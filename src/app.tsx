@@ -27,6 +27,7 @@ export const App = () => {
   }, []);
 
   useEffect(() => {
+    console.log('Hi');
     if (token) {
       axios.defaults.headers.common.Authorization = `Bearer ${token}`;
       API.initService();
