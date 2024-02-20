@@ -49,14 +49,21 @@ import {
   useUserProfile,
   userProfileParsedData,
 } from '@network/hooks/user-service-hooks/use-user-profile';
-import {NavigationContainerRef, ParamListBase, useFocusEffect} from '@react-navigation/native';
+import {
+  NavigationContainerRef,
+  ParamListBase,
+  useFocusEffect,
+} from '@react-navigation/native';
 import {navigations} from '@config/app-navigation/constant';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import moment from 'moment';
-import {DatePickerModal, TimePickerModal,} from 'react-native-paper-dates';
+import {DatePickerModal, TimePickerModal} from 'react-native-paper-dates';
 import GetLocation from 'react-native-get-location';
 import {Loader} from '@components/loader';
-
+import {ScrollView} from 'react-native-gesture-handler';
+import {Slider} from 'react-native-elements';
+import Swiper from 'react-native-swiper';
+import { API_URL } from '@network/constant';
 interface MapScreenProps {
   navigation: NavigationContainerRef<ParamListBase>;
 }
@@ -74,10 +81,10 @@ export const GratitudeScreen = (props: MapScreenProps) => {
   const [open, setOpen] = useState(false);
   const [starttimePicker, startTimePicker] = useState(false);
   const [endtimePicker, endTimePicker] = useState(false);
-  const [setStartTime,setStartTimeData]= useState()
-  const [setEndTime,setEndTimeData]= useState()
+  const [setStartTime, setStartTimeData] = useState();
+  const [setEndTime, setEndTimeData] = useState();
   var [radius, setRadius] = useState(25);
-  var [eventData, eventDetail]: any = useState();
+  var [eventData, eventDetail]: any = useState([]);
   var [circleradius, setCircleRadius] = useState(5000);
   var [location, setUserLocation]: any = useState();
   var [pitch, setPitchOnMap] = useState(45);
@@ -86,8 +93,9 @@ export const GratitudeScreen = (props: MapScreenProps) => {
   var [altitude, setAltitudeOnMap] = useState(35000);
   const [eventList, eventDataStore] = useState([]);
   const [eventType, eventTypeData] = useState('event');
-  const [userprofile, setUserProfile] = useState('');
+  const [profileData, setUserProfile]: any = useState('');
   const [isLoading, LodingData] = useState(false);
+  const [setEventIndex, setEventIndexData] = useState(0);
   const {navigation} = props || {};
   const {user} = useSelector<StoreType, UserProfileState>(
     state => state.userProfileReducer,
@@ -122,7 +130,7 @@ export const GratitudeScreen = (props: MapScreenProps) => {
   };
 
   useEffect(() => {
-    LogBox.ignoreAllLogs()
+    LogBox.ignoreAllLogs();
     getUserProfileAPI();
     setRadius(radius);
     eventTypeData(eventType);
@@ -137,8 +145,8 @@ export const GratitudeScreen = (props: MapScreenProps) => {
 
   useFocusEffect(
     useCallback(() => {
-    requestLocationPermission();
-      getUserProfileAPI(); 
+      requestLocationPermission();
+      getUserProfileAPI();
     }, []),
   );
 
@@ -182,7 +190,7 @@ export const GratitudeScreen = (props: MapScreenProps) => {
     console.log('token', token);
     try {
       const response = await fetch(
-        'https://app.onelocal.one/api/v1/users/' + user.id,
+        API_URL + '/v1/users/' + user.id,
         {
           method: 'get',
           headers: new Headers({
@@ -192,11 +200,13 @@ export const GratitudeScreen = (props: MapScreenProps) => {
         },
       );
       const dataItem = await response.json();
-      console.log('-----------------https://app.onelocal.one/api/v1/users/------------');
+      console.log(
+        '-----------------'+API_URL+'/v1/users/------------',
+      );
       console.log(dataItem);
       console.log(dataItem.data.pic);
       console.log('-----------------user profile 123------------');
-      setUserProfile(dataItem.data.pic);
+      setUserProfile(dataItem.data);
       AsyncStorage.setItem('profile', dataItem.data.pic);
       AsyncStorage.setItem('uniqueId', dataItem.data.user_unique_id);
     } catch (error) {
@@ -232,11 +242,20 @@ export const GratitudeScreen = (props: MapScreenProps) => {
       user_long: location?.longitude,
       radius: radius,
     };
+    // var data: any = {
+    //   end_date: '2024-02-02',
+    //   radius: 25,
+    //   start_date: '2024-01-24',
+    //   type: 'event',
+    //   user_lat: 23.0497594,
+    //   user_long: 72.5141551,
+    // };
+
     console.log('=========== Geo Tagging API Request ==============');
     console.log(data);
     try {
       const response = await fetch(
-        'https://app.onelocal.one/api/v1/events/geotagging',
+        API_URL + '/v1/events/geotagging',
         {
           method: 'post',
           headers: new Headers({
@@ -252,7 +271,7 @@ export const GratitudeScreen = (props: MapScreenProps) => {
       console.log('=========== Geo Tagging API Response ==============');
       LodingData(false);
       console.log(dataItem);
-      eventDetail(dataItem?.data[0]);
+      eventDetail(dataItem?.data);
       eventDataStore(dataItem?.data);
       console.log(dataItem?.data[0]);
       console.log(dataItem?.data);
@@ -261,11 +280,16 @@ export const GratitudeScreen = (props: MapScreenProps) => {
       console.error(error);
     }
   }
+
+  const onNavigateEventDetail = (item: any) => {
+    navigation.navigate(navigations.EVENT_DETAIL, {id: item?._id});
+  };
+
   const mapPlusClick = () => {
     map?.current?.getCamera().then((cam: Camera) => {
       console.log('--------------onZoomInPress------------------');
       cam.altitude = altitude + 5000;
-      radius = radius - 5000
+      radius = radius - 5000;
       cam.pitch = pitch + 5;
       // heading = heading + 5;
       cam.zoom = zoom + 5;
@@ -283,42 +307,48 @@ export const GratitudeScreen = (props: MapScreenProps) => {
     map?.current?.getCamera().then((cam: Camera) => {
       console.log('--------------onZoomOutPress------------------');
       cam.altitude = altitude - 5000;
-      radius = radius + 5000
+      radius = radius + 5000;
       cam.pitch = pitch - 5;
       // heading = heading + 5;
-      cam.zoom = zoom - 5;  
+      cam.zoom = zoom - 5;
       map?.current?.animateCamera(cam);
       console.log(cam);
-      setPitchOnMap(cam.pitch); 
+      setPitchOnMap(cam.pitch);
       // setHeadingOnMap(heading);
       setZoomOnMap(cam.zoom);
       setAltitudeOnMap(cam.altitude);
       geoTaggingAPI(location);
-    }); 
+    });
   };
-  const onConfirmStrtTime = (res:any) =>{
-    console.log(res)
-    setStartTimeData(res)
-    startTimePicker(false)
+  const onConfirmStrtTime = (res: any) => {
+    console.log(res);
+    setStartTimeData(res);
+    startTimePicker(false);
     LodingData(true);
     requestLocationPermission();
-  }
-  const onConfirmEndTime = (res:any) =>{
-    console.log(res)
-    setEndTimeData(res)
-    endTimePicker(false)
+  };
+  const onConfirmEndTime = (res: any) => {
+    console.log(res);
+    setEndTimeData(res);
+    endTimePicker(false);
     LodingData(true);
     requestLocationPermission();
-  }
+  };
 
-  const onDismissTimePicker = () =>{
-    startTimePicker(false)
-    endTimePicker(false)
-  }
+  const onDismissTimePicker = () => {
+    startTimePicker(false);
+    endTimePicker(false);
+  };
 
-  const onEventTypeClick = (type: any) => { 
+  const onEventTypeClick = (type: any) => {
     LodingData(true);
     eventTypeData(type);
+    geoTaggingAPI(location);
+  };
+
+  const onswipeSetEventIndex = (eventIndex: any) => {
+    setEventIndexData(eventIndex);
+    LodingData(true);
     geoTaggingAPI(location);
   };
 
@@ -344,12 +374,16 @@ export const GratitudeScreen = (props: MapScreenProps) => {
           <ImageComponent
             style={styles.oneContainerImage}
             source={onelogo}></ImageComponent>
-          <Text style={styles.oneContainerText}>NE</Text>
+          <View>
+            <Text style={styles.oneContainerText}>NE</Text>
+            <Text style={styles.localText}>L  o  c  a  l</Text>
+            {/* <Text style={styles.localText}>[Local]</Text> */}
+          </View>
         </View>
         <View style={styles.profileContainer}>
-          <ImageComponent
+          {/* <ImageComponent
             style={styles.bellIcon}
-            source={bell}></ImageComponent>
+            source={bell}></ImageComponent> */}
           <TouchableOpacity
             activeOpacity={0.8}
             onPress={onNavigateToProfile}
@@ -358,14 +392,14 @@ export const GratitudeScreen = (props: MapScreenProps) => {
               resizeMode="cover"
               isUrl={!!user?.pic}
               source={dummy}
-              uri={userprofile}
+              uri={profileData?.pic}
               style={styles.profile}
             />
           </TouchableOpacity>
         </View>
       </TouchableOpacity>
       <View style={{position: 'relative', zIndex: 11122222}}>
-        <View style={styles.filterTags}>
+        {/* <View style={styles.filterTags}>
           <TouchableOpacity
             style={styles.container2}
             activeOpacity={0.8}
@@ -387,10 +421,10 @@ export const GratitudeScreen = (props: MapScreenProps) => {
             <ImageComponent source={mapGifting} style={[styles.icon1]} />
             <Text style={[styles.label1, {color: '#197127'}]}>Gifting</Text>
           </TouchableOpacity>
-        </View>
+        </View> */}
       </View>
       <View style={{zIndex: 11122222}}>
-        <TouchableOpacity activeOpacity={0.8} style={styles.dateContainer}>
+        {/* <TouchableOpacity activeOpacity={0.8} style={styles.dateContainer}>
           <ImageComponent source={calendar} style={styles.calendar} />
           <TouchableOpacity activeOpacity={0.8} onPress={() => startTimePicker(true)}>
           <Text style={styles.date}>{`${moment(setStartTime).format(
@@ -445,7 +479,7 @@ export const GratitudeScreen = (props: MapScreenProps) => {
           keyboardIcon={calendar}
           clockIcon={calendar}
         />
-        </TouchableOpacity>
+        </TouchableOpacity> */}
       </View>
       <MapView
         ref={map}
@@ -467,9 +501,10 @@ export const GratitudeScreen = (props: MapScreenProps) => {
           strokeWidth={4}
           strokeColor={'black'}></Circle>
         {/* {eventList ? <View> */}
-        {eventList.map((eventList: any) => {
+        {eventList.map((eventList: any, index) => {
           return (
             <Marker
+              pinColor={setEventIndex === index ? 'red' : 'black'}
               coordinate={{
                 latitude: eventList?.location?.coordinates[1],
                 longitude: eventList?.location?.coordinates[0],
@@ -486,42 +521,54 @@ export const GratitudeScreen = (props: MapScreenProps) => {
           <Image style={styles.plusClass} source={minus}></Image>
         </TouchableOpacity>
       </Callout>
-      {eventData ? (
-        <View>
-          <TouchableOpacity style={styles.listContainer} activeOpacity={0.8}>
-            <ImageComponent
-              resizeMode="stretch"
-              source={{uri: eventData?.event_image}}
-              style={styles.dummy}
-            />
-            <View style={styles.flex}>
-              <View style={styles.row}>
-                <View style={styles.flex}>
-                  <Text style={styles.dateText}>{`${moment(
-                    eventData?.start_date,
-                  ).format('ddd, MMM DD')} • ${moment(
-                    eventData?.start_date,
-                  ).format('hh:mm A')}`}</Text>
-                  <Text style={styles.title}>{eventData?.name}</Text>
-                </View>
-                <ImageComponent source={event} style={styles.event} />
-              </View>
-              <View style={styles.row}>
-                <ImageComponent source={pin} style={styles.pin} />
-                <Text style={styles.location}>{eventData?.address}</Text>
+      <View style={styles.avatarContainer}>
+        <Swiper
+          autoplay={true}
+          // loop={false}
+          onIndexChanged={value => {
+            console.log(value);
+            // setEventIndexData(value);
+            onswipeSetEventIndex(value);
+          }}>
+          {eventData.map((eventData: any) => {
+            return (
+              <TouchableOpacity
+                style={styles.listContainer}
+                activeOpacity={0.8}
+                onPress={() => onNavigateEventDetail(eventData)}>
                 <ImageComponent
-                  style={styles.addressDot}
-                  source={activeRadio}></ImageComponent>
-                <Text style={styles.fullAddress}>
-                  {eventData?.full_address}
-                </Text>
-              </View>
-            </View>
-          </TouchableOpacity>
-        </View>
-      ) : (
-        <View></View>
-      )}
+                  resizeMode="stretch"
+                  source={{uri: eventData?.event_image}}
+                  style={styles.dummy}
+                />
+                <View style={styles.flex}>
+                  <View style={styles.row}>
+                    <View style={styles.flex}>
+                      <Text style={styles.dateText}>{`${moment(
+                        eventData?.start_date,
+                      ).format('ddd, MMM DD')} • ${moment(
+                        eventData?.start_date,
+                      ).format('hh:mm A')}`}</Text>
+                      <Text style={styles.title}>{eventData?.name}</Text>
+                    </View>
+                    <ImageComponent source={event} style={styles.event} />
+                  </View>
+                  <View style={styles.row}>
+                    <ImageComponent source={pin} style={styles.pin} />
+                    <Text style={styles.location}>{eventData?.address}</Text>
+                    <ImageComponent
+                      style={styles.addressDot}
+                      source={activeRadio}></ImageComponent>
+                    <Text numberOfLines={3} style={styles.fullAddress}>
+                      {eventData?.full_address}
+                    </Text>
+                  </View>
+                </View>
+              </TouchableOpacity>
+            );
+          })}
+        </Swiper>
+      </View>
     </View>
   );
 };

@@ -106,7 +106,7 @@ export const Header = (props: HeaderProps) => {
         
         {rightIcon ? <View style={{ position: 'absolute', right: 10, top: 40 }}><Text style={{ fontSize: 16, color: theme.colors.white, fontWeight: '500' }}>{rightIcon}</Text></View> : <View><Text></Text></View>}
         <View style={styles.profileContainer}>
-          {children ? <ImageComponent style={styles.bellIcon} source={bell}></ImageComponent> : <View></View>}
+          {/* {children ? <ImageComponent style={styles.bellIcon} source={bell}></ImageComponent> : <View></View>} */}
           <TouchableOpacity>
             <View style={styles.profile}>{children}</View>
           </TouchableOpacity>

@@ -50,6 +50,9 @@ interface EditProfileProps {
     about?: string;
     skills?: string[];
     coverImage?: string;
+    first_name?: string;
+    last_name?: string;
+    nick_name?:string;
   };
   userId: string;
 }
@@ -57,7 +60,7 @@ interface EditProfileProps {
 export const onEditUserProfile = async (props: EditProfileProps) => {
   console.log('-------------4444---------')
   const { bodyParams, userId } = props || {};
-  const { skills, about, bio, profile, coverImage } = bodyParams || {};
+  const { skills, about, bio, profile, coverImage,first_name,last_name,nick_name } = bodyParams || {};
   let response;
   console.log('*********************************',skills)
   try {
@@ -81,7 +84,10 @@ export const onEditUserProfile = async (props: EditProfileProps) => {
       // 'cover_image' : JSON.stringify(coverImgData),
       'about': about,
       'skills': skills?.toString(),
-      'bio': bio
+      'bio': bio,
+      'first_name':first_name,
+      'last_name':last_name,
+      'nick_name':nick_name
     }
     console.log('----------------attachments--------------',attachments)
     console.log('----------------attachments pic--------------',attachments.pic)
@@ -113,7 +119,7 @@ export const onEditUserProfile = async (props: EditProfileProps) => {
       console.log('-------------10101010---------')
       attachment.append('bio', bio);
     }
-
+console.log(attachment,'response=== attachment attachment request')
     const endPoint = `${apiConstants.editProfile}${userId}`;
     console.log('-------------12 12 12 12---------')
     console.log(endPoint)
@@ -127,7 +133,7 @@ export const onEditUserProfile = async (props: EditProfileProps) => {
   } catch (error: any) {
     response = getApiResponse(error);
     console.log('-------------11 11 11 11---------')
-    console.log('response===', response, error);
+    console.log('response=== profile page', response, error);
   }
 
   return response;

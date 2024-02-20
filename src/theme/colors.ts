@@ -23,5 +23,15 @@ export const colors = {
   lightBlueTwo :"#0E80E8",
   sky:"#54C1FF",
   lightgrayTwo:'#E8E8E8',
-  darkRed:'#6E1111'
+  darkRed:'#6E1111',
+  darkyellow:'#F6B816',
+  greenBdr:'#159A12',
+  redTwo:'#C60000',
+  darkenBlack:'#353535',
+  gray:'#7E7E7E',
+  lightGray:'#EDEDED',
+  appColor:'#003333',
+  headerColor:'#003333',
+  footerColor:'#003333',
+  splashColor:'#003333',
 };

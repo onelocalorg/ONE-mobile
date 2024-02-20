@@ -13,6 +13,7 @@ export interface ThemeProps {
     font7: number;
     font8: number;
     font10: number;
+    font11: number;
     font12: number;
     font14: number;
     font16: number;
@@ -56,6 +57,16 @@ export interface ThemeProps {
     sky:string;
     lightgrayTwo:string;
     darkRed:string;
+    darkyellow:string;
+    greenBdr:string;
+    redTwo:string;
+    darkenBlack:string;
+    gray:string;
+    lightGray:string;
+    appColor:string;
+    headerColor:string;
+    footerColor:string;
+    splashColor:string;
   };
   opacity: {
     opacity15: number;

@@ -13,6 +13,10 @@ export const createStyleSheet = (theme: ThemeProps) => {
       backgroundColor: theme.colors.white,
       flexDirection: 'row',
       marginTop: verticalScale(13),
+      shadowColor: theme.colors.darkGrey,
+      shadowOffset: { width: 1, height: 2 },
+      shadowOpacity: 0.9,
+      shadowRadius: 4,
     },
     dummy: {
       width: normalScale(80),
@@ -36,6 +40,7 @@ export const createStyleSheet = (theme: ThemeProps) => {
       color: theme.colors.black,
       marginBottom: verticalScale(7),
       maxWidth: normalScale(200),
+      flexShrink:1
     },
     event: {
       height: normalScale(32),
@@ -55,6 +60,7 @@ export const createStyleSheet = (theme: ThemeProps) => {
       fontFamily: theme.fontType.light,
       fontSize: theme.fontSize.font12,
       color: theme.colors.black,
+      flexShrink:1
     },
     fullAddress: {
       fontFamily: theme.fontType.light,
@@ -65,6 +71,14 @@ export const createStyleSheet = (theme: ThemeProps) => {
       height: 6,
       width: 6, marginVertical: 5,
       marginHorizontal: 5
+    },
+    cancleText:{
+      position:'absolute',
+      right:0,
+      top:35,
+      fontFamily:theme.fontType.medium,
+      fontSize:theme.fontSize.font14,
+      color:theme.colors.redTwo
     }
   });
 };

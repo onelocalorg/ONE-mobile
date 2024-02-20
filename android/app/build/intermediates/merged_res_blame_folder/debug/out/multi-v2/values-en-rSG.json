@@ -1,10 +1,10 @@
 {
     "logs": [
         {
-            "outputFile": "com.awesomeproject.app-mergeDebugResources-92:/values-en-rSG/values-en-rSG.xml",
+            "outputFile": "com.oneboulder.app-mergeDebugResources-92:/values-en-rSG/values-en-rSG.xml",
             "map": [
                 {
-                    "source": "/Users/sanandiyavipul/.gradle/caches/transforms-3/935349f7b25ac12ad24aff18e7ffd282/transformed/jetified-play-services-wallet-19.2.0-beta01/res/values-en-rSG/values.xml",
+                    "source": "/Users/sanandiyavipul/.gradle/caches/transforms-3/8a0a85d87c34df532c55de9a6da4e74f/transformed/jetified-play-services-wallet-19.2.0-beta01/res/values-en-rSG/values.xml",
                     "from": {
                         "startLines": "4",
                         "startColumns": "0",

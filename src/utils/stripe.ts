@@ -1,8 +1,9 @@
+import { STRIPE_PUBLIC_KEY } from '@network/constant';
 import {initStripe} from '@stripe/stripe-react-native';
-import ActiveEnv from '@config/env/env.json';
+
 
 const stripeConfig = {
-  publishableKey: ActiveEnv.STRIPE_PUBLISHABLE_KEY,
+  publishableKey: STRIPE_PUBLIC_KEY,
 };
 
 export const initializeStripe = () => {

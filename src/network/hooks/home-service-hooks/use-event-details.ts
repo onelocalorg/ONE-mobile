@@ -21,7 +21,15 @@ export interface EventDetails {
   is_event_owner: boolean;
   quantity: string
   max_quantity_to_show: string,
-  available_quantity: string
+  available_quantity: string,
+  cancelled:boolean,
+  date_title:string;
+  day_title:string;
+  isPayout: boolean;
+  viewCount:number;
+  start_date_label:string;
+  start_time_label:string;
+  events:[];
 }
 
 interface EventProducer {

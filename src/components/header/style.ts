@@ -13,7 +13,7 @@ export const createStyleSheet = (theme: ThemeProps) =>
     container: {
       borderBottomLeftRadius: theme.borderRadius.radius10,
       borderBottomRightRadius: theme.borderRadius.radius10,
-      backgroundColor: theme.colors.darkRed,
+      backgroundColor: theme.colors.headerColor,
       height: 120,
     },
     imageContainer: {
@@ -23,7 +23,7 @@ export const createStyleSheet = (theme: ThemeProps) =>
       borderBottomRightRadius: theme.borderRadius.radius10,
       alignItems: 'center',
       paddingHorizontal: normalScale(14),
-      backgroundColor: theme.colors.darkRed
+      backgroundColor: theme.colors.headerColor
     },
     row: {
       flexDirection: 'row',

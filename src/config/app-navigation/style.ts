@@ -10,13 +10,13 @@ export const createStyleSheet = (theme: ThemeProps) =>
       marginTop: -verticalScale(25),
     },
     container: {
-      paddingBottom : 10,
-      backgroundColor: theme.colors.darkRed,
+      paddingBottom : 20,
+      backgroundColor: theme.colors.footerColor,
       height: verticalScale(65),
       justifyContent: 'center',
       alignItems: 'center',
-      borderTopLeftRadius: theme.borderRadius.radius10,
-      borderTopRightRadius: theme.borderRadius.radius10,
+      // borderTopLeftRadius: theme.borderRadius.radius10,
+      // borderTopRightRadius: theme.borderRadius.radius10,
     },
     innerContainer: {
       alignItems: 'center',
@@ -24,8 +24,8 @@ export const createStyleSheet = (theme: ThemeProps) =>
     },
     icon: {
       marginTop: 20,
-      width: normalScale(28),
-      height: normalScale(24),
+      width: normalScale(35),
+      height: normalScale(35),
       resizeMode: 'contain',
     },
   });

@@ -13,15 +13,15 @@ import {bottomNavigationVisibleScreens, navigations} from './constant';
 import {HomeRoute} from './home-route';
 import {NavigatorOptionComponent} from './navigator-option-component';
 import {createStyleSheet} from './style';
-import {CalendarScreen} from '@screens/calendar';
 import {ChatScreen} from '@screens/chat';
 import {GratitudeScreen} from '@screens/gratitude';
-import {addGreen, calendarTime, chat, eventTwo, gratitude, home} from '@assets/images';
+import {addGreen, calendarTime, chat, eventTwo, gratitude, home, notificationTwo} from '@assets/images';
 import {ImageComponent} from '@components/image-component';
 import {bottomTabs} from '@assets/constants';
 import {TouchableOpacity} from 'react-native';
 import {ModalRefProps} from '@components/modal-component';
-import {AddComponentModal} from '@screens/calendar/add-component-modal';
+import {AddComponentModal} from '@screens/event/add-component-modal';
+import { EventRoute } from './event-route';
 
 const Tab = createBottomTabNavigator();
 const header = () => null;
@@ -35,7 +35,7 @@ export const BottomNavigator = () => {
 
   const bottomNav = [
     bottomTabs.home,
-    bottomTabs.calendar,
+    'event',
     bottomTabs.gratitude,
     bottomTabs.chat,
     
@@ -48,10 +48,10 @@ export const BottomNavigator = () => {
           screenName: navigations.HOME_ROUTE,
           component: HomeRoute,
         };
-      case bottomTabs.calendar:
+      case 'event':
         return {
-          screenName: navigations.CALENDAR,
-          component: CalendarScreen,
+          screenName: navigations.EVENT_ROUTE,
+          component: EventRoute,
         };
         case bottomTabs.gratitude:
           return {
@@ -101,7 +101,7 @@ export const BottomNavigator = () => {
         />
       );
     }
-    if (route.name === navigations.CALENDAR) {
+    if (route.name === navigations.EVENT_ROUTE) {
       return (
         <NavigatorOptionComponent
           focused={focused}
@@ -114,8 +114,8 @@ export const BottomNavigator = () => {
       return (
         <NavigatorOptionComponent
           focused={focused}
-          selectedImage={chat}
-          unSelectedImage={chat}
+          selectedImage={notificationTwo}
+          unSelectedImage={notificationTwo}
         />
       );
     }
@@ -132,8 +132,8 @@ export const BottomNavigator = () => {
   };
 
   const getTabbarStyle = (route: RouteProp<ParamListBase, string>) => {
+    console.log('routeName route',route);
     const routeName = getFocusedRouteNameFromRoute(route) ?? '';
-
     if (
       routeName.length === 0 ||
       (bottomNavigationVisibleScreens.includes(routeName) &&
@@ -190,4 +190,6 @@ export const BottomNavigator = () => {
       />
     </>
   );
+
+  
 };

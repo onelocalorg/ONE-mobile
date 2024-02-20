@@ -26,6 +26,12 @@ export interface Result {
   quantity:string
   max_quantity_to_show:string
   available_quantity:string
+  cancelled:boolean;
+  date_title:string;
+  day_title:string;
+  isPayout: boolean;
+  viewCount:number;
+  events:[];
 }
 
 interface EventProducer {

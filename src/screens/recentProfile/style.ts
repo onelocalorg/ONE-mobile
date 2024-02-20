@@ -29,7 +29,7 @@ export const createStyleSheet = (theme: ThemeProps) => {
       width: normalScale(112),
       borderRadius: normalScale(112),
     },
-    center: {
+    center: { 
       alignSelf: 'center',
       marginTop: verticalScale(2),
       marginLeft: normalScale(50),
@@ -45,9 +45,9 @@ export const createStyleSheet = (theme: ThemeProps) => {
     circularView: {
       paddingVertical: verticalScale(2),
       paddingHorizontal: normalScale(30),
-      borderColor: theme.colors.lightWhite,
-      borderWidth: theme.borderWidth.borderWidth1,
-      borderRadius: theme.borderRadius.radius12,
+      // borderColor: theme.colors.lightWhite,
+      // borderWidth: theme.borderWidth.borderWidth1,
+      // borderRadius: theme.borderRadius.radius12,
     },
     des: {
       fontFamily: theme.fontType.regular,
@@ -74,8 +74,8 @@ export const createStyleSheet = (theme: ThemeProps) => {
     },
     input: {
       backgroundColor: 'transparent',
-      borderColor: theme.colors.lightWhite,
-      borderWidth: theme.borderWidth.borderWidth1,
+      // borderColor: theme.colors.lightWhite,
+      // borderWidth: theme.borderWidth.borderWidth1,
       fontFamily: theme.fontType.regular,
       fontSize: theme.fontSize.font14,
       color: theme.colors.black,
@@ -769,7 +769,7 @@ export const createStyleSheet = (theme: ThemeProps) => {
       borderBottomRightRadius: theme.borderRadius.radius10,
       alignItems: 'center',
       paddingHorizontal: normalScale(14),
-      backgroundColor: theme.colors.darkRed
+      backgroundColor: theme.colors.headerColor
     },
     // row: {
     //   flexDirection: 'row',
@@ -825,15 +825,24 @@ export const createStyleSheet = (theme: ThemeProps) => {
       zIndex: 11111122,
       borderRadius: 100
     },
+    localText: {
+      textAlign: 'center',
+      fontSize: 14,
+      fontWeight: '400',
+      color: 'white',
+      position:'relative',
+      bottom:13,
+
+    },
 
 
 
 
     HeaderContainerTwo: {
-      borderBottomLeftRadius: theme.borderRadius.radius10,
-      borderBottomRightRadius: theme.borderRadius.radius10,
-      backgroundColor: theme.colors.darkRed,
-      height: 160,
+      // borderBottomLeftRadius: theme.borderRadius.radius10,
+      // borderBottomRightRadius: theme.borderRadius.radius10,
+      backgroundColor: theme.colors.headerColor,
+      height: 150,
       // position: 'relative',
     },
     row2: {

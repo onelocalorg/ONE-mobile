@@ -1006,13 +1006,15 @@ PODS:
     - React-Core
   - react-native-geolocation-service (5.3.1):
     - React
-  - react-native-google-maps (1.9.1):
+  - react-native-google-maps (1.10.0):
     - Google-Maps-iOS-Utils (= 4.2.2)
     - GoogleMaps (= 7.4.0)
     - React-Core
-  - react-native-image-picker (5.7.0):
+  - react-native-image-picker (7.1.0):
+    - glog
+    - RCT-Folly (= 2022.05.16.00)
     - React-Core
-  - react-native-maps (1.9.1):
+  - react-native-maps (1.10.0):
     - React-Core
   - react-native-netinfo (9.5.0):
     - React-Core
@@ -1194,6 +1196,8 @@ PODS:
     - React-perflogger (= 0.73.1)
   - ReactNativeGetLocation (4.0.1):
     - React-Core
+  - RNAppleAuthentication (2.3.0):
+    - React-Core
   - RNCAsyncStorage (1.21.0):
     - React-Core
   - RNCClipboard (1.13.2):
@@ -1206,16 +1210,25 @@ PODS:
     - React-Core
     - SDWebImage (~> 5.11.1)
     - SDWebImageWebPCoder (~> 0.8.4)
-  - RNGestureHandler (2.14.0):
+  - RNGestureHandler (2.14.1):
     - glog
     - RCT-Folly (= 2022.05.16.00)
     - React-Core
   - RNGoogleSignin (11.0.0):
     - GoogleSignIn (~> 7.0)
     - React-Core
-  - RNPermissions (4.0.2):
+  - RNImageCropPicker (0.40.2):
     - React-Core
-  - RNReanimated (3.6.1):
+    - React-RCTImage
+    - RNImageCropPicker/QBImagePickerController (= 0.40.2)
+    - TOCropViewController
+  - RNImageCropPicker/QBImagePickerController (0.40.2):
+    - React-Core
+    - React-RCTImage
+    - TOCropViewController
+  - RNPermissions (4.0.4):
+    - React-Core
+  - RNReanimated (3.6.2):
     - glog
     - RCT-Folly (= 2022.05.16.00)
     - React-Core
@@ -1274,6 +1287,7 @@ PODS:
   - StripeUICore (23.8.0):
     - StripeCore (= 23.8.0)
   - Toast (4.0.0)
+  - TOCropViewController (2.6.1)
   - Yoga (1.14.0)
 
 DEPENDENCIES:
@@ -1360,6 +1374,7 @@ DEPENDENCIES:
   - React-utils (from `../node_modules/react-native/ReactCommon/react/utils`)
   - ReactCommon/turbomodule/core (from `../node_modules/react-native/ReactCommon`)
   - ReactNativeGetLocation (from `../node_modules/react-native-get-location`)
+  - "RNAppleAuthentication (from `../node_modules/@invertase/react-native-apple-authentication`)"
   - "RNCAsyncStorage (from `../node_modules/@react-native-async-storage/async-storage`)"
   - "RNCClipboard (from `../node_modules/@react-native-clipboard/clipboard`)"
   - "RNDateTimePicker (from `../node_modules/@react-native-community/datetimepicker`)"
@@ -1367,6 +1382,7 @@ DEPENDENCIES:
   - RNFastImage (from `../node_modules/react-native-fast-image`)
   - RNGestureHandler (from `../node_modules/react-native-gesture-handler`)
   - "RNGoogleSignin (from `../node_modules/@react-native-google-signin/google-signin`)"
+  - RNImageCropPicker (from `../node_modules/react-native-image-crop-picker`)
   - RNPermissions (from `../node_modules/react-native-permissions`)
   - RNReanimated (from `../node_modules/react-native-reanimated`)
   - RNScreens (from `../node_modules/react-native-screens`)
@@ -1408,6 +1424,7 @@ SPEC REPOS:
     - StripePaymentsUI
     - StripeUICore
     - Toast
+    - TOCropViewController
 
 EXTERNAL SOURCES:
   boost:
@@ -1527,6 +1544,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon"
   ReactNativeGetLocation:
     :path: "../node_modules/react-native-get-location"
+  RNAppleAuthentication:
+    :path: "../node_modules/@invertase/react-native-apple-authentication"
   RNCAsyncStorage:
     :path: "../node_modules/@react-native-async-storage/async-storage"
   RNCClipboard:
@@ -1541,6 +1560,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-gesture-handler"
   RNGoogleSignin:
     :path: "../node_modules/@react-native-google-signin/google-signin"
+  RNImageCropPicker:
+    :path: "../node_modules/react-native-image-crop-picker"
   RNPermissions:
     :path: "../node_modules/react-native-permissions"
   RNReanimated:
@@ -1606,9 +1627,9 @@ SPEC CHECKSUMS:
   react-native-camera: 3eae183c1d111103963f3dd913b65d01aef8110f
   react-native-geolocation: ef66fb798d96284c6043f0b16c15d9d1d4955db4
   react-native-geolocation-service: 608e1da71a1ac31b4de64d9ef2815f697978c55b
-  react-native-google-maps: 5e3af3d3bd16a9936a44be5be47ced7dbd45029b
-  react-native-image-picker: 3269f75c251cdcd61ab51b911dd30d6fff8c6169
-  react-native-maps: 4f45622710094c3603b262279c40026750579b1f
+  react-native-google-maps: 8007277310c0d0f7266f7987e511fb3f5505f3f2
+  react-native-image-picker: 6c51359eca7a7df9f07e297218c25696eb9da976
+  react-native-maps: b4c3b092b1c71240d8d4792bae3738828942f14a
   react-native-netinfo: 48c5f79a84fbc3ba1d28a8b0d04adeda72885fa8
   react-native-safe-area-context: 0ee144a6170530ccc37a0fd9388e28d06f516a89
   react-native-simple-toast: 2079d417c52fc3ca295edba094d5632f7720e68d
@@ -1634,15 +1655,17 @@ SPEC CHECKSUMS:
   React-utils: debda2c206770ee2785bdebb7f16d8db9f18838a
   ReactCommon: ddb128564dcbfa0287d3d1a2d10f8c7457c971f6
   ReactNativeGetLocation: b4379a01dff72507d9abce5f4d569b98abef7761
+  RNAppleAuthentication: e99eaf3c4c01ad8ecb6125dd6f0cfd98871685b5
   RNCAsyncStorage: 618d03a5f52fbccb3d7010076bc54712844c18ef
   RNCClipboard: 60fed4b71560d7bfe40e9d35dea9762b024da86d
   RNDateTimePicker: fc2e4f2795877d45e84d85659bebe627eba5c931
   RNDeviceInfo: db5c64a060e66e5db3102d041ebe3ef307a85120
   RNFastImage: 5c9c9fed9c076e521b3f509fe79e790418a544e8
-  RNGestureHandler: 61bfdfc05db9b79dd61f894dcd29d3dcc6db3c02
+  RNGestureHandler: 25b969a1ffc806b9f9ad2e170d4a3b049c6af85e
   RNGoogleSignin: fc408799f1990a12497a32f64280c0fe353ffcc1
-  RNPermissions: 25082a7be036d2220de3e41212d79ada3373735a
-  RNReanimated: 57f436e7aa3d277fbfed05e003230b43428157c0
+  RNImageCropPicker: d9616a0cb9b72e8551ff94a7a5021fbd29050aa5
+  RNPermissions: 9610ef04ff03bdfe3156722c5c8f8910b628abf0
+  RNReanimated: 5589be82dc26b3f94738eb7c6b1f942787532b25
   RNScreens: b582cb834dc4133307562e930e8fa914b8c04ef2
   RNSVG: d00c8f91c3cbf6d476451313a18f04d220d4f396
   RNVectorIcons: 210f910e834e3485af40693ad4615c1ec22fc02b
@@ -1659,7 +1682,8 @@ SPEC CHECKSUMS:
   StripePaymentsUI: 7d2fc8fe17c3fdc63508bc54df2b7cc3f45c8ef7
   StripeUICore: 1dc4d2f9afcd908db85190e9091dfe260a1861fe
   Toast: 91b396c56ee72a5790816f40d3a94dd357abc196
-  Yoga: 4f53dc50008d626fa679c7a1cb4bed898f8c0bde
+  TOCropViewController: edfd4f25713d56905ad1e0b9f5be3fbe0f59c863
+  Yoga: 2b33a7ac96c58cdaa7b810948fc6a2a76ed2d108
 
 PODFILE CHECKSUM: 9377a1da5bf5fafdddd0aa9263b74c00241da041
 

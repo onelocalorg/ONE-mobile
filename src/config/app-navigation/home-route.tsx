@@ -9,6 +9,10 @@ import {CheckInScreen} from '@screens/check-in';
 import {PaymentScreen} from '@screens/payment-screen';
 import { CreatePostScreen } from '@screens/createPost';
 import { RecentProfileScreen } from '@screens/recentProfile';
+import { CreatePostGratisScreen } from '@screens/createPost/gratis';
+import { CreatePostRequestScreen } from '@screens/createPost/request';
+import { CreatePostOfferScreen } from '@screens/createPost/offer';
+import { CommentList } from '@screens/home/commetList';
 
 const HomeStack = createStackNavigator();
 
@@ -23,28 +27,8 @@ export const HomeRoute = () => {
         options={{header}}
       />
       <HomeStack.Screen
-        name={navigations.EVENT_DETAIL}
-        component={EventDetailScreen}
-        options={{header}}
-      />
-      <HomeStack.Screen
         name={navigations.PROFILE}
         component={ProfileScreen}
-        options={{header}}
-      />
-      <HomeStack.Screen
-        name={navigations.ADMIN_TOOLS}
-        component={AdminToolsScreen}
-        options={{header}}
-      />
-      <HomeStack.Screen
-        name={navigations.CHECK_IN}
-        component={CheckInScreen}
-        options={{header}}
-      />
-      <HomeStack.Screen
-        name={navigations.PAYMENT}
-        component={PaymentScreen}
         options={{header}}
       />
       <HomeStack.Screen
@@ -52,9 +36,29 @@ export const HomeRoute = () => {
         component={CreatePostScreen}
         options={{header}}
       />
+      <HomeStack.Screen
+        name={navigations.CREATEPOSTOFFER}
+        component={CreatePostOfferScreen}
+        options={{header}}
+      />
+      <HomeStack.Screen
+        name={navigations.CREATEPOSTREQUEST}
+        component={CreatePostRequestScreen}
+        options={{header}}
+      />
+      <HomeStack.Screen
+        name={navigations.CREATEPOSTGRATIS}
+        component={CreatePostGratisScreen}
+        options={{header}}
+      />
        <HomeStack.Screen
         name={navigations.RECENTUSERPROFILE}
         component={RecentProfileScreen}
+        options={{header}}
+      />
+       <HomeStack.Screen
+        name={navigations.COMMENTLIST}
+        component={CommentList}
         options={{header}}
       />
     </HomeStack.Navigator>

@@ -1,4 +1,4 @@
-import {apiConstants} from '@network/constant';
+import {STRIPE_SECRET_KEY, apiConstants} from '@network/constant';
 import {API} from '..';
 import ActiveEnv from '@config/env/env.json';
 
@@ -20,7 +20,7 @@ export const onCreateStripeCustomer = async (
     const endPoint = `${apiConstants.createStripeCustomer}`;
     const data = await API.paymentService.post(endPoint, bodyParams, {
       headers: {
-        Authorization: `Bearer ${ActiveEnv.STRIPE_SECRET_KEY}`,
+        Authorization: `Bearer ${STRIPE_SECRET_KEY}`,
         'Content-Type': 'application/x-www-form-urlencoded',
       },
     });
@@ -53,7 +53,7 @@ export const onCreatePayoutIntent = async (props: CreatePayoutIntentProps) => {
     console.log(bodyParams,'---------------------Stripe Payment Request--------------------')
     const data = await API.paymentService.post(endPoint, bodyParams, {
       headers: {
-        Authorization: `Bearer ${ActiveEnv.STRIPE_SECRET_KEY}`,
+        Authorization: `Bearer ${STRIPE_SECRET_KEY}`,
         'Content-Type': 'application/x-www-form-urlencoded',
       },
     });
@@ -84,7 +84,7 @@ export const onCreateSubscription = async (props: CreateSubscriptionProps) => {
     const endPoint = apiConstants.createSubscription;
     const data = await API.paymentService.post(endPoint, bodyParams, {
       headers: {
-        Authorization: `Bearer ${ActiveEnv.STRIPE_SECRET_KEY}`,
+        Authorization: `Bearer ${STRIPE_SECRET_KEY}`,
         'Content-Type': 'application/x-www-form-urlencoded',
       },
     });

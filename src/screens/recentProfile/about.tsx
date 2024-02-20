@@ -67,7 +67,7 @@ import {Loader} from '@components/loader';
 import {ButtonComponent} from '@components/button-component';
 import Toast from 'react-native-simple-toast';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {persistKeys} from '@network/constant';
+import {API_URL, persistKeys} from '@network/constant';
 import {height, width} from '@theme/device/device';
 import {useEditProfile} from '@network/hooks/user-service-hooks/use-edit-profile';
 import {ActivityIndicator} from 'react-native';
@@ -124,12 +124,12 @@ export const Recentabout = (props: RecentaboutDataProps) => {
     console.log(userID);
     try {
       const response = await fetch(
-        'https://app.onelocal.one/api/v1/users/userprofile/'+userID,
+        API_URL + '/v1/users/userprofile/'+userID,
         {
           method: 'get',
           headers: new Headers({
             Authorization: 'Bearer ' + token,
-            'Content-Type': 'application/x-www-form-urlencoded',
+            'Content-Type': 'application/json',
           }),
         },
       );
@@ -140,7 +140,7 @@ export const Recentabout = (props: RecentaboutDataProps) => {
       setAbout(dataItem?.about);
       setSkills(dataItem?.skills);
       console.log(
-        'https://app.onelocal.one/api/v1/users/userprofile/5f61a3b16f61450a2bb888e8',
+        API_URL + '/v1/users/userprofile/'+userID,
       );
       LodingData(false)
       console.log(dataItem);
@@ -224,11 +224,14 @@ export const Recentabout = (props: RecentaboutDataProps) => {
             </View>
           </TouchableOpacity>
           <View style={styles.oneContainer}>
-            <ImageComponent
-              style={styles.oneContainerImage}
-              source={onelogo}></ImageComponent>
-            <Text style={styles.oneContainerText}>NE</Text>
-          </View>
+              <ImageComponent
+                style={styles.oneContainerImage}
+                source={onelogo}></ImageComponent>
+              <View>
+                <Text style={styles.oneContainerText}>NE</Text>
+                <Text style={styles.localText}>L  o  c  a  l</Text>
+              </View>
+            </View>
         </TouchableOpacity>
 
         <View style={styles.profileContainer}>
@@ -278,7 +281,7 @@ export const Recentabout = (props: RecentaboutDataProps) => {
           <View>
             <TouchableOpacity activeOpacity={1}>
               <Text style={styles.ProfileUpdateCont}>
-                Question List
+                Question & Answer List 
               </Text>
             </TouchableOpacity>
             <View style={{marginBottom: 30}}>
@@ -286,7 +289,7 @@ export const Recentabout = (props: RecentaboutDataProps) => {
                 data={recentUser?.profile_answers}
                 renderItem={({item}) => (
                   <View>
-                    {item.answer != '' ? (
+                    {item.length != 0 ? (
                       <View>
                         <Text style={styles.questionsDisplayLbl}>
                           {item.question}

@@ -18,10 +18,10 @@ export const createStyleSheet = (theme: ThemeProps) => {
       color: theme.colors.black,
     },
     HeaderContainerTwo: {
-      borderBottomLeftRadius: theme.borderRadius.radius10,
-      borderBottomRightRadius: theme.borderRadius.radius10,
-      backgroundColor: theme.colors.darkRed,
-      height: 160,
+      // borderBottomLeftRadius: theme.borderRadius.radius10,
+      // borderBottomRightRadius: theme.borderRadius.radius10,
+      backgroundColor: theme.colors.headerColor,
+      height: 150,
       // position: 'relative',
     },
     row2: {

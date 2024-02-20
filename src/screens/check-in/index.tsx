@@ -18,7 +18,11 @@ import { useCheckedInUser } from '@network/hooks/home-service-hooks/use-checked-
 import { TouchableOpacity } from 'react-native';
 import { ImageComponent } from '@components/image-component';
 import { TextInput } from 'react-native';
-import { Search, arrowLeft, onelogo } from '@assets/images';
+import { Search, arrowLeft, dummy, onelogo } from '@assets/images';
+import { navigations } from '@config/app-navigation/constant';
+import { useSelector } from 'react-redux';
+import { StoreType } from '@network/reducers/store';
+import { UserProfileState } from '@network/reducers/user-profile-reducer';
 
 interface CheckInScreenProps {
   navigation?: NavigationContainerRef<ParamListBase>;
@@ -38,6 +42,9 @@ export const CheckInScreen = (props: CheckInScreenProps) => {
   const [totalPages, setTotalPages] = useState(0);
   const [checkInList, setCheckInList] = useState<Result[]>([]);
   const [page, setPage] = useState(1);
+  const {user} = useSelector<StoreType, UserProfileState>(
+    state => state.userProfileReducer,
+  ) as {user: {id: string; pic: string; city: string}};
   const { isLoading, isRefetching, refetch } = useTicketHolderCheckinsList({
     queryParams: { limit: 10, page },
     eventId,
@@ -81,6 +88,9 @@ export const CheckInScreen = (props: CheckInScreenProps) => {
   const onLoadMoreData = () => {
     setPage(page + 1);
   };
+  const onNavigateToProfile = () => {
+    navigation?.navigate(navigations.PROFILE);
+  };
 
   const renderItem: ListRenderItem<Result> = ({ item, index }) => (
     <CheckInList
@@ -100,30 +110,43 @@ export const CheckInScreen = (props: CheckInScreenProps) => {
         visible={
           (page === 1 && (isLoading || isRefetching)) || checkedInLoading
         }
-        showOverlay={checkedInLoading}
+        showOverlay={true}
       />
       
       <TouchableOpacity style={styles.HeaderContainerTwo} activeOpacity={1}>
-        <TouchableOpacity onPress={onBackPress} style={{ zIndex: 11111222222 }}>
+        <TouchableOpacity onPress={onBackPress} style={{zIndex: 11111222222}}>
           <View style={styles.row2}>
             <ImageComponent source={arrowLeft} style={styles.arrowLeft} />
           </View>
         </TouchableOpacity>
-        {/* <View style={styles.searchContainer}>
-          <ImageComponent style={styles.searchIcon} source={Search}></ImageComponent>
-          <TextInput value={searchQuery} placeholderTextColor="#FFFF" placeholder='Search' style={styles.searchInput} onChangeText={value => {
-            console.log(value)
-            setSearchQuery(value)
-          }}></TextInput>
-        </View> */}
-
         <View style={styles.oneContainer}>
-          <ImageComponent style={styles.oneContainerImage} source={onelogo}></ImageComponent>
-          <Text style={styles.oneContainerText}>NE</Text>
+          <ImageComponent
+            style={styles.oneContainerImage}
+            source={onelogo}></ImageComponent>
+          <View>
+            <Text style={styles.oneContainerText}>NE</Text>
+            <Text style={styles.localText}>L  o  c  a  l</Text>
+            {/* <Text style={styles.localText}>[Local]</Text> */}
+          </View>
         </View>
-
+        <View style={styles.profileContainer}>
+          {/* <ImageComponent
+              style={styles.bellIcon}
+              source={bell}></ImageComponent> */}
+          <TouchableOpacity
+            activeOpacity={0.8}
+            onPress={onNavigateToProfile}
+            style={styles.profileView}>
+            <ImageComponent
+              resizeMode="cover"
+              isUrl={!!user?.pic}
+              source={dummy}
+              uri={user?.pic}
+              style={styles.profileImage}
+            />
+          </TouchableOpacity>
+        </View>
       </TouchableOpacity>
-
       <View style={styles.pillContainer}>
         <Pill
           label={strings.ticketholderCheckin}

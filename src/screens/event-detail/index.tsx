@@ -2,10 +2,25 @@
 import {useAppTheme} from '@app-hooks/use-app-theme';
 import React, {useCallback, useRef, useState} from 'react';
 import {createStyleSheet} from './style';
-import {Alert, LogBox, ScrollView, Text, TouchableOpacity, View} from 'react-native';
+import {
+  Alert,
+  LogBox,
+  ScrollView,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import {Header} from '@components/header';
 import {ImageComponent} from '@components/image-component';
-import {Search, arrowLeft, calendarTime, copy, dummy, onelogo, pinWhite} from '@assets/images';
+import {
+  Search,
+  arrowLeft,
+  calendarTime,
+  copy,
+  dummy,
+  onelogo,
+  pinWhite,
+} from '@assets/images';
 import {SizedBox} from '@components/sized-box';
 import {verticalScale} from '@theme/device/normalize';
 import {useStringsAndLabels} from '@app-hooks/use-strings-and-labels';
@@ -15,6 +30,7 @@ import {
   NavigationContainerRef,
   ParamListBase,
   useFocusEffect,
+  useRoute,
 } from '@react-navigation/native';
 import {TicketCheckoutModal} from './ticket-checkout-modal';
 import {navigations} from '@config/app-navigation/constant';
@@ -30,11 +46,13 @@ import {usePurchaseTicket} from '@network/hooks/home-service-hooks/use-purchase-
 import {PurchaseProps} from '@network/api/services/home-service';
 import {formatPrice} from '@utils/common';
 import Clipboard from '@react-native-clipboard/clipboard';
-import { TextInput } from 'react-native';
+import {TextInput} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import Toast from 'react-native-simple-toast';
+import {API_URL} from '@network/constant';
 
 interface EventDetailScreenProps {
-  navigation?: NavigationContainerRef<ParamListBase>; 
+  navigation?: NavigationContainerRef<ParamListBase>;
   route?: {
     params: {
       id: string;
@@ -44,11 +62,14 @@ interface EventDetailScreenProps {
 
 export const EventDetailScreen = (props: EventDetailScreenProps) => {
   const {theme} = useAppTheme();
+  const routeee = useRoute();
   const {strings} = useStringsAndLabels();
   const {navigation, route} = props || {};
   const {id} = route?.params ?? {};
   const styles = createStyleSheet(theme);
   const modalRef: React.Ref<ModalRefProps> = useRef(null);
+  const [ProfileData, setUserProfile]: any = useState('');
+  const [showLoader, LoadingData] = useState(false);
   const [isTicketAvailable, setIsTicketAvailable] = useState(false);
   const {user} = useSelector<StoreType, UserProfileState>(
     state => state.userProfileReducer,
@@ -65,16 +86,22 @@ export const EventDetailScreen = (props: EventDetailScreenProps) => {
     name,
     eventProducer,
     event_image,
+    start_date_label,
+    start_time_label,
     tickets,
+    cancelled,
+  //   isPayout,
+  // viewCount
   } = data || {};
 
   const {mutateAsync: createPayoutIntent} = useCreatePayoutIntent();
   const {mutateAsync: purchaseTicket, isLoading: purchaseTicketLoading} =
     usePurchaseTicket();
-    const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
 
   useFocusEffect(
     useCallback(() => {
+      console.log('route Name-------------',routeee.name);
       const ticketLength = tickets?.filter(
         ele => !ele?.is_ticket_purchased,
       )?.length;
@@ -89,9 +116,39 @@ export const EventDetailScreen = (props: EventDetailScreenProps) => {
 
   useFocusEffect(
     useCallback(() => {
+      getUserProfileAPI();
+      eventViewAPI();
       refetch();
     }, []),
   );
+
+  async function eventViewAPI() {
+    // LodingData(true);
+    const token = await AsyncStorage.getItem('token');
+
+    try {
+      const response = await fetch(
+        API_URL + '/v1/events/event-count/' + id,
+        // API_URL + '/v1/events/event-count/6565af618267f45414608d66',
+        {
+          method: 'post',
+          headers: new Headers({
+            Authorization: 'Bearer ' + token,
+            'Content-Type': 'application/json',
+          }),
+          
+        },
+      );
+
+      const dataItem = await response.json();
+      // LodingData(false);
+      console.log('=========== eventViewAPI response==============');
+      console.log(dataItem);
+    } catch (error) {
+      console.error(error);
+      // LodingData(false);
+    }
+  }
 
   const onBuyTicket = () => {
     if (is_event_owner) {
@@ -107,6 +164,30 @@ export const EventDetailScreen = (props: EventDetailScreenProps) => {
     navigation?.goBack();
   };
 
+  const getUserProfileAPI = async () => {
+    const token = await AsyncStorage.getItem('token');
+    const userId = await AsyncStorage.getItem('userProfileId');
+    console.log('token', token);
+    try {
+      const response = await fetch(API_URL + '/v1/users/' + userId, {
+        method: 'get',
+        headers: new Headers({
+          Authorization: 'Bearer ' + token,
+          'Content-Type': 'application/json',
+        }),
+      });
+      const dataItem = await response.json();
+      console.log('-----------------Response User Profile API------------');
+      console.log(dataItem);
+      console.log(dataItem.data.pic);
+      setUserProfile(dataItem.data);
+      AsyncStorage.setItem('profile', dataItem.data.pic);
+      AsyncStorage.setItem('uniqueId', dataItem.data.user_unique_id);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const onPaymentSuccess = async (
     paymentData: PurchaseProps,
     ticketId: string,
@@ -117,24 +198,48 @@ export const EventDetailScreen = (props: EventDetailScreenProps) => {
       bodyParams: {
         stripeResponse: paymentData,
         eventId: id ?? '',
-        ticketId,
-        ticketName,
-        ticketPrice,
+        ticketId: ticketId,
+        ticketName: ticketName,
+        ticketPrice: ticketPrice,
       },
     };
+    LoadingData(true);
+    console.log(request, '1111111111');
+    const res = await purchaseTicket(request);
+    if (res?.success === true) {
+      Toast.show(res.message, Toast.LONG, {
+        backgroundColor: 'black',
+      });
+      LoadingData(false);
+      navigation?.goBack();
+    } else {
+      LoadingData(false);
+    }
+  };
 
-    await purchaseTicket(request);
-    navigation?.goBack();
+  const onPurchaseTicketThroughCard = async (
+    cardData: any,
+    ticketId: string,
+    ticketName: string,
+    price: any,
+    quantityticket: string,
+  ) => {
+    onPaymentSuccess(
+      cardData,
+      ticketId,
+      ticketName,
+      `${parseFloat(price?.replace('USD', ''))}`,
+    );
   };
 
   const onPurchaseTicket = async (
     price: any,
     ticketId: string,
-    ticketName: string, 
-    quantityticket:string
+    ticketName: string,
+    quantityticket: string,
   ) => {
     const unique_Id = await AsyncStorage.getItem('uniqueId');
-     var Payment: any = {
+    var Payment: any = {
       ticketId: ticketId,
       purchase_user_unique_id: unique_Id,
       purchased_ticket_qunatity: quantityticket,
@@ -144,16 +249,16 @@ export const EventDetailScreen = (props: EventDetailScreenProps) => {
       currency: 'usd',
       'automatic_payment_methods[enabled]': true,
       customer: user?.stripeCustomerId,
-      description: 'Payment-Mobile', 
-      metadata:Payment 
-    }; 
-    console.log('------------onPurchaseTicket-----------------')
+      description: 'Payment-Mobile',
+      metadata: Payment,
+    };
+    console.log('------------onPurchaseTicket-----------------');
     let clientSecret = '';
     const res = await createPayoutIntent({bodyParams: request});
     if (res?.statusCode === 200) {
       clientSecret = res?.data?.client_secret;
     }
-    console.log('-------------------clientSecret---------------',res)
+    console.log('-------------------clientSecret---------------', res);
     modalRef.current?.onCloseModal();
     navigation?.navigate(navigations.PAYMENT, {
       clientSecret,
@@ -177,15 +282,27 @@ export const EventDetailScreen = (props: EventDetailScreenProps) => {
     Alert.alert('Message', strings.linkCopied);
   };
 
+  const onNavigateToProducerProfile = () => {
+    if (is_event_owner) {
+      navigation?.navigate(navigations.PROFILE);
+    } else {
+      AsyncStorage.setItem('recentUserId', eventProducer?.id);
+      navigation?.navigate(navigations.RECENTUSERPROFILE);
+    }
+  };
+
+  const onNavigateToProfile = () => {
+    navigation?.navigate(navigations.PROFILE);
+  };
+
   return (
     <View>
       <Loader
         visible={isLoading || isRefetching || purchaseTicketLoading}
         showOverlay
       />
-
       <TouchableOpacity style={styles.HeaderContainerTwo} activeOpacity={1}>
-        <TouchableOpacity onPress={onBackPress} style={{zIndex:11111222222}}>
+        <TouchableOpacity onPress={onBackPress} style={{zIndex: 11111222222}}>
           <View style={styles.row2}>
             <ImageComponent source={arrowLeft} style={styles.arrowLeft} />
           </View>
@@ -199,15 +316,43 @@ export const EventDetailScreen = (props: EventDetailScreenProps) => {
         </View> */}
 
         <View style={styles.oneContainer}>
-          <ImageComponent style={styles.oneContainerImage} source={onelogo}></ImageComponent>
-          <Text style={styles.oneContainerText}>NE</Text>
+          <ImageComponent
+            style={styles.oneContainerImage}
+            source={onelogo}></ImageComponent>
+          <View>
+            <Text style={styles.oneContainerText}>NE</Text>
+            <Text style={styles.localText}>L o c a l</Text>
+          </View>
         </View>
-       
+        <View style={styles.profileContainer}>
+          {/* <ImageComponent
+            style={styles.bellIcon}
+            source={bell}></ImageComponent> */}
+          <TouchableOpacity
+            activeOpacity={0.8}
+            onPress={onNavigateToProfile}
+            style={styles.profileView}>
+            <ImageComponent
+              resizeMode="cover"
+              isUrl={!!ProfileData?.pic}
+              source={dummy}
+              uri={ProfileData?.pic}
+              style={styles.profile}
+            />
+          </TouchableOpacity>
+        </View>
       </TouchableOpacity>
-
       <ScrollView contentContainerStyle={styles.scrollView}>
         <View style={styles.container}>
           <Text style={styles.title}>{name}</Text>
+          <SizedBox height={verticalScale(16)} />
+          <ImageComponent
+            resizeMode="cover"
+            uri={event_image}
+            isUrl
+            style={styles.eventImage}
+          />
+           <SizedBox height={verticalScale(16)} />
           <View style={styles.row}>
             <View style={styles.circularView}>
               <ImageComponent
@@ -217,10 +362,10 @@ export const EventDetailScreen = (props: EventDetailScreenProps) => {
             </View>
             <View style={styles.margin}>
               <Text style={styles.date}>
-                {moment(start_date).format('DD MMM YYYY')}
+                {start_date_label}
               </Text>
               <Text style={styles.time}>
-                {moment(start_date).format('dddd, hh:mm A')}
+                {start_time_label}
               </Text>
             </View>
           </View>
@@ -234,11 +379,15 @@ export const EventDetailScreen = (props: EventDetailScreenProps) => {
             </View>
           </View>
           <View style={[styles.row, styles.marginTop]}>
-            <ImageComponent
-              resizeMode="cover"
-              source={{uri:eventProducer?.pic}}
-              style={styles.dummy}
-            />
+            <TouchableOpacity
+              activeOpacity={0.8}
+              onPress={onNavigateToProducerProfile}>
+              <ImageComponent
+                resizeMode="cover"
+                source={{uri: eventProducer?.pic}}
+                style={styles.dummy}
+              />
+            </TouchableOpacity>
             <View style={styles.margin}>
               <Text
                 style={
@@ -252,13 +401,7 @@ export const EventDetailScreen = (props: EventDetailScreenProps) => {
             </View>
           </View>
         </View>
-        <SizedBox height={verticalScale(16)} />
-        <ImageComponent
-          resizeMode="cover"
-          uri={event_image}
-          isUrl
-          style={styles.eventImage}
-        />
+
         <SizedBox height={verticalScale(16)} />
         <View style={styles.container}>
           <Text style={styles.event}>{strings.tickets}</Text>
@@ -266,7 +409,8 @@ export const EventDetailScreen = (props: EventDetailScreenProps) => {
             {tickets?.map(ele => (
               <View key={ele?.price.toString()} style={styles.rowOnly}>
                 <Text style={styles.ticket}>{`${ele?.name} - ${
-                  ele?.price} ${getDate(ele?.end_date)})`}</Text>
+                  ele?.price
+                } ${getDate(ele?.end_date)})`}</Text>
                 <TouchableOpacity
                   onPress={() =>
                     copyPaymentLink(ele?.ticket_purchase_link ?? '')
@@ -280,6 +424,7 @@ export const EventDetailScreen = (props: EventDetailScreenProps) => {
           <SizedBox height={verticalScale(20)} />
           <Text style={styles.event}>{strings.aboutEvent}</Text>
           <Text style={styles.desc}>{about}</Text>
+
           <ButtonComponent
             title={!is_event_owner ? strings.buyTicket : strings.adminTools}
             onPress={onBuyTicket}
@@ -288,8 +433,9 @@ export const EventDetailScreen = (props: EventDetailScreenProps) => {
       </ScrollView>
       <TicketCheckoutModal
         eventData={data as Result}
-        onPurchase={onPurchaseTicket}
+        onPurchase={onPurchaseTicketThroughCard}
         ref={modalRef}
+        loader={showLoader}
       />
     </View>
   );

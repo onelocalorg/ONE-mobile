@@ -47,6 +47,7 @@ import {height} from '@theme/device/device';
 import {BottomSheet} from 'react-native-elements';
 import GestureRecognizer from 'react-native-swipe-gestures';
 import ImagePicker from 'react-native-image-crop-picker';
+import { API_URL } from '@network/constant';
 
 interface UserData {
   id: string;
@@ -107,7 +108,7 @@ export const RecentProfileScreen = (props: RecentProfileScreenProps) => {
   async function userProfileUpdate() {
     console.log(token)
     try {
-      const response = await fetch('https://app.onelocal.one/api/v1/users/userprofile/5f61a3b16f61450a2bb888e8', {
+      const response = await fetch(API_URL + '/v1/users/userprofile/5f61a3b16f61450a2bb888e8', {
         method: 'get',
         headers: new Headers({
           'Authorization': 'Bearer ' + token,

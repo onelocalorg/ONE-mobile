@@ -24,6 +24,7 @@ import {useSelector} from 'react-redux';
 import {StoreType} from '@network/reducers/store';
 import {UserProfileState} from '@network/reducers/user-profile-reducer';
 import {useUserProfile} from '@network/hooks/user-service-hooks/use-user-profile';
+import { setData } from '@network/constant';
 
 interface AddComponentModalProps {
   modalRef?: React.Ref<ModalRefProps>;
@@ -44,11 +45,11 @@ export const AddComponentModal = (props: AddComponentModalProps) => {
     userId: user?.id,
   });
   const {isActiveSubscription} = data || {};
-  console.log('************',data,isActiveSubscription)
+  console.log('************', data, isActiveSubscription);
 
   useFocusEffect(
     useCallback(() => {
-      if (user?.id) { 
+      if (user?.id) {
         refetch();
       }
     }, [user]),
@@ -57,19 +58,40 @@ export const AddComponentModal = (props: AddComponentModalProps) => {
   useFocusEffect(
     useCallback(() => {
       setIsActiveSubs(isActiveSubscription);
-    }, [isActiveSubscription]), 
+    }, [isActiveSubscription]),
   );
 
-//   users API => isActiveSubscription == true
-//  Login API => user_type === 'eventProducer'
+  //   users API => isActiveSubscription == true
+  //  Login API => user_type === 'eventProducer'
 
   const onNavigate = () => {
-    console.log('vvvvvvvvvvv',isActiveSubs)
+    console.log('vvvvvvvvvvv', isActiveSubs);
     if (isActiveSubs) {
       navigation?.navigate(navigations.ADMIN_TOOLS, {isCreateEvent: true});
     } else {
       Alert.alert('', strings.purchaseSubscription);
     }
+    const ref = modalRef as {current: {onCloseModal: () => void}};
+    ref?.current?.onCloseModal();
+  };
+
+  const onNavigateOfferPost = () => {
+    setData('POST_TAB_OPEN_INDEX', 1);
+    navigation?.navigate(navigations.CREATEPOST,{selecttypes:1});
+    const ref = modalRef as {current: {onCloseModal: () => void}};
+    ref?.current?.onCloseModal();
+  };
+
+  const onNavigateRequestPost = () => {
+    setData('POST_TAB_OPEN_INDEX', 2);
+    navigation?.navigate(navigations.CREATEPOST,{selecttypes:2});
+    const ref = modalRef as {current: {onCloseModal: () => void}};
+    ref?.current?.onCloseModal();
+  };
+
+  const onNavigateGratitude = () => {
+    setData('POST_TAB_OPEN_INDEX', 3);
+    navigation?.navigate(navigations.CREATEPOST,{selecttypes:3});
     const ref = modalRef as {current: {onCloseModal: () => void}};
     ref?.current?.onCloseModal();
   };
@@ -81,10 +103,64 @@ export const AddComponentModal = (props: AddComponentModalProps) => {
     style?: StyleProp<ViewStyle>,
   ) => {
     return (
-      <TouchableOpacity 
-        activeOpacity={0.8} 
+      <TouchableOpacity
+        activeOpacity={0.8}
         disabled={!enable}
         onPress={onNavigate}
+        style={[styles.view, style]}>
+        <ImageComponent source={icon} style={styles.icon} />
+        <Text style={styles.name}>{name}</Text>
+      </TouchableOpacity>
+    );
+  };
+
+  const renderViewOffer = (
+    name: string,
+    icon: number,
+    enable: boolean,
+    style?: StyleProp<ViewStyle>,
+  ) => {
+    return (
+      <TouchableOpacity
+        activeOpacity={0.8}
+        disabled={!enable}
+        onPress={onNavigateOfferPost}
+        style={[styles.view, style]}>
+        <ImageComponent source={icon} style={styles.icon} />
+        <Text style={styles.name}>{name}</Text>
+      </TouchableOpacity>
+    );
+  };
+
+  const renderViewRequest = (
+    name: string,
+    icon: number,
+    enable: boolean,
+    style?: StyleProp<ViewStyle>,
+  ) => {
+    return (
+      <TouchableOpacity
+        activeOpacity={0.8}
+        disabled={!enable}
+        onPress={onNavigateRequestPost}
+        style={[styles.view, style]}>
+        <ImageComponent source={icon} style={styles.icon} />
+        <Text style={styles.name}>{name}</Text>
+      </TouchableOpacity>
+    );
+  };
+
+  const renderViewGratitude = (
+    name: string,
+    icon: number,
+    enable: boolean,
+    style?: StyleProp<ViewStyle>,
+  ) => {
+    return (
+      <TouchableOpacity
+        activeOpacity={0.8}
+        disabled={!enable}
+        onPress={onNavigateGratitude}
         style={[styles.view, style]}>
         <ImageComponent source={icon} style={styles.icon} />
         <Text style={styles.name}>{name}</Text>
@@ -97,12 +173,12 @@ export const AddComponentModal = (props: AddComponentModalProps) => {
       <View style={styles.optionsView}>
         {renderView(strings.event, eventBlack, true)}
         <View style={styles.row}>
-          {renderView(strings.offer, offer, false, styles.greenView)}
-          {renderView(strings.request, request, false, styles.greenView)}
-          {renderView(
+          {renderViewOffer(strings.offer, offer, true, styles.greenView)}
+          {renderViewRequest(strings.request, request, true, styles.greenView)}
+          {renderViewGratitude(
             strings.gratitude,
             gratitudeBlack,
-            false,
+            true,
             styles.greenView,
           )}
         </View>

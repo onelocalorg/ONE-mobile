@@ -1,3 +1,4 @@
+import { width } from '@theme/device/device';
 import {normalScale, verticalScale} from '@theme/device/normalize';
 import {ThemeProps} from '@theme/theme';
 import {StyleSheet} from 'react-native';
@@ -27,6 +28,7 @@ export const createStyleSheet = (theme: ThemeProps) => {
     pillContainer: {
       alignSelf: 'center',
       marginTop: -verticalScale(22),
+      paddingBottom:15,
     },
     checkIn: {
       justifyContent: 'center',
@@ -104,7 +106,7 @@ export const createStyleSheet = (theme: ThemeProps) => {
     profile: {
       height: normalScale(144),
       width: '100%',
-      marginTop: verticalScale(11),
+      // marginTop: verticalScale(11),
     },
     add: {
       position: 'absolute',
@@ -213,12 +215,38 @@ export const createStyleSheet = (theme: ThemeProps) => {
       right:5,
       bottom:10
     },
+    cancleEventBtn:{
+      marginHorizontal: 20,
+      backgroundColor: theme.colors.white,
+      borderRadius: theme.borderRadius.radius14,
+      paddingVertical: verticalScale(8),
+      shadowColor: theme.colors.black,
+      shadowOpacity: theme.opacity.opacity15,
+      shadowRadius: theme.borderRadius.radius8,
+      borderColor:theme.colors.black,
+      borderWidth:theme.borderWidth.borderWidth2,
+      color:theme.colors.black,
+      shadowOffset: {
+       
+        width: 0,
+        height: verticalScale(0),
+      },
+      elevation: 5,
+      paddingHorizontal: normalScale(10),
+      marginTop:12
+    },
+
+    cancleEventText:{
+      fontSize:14,
+      textAlign:'center',
+      color:theme.colors.black
+    },
 
     HeaderContainerTwo: {
-      borderBottomLeftRadius: theme.borderRadius.radius10,
-      borderBottomRightRadius: theme.borderRadius.radius10,
-      backgroundColor: theme.colors.darkRed,
-      height: 160,
+      // borderBottomLeftRadius: theme.borderRadius.radius10,
+      // borderBottomRightRadius: theme.borderRadius.radius10,
+      backgroundColor: theme.colors.headerColor,
+      height: 150,
       // position: 'relative',
     },
     row2: {
@@ -283,7 +311,7 @@ export const createStyleSheet = (theme: ThemeProps) => {
     profileContainer: {
       position: 'absolute',
       right: 10,
-      bottom: 0
+      bottom: 25
     },
     bellIcon: {
       height: 22,
@@ -299,5 +327,443 @@ export const createStyleSheet = (theme: ThemeProps) => {
       width: normalScale(55),
       borderRadius: normalScale(50),
     },
+    localText: {
+      textAlign: 'center',
+      fontSize: 14,
+      fontWeight: '400',
+      color: 'white',
+      position:'relative',
+      bottom:13
+    },
+
+
+    payInput: {
+      backgroundColor: theme.colors.lightgrayTwo,
+      borderRadius: 10,
+      width: width - 170,
+      marginLeft: 10,
+      paddingHorizontal: 10,
+      height: 35,
+      justifyContent: 'center',
+    },
+    whoCont: {
+      fontFamily: theme.fontType.medium,
+      color: theme.colors.black,
+      fontSize: theme.fontSize.font14,
+      marginTop: 8,
+    },
+    payModalContainer: {
+      flexDirection: 'row',
+      marginVertical: 8,
+    },
+    TypeModalContainer: {
+      flexDirection: 'row',
+      marginTop: 8
+    },
+    typeDisplayCont: {
+      flexDirection: 'row',
+    },
+    typeLbl: {
+      fontFamily: theme.fontType.light,
+      color: theme.colors.black,
+      fontSize: theme.fontSize.font14,
+      borderRadius: 12,
+      marginLeft: 6,
+      paddingHorizontal: 10,
+      paddingVertical: 1,
+      borderWidth: 1,
+      borderColor: 'lightGrey',
+      marginHorizontal: 8,
+      fontWeight: '500',
+    },
+    typeLblTwo: {
+      fontFamily: theme.fontType.light,
+      color: theme.colors.black,
+      fontSize: theme.fontSize.font14,
+      paddingVertical: 1,
+      paddingHorizontal: 10,
+      fontWeight: '500',
+    },
+    typeCont: {
+      fontFamily: theme.fontType.light,
+      color: theme.colors.black,
+      fontSize: theme.fontSize.font14,
+    },
+    amountCont: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      marginRight: 25,
+      marginTop: 5,
+      borderBottomWidth: 1,
+      borderColor: 'lightgrey',
+      paddingVertical: 3,
+    },
+    amountLbl: {
+      fontFamily: theme.fontType.light,
+      color: theme.colors.black,
+      fontSize: theme.fontSize.font14,
+    },
+    dollarSign: {
+      fontFamily: theme.fontType.light,
+      color: theme.colors.black,
+      fontSize: theme.fontSize.font14,
+    },
+    percentageSign: {
+      fontFamily: theme.fontType.light,
+      color: theme.colors.black,
+      fontSize: theme.fontSize.font14,
+    },
+    dollarRupees: {
+      fontFamily: theme.fontType.light,
+      color: theme.colors.black,
+      fontSize: theme.fontSize.font14,
+      width: 35,
+      height: 20,
+      // backgroundColor: theme.colors.lightgrayTwo,
+      textAlign: 'left'
+    },
+    dollarIcon: {
+      fontFamily: theme.fontType.light,
+      color: theme.colors.black,
+      fontSize: theme.fontSize.font14,
+      // textAlign: 'center'
+    },
+    descriptionCont: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      marginVertical: 5,
+      paddingVertical: 3,
+      marginRight: 5,
+    },
+    descpLbl: {
+      fontFamily: theme.fontType.light,
+      color: theme.colors.black,
+      fontSize: theme.fontSize.font14,
+    },
+    payoutDescLbl: {
+      fontFamily: theme.fontType.light,
+      color: theme.colors.black,
+      fontSize: theme.fontSize.font14,
+      width: width - 230,
+      // backgroundColor: theme.colors.lightgrayTwo,
+      // height: 26,
+      paddingHorizontal: 6
+    },
+    dateCont: {
+      fontFamily: theme.fontType.light,
+      color: theme.colors.black,
+      fontSize: theme.fontSize.font14,
+      textAlign: 'right',
+    },
+    mediaCont: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      marginRight: 20,
+      borderBottomWidth: 1,
+      borderColor: 'lightgrey',
+      marginTop: 3,
+      paddingVertical: 3,
+    },
+    mediaLbl: {
+      fontFamily: theme.fontType.light,
+      color: theme.colors.black,
+      fontSize: theme.fontSize.font14,
+    },
+    addPhotosCont: {
+      fontFamily: theme.fontType.light,
+      color: theme.colors.black,
+      fontSize: theme.fontSize.font14,
+      borderWidth: 1,
+      borderRadius: 4,
+      paddingHorizontal: 3,
+      paddingVertical: 2,
+      marginRight: -8
+    },
+    eventContainerTwo: {
+      marginTop: 25,
+    },
+
+    uniqueViewCont: {
+      marginHorizontal: 20,
+      width: 100,
+      marginBottom: 20
+    },
+    uniqueViewLbl: {
+      alignSelf: 'center',
+      fontFamily: theme.fontType.regular,
+      fontSize: theme.fontSize.font14,
+      color: theme.colors.black,
+    },
+    uniqueCount: {
+      alignSelf: 'center',
+      fontFamily: theme.fontType.regular,
+      fontSize: theme.fontSize.font14,
+      color: theme.colors.black,
+    },
+    cancelEventCont: {
+      flexDirection: 'row',
+      justifyContent: 'flex-end',
+      marginHorizontal: 14,
+      marginVertical: 12,
+    },
+    cancelEventLbl: {
+      fontFamily: theme.fontType.regular,
+      fontSize: theme.fontSize.font16,
+      color: theme.colors.black,
+    },
+    eventListCont: {
+      marginHorizontal: normalScale(16),
+      borderColor: theme.colors.lightGrey,
+      borderWidth: theme.borderWidth.borderWidth1,
+      paddingVertical: verticalScale(10),
+      paddingHorizontal: normalScale(8),
+      borderRadius: theme.borderRadius.radius10,
+      paddingBottom: 30,
+    },
+    financialCont: {
+      fontFamily: theme.fontType.regular,
+      fontSize: theme.fontSize.font14,
+      color: theme.colors.black,
+      marginBottom: 6,
+    },
+    revenueCont: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      borderBottomWidth: theme.borderWidth.borderWidth1,
+      borderColor: theme.colors.lightGrey,
+      paddingVertical: 4,
+      marginHorizontal: 20,
+      marginBottom:15
+    },
+    revenueLbl: {
+      fontFamily: theme.fontType.regular,
+      fontSize: theme.fontSize.font14,
+      color: theme.colors.black,
+    },
+    revenueRuppes: {
+      fontFamily: theme.fontType.regular,
+      fontSize: theme.fontSize.font14,
+      color: theme.colors.black,
+      paddingRight: 4,
+    },
+    payoutCont: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      borderBottomWidth: theme.borderWidth.borderWidth1,
+      borderColor: theme.colors.lightGrey,
+      paddingVertical: 4,
+      marginHorizontal: 20,
+      marginTop: 20,
+    },
+    payoutContainer: {
+      flexDirection: 'row',
+      justifyContent: 'flex-end',
+      marginTop: 8,
+      marginHorizontal: 8,
+    },
+
+    sendPayoutLbl: {
+      color: theme.colors.white,
+      fontFamily: theme.fontType.regular,
+      fontSize: theme.fontSize.font12,
+      paddingLeft: 4,
+    },
+    payoutImg: {
+      height: 26,
+      width: 26,
+    },
+    payoutsubContainer: {
+      flexDirection: 'row',
+      backgroundColor: '#8058AE',
+      justifyContent: 'center',
+      borderRadius: theme.borderRadius.radius8,
+      height: 30,
+      alignItems: 'center',
+      paddingHorizontal: 4,
+    },
+    payOutDetailsCont: {
+      flexDirection: 'row',
+      justifyContent: 'flex-end',
+      marginTop: 5,
+    },
+    payoutDetailsLbl: {
+      color: theme.colors.black,
+      fontFamily: theme.fontType.regular,
+      fontSize: theme.fontSize.font10,
+      width: width - 200,
+    },
+    userPayoutsStatementCont: {
+      marginTop: -8,
+    },
+    subStatementcont: {
+      marginHorizontal: 20,
+    },
+    expenensLbl: {
+      fontFamily: theme.fontType.regular,
+      fontSize: theme.fontSize.font14,
+      color: theme.colors.black,
+    },
+    expenensLblTwo: {
+      fontFamily: theme.fontType.regular,
+      fontSize: theme.fontSize.font11,
+      color: theme.colors.black,
+      paddingHorizontal: 5,
+    },
+    userDetailsCont: {
+      marginHorizontal: 20,
+      // flexDirection: 'row',
+      // backgroundColor: 'red'
+    },
+    detailsSubCont: {
+      flexDirection: 'row',
+      // backgroundColor: 'green'
+    },
+    userImage: {
+      height: 24,
+      width: 24,
+      borderRadius: 100,
+      marginTop: 8,
+    },
+    userNameCont: {
+      width: width - 200,
+    },
+    usernameLbl: {
+      fontFamily: theme.fontType.regular,
+      fontSize: theme.fontSize.font12,
+      color: theme.colors.black,
+      paddingHorizontal: 5,
+      paddingTop: 5,
+    },
+    payoutForLbl: {
+      fontFamily: theme.fontType.regular,
+      fontSize: theme.fontSize.font11,
+      color: theme.colors.black,
+      paddingHorizontal: 15,
+    },
+    addItemCont: {
+      // flexDirection: 'row',
+      // justifyContent: 'flex-end',
+      marginTop: 6,
+      width: 90,
+      marginHorizontal: 20,
+    },
+    subAddItemCont: {
+      flexDirection: 'row',
+      backgroundColor: '#DCB16C',
+      justifyContent: 'center',
+      borderRadius: theme.borderRadius.radius6,
+      height: 28,
+      alignItems: 'center',
+      paddingHorizontal: 4,
+    },
+    plusIcon: {
+      color: theme.colors.white,
+      fontFamily: theme.fontType.regular,
+      fontSize: theme.fontSize.font20,
+    },
+    addItemLbl: {
+      color: theme.colors.white,
+      fontFamily: theme.fontType.regular,
+      fontSize: theme.fontSize.font12,
+      paddingLeft: 4,
+    },
+    borderBottom: {
+      height: 1.5,
+      backgroundColor: theme.colors.grey,
+      marginHorizontal: 20,
+      marginVertical: 8,
+    },
+    rupeesCont: {
+      flexDirection: 'row',
+      justifyContent: 'flex-end',
+      marginHorizontal: 40,
+    },
+    rupeesLbl: {
+      color: theme.colors.black,
+      fontFamily: theme.fontType.regular,
+      fontSize: theme.fontSize.font14,
+      marginTop: -4,
+      fontWeight: '500',
+    },
+    totalRupeesLbl: {
+      color: theme.colors.black,
+      fontFamily: theme.fontType.regular,
+      fontSize: theme.fontSize.font14,
+      paddingTop: 5,
+    },
+    toggleContainer: {
+      flexDirection: 'row',
+      justifyContent: 'center',
+      alignItems: 'center',
+      marginVertical: 40,
+    },
+
+    villageLblTwo: {
+      fontFamily: theme.fontType.medium,
+      color: theme.colors.black,
+      fontSize: theme.fontSize.font14,
+    },
+    switchToggle: {},
+
+    breakDownCont: {
+      // height: 200
+    },
+    subBreakdowncont: {
+      borderWidth: 1,
+      borderRadius: 5,
+      marginHorizontal: 16,
+      marginVertical: 25,
+      paddingLeft: 20,
+      paddingBottom: 20,
+      borderColor: theme.colors.gray,
+    },
+    breakdownHeader: {
+      paddingTop: 2,
+      fontFamily: theme.fontType.medium,
+      color: theme.colors.black,
+      fontSize: theme.fontSize.font14,
+      textAlign: 'center',
+    },
+    avatarContainer: {
+      marginLeft: 20,
+      marginRight: 20, 
+      // backgroundColor:'red'
+    },
+    avatarImage: {
+      height: 60,
+      width: 60,
+      borderRadius: 100,
+      marginLeft: 10,
+      // backgroundColor:'green'
+    },
+    submitButton: {
+    height:38,
+    marginTop: 16,
+    alignContent: 'center',
+    alignItems: 'center',
+    marginRight: 20,
+    justifyContent: 'center',
+    backgroundColor: theme.colors.purple,
+    borderRadius: 6
+    },
+    submitLbl:{
+      fontFamily: theme.fontType.medium,
+      color: theme.colors.white,
+      fontSize: theme.fontSize.font16,
+      textAlign: 'center',
+    
+    },
+    multipleImagecont:{
+      flex: 1,
+      flexDirection:'row',
+      // width : '100%',
+      flexWrap: 'wrap',
+      },
+      selectImage:{
+        height:90,
+        width:'30%',
+        borderRadius:18,
+        marginRight:10,
+        },
   });
 };

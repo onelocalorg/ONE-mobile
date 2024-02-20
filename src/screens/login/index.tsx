@@ -1,6 +1,7 @@
 import {
   Search,
   activeRadio,
+  apple,
   arrowLeft,
   buttonArrow,
   google,
@@ -13,8 +14,9 @@ import {Header} from '@components/header';
 import {ImageComponent} from '@components/image-component';
 import {SizedBox} from '@components/sized-box';
 import {verticalScale} from '@theme/device/normalize';
-import React, {useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {
+  Alert,
   Button,
   Keyboard,
   Platform,
@@ -41,11 +43,20 @@ import {useSaveCustomerId} from '@network/hooks/user-service-hooks/use-save-cust
 import {TextInput} from 'react-native-gesture-handler';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Toast from 'react-native-simple-toast';
+import {
+  AppleButton,
+  appleAuth,
+} from '@invertase/react-native-apple-authentication';
+import {jwtDecode} from 'jwt-decode';
 
 import {
   GoogleSignin,
   statusCodes,
 } from '@react-native-google-signin/google-signin';
+import {Linking} from 'react-native';
+import WebView from 'react-native-webview';
+import {API_URL} from '@network/constant';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 GoogleSignin.configure({
   webClientId:
@@ -62,7 +73,8 @@ export const LoginScreen = (props: LoginScreenProps) => {
   const {strings} = useStringsAndLabels();
   const {navigation} = props || {};
   const [isChecked, setIsChecked] = useState(false);
-  const {isLoading, mutateAsync} = useLogin();
+  const [isLoading, LodingData] = useState(false);
+  const {mutateAsync} = useLogin();
   const {onSetToken} = useToken();
   const dispatch = useDispatch();
   const [user, setUser] = useState({emailOrMobile: '', password: ''});
@@ -71,18 +83,23 @@ export const LoginScreen = (props: LoginScreenProps) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [googleUserGmail, setGoogleEmail]: any = useState();
   const [googleAuth, setGoogleAuth]: any = useState();
+  const [userToken, setUserToken] = useState();
+  const [appleAuthAvailable, setAppleAuthAvailable] = useState(false);
 
-  const onHandleCheckBox = () => {
-    setIsChecked(!isChecked);
-  };
+  useEffect(() => {}, []);
 
-  const signIn = async () => {
+  // const onHandleCheckBox = () => {
+  //   setIsChecked(!isChecked);
+  // };
+
+  const signInWithGoogle = async () => {
     console.log('google signin clicked');
     try {
       await GoogleSignin.hasPlayServices();
       const userInfo = await GoogleSignin.signIn();
       console.log(userInfo);
       if (userInfo) {
+        LodingData(true);
         onGoogleSignUpAPI(
           userInfo?.user?.email,
           userInfo?.serverAuthCode,
@@ -106,6 +123,43 @@ export const LoginScreen = (props: LoginScreenProps) => {
     }
   };
 
+  const signInWithApple = async () => {
+    console.log('111111111------33333');
+
+    try {
+      const appleAuthRequestResponse: any = await appleAuth.performRequest({
+        requestedOperation: appleAuth.Operation.LOGIN,
+        // Note: it appears putting FULL_NAME first is important, see issue #293
+        requestedScopes: [appleAuth.Scope.FULL_NAME, appleAuth.Scope.EMAIL],
+      });
+
+      if (appleAuthRequestResponse?.email !== null) {
+        console.log(
+          '----------------Check if condition data not null------------------',
+        );
+        LodingData(true);
+        await onAppleSignUpAPI(
+          appleAuthRequestResponse?.email,
+          appleAuthRequestResponse?.user,
+          appleAuthRequestResponse?.fullName?.givenName,
+          appleAuthRequestResponse?.fullName?.familyName,
+        );
+      } else {
+        console.log(
+          '----------------Check else condition data coming null------------------',
+        );
+        LodingData(true);
+        getAppleIdCredAPI(appleAuthRequestResponse);
+      }
+      console.log(
+        'appleAuthRequestResponse==========>',
+        appleAuthRequestResponse,
+      );
+    } catch (error: any) {
+      console.log('Apple Auth Error ============>', error);
+    }
+  };
+
   async function onGoogleSignUpAPI(
     googleUserGmail: any,
     googleAuth: any,
@@ -125,18 +179,15 @@ export const LoginScreen = (props: LoginScreenProps) => {
     console.log('==========on Google Sign Up API Request==============');
     console.log(userData);
     try {
-      const response = await fetch(
-        'https://app.onelocal.one/api/v1/auth/googleSignupLogin',
-        {
-          method: 'post',
-          headers: new Headers({
-            'Content-Type': 'application/x-www-form-urlencoded',
-          }),
-          body: Object.keys(userData)
-            .map(key => key + '=' + userData[key])
-            .join('&'),
-        },
-      );
+      const response = await fetch(API_URL + '/v1/auth/googleSignupLogin', {
+        method: 'post',
+        headers: new Headers({
+          'Content-Type': 'application/x-www-form-urlencoded',
+        }),
+        body: Object.keys(userData)
+          .map(key => key + '=' + userData[key])
+          .join('&'),
+      });
       const signData = await response.json();
       console.log('==========on Google Sign Up API Response==============');
       console.log(signData);
@@ -145,6 +196,88 @@ export const LoginScreen = (props: LoginScreenProps) => {
         Toast.show(signData.message, Toast.LONG, {
           backgroundColor: 'black',
         });
+        LodingData(false);
+      }
+      const {success, data} = signData || {};
+      if (success) {
+        const {
+          first_name,
+          last_name,
+          mobile_number,
+          customer_id,
+          access_token,
+          id,
+        } = data || {};
+
+        await onSetToken(access_token);
+
+        AsyncStorage.setItem('token', data.access_token);
+
+        if (!customer_id) {
+          const stripeRes = await createStripeCustomer({
+            bodyParams: {
+              name: `${first_name} ${last_name}`,
+              phone: mobile_number,
+              description: 'Test',
+            },
+          });
+          let stripeCustomerId = '';
+          if (stripeRes?.statusCode === 200) {
+            stripeCustomerId = stripeRes?.data?.id;
+          }
+          dispatch(onSetUser({...data, stripeCustomerId}));
+
+          await saveCustomerId({
+            bodyParams: {userId: id, customerId: stripeCustomerId},
+          });
+        } else {
+          dispatch(onSetUser({...data, stripeCustomerId: customer_id}));
+        }
+        LodingData(false);
+        navigation.reset({
+          index: 0,
+          routes: [{name: navigations.BOTTOM_NAVIGATION}],
+        });
+      }
+    } catch (error) {
+      LodingData(false);
+      console.error(error);
+    }
+  }
+
+  async function onAppleSignUpAPI(
+    appleUsermail: any,
+    appleAuth: any,
+    firstName: any,
+    LastName: any,
+  ) {
+    const userData: any = {
+      email: appleUsermail,
+      authorizationCode: appleAuth,
+      givenName: firstName,
+      familyName: LastName,
+    };
+    console.log('==========on Apple Sign Up API Request==============');
+    console.log(userData);
+    try {
+      const response = await fetch(API_URL + '/v1/auth/appleSignupLogin', {
+        method: 'post',
+        headers: new Headers({
+          'Content-Type': 'application/x-www-form-urlencoded',
+        }),
+        body: Object.keys(userData)
+          .map(key => key + '=' + userData[key])
+          .join('&'),
+      });
+      const signData = await response.json();
+      console.log('==========on Apple Sign Up API Response==============');
+      console.log(signData);
+      LodingData(false);
+      if (signData?.success === false) {
+        Toast.show(signData.message, Toast.LONG, {
+          backgroundColor: 'black',
+        });
+        LodingData(false);
       }
       const {success, data} = signData || {};
       if (success) {
@@ -188,11 +321,89 @@ export const LoginScreen = (props: LoginScreenProps) => {
         });
       }
     } catch (error) {
+      LodingData(false);
+      console.error(error);
+    }
+  }
+
+  async function getAppleIdCredAPI(userid: any) {
+    const userData: any = {
+      authorizationCode: userid.user,
+    };
+    console.log('==========get user Apple Cred two API Request==============');
+    console.log(userData);
+    try {
+      const response = await fetch(API_URL + '/v1/auth/appleSignupLogin', {
+        method: 'post',
+        headers: new Headers({
+          'Content-Type': 'application/x-www-form-urlencoded',
+        }),
+        body: Object.keys(userData)
+          .map(key => key + '=' + userData[key])
+          .join('&'),
+      });
+      const userinfo = await response.json();
+      console.log(
+        '==========get user Apple Cred two API Response==============',
+      );
+      console.log(userinfo);
+
+      if (userinfo?.success === false) {
+        Toast.show('Please Connect to Admin', Toast.LONG, {
+          backgroundColor: 'black',
+        });
+        LodingData(false);
+      }
+      const {success, data} = userinfo || {};
+      if (success) {
+        const {
+          first_name,
+          last_name,
+          mobile_number,
+          customer_id,
+          access_token,
+          id,
+        } = data || {};
+
+        await onSetToken(access_token);
+
+        AsyncStorage.setItem('token', data.access_token);
+
+        if (!customer_id) {
+          const stripeRes = await createStripeCustomer({
+            bodyParams: {
+              name: `${first_name} ${last_name}`,
+              phone: mobile_number,
+              description: 'Test',
+            },
+          });
+          let stripeCustomerId = '';
+          if (stripeRes?.statusCode === 200) {
+            stripeCustomerId = stripeRes?.data?.id;
+          }
+          dispatch(onSetUser({...data, stripeCustomerId}));
+
+          await saveCustomerId({
+            bodyParams: {userId: id, customerId: stripeCustomerId},
+          });
+        } else {
+          dispatch(onSetUser({...data, stripeCustomerId: customer_id}));
+        }
+        LodingData(false);
+        navigation.reset({
+          index: 0,
+          routes: [{name: navigations.BOTTOM_NAVIGATION}],
+        });
+      }
+    } catch (error) {
+      LodingData(false);
       console.error(error);
     }
   }
 
   const onSubmit = async () => {
+    LodingData(true);
+    console.log('1111111');
     const deviceToken = await getUniqueId();
     const deviceInfo = `${Platform.OS === 'ios'} ${await getDeviceName()}`;
     const body = {
@@ -204,13 +415,14 @@ export const LoginScreen = (props: LoginScreenProps) => {
       deviceInfo,
       googleToken: 'fasdfasdfdsasdfad',
     };
-
+    console.log(body)
     const res = await mutateAsync(body);
     const {success, data} = res || {};
-    if(!success){
+    if (!success) {
       Toast.show(res?.message, Toast.LONG, {
         backgroundColor: 'black',
       });
+      LodingData(false);
     }
     if (success) {
       const {
@@ -225,6 +437,7 @@ export const LoginScreen = (props: LoginScreenProps) => {
       await onSetToken(access_token);
 
       AsyncStorage.setItem('token', data.access_token);
+      AsyncStorage.setItem('userProfileId', data.id);
 
       if (!customer_id) {
         const stripeRes = await createStripeCustomer({
@@ -243,10 +456,13 @@ export const LoginScreen = (props: LoginScreenProps) => {
         await saveCustomerId({
           bodyParams: {userId: id, customerId: stripeCustomerId},
         });
+        LodingData(false);
       } else {
+        LodingData(false);
         dispatch(onSetUser({...data, stripeCustomerId: customer_id}));
       }
 
+      LodingData(false);
       navigation.reset({
         index: 0,
         routes: [{name: navigations.BOTTOM_NAVIGATION}],
@@ -265,9 +481,16 @@ export const LoginScreen = (props: LoginScreenProps) => {
     return !(
       (emailRegexEx.test(String(user.emailOrMobile).toLowerCase()) ||
         user.emailOrMobile.length === 10) &&
-      user.password.length >= 8 &&
-      isChecked
+      user.password.length >= 8
     );
+  };
+
+  const loadInBrowser = () => {
+    const url = 'https://onelocal.one/privacy_policy.html';
+    if (url) {
+      console.log('11111111111');
+      Linking.openURL(url);
+    }
   };
 
   const keyboardDismiss = () => {
@@ -275,80 +498,127 @@ export const LoginScreen = (props: LoginScreenProps) => {
   };
 
   return (
-    <TouchableOpacity activeOpacity={1} onPress={keyboardDismiss}>
+    <TouchableOpacity
+      activeOpacity={1}
+      onPress={keyboardDismiss}
+      style={styles.container}>
       <Loader visible={isLoading} showOverlay />
 
-      <TouchableOpacity style={styles.HeaderContainerTwo} activeOpacity={1}>
-        {/* <View style={styles.searchContainer}>
-          <ImageComponent style={styles.searchIcon} source={Search}></ImageComponent>
-          <TextInput value={searchQuery} placeholderTextColor="#FFFF" placeholder='Search' style={styles.searchInput} onChangeText={value => {
-            console.log(value)
-            setSearchQuery(value)
-          }}></TextInput>
-        </View> */}
-
+      <KeyboardAwareScrollView
+        showsVerticalScrollIndicator={false}>
+      <TouchableOpacity style={{marginTop: 100,marginBottom:40}} activeOpacity={1}>
         <View style={styles.oneContainer}>
           <ImageComponent
             style={styles.oneContainerImage}
             source={onelogo}></ImageComponent>
-          <Text style={styles.oneContainerText}>NE</Text>
+          <View>
+            <Text style={styles.oneContainerText}>NE</Text>
+            <Text style={styles.localText}>L   o   c   a   l</Text>
+          </View>
         </View>
       </TouchableOpacity>
 
-      <SizedBox height={verticalScale(22)} />
-      <ImageComponent source={loginLogo} style={styles.loginLogo} />
-      <SizedBox height={verticalScale(22)} />
-      <View style={styles.container}>
-        <Input
-          placeholder={strings.mobileOrEmail}
-          onChangeText={text => handleUserData(text, 'emailOrMobile')}
-        />
-        <SizedBox height={verticalScale(22)} />
-        <Input
-          placeholder={strings.password}
-          secureTextEntry
-          onChangeText={text => handleUserData(text, 'password')}
-        />
-        <SizedBox height={verticalScale(20)} />
-        <TouchableOpacity
-          style={styles.tncStyle}
-          activeOpacity={0.8}
-          onPress={onHandleCheckBox}>
+      <Text style={styles.texClass}>{strings.email}</Text>
+      {/* <TextInput
+      // placeholder={strings.mobileOrEmail}
+      /> */}
+      <TextInput
+        placeholderTextColor="#8B8888"
+        style={styles.textInput}
+        onChangeText={text => handleUserData(text, 'emailOrMobile')}
+      />
+      <SizedBox height={verticalScale(10)} />
+      <Text style={styles.texClass}>{strings.password}</Text>
+      <TextInput
+      secureTextEntry
+        placeholderTextColor="#8B8888"
+        style={styles.textInput}
+        onChangeText={text => handleUserData(text, 'password')}
+      />
+      {/* <Input
+        placeholder={strings.password}
+        secureTextEntry
+        
+      /> */}
+      <SizedBox height={verticalScale(10)} />
+     
+
+      {/* <ButtonComponent
+          disabled={onCheckValidation()}
+          onPress={onSubmit}
+          title={strings.login}
+        /> */}
+
+      <TouchableOpacity
+        disabled={onCheckValidation()}
+        activeOpacity={0.8}
+        onPress={onSubmit}
+        style={styles.loginBtn}>
+        <Text style={styles.signUpText}>{strings.login}</Text>
+      </TouchableOpacity>
+
+      {/* <ButtonComponent
+          style={styles.signUpBtn}
+          onPress={onSignUp}
+          title={strings.signUp}
+        /> */}
+      <SizedBox height={verticalScale(8)} />
+      <TouchableOpacity activeOpacity={0.8}>
+        <Text style={styles.forgot}>{`${strings.forgotPassword}?`}</Text>
+      </TouchableOpacity>
+
+      
+      <SizedBox height={verticalScale(18)} />
+
+      <TouchableOpacity
+        activeOpacity={0.8}
+        style={styles.googleButton}
+        onPress={() => signInWithGoogle()}>
+        <ImageComponent source={google} style={styles.google} />
+        <Text style={styles.loginGoogle}>{strings.loginGoogle}</Text>
+      </TouchableOpacity>
+
+      <SizedBox height={verticalScale(10)} />
+      <TouchableOpacity
+        activeOpacity={0.8}
+        style={styles.appleButton}
+        onPress={() => signInWithApple()}>
+        <ImageComponent source={apple} style={styles.google} />
+        <Text style={styles.loginGoogle}>{strings.loginApple}</Text>
+      </TouchableOpacity>
+
+      <SizedBox height={verticalScale(12)} />
+
+      <Text style={styles.orText}>or</Text>
+      {/* <SizedBox height={verticalScale(20)} /> */}
+      <TouchableOpacity
+        activeOpacity={0.8}
+        onPress={onSignUp}
+        style={styles.signUpBtn}>
+        <Text style={styles.signUpText}>{strings.signUp}</Text>
+      </TouchableOpacity>
+
+      <SizedBox height={verticalScale(12)} />
+
+      
+      <TouchableOpacity style={styles.tncStyle} activeOpacity={0.8}>
+        {/* <TouchableOpacity onPress={onHandleCheckBox}>
           <ImageComponent
             source={isChecked ? activeRadio : inactiveRadio}
             style={styles.radio}
           />
-          <Text style={styles.agreeText}>
-            {strings.iAgree}
+        </TouchableOpacity> */}
+        <TouchableOpacity activeOpacity={0.8} onPress={loadInBrowser}>
+        <Text style={styles.agreeText}>
+          {strings.iAgree}
+          
             <Text style={styles.bold}>{` ${strings.tnc}`}</Text>
-          </Text>
+         
+        </Text>
         </TouchableOpacity>
-        <SizedBox height={verticalScale(14)} />
-        <ButtonComponent
-          disabled={onCheckValidation()}
-          onPress={onSubmit}
-          title={strings.login}
-        />
-
-        <ButtonComponent
-          style={styles.signUpBtn}
-          onPress={onSignUp}
-          title={strings.signUp}
-        />
-
-        <SizedBox height={verticalScale(14)} />
-        <TouchableOpacity activeOpacity={0.8}>
-          <Text style={styles.forgot}>{`${strings.forgotPassword}?`}</Text>
-        </TouchableOpacity>
-        <SizedBox height={verticalScale(20)} />
-        <TouchableOpacity
-          activeOpacity={0.8}
-          style={styles.googleButton}
-          onPress={() => signIn()}>
-          <ImageComponent source={google} style={styles.google} />
-          <Text style={styles.loginGoogle}>{strings.loginGoogle}</Text>
-        </TouchableOpacity>
-      </View>
+      </TouchableOpacity>
+      <SizedBox height={verticalScale(10)} />
+      </KeyboardAwareScrollView>
     </TouchableOpacity>
   );
 };

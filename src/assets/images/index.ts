@@ -60,6 +60,16 @@ export {default as buttonArrowGreen} from './buttonArrowGreen.png';
 export {default as logoblack} from './logoblack.png';
 export {default as money} from './money.png';
 export {default as send} from './send.png';
-export {default as close} from './close.png';
+export {default as close} from './close.png'; 
+export {default as apple} from './apple.png';
+export {default as greenImage} from './greenImage.png';
+export {default as selectPic} from './selectPic.png';
+export {default as requestGreen} from './requestGreen.png';
+export {default as gratisGreen} from './gratisGreen.png';
+export {default as notificationTwo} from './notificationTwo.png';
+export {default as sendPayoutImg} from './sendPayoutImg.png';
+
+
+
 
 

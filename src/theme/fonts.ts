@@ -15,6 +15,7 @@ const size = {
   font7: normalize(7),
   font8: normalize(8),
   font10: normalize(10),
+  font11: normalize(11),
   font12: normalize(12),
   font14: normalize(14),
   font16: normalize(16),

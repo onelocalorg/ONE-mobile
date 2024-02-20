@@ -11,6 +11,9 @@ interface EventProps {
   bodyParams?: {
     start_date: string;
     end_date: string;
+    event_type:string;
+    only_upcoming:number;
+    searchtext:string
   };
   userId?: string;
 }
@@ -29,6 +32,7 @@ export const onFetchEvents = async (props: EventProps) => {
   let response;
   try {
     const { bodyParams, queryParams } = props || {};
+    console.log(bodyParams,'bodyParams bodyParams')
     const endPoint = `${apiConstants.eventLists}${props?.userId ? `/${props?.userId}` : ''
       }`;
       console.log(endPoint,'----------------------------Event list endPoint-----------------------');
@@ -107,6 +111,7 @@ export const onFetchTicketHolderList = async (props: TickeHolderProps) => {
     const endPoint = `${apiConstants.ticketHolderCheckins}/${eventId}`;
     console.log('-----------------------ticketHolderCheckins------------------------',endPoint)
     const data = await API.homeService.get(endPoint, { params: queryParams });
+    console.log(data)
     response = getApiResponse(data);
   } catch (error: any) {
     response = getApiResponse(error);
@@ -154,6 +159,7 @@ interface UpdateEventProps {
 }
 
 export const onUpdateEvent = async (props: UpdateEventProps) => {
+  console.log('111112222')
   const { bodyParams, eventId } = props || {};
   const {
     address,
@@ -242,6 +248,7 @@ interface CreateEventProps {
 }
 
 export const onCreateEvent = async (props: CreateEventProps) => {
+  console.log('333333')
   const { bodyParams } = props || {};
   const {
     address,
@@ -258,7 +265,7 @@ export const onCreateEvent = async (props: CreateEventProps) => {
 
   } = bodyParams || {};
   let response;
-
+console.log(bodyParams)
   const attachment = new FormData();
   attachment.append('event_image', {
     uri: eventImage,
@@ -275,6 +282,7 @@ export const onCreateEvent = async (props: CreateEventProps) => {
   attachment.append('start_date', new Date(start_date).toISOString());
   attachment.append('event_lat', latitude);
   attachment.append('event_lng', longitude);
+  console.log(attachment,'--------------------------create event request-------------------------')
   try {
     const endPoint = `${apiConstants.createEvent}`;
     const data = await API.homeService.post(endPoint, attachment);
@@ -337,6 +345,7 @@ interface PurchaseTicketProps {
     stripeResponse: PurchaseProps;
   };
 }
+
 
 export interface PurchaseProps {
   id: string;
@@ -411,7 +420,9 @@ export const onPurchaseTicket = async (props: PurchaseTicketProps) => {
   try {
     const endPoint = apiConstants.purchaseTicket;
     const data = await API.homeService.post(endPoint, bodyParams);
+    console.log('Purchase Ticket data',bodyParams)
     response = getApiResponse(data);
+    console.log('Purchase Ticket Response',response)
   } catch (error: any) {
     response = getApiResponse(error);
   }

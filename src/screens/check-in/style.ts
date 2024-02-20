@@ -7,6 +7,7 @@ export const createStyleSheet = (theme: ThemeProps) => {
     pillContainer: {
       alignSelf: 'center',
       marginTop: -verticalScale(15),
+      paddingBottom:15
     },
     container: {
       paddingHorizontal: normalScale(20),
@@ -64,12 +65,27 @@ export const createStyleSheet = (theme: ThemeProps) => {
     pillStyle: {
       justifyContent: 'center',
     },
+    localText: {
+      textAlign: 'center',
+      fontSize: 14,
+      fontWeight: '400',
+      color: 'white',
+      position:'relative',
+      bottom:13
+    },
+    profileView: {
+      // marginTop: verticalScale(10),
+      alignSelf: 'flex-end',
+      position:'absolute',
+      right:5,
+      bottom:30
+    },
 
     HeaderContainerTwo: {
-      borderBottomLeftRadius: theme.borderRadius.radius10,
-      borderBottomRightRadius: theme.borderRadius.radius10,
-      backgroundColor: theme.colors.darkRed,
-      height: 160,
+      // borderBottomLeftRadius: theme.borderRadius.radius10,
+      // borderBottomRightRadius: theme.borderRadius.radius10,
+      backgroundColor: theme.colors.headerColor,
+      height: 150,
       // position: 'relative',
     },
     row2: {

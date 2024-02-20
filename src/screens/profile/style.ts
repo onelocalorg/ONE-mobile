@@ -44,15 +44,48 @@ export const createStyleSheet = (theme: ThemeProps) => {
     },
     circularView: {
       paddingVertical: verticalScale(2),
-      paddingHorizontal: normalScale(30),
+      paddingHorizontal: normalScale(5),
       borderColor: theme.colors.lightWhite,
       borderWidth: theme.borderWidth.borderWidth1,
       borderRadius: theme.borderRadius.radius12,
+      marginTop:5
     },
+    userNameClass:{
+
+      flexDirection:'row',
+      marginLeft:50,
+    },
+    firstName:{
+      fontFamily: theme.fontType.medium,
+      fontSize: theme.fontSize.font18,
+      color: theme.colors.darkBlack,
+      marginBottom: verticalScale(4),
+      width: normalScale(100),
+      borderColor:theme.colors.lightWhite,
+      borderRadius:theme.borderRadius.radius12,
+      borderWidth: theme.borderWidth.borderWidth1,
+      padding:5,
+      marginTop:5,
+      marginHorizontal:5
+    },
+lastName:{
+  fontFamily: theme.fontType.medium,
+  fontSize: theme.fontSize.font18,
+  color: theme.colors.darkBlack,
+  marginBottom: verticalScale(4),
+  width: normalScale(100),
+  borderColor:theme.colors.lightWhite,
+  borderRadius:theme.borderRadius.radius12,
+  borderWidth: theme.borderWidth.borderWidth1,
+  padding:5,
+  marginTop:5,
+  marginHorizontal:5
+},
     des: {
       fontFamily: theme.fontType.regular,
       fontSize: theme.fontSize.font14,
       color: theme.colors.black,
+      width:normalScale(150)
     },
     payView: {
       backgroundColor: theme.colors.lightPurple,
@@ -69,13 +102,19 @@ export const createStyleSheet = (theme: ThemeProps) => {
       color: theme.colors.black,
     },
     aboutView: {
-      marginTop: verticalScale(50),
+      // marginTop: verticalScale(25),
       marginHorizontal: normalScale(6),
     },
     input: {
       backgroundColor: 'transparent',
       borderColor: theme.colors.lightWhite,
       borderWidth: theme.borderWidth.borderWidth1,
+    },
+    inputText: {
+      fontFamily: theme.fontType.regular,
+      fontSize: theme.fontSize.font14,
+      color: theme.colors.black,
+      marginHorizontal:15
     },
     about: {
       fontFamily: theme.fontType.regular,
@@ -194,6 +233,14 @@ export const createStyleSheet = (theme: ThemeProps) => {
       borderRightWidth: theme.borderWidth.borderWidth6,
       marginHorizontal: 12,
       // flex: 1,
+    },
+    localText: {
+      textAlign: 'center',
+      fontSize: 14,
+      fontWeight: '400',
+      color: 'white',
+      position:'relative',
+      bottom:13
     },
     pillStyle: {
       alignSelf: 'center',
@@ -448,7 +495,6 @@ export const createStyleSheet = (theme: ThemeProps) => {
     },
     packageDetailModal: {
       position: 'absolute',
-      top: 470,
       bottom: 0,
       left: 0,
       right: 0,
@@ -456,12 +502,12 @@ export const createStyleSheet = (theme: ThemeProps) => {
       borderTopLeftRadius: theme.borderRadius.radius16,
       paddingVertical: verticalScale(20),
       borderColor: theme.colors.lightGreen,
-      backgroundColor: 'rgba(255, 255, 255, 0.4)',
+      backgroundColor: theme.colors.white,
       borderTopWidth: 4,
       borderLeftWidth: 4,
       borderRightWidth: 4,
       marginHorizontal: 7,
-      // flex: 1
+      maxHeight: verticalScale(600),
     },
     packageModalMembership: {
       position: 'absolute',
@@ -663,36 +709,40 @@ export const createStyleSheet = (theme: ThemeProps) => {
     HeaderContainer: {
       flexDirection: 'row',
       justifyContent: 'space-between',
-      marginTop: 40,
-      marginHorizontal: 14
+      marginTop: 60,
+     height:60
     },
     downIcon: {
-      marginTop: 4,
-      height: 20,
-      width: 20,
+      height: 24,
+      width: 24,
     },
     saveContainer: {
       fontSize: 18,
       fontFamily: theme.fontType.regular,
       fontWeight: '500',
-      color: 'black'
+      color: 'black',
+      paddingTop:16,
+      height:60,
+      width: 60,
       
     },
     MainContainer: {
       fontSize: 22,
       fontFamily: theme.fontType.regular,
       fontWeight: '600',
-      color: 'black'
+      color: 'black',
+      paddingTop:14
     },
     listContainer: {
       marginTop: 25,
+      marginBottom:20
     },
     questionsLbl: {
       fontSize: 16,
       fontFamily: theme.fontType.regular,
       fontWeight: '600',
-      marginLeft: 8,
-      marginRight: 12,
+      marginLeft: 16,
+      marginRight: 16,
       marginBottom: 14,
       color: 'black',
     },
@@ -707,9 +757,35 @@ export const createStyleSheet = (theme: ThemeProps) => {
       color: 'black',
       flex: 1
     },
+    dropDownView:{
+      paddingLeft:16,
+      paddingTop:18,
+      height: 60,
+      width: 60,
+      
+    },
+
+    memberShipCheckputContainer:{
+      borderRadius: theme.borderRadius.radius20,
+        paddingVertical: verticalScale(6),
+        paddingHorizontal: normalScale(6),
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        marginRight: normalScale(8),
+        shadowColor: theme.colors.black,
+        shadowOpacity: theme.opacity.opacity15,
+        shadowRadius: theme.borderRadius.radius8,
+        shadowOffset: {
+          width: 0,
+          height: verticalScale(0),
+        },
+        elevation: 5,
+        alignSelf: 'center',
+    },
     inputCont: {
-      marginRight: 12,
-      marginLeft: 8,
+      marginRight: 16,
+      marginLeft: 16,
       textAlign: 'left',
       color: 'black'
     },
@@ -755,6 +831,25 @@ export const createStyleSheet = (theme: ThemeProps) => {
       left: 10,
       top: -11
     },
+
+    galleryText:{
+      textAlign: 'center',
+      fontSize: 18,
+      fontFamily: 'NotoSerif-Medium',
+      backgroundColor: '#A493B7',
+      color: 'white',
+      padding: 10,
+      margin: 10,
+    },
+    cameraText:{
+      textAlign: 'center',
+      fontSize: 18,
+      fontFamily: 'NotoSerif-Medium',
+      backgroundColor: '#A493B7',
+      color: 'white',
+      padding: 10,
+      margin: 10,
+    },
   
   
     imageContainer: {
@@ -764,7 +859,7 @@ export const createStyleSheet = (theme: ThemeProps) => {
       borderBottomRightRadius: theme.borderRadius.radius10,
       alignItems: 'center',
       paddingHorizontal: normalScale(14),
-      backgroundColor: theme.colors.darkRed
+      backgroundColor: theme.colors.headerColor
     },
     // row: {
     //   flexDirection: 'row',
@@ -825,11 +920,14 @@ export const createStyleSheet = (theme: ThemeProps) => {
 
 
     HeaderContainerTwo: {
-      borderBottomLeftRadius: theme.borderRadius.radius10,
-      borderBottomRightRadius: theme.borderRadius.radius10,
-      backgroundColor: theme.colors.darkRed,
-      height: 160,
+      // borderBottomLeftRadius: theme.borderRadius.radius10,
+      // borderBottomRightRadius: theme.borderRadius.radius10,
+      backgroundColor: theme.colors.headerColor,
+      height: 150,
       // position: 'relative',
+    },
+    HeaderContainerTwoBg: {
+      height: 150,
     },
     row2: {
       position: 'absolute',
@@ -875,7 +973,7 @@ export const createStyleSheet = (theme: ThemeProps) => {
       flexDirection: 'row',
       justifyContent: 'center',
       position: 'relative',
-      top: 50,
+      bottom: 90,
     },
     oneContainerImage: {
       height: 60,
@@ -914,6 +1012,45 @@ export const createStyleSheet = (theme: ThemeProps) => {
       left: 0,
       right: 0,
       backgroundColor: theme.colors.modalOverlay,
+    },
+    containerGalleryModal:{
+      position: 'absolute',
+      top: 470,
+      bottom: 0,
+      left: 0,
+      right: 0,
+      backgroundColor: theme.colors.modalOverlay,
+    },
+    deleteAccount:{
+      fontSize: 16,
+      fontFamily: theme.fontType.regular,
+      color:theme.colors.white,
+      backgroundColor:theme.colors.darkRed,
+      textAlign:'center',
+      padding:10,
+      paddingTop:16,
+      fontWeight: '600',
+      marginHorizontal:10,
+      marginBottom:8,
+      borderRadius:12,
+      height:55
+    },
+    gratiesImage: {
+      height: 25,
+      width: 25,
+      marginVertical:20 
+    },
+    gratiesNumber: {
+      fontSize: 18,
+      fontFamily: theme.fontType.bold,
+      color: theme.colors.black,
+      marginVertical:24 ,
+      marginLeft: 6
+    },
+    gratiesCont: {
+      flexDirection: 'row',
+      paddingLeft: 30,
+      // paddingTop: -12,
     }
 
   });

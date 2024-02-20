@@ -11,6 +11,7 @@ import {
   Modal,
   Platform,
   Text,
+  TextComponent,
   TextInput,
   TouchableOpacity,
   View,
@@ -32,7 +33,9 @@ import {
   closeCard,
   comment,
   dummy,
+  gratisGreen,
   gratitudeBlack,
+  greenImage,
   greenOffer,
   logoblack,
   mapEvent,
@@ -83,6 +86,10 @@ import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete'
 import Toast from 'react-native-simple-toast';
 import GestureRecognizer from 'react-native-swipe-gestures';
 import {Result} from '@network/hooks/home-service-hooks/use-event-lists';
+import {Alert} from 'react-native';
+import {API_URL, setData} from '@network/constant';
+import Swiper from 'react-native-swiper';
+import {CommentList} from './commetList';
 
 interface Range {
   startDate: Date | undefined;
@@ -99,9 +106,9 @@ export const HomeScreen = (props: HomeScreenProps) => {
   const {strings} = useStringsAndLabels();
   const {navigation} = props || {};
   const [searchQuery, setSearchQuery] = useState('');
-  const [userprofile, setUserProfile] = useState('');
+  const [ProfileData, setUserProfile]: any = useState('');
   const [userList, recentlyJoinUser] = useState([]);
-  var [postList, postListData]: any = useState<Result[]>([]);
+  var [postList, postListData]: any = useState([]);
   const [open, setOpen] = useState(false);
   const [pagination, postLoadData] = useState(false);
   const [offerModal, CreateOfferModal] = useState(false);
@@ -111,16 +118,20 @@ export const HomeScreen = (props: HomeScreenProps) => {
   const [addnewCmtReply, onAddCommentReply] = useState('');
   const [isLoading, LodingData] = useState(false);
   const [loading, onPageLoad] = useState(false);
+  const [commentListScrollEnable, setCommentListScrollEnable] = useState(true);
   const [commentLoading, onPageLoadComment] = useState(false);
   const [ismoreData, isMoreDataLoad] = useState(false);
-  const [ismoreComment, isMoreCommentData] = useState(false);
+  const [ismoreCommentLoad, isMoreCommentData] = useState(true);
   const [replyId, commentReplyPostId] = useState('');
+  const [replyIndex, setReplayIndex] = useState('');
   const [setReplyId, setReplyCommentId] = useState('');
   var [postId, postIdData]: any = useState();
   var [gratisIndex, gratisIndexData]: any = useState();
+  var [commentIndex, setCommentIndex]: any = useState();
   var [showComment, showCommentPost] = useState(false);
   var [addComment, addCommentModal] = useState(false);
   var [gratisNo, totalGratisData]: any = useState(10);
+  var [gratisNoComment, totalGratisCommentData]: any = useState(10);
   var [page, setPage] = useState(1);
   const initialValue = 1;
   const [pageCmt, setCmtPage] = useState(initialValue);
@@ -132,19 +143,30 @@ export const HomeScreen = (props: HomeScreenProps) => {
   const [currentPages, setCurrentPage] = useState(0);
   const [gratisCmtID, setreplyGratisId] = useState();
   const [gratisCmtKey, setreplyGratisKey] = useState();
-  const [postlistTtl,postListTotalResult] = useState();
+  const [postlistTtl, postListTotalResult] = useState();
+  const [postContent, postContentModal] = useState(false);
+  const [reoportModal, reportModalShowHide] = useState(false);
+  const [postHideId, hidePostContentIDData] = useState();
+  const [reportPost, addReportReason] = useState('');
+  const [postCommentID, setPostCommentID] = useState();
+  const [postCommentIndex, setPostIndexID] = useState();
+  const [type, eventTypeData] = useState('offer');
+  const [postCommentIndexTwo, setPostCommentIndexTwo]: any = useState();
+  const [postIndexTwo, setPostIndexTwo]: any = useState();
+  const flatlistRef = useRef<FlatList>(null);
+
   const {user} = useSelector<StoreType, UserProfileState>(
     state => state.userProfileReducer,
-  ) as {user: {id: string; pic: string}};
+  ) as {user: {id: string; pic: string; city: string; state: string}};
   const {refetch} = useUserProfile({
     userId: user?.id,
   });
 
   var makeDate = new Date();
-  makeDate.setMonth(makeDate.getMonth() + 1);
+  makeDate.setMonth(makeDate.getMonth() - 1);
   const [range, setRange] = useState<Range>({
-    startDate: new Date(),
-    endDate: makeDate,
+    startDate: makeDate,
+    endDate: new Date(),
   });
 
   const dispatch = useDispatch();
@@ -152,11 +174,11 @@ export const HomeScreen = (props: HomeScreenProps) => {
   useFocusEffect(
     useCallback(() => {
       LogBox.ignoreAllLogs();
-      postListAPI();
+      getRecentlyJoinUserAPI();
+      // postListAPI();
       requestLocationPermission();
       setPage(page);
-      setCmtPage(pageCmt);
-    }, [range?.startDate, range?.endDate,page, pageCmt]),
+    }, [range?.startDate, range?.endDate, page]),
   );
 
   useEffect(() => {
@@ -164,9 +186,15 @@ export const HomeScreen = (props: HomeScreenProps) => {
     postListAPI();
     getUserProfileAPI();
     requestLocationPermission();
+    eventTypeData(type);
     setPage(page);
-    setCmtPage(pageCmt);
-  }, [page, pageCmt]);
+  }, [page, type, range?.startDate, range?.endDate, searchQuery]);
+
+  useFocusEffect(
+    useCallback(() => {
+      //  getCommentListAPI()
+    }, [pageCmt]),
+  );
 
   const requestLocationPermission = async () => {
     GetLocation.getCurrentPosition({
@@ -180,8 +208,7 @@ export const HomeScreen = (props: HomeScreenProps) => {
           location,
         );
         if (location) {
-          getRecentlyJoinUserAPI();
-          // postListAPI();
+          postListAPI();
         }
       })
       .catch(error => {
@@ -192,6 +219,7 @@ export const HomeScreen = (props: HomeScreenProps) => {
   };
 
   const onNavigateToCreatePost = () => {
+    setData('POST_TAB_OPEN_INDEX', 1);
     navigation?.navigate(navigations?.CREATEPOST);
   };
 
@@ -217,13 +245,16 @@ export const HomeScreen = (props: HomeScreenProps) => {
     replyId: any,
     replyKey: any,
     index: any,
+    cindex: any,
   ) => {
     openReplyOfferModal(true);
-    totalGratisData(10);
+    totalGratisCommentData(10);
     setreplyGratisId(replyId);
     setreplyGratisKey(replyKey);
     postIdData(postIds);
     gratisIndexData(index);
+    setCommentIndex(cindex);
+    console.log('----------cindex----------', cindex);
   };
 
   const OfferModalClose = () => {
@@ -238,6 +269,17 @@ export const HomeScreen = (props: HomeScreenProps) => {
     if (gratisNo > 10) {
       gratisNo = gratisNo - 1;
       totalGratisData(gratisNo);
+    }
+  };
+
+  const gratisCommentPlusClick = () => {
+    gratisNoComment = gratisNoComment + 1;
+    totalGratisCommentData(gratisNoComment);
+  };
+  const gratisCommrntMinusClick = () => {
+    if (gratisNoComment > 10) {
+      gratisNoComment = gratisNoComment - 1;
+      totalGratisCommentData(gratisNoComment);
     }
   };
 
@@ -275,21 +317,18 @@ export const HomeScreen = (props: HomeScreenProps) => {
     const token = await AsyncStorage.getItem('token');
     console.log('token', token);
     try {
-      const response = await fetch(
-        'https://app.onelocal.one/api/v1/users/' + user.id,
-        {
-          method: 'get',
-          headers: new Headers({
-            Authorization: 'Bearer ' + token,
-            'Content-Type': 'application/json',
-          }),
-        },
-      );
+      const response = await fetch(API_URL + '/v1/users/' + user.id, {
+        method: 'get',
+        headers: new Headers({
+          Authorization: 'Bearer ' + token,
+          'Content-Type': 'application/json',
+        }),
+      });
       const dataItem = await response.json();
       console.log('-----------------Response User Profile API------------');
       console.log(dataItem);
       console.log(dataItem.data.pic);
-      setUserProfile(dataItem.data.pic);
+      setUserProfile(dataItem.data);
       AsyncStorage.setItem('profile', dataItem.data.pic);
       AsyncStorage.setItem('uniqueId', dataItem.data.user_unique_id);
     } catch (error) {
@@ -301,34 +340,30 @@ export const HomeScreen = (props: HomeScreenProps) => {
     const token = await AsyncStorage.getItem('token');
     var data: any = {
       content: addnewCmt,
-      // comment_id:'65a6784abcbd1588bcde8f95'
     };
     console.log('===========Comment on Post API Request ==============');
     console.log(data);
-    console.log(
-      'https://app.onelocal.one/api/v1/posts/' + postID + '/comments/create',
-    );
+    console.log(API_URL + '/v1/posts/' + postID.id + '/comments/create');
     try {
       const response = await fetch(
-        'https://app.onelocal.one/api/v1/posts/' + postID + '/comments/create',
+        API_URL + '/v1/posts/' + postID.id + '/comments/create',
         {
           method: 'post',
           headers: new Headers({
             Authorization: 'Bearer ' + token,
-            'Content-Type': 'application/x-www-form-urlencoded',
+            'Content-Type': 'application/json',
           }),
-          body: Object.keys(data)
-            .map(key => key + '=' + data[key])
-            .join('&'),
+          body: JSON.stringify(data),
         },
       );
       const dataItem = await response.json();
+
+      postID.isComment = true;
       console.log('=========== Comment on Post API Response ==============');
-      console.log(dataItem);
+      console.log(JSON.stringify(dataItem));
       onAddComment('');
       onAddCommentReply('');
-      getCommentList(postID, index);
-      // postListAPI()
+      getCommentListAPITwo(postID.id, index);
       LodingData(false);
     } catch (error) {
       LodingData(false);
@@ -336,23 +371,76 @@ export const HomeScreen = (props: HomeScreenProps) => {
     }
   }
 
-  async function getCommentList(postID: any, index: any) {
+  async function getCommentListAPITwo(postID: any, index: any) {
+    // postList[index]['commentListData'] = [];
     isMoreCommentData(true);
     const token = await AsyncStorage.getItem('token');
     var data: any = {
       post_id: postID,
     };
-    console.log('===========Get Comment List API Request ==============');
     console.log(
-      'https://app.onelocal.one/api/v1/comments?limit=5&+page=' +
-        pageCmt +
-        '&post_id=' +
-        postID,
+      API_URL + '/v1/comments?limit=25&+page=1' + '&post_id=' + postID,
     );
     console.log(data);
     try {
       const response = await fetch(
-        'https://app.onelocal.one/api/v1/comments?limit=5&page=' +
+        API_URL + '/v1/comments?limit=25&page=1' + '&post_id=' + postID,
+        {
+          method: 'post',
+          headers: new Headers({
+            Authorization: 'Bearer ' + token,
+            'Content-Type': 'application/json',
+          }),
+          body: JSON.stringify(data),
+        },
+      );
+
+      // setCmtPage(pageCmt)
+      const dataItem = await response.json();
+      console.log(dataItem);
+      LodingData(false);
+      var cmtList = dataItem?.data?.results;
+
+      let markers = [...postList];
+
+      markers[index]['commentListData'] = [...cmtList];
+
+      postListData(markers);
+      // flatlistRef?.current?.scrollToIndex({index: 0});
+      // flatlistRef?.current?.scrollToOffset({ animated: true, offset: 0 });
+      console.log(
+        '-----------comment List-------------',
+        postList[index]['commentListData'],
+      );
+
+      onPageLoadComment(false);
+      setTotalPages(dataItem?.data?.totalPages);
+      setCurrentPage(dataItem?.data?.page);
+      if (pageCmt > dataItem?.data?.totalPages) {
+        isMoreCommentData(false);
+      }
+      setCommentListScrollEnable(true);
+    } catch (error) {
+      LodingData(false);
+      console.error(error);
+    }
+  }
+
+  async function getCommentListAPI(postID: any, index: any) {
+    // postList[index]['commentListData'] = [];
+    isMoreCommentData(true);
+    const token = await AsyncStorage.getItem('token');
+    var data: any = {
+      post_id: postID,
+    };
+    console.log(
+      API_URL + '/v1/comments?limit=25&+page=' + pageCmt + '&post_id=' + postID,
+    );
+    console.log(data);
+    try {
+      const response = await fetch(
+        API_URL +
+          '/v1/comments?limit=25&page=' +
           pageCmt +
           '&post_id=' +
           postID,
@@ -360,77 +448,81 @@ export const HomeScreen = (props: HomeScreenProps) => {
           method: 'post',
           headers: new Headers({
             Authorization: 'Bearer ' + token,
-            'Content-Type': 'application/x-www-form-urlencoded',
+            'Content-Type': 'application/json',
           }),
-          body: Object.keys(data)
-            .map(key => key + '=' + data[key])
-            .join('&'),
+          body: JSON.stringify(data),
         },
       );
+
       // setCmtPage(pageCmt)
       const dataItem = await response.json();
-      console.log('===========Get Comment List API Response ==============');
-      console.log(dataItem);
+      console.log(JSON.stringify(dataItem));
       LodingData(false);
-
       var cmtList = dataItem?.data?.results;
-      var dataTemp = postList[index]['commentListData'];
-      console.log(dataTemp);
 
-      for (let jindex = 0; jindex < cmtList.length; jindex++) {
-        dataTemp.push(cmtList[jindex]);
+      let markers = [...postList];
+
+      if (markers[index]['commentListData']) {
+        markers[index]['commentListData'] = [
+          ...markers[index]['commentListData'],
+          ...cmtList,
+        ];
+      } else {
+        markers[index]['commentListData'] = [...cmtList];
       }
-
-      console.log(dataTemp);
-
-      var dataTempTwo = postList;
-      dataTempTwo[index]['commentListData'] = dataTemp;
-      dataTempTwo[index]['comment'] = dataItem?.data?.totalResults;
-      console.log(dataTemp);
-      postListData(dataTempTwo);
-
-      console.log(postList, '------------post List---------------');
-
+      postListData(markers);
+      // flatlistRef?.current?.scrollToOffset({ animated: true, offset: 0 });
       onPageLoadComment(false);
       setTotalPages(dataItem?.data?.totalPages);
       setCurrentPage(dataItem?.data?.page);
-      if (pageCmt === dataItem?.data?.totalPages) {
+      if (pageCmt > dataItem?.data?.totalPages) {
         isMoreCommentData(false);
       }
+      setCommentListScrollEnable(true);
     } catch (error) {
       LodingData(false);
       console.error(error);
     }
   }
 
-  async function replyCommentOnPost() {
+  async function replyCommentOnPostAPI() {
     const token = await AsyncStorage.getItem('token');
     var data: any = {
       content: addnewCmtReply,
       comment_id: replyId,
     };
-    console.log('===========Comment on Post API Request ==============');
     console.log(data);
     try {
       const response = await fetch(
-        'https://app.onelocal.one/api/v1/posts/' +
-          setReplyId +
-          '/comments/create',
+        API_URL + '/v1/posts/' + setReplyId + '/comments/create',
         {
           method: 'post',
           headers: new Headers({
             Authorization: 'Bearer ' + token,
-            'Content-Type': 'application/x-www-form-urlencoded',
+            'Content-Type': 'application/json',
           }),
-          body: Object.keys(data)
-            .map(key => key + '=' + data[key])
-            .join('&'),
+          body: JSON.stringify(data),
         },
       );
       const dataItem = await response.json();
-      console.log('=========== Comment on Post API Response ==============');
+      console.log('===========Comment on Post API Request ==============');
+
+      let markers = [...postList];
+      var commentReplyArray = dataItem.data['reply'];
+
+      markers[postIndexTwo]['commentListData'][postCommentIndexTwo][
+        'reply'
+      ].push(commentReplyArray[commentReplyArray.length - 1]);
+
+      postListData(markers);
+
+      console.log(
+        '---------------responce reply comment post----------',
+        JSON.stringify(dataItem),
+      );
       LodingData(false);
-      postListAPI();
+      getCommentListAPI(setReplyId, replyIndex);
+
       console.log(dataItem);
     } catch (error) {
       console.error(error);
@@ -441,34 +533,35 @@ export const HomeScreen = (props: HomeScreenProps) => {
     isMoreDataLoad(true);
     const token = await AsyncStorage.getItem('token');
     var data: any = {
-      start_date:
-        moment(range.startDate).format('YYYY-MM-DD') +
-        ' ' +
-        moment(setStartTime).format('HH:mm'),
-      end_date:
-        moment(range.endDate).format('YYYY-MM-DD') +
-        ' ' +
-        moment(setEndTime).format('HH:mm'),
-      type: 'offer',
+      // start_date:
+      //   moment(range.startDate).format('YYYY-MM-DD') +
+      //   ' ' +
+      //   moment(setStartTime).format('HH:mm'),
+      // end_date:
+      //   moment(range.endDate).format('YYYY-MM-DD') +
+      //   ' ' +
+      //   moment(setEndTime).format('HH:mm'),
+      // type: type,
+      searchtext: searchQuery,
     };
     console.log(
-      '=========== Post List API Request https://app.onelocal.one/api/v1/posts/list?limit=10&page=' +
+      '=========== Post List API Request' +
+        API_URL +
+        '/v1/posts/list?limit=10&page=' +
         page +
         '==============',
     );
     console.log(data);
     try {
       const response = await fetch(
-        'https://app.onelocal.one/api/v1/posts/list?limit=10&page=' + page,
+        API_URL + '/v1/posts/list?limit=10&page=' + page,
         {
           method: 'post',
           headers: new Headers({
             Authorization: 'Bearer ' + token,
-            'Content-Type': 'application/x-www-form-urlencoded',
+            'Content-Type': 'application/json',
           }),
-          body: Object.keys(data)
-            .map(key => key + '=' + data[key])
-            .join('&'),
+          body: JSON.stringify(data),
         },
       );
       const dataItem = await response.json();
@@ -493,7 +586,7 @@ export const HomeScreen = (props: HomeScreenProps) => {
         });
         postListData(result);
       }
-      postListTotalResult(dataItem?.data?.totalResults)
+      postListTotalResult(dataItem?.data?.totalResults);
       LodingData(false);
       if (dataItem?.data?.page === dataItem?.data?.totalPages) {
         isMoreDataLoad(false);
@@ -501,7 +594,7 @@ export const HomeScreen = (props: HomeScreenProps) => {
     } catch (error) {
       LodingData(false);
       console.error(
-        '----------------https://app.onelocal.one/api/v1/posts/list?limit=10&page=',
+        '----------------' + API_URL + '/v1/posts/list?limit=10&page=',
         error,
       );
     }
@@ -514,33 +607,39 @@ export const HomeScreen = (props: HomeScreenProps) => {
       postId: postId,
       points: gratisNo,
     };
-    console.log('=========== Gratis Data API Request ==============');
+    console.log(API_URL + '/v1/posts/gratis-sharing');
     console.log(data);
     try {
-      const response = await fetch(
-        'https://app.onelocal.one/api/v1/posts/gratis-sharing',
-        {
-          method: 'post',
-          headers: new Headers({
-            Authorization: 'Bearer ' + token,
-            'Content-Type': 'application/x-www-form-urlencoded',
-          }),
-          body: Object.keys(data)
-            .map(key => key + '=' + data[key])
-            .join('&'),
-        },
-      );
+      const response = await fetch(API_URL + '/v1/posts/gratis-sharing', {
+        method: 'post',
+        headers: new Headers({
+          Authorization: 'Bearer ' + token,
+          'Content-Type': 'application/x-www-form-urlencoded',
+        }),
+        body: Object.keys(data)
+          .map(key => key + '=' + data[key])
+          .join('&'),
+      });
       const dataItem = await response.json();
       console.log('=========== Gratis Data API Response ==============');
       console.log(dataItem);
-      let markers = [...postList];
-      markers[gratisIndex] = {
-        ...markers[gratisIndex],
-        gratis: dataItem?.data?.data?.postGratis,
-      };
+      if (dataItem?.success === true) {
+        let markers = [...postList];
+        markers[gratisIndex] = {
+          ...markers[gratisIndex],
+          gratis: dataItem?.data?.data?.postGratis,
+        };
+        postListData(markers);
+      }
+
       console.log(dataItem?.data?.data?.postGratis);
       console.log(postList, '------------post List---------------');
-      postListData(markers);
+      if (dataItem?.success === false) {
+        Toast.show(dataItem?.message, Toast.LONG, {
+          backgroundColor: 'black',
+        });
+      }
+
       LodingData(false);
     } catch (error) {
       LodingData(false);
@@ -553,39 +652,55 @@ export const HomeScreen = (props: HomeScreenProps) => {
     const token = await AsyncStorage.getItem('token');
     var data: any = {
       postId: postId,
-      points: gratisNo,
+      points: gratisNoComment,
       commentId: gratisCmtID,
       commentKey: gratisCmtKey,
     };
     console.log(
-      '=========== Gratis Reply Data API Request https://app.onelocal.one/api/v1/posts/gratis-sharing ==============',
+      '=========== Gratis Reply Data API Reques' +
+        API_URL +
+        '/v1/posts/gratis-sharing ==============',
     );
     console.log(data);
     try {
-      const response = await fetch(
-        'https://app.onelocal.one/api/v1/posts/gratis-sharing',
-        {
-          method: 'post',
-          headers: new Headers({
-            Authorization: 'Bearer ' + token,
-            'Content-Type': 'application/x-www-form-urlencoded',
-          }),
-          body: Object.keys(data)
-            .map(key => key + '=' + data[key])
-            .join('&'),
-        },
-      );
+      const response = await fetch(API_URL + '/v1/posts/gratis-sharing', {
+        method: 'post',
+        headers: new Headers({
+          Authorization: 'Bearer ' + token,
+          'Content-Type': 'application/json',
+        }),
+        body: JSON.stringify(data),
+      });
       const dataItem = await response.json();
       console.log('=========== Gratis Data Reply API Response ==============');
       console.log(dataItem);
-      let markers = [...postList];
-      markers[gratisIndex] = {
-        ...markers[gratisIndex],
-        gratis: dataItem?.data?.data?.postGratis,
-      };
-      console.log(dataItem?.data?.data?.postGratis);
-      console.log(postList, '------------post List---------------');
-      postListData(markers);
+      if (dataItem?.success === true) {
+        let markers = [...postList];
+
+        console.log(
+          'commentListData 111',
+          markers[gratisIndex]['commentListData'],
+        );
+        console.log('gratisIndex', commentIndex);
+        // console.log(dataItem?.data?.data?.postGratis);
+
+        markers[gratisIndex]['commentListData'][commentIndex]['gratis'] =
+          dataItem?.data?.data?.postGratis;
+
+        console.log(
+          'commentListData 222',
+          markers[gratisIndex]['commentListData'],
+        );
+        console.log(dataItem?.data?.data?.postGratis);
+        console.log(postList, '------------ post List ---------------');
+        postListData(markers);
+      }
+
+      if (dataItem?.success === false) {
+        Toast.show(dataItem?.message, Toast.LONG, {
+          backgroundColor: 'black',
+        });
+      }
       LodingData(false);
     } catch (error) {
       LodingData(false);
@@ -603,21 +718,22 @@ export const HomeScreen = (props: HomeScreenProps) => {
     console.log('=========== Get Recentely Join API Request ==============');
     console.log(data);
     try {
-      const response = await fetch(
-        'https://app.onelocal.one/api/v1/users/recently-joined',
-        {
-          method: 'post',
-          headers: new Headers({
-            Authorization: 'Bearer ' + token,
-            'Content-Type': 'application/x-www-form-urlencoded',
-          }),
-          body: Object.keys(data)
-            .map(key => key + '=' + data[key])
-            .join('&'),
-        },
-      );
+      const response = await fetch(API_URL + '/v1/users/recently-joined', {
+        method: 'post',
+        headers: new Headers({
+          Authorization: 'Bearer ' + token,
+          'Content-Type': 'application/x-www-form-urlencoded',
+        }),
+        body: Object.keys(data)
+          .map(key => key + '=' + data[key])
+          .join('&'),
+      });
       const dataItem = await response.json();
-      console.log('=========== Get Recentely Join API Response ==============');
+      console.log(
+        '=========== Get Recentely Join API Response' +
+          API_URL +
+          '/v1/users/recently-joined ==============',
+      );
       console.log(dataItem);
       recentlyJoinUser(dataItem?.data);
     } catch (error) {
@@ -637,30 +753,72 @@ export const HomeScreen = (props: HomeScreenProps) => {
     }
   };
 
+  async function blockUserAPI(postID: any, selectOP: any) {
+    const token = await AsyncStorage.getItem('token');
+    console.log(token);
+    try {
+      const response = await fetch(API_URL + '/v1/posts/block-user/' + postID, {
+        method: 'post',
+        headers: new Headers({
+          Authorization: 'Bearer ' + token,
+          'Content-Type': 'application/x-www-form-urlencoded',
+        }),
+        // body: JSON.stringify({
+        //   "comment" : "blockUser"
+        // }),
+      });
+      const dataItem = await response.json();
+      console.log('===========Block User data Response==============');
+      console.log(API_URL + '/v1/posts/block-user/' + postID);
+      LodingData(false);
+      console.log(dataItem);
+      if (dataItem.success === true) {
+        if (selectOP === 1) {
+          postListAPI();
+          Toast.show('User Block successfully', Toast.LONG, {
+            backgroundColor: 'black',
+          });
+        } else if (selectOP === 2) {
+          postListAPI();
+          Toast.show('Report Submit successfully', Toast.LONG, {
+            backgroundColor: 'black',
+          });
+        } else {
+          postListAPI();
+          Toast.show('Post Hide successfully', Toast.LONG, {
+            backgroundColor: 'black',
+          });
+        }
+      }
+
+      if (dataItem.success === false) {
+        Toast.show(dataItem.message, Toast.LONG, {
+          backgroundColor: 'black',
+        });
+      }
+    } catch (error) {
+      LodingData(false);
+      console.error(error);
+    }
+  }
+
   const showCommentonPost = (data: any, jindex: any) => {
     setCmtPage(initialValue);
-    console.log(pageCmt, '--------------COMMENT COUNT--------------');
-
-    setTimeout(() => {
-      if (postList[jindex]['isComment'] === true) {
-        postList[jindex]['isComment'] = false;
-        let markers = [...postList];
-        markers[jindex] = {
-          ...markers[jindex],
-          isComment: false,
-        };
-        postList[jindex]['commentListData'] = []
-        postListData(markers);
-      } else {
-        postList[jindex]['commentListData'] = []
-        postList[jindex]['isComment'] = true;
-        // if(ismoreComment){
-        LodingData(true);
-        setReplyCommentId(data.id);
-        getCommentList(data.id, jindex);
-        // }
-      }
-    }, 2000);
+    LodingData(true);
+    if (postList[jindex]['isComment'] === true) {
+      let markers = [...postList];
+      markers[jindex] = {
+        ...markers[jindex],
+        commentListData: [],
+        isComment: false,
+      };
+      postListData(markers);
+      LodingData(false);
+    } else {
+      postList[jindex]['isComment'] = true;
+      setReplyCommentId(data.id);
+      getCommentListAPITwo(data.id, jindex);
+    }
   };
 
   const addNewComment = (commentID: any, index: any) => {
@@ -679,16 +837,16 @@ export const HomeScreen = (props: HomeScreenProps) => {
       });
     } else {
       LodingData(true);
-      commentOnPost(commentData.id, index);
-      setTimeout(() => {
-        commentData.isComment = true;
-      }, 3000);
+      commentOnPost(commentData, index);
     }
   };
 
-  const onReplyClick = (postId: any) => {
+  const onReplyClick = (postId: any, index: any, parentIndex: any) => {
     commentReplyPostId(postId);
+    setReplayIndex(replyId);
 
+    setPostCommentIndexTwo(index);
+    setPostIndexTwo(parentIndex);
     addCommentModal(true);
   };
 
@@ -699,7 +857,7 @@ export const HomeScreen = (props: HomeScreenProps) => {
       });
     } else {
       LodingData(true);
-      replyCommentOnPost();
+      replyCommentOnPostAPI();
       addCommentModal(false);
     }
   };
@@ -708,16 +866,35 @@ export const HomeScreen = (props: HomeScreenProps) => {
     Keyboard.dismiss();
   };
 
-  const CommentListCall = (post_id: any, indexId: any) => {
-    console.log(
-      '-----------------------pagination of comment list-----------------------',
-    );
-    if (totalPages !== currentPages) {
-      onPageLoadComment(true);
-      setCmtPage(pageCmt + 1);
-      getCommentList(post_id, indexId);
-    }
-  };
+  useFocusEffect(
+    useCallback(() => {
+      getCommentListAPI(postCommentID, postCommentIndex);
+    }, [pageCmt]),
+  );
+
+  const CommentListCall = useCallback(
+    (post_id: any, indexId: any) => {
+      // if(ismoreCommentLoad)
+      console.log(currentPages, '===============currentPages 111===========');
+      console.log(
+        totalPages,
+        '==================totalPages 1111==================',
+      );
+      if (pageCmt < totalPages) {
+        console.log(currentPages, '===============currentPages===========');
+        console.log(
+          totalPages,
+          '==================totalPages==================',
+        );
+        setCommentListScrollEnable(false);
+        onPageLoadComment(true);
+        setCmtPage(pageCmt + 1);
+        setPostIndexID(indexId);
+        setPostCommentID(post_id);
+      }
+    },
+    [pageCmt],
+  );
 
   const onConfirmEndTime = useCallback((res: any) => {
     console.log(res);
@@ -727,141 +904,377 @@ export const HomeScreen = (props: HomeScreenProps) => {
     postListAPI();
   }, []);
 
-  const onConfirmStrtTime = useCallback(
-    (res: any) => {
-      console.log(res);
-      setStartTimeData(res);
-      startTimePicker(false);
-      LodingData(true);
-      postListAPI();
-    },
-    [],
-  );
+  const onConfirmStrtTime = useCallback((res: any) => {
+    console.log(res);
+    setStartTimeData(res);
+    startTimePicker(false);
+    LodingData(true);
+    postListAPI();
+  }, []);
   const onDismissTimePicker = () => {
     startTimePicker(false);
     endTimePicker(false);
   };
 
-  const recentUserProfilePress = (id:any) => {
+  const recentUserProfilePress = (id: any) => {
     AsyncStorage.setItem('recentUserId', id);
     navigation.navigate(navigations.RECENTUSERPROFILE);
-  }
-  
+  };
+
+  const blockUserAlert = (type: any) => {
+    Alert.alert(
+      strings.blockUser,
+      strings.areYouBlockUser,
+      [
+        {text: strings.no, onPress: () => null, style: 'destructive'},
+        {
+          text: strings.yes,
+          onPress: () => {
+            blockUserAPI(postHideId, type);
+            LodingData(true);
+          },
+        },
+      ],
+      {cancelable: false},
+    );
+    postContentModal(false);
+  };
+
+  const hideUserAlert = (type: any) => {
+    Alert.alert(
+      strings.hidePost,
+      strings.areyouHide,
+      [
+        {text: strings.no, onPress: () => null, style: 'destructive'},
+        {
+          text: strings.yes,
+          onPress: () => {
+            blockUserAPI(postHideId, type);
+            LodingData(true);
+          },
+        },
+      ],
+      {cancelable: false},
+    );
+    postContentModal(false);
+  };
+
+  const onEventTypeClick = (types: string) => {
+    if (types !== type) {
+      LodingData(true);
+      console.log(types, '--------------type-------------------');
+      eventTypeData(types);
+      console.log(types, '--------------eventType-------------------');
+    }
+  };
+
+  const closeModal = () => {
+    postContentModal(false);
+  };
+
+  const openPostModal = (postID: any) => {
+    hidePostContentIDData(postID);
+    postContentModal(true);
+  };
+  const postHideOptionSelect = (postSelectType: any) => {
+    if (postSelectType === 1) {
+      console.log(postSelectType, '-------postSelectType--------');
+      blockUserAlert(postSelectType);
+    } else if (postSelectType === 2) {
+      console.log(postSelectType, '-------postSelectType--------');
+      addReportReason('');
+      reportModalShowHide(true);
+    } else if (postSelectType === 3) {
+      console.log(postSelectType, '-------postSelectType--------');
+      hideUserAlert(postSelectType);
+    }
+  };
+
+  const commentFlatlistRender = (indexParent: any, itemParent: any) => {
+    return (
+      <FlatList
+        keyExtractor={(item, index) => item.key}
+        ref={flatlistRef}
+        onEndReachedThreshold={0.05}
+        data={itemParent.commentListData}
+        renderItem={({item, index}) => (
+          <View>
+            <View style={styles.commentImgProfile}>
+              <TouchableOpacity
+                activeOpacity={0.8}
+                onPress={() => recentUserProfilePress(item?.commenter.id)}>
+                <ImageComponent
+                  resizeMode="cover"
+                  style={styles.postProfile}
+                  source={{
+                    uri: item?.commenter?.pic,
+                  }}></ImageComponent>
+              </TouchableOpacity>
+              <View style={styles.commentDisplayCont}>
+                <Text style={{fontSize: 12, color: '#110101'}}>
+                  {item?.commenter?.first_name} {item?.commenter?.last_name}
+                </Text>
+                <Text style={styles.replyMsgCont}>{item?.content}</Text>
+              </View>
+            </View>
+
+            <View style={styles.replyContainer}>
+              <ImageComponent
+                source={Vector}
+                style={styles.vectorImg}></ImageComponent>
+              <TouchableOpacity
+                onPress={() => onReplyClick(item.id, index, indexParent)}>
+                <Text style={styles.replyLbl}>reply</Text>
+              </TouchableOpacity>
+
+              <Text style={styles.minuteCont}>{item.date}</Text>
+              <Text style={styles.minuteCont}>{item.gratis}</Text>
+              <TouchableOpacity
+                onPress={() =>
+                  openReplyGratis(item.post_id, item.id, '', indexParent, index)
+                }>
+                <ImageComponent
+                  resizeMode="cover"
+                  style={styles.replyImg}
+                  source={gratisGreen}></ImageComponent>
+              </TouchableOpacity>
+            </View>
+
+            {/* {commentList?.reply?.content ? ( */}
+
+            {item.reply.map((subItem: any, jindex: any) => {
+              return (
+                <>
+                  <View>
+                    <View style={styles.commentImgProfileTwo}>
+                      <TouchableOpacity
+                        activeOpacity={0.8}
+                        onPress={() =>
+                          recentUserProfilePress(subItem?.commenter.id)
+                        }>
+                        <ImageComponent
+                          resizeMode="cover"
+                          style={styles.postProfile}
+                          source={{
+                            uri: subItem?.commenter?.pic,
+                          }}></ImageComponent>
+                      </TouchableOpacity>
+                      <View style={[styles.commentDisplayCont, {width: 210}]}>
+                        <Text
+                          style={{
+                            fontSize: 12,
+                            color: '#110101',
+                          }}>
+                          {subItem.commenter.first_name}{' '}
+                          {subItem.commenter.last_name}
+                        </Text>
+                        <Text style={styles.replyMsgCont}>
+                          {subItem.content}
+                        </Text>
+                      </View>
+                    </View>
+
+                    <View style={styles.replyContainerTwo}>
+                      <ImageComponent
+                        source={Vector}
+                        style={styles.vectorImgTwo}></ImageComponent>
+                      <TouchableOpacity
+                        onPress={() =>
+                          onReplyClick(item.id, index, indexParent)
+                        }>
+                        <Text style={styles.replyLbl}>reply</Text>
+                      </TouchableOpacity>
+
+                      <Text style={styles.minuteCont}>{subItem.date}</Text>
+                      <Text style={styles.minuteCont}>{subItem.gratis}</Text>
+                      <TouchableOpacity
+                        onPress={() =>
+                          openReplyGratis(
+                            item.post_id,
+                            item.id,
+                            subItem.key,
+                            indexParent,
+                            index,
+                          )
+                        }>
+                        <ImageComponent
+                          style={styles.replyImg}
+                          source={gratisGreen}></ImageComponent>
+                      </TouchableOpacity>
+                    </View>
+                  </View>
+                </>
+              );
+            })}
+
+            {/* ) : (
+                              <View></View>
+                            )} */}
+          </View>
+        )}></FlatList>
+    );
+  };
+
+  const CommentListNavigatiion = (id: any) => {
+    AsyncStorage.setItem('commentID', id);
+    navigation.navigate(navigations.COMMENTLIST);
+  };
+
+  const submitReportReason = () => {
+    if (reportPost === '') {
+      Toast.show('Add Reason', Toast.LONG, {
+        backgroundColor: 'black',
+      });
+    } else {
+      blockUserAPI(postHideId, 2);
+      console.log('blockUserAPI');
+      postContentModal(false);
+      reportModalShowHide(false);
+    }
+  };
+
+  const setSerchValue = useCallback(
+    (searchData: any) => {
+      setSearchQuery(searchData);
+      postListAPI();
+    },
+    [searchQuery],
+  );
 
   return (
     <>
       {/* <ScrollView></ScrollView> */}
-      {/* <TouchableOpacity activeOpacity={1} onPress={keyboardDismiss}> */}
-      <View>
-      <Loader visible={isLoading} showOverlay />
-      <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
-        <FlatList
-          data={postList}
-          onEndReachedThreshold={0.01}
-          ListHeaderComponent={
-            <View>
+      
+      <View style={styles.MainPostContainer}>
+        <Loader visible={isLoading} showOverlay />
+        
+          {/* ------------------Header------------------- */}
+          <TouchableOpacity style={styles.HeaderContainerTwo} activeOpacity={1}>
+            <View style={styles.searchContainer}>
+              <ImageComponent
+                style={styles.searchIcon}
+                source={Search}></ImageComponent>
+              <TextInput
+                value={searchQuery}
+                placeholderTextColor="#FFFF"
+                placeholder="Search"
+                style={styles.searchInput}
+                onChangeText={value => {
+                  console.log(value);
+                  setSerchValue(value);
+                }}></TextInput>
+            </View>
+            <View style={styles.oneContainer}>
+              <ImageComponent
+                style={styles.oneContainerImage}
+                source={onelogo}></ImageComponent>
+              <View>
+                <Text style={styles.oneContainerText}>NE</Text>
+                <Text style={styles.localText}>L o c a l</Text>
+              </View>
+            </View>
+            <View style={styles.profileContainer}>
               <TouchableOpacity
-                style={styles.HeaderContainerTwo}
-                activeOpacity={1}>
-                {/* <View style={styles.searchContainer}>
-                  <ImageComponent
-                    style={styles.searchIcon}
-                    source={Search}></ImageComponent>
-                  <TextInput
-                    value={searchQuery}
-                    placeholderTextColor="#FFFF"
-                    placeholder="Search"
-                    style={styles.searchInput}
-                    onChangeText={value => {
-                      console.log(value);
-                      setSearchQuery(value);
-                    }}></TextInput>
-                </View> */}
-                <View style={styles.oneContainer}>
-                  <ImageComponent
-                    style={styles.oneContainerImage}
-                    source={onelogo}></ImageComponent>
-                  <Text style={styles.oneContainerText}>NE</Text>
-                </View>
-                <View style={styles.profileContainer}>
-                  <ImageComponent
-                    style={styles.bellIcon}
-                    source={bell}></ImageComponent>
-                  <TouchableOpacity
-                    activeOpacity={0.8}
-                    onPress={onNavigateToProfile}
-                    style={styles.profileView}>
+                activeOpacity={0.8}
+                onPress={onNavigateToProfile}
+                style={styles.profileView}>
+                <ImageComponent
+                  resizeMode="cover"
+                  isUrl={!!user?.pic}
+                  source={dummy}
+                  uri={ProfileData?.pic}
+                  style={styles.profile}
+                />
+              </TouchableOpacity>
+            </View>
+          </TouchableOpacity>
+          {/* ------------------Header Tab------------------- */}
+          {/* <View style={styles.filterTags}>
+            <TouchableOpacity
+              onPress={() => onEventTypeClick('offer')}
+              style={
+                type === 'offer' ? styles.containerFocus : styles.container2
+              }
+              activeOpacity={0.8}>
+              <ImageComponent source={mapEvent} style={[styles.icon1]} />
+              <Text style={styles.label1Event}>Events</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => onEventTypeClick('request')}
+              style={
+                type === 'request' ? styles.containerFocus : styles.container2
+              }
+              activeOpacity={0.8}>
+              <ImageComponent source={mapService} style={[styles.icon1]} />
+              <Text style={styles.label1Service}>Services</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => onEventTypeClick('gratis')}
+              style={
+                type === 'gratis' ? styles.containerFocus : styles.container2
+              }
+              activeOpacity={0.8}>
+              <ImageComponent source={mapGifting} style={[styles.icon1]} />
+              <Text style={styles.label1}>Gifting</Text>
+            </TouchableOpacity>
+          </View> */}
+
+          <FlatList
+            data={postList}
+            keyExtractor={item => item.id}
+            ListFooterComponent={<View style={{height: 90}} />}
+            onEndReachedThreshold={0.01}
+            contentContainerStyle={{paddingBottom: 150}}
+            ListHeaderComponent={
+              <View>
+                {userList.length !== 0 ? (
+                  <View style={styles.avatarContainer}>
+                    <ScrollView
+                      horizontal={true}
+                      showsHorizontalScrollIndicator={false}>
+                      {userList.map((userList: any) => {
+                        return (
+                          <TouchableOpacity
+                            onPress={() => recentUserProfilePress(userList.id)}>
+                            <ImageComponent
+                              style={styles.avatarImage}
+                              isUrl={!!userList?.pic}
+                              resizeMode="cover"
+                              uri={userList?.pic}></ImageComponent>
+                          </TouchableOpacity>
+                        );
+                      })}
+                    </ScrollView>
+                  </View>
+                ) : (
+                  <View></View>
+                )}
+
+                <TouchableOpacity
+                  activeOpacity={0.8}
+                  style={styles.mainPostCont}
+                  onPress={onNavigateToCreatePost}>
+                  <View style={styles.postContainer}>
                     <ImageComponent
+                      style={styles.avatar}
                       resizeMode="cover"
                       isUrl={!!user?.pic}
                       source={dummy}
-                      uri={userprofile}
-                      style={styles.profile}
-                    />
-                  </TouchableOpacity>
-                </View>
-              </TouchableOpacity>
-              <View style={styles.filterTags}>
-                {/* <TouchableOpacity style={styles.container2} activeOpacity={0.8}>
-                  <ImageComponent source={mapEvent} style={[styles.icon1]} />
-                  <Text style={styles.label1Event}>Events</Text>
-                </TouchableOpacity> */}
-                {/* <TouchableOpacity style={styles.container2} activeOpacity={0.8}>
-                  <ImageComponent source={mapService} style={[styles.icon1]} />
-                  <Text style={styles.label1Service}>Services</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.container2} activeOpacity={0.8}>
-                  <ImageComponent source={mapGifting} style={[styles.icon1]} />
-                  <Text style={styles.label1}>Gifting</Text>
-                </TouchableOpacity> */}
-              </View>
-              {userList.length !== 0 ? (
-                <View style={styles.avatarContainer}>
-                  <ScrollView
-                    horizontal={true}
-                    showsHorizontalScrollIndicator={false}>
-                    {userList.map((userList: any) => {
-                      return (
-                        <TouchableOpacity onPress={() => recentUserProfilePress(userList.id)}>
-                          <ImageComponent
-                          style={styles.avatarImage}
-                          isUrl={!!userList?.pic}
-                          resizeMode="cover"
-                          uri={userList?.pic}></ImageComponent>
-                        </TouchableOpacity>
-                        
-                      );
-                    })}
-                  </ScrollView>
-                </View>
-              ) : (
-                <View></View>
-              )}
-
-              <TouchableOpacity  activeOpacity={0.1} style={styles.mainPostCont} onPress={onNavigateToCreatePost}>
-                <View style={styles.postContainer}>
-                  <ImageComponent style={styles.avatar} resizeMode="cover"
-                      isUrl={!!user?.pic}
-                      source={dummy}
-                      uri={userprofile}></ImageComponent>
-                  <TouchableOpacity
-                    style={styles.postInput}
-                    // onPress={CreateNewPost}>
-                    >
-                    <Text style={{textAlign: 'left', color: 'gray'}}>
-                      What do you want to post?
-                    </Text>
-                  </TouchableOpacity>
-                </View>
-                {/* <View
+                      uri={ProfileData?.pic}></ImageComponent>
+                    <View style={styles.postInput}>
+                      <Text style={{textAlign: 'left', color: 'gray'}}>
+                        What do you want to post?
+                      </Text>
+                    </View>
+                  </View>
+                  {/* <View
                   style={{
                     height: 1,
                     backgroundColor: 'gray',
                     marginHorizontal: 15,
                   }}></View> */}
 
-                {/* <View style={styles.postFilter}>
+                  {/* <View style={styles.postFilter}>
                   <TouchableOpacity
                     style={styles.container3}
                     activeOpacity={0.8}>
@@ -884,9 +1297,9 @@ export const HomeScreen = (props: HomeScreenProps) => {
                     <Text style={styles.label2}>Gratitude</Text>
                   </TouchableOpacity>
                 </View> */}
-              </TouchableOpacity>
+                </TouchableOpacity>
 
-              {/* <View>
+                {/* <View>
                 <TouchableOpacity
                   style={styles.listContainer}
                   activeOpacity={0.8}>
@@ -922,7 +1335,7 @@ export const HomeScreen = (props: HomeScreenProps) => {
                 </TouchableOpacity>
               </View> */}
 
-              <View>
+                {/* <View>
                 <TouchableOpacity
                   activeOpacity={0.8}
                   style={styles.dateContainer}>
@@ -992,282 +1405,276 @@ export const HomeScreen = (props: HomeScreenProps) => {
                     clockIcon={calendar}
                   />
                 </TouchableOpacity>
+              </View> */}
               </View>
-            </View>
-          }
-          onEndReached={postDataLoad}
-          renderItem={({item, index}) => (
-            <View style={styles.feedContainer}>
-              <Text style={styles.posttitle}>{item?.type}</Text>
-              <TouchableOpacity
-                style={{
-                  position: 'absolute',
-                  right: 14,
-                  top: 10,
-                  zIndex: 111122,
-                }}>
-                <Image
-                  style={styles.postfilterImage}
-                  source={greenOffer}></Image>
-              </TouchableOpacity>
-              <View style={styles.userDetailcont}>
-                <Image
-                  style={styles.postProfile}
-                  source={{uri: item?.user_id?.pic}}></Image>
-                <View>
-                  <Text style={styles.userName}>
-                    {item?.user_id?.first_name} {item?.user_id?.last_name}
-                  </Text>
-                  <Text style={styles.postTime}>{item?.date}</Text>
-                </View>
-              </View>
-              <Text style={styles.postDes}>{item?.content}</Text>
-              {/* <Image source={postImage}style={styles.userPost}></Image> */}
-              {item?.image[0] != '' ? (
-                <Image
-                  source={{uri: item?.image[0]}}
-                  style={styles.userPost}></Image>
-              ) : (
-                <View></View>
-              )}
-              <View style={styles.postDetailCont}>
-                <Text style={styles.postDetail}>What:</Text>
-                <Image source={painting} style={styles.detailImage}></Image>
-                <Text style={styles.postDetail}>{item?.what?.name}</Text>
-              </View>
-              <View style={styles.postDetailCont}>
-                <Text style={styles.postDetail}>For:</Text>
-                <Image source={moving} style={styles.detailImage}></Image>
-                <Text style={styles.postDetail}>{item?.what?.name}</Text>
-              </View>
-              <View style={styles.postDetailCont}>
-                <Text style={styles.postDetail}>Where:</Text>
-                <Image source={pin} style={styles.detailImage}></Image>
-                <Text style={styles.postDetail}>{item?.where?.address}</Text>
-              </View>
-              <View style={styles.postDetailCont}>
-                <Text style={styles.postDetail}>When:</Text>
-                <Image source={postCalender} style={styles.detailImage}></Image>
-                <Text style={styles.postDetail}>{item?.when}</Text>
-              </View>
-              <View style={styles.commentTitle}>
-                <Text style={styles.likeCount}>{item?.gratis}</Text>
-                <TouchableOpacity activeOpacity={1} style={styles.commentCont}>
-                  <Text style={styles.msgCount}>{item?.comment}</Text>
-                  <Image style={styles.commentImage} source={comment}></Image>
-                </TouchableOpacity>
-              </View>
-              <View
-                style={{
-                  height: 1,
-                  backgroundColor: 'gray',
-                  marginHorizontal: 12,
-                }}></View>
-              <View style={styles.commentContTwo}>
+            }
+            onEndReached={postDataLoad}
+            renderItem={({item, index}) => (
+              <View style={styles.feedContainer}>
+                <Text style={styles.posttitle}>{item?.type}</Text>
                 <TouchableOpacity
-                  onPress={() => OfferModalShow(item.id, index)}>
-                  <Image
-                    source={gratitudeBlack}
-                    style={styles.commentImgTwo}></Image>
-                </TouchableOpacity>
-                <View
                   style={{
-                    height: 20,
-                    backgroundColor: 'gray',
-                    marginHorizontal: 15,
-                    width: 2,
-                  }}></View>
-                <TouchableOpacity onPress={() => addNewComment(item.id, index)}>
-                  <Text
-                    style={{
-                      fontSize: 12,
-                      color: '#000000',
-                      alignItems: 'center',
-                    }}>
-                    Comment
-                  </Text>
+                    position: 'absolute',
+                    right: 14,
+                    top: 10,
+                    zIndex: 111122,
+                  }}>
+                  <TouchableOpacity onPress={() => openPostModal(item.id)}>
+                    <ImageComponent
+                      resizeMode="cover"
+                      style={styles.postfilterImage}
+                      source={greenImage}></ImageComponent>
+                  </TouchableOpacity>
                 </TouchableOpacity>
-              </View>
-              <View
-                style={{
-                  height: 1,
-                  backgroundColor: 'gray',
-                  marginHorizontal: 12,
-                }}></View>
-              {item?.comment !== 0 ? (
-                <View>
-                  {item.isComment ? (
-                    <TouchableOpacity
-                      onPress={() => showCommentonPost(item, index)}>
-                      <Text style={styles.commentContShow}>hide comments</Text>
-                    </TouchableOpacity>
-                  ) : (
-                    <TouchableOpacity
-                      onPress={() => showCommentonPost(item, index)}>
-                      <Text style={styles.commentContShow}>show comments</Text>
-                    </TouchableOpacity>
-                  )}
-                </View>
-              ) : (
-                <View></View>
-              )}
-
-              {item.isComment && item.commentListData.length !== 0 ? (
-                <View
-                  style={{height: 'auto', maxHeight: 250, overflow: 'hidden'}}>
-                  <ScrollView
-                    onTouchEnd={() => CommentListCall(item.id, index)}>
-                    <FlatList
-                      // onEndReached={}
-                      onEndReachedThreshold={0.8}
-                      data={item.commentListData}
-                      renderItem={({item}) => (
-                        <View>
-                          <View style={styles.commentImgProfile}>
-                            <Image
-                              style={styles.postProfile}
-                              source={{uri: item?.commenter?.pic}}></Image>
-                            <View style={styles.commentDisplayCont}>
-                              <Text style={{fontSize: 12, color: '#110101'}}>
-                                {item?.commenter?.first_name}{' '}
-                                {item?.commenter?.last_name}
-                              </Text>
-                              <Text style={styles.replyMsgCont}>
-                                {item?.content}
-                              </Text>
-                            </View>
-                          </View>
-
-                          <View style={styles.replyContainer}>
-                            <TouchableOpacity
-                              onPress={() =>
-                                openReplyGratis(
-                                  item.post_id,
-                                  item.id,
-                                  '',
-                                  index,
-                                )
-                              }>
-                              <Image
-                                style={styles.replyImg}
-                                source={gratitudeBlack}></Image>
-                            </TouchableOpacity>
-                            <TouchableOpacity
-                              onPress={() => onReplyClick(item.id)}>
-                              <Text style={styles.replyLbl}>reply</Text>
-                            </TouchableOpacity>
-
-                            <Text style={styles.minuteCont}>{item.date}</Text>
-                          </View>
-
-                          {/* {commentList?.reply?.content ? ( */}
-
-                          {item.reply.map((subItem: any, jindex: any) => {
-                            return (
-                              <>
-                                <View>
-                                  <View style={styles.commentImgProfileTwo}>
-                                    <Image
-                                      style={styles.postProfile}
-                                      source={{
-                                        uri: subItem?.commenter?.pic,
-                                      }}></Image>
-                                    <View
-                                      style={[
-                                        styles.commentDisplayCont,
-                                        {width: 210},
-                                      ]}>
-                                      <Text
-                                        style={{
-                                          fontSize: 12,
-                                          color: '#110101',
-                                        }}>
-                                        {subItem.commenter.first_name}{' '}
-                                        {subItem.commenter.last_name}
-                                      </Text>
-                                      <Text style={styles.replyMsgCont}>
-                                        {subItem.content}
-                                      </Text>
-                                    </View>
-                                  </View>
-
-                                  <View style={styles.replyContainerTwo}>
-                                    <TouchableOpacity
-                                      onPress={() =>
-                                        openReplyGratis(
-                                          item.post_id,
-                                          item.id,
-                                          subItem.key,
-                                          index,
-                                        )
-                                      }>
-                                      <Image
-                                        style={styles.replyImg}
-                                        source={gratitudeBlack}></Image>
-                                    </TouchableOpacity>
-                                    <TouchableOpacity
-                                      onPress={() => onReplyClick(item.id)}>
-                                      <Text style={styles.replyLbl}>reply</Text>
-                                    </TouchableOpacity>
-
-                                    <Text style={styles.minuteCont}>
-                                      {subItem.date}
-                                    </Text>
-                                  </View>
-                                </View>
-                              </>
-                            );
-                          })}
-
-                          {/* ) : (
-                              <View></View>
-                            )} */}
-                        </View>
-                      )}></FlatList>
-                  </ScrollView>
-                </View>
-              ) : (
-                <View></View>
-              )}
-
-              {commentLoading ? (
-                <ActivityIndicator
-                  color="black"
-                  style={{marginLeft: 8}}></ActivityIndicator>
-              ) : (
-                <View></View>
-              )}
-              {showComment ? (
-                <View style={{flexDirection: 'row'}}>
-                  <TextInput
-                    style={styles.commentInput}
-                    placeholder="Make a Comment"
-                    value={addnewCmt}
-                    onChangeText={text => onAddComment(text)}></TextInput>
+                <View style={styles.userDetailcont}>
                   <TouchableOpacity
-                    style={{alignSelf: 'center'}}
-                    onPress={() => addCommentHide(item, index)}>
-                    <Image
-                      style={{height: 40, width: 40}}
-                      source={send}></Image>
+                    onPress={() => recentUserProfilePress(item?.user_id.id)}>
+                    <ImageComponent
+                      resizeMode="cover"
+                      style={styles.postProfile}
+                      source={{uri: item?.user_id?.pic}}></ImageComponent>
+                  </TouchableOpacity>
+                  <View>
+                    <View>
+                      {item?.type === 'Gratis' ? (
+                        <View>
+                          <Text numberOfLines={1} style={styles.userName}>
+                            {item?.user_id?.first_name}{' '}
+                            {item?.user_id?.last_name}{' '}
+                          </Text>
+                          <Text style={styles.sentPointClass}>
+                              sent {item?.to?.users[0]?.point} gratis to {' '}
+                              <Text style={styles.userName}>
+                              {item?.to?.users[0]?.user_id['first_name']}{' '}
+                              {item?.to?.users[0]?.user_id['last_name']}
+                            </Text>
+                            </Text>
+                            
+                        </View>
+                        
+                      ) : (
+                        <Text numberOfLines={1} style={styles.userName}>
+                          {item?.user_id?.first_name} {item?.user_id?.last_name}
+                        </Text>
+                      )}
+                      <Text style={styles.postTime}>{item?.date}</Text>
+                    </View>
+                  </View>
+                </View>
+                <View style={styles.userListDisplayCont}>
+                <TouchableOpacity
+                    onPress={() => recentUserProfilePress(item?.to?.users[0]?.user_id['id'])}>
+                  <ImageComponent
+                    resizeMode="cover"
+                    style={styles.userListDisplay}
+                    source={{
+                      uri: item?.to?.users[0]?.user_id['pic'],
+                    }}></ImageComponent>
+                    </TouchableOpacity>
+                  {/* <ImageComponent resizeMode='cover' style={styles.userListDisplay} source={{uri:item?.to?.users?.user_id[1]['pic']}}></ImageComponent> */}
+                </View>
+                <Text style={styles.postDes}>{item?.content}</Text>
+                {/* <ImageComponent source={postImage}style={styles.userPost}></ImageComponent> */}
+                <ImageComponent
+                  resizeMode="cover"
+                  source={{uri: item.image[0]}}
+                  style={styles.userPost}></ImageComponent>
+                {/* <View style={{ height: 310 }}>
+                  <Swiper>
+                    {item?.image.map((images: any) => {
+                      return (
+                        <ImageComponent
+                          resizeMode="cover"
+                          source={{ uri: images }} 
+                          style={styles.userPost}></ImageComponent>
+                      );
+                    })}
+                  </Swiper></View> */}
+                {/* {item?.image[0] != '' ? (
+                 
+                ) : (
+                  <View></View>
+                )} */}
+                <View style={styles.postDetailCont}>
+                  <Text style={styles.postDetailTitle}>What:</Text>
+                  <ImageComponent
+                    source={{uri: item?.what?.icon}}
+                    style={styles.detailImage}></ImageComponent>
+                  <Text style={styles.postDetail}>{item?.what?.name}</Text>
+                </View>
+                <View style={styles.postDetailCont}>
+                  <Text style={styles.postDetailTitle}>For:</Text>
+                  <Image
+                    source={{uri: item?.for?.icon}}
+                    style={styles.detailImage}></Image>
+                  <Text style={styles.postDetail}>{item?.for?.name}</Text>
+                </View>
+                <View style={styles.postDetailCont}>
+                  <Text style={styles.postDetailTitle}>Where:</Text>
+                  <Image source={pin} style={styles.detailImage}></Image>
+                  <Text style={styles.postDetail}>{item?.where?.address}</Text>
+                </View>
+                <View style={styles.postDetailCont}>
+                  <Text style={styles.postDetailTitle}>When:</Text>
+                  <Image
+                    source={postCalender}
+                    style={styles.detailImage}></Image>
+                  <Text style={styles.postDetail}>{item?.when}</Text>
+                </View>
+                <View style={styles.commentTitle}>
+                  <Text style={styles.likeCount}>{item?.gratis}</Text>
+                  <TouchableOpacity
+                    activeOpacity={1}
+                    style={styles.commentCont}>
+                    <Text style={styles.msgCount}>{item?.comment}</Text>
+                    <Image style={styles.commentImage} source={comment}></Image>
                   </TouchableOpacity>
                 </View>
-              ) : (
-                <View></View>
-              )}
-            </View>
-          )}></FlatList>
-      </KeyboardAvoidingView>
-      {loading ? (
-        <ActivityIndicator
-          color="black"
-          style={{marginLeft: 8}}></ActivityIndicator>
-      ) : ( 
+                <View
+                  style={{
+                    height: 1,
+                    backgroundColor: 'gray',
+                    marginHorizontal: 12,
+                  }}></View>
+                <View style={styles.commentContTwo}>
+                  <TouchableOpacity
+                    onPress={() => OfferModalShow(item.id, index)}>
+                    <ImageComponent
+                      source={gratitudeBlack}
+                      style={styles.commentImgTwo}></ImageComponent>
+                  </TouchableOpacity>
+                  <View
+                    style={{
+                      height: 20,
+                      backgroundColor: 'gray',
+                      marginHorizontal: 15,
+                      width: 2,
+                    }}></View>
+                  <TouchableOpacity
+                    onPress={() => addNewComment(item.id, index)}>
+                    <Text
+                      style={{
+                        fontSize: 12,
+                        color: '#000000',
+                        alignItems: 'center',
+                      }}>
+                      Comment
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+
+                <View
+                  style={{
+                    height: 1,
+                    backgroundColor: 'gray',
+                    marginHorizontal: 12,
+                  }}></View>
+
+                {/* <View style={styles.gratisAndCommentContainer}>
+                  <TouchableOpacity style={styles.gratisContainer}>
+                    <Text style={styles.gratisClass}>+55</Text>
+                    <ImageComponent
+                      source={gratitudeBlack}
+                      style={styles.commentImgTwo}></ImageComponent>
+                  </TouchableOpacity>
+                  <TouchableOpacity onPress={()=>CommentListNavigatiion(item.id)} style={styles.commentsContainer}>
+                    <Text style={styles.commentClass}>36</Text>
+                    <ImageComponent
+                      source={comment}
+                      style={styles.commentImageThree}></ImageComponent>
+                  </TouchableOpacity>
+                </View> */}
+                {item?.comment !== 0 ? (
+                  <View>
+                    {item.isComment ? (
+                      <TouchableOpacity
+                        onPress={() => showCommentonPost(item, index)}>
+                        <Text style={styles.commentContShow}>
+                          hide comments
+                        </Text>
+                      </TouchableOpacity>
+                    ) : (
+                      <TouchableOpacity
+                        onPress={() => showCommentonPost(item, index)}>
+                        <Text style={styles.commentContShow}>
+                          show comments
+                        </Text>
+                      </TouchableOpacity>
+                    )}
+                  </View>
+                ) : (
+                  <View></View>
+                )}
+
+                {item.isComment && item.commentListData.length !== 0 ? (
+                  <View
+                    style={{
+                      height: 'auto',
+                      maxHeight: 250,
+                      overflow: 'hidden',
+                    }}>
+                    <ScrollView
+                      onTouchEnd={() => {
+                        console.log('-------------onEndReached---------------');
+                        if (commentListScrollEnable) {
+                          CommentListCall(item.id, index);
+                        }
+                      }}>
+                      {commentFlatlistRender(index, item)}
+                    </ScrollView>
+                  </View>
+                ) : (
+                  <View></View>
+                )}
+
+                {/* <CommentList commentItem={item} post_ID={item.id} postIndex={index} postList={postList} navigation={navigation} ></CommentList> */}
+
+                {showComment ? (
+                  <View style={{flexDirection: 'row'}}>
+                    <TextInput
+                      style={styles.commentInput}
+                      placeholder="Make a Comment"
+                      value={addnewCmt}
+                      onChangeText={text => onAddComment(text)}></TextInput>
+                    <TouchableOpacity
+                      style={{alignSelf: 'center'}}
+                      onPress={() => addCommentHide(item, index)}>
+                      <ImageComponent
+                        style={{height: 40, width: 40}}
+                        source={send}></ImageComponent>
+                    </TouchableOpacity>
+                  </View>
+                ) : (
+                  <View></View>
+                )}
+              </View>
+            )}></FlatList>
+        {loading ? (
+          <ActivityIndicator
+            color="black"
+            style={{marginLeft: 8}}></ActivityIndicator>
+        ) : (
+          <View></View>
+        )}
+      </View>
+      {postList.length === 0 ? (
+        <View>
+          <Text
+            style={{
+              fontSize: 18,
+              fontWeight: '400',
+              alignSelf: 'center',
+              marginTop: 20,
+              flex: 1,
+              color: 'white',
+            }}>
+            No Record Found
+          </Text>
+        </View>
+      ) : (
         <View></View>
       )}
-      </View>
-{postlistTtl === 0 ? <View><Text style={{fontSize:18,fontWeight:'400',textAlign:'center',marginTop:20}}>No Record Found</Text></View>: <View></View>}
-      
+
       {/* </TouchableOpacity> */}
       <Modal transparent onDismiss={OfferModalClose} visible={offerModal}>
         <GestureRecognizer onSwipeDown={OfferModalClose} style={styles.gesture}>
@@ -1285,19 +1692,27 @@ export const HomeScreen = (props: HomeScreenProps) => {
               <Text style={styles.gratiesTitle}>Give some Gratis</Text>
               <View style={styles.gratisCont}>
                 <TouchableOpacity onPress={gratisMinusClick}>
-                  <Image
+                  <ImageComponent
                     source={minus}
-                    style={{height: 30, width: 30, marginRight: 50}}></Image>
+                    style={{
+                      height: 30,
+                      width: 30,
+                      marginRight: 50,
+                    }}></ImageComponent>
                 </TouchableOpacity>
-                <Image
+                <ImageComponent
                   resizeMode="cover"
                   style={styles.gratisimg}
-                  source={Gratis}></Image>
+                  source={Gratis}></ImageComponent>
                 <Text style={styles.gratistext}>{gratisNo}</Text>
                 <TouchableOpacity onPress={gratisPlusClick}>
-                  <Image
+                  <ImageComponent
                     source={plus}
-                    style={{height: 30, width: 30, marginLeft: 50}}></Image>
+                    style={{
+                      height: 30,
+                      width: 30,
+                      marginLeft: 50,
+                    }}></ImageComponent>
                 </TouchableOpacity>
               </View>
               <TouchableOpacity
@@ -1338,20 +1753,28 @@ export const HomeScreen = (props: HomeScreenProps) => {
             <View>
               <Text style={styles.gratiesTitle}>Give some Gratis Comment</Text>
               <View style={styles.gratisCont}>
-                <TouchableOpacity onPress={gratisMinusClick}>
-                  <Image
+                <TouchableOpacity onPress={gratisCommrntMinusClick}>
+                  <ImageComponent
                     source={minus}
-                    style={{height: 30, width: 30, marginRight: 50}}></Image>
+                    style={{
+                      height: 30,
+                      width: 30,
+                      marginRight: 50,
+                    }}></ImageComponent>
                 </TouchableOpacity>
-                <Image
+                <ImageComponent
                   resizeMode="cover"
                   style={styles.gratisimg}
-                  source={Gratis}></Image>
-                <Text style={styles.gratistext}>{gratisNo}</Text>
-                <TouchableOpacity onPress={gratisPlusClick}>
-                  <Image
+                  source={Gratis}></ImageComponent>
+                <Text style={styles.gratistext}>{gratisNoComment}</Text>
+                <TouchableOpacity onPress={gratisCommentPlusClick}>
+                  <ImageComponent
                     source={plus}
-                    style={{height: 30, width: 30, marginLeft: 50}}></Image>
+                    style={{
+                      height: 30,
+                      width: 30,
+                      marginLeft: 50,
+                    }}></ImageComponent>
                 </TouchableOpacity>
               </View>
               <TouchableOpacity
@@ -1402,9 +1825,9 @@ export const HomeScreen = (props: HomeScreenProps) => {
                 style={{position: 'absolute', right: 0, zIndex: 111122}}
                 activeOpacity={0.5}
                 onPress={() => addCommentModal(false)}>
-                <Image
+                <ImageComponent
                   source={closeCard}
-                  style={{height: 25, width: 25}}></Image>
+                  style={{height: 25, width: 25}}></ImageComponent>
               </TouchableOpacity>
               <Text style={styles.gratiesTitle}>Add Comment</Text>
               <View>
@@ -1419,16 +1842,86 @@ export const HomeScreen = (props: HomeScreenProps) => {
                 style={styles.purchaseContainer}>
                 <View />
                 <Text style={styles.titleTwo}>Add Comment</Text>
-                <TouchableOpacity>
+                <View>
                   <ImageComponent
                     source={buttonArrowGreen}
                     style={styles.buttonArrow}
                   />
-                </TouchableOpacity>
+                </View>
               </TouchableOpacity>
             </View>
           </TouchableOpacity>
         </KeyboardAvoidingView>
+      </Modal>
+
+      <Modal transparent onDismiss={closeModal} visible={postContent}>
+        <GestureRecognizer onSwipeDown={closeModal} style={styles.gesture}>
+          <TouchableOpacity
+            style={styles.containerPost}
+            activeOpacity={1}
+            onPress={closeModal}
+          />
+        </GestureRecognizer>
+        <KeyboardAvoidingView
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+          style={styles.keyboardViewTwo}>
+          <View style={styles.postActionSheet}>
+            <TouchableOpacity onPress={() => postHideOptionSelect(1)}>
+              <Text style={[styles.postText, {color: 'white'}]}>Block</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => postHideOptionSelect(2)}>
+              <Text style={[styles.postText, {color: 'white'}]}>Report</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => postHideOptionSelect(3)}>
+              <Text style={[styles.postText, {color: 'white'}]}>
+                Hide this Content
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </KeyboardAvoidingView>
+
+        <Modal
+          transparent
+          onDismiss={() => reportModalShowHide(false)}
+          visible={reoportModal}>
+          <GestureRecognizer
+            onSwipeDown={() => reportModalShowHide(false)}
+            style={styles.gesture}>
+            <TouchableOpacity
+              style={styles.containerGallery}
+              activeOpacity={1}
+              onPress={() => reportModalShowHide(false)}
+            />
+          </GestureRecognizer>
+          <KeyboardAvoidingView
+            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+            style={styles.keyboardViewTwo}>
+            <TouchableOpacity activeOpacity={1} style={styles.commentContainer}>
+              <View>
+                <Text style={styles.gratiesTitle}>Report Content</Text>
+                <View>
+                  <TextInput
+                    onChangeText={text => addReportReason(text)}
+                    style={styles.commentInput}
+                    placeholder="Add Reason"></TextInput>
+                </View>
+                <TouchableOpacity
+                  onPress={() => submitReportReason()}
+                  activeOpacity={0.8}
+                  style={styles.purchaseContainer}>
+                  <View />
+                  <Text style={styles.titleTwo}>Submit</Text>
+                  <View>
+                    <ImageComponent
+                      source={buttonArrowGreen}
+                      style={styles.buttonArrow}
+                    />
+                  </View>
+                </TouchableOpacity>
+              </View>
+            </TouchableOpacity>
+          </KeyboardAvoidingView>
+        </Modal>
       </Modal>
     </>
   );

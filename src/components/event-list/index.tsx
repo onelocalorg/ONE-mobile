@@ -17,7 +17,7 @@ export const EventList = (props: EventListProps) => {
   const {theme} = useAppTheme();
   const styles = createStyleSheet(theme);
   const {data, onPress, disabled = false} = props || {};
-  const {start_date, address, name, event_image,full_address} = data || {};
+  const {start_date, address, name, event_image,full_address,cancelled} = data || {};
 
   return (
     <TouchableOpacity
@@ -32,22 +32,25 @@ export const EventList = (props: EventListProps) => {
         isUrl={!!event_image}
         style={styles.dummy}
       />
-      <View style={styles.flex}>
+      <View style={styles.flex}> 
         <View style={styles.row}>
           <View style={styles.flex}>
             <Text style={styles.dateText}>{`${moment(start_date).format(
               'ddd, MMM DD',
             )} • ${moment(start_date).format('hh:mm A')}`}</Text>
-            <Text style={styles.title}>{name}</Text>
+            <Text numberOfLines={2} style={styles.title}>{name}</Text>
           </View>
           <ImageComponent source={event} style={styles.event} />
-        </View>
+        </View> 
+       
         <View style={styles.row}>
           <ImageComponent source={pin} style={styles.pin} />
-          <Text style={styles.location}>{address}</Text>
-          <ImageComponent style={styles.addressDot} source={activeRadio}></ImageComponent>
-          <Text style={styles.fullAddress}>{full_address}</Text>
+          <Text numberOfLines={3} style={styles.location}>{address}</Text>
+          {/* <ImageComponent style={styles.addressDot} source={activeRadio}></ImageComponent> */}
+          {/* <Text style={styles.fullAddress}>{full_address}</Text> */}
         </View>
+        {cancelled ? <Text style={styles.cancleText}>CANCELED</Text> : <View></View>}
+        
       </View>
     </TouchableOpacity>
   );

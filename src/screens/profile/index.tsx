@@ -34,7 +34,7 @@ import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import {Input} from '@components/input';
 import {useEditProfile} from '@network/hooks/user-service-hooks/use-edit-profile';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
-import {Search, arrowLeft, bell, dummy, onelogo} from '@assets/images';
+import {Gratis, Search, arrowLeft, bell, dummy, onelogo} from '@assets/images';
 import {PERMISSIONS, request} from 'react-native-permissions';
 import {Alert} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -47,12 +47,15 @@ import {height} from '@theme/device/device';
 import {BottomSheet} from 'react-native-elements';
 import GestureRecognizer from 'react-native-swipe-gestures';
 import ImagePicker from 'react-native-image-crop-picker';
+import Toast from 'react-native-simple-toast';
+import {navigations} from '@config/app-navigation/constant';
+import { API_URL } from '@network/constant';
 
 interface UserData {
   id: string;
   bio: string;
   name: string;
-  pic: string; 
+  pic: string;
   status: string;
   about: string;
   skills: string[];
@@ -60,6 +63,12 @@ interface UserData {
   isActiveSubscription: boolean;
   coverImage: string;
   profile_answers: string[];
+  cover_image: string;
+  points_balance: number;
+  city:string;
+  first_name: string;
+  last_name: string;
+  nick_name: string;
 }
 
 interface ProfileScreenProps {
@@ -73,17 +82,36 @@ export const ProfileScreen = (props: ProfileScreenProps) => {
   const {navigation} = props || {};
   const [selectedTab, setSelectedTab] = useState(0);
   const [profileUri, setProfileUri] = useState('');
+  const [backgroundImageUri, setbackgroundUri] = useState('');
+  const [setimageType, selectImage] = useState();
   const [updatedBio, setBio] = useState('');
   const [filename, assetsData] = useState('');
   const [base64string, setBase64Path] = useState('');
   const [imageOption, ImageOptionModal] = useState(false);
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [nickName, setNickName] = useState('');
   const [isLoading, LodingData] = useState(false);
   const {user} = useSelector<StoreType, UserProfileState>(
     state => state.userProfileReducer,
   ) as {user: UserData};
   const {onLogout} = useLogout();
-  const {about, bio, name, pic, skills, status, id, profile_answers} =
-    user || {};
+  const {
+    about,
+    bio,
+    name,
+    pic,
+    skills,
+    status,
+    id,
+    profile_answers,
+    cover_image,
+    points_balance,
+    city,
+    first_name,
+    last_name,
+    nick_name
+  } = user || {};
   const {mutateAsync} = useEditProfile();
   const dispatch = useDispatch();
   const {token} = useToken();
@@ -93,8 +121,13 @@ export const ProfileScreen = (props: ProfileScreenProps) => {
   useEffect(() => {
     setBio(bio);
     setProfileUri(pic);
+    setbackgroundUri(cover_image);
+    setFirstName(first_name);
+    setLastName(last_name);
+    setNickName(nick_name)
     console.log('------------pic----------', pic);
-  }, [bio, pic]);
+    console.log('------------cover_image----------', cover_image);
+  }, [bio, pic, cover_image,first_name,last_name,nick_name]);
 
   useEffect(() => {
     return () => {
@@ -107,42 +140,43 @@ export const ProfileScreen = (props: ProfileScreenProps) => {
     navigation.goBack();
   };
 
-  const imageSelection = async () => {
+  const imageSelection = async (no: any) => {
+    selectImage(no);
     ImageOptionModal(true);
   };
 
   // ======================imageUpload API=========================
-  const imageUploadAPI = async (fileItem: any, base64Item: any) => {
-    var pic: any = {
-      uploadKey: 'pic',
-      imageName: fileItem,
-      base64String: 'data:image/jpeg;base64,' + base64Item,
-    };
-    ImageOptionModal(false);
-    console.log('=================Request=================');
-    console.log(pic);
-    try {
-      const response = await fetch(
-        'https://app.onelocal.one/api/v1/users/upload/file',
-        {
-          method: 'post',
-          headers: new Headers({
-            Authorization: 'Bearer ' + token,
-            'Content-Type': 'application/json',
-          }),
-          body: JSON.stringify(pic),
-        },
-      );
-      const dataItem = await response.json();
-      LodingData(false);
-      console.log('-----------------Response------------');
-      setProfileUri(dataItem?.data?.imageUrl);
-      console.log(dataItem);
-    } catch (error) {
-      LodingData(false);
-      console.log(error);
-    }
-  };
+  // const imageUploadAPI = async (fileItem: any, base64Item: any) => {
+  //   var pic: any = {
+  //     uploadKey: 'pic',
+  //     imageName: fileItem,
+  //     base64String: 'data:image/jpeg;base64,' + base64Item,
+  //   };
+  //   ImageOptionModal(false);
+  //   console.log('=================Request=================');
+  //   console.log(pic);
+  //   try {
+  //     const response = await fetch(
+  //       API_URL + '/v1/users/upload/file',
+  //       {
+  //         method: 'post',
+  //         headers: new Headers({
+  //           Authorization: 'Bearer ' + token,
+  //           'Content-Type': 'application/json',
+  //         }),
+  //         body: JSON.stringify(pic),
+  //       },
+  //     );
+  //     const dataItem = await response.json();
+  //     LodingData(false);
+  //     console.log('-----------------Response------------');
+  //     setProfileUri(dataItem?.data?.imageUrl);
+  //     console.log(dataItem);
+  //   } catch (error) {
+  //     LodingData(false);
+  //     console.log(error);
+  //   }
+  // };
 
   const imageOptionSelect = async (item: any) => {
     if (item === 1) {
@@ -206,7 +240,14 @@ export const ProfileScreen = (props: ProfileScreenProps) => {
 
       assetsData(output);
       setBase64Path(base64Two);
-      imageUploadAPI(output, base64Two);
+
+      if (setimageType === 1) {
+        ProfileImageUploadAPI(output, base64Two);
+      }
+      if (setimageType === 2) {
+        BackgroundImageUploadAPI(output, base64Two);
+      }
+      // imageUploadAPI(output, base64Two);
     }
   };
 
@@ -221,10 +262,10 @@ export const ProfileScreen = (props: ProfileScreenProps) => {
     ImagePicker.openPicker({
       width: 300,
       height: 400,
-      cropperRotateButtonsHidden:true,
+      cropperRotateButtonsHidden: true,
       mediaType: 'photo',
       includeBase64: true,
-      cropping: true
+      cropping: true,
     }).then(image => {
       console.log(image);
       console.log('===============222222==================');
@@ -237,17 +278,86 @@ export const ProfileScreen = (props: ProfileScreenProps) => {
         var output =
           fileNameTwo.substr(0, fileNameTwo.lastIndexOf('.')) || fileNameTwo;
         var base64Two = image?.data ?? '';
-  
+
         assetsData(output);
         setBase64Path(base64Two);
         console.log('---------------output---------------');
-        console.log(output)
+        console.log(output);
         console.log('---------------base64Two---------------');
-        console.log(base64Two)
-        imageUploadAPI(output, base64Two);
+        console.log(base64Two);
+        if (setimageType === 1) {
+          ProfileImageUploadAPI(output, base64Two);
+        }
+        if (setimageType === 2) {
+          BackgroundImageUploadAPI(output, base64Two);
+        }
+        // imageUploadAPI(output, base64Two);
       }
     });
-    
+  };
+
+  const ProfileImageUploadAPI = async (fileItem: any, base64Item: any) => {
+    var pic: any = {
+      uploadKey: 'pic',
+      userId: user.id,
+      imageName: fileItem,
+      base64String: 'data:image/jpeg;base64,' + base64Item,
+    };
+    ImageOptionModal(false);
+    console.log('=================Request=================');
+    console.log(pic);
+    try {
+      const response = await fetch(
+        API_URL + '/v1/users/upload/file',
+        {
+          method: 'post',
+          headers: new Headers({
+            'Content-Type': 'application/json',
+          }),
+          body: JSON.stringify(pic),
+        },
+      );
+      const dataItem = await response.json();
+      LodingData(false);
+      console.log('-----------------Response------------');
+      setProfileUri(dataItem?.data?.imageUrl);
+      console.log('=========dataItem==========', dataItem);
+    } catch (error) {
+      LodingData(false);
+      console.log(error);
+    }
+  };
+
+  const BackgroundImageUploadAPI = async (fileItem: any, base64Item: any) => {
+    var pic: any = {
+      uploadKey: 'cover_image',
+      userId: user.id,
+      imageName: fileItem,
+      base64String: 'data:image/jpeg;base64,' + base64Item,
+    };
+    ImageOptionModal(false);
+    console.log('=================Request=================');
+    console.log('-----pic------', pic);
+    try {
+      const response = await fetch(
+        API_URL + '/v1/users/upload/file',
+        {
+          method: 'post',
+          headers: new Headers({
+            'Content-Type': 'application/json',
+          }),
+          body: JSON.stringify(pic),
+        },
+      );
+      const dataItem = await response.json();
+      LodingData(false);
+      console.log('-----------------Response------------');
+      setbackgroundUri(dataItem?.data?.imageUrl);
+      console.log(dataItem);
+    } catch (error) {
+      LodingData(false);
+      console.log(error);
+    }
   };
 
   const onSaveProfile = async (request: {
@@ -260,12 +370,18 @@ export const ProfileScreen = (props: ProfileScreenProps) => {
       ...request,
       bio: updatedBio,
       coverImage: user?.coverImage,
+      first_name: firstName,
+      last_name: lastName,
+      nick_name: nickName
     } as {
       about?: string;
       skills?: string[];
       profile?: string;
+      first_name?: string;
+      last_name?: string;
+      nick_name?: string;
     };
-    LodingData(true)
+    LodingData(true);
     console.log('oooooo', profileUri);
     if (pic !== profileUri) {
       console.log('-------------11111---------');
@@ -278,16 +394,40 @@ export const ProfileScreen = (props: ProfileScreenProps) => {
       navigation.goBack();
     }
   };
+  const keyboardDismiss = () => {
+    Keyboard.dismiss();
+  };
 
   const closeModal = () => {
     ImageOptionModal(false);
   };
 
   return (
-    <View style={styles.container}>
+    <KeyboardAwareScrollView>
+<TouchableOpacity style={styles.container} activeOpacity={1} onPress={keyboardDismiss}>
       <Loader visible={isLoading} showOverlay />
 
       <TouchableOpacity style={styles.HeaderContainerTwo} activeOpacity={1}>
+        <TouchableOpacity activeOpacity={1} onPress={() => imageSelection(2)}>
+          <ImageComponent
+            isUrl={!!backgroundImageUri}
+            resizeMode="cover"
+            uri={backgroundImageUri}
+            source={dummy}
+            // source={
+            //   backgroundImageUri != '' ? {uri: backgroundImageUri} : dummy}
+            style={styles.HeaderContainerTwoBg}
+          />
+          <View style={styles.oneContainer}>
+            <ImageComponent
+              style={styles.oneContainerImage}
+              source={onelogo}></ImageComponent>
+            <View>
+              <Text style={styles.oneContainerText}>NE</Text>
+              <Text style={styles.localText}>L  o  c  a  l</Text>
+            </View>
+          </View>
+        </TouchableOpacity>
         <TouchableOpacity style={styles.row2} onPress={onBackPress}>
           <View>
             <ImageComponent source={arrowLeft} style={styles.arrowLeft} />
@@ -300,13 +440,6 @@ export const ProfileScreen = (props: ProfileScreenProps) => {
             setSearchQuery(value)
           }}></TextInput>
         </View> */}
-
-        <View style={styles.oneContainer}>
-          <ImageComponent
-            style={styles.oneContainerImage}
-            source={onelogo}></ImageComponent>
-          <Text style={styles.oneContainerText}>NE</Text>
-        </View>
 
         <TouchableOpacity
           activeOpacity={0.8}
@@ -325,7 +458,7 @@ export const ProfileScreen = (props: ProfileScreenProps) => {
       </TouchableOpacity>
 
       <View style={styles.profileContainer}>
-        <TouchableOpacity activeOpacity={0.8} onPress={imageSelection}>
+        <TouchableOpacity activeOpacity={0.8} onPress={() => imageSelection(1)}>
           <ImageComponent
             isUrl={!!profileUri}
             resizeMode="cover"
@@ -346,57 +479,52 @@ export const ProfileScreen = (props: ProfileScreenProps) => {
               behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
               style={styles.keyboardViewTwo}>
               <View style={styles.imageActionSheet}>
-              <TouchableOpacity onPress={() => imageOptionSelect(1)}>
-                <Text
-                  style={{
-                    textAlign: 'center',
-                    fontSize: 18,
-                    fontFamily: theme.fontType.medium,
-                    backgroundColor: '#A493B7',
-                    color: 'white',
-                    padding: 10,
-                    margin: 10,
-                  }}>
-                  Gallery 
-                </Text>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={() => imageOptionSelect(2)}>
-                <Text
-                  style={{
-                    textAlign: 'center',
-                    fontSize: 18,
-                    fontFamily: theme.fontType.medium,
-                    backgroundColor: '#A493B7',
-                    color: 'white',
-                    padding: 10,
-                    margin: 10,
-                  }}>
-                  Camera
-                </Text>
-              </TouchableOpacity>
-            </View>
+                <TouchableOpacity onPress={() => imageOptionSelect(1)}>
+                  <Text style={styles.galleryText}>Gallery</Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => imageOptionSelect(2)}>
+                  <Text style={styles.cameraText}>Camera</Text>
+                </TouchableOpacity>
+              </View>
             </KeyboardAvoidingView>
           </Modal>
         </TouchableOpacity>
       </View>
       <View style={styles.center}>
-        <Text style={styles.name}>{name}</Text>
+      <View style={styles.userNameClass}>
+          <TextInput onChangeText={(text)=>setFirstName(text)} placeholder='first name' placeholderTextColor='#818181' style={styles.firstName}>{firstName}</TextInput>
+          <TextInput onChangeText={(text)=>setLastName(text)} placeholder='last name' placeholderTextColor='#818181' style={styles.lastName}>{lastName}</TextInput>
+        </View>
         <View style={styles.circularView}>
-          <Text style={styles.des}>{status}</Text>
+        <TextInput onChangeText={(text)=>setNickName(text)} placeholder='enter nickname' placeholderTextColor='#818181' style={styles.des}>{nickName}</TextInput>
         </View>
       </View>
+
       {/* <TouchableOpacity activeOpacity={0.8} style={styles.payView}>
         <Text style={styles.pay}>{strings.stripePayout}</Text>
       </TouchableOpacity> */}
+
+      <View style={styles.gratiesCont}>
+        <Image
+          source={Gratis}
+          resizeMode="cover"
+          style={styles.gratiesImage}></Image>
+        <Text style={styles.gratiesNumber}>{points_balance}</Text>
+      </View>
+
       <View style={styles.aboutView}>
         <Input
           inputStyle={styles.input}
           value={updatedBio}
+          placeholderTextColor='#818181'
+          placeholder='enter a catchphrase'
           onChangeText={setBio}
           multiline
         />
       </View>
+
       <View style={styles.line} />
+
       {/* <TabComponent
         tabs={[strings.about, strings.myEvents, strings.activity]}
         onPressTab={setSelectedTab}
@@ -405,7 +533,7 @@ export const ProfileScreen = (props: ProfileScreenProps) => {
         tabs={[strings.about, strings.myEvents]}
         onPressTab={setSelectedTab}
       />
-      <ScrollView showsVerticalScrollIndicator={false}>
+      <KeyboardAwareScrollView showsVerticalScrollIndicator={false}>
         {selectedTab === 0 && (
           <About
             about={about}
@@ -418,7 +546,9 @@ export const ProfileScreen = (props: ProfileScreenProps) => {
           />
         )}
         {selectedTab === 1 && <MyEvents userId={id} navigation={navigation} />}
-      </ScrollView>
-    </View>
+      </KeyboardAwareScrollView>
+    </TouchableOpacity>
+    </KeyboardAwareScrollView>
+    
   );
 };

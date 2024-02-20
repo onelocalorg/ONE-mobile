@@ -3,7 +3,14 @@ import {useAppTheme} from '@app-hooks/use-app-theme';
 import React, {useEffect, useRef, useState} from 'react';
 import {createStyleSheet} from './style';
 import {useStringsAndLabels} from '@app-hooks/use-strings-and-labels';
-import {Alert, Keyboard, LogBox, Text, TouchableOpacity, View} from 'react-native';
+import {
+  Alert,
+  Keyboard,
+  LogBox,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import {Header} from '@components/header';
 import {NavigationContainerRef, ParamListBase} from '@react-navigation/native';
 import {Pill} from '@components/pill';
@@ -18,6 +25,7 @@ import {
   onelogo,
   pinWhite,
   save,
+  sendPayoutImg,
   ticket,
 } from '@assets/images';
 import {SizedBox} from '@components/sized-box';
@@ -53,6 +61,13 @@ import {TextInput} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import GetLocation from 'react-native-get-location';
 import {DatePickerModal} from 'react-native-paper-dates';
+import Toast from 'react-native-simple-toast';
+import {API_URL} from '@network/constant';
+import {Switch} from 'react-native';
+import {AddBreakDownModal, BreakDownModal} from './add-breakDown-modal';
+import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete';
+import {GetAdmintoolsDropDownScreen} from './getAdmintoolsDropdown';
+import {ScrollView} from 'react-native-gesture-handler';
 
 interface AdminToolsScreenProps {
   navigation?: NavigationContainerRef<ParamListBase>;
@@ -71,12 +86,16 @@ export const AdminToolsScreen = (props: AdminToolsScreenProps) => {
   const {eventData, isCreateEvent} = route?.params ?? {};
   const styles = createStyleSheet(theme);
   const modalRef: React.Ref<ModalRefProps> = useRef(null);
+  const addItemRef: React.Ref<ModalRefProps> = useRef(null);
   const [selectedTicketIndex, setSelectedTicketIndex] = useState(0);
   const [isEdit, setIsEdit] = useState(false);
   const [startDateValue, setStartDateValue] = useState(new Date());
   const [endDateValue, setEndDateValue] = useState(new Date());
   const [searchQuery, setSearchQuery] = useState('');
   var [location, setUserLocation]: any = useState();
+  const [isEnabled, setIsEnabled] = useState(false);
+  const toggleSwitch = () => setIsEnabled(previousState => !previousState);
+  const [isBreakDown, setIsBreakDown] = useState(false);
   const [eventDetails, setEventDetails] = useState<Result>(
     (eventData as Result) || {},
   );
@@ -89,19 +108,22 @@ export const AdminToolsScreen = (props: AdminToolsScreenProps) => {
     email_confirmation_body,
     id,
     full_address,
+    isPayout,
+    viewCount,
     about,
   } = eventDetails || {};
   const datePickerRefStart: React.Ref<DatePickerRefProps> = useRef(null);
   const datePickerRefend: React.Ref<DatePickerRefProps> = useRef(null);
   const {user} = useSelector<StoreType, UserProfileState>(
     state => state.userProfileReducer,
-  ) as {user: {id: string; pic: string}};
+  ) as {user: {id: string; pic: string; city: string}};
   const [eventImage, setEventImage] = useState('');
   const {refetch, data} = useTicketHolderCheckinsList({
     eventId: id,
     queryParams: {pagination: false},
   });
-  const {mutateAsync, isLoading} = useUpdateEvent();
+  const {mutateAsync} = useUpdateEvent();
+  const [isLoading, LodingData] = useState(false);
   const {mutateAsync: createEvent, isLoading: createEventLoading} =
     useCreateEvent();
 
@@ -146,6 +168,45 @@ export const AdminToolsScreen = (props: AdminToolsScreenProps) => {
       });
   };
 
+  async function onCancleEvent(eventID: any) {
+    LodingData(true);
+    const token = await AsyncStorage.getItem('token');
+
+    console.log('=========== Cancle Event API Request ==============');
+    console.log(API_URL + '/v1/events/cancel-event/' + eventID);
+    try {
+      const response = await fetch(
+        API_URL + '/v1/events/cancel-event/' + eventID,
+        {
+          method: 'post',
+          headers: new Headers({
+            Authorization: 'Bearer ' + token,
+            'Content-Type': 'application/json',
+            Accept: 'application/json',
+          }),
+        },
+      );
+      const dataItem = await response.json();
+      console.log('=========== Cancle Event API Response ==============');
+      console.log(dataItem);
+
+      Toast.show(dataItem?.message, Toast.LONG, {
+        backgroundColor: 'black',
+      });
+      if (dataItem?.success === true) {
+        LodingData(false);
+        navigation?.goBack();
+      } else {
+        LodingData(false);
+      }
+
+      // postListAPI();
+    } catch (error) {
+      LodingData(false);
+      console.error(error);
+    }
+  }
+
   const onBackPress = () => {
     navigation?.goBack();
   };
@@ -183,6 +244,8 @@ export const AdminToolsScreen = (props: AdminToolsScreenProps) => {
   };
 
   const onCreateEvent = async () => {
+    LodingData(true);
+    console.log('1111111wdeee');
     Keyboard.dismiss();
     const res = await createEvent({
       bodyParams: {
@@ -195,11 +258,15 @@ export const AdminToolsScreen = (props: AdminToolsScreenProps) => {
     });
 
     if (res?.success) {
+      LodingData(false);
       navigation?.goBack();
+    } else {
+      LodingData(false);
     }
   };
 
   const onUpdateEvent = async () => {
+    LodingData(true);
     Keyboard.dismiss();
     let request = {};
     if (name !== eventData?.name) {
@@ -238,7 +305,10 @@ export const AdminToolsScreen = (props: AdminToolsScreenProps) => {
 
     const res = await mutateAsync({bodyParams: request, eventId: id});
     if (res?.success) {
+      LodingData(false);
       navigation?.goBack();
+    } else {
+      LodingData(false);
     }
   };
 
@@ -272,6 +342,11 @@ export const AdminToolsScreen = (props: AdminToolsScreenProps) => {
     modalRef.current?.onOpenModal();
   };
 
+  const openAddBreakDownModal = () => {
+    setIsEdit(false);
+    addItemRef.current?.onOpenModal();
+  };
+
   const openEditTicketModal = (index: number) => {
     setSelectedTicketIndex(index);
     setIsEdit(true);
@@ -296,11 +371,8 @@ export const AdminToolsScreen = (props: AdminToolsScreenProps) => {
   };
 
   return (
-    <View style={styles.container}>
-      <Loader visible={isLoading || createEventLoading} showOverlay />
-      <KeyboardAwareScrollView
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={styles.scrollView}>
+      <View style={styles.container}>
+        <Loader visible={isLoading || createEventLoading} showOverlay />
         <TouchableOpacity style={styles.HeaderContainerTwo} activeOpacity={1}>
           <TouchableOpacity onPress={onBackPress} style={{zIndex: 11111222222}}>
             <View style={styles.row2}>
@@ -311,12 +383,16 @@ export const AdminToolsScreen = (props: AdminToolsScreenProps) => {
             <ImageComponent
               style={styles.oneContainerImage}
               source={onelogo}></ImageComponent>
-            <Text style={styles.oneContainerText}>NE</Text>
+            <View>
+              <Text style={styles.oneContainerText}>NE</Text>
+              <Text style={styles.localText}>L o c a l</Text>
+              {/* <Text style={styles.localText}>[Local]</Text> */}
+            </View>
           </View>
           <View style={styles.profileContainer}>
-            <ImageComponent
+            {/* <ImageComponent
               style={styles.bellIcon}
-              source={bell}></ImageComponent>
+              source={bell}></ImageComponent> */}
             <TouchableOpacity
               activeOpacity={0.8}
               onPress={onNavigateToProfile}
@@ -331,94 +407,9 @@ export const AdminToolsScreen = (props: AdminToolsScreenProps) => {
             </TouchableOpacity>
           </View>
         </TouchableOpacity>
-
-        <View style={styles.pillContainer}>
-          <Pill
-            label={strings.adminTools}
-            backgroundColor={theme.colors.white}
-            foreGroundColor={theme.colors.black}
-            icon={ticket}
-            disabled
-          />
-        </View>
-        <SizedBox height={verticalScale(6)} />
-        {!isCreateEvent && (
-          <Pill
-            label={strings.checkIns}
-            backgroundColor={theme.colors.lightRed}
-            pillStyle={styles.checkIn}
-            onPressPill={onNavigate}
-          />
-        )}
-        <View style={styles.innerContainer}>
-          <Input
-            onChangeText={text => handleText(text, 'name')}
-            placeholder={strings.enterTitle}
-            value={name}
-          />
-          <View style={styles.row}>
-            <View style={styles.circularView}>
-              <ImageComponent
-                source={calendarTime}
-                style={styles.calendarTime}
-              />
-            </View>
-            <TouchableOpacity
-              activeOpacity={0.8}
-              onPress={() => datePickerRefStart.current?.onOpenModal('start')}
-              style={styles.margin}>
-              <Text style={styles.time}>
-                Start Date
-              </Text>
-              <Text style={styles.time}>{`- ${moment(start_date).format(
-                'DD MMM YYYY (hh:mm A)',
-              )}`}</Text>
-            </TouchableOpacity>
-
-          </View>
-          <View style={styles.row}>
-            <View style={styles.circularView}>
-              <ImageComponent
-                source={calendarTime}
-                style={styles.calendarTime}
-              />
-            </View>
-            <TouchableOpacity
-              activeOpacity={0.8}
-              onPress={() => datePickerRefend.current?.onOpenModal('end')}
-              style={styles.margin}>
-              <Text style={styles.time}>
-                End Date
-              </Text>
-              <Text style={styles.time}>{`- ${moment(end_date).format(
-                'DD MMM YYYY (hh:mm A)',
-              )}`}</Text>
-            </TouchableOpacity>
-            
-          </View>
-          <View style={[styles.row, styles.center]}>
-            <View style={[styles.circularView, styles.yellow]}>
-              <ImageComponent source={pinWhite} style={styles.pinWhite} />
-            </View>
-            <SizedBox width={normalScale(8)} />
-            <View>
-              <Input
-                placeholder={strings.enterVenue}
-                inputStyle={styles.textStyle}
-                value={address}
-                onChangeText={text => handleText(text, 'address')}
-                height={verticalScale(40)}
-              />
-              <SizedBox height={verticalScale(8)} />
-              <Input
-                placeholder={strings.enterAddress}
-                inputStyle={styles.textStyle}
-                value={full_address}
-                onChangeText={text => handleText(text, 'full_address')}
-                height={verticalScale(40)}
-              />
-            </View>
-          </View>
+        <KeyboardAwareScrollView keyboardShouldPersistTaps="always"
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={styles.scrollView}>
           <TouchableOpacity activeOpacity={0.8} onPress={onUploadImage}>
             <ImageComponent
               isUrl={!!eventImage}
@@ -434,65 +425,218 @@ export const AdminToolsScreen = (props: AdminToolsScreenProps) => {
               <ImageComponent source={addGreen} style={styles.addGreen} />
             </TouchableOpacity>
           </TouchableOpacity>
-          <Text style={styles.event}>{strings.aboutEvent}</Text>
-          <SizedBox height={verticalScale(4)} />
-          <Input
-            placeholder={strings.enterAboutEvent}
-            height={verticalScale(60)}
-            multiline
-            value={about}
-            onChangeText={text => handleText(text, 'about')}
-          />
-          <View style={[styles.row, styles.marginTop]}>
-            <Text style={styles.tickets}>{strings.tickets}:</Text>
-            <TouchableOpacity
-              activeOpacity={0.8}
-              onPress={openCreateTicketModal}>
-              <ImageComponent source={addGreen} style={styles.addGreen} />
-            </TouchableOpacity>
+          <View style={styles.pillContainer}>
+            <Pill
+              label={strings.adminTools}
+              backgroundColor={theme.colors.white}
+              foreGroundColor={theme.colors.black}
+              icon={ticket}
+              disabled
+            />
           </View>
-          <View>
-            {tickets?.map((ele, index) => (
-              <View key={ele?.price.toString()} style={styles.rowOnly}>
-                <Text style={styles.ticket}>{`${ele?.name} - ${
-                  ele?.price
-                } - (ends ${getDate(ele?.end_date)})`}</Text>
-                <TouchableOpacity
-                  onPress={() => openEditTicketModal(index)}
-                  activeOpacity={0.8}>
-                  <ImageComponent source={edit} style={styles.edit} />
-                </TouchableOpacity>
-              </View>
-            ))}
-          </View>
-          <Text style={styles.tickets}>{strings.confirmationEmail}:</Text>
-          <SizedBox height={verticalScale(4)} />
-          <Input
-            placeholder={strings.enterEmail}
-            height={verticalScale(60)}
-            multiline
-            value={email_confirmation_body}
-            onChangeText={text => handleText(text, 'email_confirmation_body')}
-          />
-          <SizedBox height={verticalScale(8)} />
+
+          <SizedBox height={verticalScale(6)} />
           {!isCreateEvent && (
-            <>
-              <Text style={styles.tickets}>{strings.attendees}:</Text>
-              <SizedBox height={verticalScale(5)} />
-              {(data?.results || []).length > 0 ? (
-                (data?.results || [])?.map(item => (
-                  <Text key={item?._id} style={styles.attendee}>
-                    {item?.is_app_user
-                      ? `${item?.user?.first_name} ${item?.user?.last_name}`
-                      : item?.user?.name}
+            <Pill
+              label={strings.checkIns}
+              backgroundColor={theme.colors.lightRed}
+              pillStyle={styles.checkIn}
+              onPressPill={onNavigate}
+            />
+          )}
+          <View style={styles.toggleContainer}>
+          <Text style={styles.villageLblTwo}>Village Friendly </Text>
+          <View style={styles.switchToggle}>
+            <Switch
+              style={{transform: [{scaleX: 0.9}, {scaleY: 0.5}]}}
+              thumbColor={'white'}
+              ios_backgroundColor="#008000"
+              onChange={() => toggleSwitch()}
+              value={isEnabled}
+            />
+          </View>
+          <Text style={styles.villageLblTwo}> Adult Oriented</Text>
+        </View>
+          <View style={styles.innerContainer}>
+            <Input
+              onChangeText={text => handleText(text, 'name')}
+              placeholder={strings.enterTitle}
+              value={name}
+            />
+            <View style={styles.row}>
+              <View style={styles.circularView}>
+                <ImageComponent
+                  source={calendarTime}
+                  style={styles.calendarTime}
+                />
+              </View>
+              <TouchableOpacity
+                activeOpacity={0.8}
+                onPress={() => datePickerRefStart.current?.onOpenModal('start')}
+                style={styles.margin}>
+                <Text style={styles.time}>Start Date</Text>
+                <Text style={styles.time}>{`- ${moment(start_date).format(
+                  'MMM DD YYYY (hh:mm A)',
+                )}`}</Text>
+              </TouchableOpacity>
+            </View>
+            <View style={styles.row}>
+              <View style={styles.circularView}>
+                <ImageComponent
+                  source={calendarTime}
+                  style={styles.calendarTime}
+                />
+              </View>
+              <TouchableOpacity
+                activeOpacity={0.8}
+                onPress={() => datePickerRefend.current?.onOpenModal('end')}
+                style={styles.margin}>
+                <Text style={styles.time}>End Date</Text>
+                <Text style={styles.time}>{`- ${moment(end_date).format(
+                  'MMM DD YYYY (hh:mm A)',
+                )}`}</Text>
+              </TouchableOpacity>
+            </View>
+            <View style={[styles.row, styles.center]}>
+              <View style={[styles.circularView, styles.yellow]}>
+                <ImageComponent source={pinWhite} style={styles.pinWhite} />
+              </View>
+              <SizedBox width={normalScale(8)} />
+              <View>
+                <Input
+                  placeholder={strings.enterVenue}
+                  inputStyle={styles.textStyle}
+                  value={address}
+                  onChangeText={text => handleText(text, 'address')}
+                  height={verticalScale(40)}
+                />
+                <SizedBox height={verticalScale(8)} />
+                {/* <Input
+                placeholder={strings.enterAddress}
+                inputStyle={styles.textStyle}
+                value={full_address}
+                onChangeText={text => handleText(text, 'full_address')}
+                height={verticalScale(40)}
+              /> */}
+
+                <GooglePlacesAutocomplete
+                  styles={{
+                    textInput: {
+                      backgroundColor: '#E8E8E8',
+                      height: 35,
+                      borderRadius: 10,
+                      color: 'black',
+                      fontSize: 14,
+                      borderColor: theme.colors.black,
+                      borderWidth: theme.borderWidth.borderWidth1,
+                    },
+                    listView: {
+                      color: 'black', //To see where exactly the list is
+                      zIndex: 10000000, //To popover the component outwards
+                      // position: 'absolute',
+                      // top: 45
+                    },
+                    predefinedPlacesDescription: {
+                      color: 'black',
+                    },
+                  }}
+                  listViewDisplayed={false}
+                  placeholder="where is this offer located?"
+                  onPress={(data: any, details = null) => {
+                    handleText(data.description, 'full_address');
+                    console.log(data);
+                    console.log(details); // description
+                  }}
+                  query={{
+                    key: 'AIzaSyCobkVCxli93gBohNPhJhuHBoWThs1pZlo', // client
+                  }}
+                  currentLocationLabel="Current location"
+                />
+              </View>
+            </View>
+
+            <Text style={styles.event}>{strings.aboutEvent}</Text>
+            <SizedBox height={verticalScale(4)} />
+            <Input
+              placeholder={strings.enterAboutEvent}
+              height={verticalScale(60)}
+              multiline
+              value={about}
+              onChangeText={text => handleText(text, 'about')}
+            />
+            <View style={[styles.row, styles.marginTop]}>
+              <Text style={styles.tickets}>{strings.tickets}:</Text>
+              <TouchableOpacity
+                activeOpacity={0.8}
+                onPress={openCreateTicketModal}>
+                <ImageComponent source={addGreen} style={styles.addGreen} />
+              </TouchableOpacity>
+            </View>
+            <View>
+              {tickets?.map((ele, index) => (
+                <View key={ele?.price.toString()} style={styles.rowOnly}>
+                  <Text style={styles.ticket}>{`${ele?.name} - ${
+                    ele?.price
+                  } - (ends ${getDate(ele?.end_date)})`}</Text>
+                  <TouchableOpacity
+                    onPress={() => openEditTicketModal(index)}
+                    activeOpacity={0.8}>
+                    <ImageComponent source={edit} style={styles.edit} />
+                  </TouchableOpacity>
+                </View>
+              ))}
+            </View>
+            <Text style={styles.tickets}>{strings.confirmationEmail}:</Text>
+            <SizedBox height={verticalScale(4)} />
+            <Input
+              placeholder={strings.enterEmail}
+              height={verticalScale(60)}
+              multiline
+              value={email_confirmation_body}
+              onChangeText={text => handleText(text, 'email_confirmation_body')}
+            />
+            <SizedBox height={verticalScale(8)} />
+            {!isCreateEvent && (
+              <>
+                <Text style={styles.tickets}>{strings.attendees}:</Text>
+                <SizedBox height={verticalScale(5)} />
+                {(data?.results || []).length > 0 ? (
+                  (data?.results || [])?.map(item => (
+                    <Text key={item?._id} style={styles.attendee}>
+                      {item?.is_app_user
+                        ? `${item?.user?.first_name} ${item?.user?.last_name}`
+                        : item?.user?.name}
+                    </Text>
+                  ))
+                ) : (
+                  <Text style={styles.noAttendee}>{strings.noAttendees}</Text>
+                )}
+                <SizedBox height={20}></SizedBox>
+
+              {/* <TouchableOpacity
+                  activeOpacity={0.8}
+                  onPress={() => onCancleEvent(id)}
+                  style={styles.cancleEventBtn}>
+                  <Text style={styles.cancleEventText}>
+                    {strings.cancleEvent}
                   </Text>
-                ))
-              ) : (
-                <Text style={styles.noAttendee}>{strings.noAttendees}</Text>
-              )}
+                </TouchableOpacity> */}
             </>
           )}
         </View>
+
+        <GetAdmintoolsDropDownScreen
+          eventId={id}
+          viewCount={viewCount}
+          isPayout={isPayout}
+        />
+
+        <TouchableOpacity
+          activeOpacity={0.8}
+          onPress={() => onCancleEvent(id)}
+          style={styles.cancleEventBtn}>
+          <Text style={styles.cancleEventText}>{strings.cancleEvent}</Text>
+        </TouchableOpacity>
       </KeyboardAwareScrollView>
       <View style={styles.bottomButton}>
         <ButtonComponent
@@ -502,26 +646,30 @@ export const AdminToolsScreen = (props: AdminToolsScreenProps) => {
           disabled={checkValidation()}
         />
       </View>
-      <AddTicketModal
-        onSuccessfulTicketCreation={onSuccessfulTicketCreation}
-        eventId={id}
-        eventDetails={eventDetails}
-        ticketData={eventDetails?.tickets?.[selectedTicketIndex]}
-        ref={modalRef}
-        isEdit={isEdit}
-        onCancel={onCancel}
-      />
-      <DateRangePicker
-        selectStartDate={onConfirmStartDateTime}
-        ref={datePickerRefStart}
-      />
 
-      <DateRangePicker
-        selectEndDate={onConfirmEndDateTime}
-        ref={datePickerRefend}
-      />
+        <AddTicketModal
+          onSuccessfulTicketCreation={onSuccessfulTicketCreation}
+          eventId={id}
+          eventDetails={eventDetails}
+          ticketData={eventDetails?.tickets?.[selectedTicketIndex]}
+          ref={modalRef}
+          isEdit={isEdit}
+          onCancel={onCancel}
+        />
 
-      {/* <DatePickerModal
+        {/* <BreakDownModal ref={addItemRef} id={''} revenue={0} expense={0} profilt={0} payout={0} remainingAmt={0} userId={''}></BreakDownModal> */}
+
+        <DateRangePicker
+          selectStartDate={onConfirmStartDateTime}
+          ref={datePickerRefStart}
+        />
+
+        <DateRangePicker
+          selectEndDate={onConfirmEndDateTime}
+          ref={datePickerRefend}
+        />
+
+        {/* <DatePickerModal
           locale="en"
           mode="range"
           visible={open}
@@ -533,6 +681,7 @@ export const AdminToolsScreen = (props: AdminToolsScreenProps) => {
           editIcon="none"
           // closeIcon='none'
         /> */}
-    </View>
+      </View>
+    
   );
 };

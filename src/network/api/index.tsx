@@ -1,7 +1,7 @@
 import axios, {AxiosInstance} from 'axios';
 import ActiveEnv from '@config/env/env.json';
 import {Alert} from 'react-native';
-import {apiConstants} from '@network/constant';
+import {API_URL, STIPE_BASE_URL, apiConstants} from '@network/constant';
 import {store} from '@network/reducers/store';
 import {onSetToken} from '@app-hooks/use-token';
 import Toast from 'react-native-simple-toast';
@@ -64,7 +64,7 @@ const interceptor = (ref: AxiosInstance) => {
             access_token: string;
           }) || {};
         const res = await axios.post(
-          `${ActiveEnv.BASE_URL}${apiConstants.refereshToken}`,
+          `${API_URL}${apiConstants.refereshToken}`,
           {
             refreshToken: user?.refresh_token,
           },
@@ -79,7 +79,10 @@ const interceptor = (ref: AxiosInstance) => {
       }
 
       if (status !== 200) {
-        console.log('Error',error?.response?.data?.message)
+        Toast.show(error?.response?.data?.message, Toast.LONG, {
+          backgroundColor: 'black',
+        });
+        // console.log('Error',error?.response?.data?.message)
       }
 
       return Promise.reject(error?.response);
@@ -99,27 +102,27 @@ class APIService {
   }
 
   async initService() {
-    const userServiceUrl = ActiveEnv.BASE_URL;
+    const userServiceUrl = API_URL;
     this.userService = axios.create({
       ...axiosRequestConfig,
       baseURL: userServiceUrl,
     });
     interceptor(this.userService);
 
-    const homeServiceUrl = ActiveEnv.BASE_URL;
+    const homeServiceUrl = API_URL;
     this.homeService = axios.create({
       ...axiosRequestConfig,
       baseURL: homeServiceUrl,
     });
     interceptor(this.homeService);
 
-    const paymentServiceUrl = ActiveEnv.STIPE_BASE_URL;
+    const paymentServiceUrl = STIPE_BASE_URL;
     this.paymentService = axios.create({
       ...axiosRequestConfig,
       baseURL: paymentServiceUrl,
     });
     interceptor(this.paymentService);
-  }
+  } 
 }
 
 export const API = new APIService();

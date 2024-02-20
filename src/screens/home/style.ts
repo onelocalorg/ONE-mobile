@@ -18,11 +18,8 @@ export const createStyleSheet = (theme: ThemeProps) => {
       color: theme.colors.black,
     },
     HeaderContainerTwo: {
-      borderBottomLeftRadius: theme.borderRadius.radius10,
-      borderBottomRightRadius: theme.borderRadius.radius10,
-      backgroundColor: theme.colors.darkRed,
-      height: 160,
-      // position: 'relative',
+      backgroundColor: theme.colors.headerColor,
+      height: 150,
     },
     row2: {
       position: 'absolute',
@@ -44,7 +41,7 @@ export const createStyleSheet = (theme: ThemeProps) => {
       flexDirection: 'row',
       marginLeft: 8,
       position: 'absolute',
-      bottom: 50,
+      bottom: 30,
       color: theme.colors.white,
       zIndex: 11111222
 
@@ -80,13 +77,24 @@ export const createStyleSheet = (theme: ThemeProps) => {
       fontSize: 60,
       fontWeight: '400',
       color: theme.colors.white,
-      fontFamily: theme.fontType.regular,
+      // fontFamily: theme.fontType.regular,
+      fontFamily: 'NotoSerif-Regular',
       marginLeft: 2,
+      marginBottom: -10,
+    },
+    localText: {
+      textAlign: 'center',
+      fontSize: 14,
+      fontWeight: '400',
+      color: 'white',
+      position:'relative',
+      bottom:3,
+
     },
     profileContainer: {
       position: 'absolute',
       right: 15,
-      bottom: 40
+      bottom: 30
     },
     bellIcon: {
       height: 22,
@@ -156,6 +164,8 @@ export const createStyleSheet = (theme: ThemeProps) => {
       color: '#B10E00'
     },
     filterTags: {
+      zIndex:22323,
+      backgroundColor: 'transparent',
       flexDirection: 'row',
       justifyContent: 'center'
     },
@@ -163,11 +173,46 @@ export const createStyleSheet = (theme: ThemeProps) => {
       height: 60,
       width: 60,
       borderRadius: 100,
-      marginLeft: 10
+      marginRight: 11,
+      marginLeft:2
+    },
+    gratisAndCommentContainer:{
+      flexDirection:'row',
+      justifyContent:'space-evenly',
+      marginVertical:10
+    },
+    gratisContainer:{
+      flexDirection:'row',
+      borderWidth: theme.borderWidth.borderWidth1,
+      borderColor: theme.colors.black,
+      borderRadius:theme.borderRadius.radius20,
+      paddingHorizontal:20,
+      paddingVertical:6,
+      alignSelf:'center',
+    },
+    gratisClass:{
+      alignSelf:'center',
+      marginRight:5
+    },
+    commentsContainer:{
+      flexDirection:'row',
+      borderWidth: theme.borderWidth.borderWidth1,
+      borderColor: theme.colors.black,
+      borderRadius:theme.borderRadius.radius20,
+      paddingHorizontal:20,
+      paddingVertical:6,
+      alignSelf:'center',
+    },
+    commentImageThree:{
+      height:20,
+      width:20,
+    },
+    commentClass:{
+      marginRight:5
     },
     avatarContainer: {
-      marginLeft: 20,
-      marginRight: 20,
+      marginLeft: 11,
+      marginRight: 11,
       marginTop:20
     },
     avatar: {
@@ -185,6 +230,31 @@ export const createStyleSheet = (theme: ThemeProps) => {
       justifyContent:'center',
       fontFamily: theme.fontType.regular,
 
+    },
+    containerFocus: {
+      borderRadius: theme.borderRadius.radius20,
+      paddingVertical: verticalScale(6),
+      paddingHorizontal: normalScale(6),
+      paddingLeft: 11,
+      flexDirection: 'row',
+      // justifyContent: 'space-between',
+      alignItems: 'center',
+      marginRight: normalScale(2),
+      marginLeft: normalScale(2),
+      shadowColor: theme.colors.black,
+      shadowOpacity: theme.opacity.opacity15,
+      shadowRadius: theme.borderRadius.radius8,
+      backgroundColor: theme.colors.white,
+      borderWidth: theme.borderWidth.borderWidth2,
+      borderColor: theme.colors.black,
+      width: 110,
+      shadowOffset: {
+        width: 0,
+        height: verticalScale(2),
+      },
+      elevation: 5,
+      // position:'absolute',
+      top: -20
     },
     postContainer: {
       marginVertical: 10,
@@ -232,7 +302,7 @@ export const createStyleSheet = (theme: ThemeProps) => {
       margin: 10,
       borderRadius: 12,
       shadowColor: 'lightgray',
-      shadowOffset: { width: 1, height: 3 },
+      shadowOffset: { width: 1, height: 2 },
       shadowOpacity: 0.9,
       shadowRadius: 2,
     },
@@ -353,38 +423,40 @@ export const createStyleSheet = (theme: ThemeProps) => {
     },
     feedContainer: {
       marginHorizontal: 10,
-      marginVertical: 10,
+      marginVertical: 6,
       borderColor: theme.colors.green,
       borderWidth: 3,
       borderRadius: 8,
       paddingBottom: 14,
-      overflow:'hidden'
+      paddingTop: 8,
+      backgroundColor:theme.colors.white,
+      shadowColor: theme.colors.black,
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.9,
+      shadowRadius: 8,  
+      elevation: 5
     },
     postfilterImage: {
       height: 22,
       width: 22,
     },
     postProfile: {
-      height: 35,
-      width: 35,
+      height: 40,
+      width: 40,
       borderRadius: 100,
       marginRight: 10,
       alignItems: 'center',
-      marginTop: 1
+      marginTop: 7
     },
     userDetailcont: {
       marginHorizontal: 10,
       flexDirection: 'row',
     },
-    userName: {
-      color: theme.colors.black,
-      fontSize: 16,
-      fontFamily: theme.fontType.regular,
-    },
     postTime: {
-      color: theme.colors.purple,
+      color: theme.colors.gray,
       fontSize: 14,
       fontFamily: theme.fontType.regular,
+      paddingTop:4
     },
     postDes: {
       textAlign: 'left',
@@ -396,8 +468,8 @@ export const createStyleSheet = (theme: ThemeProps) => {
       lineHeight:20
     },
     userPost: {
-      height: 500,
-      width: 'auto',
+      height: 300,
+      // width: 'auto',
       marginHorizontal: 10,
       marginBottom: 20,
       borderRadius: 10
@@ -414,17 +486,63 @@ export const createStyleSheet = (theme: ThemeProps) => {
       color: theme.colors.black,
       fontSize: 12,
       fontFamily: theme.fontType.regular,
-      marginRight: 5
+      // marginRight: 5,
+      width:width - 100,
+    },
+    postDetailTitle:{
+      color: theme.colors.black,
+      fontSize: 12,
+      fontFamily: theme.fontType.regular,
+      marginRight: 5,
     },
     postDetailCont: {
       flexDirection: 'row',
-      marginHorizontal: 20,
-      marginBottom: 5
+      paddingHorizontal: 20,
+      marginBottom: 5,
+      marginRight: 8
     },
     detailImage: {
-      height: 14,
-      width: 14,
-      marginRight: 8
+      height: 16,
+      width: 16,
+      marginRight: 4
+      
+    },
+    userListDisplay:{
+
+      height:25,
+      width:25,
+      borderRadius:100,
+      marginHorizontal:2
+    },
+    userListDisplayCont:{
+      flexDirection: 'row',
+      position: 'absolute',
+      right: 110, 
+      top: 77
+    },
+    userNameGraties: {
+      color: theme.colors.black,
+      fontSize: 16,
+      fontFamily: theme.fontType.regular,
+      width:width-120,
+    },
+    userName: {
+      color: theme.colors.black,
+      fontSize: 16,
+      paddingTop:7,
+      fontFamily: theme.fontType.regular,
+      width:width-120
+    },
+    userNameTwo:{
+      color: theme.colors.black,
+      fontSize: 16,
+      paddingTop:7,
+      fontFamily: theme.fontType.regular,
+    },
+    sentPointClass:{
+      color: theme.colors.gray,
+      fontSize: 16,
+      fontFamily: theme.fontType.regular,
     },
     likeCount: {
       color: theme.colors.black,
@@ -458,7 +576,7 @@ export const createStyleSheet = (theme: ThemeProps) => {
     },
     commentImgTwo: {
       height: 23,
-      width: 23
+      width: 23,
     },
     commentContShow: {
       fontSize: 12,
@@ -470,15 +588,25 @@ export const createStyleSheet = (theme: ThemeProps) => {
       marginLeft: 16,
       marginRight: 30,
       flexDirection: 'row',
-      justifyContent: 'flex-start',
+      // justifyContent: 'flex-start',
       marginVertical:6,
-      overflow:'hidden'
+      // overflow:'hidden'
+    },
+    bottomButton: {
+      position: 'absolute',
+      bottom: 0,
+      left: 0,
+      right: 0,
+      paddingHorizontal: normalScale(16),
+      backgroundColor: theme.colors.white,
+      paddingBottom: verticalScale(20),
+      paddingTop: verticalScale(5),
     },
     commentDisplayCont: {
       backgroundColor: '#E6E6E6',
       borderWidth: 2,
       borderColor: '#C2DBC6',
-      height: 'auto',
+      // height: 'auto',
       borderRadius: 20,
       width: 230,
       paddingHorizontal: 10,
@@ -494,33 +622,45 @@ export const createStyleSheet = (theme: ThemeProps) => {
     replyImg: {
       height: 24,
       width: 24,
+      marginLeft: 20,
     },
     replyContainer: {
       flexDirection: 'row',
-      marginLeft: 80,
+      marginLeft: 70,
       marginTop: 2,
     },
     replyLbl: {
+      color:theme.colors.black,
       fontSize: 12,
-      marginLeft: 10,
       marginTop: 4
+    },
+    vectorImg:{
+      height:10,
+      width:10,
+      marginTop:6,
+      marginRight:1
+    },
+    vectorImgTwo:{
+      height:10,
+      width:10,
+      marginTop:6,marginRight:5
     },
     minuteCont: {
       fontSize: 12,
-      marginLeft: 16,
+      marginLeft: 8,
       marginTop: 4
     },
     commentImgProfileTwo: {
       flexDirection: 'row',
       marginLeft: 20,
       justifyContent:'center',
-      marginTop: 2,
+      marginTop: 5,
       overflow:'hidden'
     },
     replyContainerTwo: {
       flexDirection: 'row',
       justifyContent:'center',
-      marginLeft: 30,
+      marginLeft: 65,
       // marginLeft: 145,
       marginVertical:10,
       // marginTop: 2,
@@ -761,8 +901,75 @@ export const createStyleSheet = (theme: ThemeProps) => {
       right: 0,
       backgroundColor: theme.colors.modalOverlay,
     },
+    containerPost:{
+      position: 'absolute',
+      top: 0,
+      bottom: 0,
+      left: 0,
+      right: 0,
+      backgroundColor: theme.colors.modalOverlay,
+    },
     gesture: {
       flex: 1,
     },
+    keyboardViewTwo: {
+      position: 'absolute',
+      bottom: 0,
+      left: 0,
+      right: 0,
+      // top:0
+    },
+    imageActionSheet: {
+      position: 'absolute',
+      // top: 310,
+      bottom: 0,
+      left: 0,
+      right: 0,
+      height: 'auto',
+      // backgroundColor: theme.colors.modalOverlay,
+      borderTopRightRadius: theme.borderRadius.radius16,
+      borderTopLeftRadius: theme.borderRadius.radius16,
+      paddingVertical: verticalScale(20),
+      maxHeight: verticalScale(600),
+      borderColor: theme.colors.lightPurple,
+      backgroundColor: 'rgba(255, 255, 255, 0.88)',
+      borderTopWidth: 3,
+      borderLeftWidth: 3,
+      borderRightWidth: 3,
+      flex: 1,
+      marginHorizontal: 10
+    },
+    postActionSheet:{
+      position: 'absolute',
+      // top: 310,
+      bottom: 0,
+      left: 0,
+      right: 0,
+      height: 'auto',
+      // backgroundColor: theme.colors.modalOverlay,
+      borderTopRightRadius: theme.borderRadius.radius16,
+      borderTopLeftRadius: theme.borderRadius.radius16,
+      paddingVertical: verticalScale(20),
+      maxHeight: verticalScale(600),
+      borderColor: theme.colors.lightPurple,
+      backgroundColor: 'rgba(255, 255, 255, 0.88)',
+      borderTopWidth: 3,
+      borderLeftWidth: 3,
+      borderRightWidth: 3,
+      flex: 1,
+      marginHorizontal: 10
+    },
+    postText:{
+      textAlign: 'center',
+      fontSize: 18,
+      fontFamily: theme.fontType.medium,
+      backgroundColor: '#A493B7',
+      borderRadius:16,
+      padding: 10,
+      margin: 10,
+    },
+    MainPostContainer:{
+      backgroundColor:theme.colors.darkenBlack,
+    }
   });
 };

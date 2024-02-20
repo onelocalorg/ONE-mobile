@@ -10,39 +10,63 @@ export const createStyleSheet = (theme: ThemeProps) => {
       alignSelf: 'center',
     },
     container: {
+      backgroundColor:theme.colors.appColor,
       paddingHorizontal: normalScale(50),
+      flex:1
     },
     tncStyle: {
       flexDirection: 'row',
       alignItems: 'center',
+      marginLeft:16
     },
     radio: {
-      height: normalScale(18),
-      width: normalScale(18),
+      height: normalScale(16),
+      width: normalScale(16),
       marginRight: normalScale(15),
     },
     agreeText: {
       fontSize: theme.fontSize.font14,
       fontFamily: theme.fontType.regular,
-      color: theme.colors.black,
+      color: theme.colors.white,
     },
     bold: {
-      fontFamily: theme.fontType.bold,
+      fontFamily: theme.fontType.bold, 
+      color: theme.colors.lightBlueTwo,
+      fontSize: theme.fontSize.font16,
     },
+    temsCont:{
+      // borderBottomWidth:theme.borderWidth.borderWidth1,
+      // borderBottomColor:theme.colors.blue
+    }, 
     forgot: {
       fontSize: theme.fontSize.font14,
       fontFamily: theme.fontType.regular,
-      color: theme.colors.black,
-      alignSelf: 'center',
+      color: theme.colors.white,
+      marginHorizontal:5
+      // alignSelf: 'center',
     },
     googleButton: {
-      borderRadius: theme.borderRadius.radius14,
-      borderWidth: theme.borderWidth.borderWidth1,
+      borderRadius: theme.borderRadius.radius18,
+      borderWidth: theme.borderWidth.borderWidth2,
       borderColor: theme.colors.black,
-      paddingHorizontal: normalScale(14),
-      paddingVertical: verticalScale(15),
-      alignItems: 'center',
+      backgroundColor:theme.colors.gray,
+      paddingHorizontal: normalScale(10),
+      paddingVertical: verticalScale(7),
+      alignSelf: 'center',
       flexDirection: 'row',
+      width:'60%'
+    },
+
+    appleButton:{
+      borderRadius: theme.borderRadius.radius18,
+      borderWidth: theme.borderWidth.borderWidth2,
+      borderColor: theme.colors.black,
+      backgroundColor:theme.colors.gray,
+      paddingHorizontal: normalScale(10),
+      paddingVertical: verticalScale(7),
+      alignSelf: 'center',
+      flexDirection: 'row',
+      width:'60%'
     },
     google: {
       height: normalScale(24),
@@ -52,38 +76,62 @@ export const createStyleSheet = (theme: ThemeProps) => {
       fontSize: theme.fontSize.font14,
       fontFamily: theme.fontType.regular,
       color: theme.colors.black,
-      marginLeft: normalScale(18),
+      marginLeft: normalScale(10),
+      alignSelf:'center'
     },
     signUpBtn:{
-      backgroundColor: theme.colors.purple,
+      backgroundColor: theme.colors.lightBlueTwo,
       borderRadius: theme.borderRadius.radius14,
-      paddingVertical: verticalScale(14),
+      paddingVertical: verticalScale(8),
       shadowColor: theme.colors.black,
       shadowOpacity: theme.opacity.opacity15,
       shadowRadius: theme.borderRadius.radius8,
+      borderColor:theme.colors.white,
+      borderWidth:theme.borderWidth.borderWidth2,
+      color:theme.colors.black,
       shadowOffset: {
+       
         width: 0,
         height: verticalScale(0),
       },
       elevation: 5,
-      justifyContent: 'space-between',
-      flexDirection: 'row',
-      alignItems: 'center',
-      paddingHorizontal: normalScale(16),
-      marginTop:15
+      paddingHorizontal: normalScale(10),
+      marginTop:12
+    },
+
+    loginBtn:{
+      backgroundColor: '#BF820A',
+      borderRadius: theme.borderRadius.radius14,
+      paddingVertical: verticalScale(8),
+      shadowColor: theme.colors.black,
+      shadowOpacity: theme.opacity.opacity15,
+      shadowRadius: theme.borderRadius.radius8,
+      borderColor:theme.colors.white,
+      borderWidth:theme.borderWidth.borderWidth2,
+      color:theme.colors.black,
+      shadowOffset: {
+       
+        width: 0,
+        height: verticalScale(0),
+      },
+      elevation: 5,
+      paddingHorizontal: normalScale(10),
+      marginTop:12
+    },
+
+    signUpText:{
+      fontSize:14,
+      textAlign:'center',
+      color:theme.colors.black
     },
 
     HeaderContainerTwo: {
-      borderBottomLeftRadius: theme.borderRadius.radius10,
-      borderBottomRightRadius: theme.borderRadius.radius10,
-      backgroundColor: theme.colors.darkRed,
-      height: 160,
-      // position: 'relative',
+     flexDirection:'row'
     },
     row2: {
-      position: 'absolute',
-      top: 45,
-      left: 10,
+      // position: 'absolute',
+      // top: 45,
+      // left: 10,
       height: normalScale(30),
       width: normalScale(30),
       zIndex:11111222222
@@ -121,21 +169,53 @@ export const createStyleSheet = (theme: ThemeProps) => {
     oneContainer: {
       flexDirection: 'row',
       justifyContent: 'center',
-      position: 'relative',
-      top: 50,
+    },
+
+    localText:{
+      textAlign: 'center',
+      fontSize: 16,
+      fontWeight: '400',
+      color: theme.colors.white,
+     
     },
     oneContainerImage: {
-      height: 60,
-      width: 60,
-      marginTop: 10,
+      height: normalScale(100),
+      width: normalScale(100),
       marginLeft: 5
     },
     oneContainerText: {
       textAlign: 'center',
-      fontSize: 60,
+      fontSize: 75,
       fontWeight: '400',
       color: theme.colors.white,
       marginLeft: 2,
+      marginBottom:-10,
+     
+    },
+    texClass: {
+      fontSize: 15,
+      fontFamily: theme.fontType.medium,
+      color: theme.colors.white,
+      fontWeight: '600',
+      marginBottom:3
+    },
+    orText:{
+      fontSize: 16,
+      fontFamily: theme.fontType.medium,
+      color: theme.colors.white,
+      fontWeight: '600',
+      textAlign:'center'
+    },
+    textInput: {
+      backgroundColor: 'white',
+      borderRadius: 8,
+      fontSize: 14,
+      borderColor: '#8B8888',
+      borderWidth: 1,
+      padding: normalScale(10),
+      fontFamily: theme.fontType.medium,
+      height: verticalScale(38),
+      color: 'black',
     },
   });
 };

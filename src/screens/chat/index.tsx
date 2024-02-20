@@ -101,7 +101,7 @@ export const ChatScreen = (props: ChatScreenProps) => {
 
 return(
   <View style={styles.container}>
-    <Text style={styles.text}>{strings.comingSoon}</Text>
+    <Text style={styles.text}></Text>
   </View>
 )
 };

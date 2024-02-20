@@ -17,12 +17,19 @@ export const createStyleSheet = (theme: ThemeProps) => {
       color: theme.colors.black,
     },
     HeaderContainerTwo: {
-      borderBottomLeftRadius: theme.borderRadius.radius10,
-      borderBottomRightRadius: theme.borderRadius.radius10,
-      backgroundColor: theme.colors.darkRed,
-      height: 160,
+      backgroundColor: theme.colors.headerColor,
+      height: 150,
       // position: 'relative',
     },
+    localText: {
+      textAlign: 'center',
+      fontSize: 14,
+      fontWeight: '400',
+      color: 'white',
+      position:'relative',
+      bottom:13
+    },
+
     row2: {
       position: 'absolute',
       top: 45,
@@ -85,7 +92,7 @@ export const createStyleSheet = (theme: ThemeProps) => {
     profileContainer: {
       position: 'absolute',
       right: 15,
-      bottom: 40
+      bottom: 30
     },
     bellIcon: {
       height: 22,
@@ -154,8 +161,9 @@ export const createStyleSheet = (theme: ThemeProps) => {
       marginLeft:10
     },
     avatarContainer:{
-      marginLeft:20,
-      marginRight:20
+      position:'absolute',
+      top:600,
+      flex:1
     },
     avatar:{
       height:40,
@@ -210,14 +218,14 @@ export const createStyleSheet = (theme: ThemeProps) => {
       borderWidth: theme.borderWidth.borderWidth1,
       borderColor: theme.colors.black,
       paddingVertical: verticalScale(6),
-      paddingHorizontal: normalScale(6),
+      paddingHorizontal:normalScale(6),
       backgroundColor: theme.colors.white,
       flexDirection: 'row',
       marginTop: verticalScale(13),
       marginHorizontal:10,
-      position:'absolute',
-      bottom:40
+      width:width-25
     },
+    
     dummy: {
       width: normalScale(80),
       height: verticalScale(92),

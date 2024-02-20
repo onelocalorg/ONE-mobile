@@ -1,17 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.awesomeproject"
+    package="com.oneboulder"
     android:versionCode="1"
     android:versionName="1.0" >
 
     <uses-sdk
         android:minSdkVersion="21"
-        android:targetSdkVersion="34" />
+        android:targetSdkVersion="33" />
 
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <uses-feature
         android:name="android.hardware.camera"
@@ -19,8 +23,6 @@
     <uses-feature
         android:name="android.hardware.camera.autofocus"
         android:required="false" />
-
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
     <queries>
         <intent>
@@ -36,13 +38,7 @@
         <package android:name="com.google.android.apps.maps" />
     </queries>
 
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <!--
-    This manifest file is used only by Gradle to configure debug-only capabilities
-    for React Native Apps.
-    -->
-    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" /> <!-- Required by older versions of Google Play services to create IID tokens -->
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" /> <!-- Required by older versions of Google Play services to create IID tokens -->
     <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
 
     <uses-feature
@@ -54,14 +50,14 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
     <permission
-        android:name="com.awesomeproject.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
+        android:name="com.oneboulder.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
         android:protectionLevel="signature" />
 
-    <uses-permission android:name="com.awesomeproject.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION" />
+    <uses-permission android:name="com.oneboulder.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION" />
     <uses-permission android:name="com.google.android.finsky.permission.BIND_GET_INSTALL_REFERRER_SERVICE" />
 
     <application
-        android:name="com.awesomeproject.MainApplication"
+        android:name="com.oneboulder.MainApplication"
         android:allowBackup="false"
         android:appComponentFactory="androidx.core.app.CoreComponentFactory"
         android:debuggable="true"
@@ -72,7 +68,10 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true" >
         <activity
-            android:name="com.awesomeproject.MainActivity"
+            android:name="com.facebook.react.devsupport.DevSettingsActivity"
+            android:exported="false" />
+        <activity
+            android:name="com.oneboulder.MainActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|screenSize|smallestScreenSize|uiMode"
             android:exported="true"
             android:label="@string/app_name"
@@ -87,7 +86,7 @@
 
         <provider
             android:name="com.reactnative.ivpusic.imagepicker.IvpusicImagePickerFileProvider"
-            android:authorities="com.awesomeproject.provider"
+            android:authorities="com.oneboulder.provider"
             android:exported="false"
             android:grantUriPermissions="true" >
             <meta-data
@@ -101,7 +100,7 @@
 
         <provider
             android:name="com.imagepicker.ImagePickerProvider"
-            android:authorities="com.awesomeproject.imagepickerprovider"
+            android:authorities="com.oneboulder.imagepickerprovider"
             android:exported="false"
             android:grantUriPermissions="true" >
             <meta-data
@@ -110,7 +109,7 @@
         </provider>
         <provider
             android:name="com.reactnativecommunity.webview.RNCWebViewFileProvider"
-            android:authorities="com.awesomeproject.fileprovider"
+            android:authorities="com.oneboulder.fileprovider"
             android:exported="false"
             android:grantUriPermissions="true" >
             <meta-data
@@ -118,9 +117,6 @@
                 android:resource="@xml/file_provider_paths" />
         </provider>
 
-        <activity
-            android:name="com.facebook.react.devsupport.DevSettingsActivity"
-            android:exported="false" />
         <activity
             android:name="com.stripe.android.paymentsheet.PaymentSheetActivity"
             android:exported="false"
@@ -164,7 +160,7 @@
 
                 <data
                     android:host="complete"
-                    android:path="/com.awesomeproject"
+                    android:path="/com.oneboulder"
                     android:scheme="link-popup" />
             </intent-filter>
         </activity>
@@ -180,35 +176,35 @@
                 <!-- Returning from app2app: return_url is triggered to reopen web AuthFlow and poll accounts. -->
                 <data
                     android:host="link-accounts"
-                    android:pathPrefix="/com.awesomeproject/authentication_return"
+                    android:pathPrefix="/com.oneboulder/authentication_return"
                     android:scheme="stripe-auth" />
 
                 <!-- Returning from app2app: return_url is triggered to reopen native AuthFlow and poll accounts. -->
                 <data
                     android:host="link-native-accounts"
-                    android:pathPrefix="/com.awesomeproject/authentication_return"
+                    android:pathPrefix="/com.oneboulder/authentication_return"
                     android:scheme="stripe-auth" />
 
                 <!-- End of web AuthFlow success and cancel URIs that begin with "stripe-auth://link-accounts/{app-id}/...” -->
                 <data
                     android:host="link-accounts"
-                    android:path="/com.awesomeproject/success"
+                    android:path="/com.oneboulder/success"
                     android:scheme="stripe-auth" />
                 <data
                     android:host="link-accounts"
-                    android:path="/com.awesomeproject/cancel"
+                    android:path="/com.oneboulder/cancel"
                     android:scheme="stripe-auth" />
 
                 <!-- Opening app2app: Web flow triggers stripe-auth://native-redirect/{app-id}/http://web-that-redirects-to-native -->
                 <data
                     android:host="native-redirect"
-                    android:pathPrefix="/com.awesomeproject"
+                    android:pathPrefix="/com.oneboulder"
                     android:scheme="stripe-auth" />
 
                 <!-- Accepts success/cancel/fail URIs that begin with "stripe://auth-redirect” -->
                 <data
                     android:host="auth-redirect"
-                    android:pathPrefix="/com.awesomeproject"
+                    android:pathPrefix="/com.oneboulder"
                     android:scheme="stripe" />
             </intent-filter>
         </activity>
@@ -224,7 +220,7 @@
 
         <provider
             android:name="com.stripe.android.financialconnections.appinitializer.FinancialConnectionsInitializer"
-            android:authorities="com.awesomeproject.financialconnections-init"
+            android:authorities="com.oneboulder.financialconnections-init"
             android:exported="false"
             android:multiprocess="true" />
 
@@ -276,7 +272,7 @@
                 <!-- Must match `DefaultReturnUrl#value`. -->
                 <data
                     android:host="payment_return_url"
-                    android:path="/com.awesomeproject"
+                    android:path="/com.oneboulder"
                     android:scheme="stripesdk" />
             </intent-filter>
         </activity>
@@ -304,6 +300,11 @@
             android:name="com.stripe.android.stripe3ds2.views.ChallengeActivity"
             android:exported="false"
             android:theme="@style/Stripe3DS2Theme" />
+
+        <meta-data
+            android:name="com.bumptech.glide.integration.okhttp3.OkHttpGlideModule"
+            android:value="GlideModule" />
+
         <activity
             android:name="com.google.android.gms.auth.api.signin.internal.SignInHubActivity"
             android:excludeFromRecents="true"
@@ -318,11 +319,6 @@
             android:exported="true"
             android:permission="com.google.android.gms.auth.api.signin.permission.REVOCATION_NOTIFICATION"
             android:visibleToInstantApps="true" />
-
-        <meta-data
-            android:name="com.bumptech.glide.integration.okhttp3.OkHttpGlideModule"
-            android:value="GlideModule" />
-
         <service
             android:name="com.google.mlkit.common.internal.MlKitComponentDiscoveryService"
             android:directBootAware="true"
@@ -353,7 +349,7 @@
 
         <provider
             android:name="com.google.mlkit.common.internal.MlKitInitProvider"
-            android:authorities="com.awesomeproject.mlkitinitprovider"
+            android:authorities="com.oneboulder.mlkitinitprovider"
             android:exported="false"
             android:initOrder="99" />
 
@@ -364,7 +360,7 @@
 
         <provider
             android:name="androidx.startup.InitializationProvider"
-            android:authorities="com.awesomeproject.androidx-startup"
+            android:authorities="com.oneboulder.androidx-startup"
             android:exported="false" >
             <meta-data
                 android:name="androidx.work.WorkManagerInitializer"
@@ -471,6 +467,12 @@
                 <action android:name="androidx.work.diagnostics.REQUEST_DIAGNOSTICS" />
             </intent-filter>
         </receiver>
+
+        <service
+            android:name="androidx.room.MultiInstanceInvalidationService"
+            android:directBootAware="true"
+            android:exported="false" />
+
         <receiver
             android:name="androidx.profileinstaller.ProfileInstallReceiver"
             android:directBootAware="false"
@@ -491,10 +493,6 @@
             </intent-filter>
         </receiver>
 
-        <service
-            android:name="androidx.room.MultiInstanceInvalidationService"
-            android:directBootAware="true"
-            android:exported="false" />
         <service
             android:name="com.google.android.datatransport.runtime.backends.TransportBackendDiscovery"
             android:exported="false" >

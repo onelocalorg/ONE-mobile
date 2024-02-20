@@ -1,4 +1,4 @@
-com.awesomeproject
+com.oneboulder
 anim abc_fade_in
 anim abc_fade_out
 anim abc_grow_fade_in_from_bottom
@@ -3484,6 +3484,7 @@ drawable rn_edit_text_material
 drawable src_assets_images_activeradio
 drawable src_assets_images_addcard
 drawable src_assets_images_addgreen
+drawable src_assets_images_apple
 drawable src_assets_images_arrowdown
 drawable src_assets_images_arrowleft
 drawable src_assets_images_bell
@@ -3513,6 +3514,7 @@ drawable src_assets_images_google
 drawable src_assets_images_gratis
 drawable src_assets_images_gratitude
 drawable src_assets_images_gratitudeblack
+drawable src_assets_images_greenimage
 drawable src_assets_images_greenoffer
 drawable src_assets_images_hamburger
 drawable src_assets_images_headerbg
@@ -6633,6 +6635,7 @@ style amu_Bubble_TextAppearance_Dark
 style amu_Bubble_TextAppearance_Light
 style amu_ClusterIcon_TextAppearance
 style redboxButton
+style sign_in_with_apple_button_DialogTheme
 style ucrop_ImageViewWidgetIcon
 style ucrop_TextViewCropAspectRatio
 style ucrop_TextViewWidget
