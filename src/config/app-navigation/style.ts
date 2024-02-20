@@ -9,7 +9,7 @@ export const createStyleSheet = (theme: ThemeProps) =>
       width: normalScale(50),
       marginTop: -verticalScale(25),
     },
-    container: {
+    container: { 
       paddingBottom : 20,
       backgroundColor: theme.colors.footerColor,
       height: verticalScale(65),
