@@ -217,7 +217,7 @@ export const onUpdateEvent = async (props: UpdateEventProps) => {
   // if (longitude) {
     attachment.append('event_lng', longitude);
 
-    attachment.append('type', type);
+    attachment.append('event_type', type);
   // }
 
   console.log(attachment,'-----------------update event request-------------')
@@ -288,7 +288,7 @@ console.log(bodyParams)
   attachment.append('start_date', new Date(start_date).toISOString());
   attachment.append('event_lat', latitude);
   attachment.append('event_lng', longitude);
-  attachment.append('event_lng', type);
+  attachment.append('event_type', type);
   console.log(attachment,'--------------------------create event request-------------------------')
   try {
     const endPoint = `${apiConstants.createEvent}`;

@@ -1,5 +1,5 @@
-import {useAppTheme} from '@app-hooks/use-app-theme';
-import React, {useCallback, useEffect, useRef, useState} from 'react';
+import { useAppTheme } from "@app-hooks/use-app-theme";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
   Alert,
   Dimensions,
@@ -16,10 +16,10 @@ import {
   LogBox,
   KeyboardAvoidingView,
   Platform,
-} from 'react-native';
-import {createStyleSheet} from './style';
-import {useStringsAndLabels} from '@app-hooks/use-strings-and-labels';
-import {Pill} from '@components/pill';
+} from "react-native";
+import { createStyleSheet } from "./style";
+import { useStringsAndLabels } from "@app-hooks/use-strings-and-labels";
+import { Pill } from "@components/pill";
 import {
   eventWhite,
   gratitude,
@@ -39,36 +39,36 @@ import {
   downImg,
   closeCard,
   addGreen,
-} from '@assets/images';
-import {ModalRefProps} from '@components/modal-component';
-import {ImageComponent} from '@components/image-component';
-import {Input} from '@components/input';
-import {FlatListComponent} from '@components/flatlist-component';
+} from "@assets/images";
+import { ModalRefProps } from "@components/modal-component";
+import { ImageComponent } from "@components/image-component";
+import { Input } from "@components/input";
+import { FlatListComponent } from "@components/flatlist-component";
 import {
   NavigationContainerRef,
   ParamListBase,
   useFocusEffect,
-} from '@react-navigation/native';
-import {FlatList} from 'react-native-gesture-handler';
-import {usePackagePlans} from '@network/hooks/home-service-hooks/use-package-plans';
-import {Subscription} from '@components/subcription';
-import GestureRecognizer from 'react-native-swipe-gestures';
-import {useToken} from '@app-hooks/use-token';
-import {normalScale, verticalScale} from '@theme/device/normalize';
-import {useSelector} from 'react-redux';
-import {StoreType} from '@network/reducers/store';
-import {UserProfileState} from '@network/reducers/user-profile-reducer';
-import {navigations} from '@config/app-navigation/constant';
-import {stripeSuccessUrl} from '@assets/constants';
-import {Loader} from '@components/loader';
-import {ButtonComponent} from '@components/button-component';
-import Toast from 'react-native-simple-toast';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import {API_URL, persistKeys} from '@network/constant';
-import {height, width} from '@theme/device/device';
-import {useEditProfile} from '@network/hooks/user-service-hooks/use-edit-profile';
-import {ActivityIndicator} from 'react-native';
-import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
+} from "@react-navigation/native";
+import { FlatList } from "react-native-gesture-handler";
+import { usePackagePlans } from "@network/hooks/home-service-hooks/use-package-plans";
+import { Subscription } from "@components/subcription";
+import GestureRecognizer from "react-native-swipe-gestures";
+import { useToken } from "@app-hooks/use-token";
+import { normalScale, verticalScale } from "@theme/device/normalize";
+import { useSelector } from "react-redux";
+import { StoreType } from "@network/reducers/store";
+import { UserProfileState } from "@network/reducers/user-profile-reducer";
+import { navigations } from "@config/app-navigation/constant";
+import { stripeSuccessUrl } from "@assets/constants";
+import { Loader } from "@components/loader";
+import { ButtonComponent } from "@components/button-component";
+import Toast from "react-native-simple-toast";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { API_URL, persistKeys } from "@network/constant";
+import { height, width } from "@theme/device/device";
+import { useEditProfile } from "@network/hooks/user-service-hooks/use-edit-profile";
+import { ActivityIndicator } from "react-native";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
 interface AboutDataProps {
   ref: React.Ref<unknown> | undefined;
@@ -76,7 +76,7 @@ interface AboutDataProps {
   skills: string[];
   profileAnswers: any[];
   idUser: string;
-  onEditProfile?: (data: {about?: string; skills?: string[]}) => void;
+  onEditProfile?: (data: { about?: string; skills?: string[] }) => void;
   navigation: NavigationContainerRef<ParamListBase>;
   route?: {
     params: {
@@ -86,8 +86,8 @@ interface AboutDataProps {
 }
 
 export const About = (props: AboutDataProps) => {
-  const {theme} = useAppTheme();
-  const {strings} = useStringsAndLabels();
+  const { theme } = useAppTheme();
+  const { strings } = useStringsAndLabels();
   const styles = createStyleSheet(theme);
   const {
     about,
@@ -100,7 +100,7 @@ export const About = (props: AboutDataProps) => {
   } = props || {};
   const [updatedAbout, setAbout] = useState(about);
   const [allSkills, setSkills] = useState(skills);
-  const [skillValue, setSkillValue]: any = useState('');
+  const [skillValue, setSkillValue]: any = useState("");
   // var { data } = usePackagePlans();
   const [packageItem, PackageListData]: any = useState();
   const [modalVisible, setModalVisible] = useState(false);
@@ -109,8 +109,8 @@ export const About = (props: AboutDataProps) => {
 
   const [isBilledMonthly, setIsBilledMonthly] = useState(true);
   const [isLoading, LodingData] = useState(false);
-  const {token} = useToken();
-  const {id} = route?.params ?? {};
+  const { token } = useToken();
+  const { id } = route?.params ?? {};
   const [dataItem, memberShipData] = useState();
   const [monthlyPlan, monthlyPlanData]: any = useState<any[]>([]);
   const [yearlyPlan, yearlyPlanData]: any = useState<any[]>([]);
@@ -124,24 +124,24 @@ export const About = (props: AboutDataProps) => {
   const handleBillingSubscription = (value: boolean) => {
     setIsBilledMonthly(value);
   };
-  const [tokens, setToken] = useState('');
-  const [cardnumber, cardNumberData] = useState('');
-  const [cardExpmonth, cardExpMonth] = useState('');
-  const [cardExpyear, cardExpYears] = useState('');
-  const [cardCvv, cardCVVData] = useState('');
-  const [date, setDate] = useState('');
+  const [tokens, setToken] = useState("");
+  const [cardnumber, cardNumberData] = useState("");
+  const [cardExpmonth, cardExpMonth] = useState("");
+  const [cardExpyear, cardExpYears] = useState("");
+  const [cardCvv, cardCVVData] = useState("");
+  const [date, setDate] = useState("");
   const [addcard, addCardModal] = useState(false);
   const [openQues, quesAnsModal] = useState(false);
   const [planId, cancleSubscription] = useState();
   // var [usersId, userIdData] = useState(idUser);
-  console.log('==============usersId==========', idUser);
+  console.log("==============usersId==========", idUser);
   var [ansQueData, submitAnsState] = useState(profileAnswers);
   var [ansQueDataTwo, submitAnsStateTwo] = useState(profileAnswers);
 
-  console.log('==============ansQueData==========', ansQueData);
-  console.log('allSkills==============', allSkills);
+  console.log("==============ansQueData==========", ansQueData);
+  console.log("allSkills==============", allSkills);
 
-  console.log('============s=dada', token);
+  console.log("============s=dada", token);
   const {} = props || {};
   useEffect(() => {
     packageListAPI();
@@ -156,15 +156,15 @@ export const About = (props: AboutDataProps) => {
       profile_answers: ansQueData,
     };
     console.log(
-      '============https://true-guinea-heartily.ngrok-free.app/v1/users/profile/que-answers==============',
+      "============https://true-guinea-heartily.ngrok-free.app/v1/users/profile/que-answers=============="
     );
-    console.log('============Request==============', queAns);
+    console.log("============Request==============", queAns);
     try {
-      const response = await fetch(API_URL + '/v1/users/profile/que-answers', {
-        method: 'PATCH',
+      const response = await fetch(API_URL + "/v1/users/profile/que-answers", {
+        method: "PATCH",
         headers: new Headers({
-          Authorization: 'Bearer ' + token,
-          'Content-Type': 'application/json; charset=UTF-8',
+          Authorization: "Bearer " + token,
+          "Content-Type": "application/json; charset=UTF-8",
         }),
         body: JSON.stringify({
           profile_answers: ansQueData,
@@ -172,7 +172,7 @@ export const About = (props: AboutDataProps) => {
       });
       const QuestioAnswer = await response.json();
 
-      console.log('===========Response==============');
+      console.log("===========Response==============");
       LodingData(false);
       console.log(QuestioAnswer);
       userProfileUpdate();
@@ -185,19 +185,19 @@ export const About = (props: AboutDataProps) => {
   // =================Package List API====================
 
   async function packageListAPI() {
-    const token = await AsyncStorage.getItem('token');
+    const token = await AsyncStorage.getItem("token");
     console.log(token);
     try {
-      const response = await fetch(API_URL + '/v1/subscriptions/packages', {
-        method: 'get',
+      const response = await fetch(API_URL + "/v1/subscriptions/packages", {
+        method: "get",
         headers: new Headers({
-          Authorization: 'Bearer ' + token,
-          'Content-Type': 'application/x-www-form-urlencoded',
+          Authorization: "Bearer " + token,
+          "Content-Type": "application/x-www-form-urlencoded",
         }),
       });
       const data = await response.json();
       PackageListData(data?.data);
-      console.log('===========Player List ==============');
+      console.log("===========Player List ==============");
       console.log(data);
     } catch (error) {
       console.error(error);
@@ -210,15 +210,15 @@ export const About = (props: AboutDataProps) => {
     console.log(token);
     console.log(idUser);
     try {
-      const response = await fetch(API_URL + '/v1/users/' + idUser, {
-        method: 'get',
+      const response = await fetch(API_URL + "/v1/users/" + idUser, {
+        method: "get",
         headers: new Headers({
-          Authorization: 'Bearer ' + token,
-          'Content-Type': 'application/x-www-form-urlencoded',
+          Authorization: "Bearer " + token,
+          "Content-Type": "application/x-www-form-urlencoded",
         }),
       });
       const dataItem = await response.json();
-      console.log('===========User Profile data Response==============');
+      console.log("===========User Profile data Response==============");
       submitAnsState(dataItem?.data?.profile_answers);
 
       console.log(dataItem?.data?.profile_answers);
@@ -234,21 +234,21 @@ export const About = (props: AboutDataProps) => {
     console.log(dataId);
     try {
       const response = await fetch(
-        API_URL + '/v1/subscriptions/packages/' + dataId,
+        API_URL + "/v1/subscriptions/packages/" + dataId,
         {
-          method: 'get',
+          method: "get",
           headers: new Headers({
-            Authorization: 'Bearer ' + token,
-            'Content-Type': 'application/x-www-form-urlencoded',
+            Authorization: "Bearer " + token,
+            "Content-Type": "application/x-www-form-urlencoded",
           }),
-        },
+        }
       );
       packageIdData(dataId);
       const dataItem = await response.json();
-      console.log('===========Player detail ==============');
+      console.log("===========Player detail ==============");
       console.log(dataItem);
       setDataEntries(dataItem?.data);
-      console.log(dataItem, '=============data item===============');
+      console.log(dataItem, "=============data item===============");
       cancleSubscription(dataItem?.data?.current_plan_id);
     } catch (error) {
       console.error(error);
@@ -279,32 +279,32 @@ export const About = (props: AboutDataProps) => {
 
     try {
       const response = await fetch(
-        API_URL + '/v1/subscriptions/' + idPackage + '/purchase',
+        API_URL + "/v1/subscriptions/" + idPackage + "/purchase",
         {
-          method: 'post',
+          method: "post",
           headers: new Headers({
-            Authorization: 'Bearer ' + token,
-            'Content-Type': 'application/x-www-form-urlencoded',
+            Authorization: "Bearer " + token,
+            "Content-Type": "application/x-www-form-urlencoded",
           }),
           body: Object.keys(purchesData)
-            .map(key => key + '=' + purchesData[key])
-            .join('&'),
-        },
+            .map((key) => key + "=" + purchesData[key])
+            .join("&"),
+        }
       );
       const dataItem = await response.json();
       LodingData(false);
-      console.log('=========== Purchase API ==============');
+      console.log("=========== Purchase API ==============");
       console.log(dataItem);
       if (dataItem.success == true) {
         packageListAPI();
         setModalVisible(false);
         setMemberModal(false);
         Toast.show(dataItem.message, Toast.LONG, {
-          backgroundColor: 'black',
+          backgroundColor: "black",
         });
       } else {
         Toast.show(dataItem.message, Toast.LONG, {
-          backgroundColor: 'black',
+          backgroundColor: "black",
         });
       }
     } catch (error) {
@@ -324,30 +324,30 @@ export const About = (props: AboutDataProps) => {
     console.log(idPackage);
     try {
       const response = await fetch(
-        API_URL + '/v1/subscriptions/' + idPackage + '/cancel',
+        API_URL + "/v1/subscriptions/" + idPackage + "/cancel",
         {
-          method: 'post',
+          method: "post",
           headers: new Headers({
-            Authorization: 'Bearer ' + token,
-            'Content-Type': 'application/x-www-form-urlencoded',
+            Authorization: "Bearer " + token,
+            "Content-Type": "application/x-www-form-urlencoded",
           }),
           body: Object.keys(data)
-            .map(key => key + '=' + data[key])
-            .join('&'),
-        },
+            .map((key) => key + "=" + data[key])
+            .join("&"),
+        }
       );
       const dataItem = await response.json();
-      console.log('=========== Cancle Subscription API ==============');
+      console.log("=========== Cancle Subscription API ==============");
       console.log(dataItem);
       if (dataItem.success == true) {
         Toast.show(dataItem.message, Toast.LONG, {
-          backgroundColor: 'black',
+          backgroundColor: "black",
         });
         packageListAPI();
         setModalVisible(false);
       } else {
         Toast.show(dataItem.message, Toast.LONG, {
-          backgroundColor: 'black',
+          backgroundColor: "black",
         });
         packageListAPI();
         setModalVisible(false);
@@ -376,7 +376,7 @@ export const About = (props: AboutDataProps) => {
   };
 
   const onPlayerClick = async (id: any) => {
-    console.log('====id===', id);
+    console.log("====id===", id);
     setTimeout(() => {
       setModalVisible(true);
       setMemberModal(false);
@@ -389,7 +389,7 @@ export const About = (props: AboutDataProps) => {
   };
 
   const memberShipClick = async (id: any) => {
-    console.log('====id===', id);
+    console.log("====id===", id);
     setTimeout(() => {
       setMemberModal(true);
     }, 1000);
@@ -402,42 +402,42 @@ export const About = (props: AboutDataProps) => {
 
   const addCardModalHide = () => {
     addCardModal(false);
-    cardNumberData('');
-    cardExpMonth('');
-    cardExpYears('');
-    cardCVVData('');
+    cardNumberData("");
+    cardExpMonth("");
+    cardExpYears("");
+    cardCVVData("");
   };
 
   const handleRemove = (id: any) => {
-    const newPeople = allSkills.filter(person => person !== id);
-    console.log('--------newPeople---------', newPeople);
+    const newPeople = allSkills.filter((person) => person !== id);
+    console.log("--------newPeople---------", newPeople);
 
     setSkills(newPeople);
   };
 
   const onAddSkill = (text: any) => {
-    if (text !== '' && text !== undefined) {
+    if (text !== "" && text !== undefined) {
       setSkills([...allSkills, text]);
-      console.log('onSubmitEditing onSubmitEditing', allSkills, text);
-      setSkillValue('');
+      console.log("onSubmitEditing onSubmitEditing", allSkills, text);
+      setSkillValue("");
     }
   };
 
   const onSaveProfile = () => {
-    console.log('===========onSaveProfile===========');
+    console.log("===========onSaveProfile===========");
 
     let request = {};
 
     if (about !== updatedAbout) {
-      request = {...request, about: updatedAbout};
+      request = { ...request, about: updatedAbout };
     }
     if (allSkills.length) {
-      request = {...request, skills: allSkills};
+      request = { ...request, skills: allSkills };
     }
     onEditProfile?.(request);
   };
 
-  const renderItem: ListRenderItem<string> = ({item}) => (
+  const renderItem: ListRenderItem<string> = ({ item }) => (
     <Pill
       onPressPill={() => handleRemove(item)}
       pillStyle={styles.marginBottom}
@@ -452,9 +452,9 @@ export const About = (props: AboutDataProps) => {
         borderRadius: theme.borderRadius.radius20,
         paddingVertical: verticalScale(6),
         paddingHorizontal: normalScale(6),
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
+        flexDirection: "row",
+        justifyContent: "space-between",
+        alignItems: "center",
         marginRight: normalScale(8),
         shadowColor: theme.colors.black,
         shadowOpacity: theme.opacity.opacity15,
@@ -473,9 +473,9 @@ export const About = (props: AboutDataProps) => {
         borderRadius: theme.borderRadius.radius20,
         paddingVertical: verticalScale(8),
         paddingHorizontal: normalScale(8),
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
+        flexDirection: "row",
+        justifyContent: "space-between",
+        alignItems: "center",
         marginRight: normalScale(8),
         shadowColor: theme.colors.black,
         shadowOpacity: theme.opacity.opacity15,
@@ -497,9 +497,9 @@ export const About = (props: AboutDataProps) => {
       borderRadius: theme.borderRadius.radius20,
       paddingVertical: verticalScale(8),
       paddingHorizontal: normalScale(8),
-      flexDirection: 'row',
-      justifyContent: 'center',
-      alignItems: 'center',
+      flexDirection: "row",
+      justifyContent: "center",
+      alignItems: "center",
       backgroundColor: itemCss.color,
       // marginRight: normalScale(8),
       shadowColor: theme.colors.black,
@@ -528,34 +528,34 @@ export const About = (props: AboutDataProps) => {
 
   async function memberShipCheckoutAPI(dataId: any) {
     MembershipCheckOutID(dataId);
-    console.log(dataId, 'dataId dataId------------------------------------');
+    console.log(dataId, "dataId dataId------------------------------------");
     try {
       const response = await fetch(
-        API_URL + '/v1/subscriptions/packages/' + dataId + '/checkout',
+        API_URL + "/v1/subscriptions/packages/" + dataId + "/checkout",
         {
-          method: 'get',
+          method: "get",
           headers: new Headers({
-            Authorization: 'Bearer ' + token,
-            'Content-Type': 'application/x-www-form-urlencoded',
+            Authorization: "Bearer " + token,
+            "Content-Type": "application/x-www-form-urlencoded",
           }),
-        },
+        }
       );
       const dataItems = await response.json();
       memberShipData(dataItems);
-      console.log('===========MemberShip checkout==============');
+      console.log("===========MemberShip checkout==============");
       console.log(dataItems);
       // setDatacheckout(dataItem);
       monthlyPlanData(dataItems?.data?.plans[0]);
       yearlyPlanData(dataItems?.data?.plans[1]);
       monthlyPrice(
-        dataItems?.data?.customerBill?.billSummaryMonthly?.totalUnitsMonthly,
+        dataItems?.data?.customerBill?.billSummaryMonthly?.totalUnitsMonthly
       );
       yearlyPrices(
-        dataItems?.data?.customerBill?.billSummaryYearly?.totalUnitsYearly,
+        dataItems?.data?.customerBill?.billSummaryYearly?.totalUnitsYearly
       );
       descriptionData(dataItems.data.description);
       addCardList(dataItems?.data?.card);
-      console.log('=======================dsd==ds=d==========');
+      console.log("=======================dsd==ds=d==========");
       console.log(monthlyPlan);
       console.log(yearlyPlan);
       console.log(description);
@@ -567,7 +567,7 @@ export const About = (props: AboutDataProps) => {
   useEffect(() => {
     LogBox.ignoreAllLogs();
     const checkToken = async () => {
-      const tok = (await AsyncStorage.getItem(persistKeys.token)) ?? '';
+      const tok = (await AsyncStorage.getItem(persistKeys.token)) ?? "";
       setToken(tok);
       console.log(tokens);
     };
@@ -579,15 +579,15 @@ export const About = (props: AboutDataProps) => {
   // ======================Config API=========================
   const ConfigListAPI = async () => {
     try {
-      const response = await fetch(API_URL + '/v1/config/list', {
-        method: 'get',
+      const response = await fetch(API_URL + "/v1/config/list", {
+        method: "get",
         headers: new Headers({
-          Authorization: 'Bearer ' + tokens,
-          'Content-Type': 'application/x-www-form-urlencoded',
+          Authorization: "Bearer " + tokens,
+          "Content-Type": "application/x-www-form-urlencoded",
         }),
       });
       const dataItem = await response.json();
-      console.log('-----------------add card config list------------');
+      console.log("-----------------add card config list------------");
       const keyId = dataItem?.data?.stripe?.stripePublicKey;
       console.log(dataItem);
       setTimeout(() => {
@@ -605,41 +605,41 @@ export const About = (props: AboutDataProps) => {
 
   async function cardStripeAPI(stripeId: any) {
     const genCard: any = {
-      'card[number]': cardnumber,
-      'card[exp_month]': cardExpmonth,
-      'card[exp_year]': cardExpyear,
-      'card[cvc]': cardCvv,
+      "card[number]": cardnumber,
+      "card[exp_month]": cardExpmonth,
+      "card[exp_year]": cardExpyear,
+      "card[cvc]": cardCvv,
     };
 
     console.log(genCard);
 
-    const results = await fetch('https://api.stripe.com/v1/tokens', {
-      method: 'post',
+    const results = await fetch("https://api.stripe.com/v1/tokens", {
+      method: "post",
       headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/x-www-form-urlencoded',
-        Authorization: 'Bearer ' + stripeId,
+        Accept: "application/json",
+        "Content-Type": "application/x-www-form-urlencoded",
+        Authorization: "Bearer " + stripeId,
       },
       body: Object.keys(genCard)
-        .map(key => key + '=' + genCard[key])
-        .join('&'),
-    }).then(response => response.json());
+        .map((key) => key + "=" + genCard[key])
+        .join("&"),
+    }).then((response) => response.json());
 
     const card_tok = results.id;
 
     setTimeout(() => {
       if (results.id) {
         CreateCardAPI(card_tok);
-        console.log('============CreateCardAPI============');
+        console.log("============CreateCardAPI============");
       }
     }, 3000);
 
-    console.log('================card stripe api==================');
+    console.log("================card stripe api==================");
     console.log(results);
 
     if (results.error) {
       Toast.show(results.error.message, Toast.LONG, {
-        backgroundColor: 'black',
+        backgroundColor: "black",
       });
     }
 
@@ -652,31 +652,31 @@ export const About = (props: AboutDataProps) => {
       token: cardId,
     };
     try {
-      const response = await fetch(API_URL + '/v1/subscriptions/cards/create', {
-        method: 'post',
+      const response = await fetch(API_URL + "/v1/subscriptions/cards/create", {
+        method: "post",
         headers: new Headers({
-          Authorization: 'Bearer ' + tokens,
-          'Content-Type': 'application/x-www-form-urlencoded',
+          Authorization: "Bearer " + tokens,
+          "Content-Type": "application/x-www-form-urlencoded",
         }),
         body: Object.keys(cardtokenData)
-          .map(key => key + '=' + cardtokenData[key])
-          .join('&'),
+          .map((key) => key + "=" + cardtokenData[key])
+          .join("&"),
       });
       console.log(cardId);
       const dataItem = await response.json();
-      console.log('-----------------create card------------');
+      console.log("-----------------create card------------");
       console.log(dataItem);
-      cardNumberData('');
-      cardExpMonth('');
-      cardExpYears('');
-      cardCVVData('');
-      setDate('');
+      cardNumberData("");
+      cardExpMonth("");
+      cardExpYears("");
+      cardCVVData("");
+      setDate("");
       memberShipCheckoutAPI(membershipId);
       if (dataItem.success == true) {
         addCardModal(false);
       }
       Toast.show(dataItem.message, Toast.LONG, {
-        backgroundColor: 'black',
+        backgroundColor: "black",
       });
     } catch (error) {
       console.error(error);
@@ -687,18 +687,18 @@ export const About = (props: AboutDataProps) => {
     LodingData(true);
     if (cardnumber.length != 16) {
       LodingData(false);
-      Toast.show('Invalide Card Number', Toast.LONG, {
-        backgroundColor: 'black',
+      Toast.show("Invalide Card Number", Toast.LONG, {
+        backgroundColor: "black",
       });
     } else if (date.length != 5) {
       LodingData(false);
-      Toast.show('Invalide Date', Toast.LONG, {
-        backgroundColor: 'black',
+      Toast.show("Invalide Date", Toast.LONG, {
+        backgroundColor: "black",
       });
     } else if (cardCvv.length != 3) {
       LodingData(false);
-      Toast.show('Invalide CVV Number', Toast.LONG, {
-        backgroundColor: 'black',
+      Toast.show("Invalide CVV Number", Toast.LONG, {
+        backgroundColor: "black",
       });
     } else {
       ConfigListAPI();
@@ -707,50 +707,50 @@ export const About = (props: AboutDataProps) => {
 
   function handleToggleYourList(name: any, jindex: any) {
     let newArr = ansQueDataTwo.map((item, index) => {
-      const target: Partial<typeof item> = {...item};
-      delete target['question'];
+      const target: Partial<typeof item> = { ...item };
+      delete target["question"];
 
       if (index == jindex) {
-        return {...target, answer: name};
+        return { ...target, answer: name };
       } else {
         return target;
       }
     });
     let newArrs = ansQueDataTwo.map((item, index) => {
-      const target: Partial<typeof item> = {...item};
+      const target: Partial<typeof item> = { ...item };
 
       if (index == jindex) {
-        return {...target, answer: name};
+        return { ...target, answer: name };
       } else {
         return target;
       }
     });
     submitAnsState(newArr);
     submitAnsStateTwo(newArrs);
-    console.log('===========ansQueData 22==========', ansQueData);
+    console.log("===========ansQueData 22==========", ansQueData);
   }
 
   async function deleteUserAccountAPI() {
-    const token = await AsyncStorage.getItem('token');
+    const token = await AsyncStorage.getItem("token");
     console.log(token);
     try {
-      const response = await fetch(API_URL + '/v1/users/delete/' + idUser, {
-        method: 'post',
+      const response = await fetch(API_URL + "/v1/users/delete/" + idUser, {
+        method: "post",
         headers: new Headers({
-          Authorization: 'Bearer ' + token,
-          'Content-Type': 'application/x-www-form-urlencoded',
+          Authorization: "Bearer " + token,
+          "Content-Type": "application/x-www-form-urlencoded",
         }),
       });
       const dataItem = await response.json();
-      console.log('===========Delete Account data Response==============');
-      console.log(API_URL + '/v1/users/delete/' + idUser);
+      console.log("===========Delete Account data Response==============");
+      console.log(API_URL + "/v1/users/delete/" + idUser);
       LodingData(false);
       console.log(dataItem);
       if (dataItem.success === true) {
         navigation?.navigate(navigations?.LOGIN);
       }
       Toast.show(dataItem.message, Toast.LONG, {
-        backgroundColor: 'black',
+        backgroundColor: "black",
       });
     } catch (error) {
       LodingData(false);
@@ -763,7 +763,7 @@ export const About = (props: AboutDataProps) => {
       strings.deleteAccount,
       strings.areYouDeleteAccount,
       [
-        {text: strings.no, onPress: () => null, style: 'cancel'},
+        { text: strings.no, onPress: () => null, style: "cancel" },
         {
           text: strings.yes,
           onPress: () => {
@@ -772,7 +772,7 @@ export const About = (props: AboutDataProps) => {
           },
         },
       ],
-      {cancelable: false},
+      { cancelable: false }
     );
   };
 
@@ -792,14 +792,17 @@ export const About = (props: AboutDataProps) => {
             // style={{ flex: 1 }}
             onPressOut={() => {
               setModalVisible(false);
-            }}>
+            }}
+          >
             <Modal
               transparent
               onDismiss={() => setModalVisible(false)}
-              visible={modalVisible}>
+              visible={modalVisible}
+            >
               <GestureRecognizer
                 onSwipeDown={() => setModalVisible(false)}
-                style={styles.gesture}>
+                style={styles.gesture}
+              >
                 <TouchableOpacity
                   style={styles.containerGallery}
                   activeOpacity={1}
@@ -807,23 +810,27 @@ export const About = (props: AboutDataProps) => {
                 />
               </GestureRecognizer>
               <KeyboardAvoidingView
-                behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-                style={styles.keyboardViewTwo}>
+                behavior={Platform.OS === "ios" ? "padding" : "height"}
+                style={styles.keyboardViewTwo}
+              >
                 <Loader visible={false} showOverlay />
                 <View style={styles.packageDetailModal}>
                   <ScrollView
                     showsVerticalScrollIndicator={false}
-                    horizontal={false}>
+                    horizontal={false}
+                  >
                     <TouchableOpacity
                       activeOpacity={0}
                       onPress={() => {
                         openSettingsModal();
-                      }}>
+                      }}
+                    >
                       <TouchableOpacity
                         style={getTextStyleDetail(postData)}
-                        activeOpacity={0.8}>
+                        activeOpacity={0.8}
+                      >
                         <ImageComponent
-                          source={{uri: postData.role_image}}
+                          source={{ uri: postData.role_image }}
                           style={[styles.icon]}
                         />
                         <Text style={styles.label}>{postData.title}</Text>
@@ -866,10 +873,12 @@ export const About = (props: AboutDataProps) => {
               <Modal
                 transparent
                 onDismiss={memberShipHide}
-                visible={memberModal}>
+                visible={memberModal}
+              >
                 <GestureRecognizer
                   onSwipeDown={memberShipHide}
-                  style={styles.gesture}>
+                  style={styles.gesture}
+                >
                   <TouchableOpacity
                     style={styles.containerGallery}
                     activeOpacity={1}
@@ -878,28 +887,35 @@ export const About = (props: AboutDataProps) => {
                 </GestureRecognizer>
                 <Loader visible={isLoading} showOverlay />
                 <KeyboardAvoidingView
-                  behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-                  style={styles.keyboardViewTwo}>
+                  behavior={Platform.OS === "ios" ? "padding" : "height"}
+                  style={styles.keyboardViewTwo}
+                >
                   <View style={styles.packageModalMembership}>
                     <ScrollView
                       showsVerticalScrollIndicator={false}
-                      horizontal={false}>
+                      horizontal={false}
+                    >
                       <TouchableOpacity
                         disabled
                         activeOpacity={0}
                         onPress={() => {
                           memberShipHide();
-                        }}>
+                        }}
+                      >
                         <Text style={styles.memberTitle}>
                           {strings.membershipCheckout}
                         </Text>
 
                         <View style={styles.modalContainer}>
                           <TouchableOpacity
-                            style={[styles.memberShipCheckputContainer,{backgroundColor: postData.color}]}
-                            activeOpacity={0.8}>
+                            style={[
+                              styles.memberShipCheckputContainer,
+                              { backgroundColor: postData.color },
+                            ]}
+                            activeOpacity={0.8}
+                          >
                             <ImageComponent
-                              source={{uri: postData.role_image}}
+                              source={{ uri: postData.role_image }}
                               style={[styles.icon1]}
                             />
                             <Text style={styles.label1}>{postData.title}</Text>
@@ -912,14 +928,19 @@ export const About = (props: AboutDataProps) => {
                                 styles.selectView,
                                 isBilledMonthly && styles.selectedSelectView,
                               ]}
-                              onPress={() => handleBillingSubscription(true)}>
-                              <Text style={styles.amount}>
-                                {}
-                                {`$${parseInt(
-                                  monthlyPlan?.price?.$numberDecimal,
-                                  10,
-                                )}`}
-                              </Text>
+                              onPress={() => handleBillingSubscription(true)}
+                            >
+                              {monthlyPlan?.price?.$numberDecimal ? (
+                                <Text style={styles.amount}>
+                                  {`$${parseInt(
+                                    monthlyPlan?.price?.$numberDecimal,
+                                    10
+                                  )}`}
+                                </Text>
+                              ) : (
+                                <Text style={styles.amount}>$00</Text>
+                              )}
+
                               <Text style={styles.bill}>
                                 {monthlyPlan?.name}
                               </Text>
@@ -930,11 +951,16 @@ export const About = (props: AboutDataProps) => {
                                 styles.selectView,
                                 !isBilledMonthly && styles.selectedSelectView,
                               ]}
-                              onPress={() => handleBillingSubscription(false)}>
-                              <Text style={styles.amount}>{`$${parseInt(
-                                yearlyPlan?.price?.$numberDecimal,
-                                10,
-                              )}`}</Text>
+                              onPress={() => handleBillingSubscription(false)}
+                            >
+                              {yearlyPlan?.price?.$numberDecimal ? (
+                                <Text style={styles.amount}>{`$${parseInt(
+                                  yearlyPlan?.price?.$numberDecimal,
+                                  10
+                                )}`}</Text>
+                              ) : (
+                                <Text style={styles.amount}>$00</Text>
+                              )}
                               <Text style={styles.bill}>
                                 {yearlyPlan?.name}
                               </Text>
@@ -980,7 +1006,8 @@ export const About = (props: AboutDataProps) => {
                           <TouchableOpacity
                             activeOpacity={0.8}
                             onPress={onOpenModal}
-                            style={styles.addViewcard}>
+                            style={styles.addViewcard}
+                          >
                             <Text style={styles.addCard}>
                               {strings.addCard}
                             </Text>
@@ -989,7 +1016,8 @@ export const About = (props: AboutDataProps) => {
                             <TouchableOpacity
                               onPress={onPurchaseAPI}
                               activeOpacity={0.8}
-                              style={styles.purchaseContainer}>
+                              style={styles.purchaseContainer}
+                            >
                               <View />
                               <Text style={styles.title}>
                                 {strings.purchase}
@@ -1008,10 +1036,12 @@ export const About = (props: AboutDataProps) => {
                   <Modal
                     transparent
                     onDismiss={addCardModalHide}
-                    visible={addcard}>
+                    visible={addcard}
+                  >
                     <GestureRecognizer
                       onSwipeDown={addCardModalHide}
-                      style={styles.gesture}>
+                      style={styles.gesture}
+                    >
                       <TouchableOpacity
                         style={styles.containerGallery}
                         activeOpacity={1}
@@ -1020,17 +1050,20 @@ export const About = (props: AboutDataProps) => {
                     </GestureRecognizer>
                     <Loader visible={isLoading} showOverlay />
                     <KeyboardAvoidingView
-                      behavior={Platform.OS === 'ios' ? 'position' : 'height'}
-                      style={styles.keyboardViewTwo}>
+                      behavior={Platform.OS === "ios" ? "position" : "height"}
+                      style={styles.keyboardViewTwo}
+                    >
                       <View style={styles.addCardBorderContainer}>
                         <View>
                           <TouchableOpacity
                             onPress={() => {
                               addCardModalHide();
-                            }}>
+                            }}
+                          >
                             <ImageComponent
                               style={styles.closeCardCont}
-                              source={closeCard}></ImageComponent>
+                              source={closeCard}
+                            ></ImageComponent>
                           </TouchableOpacity>
 
                           <Text style={styles.addCardTitle}>
@@ -1051,7 +1084,7 @@ export const About = (props: AboutDataProps) => {
                               keyboardType="numeric"
                               style={styles.addCardInput}
                               placeholder="card number"
-                              onChangeText={value => {
+                              onChangeText={(value) => {
                                 console.log(value);
                                 cardNumberData(value);
                               }}
@@ -1059,16 +1092,16 @@ export const About = (props: AboutDataProps) => {
                             <View style={styles.cardView}>
                               <TextInput
                                 placeholderTextColor="darkgray"
-                                onChangeText={text => {
+                                onChangeText={(text) => {
                                   setDate(
-                                    text.length === 3 && !text.includes('/')
+                                    text.length === 3 && !text.includes("/")
                                       ? `${text.substring(
                                           0,
-                                          2,
+                                          2
                                         )}/${text.substring(2)}`
-                                      : text,
+                                      : text
                                   );
-                                  const [month, year] = text.split('/');
+                                  const [month, year] = text.split("/");
                                   console.log(month);
                                   console.log(year);
 
@@ -1089,7 +1122,7 @@ export const About = (props: AboutDataProps) => {
                                 keyboardType="numeric"
                                 style={styles.addCardCVCInput}
                                 placeholder="cvc"
-                                onChangeText={value => {
+                                onChangeText={(value) => {
                                   console.log(value);
                                   cardCVVData(value);
                                 }}
@@ -1115,20 +1148,20 @@ export const About = (props: AboutDataProps) => {
             </Modal>
           </TouchableOpacity>
         </GestureRecognizer>
-        <View style={{flex: 1}}>
+        <View style={{ flex: 1 }}>
           {packageItem ? (
             <FlatList
-              keyExtractor={item => item.id}
+              keyExtractor={(item) => item.id}
               data={packageItem}
               showsVerticalScrollIndicator={false}
               contentContainerStyle={{
-                alignSelf: 'center',
-                alignItems: 'center',
+                alignSelf: "center",
+                alignItems: "center",
               }}
-              columnWrapperStyle={{flexWrap: 'wrap'}}
+              columnWrapperStyle={{ flexWrap: "wrap" }}
               numColumns={packageItem.length}
               key={packageItem.length}
-              renderItem={({item, index}) => {
+              renderItem={({ item, index }) => {
                 return (
                   <View style={styles.containers}>
                     <TouchableOpacity
@@ -1137,16 +1170,18 @@ export const About = (props: AboutDataProps) => {
                       activeOpacity={0.8}
                       onPress={() => {
                         onPlayerClick(item.id);
-                      }}>
+                      }}
+                    >
                       <ImageComponent
-                        source={{uri: item.role_image}}
+                        source={{ uri: item.role_image }}
                         style={[styles.icon1]}
                       />
                       <Text style={styles.label1}>{item.title}</Text>
                     </TouchableOpacity>
                   </View>
                 );
-              }}></FlatList>
+              }}
+            ></FlatList>
           ) : (
             <View></View>
           )}
@@ -1163,15 +1198,17 @@ export const About = (props: AboutDataProps) => {
         />
 
         <Text style={styles.membership}>{strings.skills}</Text>
-        {skillValue !== '' ? (
+        {skillValue !== "" ? (
           <TouchableOpacity
-            style={{zIndex: 1111111}}
+            style={{ zIndex: 1111111 }}
             onPress={() => {
               onAddSkill(skillValue);
-            }}>
+            }}
+          >
             <ImageComponent
               style={styles.skillAddImage}
-              source={addGreen}></ImageComponent>
+              source={addGreen}
+            ></ImageComponent>
           </TouchableOpacity>
         ) : (
           <View></View>
@@ -1192,7 +1229,7 @@ export const About = (props: AboutDataProps) => {
         <View style={styles.row}>
           <FlatListComponent
             data={allSkills}
-            keyExtractor={item => item.toString()}
+            keyExtractor={(item) => item.toString()}
             renderItem={renderItem}
             numColumns={100}
             showsHorizontalScrollIndicator={false}
@@ -1204,16 +1241,18 @@ export const About = (props: AboutDataProps) => {
 
         <View>
           <Modal transparent={false} animationType="slide" visible={openQues}>
-            <View style={{height: 'auto'}}>
+            <View style={{ height: "auto" }}>
               <View style={styles.HeaderContainer}>
                 <TouchableOpacity
                   onPress={() => {
                     updateAnsBack();
-                  }}>
+                  }}
+                >
                   <View style={styles.dropDownView}>
                     <ImageComponent
                       source={downImg}
-                      style={styles.downIcon}></ImageComponent>
+                      style={styles.downIcon}
+                    ></ImageComponent>
                   </View>
                 </TouchableOpacity>
                 <Text style={styles.MainContainer}>
@@ -1223,7 +1262,8 @@ export const About = (props: AboutDataProps) => {
                   activeOpacity={0.5}
                   onPress={() => {
                     quesAnsModalHide();
-                  }}>
+                  }}
+                >
                   <Text style={styles.saveContainer}>{strings.save}</Text>
                 </TouchableOpacity>
               </View>
@@ -1232,13 +1272,14 @@ export const About = (props: AboutDataProps) => {
                   {ansQueDataTwo ? (
                     <FlatList
                       data={ansQueDataTwo}
-                      renderItem={({item, index}) => (
+                      renderItem={({ item, index }) => (
                         <View
                           style={{
                             borderBottomWidth: 1,
                             marginBottom: 12,
-                            borderBottomColor: 'gray',
-                          }}>
+                            borderBottomColor: "gray",
+                          }}
+                        >
                           <Text style={styles.questionsLbl}>
                             {item.question}
                           </Text>
@@ -1246,7 +1287,7 @@ export const About = (props: AboutDataProps) => {
 
                           <Text style={styles.answerLbl}>{item.answer}</Text>
                           : */}
-                          <View style={{height: 110}}>
+                          <View style={{ height: 110 }}>
                             <TextInput
                               editable={true}
                               value={item.answer}
@@ -1255,18 +1296,20 @@ export const About = (props: AboutDataProps) => {
                               multiline={true}
                               style={styles.inputCont}
                               // onChangeText={value => { myFunction() }}
-                              onChangeText={text =>
+                              onChangeText={(text) =>
                                 handleToggleYourList(text, index)
-                              }></TextInput>
+                              }
+                            ></TextInput>
                           </View>
 
                           {/* } */}
                         </View>
-                      )}></FlatList>
+                      )}
+                    ></FlatList>
                   ) : (
                     <View></View>
                   )}
-                  <View style={{height: 50}}></View>
+                  <View style={{ height: 50 }}></View>
                 </View>
               </ScrollView>
             </View>
@@ -1276,17 +1319,18 @@ export const About = (props: AboutDataProps) => {
             <TouchableOpacity
               onPress={() => {
                 quesAnsModalOpen();
-              }}>
+              }}
+            >
               <Text style={styles.ProfileUpdateCont}>
                 {strings.queAnsTitle}
               </Text>
             </TouchableOpacity>
-            <View style={{marginBottom: 30}}>
+            <View style={{ marginBottom: 30 }}>
               <FlatList
                 data={ansQueData}
-                renderItem={({item}) => (
+                renderItem={({ item }) => (
                   <View>
-                    {item.answer != '' ? (
+                    {item.answer != "" ? (
                       <View>
                         <Text style={styles.questionsDisplayLbl}>
                           {item.question}
@@ -1299,7 +1343,8 @@ export const About = (props: AboutDataProps) => {
                       <View></View>
                     )}
                   </View>
-                )}></FlatList>
+                )}
+              ></FlatList>
             </View>
           </View>
         </View>
@@ -1307,7 +1352,7 @@ export const About = (props: AboutDataProps) => {
         <TouchableOpacity onPress={deleteAccount}>
           <Text style={styles.deleteAccount}>{strings.deleteAccount}</Text>
         </TouchableOpacity>
-        <View style={{height: 40}}></View>
+        <View style={{ height: 40 }}></View>
       </View>
     </>
   );

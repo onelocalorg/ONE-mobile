@@ -57,16 +57,16 @@ export const apiKeys = {
 };
 
 // export const API_URL = 'https://app.onelocal.one/api'
+// export const STIPE_BASE_URL = 'https://api.stripe.com'
+// export const STRIPE_PUBLIC_KEY = 'pk_live_51ILwo9GFoMwnONQ0MYwhjHkh8K60e6AhM0FERKOTP2wIpPyKEp2d9DW80Llr5KnHnJNtemfuZTuiU4ECKrmC31le00UQlomVlx'
+// export const STRIPE_SECRET_KEY = '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'
+
+
 
 export const API_URL = 'https://eventmvp.developmentlabs.co/api'
-
 export const STIPE_BASE_URL = 'https://api.stripe.com'
-
-export const STRIPE_PUBLIC_KEY = 'pk_live_51ILwo9GFoMwnONQ0OGHR45KsEagFfXy7COuo9Ner5SHrnRmTJIA7hjli2AyqRVb6uKkrZaiCdTvGsN0JKkEMYFjR00mNeywjyx'
-export const STRIPE_SECRET_KEY = ''
-
-// export const STRIPE_PUBLIC_KEY = 'pk_test_51ILwo9GFoMwnONQ0gs60JkdjJlMCz6TU9iAB39fibm74Fv7pQ75nkawaVeEMcLXkHg80vN2c310kQ0izchqL6Rir00PU58FXrZ'
-// export const STRIPE_SECRET_KEY = 'sk_test_51ILwo9GFoMwnONQ0qlaqHJOUpu3LcReBKZZcAPZ4h11EsHqEDB4NemkZ7ywHw3LX6iAmoCEbBjEth2mwZwKQJKqS00CDnJ2YyR'
+export const STRIPE_PUBLIC_KEY = 'pk_test_51ILwo9GFoMwnONQ0gs60JkdjJlMCz6TU9iAB39fibm74Fv7pQ75nkawaVeEMcLXkHg80vN2c310kQ0izchqL6Rir00PU58FXrZ'
+export const STRIPE_SECRET_KEY = 'sk_test_51ILwo9GFoMwnONQ0qlaqHJOUpu3LcReBKZZcAPZ4h11EsHqEDB4NemkZ7ywHw3LX6iAmoCEbBjEth2mwZwKQJKqS00CDnJ2YyR'
 
 
 

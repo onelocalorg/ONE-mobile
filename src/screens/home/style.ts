@@ -479,7 +479,7 @@ export const createStyleSheet = (theme: ThemeProps) => {
     },
   scrollView: {
     // flex:1
-      paddingBottom: verticalScale(100),
+      // paddingBottom: verticalScale(100),
       // paddingHorizontal: normalScale(22),
     },
     postDetail: {
@@ -531,7 +531,7 @@ export const createStyleSheet = (theme: ThemeProps) => {
       fontSize: 16,
       paddingTop:7,
       fontFamily: theme.fontType.regular,
-      width:width-120
+      width:width-120,
     },
     userNameTwo:{
       color: theme.colors.black,

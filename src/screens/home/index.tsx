@@ -1066,8 +1066,7 @@ export const HomeScreen = (props: HomeScreenProps) => {
             <View style={styles.commentImgProfile}>
               <TouchableOpacity
                 activeOpacity={0.8}
-                onPress={() => recentUserProfilePress(item?.commenter.id)}
-              >
+                onPress={() => recentUserProfilePress(item?.commenter.id)}>
                 <ImageComponent
                   resizeMode="cover"
                   style={styles.postProfile}
@@ -1280,8 +1279,9 @@ export const HomeScreen = (props: HomeScreenProps) => {
         </TouchableOpacity>
         {/* ------------------Header Tab------------------- */}
       
-        <KeyboardAvoidingView
-          behavior={Platform.OS === "ios" ? "padding" : "height"}
+        <KeyboardAwareScrollView
+        keyboardShouldPersistTaps="always"
+        showsVerticalScrollIndicator={false}
         >
          
           <FlatList
@@ -1289,7 +1289,7 @@ export const HomeScreen = (props: HomeScreenProps) => {
             keyExtractor={(item) => item.id}
             ListFooterComponent={<View style={{ height: 90 }} />}
             onEndReachedThreshold={0.01}
-            contentContainerStyle={{ marginBottom: 150 }}
+            // contentContainerStyle={{ marginBottom: 150 }}
             keyboardShouldPersistTaps
             ListHeaderComponent={
               
@@ -1523,7 +1523,9 @@ export const HomeScreen = (props: HomeScreenProps) => {
                             sent {item?.to?.users[0]?.point} gratis to{" "}
                             <Text style={styles.userName}>
                               {item?.to?.users[0]?.user_id["first_name"]}{" "}
-                              {item?.to?.users[0]?.user_id["last_name"]}
+                              {item?.to?.users[0]?.user_id["last_name"]}{' '}
+                              {/* {item?.to?.users[1]?.user_id["first_name"]}{" "}
+                              {item?.to?.users[1]?.user_id["last_name"]} */}
                             </Text>
                           </Text>
                         </View>
@@ -1550,7 +1552,7 @@ export const HomeScreen = (props: HomeScreenProps) => {
                       }}
                     ></ImageComponent>
                   </TouchableOpacity>
-                  {/* <ImageComponent resizeMode='cover' style={styles.userListDisplay} source={{uri:item?.to?.users?.user_id[1]['pic']}}></ImageComponent> */}
+                  {/* <ImageComponent resizeMode='cover' style={styles.userListDisplay} source={{uri:item?.to?.users[1]?.user_id['pic']}}></ImageComponent> */}
                 </View>
                 <Text style={styles.postDes}>{item?.content}</Text>
                 {/* <ImageComponent source={postImage}style={styles.userPost}></ImageComponent> */}
@@ -1765,7 +1767,7 @@ export const HomeScreen = (props: HomeScreenProps) => {
       ) : (
         <View></View>
       )}
-        </KeyboardAvoidingView>
+        </KeyboardAwareScrollView>
         {loading ? (
           <ActivityIndicator
             color="black"
@@ -1787,7 +1789,7 @@ export const HomeScreen = (props: HomeScreenProps) => {
           />
         </GestureRecognizer>
         <KeyboardAvoidingView
-          behavior={Platform.OS === "ios" ? "padding" : "height"}
+          behavior={Platform.OS === "ios" ? "height" : "height"}
           style={styles.keyboardView}
         >
           <TouchableOpacity activeOpacity={1} style={styles.gratiescontainer}>

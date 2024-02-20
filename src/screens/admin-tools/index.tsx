@@ -395,8 +395,12 @@ export const AdminToolsScreen = (props: AdminToolsScreenProps) => {
     }
   };
 
+  const keyboardDismiss = () => {
+    Keyboard.dismiss();
+  };
+
   return (
-    <View style={styles.container}>
+    <TouchableOpacity style={styles.container} activeOpacity={1} onPress={keyboardDismiss}>
       <Loader visible={isLoading || createEventLoading} showOverlay />
       <TouchableOpacity style={styles.HeaderContainerTwo} activeOpacity={1}>
         <TouchableOpacity onPress={onBackPress} style={{ zIndex: 11111222222 }}>
@@ -717,6 +721,6 @@ export const AdminToolsScreen = (props: AdminToolsScreenProps) => {
           editIcon="none"
           // closeIcon='none'
         /> */}
-    </View>
+    </TouchableOpacity>
   );
 };
