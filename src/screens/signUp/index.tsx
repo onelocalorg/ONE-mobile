@@ -66,6 +66,12 @@ import {
 
 interface SignUpProps {
   navigation: NavigationContainerRef<ParamListBase>;
+  route?: {
+    params: {
+      email: any;
+      password:any
+    };
+  };
 }
 
 export const SignUp = (props: SignUpProps) => {
@@ -83,7 +89,8 @@ export const SignUp = (props: SignUpProps) => {
   });
   const [isChecked, setIsChecked] = useState(false);
   const {strings} = useStringsAndLabels();
-  const {navigation} = props || {};
+  const {navigation,route} = props || {};
+  const {email,password} = route?.params ?? {};
   const {onSetToken} = useToken();
   const handleUserData = (value: string, key: string) => {
     setUser({...user, [key]: value});
@@ -110,10 +117,10 @@ export const SignUp = (props: SignUpProps) => {
     const userData = {
       first_name: user.firstName,
       last_name: user.lastName,
-      email: user.email,
+      email: email,
       // "mobile_number": '',
-      password: user.password,
-      cpassword: user.confirmPass,
+      password: password,
+      cpassword: password,
       // city: user.city,
       // state: user.state,
       // nick_name: user.nick_name,
@@ -194,7 +201,9 @@ export const SignUp = (props: SignUpProps) => {
   };
 
   const onSignUp = () => {
-    if (user.firstName.length === 0) {
+
+    
+     if (user.firstName.length === 0) {
       Toast.show('Enter your First Name', Toast.LONG, {
         backgroundColor: 'black',
       });
@@ -202,73 +211,23 @@ export const SignUp = (props: SignUpProps) => {
       Toast.show('Enter your Last Name', Toast.LONG, {
         backgroundColor: 'black',
       });
-    } else if (!emailRegexEx.test(String(user.email).toLowerCase())) {
-      Toast.show('Enter your Valid Email', Toast.LONG, {
-        backgroundColor: 'black',
-      });
-    }
-    // else if (user.phoneNo.length < 10) {
-    //     Toast.show('Enter Valid Phone Number', Toast.LONG, {
-    //         backgroundColor: 'black',
-    //     });
-    // }
-    // else if (user.catch_phrase.length === 0) {
-    //   Toast.show('Enter your catchphrase', Toast.LONG, {
-    //     backgroundColor: 'black',
-    //   });
-    // } else if (user.nick_name.length === 0) {
-    //   Toast.show('Enter your Nick name', Toast.LONG, {
-    //     backgroundColor: 'black',
-    //   });
-    // }
+    } 
     else if (!when) {
       Toast.show('Enter your Birth Date', Toast.LONG, {
         backgroundColor: 'black',
       });
     }
-    // else if (user.state.length === 0) {
-    //   Toast.show('Enter your State', Toast.LONG, {
-    //     backgroundColor: 'black',
-    //   });
-    // } else if (user.city.length === 0) {
-    //   Toast.show('Enter your City', Toast.LONG, {
-    //     backgroundColor: 'black',
-    //   });
-    // }
-    else if (user.password.length < 8) {
-      Toast.show('Password Must be 8 Digit', Toast.LONG, {
-        backgroundColor: 'black',
-      });
-    } else if (user.password !== user.confirmPass) {
-      Toast.show('Password and Confirm Should be Same', Toast.LONG, {
-        backgroundColor: 'black',
-      });
-    } else if (profileUri === '') {
+  else if (profileUri === '') {
       Toast.show('Enter your profile image', Toast.LONG, {
         backgroundColor: 'black',
       });
-    }
-    // else if (backgroundImageUri === '') {
-    //   Toast.show('Enter your cover image', Toast.LONG, {
-    //     backgroundColor: 'black',
-    //   });
-    // }
-    else if (!isChecked) {
-      Toast.show('Please Read And Accept Term and Condition', Toast.LONG, {
-        backgroundColor: 'black',
-      });
+ 
     } else {
       onSignUpAPI();
     }
   };
 
   const GallerySelect = async () => {
-    // const {assets} = await launchImageLibrary({
-    //   mediaType: 'photo',
-    //   includeBase64: true,
-    //   maxWidth: 800,
-    //   maxHeight: 800,
-    // });
     console.log('===============111111==================');
     ImagePicker.openPicker({
       width: 300,
@@ -482,13 +441,6 @@ export const SignUp = (props: SignUpProps) => {
             <ImageComponent source={arrowLeft} style={styles.arrowLeft} />
           </View>
         </TouchableOpacity>
-
-        {/* <View style={styles.oneContainer}>
-          <ImageComponent
-            style={styles.oneContainerImage}
-            source={onelogo}></ImageComponent>
-          <Text style={styles.oneContainerText}>NE</Text>
-        </View> */}
         <View style={styles.oneContainer}>
           <ImageComponent
             style={styles.oneContainerImage}
@@ -501,7 +453,7 @@ export const SignUp = (props: SignUpProps) => {
       </TouchableOpacity>
 
       <SizedBox height={verticalScale(22)} />
-      <ScrollView
+      <KeyboardAwareScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.scrollView}>
         <View style={styles.container}>
@@ -509,7 +461,6 @@ export const SignUp = (props: SignUpProps) => {
           <TextInput
             placeholderTextColor="#8B8888"
             style={styles.textInput}
-            placeholder="add your first name"
             value={user.firstName}
             onChangeText={text => handleUserData(text, 'firstName')}
           />
@@ -518,37 +469,9 @@ export const SignUp = (props: SignUpProps) => {
           <TextInput
             placeholderTextColor="#8B8888"
             style={styles.textInput}
-            placeholder="add your last name"
             value={user.lastName}
             onChangeText={text => handleUserData(text, 'lastName')}
           />
-          <SizedBox height={verticalScale(14)} />
-          <Text style={styles.texClass}>{strings.email}</Text>
-          <TextInput
-            placeholderTextColor="#8B8888"
-            style={styles.textInput}
-            placeholder="add your email"
-            value={user.email}
-            onChangeText={text => handleUserData(text, 'email')}
-          />
-          {/* <SizedBox height={verticalScale(14)} />
-          <Text style={styles.texClass}>{strings.catchphrase}</Text>
-          <TextInput
-            placeholderTextColor="#8B8888"
-            style={styles.textInput}
-            placeholder="add a catchphrase"
-            value={user.catch_phrase}
-            onChangeText={text => handleUserData(text, 'catch_phrase')}
-          />
-          <SizedBox height={verticalScale(14)} />
-          <Text style={styles.texClass}>{strings.nickname}</Text>
-          <TextInput
-            placeholderTextColor="#8B8888"
-            style={styles.textInput}
-            placeholder="add your nick name"
-            value={user.nick_name}
-            onChangeText={text => handleUserData(text, 'nick_name')}
-          /> */}
           <SizedBox height={verticalScale(14)} />
           <Text style={styles.texClass}>{strings.birthday}</Text>
           <TouchableOpacity
@@ -571,60 +494,9 @@ export const SignUp = (props: SignUpProps) => {
               editIcon={edit}
             />
           </TouchableOpacity>
-          {/* <TextInput
-            placeholderTextColor="#8B8888"
-            style={styles.textInput}
-            placeholder="add your birthday"
-            value={user.birth_date}
-            onChangeText={text => handleUserData(text, 'birth_date')}
-          /> */}
-          {/* <SizedBox height={verticalScale(14)} />
-          <Text style={styles.texClass}>{strings.state}</Text>
-          <TextInput
-            placeholderTextColor="#8B8888"
-            style={styles.textInput}
-            placeholder="add your state"
-            value={user.state}
-            onChangeText={text => handleUserData(text, 'state')}
-          />
+         
           <SizedBox height={verticalScale(14)} />
-          <Text style={styles.texClass}>{strings.city}</Text>
-          <TextInput
-            placeholderTextColor="#8B8888"
-            style={styles.textInput}
-            placeholder="add your city"
-            value={user.city}
-            onChangeText={text => handleUserData(text, 'city')}
-          /> */}
-          <SizedBox height={verticalScale(14)} />
-          {/* <TextInput
-                    placeholderTextColor='#333333'
-                    style={styles.textInput}
-                    placeholder={strings.phoneNo}
-                    value={user.phoneNo}
-                    onChangeText={text => handleUserData(text, 'phoneNo')}
-                />
-                <SizedBox height={verticalScale(14)} /> */}
-          <Text style={styles.texClass}>{strings.password}</Text>
-          <TextInput
-            placeholderTextColor="#8B8888"
-            style={styles.textInput}
-            placeholder="add password"
-            secureTextEntry
-            value={user.password}
-            onChangeText={text => handleUserData(text, 'password')}
-          />
-          <SizedBox height={verticalScale(14)} />
-          <Text style={styles.texClass}>{strings.confirmPass}</Text>
-          <TextInput
-            placeholderTextColor="#8B8888"
-            style={styles.textInput}
-            placeholder="add confirm password"
-            secureTextEntry
-            value={user.confirmPass}
-            onChangeText={text => handleUserData(text, 'confirmPass')}
-          />
-          <SizedBox height={verticalScale(20)} />
+        
           <Text style={styles.texClass}>{strings.profilepic}</Text>
           <TouchableOpacity
             style={styles.profileUser}
@@ -641,51 +513,14 @@ export const SignUp = (props: SignUpProps) => {
                 profileUri != '' ? {uri: profileUri.imageUrl} : selectPic
               }></ImageComponent>
           </TouchableOpacity>
-
-          {/* <SizedBox height={verticalScale(20)} />
-          <Text style={styles.texClass}>{strings.bgImage}</Text>
-          <TouchableOpacity
-            style={styles.profileBackground}
-            activeOpacity={0.8}
-            onPress={() => imageSelection(2)}>
-            <ImageComponent
-              resizeMode={backgroundImageUri != '' ? 'cover' : 'center'}
-              style={
-                backgroundImageUri != ''
-                  ? styles.backgroundPicClassTwo
-                  : styles.backgroundPicClass
-              }
-              source={
-                backgroundImageUri != ''
-                  ? {uri: backgroundImageUri.imageUrl}
-                  : selectPic
-              }></ImageComponent>
-          </TouchableOpacity> */}
           <SizedBox height={verticalScale(20)} />
-          <TouchableOpacity style={styles.tncStyle} activeOpacity={0.8}>
-            <TouchableOpacity onPress={onHandleCheckBox}>
-              <ImageComponent
-                source={isChecked ? activeRadio : inactiveRadio}
-                style={styles.radio}
-              />
-            </TouchableOpacity>
-            <Text style={styles.agreeText}>
-              {strings.iAgree}
-              <TouchableOpacity
-                style={styles.temsCont}
-                activeOpacity={0.8}
-                onPress={loadInBrowser}>
-                <Text style={styles.boldtnc}>{` ${strings.tnc}`}</Text>
-              </TouchableOpacity>
-            </Text>
-          </TouchableOpacity>
           <ButtonComponent
             style={styles.signUpBtn}
             onPress={onSignUp}
             title={strings.signUpTwo}
           />
         </View>
-      </ScrollView>
+      </KeyboardAwareScrollView>
 
       <CalenderComponentModal ref={calenderShowRef}></CalenderComponentModal>
 

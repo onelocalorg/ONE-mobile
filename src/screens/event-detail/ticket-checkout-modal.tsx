@@ -644,7 +644,6 @@ const TicketCheckoutModalComp = (
                       style={styles.greenBtn}
                       source={addGreen}></ImageComponent>
                   </TouchableOpacity>
-
                  
                     <ScrollView showsHorizontalScrollIndicator={false}>
                       <View style={{height: 'auto',maxHeight:150}}>
@@ -716,9 +715,7 @@ const TicketCheckoutModalComp = (
                     /> */}
                     <TouchableOpacity
                       onPress={() =>
-
                         OnCardValidation()
-                        
                       }
                       activeOpacity={0.8}
                       style={styles.addCardContainer}>
@@ -921,7 +918,7 @@ const TicketCheckoutModalComp = (
                       onPress={onCheckValidation}
                       title={strings.addCard}
                       buttonStyle={styles.addCardContainer}
-                      icon={buttonArrowBlue}
+                      icon={buttonArrowBlue} 
                     />
                   </View>
                 </View>

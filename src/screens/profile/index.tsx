@@ -1,10 +1,13 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import {useAppTheme} from '@app-hooks/use-app-theme';
-import {NavigationContainerRef, ParamListBase} from '@react-navigation/native';
-import React, {useEffect, useState} from 'react';
-import {createStyleSheet} from './style';
-import {useStringsAndLabels} from '@app-hooks/use-strings-and-labels';
-import {Header} from '@components/header';
+import { useAppTheme } from "@app-hooks/use-app-theme";
+import {
+  NavigationContainerRef,
+  ParamListBase,
+} from "@react-navigation/native";
+import React, { useEffect, useState } from "react";
+import { createStyleSheet } from "./style";
+import { useStringsAndLabels } from "@app-hooks/use-strings-and-labels";
+import { Header } from "@components/header";
 import {
   ImageBackground,
   Keyboard,
@@ -17,39 +20,46 @@ import {
   Text,
   TouchableOpacity,
   View,
-} from 'react-native';
-import {ImageComponent} from '@components/image-component';
-import {TabComponent} from '@components/tab-component';
-import {About} from './about';
-import {MyEvents} from './my-events';
-import {useDispatch, useSelector} from 'react-redux';
+} from "react-native";
+import { ImageComponent } from "@components/image-component";
+import { TabComponent } from "@components/tab-component";
+import { About } from "./about";
+import { MyEvents } from "./my-events";
+import { useDispatch, useSelector } from "react-redux";
 import {
   UserProfileState,
   onSetCoverImage,
-} from '@network/reducers/user-profile-reducer';
-import {StoreType} from '@network/reducers/store';
-import {useLogout} from '@app-hooks/use-logout';
-import {Loader} from '@components/loader';
-import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
-import {Input} from '@components/input';
-import {useEditProfile} from '@network/hooks/user-service-hooks/use-edit-profile';
-import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
-import {Gratis, Search, arrowLeft, bell, dummy, onelogo} from '@assets/images';
-import {PERMISSIONS, request} from 'react-native-permissions';
-import {Alert} from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import {useToken} from '@app-hooks/use-token';
-import {TextInput} from 'react-native-gesture-handler';
-import {verticalScale} from '@theme/device/normalize';
-import {getTopPadding} from '@utils/platform-padding';
-import {Image} from 'react-native';
-import {height} from '@theme/device/device';
-import {BottomSheet} from 'react-native-elements';
-import GestureRecognizer from 'react-native-swipe-gestures';
-import ImagePicker from 'react-native-image-crop-picker';
-import Toast from 'react-native-simple-toast';
-import {navigations} from '@config/app-navigation/constant';
-import { API_URL } from '@network/constant';
+} from "@network/reducers/user-profile-reducer";
+import { StoreType } from "@network/reducers/store";
+import { useLogout } from "@app-hooks/use-logout";
+import { Loader } from "@components/loader";
+import { launchCamera, launchImageLibrary } from "react-native-image-picker";
+import { Input } from "@components/input";
+import { useEditProfile } from "@network/hooks/user-service-hooks/use-edit-profile";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import {
+  Gratis,
+  Search,
+  arrowLeft,
+  bell,
+  dummy,
+  onelogo,
+} from "@assets/images";
+import { PERMISSIONS, request } from "react-native-permissions";
+import { Alert } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useToken } from "@app-hooks/use-token";
+import { TextInput } from "react-native-gesture-handler";
+import { verticalScale } from "@theme/device/normalize";
+import { getTopPadding } from "@utils/platform-padding";
+import { Image } from "react-native";
+import { height } from "@theme/device/device";
+import { BottomSheet } from "react-native-elements";
+import GestureRecognizer from "react-native-swipe-gestures";
+import ImagePicker from "react-native-image-crop-picker";
+import Toast from "react-native-simple-toast";
+import { navigations } from "@config/app-navigation/constant";
+import { API_URL } from "@network/constant";
 
 interface UserData {
   id: string;
@@ -65,7 +75,7 @@ interface UserData {
   profile_answers: string[];
   cover_image: string;
   points_balance: number;
-  city:string;
+  city: string;
   first_name: string;
   last_name: string;
   nick_name: string;
@@ -76,26 +86,26 @@ interface ProfileScreenProps {
 }
 
 export const ProfileScreen = (props: ProfileScreenProps) => {
-  const {theme} = useAppTheme();
-  const {strings} = useStringsAndLabels();
+  const { theme } = useAppTheme();
+  const { strings } = useStringsAndLabels();
   const styles = createStyleSheet(theme);
-  const {navigation} = props || {};
+  const { navigation } = props || {};
   const [selectedTab, setSelectedTab] = useState(0);
-  const [profileUri, setProfileUri] = useState('');
-  const [backgroundImageUri, setbackgroundUri] = useState('');
+  const [profileUri, setProfileUri] = useState("");
+  const [backgroundImageUri, setbackgroundUri] = useState("");
   const [setimageType, selectImage] = useState();
-  const [updatedBio, setBio] = useState('');
-  const [filename, assetsData] = useState('');
-  const [base64string, setBase64Path] = useState('');
+  const [updatedBio, setBio] = useState("");
+  const [filename, assetsData] = useState("");
+  const [base64string, setBase64Path] = useState("");
   const [imageOption, ImageOptionModal] = useState(false);
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
-  const [nickName, setNickName] = useState('');
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [nickName, setNickName] = useState("");
   const [isLoading, LodingData] = useState(false);
-  const {user} = useSelector<StoreType, UserProfileState>(
-    state => state.userProfileReducer,
-  ) as {user: UserData};
-  const {onLogout} = useLogout();
+  const { user } = useSelector<StoreType, UserProfileState>(
+    (state) => state.userProfileReducer
+  ) as { user: UserData };
+  const { onLogout } = useLogout();
   const {
     about,
     bio,
@@ -110,33 +120,33 @@ export const ProfileScreen = (props: ProfileScreenProps) => {
     city,
     first_name,
     last_name,
-    nick_name
+    nick_name,
   } = user || {};
-  const {mutateAsync} = useEditProfile();
+  const { mutateAsync } = useEditProfile();
   const dispatch = useDispatch();
-  const {token} = useToken();
-  const [searchQuery, setSearchQuery] = useState('');
-  console.log(user, '--------------User Info--------------');
-  console.log(skills, '888888888888');
+  const { token } = useToken();
+  const [searchQuery, setSearchQuery] = useState("");
+  console.log(user, "--------------User Info--------------");
+  console.log(skills, "888888888888");
   useEffect(() => {
     setBio(bio);
     setProfileUri(pic);
     setbackgroundUri(cover_image);
     setFirstName(first_name);
     setLastName(last_name);
-    setNickName(nick_name)
-    console.log('------------pic----------', pic);
-    console.log('------------cover_image----------', cover_image);
-  }, [bio, pic, cover_image,first_name,last_name,nick_name]);
+    setNickName(nick_name);
+    console.log("------------pic----------", pic);
+    console.log("------------cover_image----------", cover_image);
+  }, [bio, pic, cover_image, first_name, last_name, nick_name]);
 
   useEffect(() => {
     return () => {
-      dispatch(onSetCoverImage(''));
+      dispatch(onSetCoverImage(""));
     };
   }, []);
 
   const onBackPress = () => {
-    console.log('jdjkshdjkshdkhjakhdajk');
+    console.log("jdjkshdjkshdkhjakhdajk");
     navigation.goBack();
   };
 
@@ -180,36 +190,36 @@ export const ProfileScreen = (props: ProfileScreenProps) => {
 
   const imageOptionSelect = async (item: any) => {
     if (item === 1) {
-      if (Platform.OS === 'ios') {
+      if (Platform.OS === "ios") {
         GallerySelect();
-      } else if (Platform.OS === 'android') {
+      } else if (Platform.OS === "android") {
         try {
           const granted = await PermissionsAndroid.request(
-            PermissionsAndroid.PERMISSIONS.CAMERA,
+            PermissionsAndroid.PERMISSIONS.CAMERA
           );
           if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-            console.log('You can use the camera');
+            console.log("You can use the camera");
             GallerySelect();
           } else {
-            Alert.alert('Camera permission denied');
+            Alert.alert("Camera permission denied");
           }
         } catch (err) {
           console.warn(err);
         }
       }
     } else if (item === 2) {
-      if (Platform.OS === 'ios') {
+      if (Platform.OS === "ios") {
         onUploadImage();
-      } else if (Platform.OS === 'android') {
+      } else if (Platform.OS === "android") {
         try {
           const granted = await PermissionsAndroid.request(
-            PermissionsAndroid.PERMISSIONS.CAMERA,
+            PermissionsAndroid.PERMISSIONS.CAMERA
           );
           if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-            console.log('You can use the camera');
+            console.log("You can use the camera");
             onUploadImage();
           } else {
-            Alert.alert('Camera permission denied');
+            Alert.alert("Camera permission denied");
           }
         } catch (err) {
           console.warn(err);
@@ -221,8 +231,8 @@ export const ProfileScreen = (props: ProfileScreenProps) => {
   };
 
   const onUploadImage = async () => {
-    const {assets} = await launchCamera({
-      mediaType: 'photo',
+    const { assets } = await launchCamera({
+      mediaType: "photo",
       includeBase64: true,
       maxWidth: 800,
       maxHeight: 800,
@@ -230,13 +240,13 @@ export const ProfileScreen = (props: ProfileScreenProps) => {
     ImageOptionModal(false);
     if (assets) {
       const img = assets?.[0];
-      console.log('---------------assets Gallery 222---------------');
+      console.log("---------------assets Gallery 222---------------");
       console.log(assets);
-      var fileNameTwo = img?.fileName ?? '';
+      var fileNameTwo = img?.fileName ?? "";
       LodingData(true);
       var output =
-        fileNameTwo.substr(0, fileNameTwo.lastIndexOf('.')) || fileNameTwo;
-      var base64Two = img?.base64 ?? '';
+        fileNameTwo.substr(0, fileNameTwo.lastIndexOf(".")) || fileNameTwo;
+      var base64Two = img?.base64 ?? "";
 
       assetsData(output);
       setBase64Path(base64Two);
@@ -258,32 +268,32 @@ export const ProfileScreen = (props: ProfileScreenProps) => {
     //   maxWidth: 800,
     //   maxHeight: 800,
     // });
-    console.log('===============111111==================');
+    console.log("===============111111==================");
     ImagePicker.openPicker({
       width: 300,
       height: 400,
       cropperRotateButtonsHidden: true,
-      mediaType: 'photo',
+      mediaType: "photo",
       includeBase64: true,
       cropping: true,
-    }).then(image => {
+    }).then((image) => {
       console.log(image);
-      console.log('===============222222==================');
+      console.log("===============222222==================");
 
       if (image) {
-        console.log('---------------assets Gallery 222---------------');
+        console.log("---------------assets Gallery 222---------------");
         console.log(image);
-        var fileNameTwo = image?.filename ?? '';
+        var fileNameTwo = image?.filename ?? "";
         LodingData(true);
         var output =
-          fileNameTwo.substr(0, fileNameTwo.lastIndexOf('.')) || fileNameTwo;
-        var base64Two = image?.data ?? '';
+          fileNameTwo.substr(0, fileNameTwo.lastIndexOf(".")) || fileNameTwo;
+        var base64Two = image?.data ?? "";
 
         assetsData(output);
         setBase64Path(base64Two);
-        console.log('---------------output---------------');
+        console.log("---------------output---------------");
         console.log(output);
-        console.log('---------------base64Two---------------');
+        console.log("---------------base64Two---------------");
         console.log(base64Two);
         if (setimageType === 1) {
           ProfileImageUploadAPI(output, base64Two);
@@ -298,30 +308,27 @@ export const ProfileScreen = (props: ProfileScreenProps) => {
 
   const ProfileImageUploadAPI = async (fileItem: any, base64Item: any) => {
     var pic: any = {
-      uploadKey: 'pic',
+      uploadKey: "pic",
       userId: user.id,
       imageName: fileItem,
-      base64String: 'data:image/jpeg;base64,' + base64Item,
+      base64String: "data:image/jpeg;base64," + base64Item,
     };
     ImageOptionModal(false);
-    console.log('=================Request=================');
+    console.log("=================Request=================");
     console.log(pic);
     try {
-      const response = await fetch(
-        API_URL + '/v1/users/upload/file',
-        {
-          method: 'post',
-          headers: new Headers({
-            'Content-Type': 'application/json',
-          }),
-          body: JSON.stringify(pic),
-        },
-      );
+      const response = await fetch(API_URL + "/v1/users/upload/file", {
+        method: "post",
+        headers: new Headers({
+          "Content-Type": "application/json",
+        }),
+        body: JSON.stringify(pic),
+      });
       const dataItem = await response.json();
       LodingData(false);
-      console.log('-----------------Response------------');
+      console.log("-----------------Response------------");
       setProfileUri(dataItem?.data?.imageUrl);
-      console.log('=========dataItem==========', dataItem);
+      console.log("=========dataItem==========", dataItem);
     } catch (error) {
       LodingData(false);
       console.log(error);
@@ -330,28 +337,25 @@ export const ProfileScreen = (props: ProfileScreenProps) => {
 
   const BackgroundImageUploadAPI = async (fileItem: any, base64Item: any) => {
     var pic: any = {
-      uploadKey: 'cover_image',
+      uploadKey: "cover_image",
       userId: user.id,
       imageName: fileItem,
-      base64String: 'data:image/jpeg;base64,' + base64Item,
+      base64String: "data:image/jpeg;base64," + base64Item,
     };
     ImageOptionModal(false);
-    console.log('=================Request=================');
-    console.log('-----pic------', pic);
+    console.log("=================Request=================");
+    console.log("-----pic------", pic);
     try {
-      const response = await fetch(
-        API_URL + '/v1/users/upload/file',
-        {
-          method: 'post',
-          headers: new Headers({
-            'Content-Type': 'application/json',
-          }),
-          body: JSON.stringify(pic),
-        },
-      );
+      const response = await fetch(API_URL + "/v1/users/upload/file", {
+        method: "post",
+        headers: new Headers({
+          "Content-Type": "application/json",
+        }),
+        body: JSON.stringify(pic),
+      });
       const dataItem = await response.json();
       LodingData(false);
-      console.log('-----------------Response------------');
+      console.log("-----------------Response------------");
       setbackgroundUri(dataItem?.data?.imageUrl);
       console.log(dataItem);
     } catch (error) {
@@ -364,7 +368,7 @@ export const ProfileScreen = (props: ProfileScreenProps) => {
     about?: string;
     skills?: string[];
   }) => {
-    console.log('============onSaveProfile===============');
+    console.log("============onSaveProfile===============");
     Keyboard.dismiss();
     let body = {
       ...request,
@@ -372,7 +376,7 @@ export const ProfileScreen = (props: ProfileScreenProps) => {
       coverImage: user?.coverImage,
       first_name: firstName,
       last_name: lastName,
-      nick_name: nickName
+      nick_name: nickName,
     } as {
       about?: string;
       skills?: string[];
@@ -382,15 +386,15 @@ export const ProfileScreen = (props: ProfileScreenProps) => {
       nick_name?: string;
     };
     LodingData(true);
-    console.log('oooooo', profileUri);
+    console.log("oooooo", profileUri);
     if (pic !== profileUri) {
-      console.log('-------------11111---------');
+      console.log("-------------11111---------");
       body.profile = profileUri;
     }
 
-    const res = await mutateAsync({bodyParams: body, userId: user?.id});
+    const res = await mutateAsync({ bodyParams: body, userId: user?.id });
     if (res?.success) {
-      console.log('-------------2222---------');
+      console.log("-------------2222---------");
       navigation.goBack();
     }
   };
@@ -403,37 +407,42 @@ export const ProfileScreen = (props: ProfileScreenProps) => {
   };
 
   return (
-    <KeyboardAwareScrollView>
-<TouchableOpacity style={styles.container} activeOpacity={1} onPress={keyboardDismiss}>
-      <Loader visible={isLoading} showOverlay />
+    <KeyboardAwareScrollView showsVerticalScrollIndicator={false}>
+      <TouchableOpacity
+        style={styles.container}
+        activeOpacity={1}
+        onPress={keyboardDismiss}
+      >
+        <Loader visible={isLoading} showOverlay />
 
-      <TouchableOpacity style={styles.HeaderContainerTwo} activeOpacity={1}>
-        <TouchableOpacity activeOpacity={1} onPress={() => imageSelection(2)}>
-          <ImageComponent
-            isUrl={!!backgroundImageUri}
-            resizeMode="cover"
-            uri={backgroundImageUri}
-            source={dummy}
-            // source={
-            //   backgroundImageUri != '' ? {uri: backgroundImageUri} : dummy}
-            style={styles.HeaderContainerTwoBg}
-          />
-          <View style={styles.oneContainer}>
+        <TouchableOpacity style={styles.HeaderContainerTwo} activeOpacity={1}>
+          <TouchableOpacity activeOpacity={1} onPress={() => imageSelection(2)}>
             <ImageComponent
-              style={styles.oneContainerImage}
-              source={onelogo}></ImageComponent>
-            <View>
-              <Text style={styles.oneContainerText}>NE</Text>
-              <Text style={styles.localText}>L  o  c  a  l</Text>
+              isUrl={!!backgroundImageUri}
+              resizeMode="cover"
+              uri={backgroundImageUri}
+              source={dummy}
+              // source={
+              //   backgroundImageUri != '' ? {uri: backgroundImageUri} : dummy}
+              style={styles.HeaderContainerTwoBg}
+            />
+            <View style={styles.oneContainer}>
+              <ImageComponent
+                style={styles.oneContainerImage}
+                source={onelogo}
+              ></ImageComponent>
+              <View>
+                <Text style={styles.oneContainerText}>NE</Text>
+                <Text style={styles.localText}>L o c a l</Text>
+              </View>
             </View>
-          </View>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.row2} onPress={onBackPress}>
-          <View>
-            <ImageComponent source={arrowLeft} style={styles.arrowLeft} />
-          </View>
-        </TouchableOpacity>
-        {/* <View style={styles.searchContainer}>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.row2} onPress={onBackPress}>
+            <View>
+              <ImageComponent source={arrowLeft} style={styles.arrowLeft} />
+            </View>
+          </TouchableOpacity>
+          {/* <View style={styles.searchContainer}>
           <ImageComponent style={styles.searchIcon} source={Search}></ImageComponent>
           <TextInput value={searchQuery} placeholderTextColor="#FFFF" placeholder='Search' style={styles.searchInput} onChangeText={value => {
             console.log(value)
@@ -441,114 +450,146 @@ export const ProfileScreen = (props: ProfileScreenProps) => {
           }}></TextInput>
         </View> */}
 
-        <TouchableOpacity
-          activeOpacity={0.8}
-          style={{position: 'absolute', right: 10, top: 60}}
-          onPress={onLogout}>
-          <Text
-            style={{
-              fontSize: 16,
-              color: theme.colors.white,
-              fontWeight: '500',
-              fontFamily: theme.fontType.medium,
-            }}>
-            {strings.logout}
-          </Text>
+          <TouchableOpacity
+            activeOpacity={0.8}
+            style={{ position: "absolute", right: 10, top: 60 }}
+            onPress={onLogout}
+          >
+            <Text
+              style={{
+                fontSize: 16,
+                color: theme.colors.white,
+                fontWeight: "500",
+                fontFamily: theme.fontType.medium,
+              }}
+            >
+              {strings.logout}
+            </Text>
+          </TouchableOpacity>
         </TouchableOpacity>
-      </TouchableOpacity>
 
-      <View style={styles.profileContainer}>
-        <TouchableOpacity activeOpacity={0.8} onPress={() => imageSelection(1)}>
-          <ImageComponent
-            isUrl={!!profileUri}
-            resizeMode="cover"
-            uri={profileUri}
-            source={dummy}
-            style={styles.profile}
-          />
+        <View style={styles.profileContainer}>
+          <TouchableOpacity
+            activeOpacity={0.8}
+            onPress={() => imageSelection(1)}
+          >
+            <ImageComponent
+              isUrl={!!profileUri}
+              resizeMode="cover"
+              uri={profileUri}
+              source={dummy}
+              style={styles.profile}
+            />
 
-          <Modal transparent onDismiss={closeModal} visible={imageOption}>
-            <GestureRecognizer onSwipeDown={closeModal} style={styles.gesture}>
-              <TouchableOpacity
-                style={styles.containerGallery}
-                activeOpacity={1}
-                onPress={closeModal}
-              />
-            </GestureRecognizer>
-            <KeyboardAvoidingView
-              behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-              style={styles.keyboardViewTwo}>
-              <View style={styles.imageActionSheet}>
-                <TouchableOpacity onPress={() => imageOptionSelect(1)}>
-                  <Text style={styles.galleryText}>Gallery</Text>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => imageOptionSelect(2)}>
-                  <Text style={styles.cameraText}>Camera</Text>
-                </TouchableOpacity>
-              </View>
-            </KeyboardAvoidingView>
-          </Modal>
-        </TouchableOpacity>
-      </View>
-      <View style={styles.center}>
-      <View style={styles.userNameClass}>
-          <TextInput onChangeText={(text)=>setFirstName(text)} placeholder='first name' placeholderTextColor='#818181' style={styles.firstName}>{firstName}</TextInput>
-          <TextInput onChangeText={(text)=>setLastName(text)} placeholder='last name' placeholderTextColor='#818181' style={styles.lastName}>{lastName}</TextInput>
+            <Modal transparent onDismiss={closeModal} visible={imageOption}>
+              <GestureRecognizer
+                onSwipeDown={closeModal}
+                style={styles.gesture}
+              >
+                <TouchableOpacity
+                  style={styles.containerGallery}
+                  activeOpacity={1}
+                  onPress={closeModal}
+                />
+              </GestureRecognizer>
+              <KeyboardAvoidingView
+                behavior={Platform.OS === "ios" ? "padding" : "height"}
+                style={styles.keyboardViewTwo}
+              >
+                <View style={styles.imageActionSheet}>
+                  <TouchableOpacity onPress={() => imageOptionSelect(1)}>
+                    <Text style={styles.galleryText}>Gallery</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity onPress={() => imageOptionSelect(2)}>
+                    <Text style={styles.cameraText}>Camera</Text>
+                  </TouchableOpacity>
+                </View>
+              </KeyboardAvoidingView>
+            </Modal>
+          </TouchableOpacity>
         </View>
-        <View style={styles.circularView}>
-        <TextInput onChangeText={(text)=>setNickName(text)} placeholder='enter nickname' placeholderTextColor='#818181' style={styles.des}>{nickName}</TextInput>
+        <View style={styles.center}>
+          <View style={styles.userNameClass}>
+            <TextInput
+              onChangeText={(text) => setFirstName(text)}
+              placeholder="first name"
+              placeholderTextColor="#818181"
+              style={styles.firstName}
+            >
+              {firstName}
+            </TextInput>
+            <TextInput
+              onChangeText={(text) => setLastName(text)}
+              placeholder="last name"
+              placeholderTextColor="#818181"
+              style={styles.lastName}
+            >
+              {lastName}
+            </TextInput>
+          </View>
+          <View style={styles.circularView}>
+            <TextInput
+              onChangeText={(text) => setNickName(text)}
+              placeholder="enter nickname"
+              placeholderTextColor="#818181"
+              style={styles.des}
+            >
+              {nickName}
+            </TextInput>
+          </View>
         </View>
-      </View>
 
-      {/* <TouchableOpacity activeOpacity={0.8} style={styles.payView}>
+        {/* <TouchableOpacity activeOpacity={0.8} style={styles.payView}>
         <Text style={styles.pay}>{strings.stripePayout}</Text>
       </TouchableOpacity> */}
 
-      <View style={styles.gratiesCont}>
-        <Image
-          source={Gratis}
-          resizeMode="cover"
-          style={styles.gratiesImage}></Image>
-        <Text style={styles.gratiesNumber}>{points_balance}</Text>
-      </View>
+        <View style={styles.gratiesCont}>
+          <Image
+            source={Gratis}
+            resizeMode="cover"
+            style={styles.gratiesImage}
+          ></Image>
+          <Text style={styles.gratiesNumber}>{points_balance}</Text>
+        </View>
 
-      <View style={styles.aboutView}>
-        <Input
-          inputStyle={styles.input}
-          value={updatedBio}
-          placeholderTextColor='#818181'
-          placeholder='enter a catchphrase'
-          onChangeText={setBio}
-          multiline
-        />
-      </View>
+        <View style={styles.aboutView}>
+          <Input
+            inputStyle={styles.input}
+            value={updatedBio}
+            placeholderTextColor="#818181"
+            placeholder="enter a catchphrase"
+            onChangeText={setBio}
+            multiline
+          />
+        </View>
 
-      <View style={styles.line} />
+        <View style={styles.line} />
 
-      {/* <TabComponent
+        {/* <TabComponent
         tabs={[strings.about, strings.myEvents, strings.activity]}
         onPressTab={setSelectedTab}
       /> */}
-      <TabComponent
-        tabs={[strings.about, strings.myEvents]}
-        onPressTab={setSelectedTab}
-      />
-      <KeyboardAwareScrollView showsVerticalScrollIndicator={false}>
-        {selectedTab === 0 && (
-          <About
-            about={about}
-            idUser={user?.id}
-            skills={skills}
-            profileAnswers={profile_answers}
-            onEditProfile={onSaveProfile}
-            navigation={navigation}
-            ref={undefined}
-          />
-        )}
-        {selectedTab === 1 && <MyEvents userId={id} navigation={navigation} />}
-      </KeyboardAwareScrollView>
-    </TouchableOpacity>
+        <TabComponent
+          tabs={[strings.about, strings.myEvents]}
+          onPressTab={setSelectedTab}
+        />
+        <KeyboardAwareScrollView showsVerticalScrollIndicator={false}>
+          {selectedTab === 0 && (
+            <About
+              about={about}
+              idUser={user?.id}
+              skills={skills}
+              profileAnswers={profile_answers}
+              onEditProfile={onSaveProfile}
+              navigation={navigation}
+              ref={undefined}
+            />
+          )}
+          {selectedTab === 1 && (
+            <MyEvents userId={id} navigation={navigation} />
+          )}
+        </KeyboardAwareScrollView>
+      </TouchableOpacity>
     </KeyboardAwareScrollView>
-    
   );
 };

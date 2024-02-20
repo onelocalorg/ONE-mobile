@@ -153,7 +153,8 @@ interface UpdateEventProps {
     eventImage?: string;
     about?:string
     latitude?:string,
-    longitude?:string
+    longitude?:string,
+    type?:string
   };
   eventId?: string;
 }
@@ -172,7 +173,8 @@ export const onUpdateEvent = async (props: UpdateEventProps) => {
     eventImage,
     about,
     latitude,
-    longitude
+    longitude,
+    type
      
   } = bodyParams || {};
   let response;
@@ -214,6 +216,8 @@ export const onUpdateEvent = async (props: UpdateEventProps) => {
   // }
   // if (longitude) {
     attachment.append('event_lng', longitude);
+
+    attachment.append('type', type);
   // }
 
   console.log(attachment,'-----------------update event request-------------')
@@ -244,6 +248,7 @@ interface CreateEventProps {
     about?:string;
     latitude?:string,
     longitude?:string
+    type:string
   };
 }
 
@@ -261,7 +266,8 @@ export const onCreateEvent = async (props: CreateEventProps) => {
     eventImage,
     about,
     latitude,
-    longitude
+    longitude,
+    type
 
   } = bodyParams || {};
   let response;
@@ -282,6 +288,7 @@ console.log(bodyParams)
   attachment.append('start_date', new Date(start_date).toISOString());
   attachment.append('event_lat', latitude);
   attachment.append('event_lng', longitude);
+  attachment.append('event_lng', type);
   console.log(attachment,'--------------------------create event request-------------------------')
   try {
     const endPoint = `${apiConstants.createEvent}`;

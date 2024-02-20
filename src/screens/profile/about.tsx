@@ -914,6 +914,7 @@ export const About = (props: AboutDataProps) => {
                               ]}
                               onPress={() => handleBillingSubscription(true)}>
                               <Text style={styles.amount}>
+                                {}
                                 {`$${parseInt(
                                   monthlyPlan?.price?.$numberDecimal,
                                   10,

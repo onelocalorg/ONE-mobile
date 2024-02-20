@@ -1,6 +1,6 @@
-import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {createStyleSheet} from './style';
-import {useAppTheme} from '@app-hooks/use-app-theme';
+import React, { useCallback, useEffect, useRef, useState } from "react";
+import { createStyleSheet } from "./style";
+import { useAppTheme } from "@app-hooks/use-app-theme";
 import {
   ActivityIndicator,
   FlatList,
@@ -15,9 +15,9 @@ import {
   TextInput,
   TouchableOpacity,
   View,
-} from 'react-native';
-import {useStringsAndLabels} from '@app-hooks/use-strings-and-labels';
-import {ImageComponent} from '@components/image-component';
+} from "react-native";
+import { useStringsAndLabels } from "@app-hooks/use-strings-and-labels";
+import { ImageComponent } from "@components/image-component";
 import {
   Gratis,
   Search,
@@ -51,45 +51,45 @@ import {
   postCalender,
   request,
   send,
-} from '@assets/images';
-import {useDispatch, useSelector} from 'react-redux';
-import {StoreType} from '@network/reducers/store';
+} from "@assets/images";
+import { useDispatch, useSelector } from "react-redux";
+import { StoreType } from "@network/reducers/store";
 import {
   UserProfileState,
   onSetUser,
-} from '@network/reducers/user-profile-reducer';
+} from "@network/reducers/user-profile-reducer";
 import {
   useUserProfile,
   userProfileParsedData,
-} from '@network/hooks/user-service-hooks/use-user-profile';
+} from "@network/hooks/user-service-hooks/use-user-profile";
 import {
   NavigationContainerRef,
   ParamListBase,
   useFocusEffect,
-} from '@react-navigation/native';
-import {navigations} from '@config/app-navigation/constant';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import {ScrollView} from 'react-native-gesture-handler';
-import {DatePickerModal, TimePickerModal} from 'react-native-paper-dates';
-import moment from 'moment';
-import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
-import GetLocation from 'react-native-get-location';
-import {Loader} from '@components/loader';
-import Popover, {PopoverPlacement, Rect} from 'react-native-popover-view';
-import {SizedBox} from '@components/sized-box';
-import {verticalScale} from '@theme/device/normalize';
+} from "@react-navigation/native";
+import { navigations } from "@config/app-navigation/constant";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { ScrollView } from "react-native-gesture-handler";
+import { DatePickerModal, TimePickerModal } from "react-native-paper-dates";
+import moment from "moment";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import GetLocation from "react-native-get-location";
+import { Loader } from "@components/loader";
+import Popover, { PopoverPlacement, Rect } from "react-native-popover-view";
+import { SizedBox } from "@components/sized-box";
+import { verticalScale } from "@theme/device/normalize";
 import {
   DatePickerRefProps,
   DateRangePicker,
-} from '@components/date-range-picker';
-import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete';
-import Toast from 'react-native-simple-toast';
-import GestureRecognizer from 'react-native-swipe-gestures';
-import {Result} from '@network/hooks/home-service-hooks/use-event-lists';
-import {Alert} from 'react-native';
-import {API_URL, setData} from '@network/constant';
-import Swiper from 'react-native-swiper';
-import {CommentList} from './commetList';
+} from "@components/date-range-picker";
+import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
+import Toast from "react-native-simple-toast";
+import GestureRecognizer from "react-native-swipe-gestures";
+import { Result } from "@network/hooks/home-service-hooks/use-event-lists";
+import { Alert } from "react-native";
+import { API_URL, setData } from "@network/constant";
+import Swiper from "react-native-swiper";
+import { CommentList } from "./commetList";
 
 interface Range {
   startDate: Date | undefined;
@@ -101,12 +101,12 @@ interface HomeScreenProps {
 }
 
 export const HomeScreen = (props: HomeScreenProps) => {
-  const {theme} = useAppTheme();
+  const { theme } = useAppTheme();
   const styles = createStyleSheet(theme);
-  const {strings} = useStringsAndLabels();
-  const {navigation} = props || {};
-  const [searchQuery, setSearchQuery] = useState('');
-  const [ProfileData, setUserProfile]: any = useState('');
+  const { strings } = useStringsAndLabels();
+  const { navigation } = props || {};
+  const [searchQuery, setSearchQuery] = useState("");
+  const [ProfileData, setUserProfile]: any = useState("");
   const [userList, recentlyJoinUser] = useState([]);
   var [postList, postListData]: any = useState([]);
   const [open, setOpen] = useState(false);
@@ -114,17 +114,17 @@ export const HomeScreen = (props: HomeScreenProps) => {
   const [offerModal, CreateOfferModal] = useState(false);
   const [replyofferModal, openReplyOfferModal] = useState(false);
   var [location, setUserLocation]: any = useState();
-  const [addnewCmt, onAddComment] = useState('');
-  const [addnewCmtReply, onAddCommentReply] = useState('');
+  const [addnewCmt, onAddComment] = useState("");
+  const [addnewCmtReply, onAddCommentReply] = useState("");
   const [isLoading, LodingData] = useState(false);
   const [loading, onPageLoad] = useState(false);
   const [commentListScrollEnable, setCommentListScrollEnable] = useState(true);
   const [commentLoading, onPageLoadComment] = useState(false);
   const [ismoreData, isMoreDataLoad] = useState(false);
   const [ismoreCommentLoad, isMoreCommentData] = useState(true);
-  const [replyId, commentReplyPostId] = useState('');
-  const [replyIndex, setReplayIndex] = useState('');
-  const [setReplyId, setReplyCommentId] = useState('');
+  const [replyId, commentReplyPostId] = useState("");
+  const [replyIndex, setReplayIndex] = useState("");
+  const [setReplyId, setReplyCommentId] = useState("");
   var [postId, postIdData]: any = useState();
   var [gratisIndex, gratisIndexData]: any = useState();
   var [commentIndex, setCommentIndex]: any = useState();
@@ -147,18 +147,20 @@ export const HomeScreen = (props: HomeScreenProps) => {
   const [postContent, postContentModal] = useState(false);
   const [reoportModal, reportModalShowHide] = useState(false);
   const [postHideId, hidePostContentIDData] = useState();
-  const [reportPost, addReportReason] = useState('');
+  const [reportPost, addReportReason] = useState("");
   const [postCommentID, setPostCommentID] = useState();
   const [postCommentIndex, setPostIndexID] = useState();
-  const [type, eventTypeData] = useState('offer');
+  const [type, eventTypeData] = useState("offer");
+  const [gratistype, setGratisSelectType] = useState();
+  const [childjIndex, setChildIndexForGratis]: any = useState();
   const [postCommentIndexTwo, setPostCommentIndexTwo]: any = useState();
   const [postIndexTwo, setPostIndexTwo]: any = useState();
   const flatlistRef = useRef<FlatList>(null);
 
-  const {user} = useSelector<StoreType, UserProfileState>(
-    state => state.userProfileReducer,
-  ) as {user: {id: string; pic: string; city: string; state: string}};
-  const {refetch} = useUserProfile({
+  const { user } = useSelector<StoreType, UserProfileState>(
+    (state) => state.userProfileReducer
+  ) as { user: { id: string; pic: string; city: string; state: string } };
+  const { refetch } = useUserProfile({
     userId: user?.id,
   });
 
@@ -178,7 +180,7 @@ export const HomeScreen = (props: HomeScreenProps) => {
       // postListAPI();
       requestLocationPermission();
       setPage(page);
-    }, [range?.startDate, range?.endDate, page]),
+    }, [range?.startDate, range?.endDate, page])
   );
 
   useEffect(() => {
@@ -193,7 +195,7 @@ export const HomeScreen = (props: HomeScreenProps) => {
   useFocusEffect(
     useCallback(() => {
       //  getCommentListAPI()
-    }, [pageCmt]),
+    }, [pageCmt])
   );
 
   const requestLocationPermission = async () => {
@@ -201,25 +203,25 @@ export const HomeScreen = (props: HomeScreenProps) => {
       enableHighAccuracy: true,
       timeout: 6000,
     })
-      .then(location => {
+      .then((location) => {
         setUserLocation(location);
         console.log(
-          '---------------------location---------------------',
-          location,
+          "---------------------location---------------------",
+          location
         );
         if (location) {
           postListAPI();
         }
       })
-      .catch(error => {
-        console.log('---------------------error---------------------', error);
-        const {code, message} = error;
+      .catch((error) => {
+        console.log("---------------------error---------------------", error);
+        const { code, message } = error;
         console.log(code, message);
       });
   };
 
   const onNavigateToCreatePost = () => {
-    setData('POST_TAB_OPEN_INDEX', 1);
+    setData("POST_TAB_OPEN_INDEX", 1);
     navigation?.navigate(navigations?.CREATEPOST);
   };
 
@@ -237,7 +239,11 @@ export const HomeScreen = (props: HomeScreenProps) => {
 
   const replyOfferModalHide = () => {
     openReplyOfferModal(false);
-    addReplyGratisAPI();
+    if (gratistype === 1) {
+      addReplyGratisAPI();
+    } else {
+      addChildReplyGratisAPI();
+    }
   };
 
   const openReplyGratis = (
@@ -246,7 +252,12 @@ export const HomeScreen = (props: HomeScreenProps) => {
     replyKey: any,
     index: any,
     cindex: any,
+    setGratis: any,
+    childIndex: any
   ) => {
+    console.log('childIndex1111',childIndex)
+    setChildIndexForGratis(childIndex);
+    setGratisSelectType(setGratis);
     openReplyOfferModal(true);
     totalGratisCommentData(10);
     setreplyGratisId(replyId);
@@ -254,7 +265,7 @@ export const HomeScreen = (props: HomeScreenProps) => {
     postIdData(postIds);
     gratisIndexData(index);
     setCommentIndex(cindex);
-    console.log('----------cindex----------', cindex);
+    console.log("----------cindex----------", cindex);
   };
 
   const OfferModalClose = () => {
@@ -285,9 +296,9 @@ export const HomeScreen = (props: HomeScreenProps) => {
 
   const onNavigateToProfile = () => {
     if (user?.id) {
-      refetch().then(res => {
+      refetch().then((res) => {
         const userData = userProfileParsedData(res?.data?.data);
-        console.log('check1===', userData);
+        console.log("check1===", userData);
         dispatch(onSetUser(userData));
       });
     }
@@ -300,69 +311,69 @@ export const HomeScreen = (props: HomeScreenProps) => {
 
   const onConfirm = useCallback(
     (res: Range) => {
-      console.log(res, '--------------date pick------------');
+      console.log(res, "--------------date pick------------");
       const startDate = res?.startDate;
       const endDate = res?.endDate;
       setOpen(false);
-      setRange({startDate, endDate});
+      setRange({ startDate, endDate });
       requestLocationPermission();
       LodingData(true);
       postListAPI();
-      console.log(range, '---------------set range ---------------');
+      console.log(range, "---------------set range ---------------");
     },
-    [setOpen, setRange],
+    [setOpen, setRange]
   );
 
   const getUserProfileAPI = async () => {
-    const token = await AsyncStorage.getItem('token');
-    console.log('token', token);
+    const token = await AsyncStorage.getItem("token");
+    console.log("token", token);
     try {
-      const response = await fetch(API_URL + '/v1/users/' + user.id, {
-        method: 'get',
+      const response = await fetch(API_URL + "/v1/users/" + user.id, {
+        method: "get",
         headers: new Headers({
-          Authorization: 'Bearer ' + token,
-          'Content-Type': 'application/json',
+          Authorization: "Bearer " + token,
+          "Content-Type": "application/json",
         }),
       });
       const dataItem = await response.json();
-      console.log('-----------------Response User Profile API------------');
+      console.log("-----------------Response User Profile API------------");
       console.log(dataItem);
       console.log(dataItem.data.pic);
       setUserProfile(dataItem.data);
-      AsyncStorage.setItem('profile', dataItem.data.pic);
-      AsyncStorage.setItem('uniqueId', dataItem.data.user_unique_id);
+      AsyncStorage.setItem("profile", dataItem.data.pic);
+      AsyncStorage.setItem("uniqueId", dataItem.data.user_unique_id);
     } catch (error) {
       console.log(error);
     }
   };
 
   async function commentOnPost(postID: any, index: any) {
-    const token = await AsyncStorage.getItem('token');
+    const token = await AsyncStorage.getItem("token");
     var data: any = {
       content: addnewCmt,
     };
-    console.log('===========Comment on Post API Request ==============');
+    console.log("===========Comment on Post API Request ==============");
     console.log(data);
-    console.log(API_URL + '/v1/posts/' + postID.id + '/comments/create');
+    console.log(API_URL + "/v1/posts/" + postID.id + "/comments/create");
     try {
       const response = await fetch(
-        API_URL + '/v1/posts/' + postID.id + '/comments/create',
+        API_URL + "/v1/posts/" + postID.id + "/comments/create",
         {
-          method: 'post',
+          method: "post",
           headers: new Headers({
-            Authorization: 'Bearer ' + token,
-            'Content-Type': 'application/json',
+            Authorization: "Bearer " + token,
+            "Content-Type": "application/json",
           }),
           body: JSON.stringify(data),
-        },
+        }
       );
       const dataItem = await response.json();
 
       postID.isComment = true;
-      console.log('=========== Comment on Post API Response ==============');
+      console.log("=========== Comment on Post API Response ==============");
       console.log(JSON.stringify(dataItem));
-      onAddComment('');
-      onAddCommentReply('');
+      onAddComment("");
+      onAddCommentReply("");
       getCommentListAPITwo(postID.id, index);
       LodingData(false);
     } catch (error) {
@@ -374,25 +385,25 @@ export const HomeScreen = (props: HomeScreenProps) => {
   async function getCommentListAPITwo(postID: any, index: any) {
     // postList[index]['commentListData'] = [];
     isMoreCommentData(true);
-    const token = await AsyncStorage.getItem('token');
+    const token = await AsyncStorage.getItem("token");
     var data: any = {
       post_id: postID,
     };
     console.log(
-      API_URL + '/v1/comments?limit=25&+page=1' + '&post_id=' + postID,
+      API_URL + "/v1/comments?limit=25&+page=1" + "&post_id=" + postID
     );
     console.log(data);
     try {
       const response = await fetch(
-        API_URL + '/v1/comments?limit=25&page=1' + '&post_id=' + postID,
+        API_URL + "/v1/comments?limit=25&page=1" + "&post_id=" + postID,
         {
-          method: 'post',
+          method: "post",
           headers: new Headers({
-            Authorization: 'Bearer ' + token,
-            'Content-Type': 'application/json',
+            Authorization: "Bearer " + token,
+            "Content-Type": "application/json",
           }),
           body: JSON.stringify(data),
-        },
+        }
       );
 
       // setCmtPage(pageCmt)
@@ -403,14 +414,14 @@ export const HomeScreen = (props: HomeScreenProps) => {
 
       let markers = [...postList];
 
-      markers[index]['commentListData'] = [...cmtList];
+      markers[index]["commentListData"] = [...cmtList];
 
       postListData(markers);
       // flatlistRef?.current?.scrollToIndex({index: 0});
       // flatlistRef?.current?.scrollToOffset({ animated: true, offset: 0 });
       console.log(
-        '-----------comment List-------------',
-        postList[index]['commentListData'],
+        "-----------comment List-------------",
+        postList[index]["commentListData"]
       );
 
       onPageLoadComment(false);
@@ -429,29 +440,29 @@ export const HomeScreen = (props: HomeScreenProps) => {
   async function getCommentListAPI(postID: any, index: any) {
     // postList[index]['commentListData'] = [];
     isMoreCommentData(true);
-    const token = await AsyncStorage.getItem('token');
+    const token = await AsyncStorage.getItem("token");
     var data: any = {
       post_id: postID,
     };
     console.log(
-      API_URL + '/v1/comments?limit=25&+page=' + pageCmt + '&post_id=' + postID,
+      API_URL + "/v1/comments?limit=25&+page=" + pageCmt + "&post_id=" + postID
     );
     console.log(data);
     try {
       const response = await fetch(
         API_URL +
-          '/v1/comments?limit=25&page=' +
+          "/v1/comments?limit=25&page=" +
           pageCmt +
-          '&post_id=' +
+          "&post_id=" +
           postID,
         {
-          method: 'post',
+          method: "post",
           headers: new Headers({
-            Authorization: 'Bearer ' + token,
-            'Content-Type': 'application/json',
+            Authorization: "Bearer " + token,
+            "Content-Type": "application/json",
           }),
           body: JSON.stringify(data),
-        },
+        }
       );
 
       // setCmtPage(pageCmt)
@@ -462,13 +473,13 @@ export const HomeScreen = (props: HomeScreenProps) => {
 
       let markers = [...postList];
 
-      if (markers[index]['commentListData']) {
-        markers[index]['commentListData'] = [
-          ...markers[index]['commentListData'],
+      if (markers[index]["commentListData"]) {
+        markers[index]["commentListData"] = [
+          ...markers[index]["commentListData"],
           ...cmtList,
         ];
       } else {
-        markers[index]['commentListData'] = [...cmtList];
+        markers[index]["commentListData"] = [...cmtList];
       }
       postListData(markers);
       // flatlistRef?.current?.scrollToOffset({ animated: true, offset: 0 });
@@ -486,7 +497,7 @@ export const HomeScreen = (props: HomeScreenProps) => {
   }
 
   async function replyCommentOnPostAPI() {
-    const token = await AsyncStorage.getItem('token');
+    const token = await AsyncStorage.getItem("token");
     var data: any = {
       content: addnewCmtReply,
       comment_id: replyId,
@@ -494,31 +505,31 @@ export const HomeScreen = (props: HomeScreenProps) => {
     console.log(data);
     try {
       const response = await fetch(
-        API_URL + '/v1/posts/' + setReplyId + '/comments/create',
+        API_URL + "/v1/posts/" + setReplyId + "/comments/create",
         {
-          method: 'post',
+          method: "post",
           headers: new Headers({
-            Authorization: 'Bearer ' + token,
-            'Content-Type': 'application/json',
+            Authorization: "Bearer " + token,
+            "Content-Type": "application/json",
           }),
           body: JSON.stringify(data),
-        },
+        }
       );
       const dataItem = await response.json();
-      console.log('===========Comment on Post API Request ==============');
+      console.log("===========Comment on Post API Request ==============");
 
       let markers = [...postList];
-      var commentReplyArray = dataItem.data['reply'];
+      var commentReplyArray = dataItem.data["reply"];
 
-      markers[postIndexTwo]['commentListData'][postCommentIndexTwo][
-        'reply'
+      markers[postIndexTwo]["commentListData"][postCommentIndexTwo][
+        "reply"
       ].push(commentReplyArray[commentReplyArray.length - 1]);
 
       postListData(markers);
 
       console.log(
-        '---------------responce reply comment post----------',
-        JSON.stringify(dataItem),
+        "---------------responce reply comment post----------",
+        JSON.stringify(dataItem)
       );
       LodingData(false);
       getCommentListAPI(setReplyId, replyIndex);
@@ -531,7 +542,7 @@ export const HomeScreen = (props: HomeScreenProps) => {
 
   async function postListAPI() {
     isMoreDataLoad(true);
-    const token = await AsyncStorage.getItem('token');
+    const token = await AsyncStorage.getItem("token");
     var data: any = {
       // start_date:
       //   moment(range.startDate).format('YYYY-MM-DD') +
@@ -545,27 +556,27 @@ export const HomeScreen = (props: HomeScreenProps) => {
       searchtext: searchQuery,
     };
     console.log(
-      '=========== Post List API Request' +
+      "=========== Post List API Request" +
         API_URL +
-        '/v1/posts/list?limit=10&page=' +
+        "/v1/posts/list?limit=10&page=" +
         page +
-        '==============',
+        "=============="
     );
     console.log(data);
     try {
       const response = await fetch(
-        API_URL + '/v1/posts/list?limit=10&page=' + page,
+        API_URL + "/v1/posts/list?limit=10&page=" + page,
         {
-          method: 'post',
+          method: "post",
           headers: new Headers({
-            Authorization: 'Bearer ' + token,
-            'Content-Type': 'application/json',
+            Authorization: "Bearer " + token,
+            "Content-Type": "application/json",
           }),
           body: JSON.stringify(data),
-        },
+        }
       );
       const dataItem = await response.json();
-      console.log('=========== Post List API Response ==============');
+      console.log("=========== Post List API Response ==============");
       console.log(dataItem);
 
       postLoadData(false);
@@ -573,16 +584,16 @@ export const HomeScreen = (props: HomeScreenProps) => {
 
       if (page === 1) {
         const result = dataItem?.data?.results.map((item: any) => {
-          return {...item, isComment: false, commentListData: []};
+          return { ...item, isComment: false, commentListData: [] };
         });
         postListData(result);
 
-        console.log(result, '111111111111');
+        console.log(result, "111111111111");
       }
       if (page > 1) {
         const result = dataItem?.data?.results.map((item: any) => {
-          var resultData = {...item, isComment: false, commentListData: []};
-          return {...postList, resultData};
+          var resultData = { ...item, isComment: false, commentListData: [] };
+          return { ...postList, resultData };
         });
         postListData(result);
       }
@@ -594,34 +605,34 @@ export const HomeScreen = (props: HomeScreenProps) => {
     } catch (error) {
       LodingData(false);
       console.error(
-        '----------------' + API_URL + '/v1/posts/list?limit=10&page=',
-        error,
+        "----------------" + API_URL + "/v1/posts/list?limit=10&page=",
+        error
       );
     }
   }
 
   async function addGratisAPI() {
     LodingData(true);
-    const token = await AsyncStorage.getItem('token');
+    const token = await AsyncStorage.getItem("token");
     var data: any = {
       postId: postId,
       points: gratisNo,
     };
-    console.log(API_URL + '/v1/posts/gratis-sharing');
+    console.log(API_URL + "/v1/posts/gratis-sharing");
     console.log(data);
     try {
-      const response = await fetch(API_URL + '/v1/posts/gratis-sharing', {
-        method: 'post',
+      const response = await fetch(API_URL + "/v1/posts/gratis-sharing", {
+        method: "post",
         headers: new Headers({
-          Authorization: 'Bearer ' + token,
-          'Content-Type': 'application/x-www-form-urlencoded',
+          Authorization: "Bearer " + token,
+          "Content-Type": "application/x-www-form-urlencoded",
         }),
         body: Object.keys(data)
-          .map(key => key + '=' + data[key])
-          .join('&'),
+          .map((key) => key + "=" + data[key])
+          .join("&"),
       });
       const dataItem = await response.json();
-      console.log('=========== Gratis Data API Response ==============');
+      console.log("=========== Gratis Data API Response ==============");
       console.log(dataItem);
       if (dataItem?.success === true) {
         let markers = [...postList];
@@ -633,10 +644,10 @@ export const HomeScreen = (props: HomeScreenProps) => {
       }
 
       console.log(dataItem?.data?.data?.postGratis);
-      console.log(postList, '------------post List---------------');
+      console.log(postList, "------------post List---------------");
       if (dataItem?.success === false) {
         Toast.show(dataItem?.message, Toast.LONG, {
-          backgroundColor: 'black',
+          backgroundColor: "black",
         });
       }
 
@@ -649,7 +660,7 @@ export const HomeScreen = (props: HomeScreenProps) => {
 
   async function addReplyGratisAPI() {
     LodingData(true);
-    const token = await AsyncStorage.getItem('token');
+    const token = await AsyncStorage.getItem("token");
     var data: any = {
       postId: postId,
       points: gratisNoComment,
@@ -657,48 +668,98 @@ export const HomeScreen = (props: HomeScreenProps) => {
       commentKey: gratisCmtKey,
     };
     console.log(
-      '=========== Gratis Reply Data API Reques' +
+      "=========== Gratis Reply Data API Reques" +
         API_URL +
-        '/v1/posts/gratis-sharing ==============',
+        "/v1/posts/gratis-sharing =============="
     );
     console.log(data);
     try {
-      const response = await fetch(API_URL + '/v1/posts/gratis-sharing', {
-        method: 'post',
+      const response = await fetch(API_URL + "/v1/posts/gratis-sharing", {
+        method: "post",
         headers: new Headers({
-          Authorization: 'Bearer ' + token,
-          'Content-Type': 'application/json',
+          Authorization: "Bearer " + token,
+          "Content-Type": "application/json",
         }),
         body: JSON.stringify(data),
       });
       const dataItem = await response.json();
-      console.log('=========== Gratis Data Reply API Response ==============');
+      console.log("=========== Gratis Data Reply API Response ==============");
       console.log(dataItem);
       if (dataItem?.success === true) {
         let markers = [...postList];
 
-        console.log(
-          'commentListData 111',
-          markers[gratisIndex]['commentListData'],
-        );
-        console.log('gratisIndex', commentIndex);
-        // console.log(dataItem?.data?.data?.postGratis);
+        markers[gratisIndex] = {
+          ...markers[gratisIndex],
+          gratis: dataItem?.data?.data?.postGratis,
+        };
+        markers[gratisIndex]["commentListData"][commentIndex]["gratis"] =
+          dataItem?.data?.data?.commentsGratis;
 
-        markers[gratisIndex]['commentListData'][commentIndex]['gratis'] =
-          dataItem?.data?.data?.postGratis;
-
-        console.log(
-          'commentListData 222',
-          markers[gratisIndex]['commentListData'],
-        );
-        console.log(dataItem?.data?.data?.postGratis);
-        console.log(postList, '------------ post List ---------------');
         postListData(markers);
       }
 
       if (dataItem?.success === false) {
         Toast.show(dataItem?.message, Toast.LONG, {
-          backgroundColor: 'black',
+          backgroundColor: "black",
+        });
+      }
+      LodingData(false);
+    } catch (error) {
+      LodingData(false);
+      console.error(error);
+    }
+  }
+
+  async function addChildReplyGratisAPI() {
+    LodingData(true);
+    const token = await AsyncStorage.getItem("token");
+    var data: any = {
+      postId: postId,
+      points: gratisNoComment,
+      commentId: gratisCmtID,
+      commentKey: gratisCmtKey,
+    };
+    console.log(
+      "=========== Gratis Reply Data API Reques" +
+        API_URL +
+        "/v1/posts/gratis-sharing =============="
+    );
+    console.log(data);
+    try {
+      const response = await fetch(API_URL + "/v1/posts/gratis-sharing", {
+        method: "post",
+        headers: new Headers({
+          Authorization: "Bearer " + token,
+          "Content-Type": "application/json",
+        }),
+        body: JSON.stringify(data),
+      });
+      const dataItem = await response.json();
+      console.log("=========== Gratis Data Reply API Response ==============");
+      console.log(dataItem);
+      if (dataItem?.success === true) {
+        let markers = [...postList];
+
+        markers[gratisIndex] = {
+          ...markers[gratisIndex],
+          gratis: dataItem?.data?.data?.postGratis,
+        };
+        markers[gratisIndex]["commentListData"][commentIndex]["reply"][
+          childjIndex
+        ]["gratis"] = dataItem?.data?.data?.replayGratis;
+
+        console.log(
+          "commentListData 222",
+          markers[gratisIndex]["commentListData"]
+        );
+        console.log(dataItem?.data?.data?.replayGratis);
+        console.log(postList, "------------ post List ---------------");
+        postListData(markers);
+      }
+
+      if (dataItem?.success === false) {
+        Toast.show(dataItem?.message, Toast.LONG, {
+          backgroundColor: "black",
         });
       }
       LodingData(false);
@@ -709,30 +770,30 @@ export const HomeScreen = (props: HomeScreenProps) => {
   }
 
   async function getRecentlyJoinUserAPI() {
-    const token = await AsyncStorage.getItem('token');
+    const token = await AsyncStorage.getItem("token");
     var data: any = {
       radius: 25,
       user_lat: location?.latitude,
       user_long: location?.longitude,
     };
-    console.log('=========== Get Recentely Join API Request ==============');
+    console.log("=========== Get Recentely Join API Request ==============");
     console.log(data);
     try {
-      const response = await fetch(API_URL + '/v1/users/recently-joined', {
-        method: 'post',
+      const response = await fetch(API_URL + "/v1/users/recently-joined", {
+        method: "post",
         headers: new Headers({
-          Authorization: 'Bearer ' + token,
-          'Content-Type': 'application/x-www-form-urlencoded',
+          Authorization: "Bearer " + token,
+          "Content-Type": "application/x-www-form-urlencoded",
         }),
         body: Object.keys(data)
-          .map(key => key + '=' + data[key])
-          .join('&'),
+          .map((key) => key + "=" + data[key])
+          .join("&"),
       });
       const dataItem = await response.json();
       console.log(
-        '=========== Get Recentely Join API Response' +
+        "=========== Get Recentely Join API Response" +
           API_URL +
-          '/v1/users/recently-joined ==============',
+          "/v1/users/recently-joined =============="
       );
       console.log(dataItem);
       recentlyJoinUser(dataItem?.data);
@@ -743,7 +804,7 @@ export const HomeScreen = (props: HomeScreenProps) => {
 
   const postDataLoad = () => {
     console.log(
-      'fasdfasfajsdofhajsdjfhaskdjfasjkdbfajksdbfajksdbfasjbsajkbdjfbasj',
+      "fasdfasfajsdofhajsdjfhaskdjfasjkdbfajksdbfajksdbfasjbsajkbdjfbasj"
     );
     if (ismoreData) {
       onPageLoad(true);
@@ -754,46 +815,46 @@ export const HomeScreen = (props: HomeScreenProps) => {
   };
 
   async function blockUserAPI(postID: any, selectOP: any) {
-    const token = await AsyncStorage.getItem('token');
+    const token = await AsyncStorage.getItem("token");
     console.log(token);
     try {
-      const response = await fetch(API_URL + '/v1/posts/block-user/' + postID, {
-        method: 'post',
+      const response = await fetch(API_URL + "/v1/posts/block-user/" + postID, {
+        method: "post",
         headers: new Headers({
-          Authorization: 'Bearer ' + token,
-          'Content-Type': 'application/x-www-form-urlencoded',
+          Authorization: "Bearer " + token,
+          "Content-Type": "application/x-www-form-urlencoded",
         }),
         // body: JSON.stringify({
         //   "comment" : "blockUser"
         // }),
       });
       const dataItem = await response.json();
-      console.log('===========Block User data Response==============');
-      console.log(API_URL + '/v1/posts/block-user/' + postID);
+      console.log("===========Block User data Response==============");
+      console.log(API_URL + "/v1/posts/block-user/" + postID);
       LodingData(false);
       console.log(dataItem);
       if (dataItem.success === true) {
         if (selectOP === 1) {
           postListAPI();
-          Toast.show('User Block successfully', Toast.LONG, {
-            backgroundColor: 'black',
+          Toast.show("User Block successfully", Toast.LONG, {
+            backgroundColor: "black",
           });
         } else if (selectOP === 2) {
           postListAPI();
-          Toast.show('Report Submit successfully', Toast.LONG, {
-            backgroundColor: 'black',
+          Toast.show("Report Submit successfully", Toast.LONG, {
+            backgroundColor: "black",
           });
         } else {
           postListAPI();
-          Toast.show('Post Hide successfully', Toast.LONG, {
-            backgroundColor: 'black',
+          Toast.show("Post Hide successfully", Toast.LONG, {
+            backgroundColor: "black",
           });
         }
       }
 
       if (dataItem.success === false) {
         Toast.show(dataItem.message, Toast.LONG, {
-          backgroundColor: 'black',
+          backgroundColor: "black",
         });
       }
     } catch (error) {
@@ -805,7 +866,7 @@ export const HomeScreen = (props: HomeScreenProps) => {
   const showCommentonPost = (data: any, jindex: any) => {
     setCmtPage(initialValue);
     LodingData(true);
-    if (postList[jindex]['isComment'] === true) {
+    if (postList[jindex]["isComment"] === true) {
       let markers = [...postList];
       markers[jindex] = {
         ...markers[jindex],
@@ -815,7 +876,7 @@ export const HomeScreen = (props: HomeScreenProps) => {
       postListData(markers);
       LodingData(false);
     } else {
-      postList[jindex]['isComment'] = true;
+      postList[jindex]["isComment"] = true;
       setReplyCommentId(data.id);
       getCommentListAPITwo(data.id, jindex);
     }
@@ -831,9 +892,9 @@ export const HomeScreen = (props: HomeScreenProps) => {
   };
 
   const addCommentHide = (commentData: any, index: any) => {
-    if (addnewCmt === '') {
-      Toast.show('Add Comment', Toast.LONG, {
-        backgroundColor: 'black',
+    if (addnewCmt === "") {
+      Toast.show("Add Comment", Toast.LONG, {
+        backgroundColor: "black",
       });
     } else {
       LodingData(true);
@@ -841,19 +902,22 @@ export const HomeScreen = (props: HomeScreenProps) => {
     }
   };
 
-  const onReplyClick = (postId: any, index: any, parentIndex: any) => {
+  const onReplyClick = (
+    postId: any,
+    index: any,
+    parentIndex: any,
+  ) => {
     commentReplyPostId(postId);
     setReplayIndex(replyId);
-
     setPostCommentIndexTwo(index);
     setPostIndexTwo(parentIndex);
     addCommentModal(true);
   };
 
   const onReplyClose = () => {
-    if (addnewCmtReply === '') {
-      Toast.show('Add Comment', Toast.LONG, {
-        backgroundColor: 'black',
+    if (addnewCmtReply === "") {
+      Toast.show("Add Comment", Toast.LONG, {
+        backgroundColor: "black",
       });
     } else {
       LodingData(true);
@@ -869,22 +933,22 @@ export const HomeScreen = (props: HomeScreenProps) => {
   useFocusEffect(
     useCallback(() => {
       getCommentListAPI(postCommentID, postCommentIndex);
-    }, [pageCmt]),
+    }, [pageCmt])
   );
 
   const CommentListCall = useCallback(
     (post_id: any, indexId: any) => {
       // if(ismoreCommentLoad)
-      console.log(currentPages, '===============currentPages 111===========');
+      console.log(currentPages, "===============currentPages 111===========");
       console.log(
         totalPages,
-        '==================totalPages 1111==================',
+        "==================totalPages 1111=================="
       );
       if (pageCmt < totalPages) {
-        console.log(currentPages, '===============currentPages===========');
+        console.log(currentPages, "===============currentPages===========");
         console.log(
           totalPages,
-          '==================totalPages==================',
+          "==================totalPages=================="
         );
         setCommentListScrollEnable(false);
         onPageLoadComment(true);
@@ -893,7 +957,7 @@ export const HomeScreen = (props: HomeScreenProps) => {
         setPostCommentID(post_id);
       }
     },
-    [pageCmt],
+    [pageCmt]
   );
 
   const onConfirmEndTime = useCallback((res: any) => {
@@ -917,7 +981,7 @@ export const HomeScreen = (props: HomeScreenProps) => {
   };
 
   const recentUserProfilePress = (id: any) => {
-    AsyncStorage.setItem('recentUserId', id);
+    AsyncStorage.setItem("recentUserId", id);
     navigation.navigate(navigations.RECENTUSERPROFILE);
   };
 
@@ -926,7 +990,7 @@ export const HomeScreen = (props: HomeScreenProps) => {
       strings.blockUser,
       strings.areYouBlockUser,
       [
-        {text: strings.no, onPress: () => null, style: 'destructive'},
+        { text: strings.no, onPress: () => null, style: "destructive" },
         {
           text: strings.yes,
           onPress: () => {
@@ -935,7 +999,7 @@ export const HomeScreen = (props: HomeScreenProps) => {
           },
         },
       ],
-      {cancelable: false},
+      { cancelable: false }
     );
     postContentModal(false);
   };
@@ -945,7 +1009,7 @@ export const HomeScreen = (props: HomeScreenProps) => {
       strings.hidePost,
       strings.areyouHide,
       [
-        {text: strings.no, onPress: () => null, style: 'destructive'},
+        { text: strings.no, onPress: () => null, style: "destructive" },
         {
           text: strings.yes,
           onPress: () => {
@@ -954,7 +1018,7 @@ export const HomeScreen = (props: HomeScreenProps) => {
           },
         },
       ],
-      {cancelable: false},
+      { cancelable: false }
     );
     postContentModal(false);
   };
@@ -962,9 +1026,9 @@ export const HomeScreen = (props: HomeScreenProps) => {
   const onEventTypeClick = (types: string) => {
     if (types !== type) {
       LodingData(true);
-      console.log(types, '--------------type-------------------');
+      console.log(types, "--------------type-------------------");
       eventTypeData(types);
-      console.log(types, '--------------eventType-------------------');
+      console.log(types, "--------------eventType-------------------");
     }
   };
 
@@ -978,14 +1042,14 @@ export const HomeScreen = (props: HomeScreenProps) => {
   };
   const postHideOptionSelect = (postSelectType: any) => {
     if (postSelectType === 1) {
-      console.log(postSelectType, '-------postSelectType--------');
+      console.log(postSelectType, "-------postSelectType--------");
       blockUserAlert(postSelectType);
     } else if (postSelectType === 2) {
-      console.log(postSelectType, '-------postSelectType--------');
-      addReportReason('');
+      console.log(postSelectType, "-------postSelectType--------");
+      addReportReason("");
       reportModalShowHide(true);
     } else if (postSelectType === 3) {
-      console.log(postSelectType, '-------postSelectType--------');
+      console.log(postSelectType, "-------postSelectType--------");
       hideUserAlert(postSelectType);
     }
   };
@@ -997,21 +1061,23 @@ export const HomeScreen = (props: HomeScreenProps) => {
         ref={flatlistRef}
         onEndReachedThreshold={0.05}
         data={itemParent.commentListData}
-        renderItem={({item, index}) => (
+        renderItem={({ item, index }) => (
           <View>
             <View style={styles.commentImgProfile}>
               <TouchableOpacity
                 activeOpacity={0.8}
-                onPress={() => recentUserProfilePress(item?.commenter.id)}>
+                onPress={() => recentUserProfilePress(item?.commenter.id)}
+              >
                 <ImageComponent
                   resizeMode="cover"
                   style={styles.postProfile}
                   source={{
                     uri: item?.commenter?.pic,
-                  }}></ImageComponent>
+                  }}
+                ></ImageComponent>
               </TouchableOpacity>
               <View style={styles.commentDisplayCont}>
-                <Text style={{fontSize: 12, color: '#110101'}}>
+                <Text style={{ fontSize: 12, color: "#110101" }}>
                   {item?.commenter?.first_name} {item?.commenter?.last_name}
                 </Text>
                 <Text style={styles.replyMsgCont}>{item?.content}</Text>
@@ -1021,7 +1087,8 @@ export const HomeScreen = (props: HomeScreenProps) => {
             <View style={styles.replyContainer}>
               <ImageComponent
                 source={Vector}
-                style={styles.vectorImg}></ImageComponent>
+                style={styles.vectorImg}
+              ></ImageComponent>
               <TouchableOpacity
                 onPress={() => onReplyClick(item.id, index, indexParent)}>
                 <Text style={styles.replyLbl}>reply</Text>
@@ -1031,12 +1098,22 @@ export const HomeScreen = (props: HomeScreenProps) => {
               <Text style={styles.minuteCont}>{item.gratis}</Text>
               <TouchableOpacity
                 onPress={() =>
-                  openReplyGratis(item.post_id, item.id, '', indexParent, index)
-                }>
+                  openReplyGratis(
+                    item.post_id,
+                    item.id,
+                    "",
+                    indexParent,
+                    index,
+                    1,
+                    ''
+                  )
+                }
+              >
                 <ImageComponent
                   resizeMode="cover"
                   style={styles.replyImg}
-                  source={gratisGreen}></ImageComponent>
+                  source={gratisGreen}
+                ></ImageComponent>
               </TouchableOpacity>
             </View>
 
@@ -1051,21 +1128,24 @@ export const HomeScreen = (props: HomeScreenProps) => {
                         activeOpacity={0.8}
                         onPress={() =>
                           recentUserProfilePress(subItem?.commenter.id)
-                        }>
+                        }
+                      >
                         <ImageComponent
                           resizeMode="cover"
                           style={styles.postProfile}
                           source={{
                             uri: subItem?.commenter?.pic,
-                          }}></ImageComponent>
+                          }}
+                        ></ImageComponent>
                       </TouchableOpacity>
-                      <View style={[styles.commentDisplayCont, {width: 210}]}>
+                      <View style={[styles.commentDisplayCont, { width: 210 }]}>
                         <Text
                           style={{
                             fontSize: 12,
-                            color: '#110101',
-                          }}>
-                          {subItem.commenter.first_name}{' '}
+                            color: "#110101",
+                          }}
+                        >
+                          {subItem.commenter.first_name}{" "}
                           {subItem.commenter.last_name}
                         </Text>
                         <Text style={styles.replyMsgCont}>
@@ -1077,7 +1157,8 @@ export const HomeScreen = (props: HomeScreenProps) => {
                     <View style={styles.replyContainerTwo}>
                       <ImageComponent
                         source={Vector}
-                        style={styles.vectorImgTwo}></ImageComponent>
+                        style={styles.vectorImgTwo}
+                      ></ImageComponent>
                       <TouchableOpacity
                         onPress={() =>
                           onReplyClick(item.id, index, indexParent)
@@ -1095,11 +1176,15 @@ export const HomeScreen = (props: HomeScreenProps) => {
                             subItem.key,
                             indexParent,
                             index,
+                            2,
+                            jindex
                           )
-                        }>
+                        }
+                      >
                         <ImageComponent
                           style={styles.replyImg}
-                          source={gratisGreen}></ImageComponent>
+                          source={gratisGreen}
+                        ></ImageComponent>
                       </TouchableOpacity>
                     </View>
                   </View>
@@ -1111,23 +1196,24 @@ export const HomeScreen = (props: HomeScreenProps) => {
                               <View></View>
                             )} */}
           </View>
-        )}></FlatList>
+        )}
+      ></FlatList>
     );
   };
 
   const CommentListNavigatiion = (id: any) => {
-    AsyncStorage.setItem('commentID', id);
+    AsyncStorage.setItem("commentID", id);
     navigation.navigate(navigations.COMMENTLIST);
   };
 
   const submitReportReason = () => {
-    if (reportPost === '') {
-      Toast.show('Add Reason', Toast.LONG, {
-        backgroundColor: 'black',
+    if (reportPost === "") {
+      Toast.show("Add Reason", Toast.LONG, {
+        backgroundColor: "black",
       });
     } else {
       blockUserAPI(postHideId, 2);
-      console.log('blockUserAPI');
+      console.log("blockUserAPI");
       postContentModal(false);
       reportModalShowHide(false);
     }
@@ -1138,109 +1224,93 @@ export const HomeScreen = (props: HomeScreenProps) => {
       setSearchQuery(searchData);
       postListAPI();
     },
-    [searchQuery],
+    [searchQuery]
   );
 
   return (
     <>
       {/* <ScrollView></ScrollView> */}
-      
+
       <View style={styles.MainPostContainer}>
         <Loader visible={isLoading} showOverlay />
-        
-          {/* ------------------Header------------------- */}
-          <TouchableOpacity style={styles.HeaderContainerTwo} activeOpacity={1}>
-            <View style={styles.searchContainer}>
-              <ImageComponent
-                style={styles.searchIcon}
-                source={Search}></ImageComponent>
-              <TextInput
-                value={searchQuery}
-                placeholderTextColor="#FFFF"
-                placeholder="Search"
-                style={styles.searchInput}
-                onChangeText={value => {
-                  console.log(value);
-                  setSerchValue(value);
-                }}></TextInput>
-            </View>
-            <View style={styles.oneContainer}>
-              <ImageComponent
-                style={styles.oneContainerImage}
-                source={onelogo}></ImageComponent>
-              <View>
-                <Text style={styles.oneContainerText}>NE</Text>
-                <Text style={styles.localText}>L o c a l</Text>
-              </View>
-            </View>
-            <View style={styles.profileContainer}>
-              <TouchableOpacity
-                activeOpacity={0.8}
-                onPress={onNavigateToProfile}
-                style={styles.profileView}>
-                <ImageComponent
-                  resizeMode="cover"
-                  isUrl={!!user?.pic}
-                  source={dummy}
-                  uri={ProfileData?.pic}
-                  style={styles.profile}
-                />
-              </TouchableOpacity>
-            </View>
-          </TouchableOpacity>
-          {/* ------------------Header Tab------------------- */}
-          {/* <View style={styles.filterTags}>
-            <TouchableOpacity
-              onPress={() => onEventTypeClick('offer')}
-              style={
-                type === 'offer' ? styles.containerFocus : styles.container2
-              }
-              activeOpacity={0.8}>
-              <ImageComponent source={mapEvent} style={[styles.icon1]} />
-              <Text style={styles.label1Event}>Events</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => onEventTypeClick('request')}
-              style={
-                type === 'request' ? styles.containerFocus : styles.container2
-              }
-              activeOpacity={0.8}>
-              <ImageComponent source={mapService} style={[styles.icon1]} />
-              <Text style={styles.label1Service}>Services</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => onEventTypeClick('gratis')}
-              style={
-                type === 'gratis' ? styles.containerFocus : styles.container2
-              }
-              activeOpacity={0.8}>
-              <ImageComponent source={mapGifting} style={[styles.icon1]} />
-              <Text style={styles.label1}>Gifting</Text>
-            </TouchableOpacity>
-          </View> */}
 
+        {/* ------------------Header------------------- */}
+        <TouchableOpacity style={styles.HeaderContainerTwo} activeOpacity={1}>
+          <View style={styles.searchContainer}>
+            <ImageComponent
+              style={styles.searchIcon}
+              source={Search}
+            ></ImageComponent>
+            <TextInput
+              value={searchQuery}
+              placeholderTextColor="#FFFF"
+              placeholder="Search"
+              style={styles.searchInput}
+              onChangeText={(value) => {
+                console.log(value);
+                setSerchValue(value);
+              }}
+            ></TextInput>
+          </View>
+          <View style={styles.oneContainer}>
+            <ImageComponent
+              style={styles.oneContainerImage}
+              source={onelogo}
+            ></ImageComponent>
+            <View>
+              <Text style={styles.oneContainerText}>NE</Text>
+              <Text style={styles.localText}>L o c a l</Text>
+            </View>
+          </View>
+          <View style={styles.profileContainer}>
+            <TouchableOpacity
+              activeOpacity={0.8}
+              onPress={onNavigateToProfile}
+              style={styles.profileView}
+            >
+              <ImageComponent
+                resizeMode="cover"
+                isUrl={!!user?.pic}
+                source={dummy}
+                uri={ProfileData?.pic}
+                style={styles.profile}
+              />
+            </TouchableOpacity>
+          </View>
+        </TouchableOpacity>
+        {/* ------------------Header Tab------------------- */}
+      
+        <KeyboardAvoidingView
+          behavior={Platform.OS === "ios" ? "padding" : "height"}
+        >
+         
           <FlatList
             data={postList}
-            keyExtractor={item => item.id}
-            ListFooterComponent={<View style={{height: 90}} />}
+            keyExtractor={(item) => item.id}
+            ListFooterComponent={<View style={{ height: 90 }} />}
             onEndReachedThreshold={0.01}
-            contentContainerStyle={{paddingBottom: 150}}
+            contentContainerStyle={{ marginBottom: 150 }}
+            keyboardShouldPersistTaps
             ListHeaderComponent={
+              
               <View>
                 {userList.length !== 0 ? (
                   <View style={styles.avatarContainer}>
                     <ScrollView
                       horizontal={true}
-                      showsHorizontalScrollIndicator={false}>
+                      showsHorizontalScrollIndicator={false}
+                    >
                       {userList.map((userList: any) => {
                         return (
                           <TouchableOpacity
-                            onPress={() => recentUserProfilePress(userList.id)}>
+                            onPress={() => recentUserProfilePress(userList.id)}
+                          >
                             <ImageComponent
                               style={styles.avatarImage}
                               isUrl={!!userList?.pic}
                               resizeMode="cover"
-                              uri={userList?.pic}></ImageComponent>
+                              uri={userList?.pic}
+                            ></ImageComponent>
                           </TouchableOpacity>
                         );
                       })}
@@ -1253,16 +1323,18 @@ export const HomeScreen = (props: HomeScreenProps) => {
                 <TouchableOpacity
                   activeOpacity={0.8}
                   style={styles.mainPostCont}
-                  onPress={onNavigateToCreatePost}>
+                  onPress={onNavigateToCreatePost}
+                >
                   <View style={styles.postContainer}>
                     <ImageComponent
                       style={styles.avatar}
                       resizeMode="cover"
                       isUrl={!!user?.pic}
                       source={dummy}
-                      uri={ProfileData?.pic}></ImageComponent>
+                      uri={ProfileData?.pic}
+                    ></ImageComponent>
                     <View style={styles.postInput}>
-                      <Text style={{textAlign: 'left', color: 'gray'}}>
+                      <Text style={{ textAlign: "left", color: "gray" }}>
                         What do you want to post?
                       </Text>
                     </View>
@@ -1409,49 +1481,52 @@ export const HomeScreen = (props: HomeScreenProps) => {
               </View>
             }
             onEndReached={postDataLoad}
-            renderItem={({item, index}) => (
+            renderItem={({ item, index }) => (
+              <TouchableOpacity activeOpacity={1} onPress={keyboardDismiss}>
               <View style={styles.feedContainer}>
                 <Text style={styles.posttitle}>{item?.type}</Text>
                 <TouchableOpacity
                   style={{
-                    position: 'absolute',
+                    position: "absolute",
                     right: 14,
                     top: 10,
                     zIndex: 111122,
-                  }}>
+                  }}
+                >
                   <TouchableOpacity onPress={() => openPostModal(item.id)}>
                     <ImageComponent
                       resizeMode="cover"
                       style={styles.postfilterImage}
-                      source={greenImage}></ImageComponent>
+                      source={greenImage}
+                    ></ImageComponent>
                   </TouchableOpacity>
                 </TouchableOpacity>
                 <View style={styles.userDetailcont}>
                   <TouchableOpacity
-                    onPress={() => recentUserProfilePress(item?.user_id.id)}>
+                    onPress={() => recentUserProfilePress(item?.user_id.id)}
+                  >
                     <ImageComponent
                       resizeMode="cover"
                       style={styles.postProfile}
-                      source={{uri: item?.user_id?.pic}}></ImageComponent>
+                      source={{ uri: item?.user_id?.pic }}
+                    ></ImageComponent>
                   </TouchableOpacity>
                   <View>
                     <View>
-                      {item?.type === 'Gratis' ? (
+                      {item?.type === "Gratis" ? (
                         <View>
                           <Text numberOfLines={1} style={styles.userName}>
-                            {item?.user_id?.first_name}{' '}
-                            {item?.user_id?.last_name}{' '}
+                            {item?.user_id?.first_name}{" "}
+                            {item?.user_id?.last_name}{" "}
                           </Text>
                           <Text style={styles.sentPointClass}>
-                              sent {item?.to?.users[0]?.point} gratis to {' '}
-                              <Text style={styles.userName}>
-                              {item?.to?.users[0]?.user_id['first_name']}{' '}
-                              {item?.to?.users[0]?.user_id['last_name']}
+                            sent {item?.to?.users[0]?.point} gratis to{" "}
+                            <Text style={styles.userName}>
+                              {item?.to?.users[0]?.user_id["first_name"]}{" "}
+                              {item?.to?.users[0]?.user_id["last_name"]}
                             </Text>
-                            </Text>
-                            
+                          </Text>
                         </View>
-                        
                       ) : (
                         <Text numberOfLines={1} style={styles.userName}>
                           {item?.user_id?.first_name} {item?.user_id?.last_name}
@@ -1462,23 +1537,28 @@ export const HomeScreen = (props: HomeScreenProps) => {
                   </View>
                 </View>
                 <View style={styles.userListDisplayCont}>
-                <TouchableOpacity
-                    onPress={() => recentUserProfilePress(item?.to?.users[0]?.user_id['id'])}>
-                  <ImageComponent
-                    resizeMode="cover"
-                    style={styles.userListDisplay}
-                    source={{
-                      uri: item?.to?.users[0]?.user_id['pic'],
-                    }}></ImageComponent>
-                    </TouchableOpacity>
+                  <TouchableOpacity
+                    onPress={() =>
+                      recentUserProfilePress(item?.to?.users[0]?.user_id["id"])
+                    }
+                  >
+                    <ImageComponent
+                      resizeMode="cover"
+                      style={styles.userListDisplay}
+                      source={{
+                        uri: item?.to?.users[0]?.user_id["pic"],
+                      }}
+                    ></ImageComponent>
+                  </TouchableOpacity>
                   {/* <ImageComponent resizeMode='cover' style={styles.userListDisplay} source={{uri:item?.to?.users?.user_id[1]['pic']}}></ImageComponent> */}
                 </View>
                 <Text style={styles.postDes}>{item?.content}</Text>
                 {/* <ImageComponent source={postImage}style={styles.userPost}></ImageComponent> */}
                 <ImageComponent
                   resizeMode="cover"
-                  source={{uri: item.image[0]}}
-                  style={styles.userPost}></ImageComponent>
+                  source={{ uri: item.image[0] }}
+                  style={styles.userPost}
+                ></ImageComponent>
                 {/* <View style={{ height: 310 }}>
                   <Swiper>
                     {item?.image.map((images: any) => {
@@ -1498,15 +1578,17 @@ export const HomeScreen = (props: HomeScreenProps) => {
                 <View style={styles.postDetailCont}>
                   <Text style={styles.postDetailTitle}>What:</Text>
                   <ImageComponent
-                    source={{uri: item?.what?.icon}}
-                    style={styles.detailImage}></ImageComponent>
+                    source={{ uri: item?.what?.icon }}
+                    style={styles.detailImage}
+                  ></ImageComponent>
                   <Text style={styles.postDetail}>{item?.what?.name}</Text>
                 </View>
                 <View style={styles.postDetailCont}>
                   <Text style={styles.postDetailTitle}>For:</Text>
                   <Image
-                    source={{uri: item?.for?.icon}}
-                    style={styles.detailImage}></Image>
+                    source={{ uri: item?.for?.icon }}
+                    style={styles.detailImage}
+                  ></Image>
                   <Text style={styles.postDetail}>{item?.for?.name}</Text>
                 </View>
                 <View style={styles.postDetailCont}>
@@ -1518,14 +1600,16 @@ export const HomeScreen = (props: HomeScreenProps) => {
                   <Text style={styles.postDetailTitle}>When:</Text>
                   <Image
                     source={postCalender}
-                    style={styles.detailImage}></Image>
+                    style={styles.detailImage}
+                  ></Image>
                   <Text style={styles.postDetail}>{item?.when}</Text>
                 </View>
                 <View style={styles.commentTitle}>
                   <Text style={styles.likeCount}>{item?.gratis}</Text>
                   <TouchableOpacity
                     activeOpacity={1}
-                    style={styles.commentCont}>
+                    style={styles.commentCont}
+                  >
                     <Text style={styles.msgCount}>{item?.comment}</Text>
                     <Image style={styles.commentImage} source={comment}></Image>
                   </TouchableOpacity>
@@ -1533,31 +1617,37 @@ export const HomeScreen = (props: HomeScreenProps) => {
                 <View
                   style={{
                     height: 1,
-                    backgroundColor: 'gray',
+                    backgroundColor: "gray",
                     marginHorizontal: 12,
-                  }}></View>
+                  }}
+                ></View>
                 <View style={styles.commentContTwo}>
                   <TouchableOpacity
-                    onPress={() => OfferModalShow(item.id, index)}>
+                    onPress={() => OfferModalShow(item.id, index)}
+                  >
                     <ImageComponent
                       source={gratitudeBlack}
-                      style={styles.commentImgTwo}></ImageComponent>
+                      style={styles.commentImgTwo}
+                    ></ImageComponent>
                   </TouchableOpacity>
                   <View
                     style={{
                       height: 20,
-                      backgroundColor: 'gray',
+                      backgroundColor: "gray",
                       marginHorizontal: 15,
                       width: 2,
-                    }}></View>
+                    }}
+                  ></View>
                   <TouchableOpacity
-                    onPress={() => addNewComment(item.id, index)}>
+                    onPress={() => addNewComment(item.id, index)}
+                  >
                     <Text
                       style={{
                         fontSize: 12,
-                        color: '#000000',
-                        alignItems: 'center',
-                      }}>
+                        color: "#000000",
+                        alignItems: "center",
+                      }}
+                    >
                       Comment
                     </Text>
                   </TouchableOpacity>
@@ -1566,9 +1656,10 @@ export const HomeScreen = (props: HomeScreenProps) => {
                 <View
                   style={{
                     height: 1,
-                    backgroundColor: 'gray',
+                    backgroundColor: "gray",
                     marginHorizontal: 12,
-                  }}></View>
+                  }}
+                ></View>
 
                 {/* <View style={styles.gratisAndCommentContainer}>
                   <TouchableOpacity style={styles.gratisContainer}>
@@ -1588,14 +1679,16 @@ export const HomeScreen = (props: HomeScreenProps) => {
                   <View>
                     {item.isComment ? (
                       <TouchableOpacity
-                        onPress={() => showCommentonPost(item, index)}>
+                        onPress={() => showCommentonPost(item, index)}
+                      >
                         <Text style={styles.commentContShow}>
                           hide comments
                         </Text>
                       </TouchableOpacity>
                     ) : (
                       <TouchableOpacity
-                        onPress={() => showCommentonPost(item, index)}>
+                        onPress={() => showCommentonPost(item, index)}
+                      >
                         <Text style={styles.commentContShow}>
                           show comments
                         </Text>
@@ -1609,17 +1702,19 @@ export const HomeScreen = (props: HomeScreenProps) => {
                 {item.isComment && item.commentListData.length !== 0 ? (
                   <View
                     style={{
-                      height: 'auto',
+                      height: "auto",
                       maxHeight: 250,
-                      overflow: 'hidden',
-                    }}>
+                      overflow: "hidden",
+                    }}
+                  >
                     <ScrollView
                       onTouchEnd={() => {
-                        console.log('-------------onEndReached---------------');
+                        console.log("-------------onEndReached---------------");
                         if (commentListScrollEnable) {
                           CommentListCall(item.id, index);
                         }
-                      }}>
+                      }}
+                    >
                       {commentFlatlistRender(index, item)}
                     </ScrollView>
                   </View>
@@ -1630,50 +1725,57 @@ export const HomeScreen = (props: HomeScreenProps) => {
                 {/* <CommentList commentItem={item} post_ID={item.id} postIndex={index} postList={postList} navigation={navigation} ></CommentList> */}
 
                 {showComment ? (
-                  <View style={{flexDirection: 'row'}}>
+                  <View style={{ flexDirection: "row" }}>
                     <TextInput
                       style={styles.commentInput}
                       placeholder="Make a Comment"
                       value={addnewCmt}
-                      onChangeText={text => onAddComment(text)}></TextInput>
+                      onChangeText={(text) => onAddComment(text)}
+                    ></TextInput>
                     <TouchableOpacity
-                      style={{alignSelf: 'center'}}
-                      onPress={() => addCommentHide(item, index)}>
+                      style={{ alignSelf: "center" }}
+                      onPress={() => addCommentHide(item, index)}
+                    >
                       <ImageComponent
-                        style={{height: 40, width: 40}}
-                        source={send}></ImageComponent>
+                        style={{ height: 40, width: 40 }}
+                        source={send}
+                      ></ImageComponent>
                     </TouchableOpacity>
                   </View>
                 ) : (
                   <View></View>
                 )}
-              </View>
-            )}></FlatList>
-        {loading ? (
-          <ActivityIndicator
-            color="black"
-            style={{marginLeft: 8}}></ActivityIndicator>
-        ) : (
-          <View></View>
-        )}
-      </View>
-      {postList.length === 0 ? (
+              </View></TouchableOpacity>
+            )}
+          ></FlatList>
+          {postList.length === 0 ? (
         <View>
           <Text
             style={{
               fontSize: 18,
-              fontWeight: '400',
-              alignSelf: 'center',
+              fontWeight: "400",
+              alignSelf: "center",
               marginTop: 20,
-              flex: 1,
-              color: 'white',
-            }}>
+              color: "white",
+            }}
+          >
             No Record Found
           </Text>
         </View>
       ) : (
         <View></View>
       )}
+        </KeyboardAvoidingView>
+        {loading ? (
+          <ActivityIndicator
+            color="black"
+            style={{ marginLeft: 8 }}
+          ></ActivityIndicator>
+        ) : (
+          <View></View>
+        )}
+      </View>
+      
 
       {/* </TouchableOpacity> */}
       <Modal transparent onDismiss={OfferModalClose} visible={offerModal}>
@@ -1685,8 +1787,9 @@ export const HomeScreen = (props: HomeScreenProps) => {
           />
         </GestureRecognizer>
         <KeyboardAvoidingView
-          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-          style={styles.keyboardView}>
+          behavior={Platform.OS === "ios" ? "padding" : "height"}
+          style={styles.keyboardView}
+        >
           <TouchableOpacity activeOpacity={1} style={styles.gratiescontainer}>
             <View>
               <Text style={styles.gratiesTitle}>Give some Gratis</Text>
@@ -1698,12 +1801,14 @@ export const HomeScreen = (props: HomeScreenProps) => {
                       height: 30,
                       width: 30,
                       marginRight: 50,
-                    }}></ImageComponent>
+                    }}
+                  ></ImageComponent>
                 </TouchableOpacity>
                 <ImageComponent
                   resizeMode="cover"
                   style={styles.gratisimg}
-                  source={Gratis}></ImageComponent>
+                  source={Gratis}
+                ></ImageComponent>
                 <Text style={styles.gratistext}>{gratisNo}</Text>
                 <TouchableOpacity onPress={gratisPlusClick}>
                   <ImageComponent
@@ -1712,13 +1817,15 @@ export const HomeScreen = (props: HomeScreenProps) => {
                       height: 30,
                       width: 30,
                       marginLeft: 50,
-                    }}></ImageComponent>
+                    }}
+                  ></ImageComponent>
                 </TouchableOpacity>
               </View>
               <TouchableOpacity
                 onPress={() => OfferModalHide()}
                 activeOpacity={0.8}
-                style={styles.purchaseContainer}>
+                style={styles.purchaseContainer}
+              >
                 <View />
                 <Text style={styles.titleTwo}>Give</Text>
                 <TouchableOpacity>
@@ -1736,10 +1843,12 @@ export const HomeScreen = (props: HomeScreenProps) => {
       <Modal
         transparent
         onDismiss={() => openReplyOfferModal(false)}
-        visible={replyofferModal}>
+        visible={replyofferModal}
+      >
         <GestureRecognizer
           onSwipeDown={() => openReplyOfferModal(false)}
-          style={styles.gesture}>
+          style={styles.gesture}
+        >
           <TouchableOpacity
             style={styles.containerGallery}
             activeOpacity={1}
@@ -1747,8 +1856,9 @@ export const HomeScreen = (props: HomeScreenProps) => {
           />
         </GestureRecognizer>
         <KeyboardAvoidingView
-          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-          style={styles.keyboardView}>
+          behavior={Platform.OS === "ios" ? "padding" : "height"}
+          style={styles.keyboardView}
+        >
           <TouchableOpacity activeOpacity={1} style={styles.gratiescontainer}>
             <View>
               <Text style={styles.gratiesTitle}>Give some Gratis Comment</Text>
@@ -1760,12 +1870,14 @@ export const HomeScreen = (props: HomeScreenProps) => {
                       height: 30,
                       width: 30,
                       marginRight: 50,
-                    }}></ImageComponent>
+                    }}
+                  ></ImageComponent>
                 </TouchableOpacity>
                 <ImageComponent
                   resizeMode="cover"
                   style={styles.gratisimg}
-                  source={Gratis}></ImageComponent>
+                  source={Gratis}
+                ></ImageComponent>
                 <Text style={styles.gratistext}>{gratisNoComment}</Text>
                 <TouchableOpacity onPress={gratisCommentPlusClick}>
                   <ImageComponent
@@ -1774,13 +1886,15 @@ export const HomeScreen = (props: HomeScreenProps) => {
                       height: 30,
                       width: 30,
                       marginLeft: 50,
-                    }}></ImageComponent>
+                    }}
+                  ></ImageComponent>
                 </TouchableOpacity>
               </View>
               <TouchableOpacity
                 onPress={() => replyOfferModalHide()}
                 activeOpacity={0.8}
-                style={styles.purchaseContainer}>
+                style={styles.purchaseContainer}
+              >
                 <View />
                 <Text style={styles.titleTwo}>Give</Text>
                 <TouchableOpacity>
@@ -1806,7 +1920,8 @@ export const HomeScreen = (props: HomeScreenProps) => {
       >
         <GestureRecognizer
           // onSwipeDown={() => addCommentModal(false)}
-          style={styles.gesture}>
+          style={styles.gesture}
+        >
           <TouchableOpacity
             style={[styles.containerGallery]}
             activeOpacity={1}
@@ -1814,32 +1929,37 @@ export const HomeScreen = (props: HomeScreenProps) => {
           />
         </GestureRecognizer>
         <KeyboardAvoidingView
-          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+          behavior={Platform.OS === "ios" ? "padding" : "height"}
           style={[
             styles.keyboardView,
-            {position: 'absolute', left: 0, right: 0},
-          ]}>
+            { position: "absolute", left: 0, right: 0 },
+          ]}
+        >
           <TouchableOpacity activeOpacity={1} style={styles.commentContainer}>
             <View>
               <TouchableOpacity
-                style={{position: 'absolute', right: 0, zIndex: 111122}}
+                style={{ position: "absolute", right: 0, zIndex: 111122 }}
                 activeOpacity={0.5}
-                onPress={() => addCommentModal(false)}>
+                onPress={() => addCommentModal(false)}
+              >
                 <ImageComponent
                   source={closeCard}
-                  style={{height: 25, width: 25}}></ImageComponent>
+                  style={{ height: 25, width: 25 }}
+                ></ImageComponent>
               </TouchableOpacity>
               <Text style={styles.gratiesTitle}>Add Comment</Text>
               <View>
                 <TextInput
                   style={styles.commentInput}
                   placeholder="Comment"
-                  onChangeText={text => onAddCommentReply(text)}></TextInput>
+                  onChangeText={(text) => onAddCommentReply(text)}
+                ></TextInput>
               </View>
               <TouchableOpacity
                 onPress={() => onReplyClose()}
                 activeOpacity={0.8}
-                style={styles.purchaseContainer}>
+                style={styles.purchaseContainer}
+              >
                 <View />
                 <Text style={styles.titleTwo}>Add Comment</Text>
                 <View>
@@ -1863,17 +1983,18 @@ export const HomeScreen = (props: HomeScreenProps) => {
           />
         </GestureRecognizer>
         <KeyboardAvoidingView
-          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-          style={styles.keyboardViewTwo}>
+          behavior={Platform.OS === "ios" ? "padding" : "height"}
+          style={styles.keyboardViewTwo}
+        >
           <View style={styles.postActionSheet}>
             <TouchableOpacity onPress={() => postHideOptionSelect(1)}>
-              <Text style={[styles.postText, {color: 'white'}]}>Block</Text>
+              <Text style={[styles.postText, { color: "white" }]}>Block</Text>
             </TouchableOpacity>
             <TouchableOpacity onPress={() => postHideOptionSelect(2)}>
-              <Text style={[styles.postText, {color: 'white'}]}>Report</Text>
+              <Text style={[styles.postText, { color: "white" }]}>Report</Text>
             </TouchableOpacity>
             <TouchableOpacity onPress={() => postHideOptionSelect(3)}>
-              <Text style={[styles.postText, {color: 'white'}]}>
+              <Text style={[styles.postText, { color: "white" }]}>
                 Hide this Content
               </Text>
             </TouchableOpacity>
@@ -1883,10 +2004,12 @@ export const HomeScreen = (props: HomeScreenProps) => {
         <Modal
           transparent
           onDismiss={() => reportModalShowHide(false)}
-          visible={reoportModal}>
+          visible={reoportModal}
+        >
           <GestureRecognizer
             onSwipeDown={() => reportModalShowHide(false)}
-            style={styles.gesture}>
+            style={styles.gesture}
+          >
             <TouchableOpacity
               style={styles.containerGallery}
               activeOpacity={1}
@@ -1894,21 +2017,24 @@ export const HomeScreen = (props: HomeScreenProps) => {
             />
           </GestureRecognizer>
           <KeyboardAvoidingView
-            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-            style={styles.keyboardViewTwo}>
+            behavior={Platform.OS === "ios" ? "padding" : "height"}
+            style={styles.keyboardViewTwo}
+          >
             <TouchableOpacity activeOpacity={1} style={styles.commentContainer}>
               <View>
                 <Text style={styles.gratiesTitle}>Report Content</Text>
                 <View>
                   <TextInput
-                    onChangeText={text => addReportReason(text)}
+                    onChangeText={(text) => addReportReason(text)}
                     style={styles.commentInput}
-                    placeholder="Add Reason"></TextInput>
+                    placeholder="Add Reason"
+                  ></TextInput>
                 </View>
                 <TouchableOpacity
                   onPress={() => submitReportReason()}
                   activeOpacity={0.8}
-                  style={styles.purchaseContainer}>
+                  style={styles.purchaseContainer}
+                >
                   <View />
                   <Text style={styles.titleTwo}>Submit</Text>
                   <View>

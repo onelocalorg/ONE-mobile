@@ -4,9 +4,9 @@ import React, {
   useEffect,
   useRef,
   useState,
-} from 'react';
-import {createStyleSheet} from './style';
-import {useAppTheme} from '@app-hooks/use-app-theme';
+} from "react";
+import { createStyleSheet } from "./style";
+import { useAppTheme } from "@app-hooks/use-app-theme";
 import {
   FlatList,
   Image,
@@ -17,10 +17,10 @@ import {
   TextInput,
   TouchableOpacity,
   View,
-} from 'react-native';
-import {useStringsAndLabels} from '@app-hooks/use-strings-and-labels';
-import MapView, {Callout, Camera, Circle, Marker} from 'react-native-maps';
-import {ImageComponent} from '@components/image-component';
+} from "react-native";
+import { useStringsAndLabels } from "@app-hooks/use-strings-and-labels";
+import MapView, { Callout, Camera, Circle, Marker } from "react-native-maps";
+import { ImageComponent } from "@components/image-component";
 import {
   Search,
   activeRadio,
@@ -38,32 +38,32 @@ import {
   onelogo,
   pin,
   plus,
-} from '@assets/images';
-import {useDispatch, useSelector} from 'react-redux';
-import {StoreType} from '@network/reducers/store';
+} from "@assets/images";
+import { useDispatch, useSelector } from "react-redux";
+import { StoreType } from "@network/reducers/store";
 import {
   UserProfileState,
   onSetUser,
-} from '@network/reducers/user-profile-reducer';
+} from "@network/reducers/user-profile-reducer";
 import {
   useUserProfile,
   userProfileParsedData,
-} from '@network/hooks/user-service-hooks/use-user-profile';
+} from "@network/hooks/user-service-hooks/use-user-profile";
 import {
   NavigationContainerRef,
   ParamListBase,
   useFocusEffect,
-} from '@react-navigation/native';
-import {navigations} from '@config/app-navigation/constant';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import moment from 'moment';
-import {DatePickerModal, TimePickerModal} from 'react-native-paper-dates';
-import GetLocation from 'react-native-get-location';
-import {Loader} from '@components/loader';
-import {ScrollView} from 'react-native-gesture-handler';
-import {Slider} from 'react-native-elements';
-import Swiper from 'react-native-swiper';
-import { API_URL } from '@network/constant';
+} from "@react-navigation/native";
+import { navigations } from "@config/app-navigation/constant";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import moment from "moment";
+import { DatePickerModal, TimePickerModal } from "react-native-paper-dates";
+import GetLocation from "react-native-get-location";
+import { Loader } from "@components/loader";
+import { ScrollView } from "react-native-gesture-handler";
+import { Slider } from "react-native-elements";
+import Swiper from "react-native-swiper";
+import { API_URL } from "@network/constant";
 interface MapScreenProps {
   navigation: NavigationContainerRef<ParamListBase>;
 }
@@ -74,10 +74,10 @@ interface Range {
 }
 
 export const GratitudeScreen = (props: MapScreenProps) => {
-  const {theme} = useAppTheme();
+  const { theme } = useAppTheme();
   const styles = createStyleSheet(theme);
-  const {strings} = useStringsAndLabels();
-  const [searchQuery, setSearchQuery] = useState('');
+  const { strings } = useStringsAndLabels();
+  const [searchQuery, setSearchQuery] = useState("");
   const [open, setOpen] = useState(false);
   const [starttimePicker, startTimePicker] = useState(false);
   const [endtimePicker, endTimePicker] = useState(false);
@@ -92,15 +92,16 @@ export const GratitudeScreen = (props: MapScreenProps) => {
   var [zoom, setZoomOnMap] = useState(40);
   var [altitude, setAltitudeOnMap] = useState(35000);
   const [eventList, eventDataStore] = useState([]);
-  const [eventType, eventTypeData] = useState('event');
-  const [profileData, setUserProfile]: any = useState('');
+  const [eventType, eventTypeData] = useState("event");
+  const [profileData, setUserProfile]: any = useState("");
   const [isLoading, LodingData] = useState(false);
   const [setEventIndex, setEventIndexData] = useState(0);
-  const {navigation} = props || {};
-  const {user} = useSelector<StoreType, UserProfileState>(
-    state => state.userProfileReducer,
-  ) as {user: {id: string; pic: string}};
-  const {refetch} = useUserProfile({
+  const { navigation } = props || {};
+  const mileStoneSwiperRef = useRef(null);
+  const { user } = useSelector<StoreType, UserProfileState>(
+    (state) => state.userProfileReducer
+  ) as { user: { id: string; pic: string } };
+  const { refetch } = useUserProfile({
     userId: user?.id,
   });
   var makeDate = new Date();
@@ -147,7 +148,7 @@ export const GratitudeScreen = (props: MapScreenProps) => {
     useCallback(() => {
       requestLocationPermission();
       getUserProfileAPI();
-    }, []),
+    }, [])
   );
 
   const requestLocationPermission = async () => {
@@ -155,11 +156,11 @@ export const GratitudeScreen = (props: MapScreenProps) => {
       enableHighAccuracy: true,
       timeout: 6000,
     })
-      .then(location => {
+      .then((location) => {
         setUserLocation(location);
         console.log(
-          '---------------------location---------------------',
-          location,
+          "---------------------location---------------------",
+          location
         );
         setTimeout(() => {
           if (location) {
@@ -167,18 +168,18 @@ export const GratitudeScreen = (props: MapScreenProps) => {
           }
         }, 3000);
       })
-      .catch(error => {
-        console.log('---------------------error---------------------', error);
-        const {code, message} = error;
+      .catch((error) => {
+        console.log("---------------------error---------------------", error);
+        const { code, message } = error;
         console.log(code, message);
       });
   };
 
   const onNavigateToProfile = () => {
     if (user?.id) {
-      refetch().then(res => {
+      refetch().then((res) => {
         const userData = userProfileParsedData(res?.data?.data);
-        console.log('check1===', userData);
+        console.log("check1===", userData);
         dispatch(onSetUser(userData));
       });
     }
@@ -186,29 +187,24 @@ export const GratitudeScreen = (props: MapScreenProps) => {
   };
 
   const getUserProfileAPI = async () => {
-    const token = await AsyncStorage.getItem('token');
-    console.log('token', token);
+    const token = await AsyncStorage.getItem("token");
+    console.log("token", token);
     try {
-      const response = await fetch(
-        API_URL + '/v1/users/' + user.id,
-        {
-          method: 'get',
-          headers: new Headers({
-            Authorization: 'Bearer ' + token,
-            'Content-Type': 'application/json',
-          }),
-        },
-      );
+      const response = await fetch(API_URL + "/v1/users/" + user.id, {
+        method: "get",
+        headers: new Headers({
+          Authorization: "Bearer " + token,
+          "Content-Type": "application/json",
+        }),
+      });
       const dataItem = await response.json();
-      console.log(
-        '-----------------'+API_URL+'/v1/users/------------',
-      );
+      console.log("-----------------" + API_URL + "/v1/users/------------");
       console.log(dataItem);
       console.log(dataItem.data.pic);
-      console.log('-----------------user profile 123------------');
+      console.log("-----------------user profile 123------------");
       setUserProfile(dataItem.data);
-      AsyncStorage.setItem('profile', dataItem.data.pic);
-      AsyncStorage.setItem('uniqueId', dataItem.data.user_unique_id);
+      AsyncStorage.setItem("profile", dataItem.data.pic);
+      AsyncStorage.setItem("uniqueId", dataItem.data.user_unique_id);
     } catch (error) {
       console.log(error);
     }
@@ -220,23 +216,23 @@ export const GratitudeScreen = (props: MapScreenProps) => {
 
   const onConfirm = useCallback(
     (res: Range) => {
-      console.log(res, '--------------date pick------------');
+      console.log(res, "--------------date pick------------");
       const startDate = res?.startDate;
       const endDate = res?.endDate;
       LodingData(true);
       setOpen(false);
-      setRange({startDate, endDate});
+      setRange({ startDate, endDate });
       requestLocationPermission();
-      console.log(range, '---------------set range ---------------');
+      console.log(range, "---------------set range ---------------");
     },
-    [setOpen, setRange],
+    [setOpen, setRange]
   );
 
   async function geoTaggingAPI(location: any) {
-    const token = await AsyncStorage.getItem('token');
+    const token = await AsyncStorage.getItem("token");
     var data: any = {
-      start_date: moment(range.startDate).format('YYYY-MM-DD'),
-      end_date: moment(range.endDate).format('YYYY-MM-DD'),
+      start_date: moment(range.startDate).format("YYYY-MM-DD"),
+      end_date: moment(range.endDate).format("YYYY-MM-DD"),
       type: eventType,
       user_lat: location?.latitude,
       user_long: location?.longitude,
@@ -251,24 +247,19 @@ export const GratitudeScreen = (props: MapScreenProps) => {
     //   user_long: 72.5141551,
     // };
 
-    console.log('=========== Geo Tagging API Request ==============');
+    console.log("=========== Geo Tagging API Request ==============");
     console.log(data);
     try {
-      const response = await fetch(
-        API_URL + '/v1/events/geotagging',
-        {
-          method: 'post',
-          headers: new Headers({
-            Authorization: 'Bearer ' + token,
-            'Content-Type': 'application/x-www-form-urlencoded',
-          }),
-          body: Object.keys(data)
-            .map(key => key + '=' + data[key])
-            .join('&'),
-        },
-      );
+      const response = await fetch(API_URL + "/v1/events/geotagging", {
+        method: "post",
+        headers: new Headers({
+          Authorization: "Bearer " + token,
+          "Content-Type": "application/json",
+        }),
+        body: JSON.stringify(data),
+      });
       const dataItem = await response.json();
-      console.log('=========== Geo Tagging API Response ==============');
+      console.log("=========== Geo Tagging API Response ==============");
       LodingData(false);
       console.log(dataItem);
       eventDetail(dataItem?.data);
@@ -282,12 +273,12 @@ export const GratitudeScreen = (props: MapScreenProps) => {
   }
 
   const onNavigateEventDetail = (item: any) => {
-    navigation.navigate(navigations.EVENT_DETAIL, {id: item?._id});
+    navigation.navigate(navigations.EVENT_DETAIL, { id: item?._id });
   };
 
   const mapPlusClick = () => {
     map?.current?.getCamera().then((cam: Camera) => {
-      console.log('--------------onZoomInPress------------------');
+      console.log("--------------onZoomInPress------------------");
       cam.altitude = altitude + 5000;
       radius = radius - 5000;
       cam.pitch = pitch + 5;
@@ -305,7 +296,7 @@ export const GratitudeScreen = (props: MapScreenProps) => {
 
   const mapMinusClick = () => {
     map?.current?.getCamera().then((cam: Camera) => {
-      console.log('--------------onZoomOutPress------------------');
+      console.log("--------------onZoomOutPress------------------");
       cam.altitude = altitude - 5000;
       radius = radius + 5000;
       cam.pitch = pitch - 5;
@@ -353,7 +344,7 @@ export const GratitudeScreen = (props: MapScreenProps) => {
   };
 
   return (
-    <View style={{flex: 1}}>
+    <View style={{ flex: 1 }}>
       <Loader visible={isLoading} showOverlay />
       <TouchableOpacity style={styles.HeaderContainerTwo} activeOpacity={1}>
         {/* <View style={styles.searchContainer}>
@@ -373,10 +364,11 @@ export const GratitudeScreen = (props: MapScreenProps) => {
         <View style={styles.oneContainer}>
           <ImageComponent
             style={styles.oneContainerImage}
-            source={onelogo}></ImageComponent>
+            source={onelogo}
+          ></ImageComponent>
           <View>
             <Text style={styles.oneContainerText}>NE</Text>
-            <Text style={styles.localText}>L  o  c  a  l</Text>
+            <Text style={styles.localText}>L o c a l</Text>
             {/* <Text style={styles.localText}>[Local]</Text> */}
           </View>
         </View>
@@ -387,7 +379,8 @@ export const GratitudeScreen = (props: MapScreenProps) => {
           <TouchableOpacity
             activeOpacity={0.8}
             onPress={onNavigateToProfile}
-            style={styles.profileView}>
+            style={styles.profileView}
+          >
             <ImageComponent
               resizeMode="cover"
               isUrl={!!user?.pic}
@@ -398,7 +391,7 @@ export const GratitudeScreen = (props: MapScreenProps) => {
           </TouchableOpacity>
         </View>
       </TouchableOpacity>
-      <View style={{position: 'relative', zIndex: 11122222}}>
+      <View style={{ position: "relative", zIndex: 11122222 }}>
         {/* <View style={styles.filterTags}>
           <TouchableOpacity
             style={styles.container2}
@@ -423,7 +416,7 @@ export const GratitudeScreen = (props: MapScreenProps) => {
           </TouchableOpacity>
         </View> */}
       </View>
-      <View style={{zIndex: 11122222}}>
+      <View style={{ zIndex: 11122222 }}>
         {/* <TouchableOpacity activeOpacity={0.8} style={styles.dateContainer}>
           <ImageComponent source={calendar} style={styles.calendar} />
           <TouchableOpacity activeOpacity={0.8} onPress={() => startTimePicker(true)}>
@@ -483,7 +476,7 @@ export const GratitudeScreen = (props: MapScreenProps) => {
       </View>
       <MapView
         ref={map}
-        style={{flex: 1}}
+        style={{ flex: 1 }}
         camera={Camera}
         showsUserLocation={false}
         // minZoomLevel={2}
@@ -493,22 +486,26 @@ export const GratitudeScreen = (props: MapScreenProps) => {
           longitude: location?.longitude,
           latitudeDelta: 0.0922,
           longitudeDelta: 0.0421,
-        }}>
+        }}
+      >
         <Circle
-          key={'1'}
+          key={"1"}
           center={latLong}
           radius={5000}
           strokeWidth={4}
-          strokeColor={'black'}></Circle>
+          strokeColor={"black"}
+        ></Circle>
         {/* {eventList ? <View> */}
         {eventList.map((eventList: any, index) => {
           return (
             <Marker
-              pinColor={setEventIndex === index ? 'red' : 'black'}
+              onPress={(index) => console.log(index)}
+              pinColor={setEventIndex === index ? "red" : "black"}
               coordinate={{
                 latitude: eventList?.location?.coordinates[1],
                 longitude: eventList?.location?.coordinates[0],
-              }}></Marker>
+              }}
+            ></Marker>
           );
         })}
         {/* </View> : <View></View>} */}
@@ -523,32 +520,38 @@ export const GratitudeScreen = (props: MapScreenProps) => {
       </Callout>
       <View style={styles.avatarContainer}>
         <Swiper
-          autoplay={true}
-          // loop={false}
-          onIndexChanged={value => {
-            console.log(value);
-            // setEventIndexData(value);
+          ref={mileStoneSwiperRef}
+          onIndexChanged={(value) => {
+            console.log("value index", value);
+            setEventIndexData(value);
             onswipeSetEventIndex(value);
-          }}>
+          }}
+          onMomentumScrollEnd={(event, state) => {
+            // console.log(state.index);
+            // console.log('state',state, );
+            // console.log('event11111111111',event, );
+          }}
+        >
           {eventData.map((eventData: any) => {
             return (
               <TouchableOpacity
                 style={styles.listContainer}
                 activeOpacity={0.8}
-                onPress={() => onNavigateEventDetail(eventData)}>
+                onPress={() => onNavigateEventDetail(eventData)}
+              >
                 <ImageComponent
                   resizeMode="stretch"
-                  source={{uri: eventData?.event_image}}
+                  source={{ uri: eventData?.event_image }}
                   style={styles.dummy}
                 />
                 <View style={styles.flex}>
                   <View style={styles.row}>
                     <View style={styles.flex}>
                       <Text style={styles.dateText}>{`${moment(
-                        eventData?.start_date,
-                      ).format('ddd, MMM DD')} • ${moment(
-                        eventData?.start_date,
-                      ).format('hh:mm A')}`}</Text>
+                        eventData?.start_date
+                      ).format("ddd, MMM DD")} • ${moment(
+                        eventData?.start_date
+                      ).format("hh:mm A")}`}</Text>
                       <Text style={styles.title}>{eventData?.name}</Text>
                     </View>
                     <ImageComponent source={event} style={styles.event} />
@@ -558,7 +561,8 @@ export const GratitudeScreen = (props: MapScreenProps) => {
                     <Text style={styles.location}>{eventData?.address}</Text>
                     <ImageComponent
                       style={styles.addressDot}
-                      source={activeRadio}></ImageComponent>
+                      source={activeRadio}
+                    ></ImageComponent>
                     <Text numberOfLines={3} style={styles.fullAddress}>
                       {eventData?.full_address}
                     </Text>

@@ -487,7 +487,7 @@ export const createStyleSheet = (theme: ThemeProps) => {
       fontSize: 12,
       fontFamily: theme.fontType.regular,
       // marginRight: 5,
-      width:width - 100,
+      width:width - 110,
     },
     postDetailTitle:{
       color: theme.colors.black,
@@ -970,6 +970,7 @@ export const createStyleSheet = (theme: ThemeProps) => {
     },
     MainPostContainer:{
       backgroundColor:theme.colors.darkenBlack,
+      flex:1
     }
   });
 };

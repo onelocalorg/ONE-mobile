@@ -47,7 +47,7 @@ export const createStyleSheet = (theme: ThemeProps) => {
       marginTop: verticalScale(10),
     },
     center: {
-      alignItems: 'center',
+      // alignItems: 'center',
     },
     circularView: {
       backgroundColor: theme.colors.red,
@@ -95,6 +95,7 @@ export const createStyleSheet = (theme: ThemeProps) => {
       backgroundColor: theme.colors.yellow,
       height: normalScale(58),
       width: normalScale(58),
+      marginTop:10
     },
     pinWhite: {
       height: normalScale(30),
@@ -695,7 +696,7 @@ export const createStyleSheet = (theme: ThemeProps) => {
       flexDirection: 'row',
       justifyContent: 'center',
       alignItems: 'center',
-      marginVertical: 40,
+      marginVertical: 10,
     },
 
     villageLblTwo: {
