@@ -177,7 +177,6 @@ export const HomeScreen = (props: HomeScreenProps) => {
     useCallback(() => {
       LogBox.ignoreAllLogs();
       getRecentlyJoinUserAPI();
-      // postListAPI();
       requestLocationPermission();
       setPage(page);
     }, [range?.startDate, range?.endDate, page])
@@ -185,12 +184,13 @@ export const HomeScreen = (props: HomeScreenProps) => {
 
   useEffect(() => {
     LogBox.ignoreAllLogs();
+    console.log('postListAPI 1')
     postListAPI();
     getUserProfileAPI();
     requestLocationPermission();
     eventTypeData(type);
     setPage(page);
-  }, [page, type, range?.startDate, range?.endDate, searchQuery]);
+  }, [ page,type, range?.startDate, range?.endDate, searchQuery]);
 
   useFocusEffect(
     useCallback(() => {
@@ -211,6 +211,7 @@ export const HomeScreen = (props: HomeScreenProps) => {
         );
         if (location) {
           postListAPI();
+          console.log('postListAPI 2')
         }
       })
       .catch((error) => {
@@ -319,6 +320,7 @@ export const HomeScreen = (props: HomeScreenProps) => {
       requestLocationPermission();
       LodingData(true);
       postListAPI();
+      console.log('postListAPI 3')
       console.log(range, "---------------set range ---------------");
     },
     [setOpen, setRange]
@@ -415,8 +417,11 @@ export const HomeScreen = (props: HomeScreenProps) => {
       let markers = [...postList];
 
       markers[index]["commentListData"] = [...cmtList];
+      // markers[index]['isComment'] = true;
 
+      console.log(markers[index]['isComment'],'postList111111111')
       postListData(markers);
+      console.log(markers[index]['isComment'],'postList22222')
       // flatlistRef?.current?.scrollToIndex({index: 0});
       // flatlistRef?.current?.scrollToOffset({ animated: true, offset: 0 });
       console.log(
@@ -811,6 +816,7 @@ export const HomeScreen = (props: HomeScreenProps) => {
       // page = page + 1;
       setPage(page);
       postListAPI();
+      console.log('postListAPI 4')
     }
   };
 
@@ -836,16 +842,19 @@ export const HomeScreen = (props: HomeScreenProps) => {
       if (dataItem.success === true) {
         if (selectOP === 1) {
           postListAPI();
+          console.log('postListAPI 5')
           Toast.show("User Block successfully", Toast.LONG, {
             backgroundColor: "black",
           });
         } else if (selectOP === 2) {
           postListAPI();
+          console.log('postListAPI 6')
           Toast.show("Report Submit successfully", Toast.LONG, {
             backgroundColor: "black",
           });
         } else {
           postListAPI();
+          console.log('postListAPI 7')
           Toast.show("Post Hide successfully", Toast.LONG, {
             backgroundColor: "black",
           });
@@ -867,6 +876,7 @@ export const HomeScreen = (props: HomeScreenProps) => {
     setCmtPage(initialValue);
     LodingData(true);
     if (postList[jindex]["isComment"] === true) {
+      console.log('-----------showCommentonPost----------------------')
       let markers = [...postList];
       markers[jindex] = {
         ...markers[jindex],
@@ -876,6 +886,7 @@ export const HomeScreen = (props: HomeScreenProps) => {
       postListData(markers);
       LodingData(false);
     } else {
+      console.log('-----------showCommentonPost1111----------------------')
       postList[jindex]["isComment"] = true;
       setReplyCommentId(data.id);
       getCommentListAPITwo(data.id, jindex);
@@ -966,6 +977,7 @@ export const HomeScreen = (props: HomeScreenProps) => {
     endTimePicker(false);
     LodingData(true);
     postListAPI();
+    console.log('postListAPI 8')
   }, []);
 
   const onConfirmStrtTime = useCallback((res: any) => {
@@ -974,6 +986,7 @@ export const HomeScreen = (props: HomeScreenProps) => {
     startTimePicker(false);
     LodingData(true);
     postListAPI();
+    console.log('postListAPI 9')
   }, []);
   const onDismissTimePicker = () => {
     startTimePicker(false);
@@ -1222,6 +1235,7 @@ export const HomeScreen = (props: HomeScreenProps) => {
     (searchData: any) => {
       setSearchQuery(searchData);
       postListAPI();
+      console.log('postListAPI 10')
     },
     [searchQuery]
   );
