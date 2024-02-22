@@ -439,10 +439,9 @@ export const AdminToolsScreen = (props: AdminToolsScreenProps) => {
               uri={user?.pic}
               style={styles.profileImage}
             />
-          </TouchableOpacity> 
+          </TouchableOpacity>
         </View>
       </TouchableOpacity>
-
 
       <KeyboardAwareScrollView
         keyboardShouldPersistTaps="always"
@@ -451,218 +450,220 @@ export const AdminToolsScreen = (props: AdminToolsScreenProps) => {
       >
         <TouchableOpacity activeOpacity={1}>
           <View>
-          <TouchableOpacity activeOpacity={0.8} onPress={onUploadImage}>
-            <ImageComponent
-              isUrl={!!eventImage}
-              resizeMode="cover"
-              uri={eventImage}
-              source={dummy}
-              style={styles.profile}
-            />
-            <TouchableOpacity
-              activeOpacity={0.8}
-              onPress={onUploadImage}
-              style={styles.add}
-            >
-              <ImageComponent source={addGreen} style={styles.addGreen} />
+            <TouchableOpacity activeOpacity={0.8} onPress={onUploadImage}>
+              <ImageComponent
+                isUrl={!!eventImage}
+                resizeMode="cover"
+                uri={eventImage}
+                source={dummy}
+                style={styles.profile}
+              />
+              <TouchableOpacity
+                activeOpacity={0.8}
+                onPress={onUploadImage}
+                style={styles.add}
+              >
+                <ImageComponent source={addGreen} style={styles.addGreen} />
+              </TouchableOpacity>
             </TouchableOpacity>
-          </TouchableOpacity>
-          <View style={styles.pillContainer}>
-            <Pill
-              label={strings.adminTools}
-              backgroundColor={theme.colors.white}
-              foreGroundColor={theme.colors.black}
-              icon={ticket}
-              disabled
-            />
-          </View>
-
-          <SizedBox height={verticalScale(6)} />
-          {!isCreateEvent && (
-            <Pill
-              label={strings.checkIns}
-              backgroundColor={theme.colors.lightRed}
-              pillStyle={styles.checkIn}
-              onPressPill={onNavigate}
-            />
-          )}
-          <View style={styles.toggleContainer}>
-            <Text style={styles.villageLblTwo}>Village Friendly </Text>
-            <View style={styles.switchToggle}>
-              <Switch
-                style={{ transform: [{ scaleX: 0.9 }, { scaleY: 0.5 }] }}
-                thumbColor={"white"}
-                ios_backgroundColor="#008000"
-                onChange={() => toggleSwitch(isEnabled)} 
-                value={isEnabled}
+            <View style={styles.pillContainer}>
+              <Pill
+                label={strings.adminTools}
+                backgroundColor={theme.colors.white}
+                foreGroundColor={theme.colors.black}
+                icon={ticket}
+                disabled
               />
             </View>
-            <Text style={styles.villageLblTwo}> Adult Oriented</Text>
-          </View>
-          <View style={styles.innerContainer}>
-            <Input
-              onChangeText={(text) => handleText(text, "name")}
-              placeholder={strings.enterTitle}
-              value={name}
-            />
-            <View style={styles.row}>
-              <View style={styles.circularView}>
-                <ImageComponent
-                  source={calendarTime}
-                  style={styles.calendarTime}
+
+            <SizedBox height={verticalScale(6)} />
+            {!isCreateEvent && (
+              <Pill
+                label={strings.checkIns}
+                backgroundColor={theme.colors.lightRed}
+                pillStyle={styles.checkIn}
+                onPressPill={onNavigate}
+              />
+            )}
+            <View style={styles.toggleContainer}>
+              <Text style={styles.villageLblTwo}>Village Friendly </Text>
+              <View style={styles.switchToggle}>
+                <Switch
+                  style={{ transform: [{ scaleX: 0.9 }, { scaleY: 0.5 }] }}
+                  thumbColor={"white"}
+                  ios_backgroundColor="#008000"
+                  onChange={() => toggleSwitch(isEnabled)}
+                  value={isEnabled}
                 />
               </View>
-              <TouchableOpacity
-                activeOpacity={0.8}
-                onPress={() => datePickerRefStart.current?.onOpenModal("start")}
-                style={styles.margin}
-              >
-                <Text style={styles.time}>Start Date</Text>
-                <Text style={styles.time}>{`- ${moment(start_date).format(
-                  "MMM DD YYYY (hh:mm A)"
-                )}`}</Text>
-              </TouchableOpacity>
+              <Text style={styles.villageLblTwo}> Adult Oriented</Text>
             </View>
-            <View style={styles.row}>
-              <View style={styles.circularView}>
-                <ImageComponent
-                  source={calendarTime}
-                  style={styles.calendarTime}
-                />
+            <View style={styles.innerContainer}>
+              <Input
+                onChangeText={(text) => handleText(text, "name")}
+                placeholder={strings.enterTitle}
+                value={name}
+              />
+              <View style={styles.row}>
+                <View style={styles.circularView}>
+                  <ImageComponent
+                    source={calendarTime}
+                    style={styles.calendarTime}
+                  />
+                </View>
+                <TouchableOpacity
+                  activeOpacity={0.8}
+                  onPress={() =>
+                    datePickerRefStart.current?.onOpenModal("start")
+                  }
+                  style={styles.margin}
+                >
+                  <Text style={styles.time}>Start Date</Text>
+                  <Text style={styles.time}>{`- ${moment(start_date).format(
+                    "MMM DD YYYY (hh:mm A)"
+                  )}`}</Text>
+                </TouchableOpacity>
               </View>
-              <TouchableOpacity
-                activeOpacity={0.8}
-                onPress={() => datePickerRefend.current?.onOpenModal("end")}
-                style={styles.margin}
-              >
-                <Text style={styles.time}>End Date</Text>
-                <Text style={styles.time}>{`- ${moment(end_date).format(
-                  "MMM DD YYYY (hh:mm A)"
-                )}`}</Text>
-              </TouchableOpacity>
-            </View>
-            <View style={[styles.row, styles.center]}>
-              <View style={[styles.circularView, styles.yellow]}>
-                <ImageComponent source={pinWhite} style={styles.pinWhite} />
+              <View style={styles.row}>
+                <View style={styles.circularView}>
+                  <ImageComponent
+                    source={calendarTime}
+                    style={styles.calendarTime}
+                  />
+                </View>
+                <TouchableOpacity
+                  activeOpacity={0.8}
+                  onPress={() => datePickerRefend.current?.onOpenModal("end")}
+                  style={styles.margin}
+                >
+                  <Text style={styles.time}>End Date</Text>
+                  <Text style={styles.time}>{`- ${moment(end_date).format(
+                    "MMM DD YYYY (hh:mm A)"
+                  )}`}</Text>
+                </TouchableOpacity>
               </View>
-              <SizedBox width={normalScale(8)} />
-              <View>
-                <Input
-                  placeholder={strings.enterVenue}
-                  inputStyle={styles.textStyle}
-                  value={address}
-                  onChangeText={(text) => handleText(text, "address")}
-                  height={verticalScale(40)}
-                />
-                <SizedBox height={verticalScale(8)} />
-                {/* <Input
+              <View style={[styles.row, styles.center]}>
+                <View style={[styles.circularView, styles.yellow]}>
+                  <ImageComponent source={pinWhite} style={styles.pinWhite} />
+                </View>
+                <SizedBox width={normalScale(8)} />
+                <View>
+                  <Input
+                    placeholder={strings.enterVenue}
+                    inputStyle={styles.textStyle}
+                    value={address}
+                    onChangeText={(text) => handleText(text, "address")}
+                    height={verticalScale(40)}
+                  />
+                  <SizedBox height={verticalScale(8)} />
+                  {/* <Input
                 placeholder={strings.enterAddress}
                 inputStyle={styles.textStyle}
                 value={full_address}
                 onChangeText={text => handleText(text, 'full_address')}
                 height={verticalScale(40)}
               /> */}
-                <View style={{ width: width - 100 }}>
-                  <GooglePlacesAutocomplete
-                    styles={{
-                      textInput: {
-                        backgroundColor: "#E8E8E8",
-                        height: 35,
-                        borderRadius: 10,
-                        color: "black",
-                        fontSize: 14,
-                        borderColor: theme.colors.black,
-                        borderWidth: theme.borderWidth.borderWidth1,
-                      },
-                      listView: {
-                        color: "black", //To see where exactly the list is
-                        zIndex: 10000000, //To popover the component outwards
-                        // position: 'absolute',
-                        // top: 45
-                      },
-                      predefinedPlacesDescription: {
-                        color: "black",
-                      },
-                    }}
-                    listViewDisplayed={false}
-                    placeholder="where is this offer located?"
-                    onPress={(data: any, details = null) => {
-                      handleText(data.description, "full_address");
-                      console.log(data);
-                      console.log(details); // description
-                    }}
-                    query={{
-                      key: "AIzaSyCobkVCxli93gBohNPhJhuHBoWThs1pZlo", // client
-                    }}
-                    currentLocationLabel="Current location"
-                  />
+                  <View style={{ width: width - 100 }}>
+                    <GooglePlacesAutocomplete
+                      styles={{
+                        textInput: {
+                          backgroundColor: "#E8E8E8",
+                          height: 35,
+                          borderRadius: 10,
+                          color: "black",
+                          fontSize: 14,
+                          borderColor: theme.colors.black,
+                          borderWidth: theme.borderWidth.borderWidth1,
+                        },
+                        listView: {
+                          color: "black", //To see where exactly the list is
+                          zIndex: 10000000, //To popover the component outwards
+                          // position: 'absolute',
+                          // top: 45
+                        },
+                        predefinedPlacesDescription: {
+                          color: "black",
+                        },
+                      }}
+                      listViewDisplayed={false}
+                      placeholder="where is this offer located?"
+                      onPress={(data: any, details = null) => {
+                        handleText(data.description, "full_address");
+                        console.log(data);
+                        console.log(details); // description
+                      }}
+                      query={{
+                        key: "AIzaSyCobkVCxli93gBohNPhJhuHBoWThs1pZlo", // client
+                      }}
+                      currentLocationLabel="Current location"
+                    />
+                  </View>
                 </View>
               </View>
-            </View>
 
-            <Text style={styles.event}>{strings.aboutEvent}</Text>
-            <SizedBox height={verticalScale(4)} />
-            <Input
-              placeholder={strings.enterAboutEvent}
-              height={verticalScale(60)}
-              multiline
-              value={about}
-              onChangeText={(text) => handleText(text, "about")}
-            />
-            <View style={[styles.row, styles.marginTop]}>
-              <Text style={styles.tickets}>{strings.tickets}:</Text>
-              <TouchableOpacity
-                activeOpacity={0.8}
-                onPress={openCreateTicketModal}
-              >
-                <ImageComponent source={addGreen} style={styles.addGreen} />
-              </TouchableOpacity>
-            </View>
-            <View>
-              {tickets?.map((ele, index) => (
-                <View key={ele?.price.toString()} style={styles.rowOnly}>
-                  <Text style={styles.ticket}>{`${ele?.name} - ${
-                    ele?.price
-                  } - (ends ${getDate(ele?.end_date)})`}</Text>
-                  <TouchableOpacity
-                    onPress={() => openEditTicketModal(index)}
-                    activeOpacity={0.8}
-                  >
-                    <ImageComponent source={edit} style={styles.edit} />
-                  </TouchableOpacity>
-                </View>
-              ))}
-            </View>
-            <Text style={styles.tickets}>{strings.confirmationEmail}:</Text>
-            <SizedBox height={verticalScale(4)} />
-            <Input
-              placeholder={strings.enterEmail}
-              height={verticalScale(60)}
-              multiline
-              value={email_confirmation_body}
-              onChangeText={(text) =>
-                handleText(text, "email_confirmation_body")
-              }
-            />
-            <SizedBox height={verticalScale(8)} />
-            {!isCreateEvent && (
-              <>
-                <Text style={styles.tickets}>{strings.attendees}:</Text>
-                <SizedBox height={verticalScale(5)} />
-                {(data?.results || []).length > 0 ? (
-                  (data?.results || [])?.map((item) => (
-                    <Text key={item?._id} style={styles.attendee}>
-                      {item?.is_app_user
-                        ? `${item?.user?.first_name} ${item?.user?.last_name}`
-                        : item?.user?.name}
-                    </Text>
-                  ))
-                ) : (
-                  <Text style={styles.noAttendee}>{strings.noAttendees}</Text>
-                )}
-                <SizedBox height={20}></SizedBox>
+              <Text style={styles.event}>{strings.aboutEvent}</Text>
+              <SizedBox height={verticalScale(4)} />
+              <Input
+                placeholder={strings.enterAboutEvent}
+                height={verticalScale(60)}
+                multiline
+                value={about}
+                onChangeText={(text) => handleText(text, "about")}
+              />
+              <View style={[styles.row, styles.marginTop]}>
+                <Text style={styles.tickets}>{strings.tickets}:</Text>
+                <TouchableOpacity
+                  activeOpacity={0.8}
+                  onPress={openCreateTicketModal}
+                >
+                  <ImageComponent source={addGreen} style={styles.addGreen} />
+                </TouchableOpacity>
+              </View>
+              <View>
+                {tickets?.map((ele, index) => (
+                  <View key={ele?.price.toString()} style={styles.rowOnly}>
+                    <Text style={styles.ticket}>{`${ele?.name} - ${
+                      ele?.price
+                    } - (ends ${getDate(ele?.end_date)})`}</Text>
+                    <TouchableOpacity
+                      onPress={() => openEditTicketModal(index)}
+                      activeOpacity={0.8}
+                    >
+                      <ImageComponent source={edit} style={styles.edit} />
+                    </TouchableOpacity>
+                  </View>
+                ))}
+              </View>
+              <Text style={styles.tickets}>{strings.confirmationEmail}:</Text>
+              <SizedBox height={verticalScale(4)} />
+              <Input
+                placeholder={strings.enterEmail}
+                height={verticalScale(60)}
+                multiline
+                value={email_confirmation_body}
+                onChangeText={(text) =>
+                  handleText(text, "email_confirmation_body")
+                }
+              />
+              <SizedBox height={verticalScale(8)} />
+              {!isCreateEvent && (
+                <>
+                  <Text style={styles.tickets}>{strings.attendees}:</Text>
+                  <SizedBox height={verticalScale(5)} />
+                  {(data?.results || []).length > 0 ? (
+                    (data?.results || [])?.map((item) => (
+                      <Text key={item?._id} style={styles.attendee}>
+                        {item?.is_app_user
+                          ? `${item?.user?.first_name} ${item?.user?.last_name}`
+                          : item?.user?.name}
+                      </Text>
+                    ))
+                  ) : (
+                    <Text style={styles.noAttendee}>{strings.noAttendees}</Text>
+                  )}
+                  <SizedBox height={20}></SizedBox>
 
-                {/* <TouchableOpacity
+                  {/* <TouchableOpacity
                   activeOpacity={0.8}
                   onPress={() => onCancleEvent(id)}
                   style={styles.cancleEventBtn}>
@@ -670,28 +671,26 @@ export const AdminToolsScreen = (props: AdminToolsScreenProps) => {
                     {strings.cancleEvent}
                   </Text>
                 </TouchableOpacity> */}
-              </>
-            )}
-          </View>
+                </>
+              )}
+            </View>
 
-          <GetAdmintoolsDropDownScreen
-            eventId={id}
-            viewCount={viewCount}
-            isPayout={isPayout}
-          />
+            <View style={styles.uniqueViewCont}>
+              <Text style={styles.uniqueViewLbl}>Unique Views</Text>
+              <Text style={styles.uniqueCount}>{viewCount}</Text>
+            </View>
+ 
+            <GetAdmintoolsDropDownScreen eventId={id}/>
 
-          <TouchableOpacity
-            activeOpacity={0.8}
-            onPress={() => onCancleEvent(id)}
-            style={styles.cancleEventBtn}
-          >
-            <Text style={styles.cancleEventText}>{strings.cancleEvent}</Text>
-          </TouchableOpacity>
+            <TouchableOpacity
+              activeOpacity={0.8}
+              onPress={() => onCancleEvent(id)}
+              style={styles.cancleEventBtn}
+            >
+              <Text style={styles.cancleEventText}>{strings.cancleEvent}</Text>
+            </TouchableOpacity>
           </View>
         </TouchableOpacity>
-
-          
-        
       </KeyboardAwareScrollView>
 
       <View style={styles.bottomButton}>

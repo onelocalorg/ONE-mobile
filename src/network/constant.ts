@@ -1,9 +1,9 @@
 
 
-import ActiveEnv from '@config/env/env.prod.json';
+import ActiveEnv from '@config/env/env.json';
 export const dataObject:any = [];
 
-export const getData = (key:any) => {
+export const getData = (key:any) => { 
   if (key == undefined) {
     return 1;
   }else{

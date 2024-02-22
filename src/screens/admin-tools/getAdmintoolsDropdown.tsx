@@ -18,16 +18,14 @@ import { navigations } from "@config/app-navigation/constant";
 
 interface GetAdmintoolsDropDownScreenProps {
   eventId: string;
-  isPayout: boolean;
-  viewCount: number;
 }
 
 export const GetAdmintoolsDropDownScreen = (
   props: GetAdmintoolsDropDownScreenProps
 ) => {
-  const { theme } = useAppTheme();
+  const { theme } = useAppTheme(); 
   const styles = createStyleSheet(theme);
-  const { eventId, isPayout, viewCount } = props || {};
+  const { eventId } = props || {};
   const [isLoading, LodingData] = useState(false);
   const addItemRef: React.Ref<ModalRefProps> = useRef(null);
   const editItemRef: React.Ref<ModalRefProps> = useRef(null);
@@ -36,15 +34,13 @@ export const GetAdmintoolsDropDownScreen = (
   const [expenseListData, setExpenseListData]: any = useState([]);
   const [payoutListData, setPayoutListData]: any = useState([]);
   const [modalData, setModalData] = useState({});
+  const [isPayout, setIsPayout] = useState(false);
   const [revenueAmt, setRevenueAmt] = useState(0);
   const [expensesAmt, setExpenseAmt]: any = useState();
   const [totalProfile, setTotalProfile]: any = useState();
   const [payoutAmt, setpayoutAmt]: any = useState();
   const [remainingAmt, setRemainingAmt]: any = useState();
-  const [payOutsArray, setPayoutValues]: any = useState([]);
-  const [expenseArray, setExpenseValues]: any = useState([]);
-  const [expenseValueData, setnewExpenseArray]: any = useState([]);
-
+  
   const openAddBreakDownModal = (id: any) => {
     setUserId(userId);
     addItemRef.current?.onOpenModal();
@@ -56,8 +52,8 @@ export const GetAdmintoolsDropDownScreen = (
     useCallback(() => {
       console.log(eventId, "------------getPayoutAPI--------------");
       getPayoutAPI();
-    }, [eventId])
-  );
+    }, [eventId]) 
+  ); 
 
   // </--------------getPayoutAPI---------------------->
 
@@ -68,7 +64,6 @@ export const GetAdmintoolsDropDownScreen = (
     try {
       const response = await fetch(
         API_URL + "/v1/events/event-financial/" + eventId,
-        // API_URL + '/v1/events/event-financial/65d4c08f947463a3a650e663',
         {
           method: "get",
           headers: new Headers({
@@ -79,20 +74,21 @@ export const GetAdmintoolsDropDownScreen = (
       );
       console.log(API_URL + "/v1/events/event-financial/" + eventId);
       const dataItem = await response.json();
-      LodingData(false);
       console.log("=========== payout data from API==============", dataItem);
+      LodingData(false);
       setPayoutData(dataItem?.data);
       setExpenseListData(dataItem?.data?.expenses);
       setPayoutListData(dataItem?.data?.payouts);
       setUserId(dataItem?.data?.producer?.user_id);
       setRevenueAmt(dataItem?.data?.revenue_amount);
       setExpenseAmt(dataItem?.data?.total_expenses);
+      setIsPayout(dataItem?.data?.isPayout);
       setTotalProfile(
         dataItem?.data?.revenue_amount - dataItem?.data?.total_expenses
       );
       setpayoutAmt(dataItem?.data?.total_payout);
       setRemainingAmt(dataItem?.data?.remaining_amount);
-      console.log(dataItem);
+      
     } catch (error) {
       console.error(error);
       LodingData(false);
@@ -137,31 +133,29 @@ export const GetAdmintoolsDropDownScreen = (
         }
       );
       const dataItem = await response.json();
+      console.log(dataItem);
       LodingData(false);
-      Toast.show(dataItem?.data.message, Toast.LONG, {
+      
+      if (dataItem.status) {
+        setIsPayout(false);
+      }
+      Toast.show(dataItem?.message, Toast.LONG, {
         backgroundColor: "black",
       });
+      
       console.log(dataItem);
     } catch (error) {
       console.error(error);
       LodingData(false);
     }
   }
-
+ 
   return (
     <>
       <Loader visible={isLoading} showOverlay />
       <View style={styles.eventContainerTwo}>
-        <View style={styles.uniqueViewCont}>
-          <Text style={styles.uniqueViewLbl}>Unique Views</Text>
-          <Text style={styles.uniqueCount}>{viewCount}</Text>
-        </View>
-
-        {/* <View style={styles.cancelEventCont}>
-          <Text style={styles.cancelEventLbl}>Cancel Event</Text>
-        </View> */}
-
-        {payoutData !== null && eventId !== undefined ? (
+        
+        {revenueAmt > 0 ? (
           <View style={styles.eventListCont}>
             <Text style={styles.financialCont}>Financials</Text>
 
@@ -216,7 +210,7 @@ export const GetAdmintoolsDropDownScreen = (
                     happen within this time before a payout can be sent.
                   </Text>
                 </View>
-              </TouchableOpacity>
+              </TouchableOpacity> 
             ) : (
               <View></View>
             )}

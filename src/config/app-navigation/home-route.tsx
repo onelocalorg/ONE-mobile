@@ -13,6 +13,7 @@ import { CreatePostGratisScreen } from '@screens/createPost/gratis';
 import { CreatePostRequestScreen } from '@screens/createPost/request';
 import { CreatePostOfferScreen } from '@screens/createPost/offer';
 import { CommentList } from '@screens/home/commetList';
+import { ProfileRoute } from './profile-route';
 
 const HomeStack = createStackNavigator();
 
@@ -26,9 +27,14 @@ export const HomeRoute = () => {
         component={HomeScreen}
         options={{header}}
       />
-      <HomeStack.Screen
+      {/* <HomeStack.Screen
         name={navigations.PROFILE}
         component={ProfileScreen}
+        options={{header}}
+      /> */}
+      <HomeStack.Screen
+        name={'profileroute'}
+        component={ProfileRoute}
         options={{header}}
       />
       <HomeStack.Screen

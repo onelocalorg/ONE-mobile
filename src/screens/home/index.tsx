@@ -303,7 +303,8 @@ export const HomeScreen = (props: HomeScreenProps) => {
         dispatch(onSetUser(userData));
       });
     }
-    navigation.navigate(navigations.PROFILE);
+    // navigation.navigate(navigations.PROFILE);
+    navigation.navigate('profileroute');
   };
 
   const onDismiss = useCallback(() => {
