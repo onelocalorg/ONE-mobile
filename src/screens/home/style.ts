@@ -517,7 +517,7 @@ export const createStyleSheet = (theme: ThemeProps) => {
     userListDisplayCont:{
       flexDirection: 'row',
       position: 'absolute',
-      right: 110, 
+      right: 70, 
       top: 77
     },
     userNameGraties: {
@@ -543,6 +543,8 @@ export const createStyleSheet = (theme: ThemeProps) => {
       color: theme.colors.gray,
       fontSize: 16,
       fontFamily: theme.fontType.regular,
+      flexShrink:1,
+      width:width-100
     },
     likeCount: {
       color: theme.colors.black,

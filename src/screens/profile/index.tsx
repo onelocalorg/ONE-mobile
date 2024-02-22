@@ -3,15 +3,18 @@ import { useAppTheme } from "@app-hooks/use-app-theme";
 import {
   NavigationContainerRef,
   ParamListBase,
+  useFocusEffect,
 } from "@react-navigation/native";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { createStyleSheet } from "./style";
 import { useStringsAndLabels } from "@app-hooks/use-strings-and-labels";
 import { Header } from "@components/header";
 import {
+  AppState,
   ImageBackground,
   Keyboard,
   KeyboardAvoidingView,
+  Linking,
   Modal,
   PermissionsAndroid,
   Platform,
@@ -44,6 +47,7 @@ import {
   bell,
   dummy,
   onelogo,
+  sendPayoutImg,
 } from "@assets/images";
 import { PERMISSIONS, request } from "react-native-permissions";
 import { Alert } from "react-native";
@@ -79,6 +83,7 @@ interface UserData {
   first_name: string;
   last_name: string;
   nick_name: string;
+  isConnectedLinked: boolean;
 }
 
 interface ProfileScreenProps {
@@ -102,6 +107,7 @@ export const ProfileScreen = (props: ProfileScreenProps) => {
   const [lastName, setLastName] = useState("");
   const [nickName, setNickName] = useState("");
   const [isLoading, LodingData] = useState(false);
+  
   const { user } = useSelector<StoreType, UserProfileState>(
     (state) => state.userProfileReducer
   ) as { user: UserData };
@@ -121,13 +127,17 @@ export const ProfileScreen = (props: ProfileScreenProps) => {
     first_name,
     last_name,
     nick_name,
+    isConnectedLinked,
   } = user || {};
   const { mutateAsync } = useEditProfile();
   const dispatch = useDispatch();
-  const { token } = useToken();
   const [searchQuery, setSearchQuery] = useState("");
+  const appState = useRef(AppState.currentState);
+  const [appStateVisible, setAppStateVisible] = useState(appState.current);
   console.log(user, "--------------User Info--------------");
   console.log(skills, "888888888888");
+
+
   useEffect(() => {
     setBio(bio);
     setProfileUri(pic);
@@ -135,16 +145,35 @@ export const ProfileScreen = (props: ProfileScreenProps) => {
     setFirstName(first_name);
     setLastName(last_name);
     setNickName(nick_name);
-    console.log("------------pic----------", pic);
-    console.log("------------cover_image----------", cover_image);
   }, [bio, pic, cover_image, first_name, last_name, nick_name]);
 
   useEffect(() => {
+    const subscription = AppState.addEventListener('change', nextAppState => {
+      if (
+        appState.current.match(/inactive|background/) &&
+        nextAppState === 'active'
+      ) {
+        console.log('App has come to the foreground!');
+      }
+
+      appState.current = nextAppState;
+      setAppStateVisible(appState.current);
+      console.log('AppState', appState.current);
+    });
+
     return () => {
-      dispatch(onSetCoverImage(""));
+      subscription.remove();
     };
   }, []);
 
+  useFocusEffect(
+    React.useCallback(() => {
+      console.log('appState appState appState',appState)
+      // Alert.alert('appState') 
+    }, [appState])
+  );
+
+ 
   const onBackPress = () => {
     console.log("jdjkshdjkshdkhjakhdajk");
     navigation.goBack();
@@ -155,38 +184,6 @@ export const ProfileScreen = (props: ProfileScreenProps) => {
     ImageOptionModal(true);
   };
 
-  // ======================imageUpload API=========================
-  // const imageUploadAPI = async (fileItem: any, base64Item: any) => {
-  //   var pic: any = {
-  //     uploadKey: 'pic',
-  //     imageName: fileItem,
-  //     base64String: 'data:image/jpeg;base64,' + base64Item,
-  //   };
-  //   ImageOptionModal(false);
-  //   console.log('=================Request=================');
-  //   console.log(pic);
-  //   try {
-  //     const response = await fetch(
-  //       API_URL + '/v1/users/upload/file',
-  //       {
-  //         method: 'post',
-  //         headers: new Headers({
-  //           Authorization: 'Bearer ' + token,
-  //           'Content-Type': 'application/json',
-  //         }),
-  //         body: JSON.stringify(pic),
-  //       },
-  //     );
-  //     const dataItem = await response.json();
-  //     LodingData(false);
-  //     console.log('-----------------Response------------');
-  //     setProfileUri(dataItem?.data?.imageUrl);
-  //     console.log(dataItem);
-  //   } catch (error) {
-  //     LodingData(false);
-  //     console.log(error);
-  //   }
-  // };
 
   const imageOptionSelect = async (item: any) => {
     if (item === 1) {
@@ -358,6 +355,36 @@ export const ProfileScreen = (props: ProfileScreenProps) => {
       console.log("-----------------Response------------");
       setbackgroundUri(dataItem?.data?.imageUrl);
       console.log(dataItem);
+    } catch (error) {
+      LodingData(false);
+      console.log(error);
+    }
+  };
+
+  const getPayoutConnectListAPI = async () => {
+    var pic: any = {
+      
+    };
+
+    LodingData(true);
+    console.log(API_URL + '/v1/users/connect-link')
+    try {
+      const token = await AsyncStorage.getItem('token');
+      const response = await fetch(API_URL + "/v1/users/connect-link", {
+        method: "post",
+        headers: new Headers({
+          Authorization: 'Bearer ' + token,
+          "Content-Type": "application/json",
+        }),
+       
+      });
+      const dataItem = await response.json();
+      if (dataItem?.data) {
+        console.log("11111111111",dataItem?.data);
+        Linking.openURL(dataItem?.data);
+      }
+      console.log(dataItem,'dataItem dataItem')
+      LodingData(false);
     } catch (error) {
       LodingData(false);
       console.log(error);
@@ -539,17 +566,23 @@ export const ProfileScreen = (props: ProfileScreenProps) => {
           </View>
         </View>
 
-        {/* <TouchableOpacity activeOpacity={0.8} style={styles.payView}>
-        <Text style={styles.pay}>{strings.stripePayout}</Text>
-      </TouchableOpacity> */}
-
         <View style={styles.gratiesCont}>
-          <Image
-            source={Gratis}
-            resizeMode="cover"
-            style={styles.gratiesImage}
-          ></Image>
-          <Text style={styles.gratiesNumber}>{points_balance}</Text>
+          <View style={styles.payoutAndGratisCont}>
+            <Image
+              source={Gratis}
+              resizeMode="cover"
+              style={styles.gratiesImage}
+            ></Image>
+            <Text style={styles.gratiesNumber}>{points_balance}</Text>
+          </View>
+
+          <TouchableOpacity onPress={getPayoutConnectListAPI} activeOpacity={0.8} style={styles.payView}>
+            <ImageComponent
+              style={styles.payoutIcon}
+              source={sendPayoutImg}
+            ></ImageComponent>
+            <Text style={styles.pay}> {isConnectedLinked ? 'Payout Connected' : 'link payout method'}</Text>
+          </TouchableOpacity>
         </View>
 
         <View style={styles.aboutView}>

@@ -41,6 +41,7 @@ export const createStyleSheet = (theme: ThemeProps) => {
     },
     scrollView: {
       paddingBottom: verticalScale(100),
+      // flexGrow: 1
     },
     row: {
       flexDirection: 'row',
@@ -135,9 +136,9 @@ export const createStyleSheet = (theme: ThemeProps) => {
       width: normalScale(28),
       marginLeft: normalScale(3),
     },
-    ticketTitle:{
-      fontFamily: theme.fontType.regular, fontSize: theme.fontSize.font24,color: theme.colors.black,paddingHorizontal: normalScale(16),alignSelf: 'center'
-    },
+    // ticketTitle:{
+    //   fontFamily: theme.fontType.regular, fontSize: theme.fontSize.font24,color: theme.colors.black,paddingHorizontal: normalScale(16),alignSelf: 'center'
+    // },
     rowOnly: {
       flexDirection: 'row',
       justifyContent: 'space-between',
@@ -390,50 +391,47 @@ export const createStyleSheet = (theme: ThemeProps) => {
       color: theme.colors.black,
       fontSize: theme.fontSize.font14,
     },
-    amountCont: {
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-      marginRight: 25,
-      marginTop: 5,
-      borderBottomWidth: 1,
-      borderColor: 'lightgrey',
-      paddingVertical: 3,
-    },
+    // amountCont: {
+    //   flexDirection: 'row',
+    //   justifyContent: 'space-between',
+    //   marginRight: 25,
+    //   marginTop: 5,
+    //   borderBottomWidth: 1,
+    //   borderColor: 'lightgrey',
+    //   paddingVertical: 3,
+    // },
     amountLbl: {
       fontFamily: theme.fontType.light,
       color: theme.colors.black,
       fontSize: theme.fontSize.font14,
     },
-    dollarSign: {
-      fontFamily: theme.fontType.light,
-      color: theme.colors.black,
-      fontSize: theme.fontSize.font14,
-      borderWidth: 1,
-      borderColor: 'lightGrey',
-      borderRadius: 50,
-      // padding: 5,
-    },
-    priceContainerTwo: {
+    // dollarSign: {
+    //   fontFamily: theme.fontType.light,
+    //   color: theme.colors.black,
+    //   fontSize: theme.fontSize.font14,
+    //   borderWidth: 1,
+    //   borderColor: 'lightGrey',
+    //   borderRadius: 50,
+    //   // padding: 5,
+    // },
 
-    },
-
-    priceContainer: {
-      borderRadius: 100,
-       borderWidth: 1,
-       padding: 3,
-       borderColor: 'lightGrey',
-       height: 24,
-       width: 24,
-       justifyContent: 'center',
-      //  paddingTop: 2
+    // priceContainer: {
+    //   borderRadius: 100,
+    //    borderWidth: 1,
+    //    padding: 3,
+    //    borderColor: 'lightGrey',
+    //    height: 24,
+    //    width: 24,
+    //    justifyContent: 'center',
+    //   //  paddingTop: 2
       
-    },
-    percentageSign: {
-      fontFamily: theme.fontType.light,
-      color: theme.colors.black,
-      fontSize: theme.fontSize.font14,
-      textAlign: 'center',
-    },
+    // },
+    // percentageSign: {
+    //   fontFamily: theme.fontType.light,
+    //   color: theme.colors.black,
+    //   fontSize: theme.fontSize.font14,
+    //   textAlign: 'center',
+    // },
     dollarRupees: {
       fontFamily: theme.fontType.light,
       color: theme.colors.black,
@@ -476,30 +474,30 @@ export const createStyleSheet = (theme: ThemeProps) => {
       fontSize: theme.fontSize.font14,
       textAlign: 'right',
     },
-    mediaCont: {
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-      marginRight: 20,
-      borderBottomWidth: 1,
-      borderColor: 'lightgrey',
-      marginTop: 3,
-      paddingVertical: 3,
-    },
+    // mediaCont: {
+    //   flexDirection: 'row',
+    //   justifyContent: 'space-between',
+    //   marginRight: 20,
+    //   borderBottomWidth: 1,
+    //   borderColor: 'lightgrey',
+    //   marginTop: 3,
+    //   paddingVertical: 3,
+    // },
     mediaLbl: {
       fontFamily: theme.fontType.light,
       color: theme.colors.black,
       fontSize: theme.fontSize.font14,
     },
-    addPhotosCont: {
-      fontFamily: theme.fontType.light,
-      color: theme.colors.black,
-      fontSize: theme.fontSize.font14,
-      borderWidth: 1,
-      borderRadius: 4,
-      paddingHorizontal: 3,
-      paddingVertical: 2,
-      marginRight: -8
-    },
+    // addPhotosCont: {
+    //   fontFamily: theme.fontType.light,
+    //   color: theme.colors.black,
+    //   fontSize: theme.fontSize.font14,
+    //   borderWidth: 1,
+    //   borderRadius: 4,
+    //   paddingHorizontal: 3,
+    //   paddingVertical: 2,
+    //   marginRight: -8
+    // },
     eventContainerTwo: {
       marginTop: 25,
     },
@@ -729,22 +727,22 @@ export const createStyleSheet = (theme: ThemeProps) => {
     breakDownCont: {
       // height: 200
     },
-    subBreakdowncont: {
-      borderWidth: 1,
-      borderRadius: 5,
-      marginHorizontal: 16,
-      marginVertical: 25,
-      paddingLeft: 20,
-      paddingBottom: 20,
-      borderColor: theme.colors.gray,
-    },
-    breakdownHeader: {
-      paddingTop: 2,
-      fontFamily: theme.fontType.medium,
-      color: theme.colors.black,
-      fontSize: theme.fontSize.font14,
-      textAlign: 'center',
-    },
+    // subBreakdowncont: {
+    //   borderWidth: 1,
+    //   borderRadius: 5,
+    //   marginHorizontal: 16,
+    //   marginVertical: 25,
+    //   paddingLeft: 20,
+    //   paddingBottom: 20,
+    //   borderColor: theme.colors.gray,
+    // },
+    // breakdownHeader: {
+    //   paddingTop: 2,
+    //   fontFamily: theme.fontType.medium,
+    //   color: theme.colors.black,
+    //   fontSize: theme.fontSize.font14,
+    //   textAlign: 'center',
+    // },
     avatarContainer: {
       marginLeft: 20,
       marginRight: 20, 
@@ -757,16 +755,16 @@ export const createStyleSheet = (theme: ThemeProps) => {
       marginLeft: 10,
       // backgroundColor:'green'
     },
-    submitButton: {
-    height:38,
-    marginTop: 16,
-    alignContent: 'center',
-    alignItems: 'center',
-    marginRight: 20,
-    justifyContent: 'center',
-    backgroundColor: theme.colors.purple,
-    borderRadius: 6
-    },
+    // submitButton: {
+    // height:38,
+    // marginTop: 16,
+    // alignContent: 'center',
+    // alignItems: 'center',
+    // marginRight: 20,
+    // justifyContent: 'center',
+    // backgroundColor: theme.colors.purple,
+    // borderRadius: 6
+    // },
     submitLbl:{
       fontFamily: theme.fontType.medium,
       color: theme.colors.white,
@@ -780,11 +778,114 @@ export const createStyleSheet = (theme: ThemeProps) => {
       // width : '100%',
       flexWrap: 'wrap',
       },
-      selectImage:{
-        height:90,
-        width:'30%',
-        borderRadius:18,
-        marginRight:10,
+      // selectImage:{
+      //   height:90,
+      //   width:'30%',
+      //   borderRadius:18,
+      //   marginRight:10,
+      //   },
+        ticketTitle: {
+          fontFamily: theme.fontType.regular,
+          fontSize: theme.fontSize.font24,
+          color: theme.colors.black,
+          paddingHorizontal: normalScale(16),
+          alignSelf: "center",
         },
+        amountCont: {
+          flexDirection: "row",
+          justifyContent: "space-between",
+          marginRight: 25,
+          marginTop: 5,
+          borderBottomWidth: 1,
+          borderColor: "#A9A9A9",
+          paddingVertical: 3,
+        },
+        dollarSign: {
+          fontFamily: theme.fontType.light,
+          color: theme.colors.black,
+          fontSize: theme.fontSize.font14,
+          borderWidth: 1,
+          borderColor: "lightGrey",
+          borderRadius: 50,
+          // padding: 5,
+        },
+        priceContainerTwo: {},
+
+    priceContainer: {
+      borderRadius: 100,
+      borderWidth: 1,
+      padding: 3,
+      borderColor: "lightGrey",
+      height: 24,
+      width: 24,
+      justifyContent: "center",
+      //  paddingTop: 2
+    },
+    percentageSign: {
+      fontFamily: theme.fontType.light,
+      color: theme.colors.black,
+      fontSize: theme.fontSize.font14,
+      textAlign: "center",
+    },
+    mediaCont: {
+      flexDirection: "row",
+      justifyContent: "space-between",
+      marginRight: 20,
+      borderBottomWidth: 1,
+      borderColor: "#A9A9A9",
+      marginTop: 3,
+      paddingVertical: 3,
+    },
+    addPhotosCont: {
+      fontFamily: theme.fontType.light,
+      color: theme.colors.black,
+      fontSize: theme.fontSize.font14,
+      borderWidth: 1,
+      borderRadius: 4,
+      paddingHorizontal: 3,
+      paddingVertical: 2,
+      marginRight: -8,
+      backgroundColor: "white",
+    },
+    subBreakdowncont: {
+      // borderWidth: 1,
+      borderRadius: 12,
+      marginHorizontal: 16,
+      marginVertical: 25,
+      paddingLeft: 20,
+      paddingBottom: 10,
+      borderColor: theme.colors.gray,
+      backgroundColor: "#D9D9D9",
+    },
+    breakdownHeader: {
+      fontFamily: theme.fontType.medium,
+      color: theme.colors.black,
+      fontSize: theme.fontSize.font14,
+      textAlign: "center",
+    },
+    selectImage: {
+      height: 90,
+      // width: "90%",
+      width: 90,
+      borderRadius: 18,
+      marginRight: 10,
+      marginTop: 12
+    },
+    submitButton: {
+      flexDirection: "row",
+      justifyContent: "flex-end",
+      marginHorizontal: 20,
+      marginTop: 10
+    },
+    saveIcon: {
+      marginTop: 3,
+      height: 30,
+      width: 30,
+    },
+    deleteIcon: {
+      height: 25,
+      width: 20,
+      marginLeft: 8
+    },
   });
 };

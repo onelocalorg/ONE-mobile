@@ -17,7 +17,7 @@ export const EventList = (props: EventListProps) => {
   const {theme} = useAppTheme();
   const styles = createStyleSheet(theme);
   const {data, onPress, disabled = false} = props || {};
-  const {start_date, address, name, event_image,full_address,cancelled} = data || {};
+  const {start_date, address, name, event_image,full_address,cancelled,start_date_label,start_time_label} = data || {};
 
   return (
     <TouchableOpacity
@@ -35,9 +35,9 @@ export const EventList = (props: EventListProps) => {
       <View style={styles.flex}> 
         <View style={styles.row}>
           <View style={styles.flex}>
-            <Text style={styles.dateText}>{`${moment(start_date).format(
-              'ddd, MMM DD',
-            )} • ${moment(start_date).format('hh:mm A')}`}</Text>
+            <Text style={styles.dateText}>{start_date_label}
+                      {' • '}
+                       {start_time_label}</Text>
             <Text numberOfLines={2} style={styles.title}>{name}</Text>
           </View>
           <ImageComponent source={event} style={styles.event} />

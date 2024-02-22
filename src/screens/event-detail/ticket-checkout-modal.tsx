@@ -486,7 +486,7 @@ const TicketCheckoutModalComp = (
                   <Text
                     style={
                       styles.text
-                    }>{`$${ele?.price} - ${ele?.name}${ele?.name}${ele?.name}${ele?.name}`}</Text>
+                    }>{`$${ele?.price} - ${ele?.name}`}</Text>
                   {ele?.available_quantity !== 0 ? (
                     <View style={styles.quantityContainer}>
                       <TouchableOpacity

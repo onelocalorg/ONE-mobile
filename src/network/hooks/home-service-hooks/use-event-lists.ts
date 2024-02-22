@@ -31,6 +31,8 @@ export interface Result {
   day_title:string;
   isPayout: boolean;
   viewCount:number;
+  start_time_label:string;
+  start_date_label:string;
   events:[];
 }
 

@@ -34,4 +34,5 @@ export const colors = {
   headerColor:'#003333',
   footerColor:'#003333',
   splashColor:'#003333',
+  purpleDark:'#8058AE'
 };

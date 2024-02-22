@@ -98,7 +98,8 @@ export const GratitudeScreen = (props: MapScreenProps) => {
   const [isLoading, LodingData] = useState(false);
   const [setEventIndex, setEventIndexData] = useState(0);
   const { navigation } = props || {};
-  const viewWidth = Dimensions.get("window").width;
+  const milestoneData = [1, 2, 3, 4, 5]; //your data
+  const mileStoneSwiperRef:any = useRef(null);
   const { user } = useSelector<StoreType, UserProfileState>(
     (state) => state.userProfileReducer
   ) as { user: { id: string; pic: string } };
@@ -264,14 +265,15 @@ export const GratitudeScreen = (props: MapScreenProps) => {
       LodingData(false);
       console.log(dataItem);
       eventDetail(dataItem?.data);
-      
-      const resultTemp = dataItem?.data?.map((item: any) => {
-        return { ...item, isActive: false};
-      });
-      resultTemp[0].isActive = true;
-      eventDataStore(resultTemp);
 
-      console.log(dataItem?.data[0]);
+      if (dataItem?.data.length !== 0) {
+        const resultTemp = dataItem?.data?.map((item: any) => {
+          return { ...item, isActive: false };
+        });
+        resultTemp[0].isActive = true;
+        eventDataStore(resultTemp);
+        console.log(dataItem?.data[0]);
+      }
       console.log(dataItem?.data);
     } catch (error) {
       LodingData(false);
@@ -352,27 +354,19 @@ export const GratitudeScreen = (props: MapScreenProps) => {
   };
 
   const onMarkerClick = (mapEventData: any) => {
-    const markerId = mapEventData._targetInst.return.key;
     console.log("markerIndex", mapEventData);
+    mileStoneSwiperRef?.current?.scrollTo(mapEventData);
     setEventIndexData(mapEventData);
   };
 
-  function renderPagination(
-    index: number,
-    total: number,
-    swiper: Swiper
-  ): ReactNode {
-    throw new Error("Function not implemented.");
-  }
-
-  const changeMarkerColor = (indexMarker:any) =>{
-    const resultTemp:any = eventList;
+  const changeMarkerColor = (indexMarker: any) => {
+    const resultTemp: any = [...eventList];
     for (let index = 0; index < resultTemp.length; index++) {
       resultTemp[index].isActive = false;
     }
-    // resultTemp[indexMarker].isActive = true;
+    resultTemp[indexMarker].isActive = true;
     eventDataStore(resultTemp);
-  }
+  };
 
   return (
     <View style={{ flex: 1 }}>
@@ -452,15 +446,20 @@ export const GratitudeScreen = (props: MapScreenProps) => {
         </TouchableOpacity>
       </Callout>
 
-      {eventData.length != 0 ? (
+      {eventData.length != 0 ? ( 
         <View style={styles.avatarContainer}>
           <Swiper
-            showsPagination={true}
             onIndexChanged={(value) => {
               console.log("value index", value);
               changeMarkerColor(value);
               // onswipeSetEventIndex(value);
             }}
+            ref={mileStoneSwiperRef}
+            loop={false}
+            // centeredSlides={false}
+            showsPagination={false}
+            bounces={true}
+            removeClippedSubviews={false}
           >
             {eventData.map((eventData: any) => {
               return (
@@ -482,7 +481,7 @@ export const GratitudeScreen = (props: MapScreenProps) => {
                         ).format("ddd, MMM DD")} • ${moment(
                           eventData?.start_date
                         ).format("hh:mm A")}`}</Text>
-                        <Text style={styles.title}>{eventData?.name}</Text>
+                        <Text numberOfLines={2} style={styles.title}>{eventData?.name}</Text>
                       </View>
                       <ImageComponent source={event} style={styles.event} />
                     </View>
@@ -493,7 +492,7 @@ export const GratitudeScreen = (props: MapScreenProps) => {
                         style={styles.addressDot}
                         source={activeRadio}
                       ></ImageComponent>
-                      <Text numberOfLines={3} style={styles.fullAddress}>
+                      <Text numberOfLines={1} style={styles.fullAddress}>
                         {eventData?.full_address}
                       </Text>
                     </View>

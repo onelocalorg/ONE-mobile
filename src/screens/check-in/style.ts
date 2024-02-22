@@ -19,7 +19,7 @@ export const createStyleSheet = (theme: ThemeProps) => {
       color: theme.colors.darkBlack,
     },
     scrollView: {
-      paddingBottom: verticalScale(600),
+      paddingBottom: verticalScale(800),
     },
     listContainer: {
       borderColor: theme.colors.red,

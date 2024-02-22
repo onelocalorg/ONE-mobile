@@ -88,18 +88,25 @@ lastName:{
       width:normalScale(150)
     },
     payView: {
-      backgroundColor: theme.colors.lightPurple,
-      alignSelf: 'flex-start',
-      borderRadius: theme.borderRadius.radius20,
-      paddingVertical: verticalScale(8),
+      backgroundColor: theme.colors.purpleDark,
+      alignSelf: 'flex-end',
+      flexDirection:'row',
+      borderRadius: theme.borderRadius.radius6,
+      paddingVertical: verticalScale(2),
       paddingHorizontal: normalScale(8),
       marginLeft: normalScale(6),
-      marginTop: verticalScale(11),
+      marginVertical:10
+    },
+    payoutIcon:{
+      height:30,
+      width:30
     },
     pay: {
       fontFamily: theme.fontType.medium,
       fontSize: theme.fontSize.font12,
-      color: theme.colors.black,
+      color: theme.colors.white,
+      alignSelf:'center',
+      paddingLeft:10
     },
     aboutView: {
       // marginTop: verticalScale(25),
@@ -1038,19 +1045,25 @@ lastName:{
     gratiesImage: {
       height: 25,
       width: 25,
-      marginVertical:20 
+      marginVertical:12
     },
     gratiesNumber: {
       fontSize: 18,
       fontFamily: theme.fontType.bold,
       color: theme.colors.black,
-      marginVertical:24 ,
+      marginVertical:10,
+      alignSelf:'center',
       marginLeft: 6
     },
     gratiesCont: {
       flexDirection: 'row',
       paddingLeft: 30,
-      // paddingTop: -12,
+      paddingRight:15,
+      justifyContent:'space-between',
+    },
+
+    payoutAndGratisCont:{
+      flexDirection: 'row',
     }
 
   });

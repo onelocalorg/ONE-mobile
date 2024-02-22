@@ -1,24 +1,24 @@
-import React, { forwardRef, useEffect, useRef, useState } from "react";
-import { createStyleSheet } from "./style";
-import { View } from "react-native";
-import { Text } from "react-native";
-import { useAppTheme } from "@app-hooks/use-app-theme";
-import { useStringsAndLabels } from "@app-hooks/use-strings-and-labels";
-import { TextInput } from "react-native-gesture-handler";
-import { ModalComponent, ModalRefProps } from "@components/modal-component";
-import { TouchableOpacity } from "react-native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { API_URL } from "@network/constant";
-import { ScrollView } from "react-native";
-import { FlatList } from "react-native";
-import { ImageComponent } from "@components/image-component";
-import { buttonArrowGreen, closeCard, redDeleteIcon, saveIcon } from "@assets/images";
-import Toast from "react-native-simple-toast";
-import { Loader } from "@components/loader";
-import { launchImageLibrary } from "react-native-image-picker";
-import { ButtonComponent } from "@components/button-component";
+import React, { forwardRef, useEffect, useRef, useState } from 'react';
+import { createStyleSheet } from './style';
+import { View } from 'react-native';
+import { Text } from 'react-native';
+import { useAppTheme } from '@app-hooks/use-app-theme';
+import { useStringsAndLabels } from '@app-hooks/use-strings-and-labels';
+import { TextInput } from 'react-native-gesture-handler';
+import { ModalComponent, ModalRefProps } from '@components/modal-component';
+import { TouchableOpacity } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { API_URL } from '@network/constant';
+import { ScrollView } from 'react-native';
+import { FlatList } from 'react-native';
+import { ImageComponent } from '@components/image-component';
+import { buttonArrowGreen, closeCard, redDeleteIcon, saveIcon } from '@assets/images';
+import Toast from 'react-native-simple-toast';
+import { Loader } from '@components/loader';
+import { launchImageLibrary } from 'react-native-image-picker';
+import { ButtonComponent } from '@components/button-component';
 
-interface AddBreakDownModalProps {
+interface EditBreakDownModalProps {
   id: string;
   revenue: number;
   expense: number;
@@ -31,15 +31,15 @@ interface AddBreakDownModalProps {
   ) => void;
 }
 
-export const AddBreakDownModal = (
-  props: AddBreakDownModalProps,
-  ref: React.Ref<unknown> | undefined
+export const editPayoutModalScreen = (
+  props: EditBreakDownModalProps,
+  ref: React.Ref<unknown> | undefined,
 ) => {
   const { theme } = useAppTheme();
   const { strings } = useStringsAndLabels();
   const styles = createStyleSheet(theme);
   const {profilt, id, onSuccessFulData } =
-  props || {};
+    props || {};
   const addItemRef: React.Ref<ModalRefProps> = useRef(null);
   const [isLoading, LodingData] = useState(false);
   const [borderData, setBorderData] = useState('Expense');
@@ -66,28 +66,7 @@ export const AddBreakDownModal = (
     setPriceData(item);
   }
 
-  // const addBreakDownData = () => {
-  //   onSuccessFulData(
-  //     amount,
-  //     descriptions,
-  //     imageSelectArrayKey,
-  //     user_id,
-  //     borderData,
-  //     priceData
-  //   );
-  //   resetState();
-  // };
-
-  const resetState = () => {
-    onUserSearch('');
-    setDescriptions('');
-    setAmount('');
-    setImageSelectArray([]);
-    SetuserData({});
-    recentlyJoinUser([]);
-  };
-
-
+  
   const AddUserList = (item: any) => {
     const found = userList.find((element: any) => element.id == item.id);
     if (userList.length < 1) {
@@ -112,91 +91,30 @@ export const AddBreakDownModal = (
     }
   };
 
-
-  const removeSelectImage = (imageUrl: any) => {
-
-    const newImage = imageSelectArray.filter((person: any) => person.imageUrl !== imageUrl);
-    setImageSelectArray(newImage)
-  };
-
-  async function createPayoutAPI() {
-    LodingData(true);
-    const token = await AsyncStorage.getItem('token');
-    var getAmount = (profilt * amount) / 100;
-    console.log(getAmount, '---------------getAmount-----------')
-    if(priceData === 1){
-      var item: any = {
-        user_id: newUserId,
-        amount: parseInt(amount),
-        description: descriptions, 
-        type: 'price',
-        images: imageSelectArrayKey,
-        amount_percent: 0
-      };
-    } else {
-      var item: any = {
-        user_id: newUserId,
-        amount: getAmount,
-        description: descriptions,
-        type: 'percentage',
-        images: imageSelectArrayKey,
-        amount_percent: parseInt(amount)
-      };
-    }
-   
-    console.log('------------createPayoutAPI request-------------', item)
-    try {
-      const response = await fetch(
-        API_URL + '/v1/events/event-financial/' + id + '/draft/payout',
-        // API_URL + '/v1/events/event-financial/65d4c08f947463a3a650e663/draft/payout',
-        {
-          method: 'post',
-          headers: new Headers({
-            Authorization: 'Bearer ' + token,
-            'Content-Type': 'application/json',
-          }),
-          body: JSON.stringify(item),
-        },
-      );
-
-      const dataItem = await response.json();
-      LodingData(false);
-      onSuccessFulData(dataItem.data);
-      console.log('-------------dataItem--------', dataItem);
-      resetState();
-      
-    } catch (error) {
-      console.error(error);
-      LodingData(false);
-    }
-  }
-
   const removeuserSelect = (id: any) => {
     const newPeople = userList.filter((person: any) => person !== id);
-    console.log("--------newPeople---------", newPeople);
-
     recentlyJoinUser(newPeople);
   };
 
   async function gratisUserList(textUser: any) {
-    const token = await AsyncStorage.getItem("token");
+    const token = await AsyncStorage.getItem('token');
     var datas: any = {
       searchtext: textUser,
     };
     onUserSearch(textUser);
     LodingData(true);
     console.log(datas);
-    console.log(API_URL + "/v1/users/search-user?searchtext=" + textUser);
+    console.log(API_URL + '/v1/users/search-user?searchtext=' + textUser);
     try {
       const response = await fetch(
-        API_URL + "/v1/users/search-user?searchtext=" + textUser,
+        API_URL + '/v1/users/search-user?searchtext=' + textUser,
         {
-          method: "get",
+          method: 'get',
           headers: new Headers({
-            Authorization: "Bearer " + token,
-            "Content-Type": "application/x-www-form-urlencoded",
+            Authorization: 'Bearer ' + token,
+            'Content-Type': 'application/x-www-form-urlencoded',
           }),
-        }
+        },
       );
       const dataItem = await response.json();
       const result = dataItem?.data?.map((item: any) => {
@@ -212,98 +130,35 @@ export const AddBreakDownModal = (
   }
 
   // </---------------createPayoutAPI--------------------/>
-  // async function createPayoutAPI() {
-  //   LodingData(true);
-  //   const token = await AsyncStorage.getItem("token");
-  //   var item: any = {
-  //     user_id: userId,
-  //     amount: amount,
-  //     description: descriptions,
-  //     images: userListArray,
-  //     // images:userList[0]['pic']
-  //     // images: imageSelectArrayKey,
-  //   };
-  //   console.log(
-  //     "----------------userListArray1111-------------",
-  //     userList[0]["pic"]
-  //   );
-  //   console.log("----------------userListArray-------------", userListArray);
-
-  //   var tempData = expenseArray;
-  //   tempData.push(item);
-  //   setExpenseArray(tempData);
-
-  //   if (borderData === "Expense") {
-  //     var data: any = {
-  //       revenue_amount: revenue,
-  //       total_expenses: expense,
-  //       total_payout: payout,
-  //       total_profit: profilt,
-  //       remaining_amount: remainingAmt,
-  //       // expenses: expenseArray,
-  //       expenses: [],
-  //       payouts: [],
-  //     };
-  //   } else if (borderData === "payout") {
-  //     var data: any = {
-  //       revenue_amount: revenue,
-  //       total_expenses: expense,
-  //       total_payout: payout,
-  //       total_profit: profilt,
-  //       remaining_amount: remainingAmt,
-  //       expenses: [],
-  //       // payouts: expenseArray,
-  //       payouts: [],
-  //     };
-  //   }
-
-  //   console.log(data, "---------------setExpenseArray----------------");
-  //   console.log("=========== createPayoutAPI Request ==============");
-
-  //   try {
-  //     const response = await fetch(
-  //       // API_URL + '/v1/events/event-financial/' + id,
-  //       API_URL + "/v1/events/event-financial/6565af618267f45414608d66/create",
-  //       {
-  //         method: "post",
-  //         headers: new Headers({
-  //           Authorization: "Bearer " + token,
-  //           "Content-Type": "application/json",
-  //         }),
-  //         body: JSON.stringify(data),
-  //         // body: Object.keys(data)
-  //         // .map(key => key + '=' + data[key])
-  //         // .join('&'),
-  //       }
-  //     );
-
-  //     const dataItem = await response.json();
-  //     LodingData(false);
-  //     console.log("=========== createPayoutAPI==============");
-  //     console.log(dataItem);
-  //     closeModal();
-  //   } catch (error) {
-  //     console.error(error);
-  //     LodingData(false);
-  //   }
-  // }
-
-
-  async function createExpenseAPI() {
+  async function createPayoutAPI() {
     LodingData(true);
     const token = await AsyncStorage.getItem('token');
-    var item: any = {
-      user_id: newUserId,
-      amount: parseInt(amount),
-      description: descriptions,
-      type: 'price',
-      images: imageSelectArrayKey,
-    };
-    console.log('------------createExpenseAPI request-------------', item)
+    var getAmount = (profilt * amount) / 100;
+    console.log(getAmount, '---------------getAmount-----------')
+    if(priceData === 1){
+      var item: any = {
+        user_id: newUserId,
+        amount: amount,
+        description: descriptions, 
+        type: 'price',
+        images: imageSelectArrayKey,
+        amount_percent: 0
+      };
+    } else {
+      var item: any = {
+        user_id: newUserId,
+        amount: getAmount,
+        description: descriptions,
+        type: 'percentage',
+        images: imageSelectArrayKey,
+        amount_percent: amount
+      };
+    }
+   
+    console.log('------------createPayoutAPI request-------------', item)
     try {
       const response = await fetch(
-        API_URL + '/v1/events/event-financial/' + id + '/draft/expense',
-        // API_URL + '/v1/events/event-financial/65d4c08f947463a3a650e663/draft/expense',
+        API_URL + '/v1/events/event-financial/' + id + '/draft/payout',
         {
           method: 'post',
           headers: new Headers({
@@ -315,16 +170,45 @@ export const AddBreakDownModal = (
       );
 
       const dataItem = await response.json();
-      console.log('-------------dataItem--------', dataItem);
-      if (dataItem?.success === false) {
-        Toast.show(dataItem?.message, Toast.LONG, {
-          backgroundColor: "black",
-        });
-      }
       LodingData(false);
       onSuccessFulData(dataItem.data);
+      console.log('-------------dataItem--------', dataItem);
       
-      resetState();
+    } catch (error) {
+      console.error(error);
+      LodingData(false);
+    }
+  }
+
+  async function createExpenseAPI() {
+    LodingData(true);
+    const token = await AsyncStorage.getItem('token');
+    var item: any = {
+      user_id: newUserId,
+      amount: amount,
+      description: descriptions,
+      type: 'price',
+      images: imageSelectArrayKey,
+    };
+    console.log('------------createExpenseAPI request-------------', item)
+    try {
+      const response = await fetch(
+        API_URL + '/v1/events/event-financial/' + id + '/draft/expense',
+        // API_URL + '/v1/events/event-financial/655ef279d83b7471eb7040fe/draft/expense',
+        {
+          method: 'post',
+          headers: new Headers({
+            Authorization: 'Bearer ' + token,
+            'Content-Type': 'application/json',
+          }),
+          body: JSON.stringify(item),
+        },
+      );
+
+      const dataItem = await response.json();
+      LodingData(false);
+      onSuccessFulData(dataItem.data);
+      console.log('-------------dataItem--------', dataItem);
     } catch (error) {
       console.error(error);
       LodingData(false);
@@ -332,16 +216,11 @@ export const AddBreakDownModal = (
   }
 
   const submitClick = () => {
-     if (userList.length === 0) {
-      Toast.show('Select user', Toast.LONG, {
-        backgroundColor: 'black',
-      });
-    } else if (amount < 0) {
+    if (amount < 0) {
       Toast.show('Enter Ammount', Toast.LONG, {
         backgroundColor: 'black',
       });
-    }
-     else if (descriptions.length === 0) {
+    } else if (descriptions.length === 0) {
       Toast.show('Enter Descriptions', Toast.LONG, {
         backgroundColor: 'black',
       });
@@ -358,23 +237,17 @@ export const AddBreakDownModal = (
       } else {
         console.log('----------------borderData === payout--------------------')
         createPayoutAPI();
-       
       }
       
 
     }
 
-    // createExpenseAPI();
   }
 
-  const closeModal = () => {
-    addItemRef.current?.onCloseModal();
-  };
-
   const openGallary = async () => {
+
     const { assets } = await launchImageLibrary({
-      mediaType: "photo",
-      // selectionLimit: 2,
+      mediaType: 'photo',
       includeBase64: true,
       maxWidth: 800,
       maxHeight: 800,
@@ -383,30 +256,30 @@ export const AddBreakDownModal = (
     if (assets) {
       const img = assets?.[0];
       console.log(assets);
-      var fileNameTwo = img?.fileName ?? "";
+      var fileNameTwo = img?.fileName ?? '';
       LodingData(true);
       var output =
-        fileNameTwo.substr(0, fileNameTwo.lastIndexOf(".")) || fileNameTwo;
-      var base64Two = img?.base64 ?? "";
+        fileNameTwo.substr(0, fileNameTwo.lastIndexOf('.')) || fileNameTwo;
+      var base64Two = img?.base64 ?? '';
       postImageUploadAPI(output, base64Two);
     }
-  };
+  }
 
   const postImageUploadAPI = async (fileItem: any, base64Item: any) => {
-    const token = await AsyncStorage.getItem("token");
+    const token = await AsyncStorage.getItem('token');
     var pic: any = {
-      uploadKey: "createPostImg",
+      uploadKey: 'createPostImg',
       imageName: fileItem,
-      base64String: "data:image/jpeg;base64," + base64Item,
+      base64String: 'data:image/jpeg;base64,' + base64Item,
     };
 
-    console.log("================ postImageUploadAPI Request=================");
+    console.log('================ postImageUploadAPI Request=================');
     try {
-      const response = await fetch(API_URL + "/v1/users/upload/file", {
-        method: "post",
+      const response = await fetch(API_URL + '/v1/users/upload/file', {
+        method: 'post',
         headers: new Headers({
-          Authorization: "Bearer " + token,
-          "Content-Type": "application/json",
+          Authorization: 'Bearer ' + token,
+          'Content-Type': 'application/json',
         }),
         body: JSON.stringify(pic),
       });
@@ -414,12 +287,12 @@ export const AddBreakDownModal = (
       var tempData = imageSelectArray;
       tempData.push(dataItem?.data);
       setImageSelectArray(tempData);
-      console.log(" console.log(imageSelectArray)", imageSelectArray);
+      console.log(' console.log(imageSelectArray)', imageSelectArray)
       var tempTwo = imageSelectArrayKey;
 
-      tempTwo.push(dataItem?.data?.key);
+      tempTwo.push(dataItem?.data?.key)
       setImageSelectArrayKey(tempTwo);
-      console.log(" console.log(imageSelectArrayKey)", imageSelectArrayKey);
+      console.log(' console.log(imageSelectArrayKey)', imageSelectArrayKey)
       LodingData(false);
     } catch (error) {
       console.log(error);
@@ -427,21 +300,28 @@ export const AddBreakDownModal = (
     }
   };
 
+  const resetState = () => {
+    onUserSearch('');
+    setDescriptions('');
+    setAmount('');
+    setImageSelectArray([]);
+    SetuserData({});
+    recentlyJoinUser([]);
+  };
+
   return (
     <>
+      <View style={styles.breakDownCont}>
         <ModalComponent ref={ref}>
           <Loader visible={isLoading} showOverlay />
           <View style={styles.subBreakdowncont}>
-
             <ScrollView showsVerticalScrollIndicator={false}>
-              <TouchableOpacity >
               <View style={{ marginTop: 5, marginBottom: -20, marginLeft:0}}>
                 <ImageComponent
                   source={closeCard}
                   style={{ height: 24, width: 24}}
                 ></ImageComponent>
               </View>
-              </TouchableOpacity>
               <Text style={styles.breakdownHeader}>Add Breakdown</Text>
 
               <View style={styles.payModalContainer}>
@@ -581,6 +461,11 @@ export const AddBreakDownModal = (
                   ]}>
                     <Text
                       style={styles.percentageSign}
+                    // style={[
+                    //   priceData === 1
+                    //     ? styles.dollarSign
+                    //     : styles.percentageSign,
+                    // ]}
                     >$</Text>
                   </View>
                 </TouchableOpacity>
@@ -594,6 +479,11 @@ export const AddBreakDownModal = (
                           ? styles.priceContainer : styles.priceContainerTwo,
                       ]}>
                       <Text style={styles.percentageSign}
+                      // style={[
+                      //   priceData === 2
+                      //     ? styles.dollarSign
+                      //     : styles.percentageSign,
+                      // ]}
                       >%</Text>
                     </View>
                   </TouchableOpacity> : <View></View>}
@@ -633,10 +523,7 @@ export const AddBreakDownModal = (
               <View style={styles.multipleImagecont}>
                 {imageSelectArray.map((item: any) => {
                   return (
-                    <TouchableOpacity
-                        onPress={() => removeSelectImage(item?.imageUrl)}>
                     <ImageComponent source={{ uri: item?.imageUrl }} style={styles.selectImage}></ImageComponent>
-                    </TouchableOpacity>
                   );
                 })}
 
@@ -652,8 +539,9 @@ export const AddBreakDownModal = (
             </ScrollView>
           </View>
         </ModalComponent>
+      </View>
     </>
   );
 };
 
-export const BreakDownModal = forwardRef(AddBreakDownModal);
+export const EditPayoutModal = forwardRef(editPayoutModalScreen);

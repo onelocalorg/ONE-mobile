@@ -22,6 +22,7 @@ import {ModalRefProps} from '@components/modal-component';
 import {AddComponentModal} from '@screens/event/add-component-modal';
 import { EventRoute } from './event-route';
 import { GratitudeScreen } from '@screens/gratitude';
+import { MapRoute } from './map-route';
 
 const Tab = createBottomTabNavigator();
 const header = () => null;
@@ -55,8 +56,8 @@ export const BottomNavigator = () => {
         };
         case bottomTabs.gratitude:
           return {
-            screenName: navigations.GRATITUDE,
-            component: GratitudeScreen,
+            screenName: navigations.MAP_ROUTE,
+            component: MapRoute,
           };
       case bottomTabs.chat:
         return {
@@ -119,7 +120,7 @@ export const BottomNavigator = () => {
         />
       );
     }
-    if (route.name === navigations.GRATITUDE) {
+    if (route.name === navigations.MAP_ROUTE) {
       return (
         <NavigatorOptionComponent
           focused={focused}

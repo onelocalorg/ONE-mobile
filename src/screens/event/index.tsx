@@ -269,11 +269,11 @@ export const EventListScreen = (props: EventListScreenProps) => {
               <View style={styles.flex}>
                 <View style={styles.rowClass}>
                   <View style={styles.flex}>
-                    <Text style={styles.dateText}>{`${moment(
-                      subitem.start_date,
-                    ).format('ddd, MMM DD')} • ${moment(
-                      subitem.start_date,
-                    ).format('hh:mm A')}`}</Text>
+                    <Text style={styles.dateText}>
+                      {subitem.start_date_label}
+                      {' • '}
+                       {subitem.start_time_label}
+                   </Text>
                     <Text numberOfLines={2} style={styles.title}>
                       {subitem.name}
                     </Text>

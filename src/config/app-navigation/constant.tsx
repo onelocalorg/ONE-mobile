@@ -2,6 +2,7 @@ export const navigations = {
   LOGIN: 'login',
   BOTTOM_NAVIGATION: 'bottomNavigation',
   HOME_ROUTE: 'homeRoute',
+  MAP_ROUTE: 'mapRoute',
   HOMESCREEN: 'home',
   EVENT_ROUTE: 'eventRoute',
   EVENTSCREEN: 'event',

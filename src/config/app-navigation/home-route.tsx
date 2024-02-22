@@ -61,6 +61,11 @@ export const HomeRoute = () => {
         component={CommentList}
         options={{header}}
       />
+        <HomeStack.Screen
+        name={navigations.ADMIN_TOOLS}
+        component={AdminToolsScreen}
+        options={{header}}
+      />
     </HomeStack.Navigator>
   );
 };

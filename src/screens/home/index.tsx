@@ -113,7 +113,7 @@ export const HomeScreen = (props: HomeScreenProps) => {
   const [pagination, postLoadData] = useState(false);
   const [offerModal, CreateOfferModal] = useState(false);
   const [replyofferModal, openReplyOfferModal] = useState(false);
-  var [location, setUserLocation]: any = useState(); 
+  var [location, setUserLocation]: any = useState();
   const [addnewCmt, onAddComment] = useState("");
   const [addnewCmtReply, onAddCommentReply] = useState("");
   const [isLoading, LodingData] = useState(false);
@@ -126,9 +126,9 @@ export const HomeScreen = (props: HomeScreenProps) => {
   const [replyIndex, setReplayIndex] = useState("");
   const [setReplyId, setReplyCommentId] = useState("");
   var [postId, postIdData]: any = useState();
-  var [gratisIndex, gratisIndexData]: any = useState(); 
-  var [commentIndex, setCommentIndex]: any = useState(); 
-  var [showComment, showCommentPost] = useState(false); 
+  var [gratisIndex, gratisIndexData]: any = useState();
+  var [commentIndex, setCommentIndex]: any = useState();
+  var [showComment, showCommentPost] = useState(false);
   var [addComment, addCommentModal] = useState(false);
   var [gratisNo, totalGratisData]: any = useState(10);
   var [gratisNoComment, totalGratisCommentData]: any = useState(10);
@@ -184,13 +184,13 @@ export const HomeScreen = (props: HomeScreenProps) => {
 
   useEffect(() => {
     LogBox.ignoreAllLogs();
-    console.log('postListAPI 1')
+    console.log("postListAPI 1");
     postListAPI();
     getUserProfileAPI();
     requestLocationPermission();
     eventTypeData(type);
     setPage(page);
-  }, [ page,type, range?.startDate, range?.endDate, searchQuery]);
+  }, [page, type, range?.startDate, range?.endDate, searchQuery]);
 
   useFocusEffect(
     useCallback(() => {
@@ -211,7 +211,7 @@ export const HomeScreen = (props: HomeScreenProps) => {
         );
         if (location) {
           postListAPI();
-          console.log('postListAPI 2')
+          console.log("postListAPI 2");
         }
       })
       .catch((error) => {
@@ -320,7 +320,7 @@ export const HomeScreen = (props: HomeScreenProps) => {
       requestLocationPermission();
       LodingData(true);
       postListAPI();
-      console.log('postListAPI 3')
+      console.log("postListAPI 3");
       console.log(range, "---------------set range ---------------");
     },
     [setOpen, setRange]
@@ -376,6 +376,9 @@ export const HomeScreen = (props: HomeScreenProps) => {
       console.log(JSON.stringify(dataItem));
       onAddComment("");
       onAddCommentReply("");
+      let markers = [...postList];
+      markers[index]["comment"] = dataItem.data.totalComment;
+      postListData(markers);
       getCommentListAPITwo(postID.id, index);
       LodingData(false);
     } catch (error) {
@@ -419,9 +422,9 @@ export const HomeScreen = (props: HomeScreenProps) => {
       markers[index]["commentListData"] = [...cmtList];
       // markers[index]['isComment'] = true;
 
-      console.log(markers[index]['isComment'],'postList111111111')
+      console.log(markers[index]["isComment"], "postList111111111");
       postListData(markers);
-      console.log(markers[index]['isComment'],'postList22222')
+      console.log(markers[index]["isComment"], "postList22222");
       // flatlistRef?.current?.scrollToIndex({index: 0});
       // flatlistRef?.current?.scrollToOffset({ animated: true, offset: 0 });
       console.log(
@@ -526,6 +529,7 @@ export const HomeScreen = (props: HomeScreenProps) => {
       let markers = [...postList];
       var commentReplyArray = dataItem.data["reply"];
 
+      markers[postIndexTwo]["comment"] = dataItem.data.totalComment;
       markers[postIndexTwo]["commentListData"][postCommentIndexTwo][
         "reply"
       ].push(commentReplyArray[commentReplyArray.length - 1]);
@@ -816,7 +820,7 @@ export const HomeScreen = (props: HomeScreenProps) => {
       // page = page + 1;
       setPage(page);
       postListAPI();
-      console.log('postListAPI 4')
+      console.log("postListAPI 4");
     }
   };
 
@@ -842,19 +846,19 @@ export const HomeScreen = (props: HomeScreenProps) => {
       if (dataItem.success === true) {
         if (selectOP === 1) {
           postListAPI();
-          console.log('postListAPI 5')
+          console.log("postListAPI 5");
           Toast.show("User Block successfully", Toast.LONG, {
             backgroundColor: "black",
           });
         } else if (selectOP === 2) {
           postListAPI();
-          console.log('postListAPI 6')
+          console.log("postListAPI 6");
           Toast.show("Report Submit successfully", Toast.LONG, {
             backgroundColor: "black",
           });
         } else {
           postListAPI();
-          console.log('postListAPI 7')
+          console.log("postListAPI 7");
           Toast.show("Post Hide successfully", Toast.LONG, {
             backgroundColor: "black",
           });
@@ -876,7 +880,7 @@ export const HomeScreen = (props: HomeScreenProps) => {
     setCmtPage(initialValue);
     LodingData(true);
     if (postList[jindex]["isComment"] === true) {
-      console.log('-----------showCommentonPost----------------------')
+      console.log("-----------showCommentonPost----------------------");
       let markers = [...postList];
       markers[jindex] = {
         ...markers[jindex],
@@ -886,7 +890,7 @@ export const HomeScreen = (props: HomeScreenProps) => {
       postListData(markers);
       LodingData(false);
     } else {
-      console.log('-----------showCommentonPost1111----------------------')
+      console.log("-----------showCommentonPost1111----------------------");
       postList[jindex]["isComment"] = true;
       setReplyCommentId(data.id);
       getCommentListAPITwo(data.id, jindex);
@@ -913,11 +917,7 @@ export const HomeScreen = (props: HomeScreenProps) => {
     }
   };
 
-  const onReplyClick = (
-    postId: any,
-    index: any,
-    parentIndex: any,
-  ) => {
+  const onReplyClick = (postId: any, index: any, parentIndex: any) => {
     commentReplyPostId(postId);
     setReplayIndex(replyId);
     setPostCommentIndexTwo(index);
@@ -977,7 +977,7 @@ export const HomeScreen = (props: HomeScreenProps) => {
     endTimePicker(false);
     LodingData(true);
     postListAPI();
-    console.log('postListAPI 8')
+    console.log("postListAPI 8");
   }, []);
 
   const onConfirmStrtTime = useCallback((res: any) => {
@@ -986,7 +986,7 @@ export const HomeScreen = (props: HomeScreenProps) => {
     startTimePicker(false);
     LodingData(true);
     postListAPI();
-    console.log('postListAPI 9')
+    console.log("postListAPI 9");
   }, []);
   const onDismissTimePicker = () => {
     startTimePicker(false);
@@ -1238,7 +1238,7 @@ export const HomeScreen = (props: HomeScreenProps) => {
     (searchData: any) => {
       setSearchQuery(searchData);
       postListAPI();
-      console.log('postListAPI 10')
+      console.log("postListAPI 10");
     },
     [searchQuery]
   );
@@ -1295,17 +1295,17 @@ export const HomeScreen = (props: HomeScreenProps) => {
           </View>
         </TouchableOpacity>
         {/* ------------------Header Tab------------------- */}
-      
+
         <KeyboardAwareScrollView
-        keyboardShouldPersistTaps="always"
-        showsVerticalScrollIndicator={false}
+          keyboardShouldPersistTaps="always"
+          showsVerticalScrollIndicator={false}
         >
           <FlatList
             data={postList}
             keyExtractor={(item) => item.id}
             ListFooterComponent={<View style={{ height: 90 }} />}
-            onEndReachedThreshold={0.1} 
-            // contentContainerStyle={{ marginBottom: 150 }} 
+            onEndReachedThreshold={0.1}
+            // contentContainerStyle={{ marginBottom: 150 }}
             keyboardShouldPersistTaps
             ListHeaderComponent={
               <View>
@@ -1493,16 +1493,15 @@ export const HomeScreen = (props: HomeScreenProps) => {
                   />
                 </TouchableOpacity>
               </View> */}
-              </View> 
+              </View>
             }
-            initialNumToRender={10} 
-           
-            onEndReached={({ distanceFromEnd }) => {  
-               if(distanceFromEnd > 0) {    
-                console.log('111111111 pagination') 
-                  postDataLoad();  
-               }
-            }} 
+            initialNumToRender={10}
+            onEndReached={({ distanceFromEnd }) => {
+              if (distanceFromEnd > 0) {
+                console.log("111111111 pagination");
+                postDataLoad();
+              }
+            }}
             renderItem={({ item, index }) => (
               <TouchableOpacity activeOpacity={1} onPress={keyboardDismiss}>
                 <View style={styles.feedContainer}>
@@ -1541,15 +1540,22 @@ export const HomeScreen = (props: HomeScreenProps) => {
                               {item?.user_id?.first_name}{" "}
                               {item?.user_id?.last_name}{" "}
                             </Text>
-                            <Text style={styles.sentPointClass}>
-                              sent {item?.to?.users[0]?.point} gratis to{" "}
-                              <Text style={styles.userName}>
-                                {item?.to?.users[0]?.user_id["first_name"]}{" "}
-                                {item?.to?.users[0]?.user_id["last_name"]}{" "}
-                                {/* {item?.to?.users[1]?.user_id["first_name"]}{" "}
-                              {item?.to?.users[1]?.user_id["last_name"]} */}
+                            {item?.to?.users.length !== 0 ? (
+                              <Text
+                                numberOfLines={1}
+                                style={styles.sentPointClass}
+                              >
+                                sent {item?.to?.users[0]?.point} gratis to{" "}
+                                <Text style={styles.userName}>
+                                  {item?.to?.users[0]?.user_id["first_name"]}{" "}
+                                  {item?.to?.users[0]?.user_id["last_name"]}{" "}
+                                  {item?.to?.users[1]?.user_id["first_name"]}{" "}
+                                  {item?.to?.users[1]?.user_id["last_name"]}
+                                </Text>
                               </Text>
-                            </Text>
+                            ) : (
+                              <></>
+                            )}
                           </View>
                         ) : (
                           <Text numberOfLines={1} style={styles.userName}>
@@ -1577,7 +1583,19 @@ export const HomeScreen = (props: HomeScreenProps) => {
                         }}
                       ></ImageComponent>
                     </TouchableOpacity>
-                    {/* <ImageComponent resizeMode='cover' style={styles.userListDisplay} source={{uri:item?.to?.users[1]?.user_id['pic']}}></ImageComponent> */}
+                    <TouchableOpacity
+                      onPress={() =>
+                        recentUserProfilePress(
+                          item?.to?.users[1]?.user_id["id"]
+                        )
+                      }
+                    >
+                      <ImageComponent
+                        resizeMode="cover"
+                        style={styles.userListDisplay}
+                        source={{ uri: item?.to?.users[1]?.user_id["pic"] }}
+                      ></ImageComponent>
+                    </TouchableOpacity>
                   </View>
                   <Text style={styles.postDes}>{item?.content}</Text>
                   {/* <ImageComponent source={postImage}style={styles.userPost}></ImageComponent> */}

@@ -224,7 +224,6 @@ export const createStyleSheet = (theme: ThemeProps) => {
       flexDirection: 'row',
       marginTop: verticalScale(13),
       marginHorizontal:10,
-      width:width-25,
     },
     
     
@@ -250,6 +249,7 @@ export const createStyleSheet = (theme: ThemeProps) => {
       color: theme.colors.black,
       marginBottom: verticalScale(7),
       maxWidth: normalScale(200),
+      flexShrink:1,
     },
     event: {
       height: 32,
@@ -274,6 +274,7 @@ export const createStyleSheet = (theme: ThemeProps) => {
       fontFamily: theme.fontType.light,
       fontSize: theme.fontSize.font12,
       color: theme.colors.black,
+      flexShrink:1
     },
     addressDot: {
       height: 6,

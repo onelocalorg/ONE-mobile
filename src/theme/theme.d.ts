@@ -67,6 +67,7 @@ export interface ThemeProps {
     headerColor:string;
     footerColor:string;
     splashColor:string;
+    purpleDark:string;
   };
   opacity: {
     opacity15: number;
