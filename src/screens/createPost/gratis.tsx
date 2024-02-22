@@ -507,38 +507,6 @@ export const CreatePostGratisScreen = (props: CreatePostGratisScreenProps) => {
           activeOpacity={1}
           style={styles.createPostModal}>
           <View>
-            {/* <View style={styles.postFilter}>
-              <TouchableOpacity
-                style={styles.container3}
-                activeOpacity={1}
-                onPress={() => createPostSetType(1, 'offer')}>
-                <ImageComponent
-                  source={selecttype == 1 ? greenOffer : blackOffer}
-                  style={styles.icon1}
-                />
-                <Text style={[selecttype == 1 ? styles.label3 : styles.label4]}>
-                  Offer
-                </Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={styles.container3}
-                activeOpacity={0.8}
-                onPress={() => createPostSetType(2, 'request')}>
-                <ImageComponent source={request} style={styles.icon1} />
-                <Text style={[selecttype == 2 ? styles.label3 : styles.label4]}>
-                  Request
-                </Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={styles.container3}
-                activeOpacity={0.8}
-                onPress={() => createPostSetType(3, 'gratis')}>
-                <ImageComponent source={gratitudeBlack} style={styles.icon1} />
-                <Text style={[selecttype == 3 ? styles.label3 : styles.label4]}>
-                  Gratitude
-                </Text>
-              </TouchableOpacity>
-            </View> */}
             <View style={styles.postClass}>
               <View style={styles.createPostCont}>
                 <Text style={styles.textOne}>What</Text>
@@ -558,43 +526,7 @@ export const CreatePostGratisScreen = (props: CreatePostGratisScreenProps) => {
                     <Text style={styles.QuantityPlus}>+</Text>
                   </TouchableOpacity>
                 </View>
-                {/* <Popover
-                  isVisible={showWhatPopover}
-                  placement={PopoverPlacement.BOTTOM}
-                  onRequestClose={() => setWhatShowPopover(false)}
-                  from={
-                    <TouchableOpacity onPress={() => setWhatShowPopover(true)}>
-                      <ImageComponent
-                        resizeMode='contain'
-                        source={arrowDown}
-                        style={styles.arrowDown}></ImageComponent>
-                    </TouchableOpacity>
-                  }>
-                  <FlatList
-                    data={getResourcewhatList}
-                    renderItem={({item}) => (
-                      <View style={{width: 120}}>
-                        <TouchableOpacity
-                          onPress={() =>
-                            selectWhatTypePost(item?.icon, item?.value)
-                          }
-                          style={styles.container3}
-                          activeOpacity={0.8}>
-                          <ImageComponent
-                            source={{uri: item?.icon}}
-                            style={styles.icon1}
-                          />
-                          <Text style={styles.label2}>{item?.title}</Text>
-                        </TouchableOpacity>
-                        <View
-                          style={{
-                            height: 2,
-                            backgroundColor: 'lightgray',
-                            marginHorizontal: 10,
-                          }}></View>
-                      </View>
-                    )}></FlatList>
-                </Popover> */}
+               
                 <SizedBox width={10}></SizedBox>
                 <TouchableOpacity
                   activeOpacity={1}
@@ -619,64 +551,17 @@ export const CreatePostGratisScreen = (props: CreatePostGratisScreenProps) => {
                   style={styles.postinput}></TextInput>
               </View>
               <SizedBox height={10}></SizedBox>
-              {/* <View style={styles.quntitiyCont}>
-                <Text style={styles.textOne}>Quantity</Text>
-                <TextInput
-                  keyboardType="numeric"
-                  placeholder="how many?"
-                  value={whatQuantity}
-                  placeholderTextColor="darkgray"
-                  onChangeText={text => createPostwhatQuantity(text)}
-                  style={styles.quntitiyInput}></TextInput>
-              </View> */}
+              
               <View style={styles.createPostCont}>
                 <Text style={styles.textOne}>To:</Text>
                 
                 <TextInput
-                  // value={forName}
                   placeholder="who do you want to send gratis to?"
                   placeholderTextColor="darkgray"
                   value={usertext}
                   onChangeText={text => gratisUserList(text)}
                   style={styles.postInputToType}></TextInput>
-                <Popover
-                  isVisible={showToPopover}
-                  placement={PopoverPlacement.BOTTOM}
-                  onRequestClose={() => setToShowPopover(false)}
-                  from={
-                    <TouchableOpacity onPress={() => setToShowPopover(true)}>
-                      <ImageComponent
-                        resizeMode='contain'
-                        source={arrowDown}
-                        style={styles.arrowDown}></ImageComponent>
-                    </TouchableOpacity>
-                  }>
-                  <FlatList
-                    data={getResourceToList}
-                    keyExtractor={item => item.id}
-                    renderItem={({item}) => (
-                      <View style={{width: 120}}>
-                        <TouchableOpacity
-                          onPress={() =>
-                            selectToTypePost(item?.icon, item?.value)
-                          }
-                          style={styles.container3}
-                          activeOpacity={0.8}>
-                          <ImageComponent
-                            source={{uri: item?.icon}}
-                            style={styles.icon1}
-                          />
-                          <Text style={styles.label2}>{item?.title}</Text>
-                        </TouchableOpacity>
-                        <View
-                          style={{
-                            height: 2,
-                            backgroundColor: 'lightgray',
-                            marginHorizontal: 10,
-                          }}></View>
-                      </View>
-                    )}></FlatList>
-                </Popover>
+               
                 <TouchableOpacity activeOpacity={1}>
                   <ImageComponent
                     resizeMode="stretch"

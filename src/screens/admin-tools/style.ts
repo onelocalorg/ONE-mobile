@@ -408,11 +408,31 @@ export const createStyleSheet = (theme: ThemeProps) => {
       fontFamily: theme.fontType.light,
       color: theme.colors.black,
       fontSize: theme.fontSize.font14,
+      borderWidth: 1,
+      borderColor: 'lightGrey',
+      borderRadius: 50,
+      // padding: 5,
+    },
+    priceContainerTwo: {
+
+    },
+
+    priceContainer: {
+      borderRadius: 100,
+       borderWidth: 1,
+       padding: 3,
+       borderColor: 'lightGrey',
+       height: 24,
+       width: 24,
+       justifyContent: 'center',
+      //  paddingTop: 2
+      
     },
     percentageSign: {
       fontFamily: theme.fontType.light,
       color: theme.colors.black,
       fontSize: theme.fontSize.font14,
+      textAlign: 'center',
     },
     dollarRupees: {
       fontFamily: theme.fontType.light,

@@ -1,6 +1,6 @@
 
 
-
+import ActiveEnv from '@config/env/env.dev.json';
 export const dataObject:any = [];
 
 export const getData = (key:any) => {
@@ -15,7 +15,7 @@ export const getData = (key:any) => {
 export const setData = (key:any, value:any) => {
   dataObject[key] = value;
 };
-
+ 
 export const apiConstants = {
   login: '/v1/auth/login',
   userProfile: '/v1/users',
@@ -56,19 +56,12 @@ export const apiKeys = {
   packageDetail:'packageDetails'
 };
 
-export const API_URL = 'https://app.onelocal.one/api'
-export const STIPE_BASE_URL = 'https://api.stripe.com'
-export const STRIPE_PUBLIC_KEY = 'pk_live_51ILwo9GFoMwnONQ0MYwhjHkh8K60e6AhM0FERKOTP2wIpPyKEp2d9DW80Llr5KnHnJNtemfuZTuiU4ECKrmC31le00UQlomVlx'
-export const STRIPE_SECRET_KEY = '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'
+export const API_URL = ActiveEnv.BASE_URL
+export const STIPE_BASE_URL = ActiveEnv.STIPE_BASE_URL
+export const STRIPE_PUBLIC_KEY = ActiveEnv.STRIPE_PUBLISHABLE_KEY
+export const STRIPE_SECRET_KEY = ActiveEnv.STRIPE_SECRET_KEY
 
 
 
-// export const API_URL = 'https://eventmvp.developmentlabs.co/api'
-// export const STIPE_BASE_URL = 'https://api.stripe.com'
-// export const STRIPE_PUBLIC_KEY = 'pk_test_51ILwo9GFoMwnONQ0gs60JkdjJlMCz6TU9iAB39fibm74Fv7pQ75nkawaVeEMcLXkHg80vN2c310kQ0izchqL6Rir00PU58FXrZ'
-// export const STRIPE_SECRET_KEY = 'sk_test_51ILwo9GFoMwnONQ0qlaqHJOUpu3LcReBKZZcAPZ4h11EsHqEDB4NemkZ7ywHw3LX6iAmoCEbBjEth2mwZwKQJKqS00CDnJ2YyR'
-
-
-
-
+ 
 

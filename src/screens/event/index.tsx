@@ -164,7 +164,7 @@ export const EventListScreen = (props: EventListScreenProps) => {
         body: JSON.stringify(eventData),
       });
       const dataItem = await response.json();
-      var dataTemp = [...eventsList, ...dataItem?.data.results];
+      var dataTemp = [...eventsList, ...dataItem?.data.results]; 
       setEventsList(dataTemp);
       setTotalPages(dataItem?.data?.totalPages);
       setCurrentPage(dataItem?.data?.page);

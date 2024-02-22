@@ -1,5 +1,6 @@
 import React, {
   LegacyRef,
+  ReactNode,
   useCallback,
   useEffect,
   useRef,
@@ -8,6 +9,7 @@ import React, {
 import { createStyleSheet } from "./style";
 import { useAppTheme } from "@app-hooks/use-app-theme";
 import {
+  Dimensions,
   FlatList,
   Image,
   LogBox,
@@ -60,9 +62,8 @@ import moment from "moment";
 import { DatePickerModal, TimePickerModal } from "react-native-paper-dates";
 import GetLocation from "react-native-get-location";
 import { Loader } from "@components/loader";
-import { ScrollView } from "react-native-gesture-handler";
-import { Slider } from "react-native-elements";
 import Swiper from "react-native-swiper";
+
 import { API_URL } from "@network/constant";
 interface MapScreenProps {
   navigation: NavigationContainerRef<ParamListBase>;
@@ -97,7 +98,7 @@ export const GratitudeScreen = (props: MapScreenProps) => {
   const [isLoading, LodingData] = useState(false);
   const [setEventIndex, setEventIndexData] = useState(0);
   const { navigation } = props || {};
-  const mileStoneSwiperRef = useRef(null);
+  const viewWidth = Dimensions.get("window").width;
   const { user } = useSelector<StoreType, UserProfileState>(
     (state) => state.userProfileReducer
   ) as { user: { id: string; pic: string } };
@@ -263,7 +264,13 @@ export const GratitudeScreen = (props: MapScreenProps) => {
       LodingData(false);
       console.log(dataItem);
       eventDetail(dataItem?.data);
-      eventDataStore(dataItem?.data);
+      
+      const resultTemp = dataItem?.data?.map((item: any) => {
+        return { ...item, isActive: false};
+      });
+      resultTemp[0].isActive = true;
+      eventDataStore(resultTemp);
+
       console.log(dataItem?.data[0]);
       console.log(dataItem?.data);
     } catch (error) {
@@ -311,6 +318,7 @@ export const GratitudeScreen = (props: MapScreenProps) => {
       geoTaggingAPI(location);
     });
   };
+
   const onConfirmStrtTime = (res: any) => {
     console.log(res);
     setStartTimeData(res);
@@ -343,24 +351,34 @@ export const GratitudeScreen = (props: MapScreenProps) => {
     geoTaggingAPI(location);
   };
 
+  const onMarkerClick = (mapEventData: any) => {
+    const markerId = mapEventData._targetInst.return.key;
+    console.log("markerIndex", mapEventData);
+    setEventIndexData(mapEventData);
+  };
+
+  function renderPagination(
+    index: number,
+    total: number,
+    swiper: Swiper
+  ): ReactNode {
+    throw new Error("Function not implemented.");
+  }
+
+  const changeMarkerColor = (indexMarker:any) =>{
+    const resultTemp:any = eventList;
+    for (let index = 0; index < resultTemp.length; index++) {
+      resultTemp[index].isActive = false;
+    }
+    // resultTemp[indexMarker].isActive = true;
+    eventDataStore(resultTemp);
+  }
+
   return (
     <View style={{ flex: 1 }}>
       <Loader visible={isLoading} showOverlay />
+
       <TouchableOpacity style={styles.HeaderContainerTwo} activeOpacity={1}>
-        {/* <View style={styles.searchContainer}>
-          <ImageComponent
-            style={styles.searchIcon}
-            source={Search}></ImageComponent>
-          <TextInput
-            value={searchQuery}
-            placeholderTextColor="#FFFF"
-            placeholder="Search"
-            style={styles.searchInput}
-            onChangeText={value => {
-              console.log(value);
-              setSearchQuery(value);
-            }}></TextInput>
-        </View> */}
         <View style={styles.oneContainer}>
           <ImageComponent
             style={styles.oneContainerImage}
@@ -369,13 +387,9 @@ export const GratitudeScreen = (props: MapScreenProps) => {
           <View>
             <Text style={styles.oneContainerText}>NE</Text>
             <Text style={styles.localText}>L o c a l</Text>
-            {/* <Text style={styles.localText}>[Local]</Text> */}
           </View>
         </View>
         <View style={styles.profileContainer}>
-          {/* <ImageComponent
-            style={styles.bellIcon}
-            source={bell}></ImageComponent> */}
           <TouchableOpacity
             activeOpacity={0.8}
             onPress={onNavigateToProfile}
@@ -391,89 +405,7 @@ export const GratitudeScreen = (props: MapScreenProps) => {
           </TouchableOpacity>
         </View>
       </TouchableOpacity>
-      <View style={{ position: "relative", zIndex: 11122222 }}>
-        {/* <View style={styles.filterTags}>
-          <TouchableOpacity
-            style={styles.container2}
-            activeOpacity={0.8}
-            onPress={() => onEventTypeClick('event')}>
-            <ImageComponent source={mapEvent} style={[styles.icon1]} />
-            <Text style={[styles.label1, {color: '#B10E00'}]}>Events</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.container2}
-            activeOpacity={0.8}
-            onPress={() => onEventTypeClick('service')}>
-            <ImageComponent source={mapService} style={[styles.icon1]} />
-            <Text style={[styles.label1, {color: '#0081D2'}]}>Services</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.container2}
-            activeOpacity={0.8}
-            onPress={() => onEventTypeClick('gifting')}>
-            <ImageComponent source={mapGifting} style={[styles.icon1]} />
-            <Text style={[styles.label1, {color: '#197127'}]}>Gifting</Text>
-          </TouchableOpacity>
-        </View> */}
-      </View>
-      <View style={{ zIndex: 11122222 }}>
-        {/* <TouchableOpacity activeOpacity={0.8} style={styles.dateContainer}>
-          <ImageComponent source={calendar} style={styles.calendar} />
-          <TouchableOpacity activeOpacity={0.8} onPress={() => startTimePicker(true)}>
-          <Text style={styles.date}>{`${moment(setStartTime).format(
-              'h:mm a',
-            )}`}</Text>
-            </TouchableOpacity>
-          <TouchableOpacity activeOpacity={0.8} onPress={() => setOpen(true)}>
-            <Text style={styles.date}>{`${moment(range?.startDate).format(
-              'MMM DD, YYYY',
-            )}`}</Text>
-          </TouchableOpacity>
-          <ImageComponent source={arrowDown} style={styles.arrowDown} />
-          <TouchableOpacity activeOpacity={0.8} onPress={() => endTimePicker(true)}>
-          <Text style={styles.date}>{`${moment(setEndTime).format(
-              'h:mm a',
-            )}`}</Text>
-            </TouchableOpacity>
-          <TouchableOpacity activeOpacity={0.8} onPress={() => setOpen(true)}>
-            <Text style={styles.date}>{`${moment(range?.endDate).format(
-              'MMM DD, YYYY',
-            )}`}</Text>
-          </TouchableOpacity>
-          <ImageComponent source={arrowDown} style={styles.arrowDown} />
 
-          <DatePickerModal
-            locale="en"
-            mode="range"
-            visible={open}
-            onDismiss={onDismiss}
-            startDate={range.startDate}
-            endDate={range.endDate}
-            onConfirm={onConfirm}
-            validRange={{startDate: new Date()}}
-            editIcon="none"
-            closeIcon={close}
-          />
-          <TimePickerModal
-          visible={starttimePicker}
-          onDismiss={onDismissTimePicker}
-          onConfirm={onConfirmStrtTime}
-          hours={12}
-          minutes={14}
-          keyboardIcon={calendar}
-          clockIcon={calendar}
-        />
-         <TimePickerModal
-          visible={endtimePicker}
-          onDismiss={onDismissTimePicker}
-          onConfirm={onConfirmEndTime}
-          hours={12}
-          minutes={14}
-          keyboardIcon={calendar}
-          clockIcon={calendar}
-        />
-        </TouchableOpacity> */}
-      </View>
       <MapView
         ref={map}
         style={{ flex: 1 }}
@@ -495,12 +427,13 @@ export const GratitudeScreen = (props: MapScreenProps) => {
           strokeWidth={4}
           strokeColor={"black"}
         ></Circle>
-        {/* {eventList ? <View> */}
-        {eventList.map((eventList: any, index) => {
+        {eventList.map((eventList: any, jindex) => {
           return (
             <Marker
-              onPress={(index) => console.log(index)}
-              pinColor={setEventIndex === index ? "red" : "black"}
+              key={jindex}
+              onPress={(value) => onMarkerClick(value)}
+              // pinColor={setEventIndex === jindex ? "red" : "black"}
+              pinColor={eventList.isActive ? "red" : "black"}
               coordinate={{
                 latitude: eventList?.location?.coordinates[1],
                 longitude: eventList?.location?.coordinates[0],
@@ -508,8 +441,8 @@ export const GratitudeScreen = (props: MapScreenProps) => {
             ></Marker>
           );
         })}
-        {/* </View> : <View></View>} */}
       </MapView>
+
       <Callout style={styles.buttonCallout}>
         <TouchableOpacity style={[styles.touchable]} onPress={mapMinusClick}>
           <Image style={styles.plusClass} source={plus}></Image>
@@ -518,61 +451,61 @@ export const GratitudeScreen = (props: MapScreenProps) => {
           <Image style={styles.plusClass} source={minus}></Image>
         </TouchableOpacity>
       </Callout>
-      <View style={styles.avatarContainer}>
-        <Swiper
-          ref={mileStoneSwiperRef}
-          onIndexChanged={(value) => {
-            console.log("value index", value);
-            setEventIndexData(value);
-            onswipeSetEventIndex(value);
-          }}
-          onMomentumScrollEnd={(event, state) => {
-            // console.log(state.index);
-            // console.log('state',state, );
-            // console.log('event11111111111',event, );
-          }}
-        >
-          {eventData.map((eventData: any) => {
-            return (
-              <TouchableOpacity
-                style={styles.listContainer}
-                activeOpacity={0.8}
-                onPress={() => onNavigateEventDetail(eventData)}
-              >
-                <ImageComponent
-                  resizeMode="stretch"
-                  source={{ uri: eventData?.event_image }}
-                  style={styles.dummy}
-                />
-                <View style={styles.flex}>
-                  <View style={styles.row}>
-                    <View style={styles.flex}>
-                      <Text style={styles.dateText}>{`${moment(
-                        eventData?.start_date
-                      ).format("ddd, MMM DD")} • ${moment(
-                        eventData?.start_date
-                      ).format("hh:mm A")}`}</Text>
-                      <Text style={styles.title}>{eventData?.name}</Text>
+
+      {eventData.length != 0 ? (
+        <View style={styles.avatarContainer}>
+          <Swiper
+            showsPagination={true}
+            onIndexChanged={(value) => {
+              console.log("value index", value);
+              changeMarkerColor(value);
+              // onswipeSetEventIndex(value);
+            }}
+          >
+            {eventData.map((eventData: any) => {
+              return (
+                <TouchableOpacity
+                  activeOpacity={0.8}
+                  style={styles.listContainer}
+                  onPress={() => onNavigateEventDetail(eventData)}
+                >
+                  <ImageComponent
+                    resizeMode="stretch"
+                    source={{ uri: eventData?.event_image }}
+                    style={styles.dummy}
+                  />
+                  <View style={styles.flex}>
+                    <View style={styles.row}>
+                      <View style={styles.flex}>
+                        <Text style={styles.dateText}>{`${moment(
+                          eventData?.start_date
+                        ).format("ddd, MMM DD")} • ${moment(
+                          eventData?.start_date
+                        ).format("hh:mm A")}`}</Text>
+                        <Text style={styles.title}>{eventData?.name}</Text>
+                      </View>
+                      <ImageComponent source={event} style={styles.event} />
                     </View>
-                    <ImageComponent source={event} style={styles.event} />
+                    <View style={styles.row}>
+                      <ImageComponent source={pin} style={styles.pin} />
+                      <Text style={styles.location}>{eventData?.address}</Text>
+                      <ImageComponent
+                        style={styles.addressDot}
+                        source={activeRadio}
+                      ></ImageComponent>
+                      <Text numberOfLines={3} style={styles.fullAddress}>
+                        {eventData?.full_address}
+                      </Text>
+                    </View>
                   </View>
-                  <View style={styles.row}>
-                    <ImageComponent source={pin} style={styles.pin} />
-                    <Text style={styles.location}>{eventData?.address}</Text>
-                    <ImageComponent
-                      style={styles.addressDot}
-                      source={activeRadio}
-                    ></ImageComponent>
-                    <Text numberOfLines={3} style={styles.fullAddress}>
-                      {eventData?.full_address}
-                    </Text>
-                  </View>
-                </View>
-              </TouchableOpacity>
-            );
-          })}
-        </Swiper>
-      </View>
+                </TouchableOpacity>
+              );
+            })}
+          </Swiper>
+        </View>
+      ) : (
+        <></>
+      )}
     </View>
   );
 };

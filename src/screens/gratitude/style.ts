@@ -162,16 +162,16 @@ export const createStyleSheet = (theme: ThemeProps) => {
     },
     avatarContainer:{
       position:'absolute',
-      top:600,
-      // flex:1,
-      // zIndex:11112222
+      bottom:6,  
+      height:180,
+      width:'100%'
     },
     avatar:{
       height:40,
       width:40,
       borderRadius:100,
       marginLeft:10,
-    },
+    }, 
     postInput:{
       backgroundColor:'lightgray', 
       borderRadius:22, 
@@ -224,8 +224,9 @@ export const createStyleSheet = (theme: ThemeProps) => {
       flexDirection: 'row',
       marginTop: verticalScale(13),
       marginHorizontal:10,
-      width:width-25
+      width:width-25,
     },
+    
     
     dummy: {
       width: normalScale(80),

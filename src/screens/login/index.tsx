@@ -57,7 +57,6 @@ import {
   statusCodes,
 } from "@react-native-google-signin/google-signin";
 import { Linking } from "react-native";
-import WebView from "react-native-webview";
 import { API_URL } from "@network/constant";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
@@ -69,7 +68,7 @@ GoogleSignin.configure({
 interface LoginScreenProps {
   navigation: NavigationContainerRef<ParamListBase>;
 }
-
+ 
 export const LoginScreen = (props: LoginScreenProps) => {
   const { theme } = useAppTheme();
   const styles = createStyleSheet(theme);
@@ -89,7 +88,8 @@ export const LoginScreen = (props: LoginScreenProps) => {
   const [userToken, setUserToken] = useState();
   const [appleAuthAvailable, setAppleAuthAvailable] = useState(false);
 
-  useEffect(() => {}, []);
+  useEffect(() => {
+  }, []);
 
   // const onHandleCheckBox = () => {
   //   setIsChecked(!isChecked);
