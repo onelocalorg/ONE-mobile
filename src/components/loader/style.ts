@@ -16,7 +16,8 @@ export const createStyleSheet = (theme: ThemeProps) =>
       left: 0,
       right: 0,
       zIndex: 1000,
-      height: screenHeight,
+      // height: screenHeight,
+      height: '100%',
     },
     overlay: {
       zIndex: 10,

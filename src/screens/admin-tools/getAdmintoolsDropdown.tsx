@@ -219,7 +219,6 @@ export const GetAdmintoolsDropDownScreen = (
               <View style={styles.userPayoutsStatementCont}>
                 <View style={styles.subStatementcont}>
                   <Text style={styles.expenensLbl}>Expenses</Text>
-                  {/* {/ <Text style={styles.expenensLblTwo}>No expenses yet</Text> /} */}
                 </View>
               </View>
               <FlatList
@@ -278,7 +277,6 @@ export const GetAdmintoolsDropDownScreen = (
               <View style={styles.userPayoutsStatementCont}>
                 <View style={styles.subStatementcont}>
                   <Text style={styles.expenensLbl}>Payouts</Text>
-                  {/* {/ <Text style={styles.expenensLblTwo}>No expenses yet</Text> /} */}
                 </View>
               </View>
               <FlatList
