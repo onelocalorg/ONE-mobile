@@ -133,16 +133,16 @@ export const GetAdmintoolsDropDownScreen = (
         }
       );
       const dataItem = await response.json();
-      console.log(dataItem);
+      console.log(dataItem); 
       LodingData(false);
       
-      if (dataItem.status) {
+      if (dataItem.success) {
         setIsPayout(false);
       }
       Toast.show(dataItem?.message, Toast.LONG, {
         backgroundColor: "black",
       });
-      
+
       console.log(dataItem);
     } catch (error) {
       console.error(error);
