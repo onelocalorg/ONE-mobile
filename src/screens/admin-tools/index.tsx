@@ -442,12 +442,15 @@ export const AdminToolsScreen = (props: AdminToolsScreenProps) => {
           </TouchableOpacity> 
         </View>
       </TouchableOpacity>
-      <View style={{flex: 1}}>
+
+
       <KeyboardAwareScrollView
         keyboardShouldPersistTaps="always"
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.scrollView}
       >
+        <TouchableOpacity activeOpacity={1}>
+          <View>
           <TouchableOpacity activeOpacity={0.8} onPress={onUploadImage}>
             <ImageComponent
               isUrl={!!eventImage}
@@ -490,7 +493,7 @@ export const AdminToolsScreen = (props: AdminToolsScreenProps) => {
                 style={{ transform: [{ scaleX: 0.9 }, { scaleY: 0.5 }] }}
                 thumbColor={"white"}
                 ios_backgroundColor="#008000"
-                onChange={() => toggleSwitch(isEnabled)}
+                onChange={() => toggleSwitch(isEnabled)} 
                 value={isEnabled}
               />
             </View>
@@ -684,9 +687,12 @@ export const AdminToolsScreen = (props: AdminToolsScreenProps) => {
           >
             <Text style={styles.cancleEventText}>{strings.cancleEvent}</Text>
           </TouchableOpacity>
+          </View>
+        </TouchableOpacity>
+
+          
         
       </KeyboardAwareScrollView>
-      </View>
 
       <View style={styles.bottomButton}>
         <ButtonComponent

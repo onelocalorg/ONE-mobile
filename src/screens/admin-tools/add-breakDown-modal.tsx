@@ -1,6 +1,6 @@
 import React, { forwardRef, useEffect, useRef, useState } from "react";
 import { createStyleSheet } from "./style";
-import { View } from "react-native";
+import { KeyboardAvoidingView, Platform, View } from "react-native";
 import { Text } from "react-native";
 import { useAppTheme } from "@app-hooks/use-app-theme";
 import { useStringsAndLabels } from "@app-hooks/use-strings-and-labels";
@@ -12,11 +12,17 @@ import { API_URL } from "@network/constant";
 import { ScrollView } from "react-native";
 import { FlatList } from "react-native";
 import { ImageComponent } from "@components/image-component";
-import { buttonArrowGreen, closeCard, redDeleteIcon, saveIcon } from "@assets/images";
+import {
+  buttonArrowGreen,
+  closeCard,
+  redDeleteIcon,
+  saveIcon,
+} from "@assets/images";
 import Toast from "react-native-simple-toast";
 import { Loader } from "@components/loader";
 import { launchImageLibrary } from "react-native-image-picker";
 import { ButtonComponent } from "@components/button-component";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
 interface AddBreakDownModalProps {
   id: string;
@@ -26,9 +32,7 @@ interface AddBreakDownModalProps {
   payout: number;
   remainingAmt: number;
   userId: string;
-  onSuccessFulData: (
-    payoutListData:[]
-  ) => void;
+  onSuccessFulData: (payoutListData: []) => void;
 }
 
 export const AddBreakDownModal = (
@@ -38,25 +42,24 @@ export const AddBreakDownModal = (
   const { theme } = useAppTheme();
   const { strings } = useStringsAndLabels();
   const styles = createStyleSheet(theme);
-  const {profilt, id, onSuccessFulData } =
-  props || {};
+  const { profilt, id, onSuccessFulData } = props || {};
   const addItemRef: React.Ref<ModalRefProps> = useRef(null);
   const [isLoading, LodingData] = useState(false);
-  const [borderData, setBorderData] = useState('Expense');
+  const [borderData, setBorderData] = useState("Expense");
   const [priceData, setPriceData] = useState(1);
-  const [whoName, createPayoutWhoName] = useState('');
+  const [whoName, createPayoutWhoName] = useState("");
   const [amount, setAmount]: any = useState(0);
-  const [descriptions, setDescriptions] = useState('');
+  const [descriptions, setDescriptions] = useState("");
   const [expenseArray, setExpenseArray]: any = useState([]);
-  const [usertext, onUserSearch] = useState('');
+  const [usertext, onUserSearch] = useState("");
   const [userList, recentlyJoinUser]: any = useState([]);
   const [usergratisList, userGratiesListData]: any = useState([]);
   const [userListArray, getUsetList]: any = useState();
   const [user_id, SetuserData] = useState({});
   const [imageSelectArray, setImageSelectArray]: any = useState([]);
   const [imageSelectArrayKey, setImageSelectArrayKey]: any = useState([]);
-  const [newUserId, setNewUserIdData]: any = useState('');
-  const [payoutListData, setPayoutListData]:any = useState([]);
+  const [newUserId, setNewUserIdData]: any = useState("");
+  const [payoutListData, setPayoutListData]: any = useState([]);
 
   const expenseContClick = (item: any) => {
     setBorderData(item);
@@ -64,7 +67,7 @@ export const AddBreakDownModal = (
 
   const priceClick = (item: any) => {
     setPriceData(item);
-  }
+  };
 
   // const addBreakDownData = () => {
   //   onSuccessFulData(
@@ -79,14 +82,13 @@ export const AddBreakDownModal = (
   // };
 
   const resetState = () => {
-    onUserSearch('');
-    setDescriptions('');
-    setAmount('');
+    onUserSearch("");
+    setDescriptions("");
+    setAmount("");
     setImageSelectArray([]);
     SetuserData({});
     recentlyJoinUser([]);
   };
-
 
   const AddUserList = (item: any) => {
     const found = userList.find((element: any) => element.id == item.id);
@@ -95,76 +97,85 @@ export const AddBreakDownModal = (
         recentlyJoinUser([...userList, item]);
         const newItems = { ...item };
         delete newItems.gratisNo;
-        const newuserData = { ...newItems, first_name: item.first_name, last_name: item.last_name, pic: item.pic, id: item.id };
+        const newuserData = {
+          ...newItems,
+          first_name: item.first_name,
+          last_name: item.last_name,
+          pic: item.pic,
+          id: item.id,
+        };
         SetuserData(newuserData);
         getUsetList([newuserData]);
-        setNewUserIdData(newuserData.id)
+        setNewUserIdData(newuserData.id);
       } else {
-        Toast.show('Already Added', Toast.LONG, {
-          backgroundColor: 'black',
+        Toast.show("Already Added", Toast.LONG, {
+          backgroundColor: "black",
         });
       }
-    }
-    else {
-      Toast.show('You can not select more than one users', Toast.LONG, {
-        backgroundColor: 'black',
+    } else {
+      Toast.show("You can not select more than one users", Toast.LONG, {
+        backgroundColor: "black",
       });
     }
   };
 
-
   const removeSelectImage = (imageUrl: any) => {
-
-    const newImage = imageSelectArray.filter((person: any) => person.imageUrl !== imageUrl);
-    setImageSelectArray(newImage)
+    const newImage = imageSelectArray.filter(
+      (person: any) => person.imageUrl !== imageUrl
+    );
+    setImageSelectArray(newImage);
   };
 
   async function createPayoutAPI() {
     LodingData(true);
-    const token = await AsyncStorage.getItem('token');
+    const token = await AsyncStorage.getItem("token");
     var getAmount = (profilt * amount) / 100;
-    console.log(getAmount, '---------------getAmount-----------')
-    if(priceData === 1){
+    console.log(getAmount, "---------------getAmount-----------");
+    if (priceData === 1) {
       var item: any = {
         user_id: newUserId,
         amount: parseInt(amount),
-        description: descriptions, 
-        type: 'price',
+        description: descriptions,
+        type: "price",
         images: imageSelectArrayKey,
-        amount_percent: 0
+        amount_percent: 0,
       };
     } else {
       var item: any = {
         user_id: newUserId,
         amount: getAmount,
         description: descriptions,
-        type: 'percentage',
+        type: "percentage",
         images: imageSelectArrayKey,
-        amount_percent: parseInt(amount)
+        amount_percent: parseInt(amount),
       };
     }
-   
-    console.log('------------createPayoutAPI request-------------', item)
+
+    console.log("------------createPayoutAPI request-------------", item);
     try {
       const response = await fetch(
-        API_URL + '/v1/events/event-financial/' + id + '/draft/payout',
+        API_URL + "/v1/events/event-financial/" + id + "/draft/payout",
         // API_URL + '/v1/events/event-financial/65d4c08f947463a3a650e663/draft/payout',
         {
-          method: 'post',
+          method: "post",
           headers: new Headers({
-            Authorization: 'Bearer ' + token,
-            'Content-Type': 'application/json',
+            Authorization: "Bearer " + token,
+            "Content-Type": "application/json",
           }),
           body: JSON.stringify(item),
-        },
+        }
       );
 
       const dataItem = await response.json();
+      console.log("-------------dataItem--------", dataItem);
       LodingData(false);
       onSuccessFulData(dataItem.data);
-      console.log('-------------dataItem--------', dataItem);
+      if (dataItem?.success === false) {
+        Toast.show(dataItem?.message, Toast.LONG, {
+          backgroundColor: "black",
+        });
+      }
       resetState();
-      
     } catch (error) {
       console.error(error);
       LodingData(false);
@@ -288,34 +299,33 @@ export const AddBreakDownModal = (
   //   }
   // }
 
-
   async function createExpenseAPI() {
     LodingData(true);
-    const token = await AsyncStorage.getItem('token');
+    const token = await AsyncStorage.getItem("token");
     var item: any = {
       user_id: newUserId,
       amount: parseInt(amount),
       description: descriptions,
-      type: 'price',
+      type: "price",
       images: imageSelectArrayKey,
     };
-    console.log('------------createExpenseAPI request-------------', item)
+    console.log("------------createExpenseAPI request-------------", item);
     try {
       const response = await fetch(
-        API_URL + '/v1/events/event-financial/' + id + '/draft/expense',
+        API_URL + "/v1/events/event-financial/" + id + "/draft/expense",
         // API_URL + '/v1/events/event-financial/65d4c08f947463a3a650e663/draft/expense',
         {
-          method: 'post',
+          method: "post",
           headers: new Headers({
-            Authorization: 'Bearer ' + token,
-            'Content-Type': 'application/json',
+            Authorization: "Bearer " + token,
+            "Content-Type": "application/json",
           }),
           body: JSON.stringify(item),
-        },
+        }
       );
 
       const dataItem = await response.json();
-      console.log('-------------dataItem--------', dataItem);
+      console.log("-------------dataItem--------", dataItem);
       if (dataItem?.success === false) {
         Toast.show(dataItem?.message, Toast.LONG, {
           backgroundColor: "black",
@@ -323,7 +333,7 @@ export const AddBreakDownModal = (
       }
       LodingData(false);
       onSuccessFulData(dataItem.data);
-      
+
       resetState();
     } catch (error) {
       console.error(error);
@@ -332,40 +342,38 @@ export const AddBreakDownModal = (
   }
 
   const submitClick = () => {
-     if (userList.length === 0) {
-      Toast.show('Select user', Toast.LONG, {
-        backgroundColor: 'black',
+    if (userList.length === 0) {
+      Toast.show("Select user", Toast.LONG, {
+        backgroundColor: "black",
       });
-    } else if (amount < 0) {
-      Toast.show('Enter Ammount', Toast.LONG, {
-        backgroundColor: 'black',
+    } else if (amount <= 0) {
+      Toast.show("Enter Ammount", Toast.LONG, {
+        backgroundColor: "black",
       });
-    }
-     else if (descriptions.length === 0) {
-      Toast.show('Enter Descriptions', Toast.LONG, {
-        backgroundColor: 'black',
+    } else if (descriptions.length === 0) {
+      Toast.show("Enter Descriptions", Toast.LONG, {
+        backgroundColor: "black",
       });
-    }
-    else if (imageSelectArray.length === 0) {
-      Toast.show('Add Image to Post', Toast.LONG, {
-        backgroundColor: 'black',
+    } else if (imageSelectArray.length === 0) {
+      Toast.show("Add Image to Post", Toast.LONG, {
+        backgroundColor: "black",
       });
-    }
-    else {
-      if(borderData === 'Expense'){
-        console.log('----------------borderData === Expense--------------------')
+    } else {
+      if (borderData === "Expense") {
+        console.log(
+          "----------------borderData === Expense--------------------"
+        );
         createExpenseAPI();
       } else {
-        console.log('----------------borderData === payout--------------------')
+        console.log(
+          "----------------borderData === payout--------------------"
+        );
         createPayoutAPI();
-       
       }
-      
-
     }
 
     // createExpenseAPI();
-  }
+  };
 
   const closeModal = () => {
     addItemRef.current?.onCloseModal();
@@ -429,229 +437,272 @@ export const AddBreakDownModal = (
 
   return (
     <>
-        <ModalComponent ref={ref}>
-          <Loader visible={isLoading} showOverlay />
-          <View style={styles.subBreakdowncont}>
+      <ModalComponent ref={ref}>
+        <Loader visible={isLoading} showOverlay />
+        <View style={styles.subBreakdowncont}>
 
-            <ScrollView showsVerticalScrollIndicator={false}>
-              <TouchableOpacity >
-              <View style={{ marginTop: 5, marginBottom: -20, marginLeft:0}}>
+        {/* <KeyboardAvoidingView
+          behavior={Platform.OS === "ios" ? "height" : "height"}
+          style={styles.keyboardViewTwo}
+        > */}
+          <KeyboardAwareScrollView
+            showsVerticalScrollIndicator={false}
+            horizontal={false}
+            style={{height:350}}
+          >
+            <TouchableOpacity>
+              <View style={{ marginTop: 5, marginBottom: -20, marginLeft: 0 }}>
                 <ImageComponent
                   source={closeCard}
-                  style={{ height: 24, width: 24}}
+                  style={{ height: 24, width: 24 }}
                 ></ImageComponent>
               </View>
-              </TouchableOpacity>
-              <Text style={styles.breakdownHeader}>Add Breakdown</Text>
+            </TouchableOpacity>
+            <Text style={styles.breakdownHeader}>Add Breakdown</Text>
 
-              <View style={styles.payModalContainer}>
-                <Text style={styles.whoCont}>Who:</Text>
-                <View>
-                  <TextInput
-                    placeholder="select who to pay"
-                    placeholderTextColor="darkgray"
-                    value={usertext}
-                    onChangeText={text => gratisUserList(text)}
-                    style={styles.payInput}></TextInput>
-                </View>
+            <View style={styles.payModalContainer}>
+              <Text style={styles.whoCont}>Who:</Text>
+              <View>
+                <TextInput
+                  placeholder="select who to pay"
+                  placeholderTextColor="darkgray"
+                  value={usertext}
+                  onChangeText={(text) => gratisUserList(text)}
+                  style={styles.payInput}
+                ></TextInput>
               </View>
+            </View>
 
-              <View style={styles.avatarContainer}>
-                <ScrollView
-                  horizontal={true}
-                  showsHorizontalScrollIndicator={false}>
-                  {userList.map((userList: any) => {
-                    return (
-                      <TouchableOpacity
-                        onPress={() => removeuserSelect(userList)}>
-                        <ImageComponent
-                          style={styles.avatarImage}
-                          isUrl={!!userList?.pic}
-                          resizeMode="cover"
-                          uri={userList?.pic}></ImageComponent>
-                      </TouchableOpacity>
-                    );
-                  })}
-                </ScrollView>
-              </View>
-
-              {usertext.length !== 0 ? (
-                <View
-                  style={{
-                    borderWidth: 1,
-                    marginVertical: 10,
-                    marginHorizontal: 10,
-                    marginRight: 20,
-                    borderRadius: 10,
-                    maxHeight: 275,
-                    overflow: 'hidden',
-                    height: 'auto',
-                  }}>
-                  <ScrollView showsVerticalScrollIndicator={false}>
-                    <FlatList
-                      data={usergratisList}
-                      renderItem={({ item, index }) => (
-                        <TouchableOpacity
-                          activeOpacity={1}
-                          style={{
-                            flexDirection: 'row',
-                            alignItems: 'center',
-                            marginVertical: 5,
-                            borderBottomWidth: 1,
-                            borderColor: 'gray',
-                            paddingVertical: 8,
-                          }}>
-                          <View style={{ flexDirection: 'row', marginRight: 50 }}>
-                            <ImageComponent
-                              style={{
-                                height: 30,
-                                width: 30,
-                                marginRight: 20,
-                                marginLeft: 10,
-                                borderRadius: 100,
-                              }}
-                              resizeMode="cover"
-                              source={{ uri: item?.pic }}></ImageComponent>
-                            <Text
-                              numberOfLines={1}
-                              style={{
-                                alignSelf: 'center',
-                                flexShrink: 1,
-                                width: 150,
-                              }}>
-                              {item?.first_name} {item?.last_name}
-                            </Text>
-
-                            <TouchableOpacity onPress={() => AddUserList(item)}>
-                              <ImageComponent
-                                style={{
-                                  height: 20,
-                                  width: 20,
-                                  marginLeft: 20,
-                                  marginTop: 2,
-                                }}
-                                source={buttonArrowGreen}></ImageComponent>
-                            </TouchableOpacity>
-                          </View>
-                        </TouchableOpacity>
-                      )}></FlatList>
-                  </ScrollView>
-                </View>
-              ) : (
-                <View></View>
-              )}
-              <View style={styles.TypeModalContainer}>
-                <Text style={styles.typeCont}>Type:</Text>
-                <View style={styles.typeDisplayCont}>
-                  <TouchableOpacity
-                    activeOpacity={0.8}
-                    onPress={() => expenseContClick('Expense')}>
-                    <Text
-                      style={[
-                        borderData === 'Expense'
-                          ? styles.typeLbl
-                          : styles.typeLblTwo,
-                      ]}>
-                      Expense
-                    </Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    activeOpacity={0.8}
-                    onPress={() => expenseContClick('payout')}>
-                    <Text
-                      style={[
-                        borderData === 'payout'
-                          ? styles.typeLbl
-                          : styles.typeLblTwo,
-                      ]}>
-                      payout
-                    </Text>
-                  </TouchableOpacity>
-                </View>
-              </View>
-
-              <View style={styles.amountCont}>
-                <Text style={styles.amountLbl}>Ammount</Text>
-                <TouchableOpacity
-                  activeOpacity={0.8}
-                  onPress={() => priceClick(1)}>
-                  <View style={[
-                    priceData === 1
-                      ? styles.priceContainer : styles.priceContainerTwo,
-                  ]}>
-                    <Text
-                      style={styles.percentageSign}
-                    >$</Text>
-                  </View>
-                </TouchableOpacity>
-                {borderData !== 'Expense' ?
-                  <TouchableOpacity
-                    activeOpacity={0.8}
-                    onPress={() => priceClick(2)}>
-                    <View
-                      style={[
-                        priceData === 2
-                          ? styles.priceContainer : styles.priceContainerTwo,
-                      ]}>
-                      <Text style={styles.percentageSign}
-                      >%</Text>
-                    </View>
-                  </TouchableOpacity> : <View></View>}
-                <View style={{ flexDirection: 'row' }}>
-                  <Text style={styles.dollarIcon}>{priceData === 1 ? '$' : '%'}</Text>
-                  <TextInput
-                    value={amount}
-                    keyboardType='number-pad'
-                    onChangeText={text => setAmount(text)}
-                    style={styles.dollarRupees}></TextInput>
-                </View>
-              </View>
-
-              <View style={styles.descriptionCont}>
-                <Text style={styles.descpLbl}>Description</Text>
-                <View>
-                  <TextInput
-                    value={descriptions}
-                    onChangeText={text => setDescriptions(text)}
-                    style={styles.payoutDescLbl}></TextInput>
-                </View>
-              </View>
-
-              <View
-                style={{
-                  backgroundColor: '#A9A9A9',
-                  height: 1,
-                  marginRight: 20,
-                }}></View>
-              <View style={styles.mediaCont}>
-                <Text style={styles.mediaLbl}>Media</Text>
-                <TouchableOpacity onPress={openGallary}>
-                  <Text style={styles.addPhotosCont}>add photos</Text>
-                </TouchableOpacity>
-              </View>
-
-              <View style={styles.multipleImagecont}>
-                {imageSelectArray.map((item: any) => {
+            <View style={styles.avatarContainer}>
+              <ScrollView
+                horizontal={true}
+                showsHorizontalScrollIndicator={false}
+              >
+                {userList.map((userList: any) => {
                   return (
                     <TouchableOpacity
-                        onPress={() => removeSelectImage(item?.imageUrl)}>
-                    <ImageComponent source={{ uri: item?.imageUrl }} style={styles.selectImage}></ImageComponent>
+                      onPress={() => removeuserSelect(userList)}
+                    >
+                      <ImageComponent
+                        style={styles.avatarImage}
+                        isUrl={!!userList?.pic}
+                        resizeMode="cover"
+                        uri={userList?.pic}
+                      ></ImageComponent>
                     </TouchableOpacity>
                   );
                 })}
+              </ScrollView>
+            </View>
 
+            {usertext.length !== 0 ? (
+              <View
+                style={{
+                  borderWidth: 1,
+                  marginVertical: 10,
+                  marginHorizontal: 10,
+                  marginRight: 20,
+                  borderRadius: 10,
+                  maxHeight: 275,
+                  overflow: "hidden",
+                  height: "auto",
+                }}
+              >
+                <ScrollView showsVerticalScrollIndicator={false}>
+                  <FlatList
+                    data={usergratisList}
+                    renderItem={({ item, index }) => (
+                      <TouchableOpacity
+                        activeOpacity={1}
+                        style={{
+                          flexDirection: "row",
+                          alignItems: "center",
+                          marginVertical: 5,
+                          borderBottomWidth: 1,
+                          borderColor: "gray",
+                          paddingVertical: 8,
+                        }}
+                      >
+                        <View style={{ flexDirection: "row", marginRight: 50 }}>
+                          <ImageComponent
+                            style={{
+                              height: 30,
+                              width: 30,
+                              marginRight: 20,
+                              marginLeft: 10,
+                              borderRadius: 100,
+                            }}
+                            resizeMode="cover"
+                            source={{ uri: item?.pic }}
+                          ></ImageComponent>
+                          <Text
+                            numberOfLines={1}
+                            style={{
+                              alignSelf: "center",
+                              flexShrink: 1,
+                              width: 150,
+                            }}
+                          >
+                            {item?.first_name} {item?.last_name}
+                          </Text>
+
+                          <TouchableOpacity onPress={() => AddUserList(item)}>
+                            <ImageComponent
+                              style={{
+                                height: 20,
+                                width: 20,
+                                marginLeft: 20,
+                                marginTop: 2,
+                              }}
+                              source={buttonArrowGreen}
+                            ></ImageComponent>
+                          </TouchableOpacity>
+                        </View>
+                      </TouchableOpacity>
+                    )}
+                  ></FlatList>
+                </ScrollView>
               </View>
-              
-              <View style={styles.submitButton}>
+            ) : (
+              <View></View>
+            )}
+            <View style={styles.TypeModalContainer}>
+              <Text style={styles.typeCont}>Type:</Text>
+              <View style={styles.typeDisplayCont}>
+                <TouchableOpacity
+                  activeOpacity={0.8}
+                  onPress={() => expenseContClick("Expense")}
+                >
+                  <Text
+                    style={[
+                      borderData === "Expense"
+                        ? styles.typeLbl
+                        : styles.typeLblTwo,
+                    ]}
+                  >
+                    Expense
+                  </Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  activeOpacity={0.8}
+                  onPress={() => expenseContClick("payout")}
+                >
+                  <Text
+                    style={[
+                      borderData === "payout"
+                        ? styles.typeLbl
+                        : styles.typeLblTwo,
+                    ]}
+                  >
+                    payout
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+
+            <View style={styles.amountCont}>
+              <Text style={styles.amountLbl}>Ammount</Text>
+              <TouchableOpacity
+                activeOpacity={0.8}
+                onPress={() => priceClick(1)}
+              >
+                <View
+                  style={[
+                    priceData === 1
+                      ? styles.priceContainer
+                      : styles.priceContainerTwo,
+                  ]}
+                >
+                  <Text style={styles.percentageSign}>$</Text>
+                </View>
+              </TouchableOpacity>
+              {borderData !== "Expense" ? (
+                <TouchableOpacity
+                  activeOpacity={0.8}
+                  onPress={() => priceClick(2)}
+                >
+                  <View
+                    style={[
+                      priceData === 2
+                        ? styles.priceContainer
+                        : styles.priceContainerTwo,
+                    ]}
+                  >
+                    <Text style={styles.percentageSign}>%</Text>
+                  </View>
+                </TouchableOpacity>
+              ) : (
+                <View></View>
+              )}
+              <View style={{ flexDirection: "row" }}>
+                <Text style={styles.dollarIcon}>
+                  {priceData === 1 ? "$" : "%"}
+                </Text>
+                <TextInput
+                  value={amount}
+                  keyboardType="number-pad"
+                  onChangeText={(text) => setAmount(text)}
+                  style={styles.dollarRupees}
+                ></TextInput>
+              </View>
+            </View>
+
+            <View style={styles.descriptionCont}>
+              <Text style={styles.descpLbl}>Description</Text>
+              <View>
+                <TextInput
+                  value={descriptions}
+                  onChangeText={(text) => setDescriptions(text)}
+                  style={styles.payoutDescLbl}
+                ></TextInput>
+              </View>
+            </View>
+
+            <View
+              style={{
+                backgroundColor: "#A9A9A9",
+                height: 1,
+                marginRight: 20,
+              }}
+            ></View>
+            <View style={styles.mediaCont}>
+              <Text style={styles.mediaLbl}>Media</Text>
+              <TouchableOpacity onPress={openGallary}>
+                <Text style={styles.addPhotosCont}>add photos</Text>
+              </TouchableOpacity>
+            </View>
+
+            <View style={styles.multipleImagecont}>
+              {imageSelectArray.map((item: any) => {
+                return (
+                  <TouchableOpacity
+                    onPress={() => removeSelectImage(item?.imageUrl)}
+                  >
+                    <ImageComponent
+                      source={{ uri: item?.imageUrl }}
+                      style={styles.selectImage}
+                    ></ImageComponent>
+                  </TouchableOpacity>
+                );
+              })}
+            </View>
+
+            <View style={styles.submitButton}>
               <TouchableOpacity activeOpacity={0.8} onPress={submitClick}>
-              <ImageComponent source={saveIcon} style={styles.saveIcon}></ImageComponent>
-              </TouchableOpacity>  
-                <ImageComponent source={redDeleteIcon} style={styles.deleteIcon}></ImageComponent>
-              </View>
-
-            </ScrollView>
-          </View>
-        </ModalComponent>
+                <ImageComponent
+                  source={saveIcon}
+                  style={styles.saveIcon}
+                ></ImageComponent>
+              </TouchableOpacity>
+              {/* <ImageComponent
+                source={redDeleteIcon}
+                style={styles.deleteIcon}
+              ></ImageComponent> */}
+            </View>
+          </KeyboardAwareScrollView>
+        {/* </KeyboardAvoidingView> */}
+        </View>
+      </ModalComponent>
     </>
   );
 };

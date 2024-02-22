@@ -13,6 +13,8 @@ import { FlatList } from "react-native";
 import { Loader } from "@components/loader";
 import { useFocusEffect } from "@react-navigation/native";
 import { EditPayoutModal } from "./payoutExpenseEdit-modal";
+import Toast from "react-native-simple-toast";
+import { navigations } from "@config/app-navigation/constant";
 
 interface GetAdmintoolsDropDownScreenProps {
   eventId: string;
@@ -121,20 +123,11 @@ export const GetAdmintoolsDropDownScreen = (
     LodingData(true);
     const token = await AsyncStorage.getItem("token");
     var data: any = {
-      revenue_amount: revenueAmt,
-      total_expenses: expensesAmt,
-      total_payout: payoutAmt,
-      total_profit: totalProfile,
-      remaining_amount: remainingAmt,
-      expenses: expenseValueData,
-      payouts: payOutsArray,
     };
     console.log("-----------dataprint-------------", JSON.stringify(data));
     try {
       const response = await fetch(
-        // API_URL + '/v1/events/event-financial/' + id,
         API_URL + "/v1/events/event-financial/" + eventId + "/create",
-        // API_URL + "/v1/events/event-financial/65d4c08f947463a3a650e663/create",
         {
           method: "post",
           headers: new Headers({
@@ -145,7 +138,9 @@ export const GetAdmintoolsDropDownScreen = (
       );
       const dataItem = await response.json();
       LodingData(false);
-
+      Toast.show(dataItem?.data.message, Toast.LONG, {
+        backgroundColor: "black",
+      });
       console.log(dataItem);
     } catch (error) {
       console.error(error);
@@ -203,7 +198,7 @@ export const GetAdmintoolsDropDownScreen = (
               )}
             </View>
 
-            {!isPayout ? (
+            {isPayout ? (
               <TouchableOpacity onPress={createPayoutAPI}>
                 <View style={styles.payoutContainer}>
                   <View style={styles.payoutsubContainer}>

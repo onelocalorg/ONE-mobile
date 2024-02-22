@@ -41,7 +41,7 @@ export const createStyleSheet = (theme: ThemeProps) => {
     },
     scrollView: {
       paddingBottom: verticalScale(100),
-      // flexGrow: 1
+      // flex:1
     },
     row: {
       flexDirection: 'row',
@@ -754,6 +754,13 @@ export const createStyleSheet = (theme: ThemeProps) => {
       borderRadius: 100,
       marginLeft: 10,
       // backgroundColor:'green'
+    },
+    keyboardViewTwo: {
+      // position: 'absolute',
+      // bottom: 0,
+      // left: 0,
+      // right: 0,
+      // top:0
     },
     // submitButton: {
     // height:38,
