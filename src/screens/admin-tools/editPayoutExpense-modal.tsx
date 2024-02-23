@@ -653,8 +653,8 @@ export const editPayoutModalScreen = (props: EditBreakDownModalProps, ref: React
                       <Text style={styles.percentageSign}>%</Text>
                     </View>
                   </TouchableOpacity> : <View></View>}
-                <View style={{ flexDirection: 'row' }}>
-                  <Text style={styles.dollarIcon}>{priceData === 1 ? '$' : '%'}</Text>
+                <View style={{ flexDirection: 'row', width:150 }}>
+                  <Text style={styles.dollarIcon}>{priceData === 1 ? '$ ' : '% '}</Text>
                   <TextInput
                     value={amount}
                     keyboardType='number-pad'

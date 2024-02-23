@@ -159,13 +159,14 @@ export const AddPayoutExpenseScreen = (
       const dataItem = await response.json();
       console.log("-------------dataItem--------", dataItem);
       LodingData(false);
-      onSuccessFulData(dataItem.data);
-      if (dataItem?.success === false) {
+      if (dataItem.success) {
+        onSuccessFulData(dataItem.data);
+        resetState();
+      } else {
         Toast.show(dataItem?.message, Toast.LONG, {
           backgroundColor: "black",
         });
       }
-      resetState();
     } catch (error) {
       console.error(error);
       LodingData(false);
@@ -237,15 +238,15 @@ export const AddPayoutExpenseScreen = (
 
       const dataItem = await response.json();
       console.log("-------------dataItem--------", dataItem);
-      if (dataItem?.success === false) {
+      LodingData(false);
+      if (dataItem.success) {
+        onSuccessFulData(dataItem.data);
+        resetState();
+      } else {
         Toast.show(dataItem?.message, Toast.LONG, {
           backgroundColor: "black",
         });
       }
-      LodingData(false);
-      onSuccessFulData(dataItem.data);
-
-      resetState();
     } catch (error) {
       console.error(error);
       LodingData(false);
@@ -539,9 +540,9 @@ export const AddPayoutExpenseScreen = (
               ) : (
                 <View></View>
               )}
-              <View style={{ flexDirection: "row" }}>
+              <View style={{ flexDirection: "row", width:150 }}>
                 <Text style={styles.dollarIcon}>
-                  {priceData === 1 ? "$" : "%"}
+                  {priceData === 1 ? "$ " : "% "}
                 </Text>
                 <TextInput
                   value={amount}
