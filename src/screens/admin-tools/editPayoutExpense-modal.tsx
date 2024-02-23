@@ -1,4 +1,4 @@
-import React, { forwardRef, useEffect, useRef, useState } from 'react';
+import React, { forwardRef, useCallback, useEffect, useRef, useState } from 'react';
 import { createStyleSheet } from './style';
 import { View } from 'react-native';
 import { Text } from 'react-native';
@@ -8,7 +8,7 @@ import { TextInput } from 'react-native-gesture-handler';
 import { ModalComponent, ModalRefProps } from '@components/modal-component';
 import { TouchableOpacity } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { API_URL } from '@network/constant';
+import { API_URL, getData } from '@network/constant';
 import { ScrollView } from 'react-native';
 import { FlatList } from 'react-native';
 import { ImageComponent } from '@components/image-component';
@@ -17,6 +17,7 @@ import Toast from 'react-native-simple-toast';
 import { Loader } from '@components/loader';
 import { launchImageLibrary } from 'react-native-image-picker';
 import { ButtonComponent } from '@components/button-component';
+import { useFocusEffect } from '@react-navigation/native';
 
 interface EditBreakDownModalProps {
   id: string;
@@ -31,23 +32,20 @@ interface EditBreakDownModalProps {
   ) => void;
 }
 
-export const editPayoutModalScreen = (
-  props: EditBreakDownModalProps,
-  ref: React.Ref<unknown> | undefined,
-) => {
+// type, userSelectedData, amount, percentageAmount, description, imagearray,EventID, expensePayoutID, revenueAmt
+
+
+export const editPayoutModalScreen = ( props: EditBreakDownModalProps, ref: React.Ref<unknown> | undefined,) => {
+
+  const {profilt, id, onSuccessFulData } = props || {};
   const { theme } = useAppTheme();
-  const { strings } = useStringsAndLabels();
   const styles = createStyleSheet(theme);
-  const {profilt, id, onSuccessFulData } =
-    props || {};
   const addItemRef: React.Ref<ModalRefProps> = useRef(null);
   const [isLoading, LodingData] = useState(false);
   const [borderData, setBorderData] = useState('Expense');
   const [priceData, setPriceData] = useState(1);
-  const [whoName, createPayoutWhoName] = useState('');
   const [amount, setAmount]: any = useState(0);
   const [descriptions, setDescriptions] = useState('');
-  const [expenseArray, setExpenseArray]: any = useState([]);
   const [usertext, onUserSearch] = useState('');
   const [userList, recentlyJoinUser]: any = useState([]);
   const [usergratisList, userGratiesListData]: any = useState([]);
@@ -57,6 +55,12 @@ export const editPayoutModalScreen = (
   const [imageSelectArrayKey, setImageSelectArrayKey]: any = useState([]);
   const [newUserId, setNewUserIdData]: any = useState('');
   const [payoutListData, setPayoutListData]:any = useState([]);
+
+  useFocusEffect(
+    useCallback(() => {
+      
+    }, []) 
+  ); 
 
   const expenseContClick = (item: any) => {
     setBorderData(item);

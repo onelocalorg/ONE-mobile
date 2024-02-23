@@ -6,23 +6,21 @@ import { dummy, sendPayoutImg } from "@assets/images";
 import { ImageComponent } from "@components/image-component";
 import { ModalRefProps } from "@components/modal-component";
 import { TouchableOpacity } from "react-native";
-import { API_URL } from "@network/constant";
+import { API_URL, setData } from "@network/constant";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { BreakDownModal } from "./add-breakDown-modal";
 import { FlatList } from "react-native";
 import { Loader } from "@components/loader";
 import { useFocusEffect } from "@react-navigation/native";
-import { EditPayoutModal } from "./payoutExpenseEdit-modal";
+import { EditPayoutModal } from "./editPayoutExpense-modal";
 import Toast from "react-native-simple-toast";
-import { navigations } from "@config/app-navigation/constant";
+import { AddPayoutExpenseModel } from "./addPayoutExpense-modal";
 
 interface GetAdmintoolsDropDownScreenProps {
   eventId: string;
 }
 
-export const GetAdmintoolsDropDownScreen = (
-  props: GetAdmintoolsDropDownScreenProps
-) => {
+export const GetAdmintoolsDropDownScreen = (props: GetAdmintoolsDropDownScreenProps) => {
+
   const { theme } = useAppTheme(); 
   const styles = createStyleSheet(theme);
   const { eventId } = props || {};
@@ -148,6 +146,10 @@ export const GetAdmintoolsDropDownScreen = (
       console.error(error);
       LodingData(false);
     }
+  }
+
+  const editClick = (item:any, type:any) =>{
+    editItemRef.current?.onOpenModal();
   }
  
   return (
@@ -281,7 +283,7 @@ export const GetAdmintoolsDropDownScreen = (
               </View>
               <FlatList
                 data={payoutListData}
-                renderItem={({ item }) => (
+                renderItem={({ item, index }) => (
                   <View style={styles.userDetailsCont}>
                     <View
                       style={{
@@ -290,6 +292,15 @@ export const GetAdmintoolsDropDownScreen = (
                       }}
                     >
                       <View style={styles.detailsSubCont}>
+                        <TouchableOpacity onPress={() => editClick(item, index)}>
+                          <ImageComponent
+                            source={{ uri: item?.user_id?.pic }}
+                            resizeMode="cover"
+                            style={styles.userImage}
+                          />
+                        </TouchableOpacity>
+                      
+                        
                         <ImageComponent
                           source={{ uri: item?.user_id?.pic }}
                           resizeMode="cover"
@@ -342,6 +353,8 @@ export const GetAdmintoolsDropDownScreen = (
           <View></View>
         )}
 
+          {/* type, userSelectedData, amount, percentageAmount, description, 
+              imagearray,EventID, expensePayoutID, profitAmt */}
         <EditPayoutModal
           ref={editItemRef}
           id={eventId}
@@ -354,7 +367,7 @@ export const GetAdmintoolsDropDownScreen = (
           onSuccessFulData={onSuccessfulCreate}
         />
 
-        <BreakDownModal
+        <AddPayoutExpenseModel
           ref={addItemRef}
           id={eventId}
           revenue={payoutData?.revenue_amount}

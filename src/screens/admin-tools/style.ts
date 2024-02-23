@@ -643,6 +643,12 @@ export const createStyleSheet = (theme: ThemeProps) => {
       borderRadius: 100,
       marginTop: 8,
     },
+    editIcon:{
+      height: 24,
+      width: 24,
+      borderRadius: 100,
+      marginTop: 8,
+    },
     userNameCont: {
       width: width - 200,
     },

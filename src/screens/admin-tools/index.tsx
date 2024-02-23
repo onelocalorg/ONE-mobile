@@ -67,7 +67,7 @@ import { DatePickerModal } from "react-native-paper-dates";
 import Toast from "react-native-simple-toast";
 import { API_URL } from "@network/constant";
 import { Switch } from "react-native";
-import { AddBreakDownModal, BreakDownModal } from "./add-breakDown-modal";
+import { AddPayoutExpenseModel } from "./addPayoutExpense-modal";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
 import { GetAdmintoolsDropDownScreen } from "./getAdmintoolsDropdown";
 import { ScrollView } from "react-native-gesture-handler";
@@ -448,7 +448,7 @@ export const AdminToolsScreen = (props: AdminToolsScreenProps) => {
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.scrollView}
       >
-        <TouchableOpacity activeOpacity={1}>
+        <TouchableOpacity activeOpacity={1} onPress={keyboardDismiss}>
           <View>
             <TouchableOpacity activeOpacity={0.8} onPress={onUploadImage}>
               <ImageComponent

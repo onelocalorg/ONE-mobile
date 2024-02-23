@@ -24,7 +24,7 @@ import { launchImageLibrary } from "react-native-image-picker";
 import { ButtonComponent } from "@components/button-component";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
-interface AddBreakDownModalProps {
+interface AddPayoutExpenseScreenProps {
   id: string;
   revenue: number;
   expense: number;
@@ -35,8 +35,8 @@ interface AddBreakDownModalProps {
   onSuccessFulData: (payoutListData: []) => void;
 }
 
-export const AddBreakDownModal = (
-  props: AddBreakDownModalProps,
+export const AddPayoutExpenseScreen = (
+  props: AddPayoutExpenseScreenProps,
   ref: React.Ref<unknown> | undefined
 ) => {
   const { theme } = useAppTheme();
@@ -69,17 +69,7 @@ export const AddBreakDownModal = (
     setPriceData(item);
   };
 
-  // const addBreakDownData = () => {
-  //   onSuccessFulData(
-  //     amount,
-  //     descriptions,
-  //     imageSelectArrayKey,
-  //     user_id,
-  //     borderData,
-  //     priceData
-  //   );
-  //   resetState();
-  // };
+  
 
   const resetState = () => {
     onUserSearch("");
@@ -185,7 +175,6 @@ export const AddBreakDownModal = (
   const removeuserSelect = (id: any) => {
     const newPeople = userList.filter((person: any) => person !== id);
     console.log("--------newPeople---------", newPeople);
-
     recentlyJoinUser(newPeople);
   };
 
@@ -222,83 +211,6 @@ export const AddBreakDownModal = (
     }
   }
 
-  // </---------------createPayoutAPI--------------------/>
-  // async function createPayoutAPI() {
-  //   LodingData(true);
-  //   const token = await AsyncStorage.getItem("token");
-  //   var item: any = {
-  //     user_id: userId,
-  //     amount: amount,
-  //     description: descriptions,
-  //     images: userListArray,
-  //     // images:userList[0]['pic']
-  //     // images: imageSelectArrayKey,
-  //   };
-  //   console.log(
-  //     "----------------userListArray1111-------------",
-  //     userList[0]["pic"]
-  //   );
-  //   console.log("----------------userListArray-------------", userListArray);
-
-  //   var tempData = expenseArray;
-  //   tempData.push(item);
-  //   setExpenseArray(tempData);
-
-  //   if (borderData === "Expense") {
-  //     var data: any = {
-  //       revenue_amount: revenue,
-  //       total_expenses: expense,
-  //       total_payout: payout,
-  //       total_profit: profilt,
-  //       remaining_amount: remainingAmt,
-  //       // expenses: expenseArray,
-  //       expenses: [],
-  //       payouts: [],
-  //     };
-  //   } else if (borderData === "payout") {
-  //     var data: any = {
-  //       revenue_amount: revenue,
-  //       total_expenses: expense,
-  //       total_payout: payout,
-  //       total_profit: profilt,
-  //       remaining_amount: remainingAmt,
-  //       expenses: [],
-  //       // payouts: expenseArray,
-  //       payouts: [],
-  //     };
-  //   }
-
-  //   console.log(data, "---------------setExpenseArray----------------");
-  //   console.log("=========== createPayoutAPI Request ==============");
-
-  //   try {
-  //     const response = await fetch(
-  //       // API_URL + '/v1/events/event-financial/' + id,
-  //       API_URL + "/v1/events/event-financial/6565af618267f45414608d66/create",
-  //       {
-  //         method: "post",
-  //         headers: new Headers({
-  //           Authorization: "Bearer " + token,
-  //           "Content-Type": "application/json",
-  //         }),
-  //         body: JSON.stringify(data),
-  //         // body: Object.keys(data)
-  //         // .map(key => key + '=' + data[key])
-  //         // .join('&'),
-  //       }
-  //     );
-
-  //     const dataItem = await response.json();
-  //     LodingData(false);
-  //     console.log("=========== createPayoutAPI==============");
-  //     console.log(dataItem);
-  //     closeModal();
-  //   } catch (error) {
-  //     console.error(error);
-  //     LodingData(false);
-  //   }
-  // }
-
   async function createExpenseAPI() {
     LodingData(true);
     const token = await AsyncStorage.getItem("token");
@@ -313,7 +225,6 @@ export const AddBreakDownModal = (
     try {
       const response = await fetch(
         API_URL + "/v1/events/event-financial/" + id + "/draft/expense",
-        // API_URL + '/v1/events/event-financial/65d4c08f947463a3a650e663/draft/expense',
         {
           method: "post",
           headers: new Headers({
@@ -382,7 +293,6 @@ export const AddBreakDownModal = (
   const openGallary = async () => {
     const { assets } = await launchImageLibrary({
       mediaType: "photo",
-      // selectionLimit: 2,
       includeBase64: true,
       maxWidth: 800,
       maxHeight: 800,
@@ -440,17 +350,12 @@ export const AddBreakDownModal = (
       <ModalComponent ref={ref}>
         <Loader visible={isLoading} showOverlay />
         <View style={styles.subBreakdowncont}>
-
-        {/* <KeyboardAvoidingView
-          behavior={Platform.OS === "ios" ? "height" : "height"}
-          style={styles.keyboardViewTwo}
-        > */}
           <KeyboardAwareScrollView
             showsVerticalScrollIndicator={false}
             horizontal={false}
             style={{height:350}}
           >
-            <TouchableOpacity>
+            <TouchableOpacity onPress={closeModal}>
               <View style={{ marginTop: 5, marginBottom: -20, marginLeft: 0 }}>
                 <ImageComponent
                   source={closeCard}
@@ -707,4 +612,4 @@ export const AddBreakDownModal = (
   );
 };
 
-export const BreakDownModal = forwardRef(AddBreakDownModal);
+export const AddPayoutExpenseModel = forwardRef(AddPayoutExpenseScreen);
