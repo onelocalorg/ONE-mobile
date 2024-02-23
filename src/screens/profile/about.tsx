@@ -204,7 +204,6 @@ export const About = (props: AboutDataProps) => {
     }
   }
 
-  // =================Package Detail API====================
 
   async function userProfileUpdate() {
     console.log(token);
@@ -214,11 +213,17 @@ export const About = (props: AboutDataProps) => {
         method: "get",
         headers: new Headers({
           Authorization: "Bearer " + token,
-          "Content-Type": "application/x-www-form-urlencoded",
+          "Content-Type": "application/json",
         }),
       });
       const dataItem = await response.json();
       console.log("===========User Profile data Response==============");
+      if(dataItem?.data?.isEventActiveSubscription === true){
+        AsyncStorage.setItem('isEventActive','true')
+      }
+      else{
+        AsyncStorage.setItem('isEventActive','false')
+      }
       submitAnsState(dataItem?.data?.profile_answers);
 
       console.log(dataItem?.data?.profile_answers);
@@ -297,6 +302,7 @@ export const About = (props: AboutDataProps) => {
       console.log(dataItem);
       if (dataItem.success == true) {
         packageListAPI();
+        userProfileUpdate();
         setModalVisible(false);
         setMemberModal(false);
         Toast.show(dataItem.message, Toast.LONG, {

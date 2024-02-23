@@ -92,7 +92,7 @@ export function FlatListComponent<ItemT>(props: ListProps<ItemT>) {
         ListFooterComponent={
           enablePagination && dataLength > 0 ? listFooterComponent() : <></>
         }
-        onEndReachedThreshold={0.5}
+        onEndReachedThreshold={0.01}
         ListEmptyComponent={title ? listEmptyComponent() : <></>}
         {...remainingProps}
       />

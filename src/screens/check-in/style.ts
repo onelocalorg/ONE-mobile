@@ -1,3 +1,4 @@
+import { width } from '@theme/device/device';
 import {normalScale, verticalScale} from '@theme/device/normalize';
 import {ThemeProps} from '@theme/theme';
 import {StyleSheet} from 'react-native';
@@ -15,7 +16,7 @@ export const createStyleSheet = (theme: ThemeProps) => {
     heading: {
       marginVertical: verticalScale(8),
       fontFamily: theme.fontType.medium,
-      fontSize: theme.fontSize.font34,
+      fontSize: theme.fontSize.font22,
       color: theme.colors.darkBlack,
     },
     scrollView: {
@@ -46,8 +47,8 @@ export const createStyleSheet = (theme: ThemeProps) => {
       borderRadius: normalScale(60),
     },
     row: {
-      flexDirection: 'row',
-      justifyContent: 'space-between',
+      // flexDirection: 'row',
+      // justifyContent: 'space-between',
       flex: 1,
     },
     name: {
@@ -61,6 +62,7 @@ export const createStyleSheet = (theme: ThemeProps) => {
       color: theme.colors.black,
       marginBottom: verticalScale(2),
       marginTop: verticalScale(4),
+      flexShrink:1
     },
     pillStyle: {
       justifyContent: 'center',

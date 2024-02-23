@@ -145,13 +145,13 @@ export const EventListScreen = (props: EventListScreenProps) => {
   const getEventListAPI = async () => {
     var eventData = {
       start_date: moment(range.startDate).format('YYYY-MM-DD'),
-      end_date: moment(range.endDate).format('YYYY-MM-DD'),
+      end_date: moment(range.endDate).format('YYYY-MM-DD'), 
       event_type: setFilter,
       only_upcoming: 0,
       searchtext: searchQuery,
     };
 
-    var eventList_url = API_URL + '/v1/events/list?limit=10&page=' + page;
+    var eventList_url = API_URL + '/v1/events/list?limit=20&page=' + page;
     console.log('---------------getEventListAPI--------------', page,setFilter);
     try {
       const token = await AsyncStorage.getItem('token');

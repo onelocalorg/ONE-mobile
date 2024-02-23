@@ -69,6 +69,8 @@ export const CheckInScreen = (props: CheckInScreenProps) => {
     tickeHolderCopy.splice(index, 1, selectedTickeHolder);
 
     setCheckInList(tickeHolderCopy);
+
+    console.log(tickeHolderCopy,'tickeHolderCopy tickeHolderCopy')
   };
 
   useEffect(() => {
@@ -82,6 +84,7 @@ export const CheckInScreen = (props: CheckInScreenProps) => {
       ...prevData,
       ...(res?.data?.data?.results || []),
     ]);
+    console.log(res?.data?.data?.results,'tickeHolderCopy tickeHolderCopy 333')
     setTotalPages(res?.data?.data?.totalPages);
   };
 

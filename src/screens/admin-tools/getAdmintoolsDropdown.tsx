@@ -2,7 +2,7 @@ import { useAppTheme } from "@app-hooks/use-app-theme";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { View, Text } from "react-native";
 import { createStyleSheet } from "./style";
-import { dummy, sendPayoutImg } from "@assets/images";
+import { dummy, edit2, sendPayoutImg } from "@assets/images";
 import { ImageComponent } from "@components/image-component";
 import { ModalRefProps } from "@components/modal-component";
 import { TouchableOpacity } from "react-native";
@@ -38,7 +38,8 @@ export const GetAdmintoolsDropDownScreen = (props: GetAdmintoolsDropDownScreenPr
   const [totalProfile, setTotalProfile]: any = useState();
   const [payoutAmt, setpayoutAmt]: any = useState();
   const [remainingAmt, setRemainingAmt]: any = useState();
-  
+  const [editPayoutExpenseObject, setEditPayoutExpenseObject]: any = useState();
+
   const openAddBreakDownModal = (id: any) => {
     setUserId(userId);
     addItemRef.current?.onOpenModal();
@@ -72,7 +73,7 @@ export const GetAdmintoolsDropDownScreen = (props: GetAdmintoolsDropDownScreenPr
       );
       console.log(API_URL + "/v1/events/event-financial/" + eventId);
       const dataItem = await response.json();
-      console.log("=========== payout data from API==============", dataItem);
+      console.log("=========== payout data from API==============", JSON.stringify(dataItem));
       LodingData(false);
       setPayoutData(dataItem?.data);
       setExpenseListData(dataItem?.data?.expenses);
@@ -98,17 +99,47 @@ export const GetAdmintoolsDropDownScreen = (props: GetAdmintoolsDropDownScreenPr
     console.log("-------------onSuccessfulCreate--------------");
     console.log(payoutListData);
 
-    setPayoutData(payoutListData);
-    setExpenseListData(payoutListData.expenses);
-    setPayoutListData(payoutListData.payouts);
-    setUserId(payoutListData.producer?.user_id);
-    setRevenueAmt(payoutListData.revenue_amount);
-    setExpenseAmt(payoutListData.total_expenses);
-    setTotalProfile(
-      payoutListData.revenue_amount - payoutListData.total_expenses
-    );
-    setpayoutAmt(payoutListData.total_payout);
-    setRemainingAmt(payoutListData.remaining_amount);
+    if (payoutListData.length == 0 || payoutListData == undefined) {
+      // getPayoutAPI();
+    }else{
+      setPayoutData(payoutListData);
+      setExpenseListData(payoutListData.expenses);
+      setPayoutListData(payoutListData.payouts);
+      setUserId(payoutListData.producer?.user_id);
+      setRevenueAmt(payoutListData.revenue_amount);
+      setExpenseAmt(payoutListData.total_expenses);
+      setTotalProfile(
+        payoutListData.revenue_amount - payoutListData.total_expenses
+      );
+      setpayoutAmt(payoutListData.total_payout);
+      setRemainingAmt(payoutListData.remaining_amount);
+    }
+    
+  };
+
+  const onSuccessfulEditDelete = (payoutListData: any) => {
+
+    editItemRef.current?.onCloseModal();
+    if (payoutListData.length == 0 || payoutListData == undefined) {
+      // getPayoutAPI();
+    }else{
+      console.log("-------------onSuccessfulCreate--------------");
+      console.log(payoutListData);
+  
+      setPayoutData(payoutListData);
+      setExpenseListData(payoutListData.expenses);
+      setPayoutListData(payoutListData.payouts);
+      setUserId(payoutListData.producer?.user_id);
+      setRevenueAmt(payoutListData.revenue_amount);
+      setExpenseAmt(payoutListData.total_expenses);
+      setTotalProfile(
+        payoutListData.revenue_amount - payoutListData.total_expenses
+      );
+      setpayoutAmt(payoutListData.total_payout);
+      setRemainingAmt(payoutListData.remaining_amount);
+    }
+    
+    
   };
 
   //  // </---------------createPayoutAPI--------------------/>
@@ -149,10 +180,24 @@ export const GetAdmintoolsDropDownScreen = (props: GetAdmintoolsDropDownScreenPr
   }
 
   const editClick = (item:any, type:any) =>{
+    console.log(item);
+    var tempData = {
+      isPayoutorExpense : type,
+      userSelectedData: item.user_id,
+      profitAmt : payoutData?.total_profit,
+      percentageAmount: item.amount_percent,
+      description : item.description,
+      images : item.images,
+      eventId : eventId,
+      amount: item.amount,
+      expensePayoutID : item.key 
+    }
+    // console.log(tempData);
+    setEditPayoutExpenseObject(tempData);
     editItemRef.current?.onOpenModal();
   }
  
-  return (
+  return ( 
     <>
       <Loader visible={isLoading} showOverlay />
       <View style={styles.eventContainerTwo}>
@@ -235,6 +280,12 @@ export const GetAdmintoolsDropDownScreen = (props: GetAdmintoolsDropDownScreenPr
                         }}
                       >
                         <View style={styles.detailsSubCont}>
+                        <TouchableOpacity onPress={() => editClick(item, 'Expense')}>
+                          <ImageComponent
+                            source={edit2}
+                            style={styles.editIcon}
+                          />
+                        </TouchableOpacity>
                           <ImageComponent
                             source={{ uri: item?.user_id?.pic }}
                             resizeMode="cover"
@@ -292,11 +343,10 @@ export const GetAdmintoolsDropDownScreen = (props: GetAdmintoolsDropDownScreenPr
                       }}
                     >
                       <View style={styles.detailsSubCont}>
-                        <TouchableOpacity onPress={() => editClick(item, index)}>
+                        <TouchableOpacity onPress={() => editClick(item, 'Payout')}>
                           <ImageComponent
-                            source={{ uri: item?.user_id?.pic }}
-                            resizeMode="cover"
-                            style={styles.userImage}
+                            source={edit2}
+                            style={styles.editIcon}
                           />
                         </TouchableOpacity>
                       
@@ -353,18 +403,11 @@ export const GetAdmintoolsDropDownScreen = (props: GetAdmintoolsDropDownScreenPr
           <View></View>
         )}
 
-          {/* type, userSelectedData, amount, percentageAmount, description, 
-              imagearray,EventID, expensePayoutID, profitAmt */}
         <EditPayoutModal
           ref={editItemRef}
           id={eventId}
-          revenue={payoutData?.revenue_amount}
-          expense={payoutData?.total_expenses}
-          payout={payoutData?.total_payout}
-          profilt={payoutData?.total_profit}
-          remainingAmt={payoutData?.remaining_amount}
-          userId={userId}
-          onSuccessFulData={onSuccessfulCreate}
+          payoutExpenseObject={editPayoutExpenseObject}
+          onSuccessFulData={onSuccessfulEditDelete}
         />
 
         <AddPayoutExpenseModel

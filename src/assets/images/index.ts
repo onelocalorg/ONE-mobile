@@ -70,6 +70,7 @@ export {default as notificationTwo} from './notificationTwo.png';
 export {default as sendPayoutImg} from './sendPayoutImg.png';
 export {default as redDeleteIcon} from './redDeleteIcon.png';
 export {default as saveIcon} from './saveIcon.png';
+export {default as edit2} from './edit2.png';
 
 
 

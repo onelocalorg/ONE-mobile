@@ -128,6 +128,7 @@ export const ProfileScreen = (props: ProfileScreenProps) => {
     last_name,
     nick_name,
     isConnectedLinked,
+    isActiveSubscription
   } = user || {};
   const { mutateAsync } = useEditProfile();
   const dispatch = useDispatch();
@@ -145,7 +146,7 @@ export const ProfileScreen = (props: ProfileScreenProps) => {
     setFirstName(first_name);
     setLastName(last_name);
     setNickName(nick_name);
-  }, [bio, pic, cover_image, first_name, last_name, nick_name]);
+  }, [bio, pic, cover_image, first_name, last_name, nick_name,isActiveSubscription]);
 
   useEffect(() => {
     const subscription = AppState.addEventListener('change', nextAppState => {
@@ -434,7 +435,7 @@ export const ProfileScreen = (props: ProfileScreenProps) => {
   };
 
   return (
-    <KeyboardAwareScrollView showsVerticalScrollIndicator={false}>
+    <KeyboardAwareScrollView showsVerticalScrollIndicator={true}>
       <TouchableOpacity
         style={styles.container}
         activeOpacity={1}
@@ -597,11 +598,6 @@ export const ProfileScreen = (props: ProfileScreenProps) => {
         </View>
 
         <View style={styles.line} />
-
-        {/* <TabComponent
-        tabs={[strings.about, strings.myEvents, strings.activity]}
-        onPressTab={setSelectedTab}
-      /> */}
         <TabComponent
           tabs={[strings.about, strings.myEvents]}
           onPressTab={setSelectedTab}

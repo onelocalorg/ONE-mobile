@@ -226,13 +226,14 @@ const TicketCheckoutModalComp = (
       console.log(
         '-------------------Get Card Detail API Response---------------------',
       );
+      console.log(JSON.stringify(dataItem));
       isLoading(false);
-      console.log(dataItem);
+      
       setCardData(dataItem?.data?.cards);
     } catch (error) {
       isLoading(false);
       console.error(error);
-    }
+    } 
   };
 
   // ======================Config API=========================

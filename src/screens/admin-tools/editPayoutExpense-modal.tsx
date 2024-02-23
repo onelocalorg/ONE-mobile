@@ -1,6 +1,6 @@
 import React, { forwardRef, useCallback, useEffect, useRef, useState } from 'react';
 import { createStyleSheet } from './style';
-import { View } from 'react-native';
+import { Alert, View } from 'react-native';
 import { Text } from 'react-native';
 import { useAppTheme } from '@app-hooks/use-app-theme';
 import { useStringsAndLabels } from '@app-hooks/use-strings-and-labels';
@@ -21,28 +21,23 @@ import { useFocusEffect } from '@react-navigation/native';
 
 interface EditBreakDownModalProps {
   id: string;
-  revenue: number;
-  expense: number;
-  profilt: number;
-  payout: number;
-  remainingAmt: number;
-  userId: string;
+  payoutExpenseObject: any,
   onSuccessFulData: (
-    payoutListData:[]
+    payoutListData: []
   ) => void;
 }
 
 // type, userSelectedData, amount, percentageAmount, description, imagearray,EventID, expensePayoutID, revenueAmt
 
 
-export const editPayoutModalScreen = ( props: EditBreakDownModalProps, ref: React.Ref<unknown> | undefined,) => {
+export const editPayoutModalScreen = (props: EditBreakDownModalProps, ref: React.Ref<unknown> | undefined) => {
 
-  const {profilt, id, onSuccessFulData } = props || {};
+  const { payoutExpenseObject, id, onSuccessFulData } = props || {};
   const { theme } = useAppTheme();
   const styles = createStyleSheet(theme);
-  const addItemRef: React.Ref<ModalRefProps> = useRef(null);
+  const editItemRef: React.Ref<ModalRefProps> = useRef(null);
   const [isLoading, LodingData] = useState(false);
-  const [borderData, setBorderData] = useState('Expense');
+  const [isExpenseorPayout, setIsExpenseorPayout] = useState('Expense');
   const [priceData, setPriceData] = useState(1);
   const [amount, setAmount]: any = useState(0);
   const [descriptions, setDescriptions] = useState('');
@@ -54,23 +49,49 @@ export const editPayoutModalScreen = ( props: EditBreakDownModalProps, ref: Reac
   const [imageSelectArray, setImageSelectArray]: any = useState([]);
   const [imageSelectArrayKey, setImageSelectArrayKey]: any = useState([]);
   const [newUserId, setNewUserIdData]: any = useState('');
-  const [payoutListData, setPayoutListData]:any = useState([]);
+  const [payoutListData, setPayoutListData]: any = useState([]);
+  const [expensePayoutID, setExpensePayoutID]: any = useState();
+
 
   useFocusEffect(
     useCallback(() => {
-      
-    }, []) 
-  ); 
+      console.log('-----------payoutExpenseObject----------------', payoutExpenseObject);
+      if (payoutExpenseObject != undefined) {
+        recentlyJoinUser([payoutExpenseObject?.userSelectedData])
+        setNewUserIdData(payoutExpenseObject?.userSelectedData.id)
+        setIsExpenseorPayout(payoutExpenseObject?.isPayoutorExpense);
+        setDescriptions(payoutExpenseObject?.description);
+        setExpensePayoutID(payoutExpenseObject?.expensePayoutID)
+
+        if (payoutExpenseObject?.images.length > 0) {
+          setImageSelectArray(payoutExpenseObject?.images);
+
+          var imageKeyArry = [];
+          for (let index = 0; index < payoutExpenseObject?.images.length; index++) {
+            imageKeyArry.push(payoutExpenseObject?.images[index]['key']);
+          }
+          setImageSelectArrayKey(imageKeyArry);
+        }
+        if (payoutExpenseObject?.percentageAmount > 0) {
+          setAmount(payoutExpenseObject.percentageAmount.toString())
+          setPriceData(2)
+        } else {
+          setAmount(payoutExpenseObject.amount.toString())
+          setPriceData(1)
+        }
+      }
+    }, [payoutExpenseObject])
+  );
 
   const expenseContClick = (item: any) => {
-    setBorderData(item);
+    setIsExpenseorPayout(item);
   };
 
   const priceClick = (item: any) => {
     setPriceData(item);
   }
 
-  
+
   const AddUserList = (item: any) => {
     const found = userList.find((element: any) => element.id == item.id);
     if (userList.length < 1) {
@@ -133,20 +154,67 @@ export const editPayoutModalScreen = ( props: EditBreakDownModalProps, ref: Reac
     }
   }
 
-  // </---------------createPayoutAPI--------------------/>
-  async function createPayoutAPI() {
+  // </---------------EditPayoutAPI--------------------/>
+
+  async function editExpenseAPI() {
     LodingData(true);
     const token = await AsyncStorage.getItem('token');
-    var getAmount = (profilt * amount) / 100;
+    var url = API_URL + '/v1/events/event-financial/' + id + '/edit/expense';
+    var item: any = {
+      user_id: newUserId,
+      amount: amount,
+      description: descriptions,
+      type: 'price',
+      images: imageSelectArrayKey,
+      key: expensePayoutID
+    };
+    console.log('------------editExpenseAPI url-------------', url)
+    console.log('------------editExpenseAPI request-------------', item)
+
+    try {
+      const response = await fetch(url, {
+        method: 'post',
+        headers: new Headers({
+          Authorization: 'Bearer ' + token,
+          'Content-Type': 'application/json',
+        }),
+        body: JSON.stringify(item),
+      },
+      );
+
+      const dataItem = await response.json();
+      console.log('------------editExpenseAPI response-------------', dataItem)
+      LodingData(false);
+      if (dataItem.success) {
+        onSuccessFulData(dataItem.data);
+        resetState();
+      } else {
+        Toast.show(dataItem?.message, Toast.LONG, {
+          backgroundColor: "black",
+        });
+      }
+    } catch (error) {
+      console.error(error);
+      LodingData(false);
+    }
+  }
+
+  async function editPayoutAPI() {
+    LodingData(true);
+    const token = await AsyncStorage.getItem('token');
+    var url = API_URL + '/v1/events/event-financial/' + id + '/edit/payout';
+
+    var getAmount = (payoutExpenseObject?.profitAmt * amount) / 100;
     console.log(getAmount, '---------------getAmount-----------')
-    if(priceData === 1){
+    if (priceData === 1) {
       var item: any = {
         user_id: newUserId,
         amount: amount,
-        description: descriptions, 
+        description: descriptions,
         type: 'price',
         images: imageSelectArrayKey,
-        amount_percent: 0
+        amount_percent: 0,
+        key: expensePayoutID
       };
     } else {
       var item: any = {
@@ -155,98 +223,144 @@ export const editPayoutModalScreen = ( props: EditBreakDownModalProps, ref: Reac
         description: descriptions,
         type: 'percentage',
         images: imageSelectArrayKey,
-        amount_percent: amount
+        amount_percent: amount,
+        key: expensePayoutID
       };
     }
-   
-    console.log('------------createPayoutAPI request-------------', item)
-    try {
-      const response = await fetch(
-        API_URL + '/v1/events/event-financial/' + id + '/draft/payout',
-        {
-          method: 'post',
-          headers: new Headers({
-            Authorization: 'Bearer ' + token,
-            'Content-Type': 'application/json',
-          }),
-          body: JSON.stringify(item),
-        },
-      );
 
+    console.log('------------editPayoutAPI url-------------', url)
+    console.log('------------editPayoutAPI request-------------', item)
+
+    try {
+      const response = await fetch(url, {
+        method: 'post',
+        headers: new Headers({
+          Authorization: 'Bearer ' + token,
+          'Content-Type': 'application/json',
+        }),
+        body: JSON.stringify(item),
+      },
+      );
       const dataItem = await response.json();
+      console.log('------------editPayoutAPI response-------------', dataItem)
       LodingData(false);
-      onSuccessFulData(dataItem.data);
-      console.log('-------------dataItem--------', dataItem);
-      
+      if (dataItem.success) {
+        onSuccessFulData(dataItem.data);
+        resetState();
+      } else {
+        Toast.show(dataItem?.message, Toast.LONG, {
+          backgroundColor: "black",
+        });
+      }
+
     } catch (error) {
       console.error(error);
       LodingData(false);
     }
   }
 
-  async function createExpenseAPI() {
+  // </---------------Delete Expense and Payout--------------------/>
+ 
+  const deleteClick = () => {
+    Alert.alert(
+      'Delete',
+      'Are you sure you want to delete it?',
+      [
+        {
+          text: 'Yes', onPress: () => {
+            if (isExpenseorPayout == 'Expense') {
+              deleteExpenseAPI();
+            } else {
+              deletePayoutAPI();
+            }
+          }, style: "destructive"
+        },
+        {
+          text: 'No',
+          onPress: () => {
+            
+          },
+        },
+      ],
+      { cancelable: false }
+    );
+    // postContentModal(false);
+  };
+
+  async function deleteExpenseAPI() {
     LodingData(true);
     const token = await AsyncStorage.getItem('token');
-    var item: any = {
-      user_id: newUserId,
-      amount: amount,
-      description: descriptions,
-      type: 'price',
-      images: imageSelectArrayKey,
-    };
-    console.log('------------createExpenseAPI request-------------', item)
+    var url = API_URL + '/v1/events/event-financial/' + id + '/delete/expense'
+    var dataReq = {
+      key: expensePayoutID
+    }
+    console.log('-------------deletePayoutAPI url--------', url);
+    console.log('-------------deletePayoutAPI Request--------', dataReq);
     try {
-      const response = await fetch(
-        API_URL + '/v1/events/event-financial/' + id + '/draft/expense',
-        // API_URL + '/v1/events/event-financial/655ef279d83b7471eb7040fe/draft/expense',
+      const response = await fetch(url,
         {
           method: 'post',
           headers: new Headers({
             Authorization: 'Bearer ' + token,
             'Content-Type': 'application/json',
           }),
-          body: JSON.stringify(item),
+          body: JSON.stringify(dataReq),
         },
       );
-
       const dataItem = await response.json();
+      console.log('-------------deletePayoutAPI Response--------', dataItem);
       LodingData(false);
-      onSuccessFulData(dataItem.data);
-      console.log('-------------dataItem--------', dataItem);
+      if (dataItem.success) {
+        onSuccessFulData(dataItem.data);
+        resetState();
+      } else {
+        Toast.show(dataItem?.message, Toast.LONG, {
+          backgroundColor: "black",
+        });
+      }
     } catch (error) {
       console.error(error);
       LodingData(false);
     }
   }
 
-  const submitClick = () => {
-    if (amount < 0) {
-      Toast.show('Enter Ammount', Toast.LONG, {
-        backgroundColor: 'black',
-      });
-    } else if (descriptions.length === 0) {
-      Toast.show('Enter Descriptions', Toast.LONG, {
-        backgroundColor: 'black',
-      });
+  async function deletePayoutAPI() {
+    LodingData(true);
+    const token = await AsyncStorage.getItem('token');
+    var url = API_URL + '/v1/events/event-financial/' + id + '/delete/payout'
+    var dataReq = {
+      key: expensePayoutID
     }
-    else if (imageSelectArray.length === 0) {
-      Toast.show('Add Image to Post', Toast.LONG, {
-        backgroundColor: 'black',
-      });
-    }
-    else {
-      if(borderData === 'Expense'){
-        console.log('----------------borderData === Expense--------------------')
-        createExpenseAPI();
+    console.log('-------------deletePayoutAPI url--------', url);
+    console.log('-------------deletePayoutAPI Request--------', dataReq);
+    try {
+      const response = await fetch(url,
+        {
+          method: 'post',
+          headers: new Headers({
+            Authorization: 'Bearer ' + token,
+            'Content-Type': 'application/json',
+          }),
+          body: JSON.stringify(dataReq),
+        },
+      );
+      const dataItem = await response.json();
+      console.log('-------------deletePayoutAPI Response--------', dataItem);
+      LodingData(false);
+      if (dataItem.success) {
+        onSuccessFulData(dataItem.data);
+        resetState();
       } else {
-        console.log('----------------borderData === payout--------------------')
-        createPayoutAPI();
+        Toast.show(dataItem?.message, Toast.LONG, {
+          backgroundColor: "black",
+        });
       }
-      
-
+    } catch (error) {
+      console.error(error);
+      LodingData(false);
     }
-
   }
+
 
   const openGallary = async () => {
 
@@ -304,6 +418,36 @@ export const editPayoutModalScreen = ( props: EditBreakDownModalProps, ref: Reac
     }
   };
 
+  const submitClick = () => {
+    if (amount < 0) {
+      Toast.show('Enter Ammount', Toast.LONG, {
+        backgroundColor: 'black',
+      });
+    } else if (descriptions.length === 0) {
+      Toast.show('Enter Descriptions', Toast.LONG, {
+        backgroundColor: 'black',
+      });
+    }
+    else if (imageSelectArray.length === 0) {
+      Toast.show('Add Image to Post', Toast.LONG, {
+        backgroundColor: 'black',
+      });
+    }
+    else {
+      if (isExpenseorPayout === 'Expense') {
+        console.log('----------------borderData === Expense--------------------')
+        editExpenseAPI();
+      } else {
+        console.log('----------------borderData === payout--------------------')
+        editPayoutAPI();
+      }
+
+
+    }
+
+  }
+
+
   const resetState = () => {
     onUserSearch('');
     setDescriptions('');
@@ -313,6 +457,27 @@ export const editPayoutModalScreen = ( props: EditBreakDownModalProps, ref: Reac
     recentlyJoinUser([]);
   };
 
+  const removeSelectImage = (imageItem: any) => {
+    console.log(imageItem)
+    const newImage = imageSelectArray.filter(
+      (person: any) => person.imageUrl !== imageItem.imageUrl && person.key !== imageItem.key
+    );
+
+    setImageSelectArray(newImage);
+
+    const newImageKey = imageSelectArrayKey.filter(
+      (person: any) => person !== imageItem.key
+    );
+    setImageSelectArrayKey(newImageKey);
+
+    console.log(newImage)
+  };
+
+  const closeModel = () => {
+    console.log('--------close model-----------')
+    onSuccessFulData([]);
+  }
+
   return (
     <>
       <View style={styles.breakDownCont}>
@@ -320,13 +485,17 @@ export const editPayoutModalScreen = ( props: EditBreakDownModalProps, ref: Reac
           <Loader visible={isLoading} showOverlay />
           <View style={styles.subBreakdowncont}>
             <ScrollView showsVerticalScrollIndicator={false}>
-              <View style={{ marginTop: 5, marginBottom: -20, marginLeft:0}}>
-                <ImageComponent
-                  source={closeCard}
-                  style={{ height: 24, width: 24}}
-                ></ImageComponent>
+
+              <View style={{ marginTop: 5, marginLeft: 0, paddingTop: 5, flexDirection: 'row', alignItems: 'center' }}>
+                <TouchableOpacity onPress={closeModel}>
+                  <ImageComponent
+                    source={closeCard}
+                    style={{ height: 24, width: 26, zIndex: 123 }}
+                  ></ImageComponent>
+                </TouchableOpacity>
+                <Text style={styles.breakdownHeader}>Add Breakdown</Text>
               </View>
-              <Text style={styles.breakdownHeader}>Add Breakdown</Text>
+
 
               <View style={styles.payModalContainer}>
                 <Text style={styles.whoCont}>Who:</Text>
@@ -424,33 +593,39 @@ export const editPayoutModalScreen = ( props: EditBreakDownModalProps, ref: Reac
               ) : (
                 <View></View>
               )}
+
               <View style={styles.TypeModalContainer}>
                 <Text style={styles.typeCont}>Type:</Text>
                 <View style={styles.typeDisplayCont}>
-                  <TouchableOpacity
-                    activeOpacity={0.8}
-                    onPress={() => expenseContClick('Expense')}>
-                    <Text
-                      style={[
-                        borderData === 'Expense'
-                          ? styles.typeLbl
-                          : styles.typeLblTwo,
-                      ]}>
-                      Expense
-                    </Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    activeOpacity={0.8}
-                    onPress={() => expenseContClick('payout')}>
-                    <Text
-                      style={[
-                        borderData === 'payout'
-                          ? styles.typeLbl
-                          : styles.typeLblTwo,
-                      ]}>
-                      payout
-                    </Text>
-                  </TouchableOpacity>
+                  {isExpenseorPayout === 'Expense' ?
+                    <TouchableOpacity
+                      activeOpacity={0.8}
+                      onPress={() => expenseContClick('Expense')}>
+                      <Text
+                        style={[
+                          isExpenseorPayout === 'Expense'
+                            ? styles.typeLbl
+                            : styles.typeLblTwo,
+                        ]}>
+                        Expense
+                      </Text>
+                    </TouchableOpacity>
+                    :
+                    <TouchableOpacity
+                      activeOpacity={0.8}
+                      onPress={() => expenseContClick('Payout')}>
+                      <Text
+                        style={[
+                          isExpenseorPayout === 'Payout'
+                            ? styles.typeLbl
+                            : styles.typeLblTwo,
+                        ]}>
+                        Payout
+                      </Text>
+                    </TouchableOpacity>
+                  }
+
+
                 </View>
               </View>
 
@@ -463,17 +638,10 @@ export const editPayoutModalScreen = ( props: EditBreakDownModalProps, ref: Reac
                     priceData === 1
                       ? styles.priceContainer : styles.priceContainerTwo,
                   ]}>
-                    <Text
-                      style={styles.percentageSign}
-                    // style={[
-                    //   priceData === 1
-                    //     ? styles.dollarSign
-                    //     : styles.percentageSign,
-                    // ]}
-                    >$</Text>
+                    <Text style={styles.percentageSign}>$</Text>
                   </View>
                 </TouchableOpacity>
-                {borderData !== 'Expense' ?
+                {isExpenseorPayout !== 'Expense' ?
                   <TouchableOpacity
                     activeOpacity={0.8}
                     onPress={() => priceClick(2)}>
@@ -482,13 +650,7 @@ export const editPayoutModalScreen = ( props: EditBreakDownModalProps, ref: Reac
                         priceData === 2
                           ? styles.priceContainer : styles.priceContainerTwo,
                       ]}>
-                      <Text style={styles.percentageSign}
-                      // style={[
-                      //   priceData === 2
-                      //     ? styles.dollarSign
-                      //     : styles.percentageSign,
-                      // ]}
-                      >%</Text>
+                      <Text style={styles.percentageSign}>%</Text>
                     </View>
                   </TouchableOpacity> : <View></View>}
                 <View style={{ flexDirection: 'row' }}>
@@ -527,19 +689,24 @@ export const editPayoutModalScreen = ( props: EditBreakDownModalProps, ref: Reac
               <View style={styles.multipleImagecont}>
                 {imageSelectArray.map((item: any) => {
                   return (
-                    <ImageComponent source={{ uri: item?.imageUrl }} style={styles.selectImage}></ImageComponent>
+                    <TouchableOpacity
+                      onPress={() => removeSelectImage(item)}
+                    >
+                      <ImageComponent source={{ uri: item?.imageUrl }} style={styles.selectImage}></ImageComponent>
+                    </TouchableOpacity>
                   );
                 })}
 
               </View>
-              
-              <View style={styles.submitButton}>
-              <TouchableOpacity activeOpacity={0.8} onPress={submitClick}>
-              <ImageComponent source={saveIcon} style={styles.saveIcon}></ImageComponent>
-              </TouchableOpacity>  
-                <ImageComponent source={redDeleteIcon} style={styles.deleteIcon}></ImageComponent>
-              </View>
 
+              <View style={styles.submitButton}>
+                <TouchableOpacity activeOpacity={0.8} onPress={submitClick}>
+                  <ImageComponent source={saveIcon} style={styles.saveIcon}></ImageComponent>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={deleteClick}>
+                  <ImageComponent source={redDeleteIcon} style={styles.deleteIcon}></ImageComponent>
+                </TouchableOpacity>
+              </View>
             </ScrollView>
           </View>
         </ModalComponent>

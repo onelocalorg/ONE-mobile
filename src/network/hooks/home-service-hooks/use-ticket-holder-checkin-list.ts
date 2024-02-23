@@ -21,6 +21,7 @@ export interface Result {
   ticket_name: string;
   stripe_response: StripeResponse;
   ticket_price: string;
+  ticket_total_price:string;
   _id: string;
   is_app_user: number;
 }

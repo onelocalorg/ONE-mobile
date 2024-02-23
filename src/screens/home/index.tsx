@@ -159,7 +159,7 @@ export const HomeScreen = (props: HomeScreenProps) => {
 
   const { user } = useSelector<StoreType, UserProfileState>(
     (state) => state.userProfileReducer
-  ) as { user: { id: string; pic: string; city: string; state: string } };
+  ) as { user: { id: string; pic: string; city: string; state: string} };
   const { refetch } = useUserProfile({
     userId: user?.id,
   });
@@ -178,6 +178,7 @@ export const HomeScreen = (props: HomeScreenProps) => {
       LogBox.ignoreAllLogs();
       getRecentlyJoinUserAPI();
       requestLocationPermission();
+     
       setPage(page);
     }, [range?.startDate, range?.endDate, page])
   );
@@ -343,6 +344,12 @@ export const HomeScreen = (props: HomeScreenProps) => {
       console.log(dataItem);
       console.log(dataItem.data.pic);
       setUserProfile(dataItem.data);
+      if(dataItem?.data?.isEventActiveSubscription === true){
+        AsyncStorage.setItem('isEventActive','true')
+      }
+      else{
+        AsyncStorage.setItem('isEventActive','false')
+      }
       AsyncStorage.setItem("profile", dataItem.data.pic);
       AsyncStorage.setItem("uniqueId", dataItem.data.user_unique_id);
     } catch (error) {

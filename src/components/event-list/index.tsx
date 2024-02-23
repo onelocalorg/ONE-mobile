@@ -49,7 +49,7 @@ export const EventList = (props: EventListProps) => {
           {/* <ImageComponent style={styles.addressDot} source={activeRadio}></ImageComponent> */}
           {/* <Text style={styles.fullAddress}>{full_address}</Text> */}
         </View>
-        {cancelled ? <Text style={styles.cancleText}>CANCELED</Text> : <View></View>}
+        {cancelled ? <Text style={styles.cancleText}>CANCELED</Text> : <></>}
         
       </View>
     </TouchableOpacity>

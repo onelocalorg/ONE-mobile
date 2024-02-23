@@ -284,8 +284,13 @@ lastName:{
       marginTop: verticalScale(200),
 
     },
-    eventContainer: {
-      paddingHorizontal: normalScale(22),
+    noMoreTitle: {
+      fontFamily: theme.fontType.bold,
+      fontSize: theme.fontSize.font14,
+      color: theme.colors.black,
+      // marginTop:verticalScale(6),
+      marginBottom: verticalScale(25),
+      alignSelf: 'center',
     },
     loader: {
       height: verticalScale(450),
@@ -293,6 +298,10 @@ lastName:{
     },
     scrollView: {
       paddingBottom: verticalScale(200),
+      paddingHorizontal: normalScale(22),
+    },
+    scrollViewEvent: {
+      paddingBottom: verticalScale(50),
       paddingHorizontal: normalScale(22),
     },
     icon: {

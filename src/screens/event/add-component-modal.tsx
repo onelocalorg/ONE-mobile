@@ -25,6 +25,7 @@ import {StoreType} from '@network/reducers/store';
 import {UserProfileState} from '@network/reducers/user-profile-reducer';
 import {useUserProfile} from '@network/hooks/user-service-hooks/use-user-profile';
 import { setData } from '@network/constant';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 interface AddComponentModalProps {
   modalRef?: React.Ref<ModalRefProps>;
@@ -45,17 +46,23 @@ export const AddComponentModal = (props: AddComponentModalProps) => {
     userId: user?.id,
   });
   const {isActiveSubscription} = data || {};
-
   useFocusEffect(
     useCallback(() => {
       if (user?.id) {
         refetch();
       }
-    }, [user]),
+    }, [user,isActiveSubs]),
   );
-
+ 
   useFocusEffect(
     useCallback(() => {
+      console.log('isActiveSubscription isActiveSubscription')
+      if(isActiveSubscription === true){
+        AsyncStorage.setItem('isEventActive','true')
+      }
+      else{
+        AsyncStorage.setItem('isEventActive','false')
+      }
       setIsActiveSubs(isActiveSubscription);
     }, [isActiveSubscription]),
   );
@@ -63,8 +70,9 @@ export const AddComponentModal = (props: AddComponentModalProps) => {
   //   users API => isActiveSubscription == true
   //  Login API => user_type === 'eventProducer'
 
-  const onNavigate = () => {
-    if (isActiveSubs) {
+  const onNavigate = async () => {
+    const isEventPurched = await AsyncStorage.getItem('isEventActive')
+    if (isEventPurched === 'true') {
       navigation?.navigate(navigations.ADMIN_TOOLS, {isCreateEvent: true});
     } else {
       Alert.alert('', strings.purchaseSubscription);

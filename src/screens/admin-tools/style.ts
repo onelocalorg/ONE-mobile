@@ -644,10 +644,10 @@ export const createStyleSheet = (theme: ThemeProps) => {
       marginTop: 8,
     },
     editIcon:{
-      height: 24,
-      width: 24,
-      borderRadius: 100,
-      marginTop: 8,
+      height: 16,
+      width: 16,
+      marginTop: 12,
+      marginRight:5
     },
     userNameCont: {
       width: width - 200,
@@ -875,6 +875,8 @@ export const createStyleSheet = (theme: ThemeProps) => {
       color: theme.colors.black,
       fontSize: theme.fontSize.font14,
       textAlign: "center",
+      width:'100%',
+      paddingRight:70,
     },
     selectImage: {
       height: 90,

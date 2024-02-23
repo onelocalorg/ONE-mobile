@@ -94,7 +94,7 @@ export const AddPayoutExpenseScreen = (
           pic: item.pic,
           id: item.id,
         };
-        SetuserData(newuserData);
+        SetuserData(newuserData); 
         getUsetList([newuserData]);
         setNewUserIdData(newuserData.id);
       } else {
@@ -287,7 +287,7 @@ export const AddPayoutExpenseScreen = (
   };
 
   const closeModal = () => {
-    addItemRef.current?.onCloseModal();
+    onSuccessFulData([]);
   };
 
   const openGallary = async () => {
@@ -355,15 +355,15 @@ export const AddPayoutExpenseScreen = (
             horizontal={false}
             style={{height:350}}
           >
-            <TouchableOpacity onPress={closeModal}>
-              <View style={{ marginTop: 5, marginBottom: -20, marginLeft: 0 }}>
-                <ImageComponent
-                  source={closeCard}
-                  style={{ height: 24, width: 24 }}
-                ></ImageComponent>
+            <View style={{ marginTop: 5, marginLeft: 0, paddingTop: 5, flexDirection: 'row', alignItems: 'center' }}>
+                <TouchableOpacity onPress={closeModal}>
+                  <ImageComponent
+                    source={closeCard}
+                    style={{ height: 24, width: 26, zIndex: 123 }}
+                  ></ImageComponent>
+                </TouchableOpacity>
+                <Text style={styles.breakdownHeader}>Add Breakdown</Text>
               </View>
-            </TouchableOpacity>
-            <Text style={styles.breakdownHeader}>Add Breakdown</Text>
 
             <View style={styles.payModalContainer}>
               <Text style={styles.whoCont}>Who:</Text>
