@@ -479,7 +479,7 @@ export const createStyleSheet = (theme: ThemeProps) => {
     },
   scrollView: {
     // flex:1
-      // paddingBottom: verticalScale(100),
+      paddingBottom: verticalScale(140),
       // paddingHorizontal: normalScale(22),
     },
     postDetail: {

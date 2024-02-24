@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import {useAppTheme} from '@app-hooks/use-app-theme';
-import React, {useState, useCallback, useEffect} from 'react';
-import {createStyleSheet} from './style';
+import { useAppTheme } from '@app-hooks/use-app-theme';
+import React, { useState, useCallback, useEffect } from 'react';
+import { createStyleSheet } from './style';
 import {
   ActivityIndicator,
   ListRenderItem,
@@ -10,8 +10,8 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import {Header} from '@components/header';
-import {ImageComponent} from '@components/image-component';
+import { Header } from '@components/header';
+import { ImageComponent } from '@components/image-component';
 import {
   Search,
   arrowDown,
@@ -27,40 +27,40 @@ import {
   onelogo,
   pin,
 } from '@assets/images';
-import {DatePickerModal} from 'react-native-paper-dates';
+import { DatePickerModal } from 'react-native-paper-dates';
 import moment from 'moment';
-import {EventList} from '@components/event-list';
+import { EventList } from '@components/event-list';
 import {
   NavigationContainerRef,
   ParamListBase,
   useFocusEffect,
   useRoute,
 } from '@react-navigation/native';
-import {navigations} from '@config/app-navigation/constant';
+import { navigations } from '@config/app-navigation/constant';
 import {
   Result,
   useEventLists,
 } from '@network/hooks/home-service-hooks/use-event-lists';
-import {Loader} from '@components/loader';
-import {FlatListComponent} from '@components/flatlist-component';
-import {useStringsAndLabels} from '@app-hooks/use-strings-and-labels';
+import { Loader } from '@components/loader';
+import { FlatListComponent } from '@components/flatlist-component';
+import { useStringsAndLabels } from '@app-hooks/use-strings-and-labels';
 import {
   useUserProfile,
   userProfileParsedData,
 } from '@network/hooks/user-service-hooks/use-user-profile';
-import {useDispatch, useSelector} from 'react-redux';
-import {StoreType} from '@network/reducers/store';
+import { useDispatch, useSelector } from 'react-redux';
+import { StoreType } from '@network/reducers/store';
 import {
   UserProfileState,
   onSetUser,
 } from '@network/reducers/user-profile-reducer';
-import {Alert} from 'react-native';
+import { Alert } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {TextInput} from 'react-native';
+import { TextInput } from 'react-native';
 import GetLocation from 'react-native-get-location';
-import {FlatList, ScrollView} from 'react-native-gesture-handler';
-import {Switch} from 'react-native';
-import {API_URL} from '@network/constant';
+import { FlatList, ScrollView } from 'react-native-gesture-handler';
+import { Switch } from 'react-native';
+import { API_URL } from '@network/constant';
 
 interface Range {
   startDate: Date | undefined;
@@ -72,10 +72,10 @@ interface EventListScreenProps {
 }
 
 export const EventListScreen = (props: EventListScreenProps) => {
-  const {theme} = useAppTheme();
+  const { theme } = useAppTheme();
   const styles = createStyleSheet(theme);
-  const {strings} = useStringsAndLabels();
-  const {navigation} = props || {};
+  const { strings } = useStringsAndLabels();
+  const { navigation } = props || {};
   var makeDate = new Date();
   makeDate.setMonth(makeDate.getMonth() + 1);
   const [range, setRange] = useState<Range>({
@@ -87,7 +87,7 @@ export const EventListScreen = (props: EventListScreenProps) => {
   const [eventsList, setEventsList]: any = useState([]);
   const [totalPages, setTotalPages] = useState(0);
   const [currentPages, setCurrentPage] = useState(0);
-  const {mutateAsync} = useEventLists();
+  const { mutateAsync } = useEventLists();
   const [isLoading, LoadingData] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [page, setPage] = useState(1);
@@ -96,13 +96,13 @@ export const EventListScreen = (props: EventListScreenProps) => {
   const route = useRoute();
   const [isEnabled, setIsEnabled] = useState(false);
   // const toggleSwitch = () => setIsEnabled(previousState => !previousState);
-  const {user} = useSelector<StoreType, UserProfileState>(
+  const { user } = useSelector<StoreType, UserProfileState>(
     state => state.userProfileReducer,
-  ) as {user: {id: string; pic: string}};
-  const {refetch} = useUserProfile({
+  ) as { user: { id: string; pic: string } };
+  const { refetch } = useUserProfile({
     userId: user?.id,
   });
-  
+
 
   const dispatch = useDispatch();
 
@@ -145,14 +145,14 @@ export const EventListScreen = (props: EventListScreenProps) => {
   const getEventListAPI = async () => {
     var eventData = {
       start_date: moment(range.startDate).format('YYYY-MM-DD'),
-      end_date: moment(range.endDate).format('YYYY-MM-DD'), 
+      end_date: moment(range.endDate).format('YYYY-MM-DD'),
       event_type: setFilter,
       only_upcoming: 0,
       searchtext: searchQuery,
     };
 
     var eventList_url = API_URL + '/v1/events/list?limit=20&page=' + page;
-    console.log('---------------getEventListAPI--------------', page,setFilter);
+    console.log('---------------getEventListAPI--------------', page, setFilter);
     try {
       const token = await AsyncStorage.getItem('token');
       const response = await fetch(eventList_url, {
@@ -164,8 +164,45 @@ export const EventListScreen = (props: EventListScreenProps) => {
         body: JSON.stringify(eventData),
       });
       const dataItem = await response.json();
-      var dataTemp = [...eventsList, ...dataItem?.data.results]; 
-      setEventsList(dataTemp);
+
+
+      if (page === 1) {
+        var dataTemp = [...eventsList, ...dataItem?.data.results];
+        setEventsList(dataTemp);
+      }
+
+      if (page > 1) {
+        var newEventList = dataItem?.data.results
+        var newEventListTwo = dataItem?.data.results
+        var lastItemEvent = eventsList[eventsList.length - 1];
+        var arrLength = eventsList.length - 1;
+
+        for (let index = 0; index < newEventListTwo.length; index++) {
+          if (newEventList[index]['date_title'] === lastItemEvent['date_title']) {
+
+            var addEventinList = [...newEventListTwo[index]['events']]
+            // delete lastItemEvent['date_title']
+            // delete lastItemEvent['day_title']
+
+            var eventsListTwo = [...eventsList]
+            eventsListTwo[arrLength]['events'] = [...eventsList[arrLength]['events'], ...addEventinList];
+            setEventsList(eventsListTwo);
+
+            console.log('yes same date display')
+          }
+          else {
+            var dataTempTwo = [...eventsList, ...dataItem?.data.results];
+            setEventsList(dataTempTwo);
+            console.log('not same date display')
+
+          }
+
+        }
+
+
+      }
+
+
       setTotalPages(dataItem?.data?.totalPages);
       setCurrentPage(dataItem?.data?.page);
       LoadingData(false);
@@ -176,10 +213,10 @@ export const EventListScreen = (props: EventListScreenProps) => {
   };
 
   const setSerchValue = useCallback((searchData: any) => {
-      setSearchQuery(searchData);
-      setPage(1);
-      setEventsList([]);
-    },[searchQuery],
+    setSearchQuery(searchData);
+    setPage(1);
+    setEventsList([]);
+  }, [searchQuery],
   );
 
   const onDismiss = useCallback(() => {
@@ -191,7 +228,7 @@ export const EventListScreen = (props: EventListScreenProps) => {
       const startDate = res?.startDate;
       const endDate = res?.endDate;
       setOpen(false);
-      setRange({startDate, endDate});
+      setRange({ startDate, endDate });
       setTotalPages(0);
       setPage(1);
       setEventsList([]);
@@ -212,14 +249,14 @@ export const EventListScreen = (props: EventListScreenProps) => {
 
   const onNavigate = (item: Result) => {
     console.log(route.name);
-    navigation?.navigate(navigations.EVENT_DETAIL, {id: item?.id});
+    navigation?.navigate(navigations.EVENT_DETAIL, { id: item?.id });
   };
 
   const postDataLoad = () => {
     console.log('fasdfasfajsdofhajsdjfhaskdjfasjkdbfajksdbfajksdbfasjbsajkbdjfbasj',);
     if (totalPages !== currentPages) {
       console.log('11111111111111111111111111111111111');
-      setPage(page + 1); 
+      setPage(page + 1);
     }
   };
 
@@ -230,18 +267,18 @@ export const EventListScreen = (props: EventListScreenProps) => {
       setPage(1);
       setIsEnabled(true);
       SetToggleFilter('AO');
-      
+
     } else {
       setEventsList([]);
       setPage(1);
       setIsEnabled(false);
       SetToggleFilter('VF');
-      
+
     }
 
   };
 
-  const renderItem: ListRenderItem<Result> = ({item}) => {
+  const renderItem: ListRenderItem<Result> = ({ item }) => {
     return (
       <View>
         {/* Header */}
@@ -255,9 +292,9 @@ export const EventListScreen = (props: EventListScreenProps) => {
           return (
             <TouchableOpacity
               style={styles.listContainer}
-              onPress={()=>onNavigate(subitem)}
+              onPress={() => onNavigate(subitem)}
               activeOpacity={0.8}
-              // disabled={disabled}
+            // disabled={disabled}
             >
               <ImageComponent
                 resizeMode="stretch"
@@ -272,8 +309,8 @@ export const EventListScreen = (props: EventListScreenProps) => {
                     <Text style={styles.dateText}>
                       {subitem.start_date_label}
                       {' • '}
-                       {subitem.start_time_label}
-                   </Text>
+                      {subitem.start_time_label}
+                    </Text>
                     <Text numberOfLines={2} style={styles.title}>
                       {subitem.name}
                     </Text>
@@ -351,7 +388,7 @@ export const EventListScreen = (props: EventListScreenProps) => {
           <View style={styles.switchToggle}>
             <Switch
               // trackColor={{ false: "#767577", true: "#81b0ff" }}
-              style={{transform: [{scaleX: 0.9}, {scaleY: 0.5}]}}
+              style={{ transform: [{ scaleX: 0.9 }, { scaleY: 0.5 }] }}
               thumbColor={'white'}
               ios_backgroundColor="#008000"
               onChange={() => toggleSwitch(isEnabled)}
@@ -376,7 +413,7 @@ export const EventListScreen = (props: EventListScreenProps) => {
             startDate={range.startDate}
             endDate={range.endDate}
             onConfirm={onConfirm}
-            validRange={{startDate: new Date()}}
+            validRange={{ startDate: new Date() }}
             closeIcon={close}
             editIcon={close}
             calendarIcon={close}
@@ -405,7 +442,7 @@ export const EventListScreen = (props: EventListScreenProps) => {
           }
         }}
         onEndReachedThreshold={0.1}
-        ></FlatList>
+      ></FlatList>
     </View>
   );
 };

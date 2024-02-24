@@ -9,7 +9,6 @@ export const getData = (key:any) => {
   }else{
     return dataObject[key];
   }
-  
 };
 
 export const setData = (key:any, value:any) => {
