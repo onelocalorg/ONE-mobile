@@ -117,7 +117,6 @@ export const EventListScreen = (props: EventListScreenProps) => {
 
   useFocusEffect(
     useCallback(() => {
-      console.log('--------------useFocusEffect getEventListAPI------------------');
       getEventListAPI();
     }, [setFilter, page, range, searchQuery]),
   );
@@ -151,7 +150,7 @@ export const EventListScreen = (props: EventListScreenProps) => {
       searchtext: searchQuery,
     };
 
-    var eventList_url = API_URL + '/v1/events/list?limit=20&page=' + page;
+    var eventList_url = API_URL + '/v1/events/list?limit=10&page=' + page;
     console.log('---------------getEventListAPI--------------', page, setFilter);
     try {
       const token = await AsyncStorage.getItem('token');
@@ -164,44 +163,13 @@ export const EventListScreen = (props: EventListScreenProps) => {
         body: JSON.stringify(eventData),
       });
       const dataItem = await response.json();
-
-
-      if (page === 1) {
+      
+      if (page == 1) {
         var dataTemp = [...eventsList, ...dataItem?.data.results];
         setEventsList(dataTemp);
+      }else{
+        manageSameHeader(dataItem?.data.results)
       }
-
-      if (page > 1) {
-        var newEventList = dataItem?.data.results
-        var newEventListTwo = dataItem?.data.results
-        var lastItemEvent = eventsList[eventsList.length - 1];
-        var arrLength = eventsList.length - 1;
-
-        for (let index = 0; index < newEventListTwo.length; index++) {
-          if (newEventList[index]['date_title'] === lastItemEvent['date_title']) {
-
-            var addEventinList = [...newEventListTwo[index]['events']]
-            // delete lastItemEvent['date_title']
-            // delete lastItemEvent['day_title']
-
-            var eventsListTwo = [...eventsList]
-            eventsListTwo[arrLength]['events'] = [...eventsList[arrLength]['events'], ...addEventinList];
-            setEventsList(eventsListTwo);
-
-            console.log('yes same date display')
-          }
-          else {
-            var dataTempTwo = [...eventsList, ...dataItem?.data.results];
-            setEventsList(dataTempTwo);
-            console.log('not same date display')
-
-          }
-
-        }
-
-
-      }
-
 
       setTotalPages(dataItem?.data?.totalPages);
       setCurrentPage(dataItem?.data?.page);
@@ -211,6 +179,29 @@ export const EventListScreen = (props: EventListScreenProps) => {
       console.log(error);
     }
   };
+
+  function getUnique(arr:any, indexName:any) {
+    const unique = arr.map((e:any) => e[indexName]).map((e:any, i:any, final:any) => final.indexOf(e) === i && i).filter((e:any) => arr[e]).map((e:any) => arr[e]);      
+    return unique;
+  }
+
+  function manageSameHeader(newEventArray:any){
+
+    var oldEventLastIndex = eventsList.length-1;
+    if (newEventArray[0]['date_title'] == eventsList[oldEventLastIndex]['date_title']) {
+      
+      var oldEventTempOne = [...eventsList];
+      oldEventTempOne[oldEventLastIndex]['events'] = [...eventsList[oldEventLastIndex]['events'], ...newEventArray[0]['events']];
+      newEventArray.splice(0, 1);
+      setEventsList([...oldEventTempOne, ...newEventArray]);
+
+    }else{
+      var dataTempTwo = [...eventsList, ...newEventArray];
+      setEventsList(dataTempTwo);
+      console.log('not same date display');
+    }
+
+  }
 
   const setSerchValue = useCallback((searchData: any) => {
     setSearchQuery(searchData);
@@ -253,9 +244,7 @@ export const EventListScreen = (props: EventListScreenProps) => {
   };
 
   const postDataLoad = () => {
-    console.log('fasdfasfajsdofhajsdjfhaskdjfasjkdbfajksdbfajksdbfasjbsajkbdjfbasj',);
     if (totalPages !== currentPages) {
-      console.log('11111111111111111111111111111111111');
       setPage(page + 1);
     }
   };
@@ -432,7 +421,6 @@ export const EventListScreen = (props: EventListScreenProps) => {
         keyExtractor={(item, index) => index.toString()}
         contentContainerStyle={styles.scrollView}
         data={eventsList}
-        // onMomentumScrollEnd={postDataLoad}
         initialNumToRender={10}
         onEndReached={() => {
           console.log('-------------onEndReached---------------');
