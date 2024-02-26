@@ -482,6 +482,9 @@ export const createStyleSheet = (theme: ThemeProps) => {
       paddingBottom: verticalScale(140),
       // paddingHorizontal: normalScale(22),
     },
+    scrollViewComment:{
+      paddingBottom: verticalScale(110),
+    },
     postDetail: {
       color: theme.colors.black,
       fontSize: 12,
@@ -595,14 +598,12 @@ export const createStyleSheet = (theme: ThemeProps) => {
       // overflow:'hidden'
     },
     bottomButton: {
-      position: 'absolute',
-      bottom: 20,
-      left: 0,
-      right: 0,
+    // justifyContent:'flex-end',
       paddingHorizontal: normalScale(16),
       backgroundColor: theme.colors.white,
       paddingBottom: verticalScale(25),
       paddingTop: verticalScale(5),
+      // backgroundColor: 'red',
     },
     commentDisplayCont: {
       backgroundColor: '#E6E6E6',
@@ -975,14 +976,18 @@ export const createStyleSheet = (theme: ThemeProps) => {
       flex:1
     },
     commentModalContainer:{ 
-    position:'absolute',
-    left:0,
-    right:0,
+    // position:'relative',
+    // left:0,
+    // right:0,
     height:'90%',
-    bottom:0,
-    backgroundColor:'white',
-    // margin:12,
-    borderRadius:16
+    // marginTop:'30%',
+    // bottom:0,
+paddingBottom:120,
+    backgroundColor:theme.colors.white,
+    // margin:12, 
+    borderTopStartRadius:16,
+    borderTopEndRadius:16,
+    // flex:1
   },
   notchCont:{
     borderRadius:20,
@@ -991,6 +996,15 @@ export const createStyleSheet = (theme: ThemeProps) => {
     alignSelf:'center',
     width:50,
     marginVertical:16
+  },
+  getMoreDataCont:{
+    fontSize:16,
+    color:theme.colors.black,
+    padding:10,
+    marginVertical:10,
+    alignSelf:'center',
+    borderRadius:20,
+    borderWidth:theme.borderWidth.borderWidth1
   }
   });
 };

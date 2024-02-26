@@ -66,6 +66,7 @@ export const stringsAndLabels = {
   updateApp: 'Update App',
   noTicketsAvailable: 'No tickets available to purchase',
   noCheckedInUserFound: 'No checked-in user found',
+  nocommentFound:'No Comment Data Found',
   purchaseSubscription: 'Please purchase the subscription',
   linkCopied: 'Link copied to clipboard',
   noAttendees: 'No Attendees Found',
