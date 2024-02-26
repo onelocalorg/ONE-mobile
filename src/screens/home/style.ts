@@ -976,18 +976,11 @@ export const createStyleSheet = (theme: ThemeProps) => {
       flex:1
     },
     commentModalContainer:{ 
-    // position:'relative',
-    // left:0,
-    // right:0,
-    height:'90%',
-    // marginTop:'30%',
-    // bottom:0,
-paddingBottom:120,
-    backgroundColor:theme.colors.white,
-    // margin:12, 
-    borderTopStartRadius:16,
-    borderTopEndRadius:16,
-    // flex:1
+      height:'100%',
+      // marginTop:80,
+      backgroundColor:theme.colors.white,
+      borderTopStartRadius:16,
+      borderTopEndRadius:16,
   },
   notchCont:{
     borderRadius:20,
@@ -995,7 +988,8 @@ paddingBottom:120,
     backgroundColor:theme.colors.black,
     alignSelf:'center',
     width:50,
-    marginVertical:16
+    marginTop:80,
+    marginBottom:20
   },
   getMoreDataCont:{
     fontSize:16,
