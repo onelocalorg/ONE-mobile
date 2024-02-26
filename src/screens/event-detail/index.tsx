@@ -193,6 +193,7 @@ export const EventDetailScreen = (props: EventDetailScreenProps) => {
     ticketId: string,
     ticketName: string,
     ticketPrice: string,
+    quantityticket:number
   ) => {
     const request = {
       bodyParams: {
@@ -201,6 +202,7 @@ export const EventDetailScreen = (props: EventDetailScreenProps) => {
         ticketId: ticketId,
         ticketName: ticketName,
         ticketPrice: ticketPrice,
+        ticket_quantity:quantityticket
       },
     };
     LoadingData(true);
@@ -222,13 +224,14 @@ export const EventDetailScreen = (props: EventDetailScreenProps) => {
     ticketId: string,
     ticketName: string,
     price: any,
-    quantityticket: string,
+    quantityticket: number,
   ) => {
     onPaymentSuccess(
       cardData,
       ticketId,
       ticketName,
       `${parseFloat(price?.replace('USD', ''))}`,
+      quantityticket
     );
   };
 
@@ -236,7 +239,7 @@ export const EventDetailScreen = (props: EventDetailScreenProps) => {
     price: any,
     ticketId: string,
     ticketName: string,
-    quantityticket: string,
+    quantityticket: number,
   ) => {
     const unique_Id = await AsyncStorage.getItem('uniqueId');
     var Payment: any = {
@@ -269,6 +272,7 @@ export const EventDetailScreen = (props: EventDetailScreenProps) => {
           ticketId,
           ticketName,
           `${parseFloat(price?.replace('USD', ''))}`,
+          quantityticket
         ),
     });
   };

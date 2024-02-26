@@ -156,6 +156,7 @@ export const HomeScreen = (props: HomeScreenProps) => {
   const [childjIndex, setChildIndexForGratis]: any = useState();
   const [postCommentIndexTwo, setPostCommentIndexTwo]: any = useState();
   const [postIndexTwo, setPostIndexTwo]: any = useState();
+  const [showCommentListModal, setShowCommentListData] = useState(false);
   const flatlistRef = useRef<FlatList>(null);
 
   const { user } = useSelector<StoreType, UserProfileState>(
@@ -1263,20 +1264,20 @@ export const HomeScreen = (props: HomeScreenProps) => {
                     }}
                   ></View>
 
-                  {/* <View style={styles.gratisAndCommentContainer}>
+                  <View style={styles.gratisAndCommentContainer}>
                   <TouchableOpacity style={styles.gratisContainer}>
-                    <Text style={styles.gratisClass}>+55</Text>
+                    <Text style={styles.gratisClass}>+{item?.gratis}</Text>
                     <ImageComponent
                       source={gratitudeBlack}
                       style={styles.commentImgTwo}></ImageComponent>
                   </TouchableOpacity>
                   <TouchableOpacity onPress={()=>CommentListNavigatiion(item.id)} style={styles.commentsContainer}>
-                    <Text style={styles.commentClass}>36</Text>
+                    <Text style={styles.commentClass}>{item?.comment}</Text>
                     <ImageComponent
                       source={comment}
                       style={styles.commentImageThree}></ImageComponent>
                   </TouchableOpacity>
-                </View> */}
+                </View>
                   {item?.comment !== 0 ? (
                     <View>
                       {item.isComment ? (
@@ -1326,7 +1327,7 @@ export const HomeScreen = (props: HomeScreenProps) => {
                     <View></View>
                   )}
 
-                  {/* <CommentList commentItem={item} post_ID={item.id} postIndex={index} postList={postList} navigation={navigation} ></CommentList> */}
+                
 
                   {showComment ? (
                     <View style={{ flexDirection: "row" }}>
@@ -1503,9 +1504,15 @@ export const HomeScreen = (props: HomeScreenProps) => {
     );
   };
 
+  
+
+  const onCloseCommentListModal = () => {
+    setShowCommentListData(false)
+  };
+
   const CommentListNavigatiion = (id: any) => {
-    AsyncStorage.setItem("commentID", id);
-    navigation.navigate(navigations.COMMENTLIST);
+    AsyncStorage.setItem("postID", id);
+    setShowCommentListData(true)
   };
 
   const submitReportReason = () => {
@@ -1595,7 +1602,7 @@ export const HomeScreen = (props: HomeScreenProps) => {
             onEndReachedThreshold={0.5}
             endFillColor='red'
             contentContainerStyle={styles.scrollView}
-            keyboardShouldPersistTaps
+          
             ListHeaderComponent={
               <View>
                 {userList.length !== 0 ? (
@@ -1648,9 +1655,9 @@ export const HomeScreen = (props: HomeScreenProps) => {
             }
             initialNumToRender={10}
             onEndReached={({distanceFromEnd}) => {
-              // if (distanceFromEnd < 0) {
+              if (distanceFromEnd < 0) {
                 return postDataLoad();
-              // }
+              }
             }}
             renderItem={renderItem} 
           ></FlatList>
@@ -1802,13 +1809,13 @@ export const HomeScreen = (props: HomeScreenProps) => {
               >
                 <View />
                 <Text style={styles.titleTwo}>Give</Text>
-                <TouchableOpacity>
+                <View>
                   <ImageComponent
                     source={buttonArrowGreen}
                     style={styles.buttonArrow}
                   />
-                </TouchableOpacity>
-              </TouchableOpacity>
+                </View>
+              </TouchableOpacity> 
             </View>
           </TouchableOpacity>
         </KeyboardAvoidingView>
@@ -1954,6 +1961,8 @@ export const HomeScreen = (props: HomeScreenProps) => {
           </KeyboardAvoidingView>
         </Modal>
       </Modal>
+
+        <CommentList indexParent={postIndexTwo} onCommentHide={onCloseCommentListModal} showModal={showCommentListModal}></CommentList>
     </>
   );
 };

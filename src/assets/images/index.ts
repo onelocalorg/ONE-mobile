@@ -71,6 +71,7 @@ export {default as sendPayoutImg} from './sendPayoutImg.png';
 export {default as redDeleteIcon} from './redDeleteIcon.png';
 export {default as saveIcon} from './saveIcon.png';
 export {default as edit2} from './edit2.png';
+export {default as payoutClose} from './payoutClose.png';
 
 
 

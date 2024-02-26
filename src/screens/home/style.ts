@@ -596,12 +596,12 @@ export const createStyleSheet = (theme: ThemeProps) => {
     },
     bottomButton: {
       position: 'absolute',
-      bottom: 0,
+      bottom: 20,
       left: 0,
       right: 0,
       paddingHorizontal: normalScale(16),
       backgroundColor: theme.colors.white,
-      paddingBottom: verticalScale(20),
+      paddingBottom: verticalScale(25),
       paddingTop: verticalScale(5),
     },
     commentDisplayCont: {
@@ -973,6 +973,24 @@ export const createStyleSheet = (theme: ThemeProps) => {
     MainPostContainer:{
       backgroundColor:theme.colors.darkenBlack,
       flex:1
-    }
+    },
+    commentModalContainer:{ 
+    position:'absolute',
+    left:0,
+    right:0,
+    height:'90%',
+    bottom:0,
+    backgroundColor:'white',
+    // margin:12,
+    borderRadius:16
+  },
+  notchCont:{
+    borderRadius:20,
+    padding:2,
+    backgroundColor:theme.colors.black,
+    alignSelf:'center',
+    width:50,
+    marginVertical:16
+  }
   });
 };

@@ -43,8 +43,8 @@ interface TicketCheckoutModalCompProps {
     price: string,
     ticketId: string,
     ticketName: string,
-    quantityticket: string,
     cardData: string,
+    quantityticket: number,
   ) => void;
   eventData: Result;
   loader:boolean;
@@ -92,6 +92,7 @@ const TicketCheckoutModalComp = (
     eventData,
     '----------------ticket check out--------------------',
   );
+
   useEffect(() => {
     getCardDetailAPI();
     const index = eventData?.tickets.findIndex(ele => !ele.is_ticket_purchased);

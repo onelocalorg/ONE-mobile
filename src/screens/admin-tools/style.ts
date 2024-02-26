@@ -902,5 +902,85 @@ export const createStyleSheet = (theme: ThemeProps) => {
       width: 20,
       marginLeft: 8
     },
+
+
+    modalContainerTwo: {
+      flex: 1,
+      alignItems: 'center',
+      position: 'absolute',
+      bottom: 0,
+      margin: 0,
+      padding: 0,
+      backgroundColor: 'white',
+      width: '100%'
+    },
+     modalView: {
+      marginVertical: 40,
+      backgroundColor: 'lightgray',
+      borderRadius: 18,
+      padding: 20,
+      alignItems: 'center',
+      shadowColor: '#000',
+      shadowOpacity: 0.25,
+      shadowRadius: 4,
+      elevation: 5,
+    },
+    sendPayoutLblTwo: {
+      marginTop: 16,
+      fontSize: 18,
+      color: 'black',
+      fontWeight: '500',
+    },
+    sendingTextLbl: {
+      fontSize: 12,
+      color: 'black',
+      fontWeight: '500',
+      marginVertical: 2
+    },
+    payoutButtonCont: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      height: 40,
+      backgroundColor: '#007112',
+      borderRadius: 14,
+     marginTop: 24,
+      width:160
+    },
+  
+    sendPayoutButton: {
+      color: 'white',
+      textAlign: 'center',
+      alignSelf: 'center',
+      fontSize: 14,
+      width: 130,
+    },
+    sendIcon: {
+      height: 26,
+      width: 26,
+      borderRadius: 100,
+      textAlign: 'center',
+      alignSelf: 'center',
+      marginRight: 6,
+    },
+    cancelButtonCont: {
+       flexDirection: 'row',
+      justifyContent: 'space-between',
+      height: 40,
+      backgroundColor: '#710000',
+      borderRadius: 14,
+     marginTop: 12,
+     width:160
+    },
+    gesture: {
+      flex: 1,
+    },
+    containerGallery:{
+      position: 'absolute',
+      top: 0,
+      bottom: 0,
+      left: 0,
+      right: 0,
+      backgroundColor: theme.colors.modalOverlay,
+    },
   });
 };
