@@ -796,10 +796,10 @@ export const HomeScreen = (props: HomeScreenProps) => {
         </TouchableOpacity>
         {/* ------------------Header Tab------------------- */}
 
-        <KeyboardAwareScrollView
+        {/* <KeyboardAwareScrollView
           keyboardShouldPersistTaps="always"
           showsVerticalScrollIndicator={false}
-        >
+        > */}
           <FlatList
             data={postList}
             keyExtractor={(item, index) => item.key}
@@ -882,7 +882,7 @@ export const HomeScreen = (props: HomeScreenProps) => {
           ) : (
             <View></View>
           )}
-        </KeyboardAwareScrollView>
+        {/* </KeyboardAwareScrollView> */}
         {loading ? (
           <ActivityIndicator
             color="white"

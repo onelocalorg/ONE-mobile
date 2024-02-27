@@ -59,7 +59,6 @@ import { useSelector } from "react-redux";
 import { StoreType } from "@network/reducers/store";
 import { UserProfileState } from "@network/reducers/user-profile-reducer";
 import { navigations } from "@config/app-navigation/constant";
-import { stripeSuccessUrl } from "@assets/constants";
 import { Loader } from "@components/loader";
 import { ButtonComponent } from "@components/button-component";
 import Toast from "react-native-simple-toast";

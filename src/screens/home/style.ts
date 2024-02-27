@@ -598,7 +598,7 @@ export const createStyleSheet = (theme: ThemeProps) => {
       // overflow:'hidden'
     },
     bottomButton: {
-    // justifyContent:'flex-end',
+    justifyContent:'flex-end', 
       paddingHorizontal: normalScale(16),
       backgroundColor: theme.colors.white,
       paddingBottom: verticalScale(25),
