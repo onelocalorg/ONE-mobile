@@ -254,16 +254,8 @@ export const HomeScreen = (props: HomeScreenProps) => {
         body: JSON.stringify(data),
       });
       const dataItem = await response.json();
-      console.log("=========== Post List API Response ==============");
-      console.log(dataItem);
-
+      postListData([...postList, ...dataItem?.data?.results]);
       onPageLoad(false);
-
-      var result = dataItem?.data?.results.map((item: any) => {
-        return { ...item, isComment: false, commentListData: [] };
-      });
-      postListData([...postList, ...result]);
-
       isMoreDataLoad(true);
       LodingData(false);
       if (dataItem?.data?.page === dataItem?.data?.totalPages) {
@@ -271,13 +263,7 @@ export const HomeScreen = (props: HomeScreenProps) => {
       }
     } catch (error) {
       LodingData(false);
-      console.error(
-        "--------error--------" +
-          API_URL +
-          "/v1/posts/list?limit=10&page=" +
-          page,
-        error
-      );
+      console.error("--------error--------" +URL,error);
     }
   }
 
@@ -681,6 +667,15 @@ export const HomeScreen = (props: HomeScreenProps) => {
     [searchQuery]
   );
 
+  const renderLoader = () => {
+    return (
+      loading ?
+        <View style={{marginVertical: 26,alignItems: "center",}}>
+          <ActivityIndicator size="large" color="#aaa" />
+        </View> : null
+    );
+  };
+
   return (
     <>
       <View style={styles.MainPostContainer}>
@@ -732,20 +727,12 @@ export const HomeScreen = (props: HomeScreenProps) => {
         </TouchableOpacity>
         {/* ------------------Header Tab------------------- */}
 
-        {/* <KeyboardAwareScrollView
-          keyboardShouldPersistTaps="always"
-          showsVerticalScrollIndicator={false}
-        > */}
         <FlatList
           data={postList}
           keyExtractor={(item, index) => item.key}
-          // ListFooterComponent={<View style={{ height: 90 }} />}
-          // onEndReachedThreshold={0.5}
           onEndReached={() => {
             return postDataLoad();
           }}
-          // initialNumToRender={10}
-          // inverted
           windowSize={windowSize} //If you have scroll stuttering but working fine when 'disableVirtualization = true' then use this windowSize, it fix the stuttering problem.
           maxToRenderPerBatch={num}
           updateCellsBatchingPeriod={num / 2}
@@ -757,6 +744,7 @@ export const HomeScreen = (props: HomeScreenProps) => {
           renderItem={renderItem}
           endFillColor="red"
           contentContainerStyle={styles.scrollView}
+          ListFooterComponent={renderLoader}
           ListHeaderComponent={
             <View>
               {userList.length !== 0 ? (
@@ -808,35 +796,9 @@ export const HomeScreen = (props: HomeScreenProps) => {
             </View>
           }
         ></FlatList>
-        {postList.length === 0 ? (
-          <View>
-            <Text
-              style={{
-                fontSize: 18,
-                fontWeight: "400",
-                alignSelf: "center",
-                marginTop: 20,
-                color: "white",
-              }}
-            >
-              No Record Found
-            </Text>
-          </View>
-        ) : (
-          <View></View>
-        )}
-        {/* </KeyboardAwareScrollView> */}
-        {loading ? (
-          <ActivityIndicator
-            color="white"
-            style={{ marginLeft: 8 }}
-          ></ActivityIndicator>
-        ) : (
-          <View></View>
-        )}
+        
       </View>
 
-      {/* </TouchableOpacity> */}
       <Modal transparent onDismiss={OfferModalClose} visible={offerModal}>
         <GestureRecognizer onSwipeDown={OfferModalClose} style={styles.gesture}>
           <TouchableOpacity
