@@ -91,6 +91,7 @@ import { Alert } from "react-native";
 import { API_URL, setData } from "@network/constant";
 import Swiper from "react-native-swiper";
 import { CommentList } from "./commetList";
+import codegenNativeCommands from "react-native/Libraries/Utilities/codegenNativeCommands";
 
 interface Range {
   startDate: Date | undefined;
@@ -149,12 +150,12 @@ export const HomeScreen = (props: HomeScreenProps) => {
   const [reoportModal, reportModalShowHide] = useState(false);
   const [postHideId, hidePostContentIDData] = useState();
   const [reportPost, addReportReason] = useState("");
-  const [postCommentID, setPostCommentID] = useState();
-  const [postCommentIndex, setPostIndexID] = useState();
+  const [setGratis, setPostGratisData] = useState();
+  const [setComment, setPostCommentData] = useState();
   const [type, eventTypeData] = useState("offer");
   const [gratistype, setGratisSelectType] = useState();
   const [childjIndex, setChildIndexForGratis]: any = useState();
-  const [postCommentIndexTwo, setPostCommentIndexTwo]: any = useState();
+  const [post_index, setPostCommentIndexTwo]: any = useState();
   const [postIndexTwo, setPostIndexTwo]: any = useState();
   const [showCommentListModal, setShowCommentListData] = useState(false);
   const [Post_Id, setPostDataId] = useState("");
@@ -310,14 +311,14 @@ export const HomeScreen = (props: HomeScreenProps) => {
     console.log(
       "=========== Post List API Request" +
         API_URL +
-        "/v1/posts/list?limit=20&page=" +
+        "/v1/posts/list?limit=5&page=" +
         page +
         "=============="
     );
     console.log(data);
     try {
       const response = await fetch(
-        API_URL + "/v1/posts/list?limit=20&page=" + page,
+        API_URL + "/v1/posts/list?limit=5&page=" + page,
         {
           method: "post",
           headers: new Headers({
@@ -692,7 +693,7 @@ export const HomeScreen = (props: HomeScreenProps) => {
             </TouchableOpacity>
             <TouchableOpacity
               activeOpacity={0.8}
-              onPress={() => onCommentListModal(item.id)}
+              onPress={() => onCommentListModal(item,index)}
               style={styles.commentsContainer}
             >
               <Text style={styles.commentClass}>{item?.comment}</Text>
@@ -707,18 +708,29 @@ export const HomeScreen = (props: HomeScreenProps) => {
     );
   };
 
-  const onCloseCommentListModal = () => {
+  const onCloseCommentListModal = (setGrais:any,comment:any) => {
     setShowCommentListData(false);
-    postListData([]);
     setPage(1)
-    postListAPI();
-    LodingData(true)
+    console.log(setGrais)
+    console.log(comment)
+
+    let markers = [...postList];
+
+    markers[post_index]["gratis"] = setGrais;
+    markers[post_index]["comment"] = comment;
+    
+    postListData(markers)
   };
 
-  const onCommentListModal = (id: any) => {
+  const onCommentListModal = (item: any,post_index:any) => {
     console.log("open comment modal");
-    AsyncStorage.setItem("postID", id);
-    setPostDataId(id);
+    AsyncStorage.setItem("postID", item.id);
+    setPostCommentIndexTwo(post_index)
+    setPostDataId(item.id);
+    setPostGratisData(item.gratis)
+    setPostCommentData(item.comment)
+    console.log(item.gratis)
+    console.log(item.comment)
     setShowCommentListData(true);
   };
 
@@ -805,6 +817,12 @@ export const HomeScreen = (props: HomeScreenProps) => {
             keyExtractor={(item, index) => item.key}
             // ListFooterComponent={<View style={{ height: 90 }} />}
             onEndReachedThreshold={0.5}
+            onEndReached={() => {
+                return postDataLoad();
+            }}
+            initialNumToRender={10}
+           
+            renderItem={renderItem}
             endFillColor="red"
             contentContainerStyle={styles.scrollView}
             ListHeaderComponent={
@@ -857,13 +875,7 @@ export const HomeScreen = (props: HomeScreenProps) => {
                 </TouchableOpacity>
               </View>
             }
-            initialNumToRender={10}
-            onEndReached={({ distanceFromEnd }) => {
-              if (distanceFromEnd < 0) {
-                return postDataLoad();
-              }
-            }}
-            renderItem={renderItem}
+           
           ></FlatList>
           {postList.length === 0 ? (
             <View>
@@ -1035,8 +1047,11 @@ export const HomeScreen = (props: HomeScreenProps) => {
       <CommentList
         post_id={Post_Id}
         indexParent={postIndexTwo}
+        setCommentReturn={setComment}
+        setGratisReturn={setGratis}
         onCommentHide={onCloseCommentListModal}
         showModal={showCommentListModal}
+        navigation={navigation} 
       ></CommentList>
     </>
   );

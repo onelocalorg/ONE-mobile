@@ -51,17 +51,23 @@ import { useStringsAndLabels } from "@app-hooks/use-strings-and-labels";
 import { Loader } from "@components/loader";
 
 interface commentListProps {
+  navigation: NavigationContainerRef<ParamListBase>;
   showModal: boolean;
-  onCommentHide: () => void;
+  onCommentHide: (
+    setGrais:number,
+    setComment:number
+  ) => void;
   indexParent: string;
   post_id: string;
+  setCommentReturn:any;
+  setGratisReturn:any;
 }
 
 export const CommentList = (props: commentListProps) => {
   const { theme } = useAppTheme();
   const styles = createStyleSheet(theme);
   const { strings } = useStringsAndLabels();
-  const { showModal, onCommentHide, indexParent, post_id } = props || {};
+  const { showModal, onCommentHide,setCommentReturn,setGratisReturn,navigation, indexParent, post_id } = props || {};
   const [offerModal, CreateOfferModal] = useState(false);
   const [replyofferModal, openReplyOfferModal] = useState(false);
   var [gratisNo, totalGratisData]: any = useState(10);
@@ -74,7 +80,6 @@ export const CommentList = (props: commentListProps) => {
   const [isLoading, LodingData] = useState(false);
   const [pageCmt, setCmtPage] = useState(1);
   const [addnewCmt, onAddComment] = useState("");
-  const [commentLoading, onPageLoadComment] = useState(false);
   const [totalPages, setTotalPages] = useState(0);
   const [currentPages, setCurrentPage] = useState(0);
   const [commentList, setCommentListData]: any = useState([]);
@@ -84,12 +89,16 @@ export const CommentList = (props: commentListProps) => {
   const [gratistype, setGratisSelectType] = useState();
   const [childjIndex, setChildIndexForGratis]: any = useState();
   const [replyId, commentReplyPostId] = useState("");
-  const [replyIndex, setReplayIndex] = useState("");
-  const [setReplyId, setReplyCommentId] = useState("");
+  const [replyIndex, setReplayIndex] = useState(""); 
+  const [setGrais, setGratisData] = useState(setGratisReturn);
+  const [setComment, setCommentData] = useState(setCommentReturn);
   const [postCommentIndexTwo, setPostCommentIndexTwo]: any = useState();
   const [postIndexTwo, setPostIndexTwo]: any = useState();
   const [commentListScrollEnable, setCommentListScrollEnable] = useState(true);
-  const flatlistRef = useRef<FlatList>(null);
+  const flatListRef:any = React.useRef()
+
+  console.log(setGratisReturn)
+  console.log(setCommentReturn)
   
   useFocusEffect(
     useCallback(() => {
@@ -97,6 +106,12 @@ export const CommentList = (props: commentListProps) => {
       getCommentListAPI(1);
     }, [post_id])
   );
+
+  const recentUserProfilePress = (id: any) => {
+    onCommentHide(setGrais,setComment);
+    AsyncStorage.setItem("recentUserId", id);
+    navigation?.navigate(navigations.RECENTUSERPROFILE);
+  };
 
   async function getCommentListAPI(pageCount: any) {
     const token = await AsyncStorage.getItem("token");
@@ -179,7 +194,8 @@ export const CommentList = (props: commentListProps) => {
       marker.splice(0, 0, ...[dataTemp]);
 
       setCommentListData(marker);
-
+      setCommentData(dataItem.data.totalComment)
+      flatListRef.current.scrollToOffset({ animated: true, offset: 0 })
       console.log("=========== Comment on Post API Response ==============");
       console.log(JSON.stringify(marker));
       onAddComment("");
@@ -187,62 +203,6 @@ export const CommentList = (props: commentListProps) => {
       // getCommentListAPITwo(postId);
       setCommentListScrollEnable(true);
       LodingData(false);
-    } catch (error) {
-      LodingData(false);
-      console.error(error);
-    }
-  }
-
-  async function getCommentListAPITwo(postID: any) {
-    // postList[index]['commentListData'] = [];
-    // isMoreCommentData(true);
-    const token = await AsyncStorage.getItem("token");
-    var data: any = {
-      post_id: postID,
-    };
-    console.log(
-      API_URL + "/v1/comments?limit=25&+page=1" + "&post_id=" + postID
-    );
-    console.log(data);
-    try {
-      const response = await fetch(
-        API_URL + "/v1/comments?limit=25&page=1" + "&post_id=" + postID,
-        {
-          method: "post",
-          headers: new Headers({
-            Authorization: "Bearer " + token,
-            "Content-Type": "application/json",
-          }),
-          body: JSON.stringify(data),
-        }
-      );
-
-      // setCmtPage(pageCmt)
-      const dataItem = await response.json();
-      console.log(dataItem);
-      LodingData(false);
-      var cmtList = dataItem?.data;
-
-      let markers = [...commentList];
-
-      markers = [...cmtList];
-
-      setCommentListData([...cmtList, cmtList]);
-      setCommentListData(markers);
-      // flatlistRef?.current?.scrollToIndex({index: 0});
-      flatlistRef?.current?.scrollToOffset({ animated: true, offset: 0 });
-      console.log(
-        "-----------comment List-------------"
-        // commentList[index]['commentListData'],
-      );
-
-      onPageLoadComment(false);
-      setTotalPages(dataItem?.data?.totalPages);
-      setCurrentPage(dataItem?.data?.page);
-      if (pageCmt > dataItem?.data?.totalPages) {
-        // isMoreCommentData(false);
-      }
-      // setCommentListScrollEnable(true);
     } catch (error) {
       LodingData(false);
       console.error(error);
@@ -280,6 +240,9 @@ export const CommentList = (props: commentListProps) => {
         let markers = [...commentList];
 
         markers[commentIndex]["gratis"] = dataItem?.data?.data?.commentsGratis;
+
+        setGratisData(dataItem?.data?.data?.postGratis)
+        
       }
 
       if (dataItem?.success === false) {
@@ -327,6 +290,7 @@ export const CommentList = (props: commentListProps) => {
         markers[commentIndex]["reply"][childjIndex]["gratis"] =
           dataItem?.data?.data?.replayGratis;
 
+          setGratisData(dataItem?.data?.data?.postGratis)
         console.log(
           "commentListData 222",
           markers[gratisIndex]["commentListData"]
@@ -376,6 +340,8 @@ export const CommentList = (props: commentListProps) => {
       markers[postCommentIndexTwo]["reply"].push(
         commentReplyArray[commentReplyArray.length - 1]
       );
+
+      setCommentData(dataItem.data.totalComment)
 
       console.log(
         "---------------responce reply comment post----------",
@@ -494,7 +460,7 @@ export const CommentList = (props: commentListProps) => {
         <View style={styles.commentImgProfile}>
           <TouchableOpacity
             activeOpacity={0.8}
-            // onPress={() => recentUserProfilePress(item?.user_id.id)}
+            onPress={() => recentUserProfilePress(item?.commenter?.id)}
           >
             <ImageComponent
               resizeMode="cover"
@@ -551,13 +517,16 @@ export const CommentList = (props: commentListProps) => {
             <>
               <View>
                 <View style={styles.commentImgProfileTwo}>
+                <TouchableOpacity
+            activeOpacity={0.8}
+            onPress={() => recentUserProfilePress(subItem?.commenter?.id)} >
                   <ImageComponent
                     resizeMode="cover"
                     style={styles.postProfile}
                     source={{
                       uri: subItem?.commenter?.pic,
                     }}
-                  ></ImageComponent>
+                  ></ImageComponent></TouchableOpacity>
                   <View style={[styles.commentDisplayCont, { width: 210 }]}>
                     <Text
                       style={{
@@ -612,10 +581,6 @@ export const CommentList = (props: commentListProps) => {
     );
   };
 
-  const onLoadMoreData = () => {
-    setCmtPage(pageCmt + 1);
-  };
-
   const postDataLoad = () => {
     if (isCommentData) {
       setCmtPage(pageCmt + 1);
@@ -627,7 +592,7 @@ export const CommentList = (props: commentListProps) => {
   return (
     <SafeAreaView>
       <Modal
-        onDismiss={onCommentHide}
+        onDismiss={() => onCommentHide(setGrais,setComment)}
         transparent
         visible={showModal}
         animationType="slide"
@@ -636,16 +601,16 @@ export const CommentList = (props: commentListProps) => {
           behavior="padding"
           contentContainerStyle={{ flex: 1 }}
         >
-          <GestureRecognizer onSwipeDown={onCommentHide} style={styles.gesture}>
+          <GestureRecognizer onSwipeDown={() => onCommentHide(setGrais,setComment)} style={styles.gesture}>
             <TouchableOpacity
               style={styles.containerGallery}
               activeOpacity={1}
-              onPress={onCommentHide}
+              onPress={() => onCommentHide(setGrais,setComment)}
             />
           </GestureRecognizer>
           <Loader visible={isLoading} showOverlay />
             <View style={styles.commentModalContainer}>
-              <TouchableOpacity onPress={onCommentHide} style={{height:50,width:50, position:'absolute',right:20,top:50, zIndex:111111}}>
+              <TouchableOpacity onPress={() => onCommentHide(setGrais,setComment)} style={{height:50,width:50, position:'absolute',right:20,top:50, zIndex:111111}}>
                 <ImageComponent source={close} style={{height:30,width:30,}} />
               </TouchableOpacity>
             
@@ -656,8 +621,8 @@ export const CommentList = (props: commentListProps) => {
                 <View style={styles.scrollViewComment}>
                   <FlatList
                     data={commentList}
-                    // onEndReached={postDataLoad}
-                    onEndReachedThreshold={0.5}
+                    ref={flatListRef}
+                    onEndReachedThreshold={0.005}
                     keyExtractor={(item, index) => index.toString()}
                     renderItem={renderItem}
                     ListFooterComponent={

@@ -481,10 +481,7 @@ export const createStyleSheet = (theme: ThemeProps) => {
     // flex:1
       paddingBottom: verticalScale(140),
       // paddingHorizontal: normalScale(22),
-    },
-    scrollViewComment:{
-      paddingBottom: verticalScale(110),
-    },
+  },
     postDetail: {
       color: theme.colors.black,
       fontSize: 12,
@@ -626,6 +623,9 @@ export const createStyleSheet = (theme: ThemeProps) => {
       height: 24,
       width: 24,
       marginLeft: 20,
+    },
+    scrollViewComment:{
+      flex: 1
     },
     replyContainer: {
       flexDirection: 'row',

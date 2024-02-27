@@ -12,14 +12,13 @@ export const AppNavigation = () => {
   }, []);
 
   const getAppVersion = async () => {
-    var eventList_url = API_URL + '/v1/auth/appConfig';
+    var eventList_url = API_URL + '/v1/config/verions';
     try {
       const response = await fetch(eventList_url, {method: 'get',});
       const dataItem = await response.json();
       console.log('-----------App Version--------------',dataItem);
       if (dataItem.success) {
         iosVersionCheck(dataItem.data.ios);
-        // androidVersionCheck(dataItem.data.android);
       }
     } catch (error) {
       console.log(error);
@@ -37,16 +36,6 @@ export const AppNavigation = () => {
     } 
   }
 
-  function androidVersionCheck(dataAndrroid:any){
-    if (ANDROID_VERSION < dataAndrroid.version) {
-      if (dataAndrroid.is_update) {
-        setShowUpdate(true);
-      }
-      if (dataAndrroid.is_maintenance) {
-        setShowUpdate(true);
-      }
-    } 
-  }
 
   return (
     <>

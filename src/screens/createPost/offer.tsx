@@ -536,6 +536,8 @@ export const CreatePostOfferScreen = (props: CreatePostOfferScreenProps) => {
   };
 
   const AddUserList = (item: any) => {
+    const found = userList.find((element:any) => element.id == item.id);
+    if (!found) {
     recentlyJoinUser([...userList, item]);
     const newItems = {...item};
     delete newItems.first_name;
@@ -546,8 +548,21 @@ export const CreatePostOfferScreen = (props: CreatePostOfferScreenProps) => {
     console.log(item.gratisNo);
     getUsetList([...userListArray, item.id]);
     console.log(userListArray);
-  };
+  } else{
+    Toast.show('Already Added', Toast.LONG, { 
+      backgroundColor: 'black',
+    });
+  }
+};
 
+const removeSelectImage = (imageUrl: any) => {
+  console.log(imageUrl)
+  const newImage = imageArray.filter(
+    (person: any) => person.imageUrl !== imageUrl
+  );
+  setImageArray(newImage);
+  console.log('--------------setImageArray----------------')
+  }
   return (
     <>
       <Loader visible={isLoading} showOverlay />
@@ -1041,7 +1056,10 @@ export const CreatePostOfferScreen = (props: CreatePostOfferScreenProps) => {
               <View style={styles.multipleImagecont}>
                 {imageArray.map((item: any) => {
                   return (
-                      <ImageComponent source={{uri: item?.imageUrl}} style={styles.selectImage}></ImageComponent>
+                    <TouchableOpacity
+                    onPress={() => removeSelectImage(item?.imageUrl)}
+                  >
+                      <ImageComponent source={{uri: item?.imageUrl}} style={styles.selectImage}></ImageComponent></TouchableOpacity>
                   );
                 })}
               </View>

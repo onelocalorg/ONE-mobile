@@ -1,30 +1,30 @@
-import { useAppTheme } from '@app-hooks/use-app-theme';
-import { useStringsAndLabels } from '@app-hooks/use-strings-and-labels';
-import React, { forwardRef, useCallback, useRef, useState } from 'react';
-import { createStyleSheet } from './style';
-import { ModalComponent } from '@components/modal-component';
-import { Keyboard, Text, TouchableOpacity, View } from 'react-native';
-import { EventList } from '@components/event-list';
-import { Input } from '@components/input';
-import { ImageComponent } from '@components/image-component';
-import { arrowDown, calendar, save } from '@assets/images';
+import { useAppTheme } from "@app-hooks/use-app-theme";
+import { useStringsAndLabels } from "@app-hooks/use-strings-and-labels";
+import React, { forwardRef, useCallback, useRef, useState } from "react";
+import { createStyleSheet } from "./style";
+import { ModalComponent } from "@components/modal-component";
+import { Keyboard, Text, TouchableOpacity, View } from "react-native";
+import { EventList } from "@components/event-list";
+import { Input } from "@components/input";
+import { ImageComponent } from "@components/image-component";
+import { activeRadio, arrowDown, calendar, dummy, event, pin, save } from "@assets/images";
 import {
   DatePickerRefProps,
   DateRangePicker,
-} from '@components/date-range-picker';
-import moment from 'moment';
-import { SizedBox } from '@components/sized-box';
-import { normalScale, verticalScale } from '@theme/device/normalize';
-import { ButtonComponent } from '@components/button-component';
+} from "@components/date-range-picker";
+import moment from "moment";
+import { SizedBox } from "@components/sized-box";
+import { normalScale, verticalScale } from "@theme/device/normalize";
+import { ButtonComponent } from "@components/button-component";
 import {
   Result,
   Ticket,
-} from '@network/hooks/home-service-hooks/use-event-lists';
-import { useCreateTicket } from '@network/hooks/home-service-hooks/use-create-ticket';
-import { Loader } from '@components/loader';
-import { TicketBodyParamProps } from '@network/api/services/home-service';
-import { useEditTicket } from '@network/hooks/home-service-hooks/use-edit-ticket';
-import { useFocusEffect } from '@react-navigation/native';
+} from "@network/hooks/home-service-hooks/use-event-lists";
+import { useCreateTicket } from "@network/hooks/home-service-hooks/use-create-ticket";
+import { Loader } from "@components/loader";
+import { TicketBodyParamProps } from "@network/api/services/home-service";
+import { useEditTicket } from "@network/hooks/home-service-hooks/use-edit-ticket";
+import { useFocusEffect } from "@react-navigation/native";
 
 interface AddTicketModalCompProps {
   eventDetails: Result;
@@ -37,7 +37,7 @@ interface AddTicketModalCompProps {
 
 const AddTicketModalComp = (
   props: AddTicketModalCompProps,
-  ref: React.Ref<unknown> | undefined,
+  ref: React.Ref<unknown> | undefined
 ) => {
   const { theme } = useAppTheme();
   const { strings } = useStringsAndLabels();
@@ -45,9 +45,9 @@ const AddTicketModalComp = (
   const datePickerRef: React.Ref<DatePickerRefProps> = useRef(null);
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
-  const [price, setPrice] = useState('');
-  const [ticketName, setTicketName] = useState('');
-  const [ticketquantity, totalTicketQuantity] = useState('');
+  const [price, setPrice] = useState("");
+  const [ticketName, setTicketName] = useState("");
+  const [ticketquantity, totalTicketQuantity] = useState("");
   const {
     eventDetails,
     eventId,
@@ -60,7 +60,10 @@ const AddTicketModalComp = (
   const { mutateAsync: editTicket, isLoading: editTicketLoading } =
     useEditTicket();
 
-    console.log(ticketData,'-----------------------ticketData----------------------')
+  console.log(
+    ticketData,
+    "-----------------------ticketData----------------------"
+  );
 
   useFocusEffect(
     useCallback(() => {
@@ -69,18 +72,18 @@ const AddTicketModalComp = (
         setStartDate(new Date(ticketData?.start_date));
         setPrice(ticketData?.price);
         setTicketName(ticketData?.name);
-        totalTicketQuantity(ticketData?.quantity)
-        console.log(ticketData?.quantity,'============')
+        totalTicketQuantity(ticketData?.quantity);
+        console.log(ticketData?.quantity, "============");
       }
-    }, [ticketData, isEdit]),
+    }, [ticketData, isEdit])
   );
 
   const onSetPrice = (text: string) => {
-    setPrice(text.replace('$ ', '').replace('$', ''));
+    setPrice(text.replace("$ ", "").replace("$", ""));
   };
 
   const onSetQuantity = (text: string) => {
-    totalTicketQuantity(text)
+    totalTicketQuantity(text);
   };
 
   const onCreateTicket = async () => {
@@ -88,19 +91,18 @@ const AddTicketModalComp = (
       name: ticketName,
       start_date: new Date(startDate).toISOString(),
       end_date: new Date(endDate).toISOString(),
-      price:price.toString(),
+      price: price.toString(),
       // event: eventId,
-      quantity: ticketquantity
-      
+      quantity: ticketquantity,
     };
     let res;
-    console.log(request, '----------onCreateTicket Request---------')
+    console.log(request, "----------onCreateTicket Request---------");
     if (isEdit) {
       res = await editTicket({ bodyParams: request, ticketId: ticketData?.id });
-      console.log(res, '----------onCreateTicket Response---------')
+      console.log(res, "----------onCreateTicket Response---------");
     } else {
       res = await mutateAsync({ bodyParams: request });
-      console.log(res, '----------onCreateTicket Response---------')
+      console.log(res, "----------onCreateTicket Response---------");
     }
 
     if (res?.success) {
@@ -116,49 +118,53 @@ const AddTicketModalComp = (
   const resetState = () => {
     setStartDate(new Date());
     setEndDate(new Date());
-    setPrice('');
-    setTicketName('');
-    totalTicketQuantity('')
+    setPrice("");
+    setTicketName("");
+    totalTicketQuantity("");
     onCancel?.();
   };
 
   const keyboardDismiss = () => {
-    Keyboard.dismiss()
+    Keyboard.dismiss();
   };
 
   return (
     <View>
-      <ModalComponent
-        callBack={resetState}
-        ref={ref}>
+      <ModalComponent callBack={resetState} ref={ref}>
         <Loader visible={isLoading || editTicketLoading} showOverlay />
-        {isEdit === false ? <Text style={styles.ticketTitle}>{strings.ticketAdd}</Text> : <Text style={styles.ticketTitle}>{strings.ticketEdit}</Text>}
+        {isEdit === false ? (
+          <Text style={styles.ticketTitle}>{strings.ticketAdd}</Text>
+        ) : (
+          <Text style={styles.ticketTitle}>{strings.ticketEdit}</Text>
+        )}
 
         <TouchableOpacity activeOpacity={1} onPress={keyboardDismiss}>
           <View style={styles.modalContainer}>
-            <EventList data={eventDetails} />
+            <EventList data={eventDetails} />/
             <Text style={styles.label}>{strings.ticketName}</Text>
             <Input value={ticketName} onChangeText={setTicketName} />
             <Text style={styles.label}>{strings.ticketTimeframe}</Text>
             <View style={styles.dateView}>
               <ImageComponent source={calendar} style={styles.calendar} />
               <TouchableOpacity
-                onPress={() => datePickerRef.current?.onOpenModal('start')}
+                onPress={() => datePickerRef.current?.onOpenModal("start")}
                 activeOpacity={0.8}
-                style={styles.rowData}>
+                style={styles.rowData}
+              >
                 <Text style={styles.startLabel}>
-                  {moment(startDate).format('MMM DD, YYYY, h:mma') ||
+                  {moment(startDate).format("MMM DD, YYYY, h:mma") ||
                     strings.selectStartDate}
                 </Text>
                 <ImageComponent source={arrowDown} style={styles.arrowDown} />
               </TouchableOpacity>
               <Text style={styles.startLabel}>{strings.to}</Text>
               <TouchableOpacity
-                onPress={() => datePickerRef.current?.onOpenModal('end')}
+                onPress={() => datePickerRef.current?.onOpenModal("end")}
                 activeOpacity={0.8}
-                style={styles.rowData}>
+                style={styles.rowData}
+              >
                 <Text style={styles.startLabel}>
-                  {moment(endDate).format('MMM DD, YYYY, h:mma') ||
+                  {moment(endDate).format("MMM DD, YYYY, h:mma") ||
                     strings.selectEndDate}
                 </Text>
                 <ImageComponent source={arrowDown} style={styles.arrowDown} />

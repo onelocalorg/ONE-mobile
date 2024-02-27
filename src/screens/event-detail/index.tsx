@@ -430,6 +430,7 @@ export const EventDetailScreen = (props: EventDetailScreenProps) => {
           <Text style={styles.desc}>{about}</Text>
 
           <ButtonComponent
+          disabled={cancelled}
             title={!is_event_owner ? strings.buyTicket : strings.adminTools}
             onPress={onBuyTicket}
           />

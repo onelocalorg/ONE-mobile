@@ -83,7 +83,7 @@ export const EventListScreen = (props: EventListScreenProps) => {
     endDate: makeDate,
   });
   const [open, setOpen] = useState(false);
-  const [profileData, setUserProfile]: any = useState('');
+  const [profileData, setUserProfile]: any = useState();
   const [eventsList, setEventsList]: any = useState([]);
   const [totalPages, setTotalPages] = useState(0);
   const [currentPages, setCurrentPage] = useState(0);
@@ -107,11 +107,16 @@ export const EventListScreen = (props: EventListScreenProps) => {
   const dispatch = useDispatch();
 
   useFocusEffect(
-    useCallback(() => {
+    useCallback( () => {
+      const getUserProfilePic = async() => {
+        var profilePic = await AsyncStorage.getItem("profile");
+        setUserProfile(profilePic);
+        console.log('ProfilePic=>', profilePic);  
+      }
+      getUserProfilePic(); 
       onPageLoad(false);
       setPage(1);
       setEventsList([]);
-      getUserProfileAPI();
     }, []),
   );
 
@@ -120,26 +125,6 @@ export const EventListScreen = (props: EventListScreenProps) => {
       getEventListAPI();
     }, [setFilter, page, range, searchQuery]),
   );
-
-  // ======================get User Profile API=========================
-  const getUserProfileAPI = async () => {
-    const token = await AsyncStorage.getItem('token');
-    try {
-      const response = await fetch(API_URL + '/v1/users/' + user.id, {
-        method: 'get',
-        headers: new Headers({
-          Authorization: 'Bearer ' + token,
-          'Content-Type': 'application/json',
-        }),
-      });
-      const dataItem = await response.json();
-      setUserProfile(dataItem.data);
-      AsyncStorage.setItem('profile', dataItem.data.pic);
-      AsyncStorage.setItem('uniqueId', dataItem.data.user_unique_id);
-    } catch (error) {
-      console.log(error);
-    }
-  };
 
   const getEventListAPI = async () => {
     var eventData = {
@@ -309,7 +294,7 @@ export const EventListScreen = (props: EventListScreenProps) => {
 
                 <View style={styles.rowClass}>
                   <ImageComponent source={pin} style={styles.pin} />
-                  <Text numberOfLines={3} style={styles.location}>
+                  <Text numberOfLines={1} style={styles.location}>
                     {subitem.address}
                   </Text>
                 </View>
@@ -363,9 +348,10 @@ export const EventListScreen = (props: EventListScreenProps) => {
             style={styles.profileView}>
             <ImageComponent
               resizeMode="cover"
-              isUrl={!!user?.pic}
-              source={dummy}
-              uri={user?.pic}
+              // isUrl={!!user?.pic}
+              isUrl={profileData}
+              // source={dummy}
+              uri={profileData}
               style={styles.profile}
             />
           </TouchableOpacity>

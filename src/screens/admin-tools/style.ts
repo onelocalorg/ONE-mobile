@@ -982,5 +982,82 @@ export const createStyleSheet = (theme: ThemeProps) => {
       right: 0,
       backgroundColor: theme.colors.modalOverlay,
     },
+
+    listContainer: {
+      borderRadius: theme.borderRadius.radius16,
+      borderWidth: theme.borderWidth.borderWidth1,
+      borderColor: theme.colors.red,
+      paddingVertical: verticalScale(8),
+      paddingHorizontal: normalScale(8),
+      backgroundColor: theme.colors.white,
+      flexDirection: 'row',
+      marginTop: verticalScale(13),
+      shadowColor: theme.colors.darkGrey,
+      shadowOffset: { width: 1, height: 2 },
+      shadowOpacity: 0.9,
+      shadowRadius: 4,
+    },
+    dummy: {
+      width: normalScale(80),
+      height: verticalScale(92),
+      marginRight: normalScale(18),
+      borderRadius: theme.borderRadius.radius10,
+    },
+    flex: {
+      flex: 1,
+      overflow:'hidden',
+    },
+    dateText: {
+      fontFamily: theme.fontType.light,
+      fontSize: theme.fontSize.font12,
+      color: theme.colors.black,
+      marginBottom: verticalScale(4),
+    },
+    title: {
+      fontFamily: theme.fontType.medium,
+      fontSize: theme.fontSize.font16,
+      color: theme.colors.black,
+      marginBottom: verticalScale(7),
+      maxWidth: normalScale(200),
+      flexShrink:1
+    },
+    eventTwo: {
+      height: normalScale(32),
+      width: normalScale(32),
+      marginLeft: normalScale(12),
+    },
+    rowTwo: {
+      flexDirection: 'row',
+      flex: 1,
+    },
+    pin: {
+      height: normalScale(14),
+      width: normalScale(14),
+      marginRight: normalScale(8),
+    },
+    location: {
+      fontFamily: theme.fontType.light,
+      fontSize: theme.fontSize.font12,
+      color: theme.colors.black,
+      flexShrink:1
+    },
+    fullAddress: {
+      fontFamily: theme.fontType.light,
+      fontSize: theme.fontSize.font12,
+      color: theme.colors.black,
+    },
+    addressDot: {
+      height: 6,
+      width: 6, marginVertical: 5,
+      marginHorizontal: 5
+    },
+    cancleText:{
+      position:'absolute',
+      right:0,
+      top:35,
+      fontFamily:theme.fontType.medium,
+      fontSize:theme.fontSize.font14,
+      color:theme.colors.redTwo
+    }
   });
 };

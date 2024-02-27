@@ -163,7 +163,7 @@ export const createStyleSheet = (theme: ThemeProps) => {
       fontFamily: theme.fontType.light,
       fontSize: theme.fontSize.font12,
       color: theme.colors.black,
-      // flexShrink:1
+      flexShrink:1
     },
     fullAddress: {
       fontFamily: theme.fontType.light,

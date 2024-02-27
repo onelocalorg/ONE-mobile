@@ -721,11 +721,12 @@ export const createStyleSheet = (theme: ThemeProps) => {
     // width : '100%',
     flexWrap: 'wrap',
     },
-    selectImage:{
-    height:90,
-    width:'30%',
-    borderRadius:18,
-    marginRight:10,
+    selectImage: {
+      height: 90,
+      width: 90,
+      borderRadius: 18,
+      marginRight: 10,
+      marginTop: 12
     },
     postClass:{
       borderColor:'green',
