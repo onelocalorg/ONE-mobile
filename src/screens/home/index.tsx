@@ -12,7 +12,6 @@ import {
   Modal,
   Platform,
   Text,
-  TextComponent,
   TextInput,
   TouchableOpacity,
   View,
@@ -22,36 +21,16 @@ import { ImageComponent } from "@components/image-component";
 import {
   Gratis,
   Search,
-  Vector,
-  activeRadio,
-  addGreen,
-  arrowDown,
-  bell,
-  blackOffer,
   buttonArrowGreen,
-  calendar,
-  close,
-  closeCard,
   comment,
   dummy,
-  gratisGreen,
   gratitudeBlack,
   greenImage,
-  greenOffer,
-  logoblack,
-  mapEvent,
-  mapGifting,
-  mapService,
   minus,
-  money,
-  moving,
   onelogo,
-  painting,
   pin,
   plus,
   postCalender,
-  request,
-  send,
 } from "@assets/images";
 import { useDispatch, useSelector } from "react-redux";
 import { StoreType } from "@network/reducers/store";
@@ -71,27 +50,13 @@ import {
 import { navigations } from "@config/app-navigation/constant";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { ScrollView } from "react-native-gesture-handler";
-import { DatePickerModal, TimePickerModal } from "react-native-paper-dates";
-import moment from "moment";
-import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import GetLocation from "react-native-get-location";
 import { Loader } from "@components/loader";
-import Popover, { PopoverPlacement, Rect } from "react-native-popover-view";
-import { SizedBox } from "@components/sized-box";
-import { verticalScale } from "@theme/device/normalize";
-import {
-  DatePickerRefProps,
-  DateRangePicker,
-} from "@components/date-range-picker";
-import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
 import Toast from "react-native-simple-toast";
 import GestureRecognizer from "react-native-swipe-gestures";
-import { Result } from "@network/hooks/home-service-hooks/use-event-lists";
 import { Alert } from "react-native";
 import { API_URL, setData } from "@network/constant";
-import Swiper from "react-native-swiper";
 import { CommentList } from "./commetList";
-import codegenNativeCommands from "react-native/Libraries/Utilities/codegenNativeCommands";
 
 interface Range {
   startDate: Date | undefined;
@@ -111,41 +76,15 @@ export const HomeScreen = (props: HomeScreenProps) => {
   const [ProfileData, setUserProfile]: any = useState("");
   const [userList, recentlyJoinUser] = useState([]);
   var [postList, postListData]: any = useState([]);
-  const [open, setOpen] = useState(false);
-  const [pagination, postLoadData] = useState(false);
   const [offerModal, CreateOfferModal] = useState(false);
-  const [replyofferModal, openReplyOfferModal] = useState(false);
   var [location, setUserLocation]: any = useState();
-  const [addnewCmt, onAddComment] = useState("");
-  const [addnewCmtReply, onAddCommentReply] = useState("");
   const [isLoading, LodingData] = useState(false);
   const [loading, onPageLoad] = useState(false);
-  const [commentListScrollEnable, setCommentListScrollEnable] = useState(true);
-  const [commentLoading, onPageLoadComment] = useState(false);
   const [ismoreData, isMoreDataLoad] = useState(false);
-  const [ismoreCommentLoad, isMoreCommentData] = useState(true);
-  const [replyId, commentReplyPostId] = useState("");
-  const [replyIndex, setReplayIndex] = useState("");
-  const [setReplyId, setReplyCommentId] = useState("");
   var [postId, postIdData]: any = useState();
   var [gratisIndex, gratisIndexData]: any = useState();
-  var [commentIndex, setCommentIndex]: any = useState();
-  var [showComment, showCommentPost] = useState(false);
-  var [addComment, addCommentModal] = useState(false);
   var [gratisNo, totalGratisData]: any = useState(10);
-  var [gratisNoComment, totalGratisCommentData]: any = useState(10);
   var [page, setPage] = useState(1);
-  const initialValue = 1;
-  const [pageCmt, setCmtPage] = useState(initialValue);
-  const [starttimePicker, startTimePicker] = useState(false);
-  const [endtimePicker, endTimePicker] = useState(false);
-  const [setStartTime, setStartTimeData]: any = useState(new Date());
-  const [setEndTime, setEndTimeData]: any = useState(new Date());
-  const [totalPages, setTotalPages] = useState(0);
-  const [currentPages, setCurrentPage] = useState(0);
-  const [gratisCmtID, setreplyGratisId] = useState();
-  const [gratisCmtKey, setreplyGratisKey] = useState();
-  const [postlistTtl, postListTotalResult] = useState();
   const [postContent, postContentModal] = useState(false);
   const [reoportModal, reportModalShowHide] = useState(false);
   const [postHideId, hidePostContentIDData] = useState();
@@ -153,13 +92,16 @@ export const HomeScreen = (props: HomeScreenProps) => {
   const [setGratis, setPostGratisData] = useState();
   const [setComment, setPostCommentData] = useState();
   const [type, eventTypeData] = useState("offer");
-  const [gratistype, setGratisSelectType] = useState();
-  const [childjIndex, setChildIndexForGratis]: any = useState();
   const [post_index, setPostCommentIndexTwo]: any = useState();
-  const [postIndexTwo, setPostIndexTwo]: any = useState();
   const [showCommentListModal, setShowCommentListData] = useState(false);
   const [Post_Id, setPostDataId] = useState("");
-  const flatlistRef = useRef<FlatList>(null);
+
+  const [offset, setOffset] = useState(1); //Its Like Page number
+  const [messages, setMessages] = useState<[]>([]); //Contains the whole data
+  const [dataSource, setDataSource] = useState<[]>([]); //Contains limited number of data
+  const windowSize = messages.length > 50 ? messages.length / 4 : 21;
+  let num = 100; // This is the number which defines how many data will be loaded for every 'onReachEnd'
+  let initialLoadNumber = 40;
 
   const { user } = useSelector<StoreType, UserProfileState>(
     (state) => state.userProfileReducer
@@ -200,7 +142,6 @@ export const HomeScreen = (props: HomeScreenProps) => {
     requestLocationPermission();
     eventTypeData(type);
   }, [type, range?.startDate, range?.endDate, searchQuery]);
-
 
   const requestLocationPermission = async () => {
     GetLocation.getCurrentPosition({
@@ -297,42 +238,25 @@ export const HomeScreen = (props: HomeScreenProps) => {
   async function postListAPI() {
     const token = await AsyncStorage.getItem("token");
     var data: any = {
-      // start_date:
-      //   moment(range.startDate).format('YYYY-MM-DD') +
-      //   ' ' +
-      //   moment(setStartTime).format('HH:mm'),
-      // end_date:
-      //   moment(range.endDate).format('YYYY-MM-DD') +
-      //   ' ' +
-      //   moment(setEndTime).format('HH:mm'),
-      // type: type,
       searchtext: searchQuery,
     };
-    console.log(
-      "=========== Post List API Request" +
-        API_URL +
-        "/v1/posts/list?limit=5&page=" +
-        page +
-        "=============="
-    );
+
+    var URL = API_URL + "/v1/posts/list?limit=5&page=" + page;
+    console.log(URL);
     console.log(data);
     try {
-      const response = await fetch(
-        API_URL + "/v1/posts/list?limit=5&page=" + page,
-        {
-          method: "post",
-          headers: new Headers({
-            Authorization: "Bearer " + token,
-            "Content-Type": "application/json",
-          }),
-          body: JSON.stringify(data),
-        }
-      );
+      const response = await fetch(URL, {
+        method: "post",
+        headers: new Headers({
+          Authorization: "Bearer " + token,
+          "Content-Type": "application/json",
+        }),
+        body: JSON.stringify(data),
+      });
       const dataItem = await response.json();
       console.log("=========== Post List API Response ==============");
       console.log(dataItem);
 
-      postLoadData(false);
       onPageLoad(false);
 
       var result = dataItem?.data?.results.map((item: any) => {
@@ -341,7 +265,6 @@ export const HomeScreen = (props: HomeScreenProps) => {
       postListData([...postList, ...result]);
 
       isMoreDataLoad(true);
-      postListTotalResult(dataItem?.data?.totalResults);
       LodingData(false);
       if (dataItem?.data?.page === dataItem?.data?.totalPages) {
         isMoreDataLoad(false);
@@ -693,7 +616,7 @@ export const HomeScreen = (props: HomeScreenProps) => {
             </TouchableOpacity>
             <TouchableOpacity
               activeOpacity={0.8}
-              onPress={() => onCommentListModal(item,index)}
+              onPress={() => onCommentListModal(item, index)}
               style={styles.commentsContainer}
             >
               <Text style={styles.commentClass}>{item?.comment}</Text>
@@ -708,29 +631,30 @@ export const HomeScreen = (props: HomeScreenProps) => {
     );
   };
 
-  const onCloseCommentListModal = (setGrais:any,comment:any) => {
-    setShowCommentListData(false);
-    setPage(1)
-    console.log(setGrais)
-    console.log(comment)
+  const onCloseCommentListModal = (setGraisTwo: any, commentTwo: any) => {
 
+    console.log(setGraisTwo,'111111');
+    console.log(commentTwo,'222222');
+
+    setShowCommentListData(false);
+    setPage(1);
     let markers = [...postList];
 
-    markers[post_index]["gratis"] = setGrais;
-    markers[post_index]["comment"] = comment;
-    
-    postListData(markers)
+    markers[post_index]["gratis"] = setGraisTwo;
+    markers[post_index]["comment"] = commentTwo;
+
+    postListData(markers);
   };
 
-  const onCommentListModal = (item: any,post_index:any) => {
+  const onCommentListModal = (item: any, post_index: any) => {
     console.log("open comment modal");
     AsyncStorage.setItem("postID", item.id);
-    setPostCommentIndexTwo(post_index)
+    setPostCommentIndexTwo(post_index);
     setPostDataId(item.id);
-    setPostGratisData(item.gratis)
-    setPostCommentData(item.comment)
-    console.log(item.gratis)
-    console.log(item.comment)
+    setPostGratisData(item.gratis);
+    setPostCommentData(item.comment);
+    console.log(item.gratis);
+    console.log(item.comment);
     setShowCommentListData(true);
   };
 
@@ -774,7 +698,7 @@ export const HomeScreen = (props: HomeScreenProps) => {
               placeholderTextColor="#FFFF"
               placeholder="Search"
               style={styles.searchInput}
-              onChangeText={(value) => {
+              onChangeText={(value) => { 
                 console.log(value);
                 setSerchValue(value);
               }}
@@ -812,88 +736,95 @@ export const HomeScreen = (props: HomeScreenProps) => {
           keyboardShouldPersistTaps="always"
           showsVerticalScrollIndicator={false}
         > */}
-          <FlatList
-            data={postList}
-            keyExtractor={(item, index) => item.key}
-            // ListFooterComponent={<View style={{ height: 90 }} />}
-            onEndReachedThreshold={0.5}
-            onEndReached={() => {
-                return postDataLoad();
-            }}
-            initialNumToRender={10}
-           
-            renderItem={renderItem}
-            endFillColor="red"
-            contentContainerStyle={styles.scrollView}
-            ListHeaderComponent={
-              <View>
-                {userList.length !== 0 ? (
-                  <View style={styles.avatarContainer}>
-                    <ScrollView
-                      horizontal={true}
-                      showsHorizontalScrollIndicator={false}
-                    >
-                      {userList.map((userList: any) => {
-                        return (
-                          <TouchableOpacity
-                            onPress={() => recentUserProfilePress(userList.id)}
-                          >
-                            <ImageComponent
-                              style={styles.avatarImage}
-                              isUrl={!!userList?.pic}
-                              resizeMode="cover"
-                              uri={userList?.pic}
-                            ></ImageComponent>
-                          </TouchableOpacity>
-                        );
-                      })}
-                    </ScrollView>
-                  </View>
-                ) : (
-                  <View></View>
-                )}
-
-                <TouchableOpacity
-                  activeOpacity={0.8}
-                  style={styles.mainPostCont}
-                  onPress={onNavigateToCreatePost}
-                >
-                  <View style={styles.postContainer}>
-                    <ImageComponent
-                      style={styles.avatar}
-                      resizeMode="cover"
-                      isUrl={!!user?.pic}
-                      source={dummy}
-                      uri={ProfileData?.pic}
-                    ></ImageComponent>
-                    <View style={styles.postInput}>
-                      <Text style={{ textAlign: "left", color: "gray" }}>
-                        What do you want to post?
-                      </Text>
-                    </View>
-                  </View>
-                </TouchableOpacity>
-              </View>
-            }
-           
-          ></FlatList>
-          {postList.length === 0 ? (
+        <FlatList
+          data={postList}
+          keyExtractor={(item, index) => item.key}
+          // ListFooterComponent={<View style={{ height: 90 }} />}
+          // onEndReachedThreshold={0.5}
+          onEndReached={() => {
+            return postDataLoad();
+          }}
+          // initialNumToRender={10}
+          // inverted
+          windowSize={windowSize} //If you have scroll stuttering but working fine when 'disableVirtualization = true' then use this windowSize, it fix the stuttering problem.
+          maxToRenderPerBatch={num}
+          updateCellsBatchingPeriod={num / 2}
+          onEndReachedThreshold={
+            offset < 10 ? offset * (offset == 1 ? 2 : 2) : 20
+          } //While you scolling the offset number and your data number will increases.So endReached will be triggered earlier because our data will be too many
+          removeClippedSubviews={true}
+          initialNumToRender={initialLoadNumber}
+          renderItem={renderItem}
+          endFillColor="red"
+          contentContainerStyle={styles.scrollView}
+          ListHeaderComponent={
             <View>
-              <Text
-                style={{
-                  fontSize: 18,
-                  fontWeight: "400",
-                  alignSelf: "center",
-                  marginTop: 20,
-                  color: "white",
-                }}
+              {userList.length !== 0 ? (
+                <View style={styles.avatarContainer}>
+                  <ScrollView
+                    horizontal={true}
+                    showsHorizontalScrollIndicator={false}
+                  >
+                    {userList.map((userList: any) => {
+                      return (
+                        <TouchableOpacity
+                          onPress={() => recentUserProfilePress(userList.id)}
+                        >
+                          <ImageComponent
+                            style={styles.avatarImage}
+                            isUrl={!!userList?.pic}
+                            resizeMode="cover"
+                            uri={userList?.pic}
+                          ></ImageComponent>
+                        </TouchableOpacity>
+                      );
+                    })}
+                  </ScrollView>
+                </View>
+              ) : (
+                <View></View>
+              )}
+
+              <TouchableOpacity
+                activeOpacity={0.8}
+                style={styles.mainPostCont}
+                onPress={onNavigateToCreatePost}
               >
-                No Record Found
-              </Text>
+                <View style={styles.postContainer}>
+                  <ImageComponent
+                    style={styles.avatar}
+                    resizeMode="cover"
+                    isUrl={!!user?.pic}
+                    source={dummy}
+                    uri={ProfileData?.pic}
+                  ></ImageComponent>
+                  <View style={styles.postInput}>
+                    <Text style={{ textAlign: "left", color: "gray" }}>
+                      What do you want to post?
+                    </Text>
+                  </View>
+                </View>
+              </TouchableOpacity>
             </View>
-          ) : (
-            <View></View>
-          )}
+          }
+        ></FlatList>
+        {postList.length === 0 ? (
+          <View>
+            <Text
+              style={{
+                fontSize: 18,
+                fontWeight: "400",
+                alignSelf: "center",
+                marginTop: 20,
+                color: "white",
+              }}
+            >
+              No Record Found
+            </Text>
+          </View>
+        ) : (
+          <View></View>
+        )}
         {/* </KeyboardAwareScrollView> */}
         {loading ? (
           <ActivityIndicator
@@ -1046,12 +977,11 @@ export const HomeScreen = (props: HomeScreenProps) => {
 
       <CommentList
         post_id={Post_Id}
-        indexParent={postIndexTwo}
         setCommentReturn={setComment}
         setGratisReturn={setGratis}
         onCommentHide={onCloseCommentListModal}
         showModal={showCommentListModal}
-        navigation={navigation} 
+        navigation={navigation}
       ></CommentList>
     </>
   );

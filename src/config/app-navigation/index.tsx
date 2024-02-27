@@ -18,22 +18,25 @@ export const AppNavigation = () => {
       const dataItem = await response.json();
       console.log('-----------App Version--------------',dataItem);
       if (dataItem.success) {
-        iosVersionCheck(dataItem.data.ios);
+        iosVersionCheck(dataItem.data);
       }
     } catch (error) {
-      console.log(error);
+      console.log(error); 
     }
   };
 
   function iosVersionCheck(dataIOS:any){
-    if (IOS_VERSION < dataIOS.version) {
-      if (dataIOS.is_update) {
+    if (IOS_VERSION < dataIOS.ios_version) {
+      if (dataIOS.isForceforIOS) {
         setShowUpdate(true);
-      }
-      if (dataIOS.is_maintenance) {
+      }else if (dataIOS.inMaintananceIOS) { 
         setShowUpdate(true);
+      }else{
+        setShowUpdate(false);
       } 
-    } 
+    } else{
+      setShowUpdate(false);
+    }
   }
 
 
