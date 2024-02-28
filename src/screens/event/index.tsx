@@ -370,7 +370,7 @@ export const EventListScreen = (props: EventListScreenProps) => {
               resizeMode="cover"
               isUrl={!!profileData?.pic}
               source={dummy}
-              uri={profileData.pic}
+              uri={profileData?.pic}
               style={styles.profile}
             />
           </TouchableOpacity>
