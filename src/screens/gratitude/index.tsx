@@ -134,7 +134,6 @@ export const GratitudeScreen = (props: MapScreenProps) => {
 
   useEffect(() => {
     LogBox.ignoreAllLogs();
-    getUserProfileAPI();
     setRadius(radius);
     eventTypeData(eventType);
     setCircleRadius(circleradius);

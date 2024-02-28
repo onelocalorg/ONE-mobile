@@ -108,14 +108,10 @@ export const EventListScreen = (props: EventListScreenProps) => {
 
   useFocusEffect(
     useCallback( () => {
-      const getUserProfilePic = async() => {
-        var profilePic = await AsyncStorage.getItem("profile");
-        setUserProfile(profilePic);
-        console.log('ProfilePic=>', profilePic);  
-      }
-      getUserProfilePic(); 
+      getUserProfileAPI();
       onPageLoad(false);
       setPage(1);
+      setSearchQuery('')
       setEventsList([]);
     }, []),
   );
@@ -165,10 +161,34 @@ export const EventListScreen = (props: EventListScreenProps) => {
     }
   };
 
-  function getUnique(arr:any, indexName:any) {
-    const unique = arr.map((e:any) => e[indexName]).map((e:any, i:any, final:any) => final.indexOf(e) === i && i).filter((e:any) => arr[e]).map((e:any) => arr[e]);      
-    return unique;
-  }
+  const getUserProfileAPI = async () => {
+    const token = await AsyncStorage.getItem("token");
+    console.log("token", token);
+    try {
+      const response = await fetch(API_URL + "/v1/users/" + user.id, {
+        method: "get",
+        headers: new Headers({
+          Authorization: "Bearer " + token,
+          "Content-Type": "application/json",
+        }),
+      });
+      const dataItem = await response.json();
+      console.log("-----------------Response User Profile API------------");
+      console.log(dataItem);
+      console.log(dataItem.data.pic);
+      setUserProfile(dataItem.data);
+      if (dataItem?.data?.isEventActiveSubscription === true) {
+        AsyncStorage.setItem("isEventActive", "true");
+      } else {
+        AsyncStorage.setItem("isEventActive", "false");
+      }
+      AsyncStorage.setItem("profile", dataItem.data.pic);
+      AsyncStorage.setItem("uniqueId", dataItem.data.user_unique_id);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
 
   function manageSameHeader(newEventArray:any){
 
@@ -348,10 +368,9 @@ export const EventListScreen = (props: EventListScreenProps) => {
             style={styles.profileView}>
             <ImageComponent
               resizeMode="cover"
-              // isUrl={!!user?.pic}
-              isUrl={profileData}
-              // source={dummy}
-              uri={profileData}
+              isUrl={!!profileData?.pic}
+              source={dummy}
+              uri={profileData.pic}
               style={styles.profile}
             />
           </TouchableOpacity>

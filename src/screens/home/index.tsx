@@ -124,8 +124,10 @@ export const HomeScreen = (props: HomeScreenProps) => {
       LogBox.ignoreAllLogs();
       getRecentlyJoinUserAPI();
       requestLocationPermission();
+      getUserProfileAPI();
       setPage(1);
       postListData([]);
+      setSearchQuery('')
     }, [range?.startDate, range?.endDate])
   );
 
@@ -138,7 +140,7 @@ export const HomeScreen = (props: HomeScreenProps) => {
   useEffect(() => {
     LogBox.ignoreAllLogs();
 
-    getUserProfileAPI();
+    
     requestLocationPermission();
     eventTypeData(type);
   }, [type, range?.startDate, range?.endDate, searchQuery]);
@@ -618,12 +620,13 @@ export const HomeScreen = (props: HomeScreenProps) => {
   };
 
   const onCloseCommentListModal = (setGraisTwo: any, commentTwo: any) => {
-
     console.log(setGraisTwo,'111111');
     console.log(commentTwo,'222222');
 
+    setPostCommentData(commentTwo)
+    setPostGratisData(setGraisTwo)
+
     setShowCommentListData(false);
-    setPage(1);
     let markers = [...postList];
 
     markers[post_index]["gratis"] = setGraisTwo;

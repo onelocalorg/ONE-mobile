@@ -41,7 +41,7 @@ export const createStyleSheet = (theme: ThemeProps) => {
       flexDirection: 'row',
       marginLeft: 8,
       position: 'absolute',
-      bottom: 30,
+      bottom: 50,
       color: theme.colors.white,
       zIndex: 11111222
 
