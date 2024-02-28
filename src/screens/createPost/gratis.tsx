@@ -494,16 +494,6 @@ export const CreatePostGratisScreen = (props: CreatePostGratisScreenProps) => {
     createPostwhatQuantity(whatQuantity)
   }
 
-  // const onNavigateToProfile = () =>
-  //   if (user?.id) {
-  //     refetch().then(res => {
-  //       const userData = userProfileParsedData(res?.data?.data);
-  //       console.log('check1===', userData);
-  //       dispatch(onSetUser(userData));
-  //     });
-  //   }
-  //   navigation?.navigate(navigations.PROFILE);
-  // };
   return (
     <>
       <Loader visible={isLoading} showOverlay />
@@ -677,92 +667,6 @@ export const CreatePostGratisScreen = (props: CreatePostGratisScreenProps) => {
                           </View>
                         </TouchableOpacity>
                       )}></FlatList>
-
-                    {/* <View
-                      style={{
-                        flexDirection: 'row',
-                        alignItems: 'center',
-                        marginVertical: 5,
-                      }}>
-                      <ImageComponent
-                        style={{
-                          height: 25,
-                          width: 25,
-                          marginRight: 20,
-                          borderRadius: 100,
-                        }}
-                        resizeMode="cover"
-                        source={dummy}></ImageComponent>
-                      <Text>Trevor smith</Text>
-                    </View>
-                    <View
-                      style={{
-                        flexDirection: 'row',
-                        alignItems: 'center',
-                        marginVertical: 5,
-                      }}>
-                      <ImageComponent
-                        style={{
-                          height: 25,
-                          width: 25,
-                          marginRight: 20,
-                          borderRadius: 100,
-                        }}
-                        resizeMode="cover"
-                        source={dummy}></ImageComponent>
-                      <Text>Trevor smith</Text>
-                    </View>
-                    <View
-                      style={{
-                        flexDirection: 'row',
-                        alignItems: 'center',
-                        marginVertical: 5,
-                      }}>
-                      <ImageComponent
-                        style={{
-                          height: 25,
-                          width: 25,
-                          marginRight: 20,
-                          borderRadius: 100,
-                        }}
-                        resizeMode="cover"
-                        source={dummy}></ImageComponent>
-                      <Text>Trevor smith</Text>
-                    </View>
-                    <View
-                      style={{
-                        flexDirection: 'row',
-                        alignItems: 'center',
-                        marginVertical: 5,
-                      }}>
-                      <ImageComponent
-                        style={{
-                          height: 25,
-                          width: 25,
-                          marginRight: 20,
-                          borderRadius: 100,
-                        }}
-                        resizeMode="cover"
-                        source={dummy}></ImageComponent>
-                      <Text>Trevor smith</Text>
-                    </View>
-                    <View
-                      style={{
-                        flexDirection: 'row',
-                        alignItems: 'center',
-                        marginVertical: 5,
-                      }}>
-                      <ImageComponent
-                        style={{
-                          height: 25,
-                          width: 25,
-                          marginRight: 20,
-                          borderRadius: 100,
-                        }}
-                        resizeMode="cover"
-                        source={dummy}></ImageComponent>
-                      <Text>Trevor smith</Text>
-                    </View> */}
                   </ScrollView>
                 </View>
               ) : (

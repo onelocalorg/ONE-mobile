@@ -196,6 +196,7 @@ export const CreatePostRequestScreen = (
       getTypeIconFor(dataItem?.data?.for[0]['icon']);
       getForTypeValue(dataItem?.data?.for[0]['value']);
       getTypeIconTo(dataItem?.data?.to[0]['icon']);
+      setToTitleData(dataItem?.data?.to[0]['title']);
       getToTypeValue(dataItem?.data?.to[0]['value']);
       getTypeIconFrom(dataItem?.data?.from[0]['icon']);
       getFromTypeValue(dataItem?.data?.from[0]['value']);
@@ -409,19 +410,32 @@ export const CreatePostRequestScreen = (
     console.log('--------newPeople---------', newPeople);
 
     recentlyJoinUser(newPeople);
+    getUsetList(newPeople);
   };
 
   const AddUserList = (item: any) => {
-    recentlyJoinUser([...userList, item]);
-    const newItems = {...item};
-    delete newItems.first_name;
-    delete newItems.last_name;
-    delete newItems.pic;
-    delete newItems.id;
-    delete newItems.gratisNo;
-    console.log(item.gratisNo);
-    getUsetList([...userListArray, item.id]);
-    console.log(userListArray);
+    const found = userList.find((element:any) => element.id == item.id);
+    if (!found) {
+      recentlyJoinUser([...userList, item]); 
+      
+      const newItems = {...item};
+      delete newItems.first_name;
+      delete newItems.last_name;
+      delete newItems.pic;
+      delete newItems.id;
+      delete newItems.gratisNo;
+      console.log(item.gratisNo);
+      const newuserData = {...newItems, point: item.gratisNo, user_id: item.id};
+      getUsetList([...userListArray, newuserData]);
+      
+      console.log(userListArray);
+    }else{
+      Toast.show('Already Added', Toast.LONG, { 
+        backgroundColor: 'black',
+      });
+    }
+    
+   
   };
 
   async function gratisUserList(textUser: any) {

@@ -212,6 +212,7 @@ export const CreatePostOfferScreen = (props: CreatePostOfferScreenProps) => {
       getForTypeValue(dataItem?.data?.for[0]['value']);
 
       getTypeIconTo(dataItem?.data?.to[0]['icon']);
+      setToTitleData(dataItem?.data?.to[0]['title']);
       getToTypeValue(dataItem?.data?.to[0]['value']);
 
       getTypeIconFrom(dataItem?.data?.from[0]['icon']);
@@ -833,92 +834,6 @@ const removeSelectImage = (imageUrl: any) => {
                           </View>
                         </TouchableOpacity>
                       )}></FlatList>
-
-                    {/* <View
-                      style={{
-                        flexDirection: 'row',
-                        alignItems: 'center',
-                        marginVertical: 5,
-                      }}>
-                      <ImageComponent
-                        style={{
-                          height: 25,
-                          width: 25,
-                          marginRight: 20,
-                          borderRadius: 100,
-                        }}
-                        resizeMode="cover"
-                        source={dummy}></ImageComponent>
-                      <Text>Trevor smith</Text>
-                    </View>
-                    <View
-                      style={{
-                        flexDirection: 'row',
-                        alignItems: 'center',
-                        marginVertical: 5,
-                      }}>
-                      <ImageComponent
-                        style={{
-                          height: 25,
-                          width: 25,
-                          marginRight: 20,
-                          borderRadius: 100,
-                        }}
-                        resizeMode="cover"
-                        source={dummy}></ImageComponent>
-                      <Text>Trevor smith</Text>
-                    </View>
-                    <View
-                      style={{
-                        flexDirection: 'row',
-                        alignItems: 'center',
-                        marginVertical: 5,
-                      }}>
-                      <ImageComponent
-                        style={{
-                          height: 25,
-                          width: 25,
-                          marginRight: 20,
-                          borderRadius: 100,
-                        }}
-                        resizeMode="cover"
-                        source={dummy}></ImageComponent>
-                      <Text>Trevor smith</Text>
-                    </View>
-                    <View
-                      style={{
-                        flexDirection: 'row',
-                        alignItems: 'center',
-                        marginVertical: 5,
-                      }}>
-                      <ImageComponent
-                        style={{
-                          height: 25,
-                          width: 25,
-                          marginRight: 20,
-                          borderRadius: 100,
-                        }}
-                        resizeMode="cover"
-                        source={dummy}></ImageComponent>
-                      <Text>Trevor smith</Text>
-                    </View>
-                    <View
-                      style={{
-                        flexDirection: 'row',
-                        alignItems: 'center',
-                        marginVertical: 5,
-                      }}>
-                      <ImageComponent
-                        style={{
-                          height: 25,
-                          width: 25,
-                          marginRight: 20,
-                          borderRadius: 100,
-                        }}
-                        resizeMode="cover"
-                        source={dummy}></ImageComponent>
-                      <Text>Trevor smith</Text>
-                    </View> */}
                   </ScrollView>
                 </View>
               ) : (
