@@ -98,8 +98,7 @@ export const GratitudeScreen = (props: MapScreenProps) => {
   const [isLoading, LodingData] = useState(false);
   const [setEventIndex, setEventIndexData] = useState(0);
   const { navigation } = props || {};
-  const milestoneData = [1, 2, 3, 4, 5]; //your data
-  const mileStoneSwiperRef:any = useRef(null);
+  const mileStoneSwiperRef: any = useRef(null);
   const { user } = useSelector<StoreType, UserProfileState>(
     (state) => state.userProfileReducer
   ) as { user: { id: string; pic: string } };
@@ -111,6 +110,11 @@ export const GratitudeScreen = (props: MapScreenProps) => {
   const [range, setRange] = useState<Range>({
     startDate: new Date(),
     endDate: makeDate,
+  });
+
+  const [setCircle, setCircleHightWidth] = useState({
+    height: 200,
+    width: 200,
   });
   const map: LegacyRef<MapView> = useRef(null);
 
@@ -251,7 +255,7 @@ export const GratitudeScreen = (props: MapScreenProps) => {
     console.log("=========== Geo Tagging API Request ==============");
     console.log(data);
     try {
-      const response = await fetch(API_URL + "/v1/events/geotagging", {
+      const response = await fetch(API_URL + "/v1/events/geotagging", { 
         method: "post",
         headers: new Headers({
           Authorization: "Bearer " + token,
@@ -285,38 +289,46 @@ export const GratitudeScreen = (props: MapScreenProps) => {
   };
 
   const mapPlusClick = () => {
-    map?.current?.getCamera().then((cam: Camera) => {
-      console.log("--------------onZoomInPress------------------");
-      cam.altitude = altitude + 5000;
-      radius = radius - 5000;
-      cam.pitch = pitch + 5;
-      // heading = heading + 5;
-      cam.zoom = zoom + 5;
-      map?.current?.animateCamera(cam);
-      console.log(cam);
-      setPitchOnMap(cam.pitch);
-      // setHeadingOnMap(heading);
-      setZoomOnMap(cam.zoom);
-      setAltitudeOnMap(cam.altitude);
-      geoTaggingAPI(location);
-    });
+    var height = setCircle.height - 100
+    var width = setCircle.width - 100
+    setCircleHightWidth({ height, width });
+    geoTaggingAPI(location);
+    // map?.current?.getCamera().then((cam: Camera) => {
+    //   console.log("--------------onZoomInPress------------------");
+    //   cam.altitude = altitude + 5000;
+    //   radius = radius - 5000;
+    //   cam.pitch = pitch + 5;
+    //   // heading = heading + 5;
+    //   cam.zoom = zoom + 5;
+    //   map?.current?.animateCamera(cam);
+    //   console.log(cam);
+    //   setPitchOnMap(cam.pitch);
+    //   // setHeadingOnMap(heading);
+    //   setZoomOnMap(cam.zoom);
+    //   setAltitudeOnMap(cam.altitude);
+    //   geoTaggingAPI(location);
+    // });
   };
 
   const mapMinusClick = () => {
+    var height = setCircle.height + 100
+    var width = setCircle.width + 100
+    setCircleHightWidth({ height, width });
+    geoTaggingAPI(location);
     map?.current?.getCamera().then((cam: Camera) => {
-      console.log("--------------onZoomOutPress------------------");
-      cam.altitude = altitude - 5000;
-      radius = radius + 5000;
-      cam.pitch = pitch - 5;
-      // heading = heading + 5;
-      cam.zoom = zoom - 5;
-      map?.current?.animateCamera(cam);
-      console.log(cam);
-      setPitchOnMap(cam.pitch);
-      // setHeadingOnMap(heading);
-      setZoomOnMap(cam.zoom);
-      setAltitudeOnMap(cam.altitude);
-      geoTaggingAPI(location);
+      console.log("--------------onZoomOutPress------------------",cam);
+      // cam.altitude = altitude - 5000;
+      // radius = radius + 5000;
+      // cam.pitch = pitch - 5;
+      // // heading = heading + 5;
+      // cam.zoom = zoom - 5;
+      // map?.current?.animateCamera(cam);
+      // console.log(cam);
+      // setPitchOnMap(cam.pitch);
+      // // setHeadingOnMap(heading);
+      // setZoomOnMap(cam.zoom);
+      // setAltitudeOnMap(cam.altitude);
+      // geoTaggingAPI(location);
     });
   };
 
@@ -351,13 +363,17 @@ export const GratitudeScreen = (props: MapScreenProps) => {
     LodingData(true);
     geoTaggingAPI(location);
   };
-
+  
   const onMarkerClick = (mapEventData: any) => {
     console.log("markerIndex", mapEventData);
     mileStoneSwiperRef?.current?.scrollTo(mapEventData);
     setEventIndexData(mapEventData);
   };
 
+  const onCircleDragDrop = (circleLatLog: any) => {
+    console.log("markerIndex", circleLatLog);
+    // geoTaggingAPI(circleLatLog);
+  }
   const changeMarkerColor = (indexMarker: any) => {
     const resultTemp: any = [...eventList];
     for (let index = 0; index < resultTemp.length; index++) {
@@ -413,17 +429,21 @@ export const GratitudeScreen = (props: MapScreenProps) => {
           longitudeDelta: 0.0421,
         }}
       >
-        <Circle
+        {/* <Circle
           key={"1"}
           center={latLong}
           radius={5000}
           strokeWidth={4}
           strokeColor={"black"}
-        ></Circle>
+        ></Circle> */}
         {eventList.map((eventList: any, jindex) => {
           return (
             <Marker
               key={jindex}
+              draggable
+              onDragEnd={(e) =>
+                console.log(e.nativeEvent.coordinate, "get data")
+              }
               onPress={(value) => onMarkerClick(value)}
               // pinColor={setEventIndex === jindex ? "red" : "black"}
               pinColor={eventList.isActive ? "red" : "black"}
@@ -434,6 +454,27 @@ export const GratitudeScreen = (props: MapScreenProps) => {
             ></Marker>
           );
         })}
+
+        <Marker
+          coordinate={{
+            latitude: location?.latitude,
+            longitude: location?.longitude,
+          }}
+          // fillColor="rgba(101,75,169,0.5)"
+          draggable
+          onDragEnd={(e) => {onCircleDragDrop(e.nativeEvent)}}
+          onPress={(e) => {}}
+        >
+          <View
+            style={{
+              width: setCircle.width,
+              height: setCircle.height,
+              borderRadius: setCircle.width/2,
+              borderColor: "black",
+              borderWidth: 4,
+            }}
+          />
+        </Marker>
       </MapView>
 
       <Callout style={styles.buttonCallout}>
@@ -445,7 +486,7 @@ export const GratitudeScreen = (props: MapScreenProps) => {
         </TouchableOpacity>
       </Callout>
 
-      {eventData.length != 0 ? ( 
+      {eventData.length != 0 ? (
         <View style={styles.avatarContainer}>
           <Swiper
             onIndexChanged={(value) => {
@@ -480,7 +521,9 @@ export const GratitudeScreen = (props: MapScreenProps) => {
                         ).format("ddd, MMM DD")} • ${moment(
                           eventData?.start_date
                         ).format("hh:mm A")}`}</Text>
-                        <Text numberOfLines={2} style={styles.title}>{eventData?.name}</Text>
+                        <Text numberOfLines={2} style={styles.title}>
+                          {eventData?.name}
+                        </Text>
                       </View>
                       <ImageComponent source={event} style={styles.event} />
                     </View>

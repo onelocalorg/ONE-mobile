@@ -515,13 +515,6 @@ const TicketCheckoutModalComp = (
 
             <View style={styles.line} />
             {!buttonDisable ? (
-              // <View style={styles.priceTaxcontainer}>
-              //   <Text style={styles.priceTitle}>{strings.pricetax}</Text>
-              //   <Text style={styles.totalPrice}>
-              //     {strings.totalAmount}
-              //     <Text style={{fontWeight: '600'}}>${totalPrice}</Text>
-              //   </Text>
-              // </View>
               <View style={{marginVertical: 4}}>
                 <View style={styles.subTotalContainer}>
                   <Text style={styles.subTotalLbl}>{strings.subTotal}</Text>
@@ -588,55 +581,6 @@ const TicketCheckoutModalComp = (
               <View>
                 <Text style={styles.addCardTitle}>{strings.purchase}</Text>
                 <View>
-                  {/* <ImageComponent source={addCard} style={styles.addCardLogo} />
-                  <TextInput
-                    placeholderTextColor="darkgray"
-                    value={cardnumber}
-                    maxLength={16}
-                    keyboardType="numeric"
-                    style={styles.addCardInput}
-                    placeholder="card number"
-                    onChangeText={value => {
-                      console.log(value);
-                      cardNumberData(value);
-                    }}
-                  /> */}
-                  {/* <View style={styles.cardView}>
-                    <TextInput
-                      placeholderTextColor="darkgray"
-                      onChangeText={text => {
-                        setDate(
-                          text.length === 3 && !text.includes('/')
-                            ? `${text.substring(0, 2)}/${text.substring(2)}`
-                            : text,
-                        );
-                        const [month, year] = text.split('/');
-                        console.log(month);
-                        console.log(year);
-
-                        cardExpMonth(month);
-                        cardExpYears(year);
-                      }}
-                      placeholder="mm/yy"
-                      keyboardType="number-pad"
-                      maxLength={5}
-                      style={styles.addCardDateInput}
-                      value={date}
-                    />
-
-                    <TextInput
-                      placeholderTextColor="darkgray"
-                      value={cardCvv}
-                      maxLength={3}
-                      keyboardType="numeric"
-                      style={styles.addCardCVCInput}
-                      placeholder="cvc"
-                      onChangeText={value => {
-                        console.log(value);
-                        cardCVVData(value);
-                      }}
-                    />
-                  </View> */}
 
                   <TouchableOpacity
                     activeOpacity={0.8}
@@ -687,34 +631,10 @@ const TicketCheckoutModalComp = (
                           )}></FlatList>
                       </View>
                     </ScrollView>
-                 
-
-                  {/* <View
-                    style={{
-                      flexDirection: 'row',
-                      justifyContent: 'space-between',
-                      marginTop: 10,
-                    }}>
-                    <View style={styles.cardList}>
-                      <Text style={styles.cardNum}>visa</Text>
-                      <Text style={styles.cardNum}>1234</Text>
-                    </View>
-                    <View style={styles.cardList}>
-                      <Text style={styles.CardexpDate}>{strings.exp}</Text>
-                      <Text style={styles.CardexpDate}>07/2024</Text>
-                    </View>
-                  </View> */}
                 </View>
 
-                {/* {setCard.length > 0 ? ( */}
+               
                   <View>
-                    {/* <ActivityIndicator style={{flex:1,justifyContent:'center',alignSelf:'center',backgroundColor:'transparent'}} animating={true} size="small" color="#0000ff" /> */}
-                    {/* <ButtonComponent
-                      onPress={onCheckValidation}
-                      title={strings.pay}{...setPrice}
-                      buttonStyle={styles.addCardContainer}
-                      icon={buttonArrowBlue}
-                    /> */}
                     <TouchableOpacity
                       onPress={() =>
                         OnCardValidation()
@@ -731,9 +651,6 @@ const TicketCheckoutModalComp = (
                       />
                     </TouchableOpacity>
                   </View>
-                {/* ) : (
-                  <View></View>
-                )} */}
               </View>
             </View>
           </KeyboardAvoidingView>
@@ -905,17 +822,9 @@ const TicketCheckoutModalComp = (
                         }}
                       />
                     </View>
-                    {/* <TouchableOpacity
-                      activeOpacity={0.8}
-                      onPress={() => onCheckValidation()}>
-                      <ImageComponent
-                        style={styles.greenBtn}
-                        source={addGreen}></ImageComponent>
-                    </TouchableOpacity> */}
                   </View>
 
                   <View>
-                    {/* <ActivityIndicator style={{flex:1,justifyContent:'center',alignSelf:'center',backgroundColor:'transparent'}} animating={true} size="small" color="#0000ff" /> */}
                     <ButtonComponent
                       onPress={onCheckValidation}
                       title={strings.addCard}

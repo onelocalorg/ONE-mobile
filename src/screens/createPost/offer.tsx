@@ -534,6 +534,7 @@ export const CreatePostOfferScreen = (props: CreatePostOfferScreenProps) => {
     console.log('--------newPeople---------', newPeople);
 
     recentlyJoinUser(newPeople);
+    getUsetList(newPeople);
   };
 
   const AddUserList = (item: any) => {

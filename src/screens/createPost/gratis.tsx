@@ -350,6 +350,7 @@ export const CreatePostGratisScreen = (props: CreatePostGratisScreenProps) => {
     console.log('--------newPeople---------', newPeople);
 
     recentlyJoinUser(newPeople);
+    getUsetList(newPeople);
   };
 
   const CreateNewPostModal = () => {

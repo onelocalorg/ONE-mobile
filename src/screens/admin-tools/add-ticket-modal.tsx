@@ -140,7 +140,7 @@ const AddTicketModalComp = (
 
         <TouchableOpacity activeOpacity={1} onPress={keyboardDismiss}>
           <View style={styles.modalContainer}>
-            <EventList data={eventDetails} />/
+            <EventList data={eventDetails} />
             <Text style={styles.label}>{strings.ticketName}</Text>
             <Input value={ticketName} onChangeText={setTicketName} />
             <Text style={styles.label}>{strings.ticketTimeframe}</Text>
