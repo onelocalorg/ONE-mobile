@@ -255,7 +255,7 @@ export const GratitudeScreen = (props: MapScreenProps) => {
     console.log("=========== Geo Tagging API Request ==============");
     console.log(data);
     try {
-      const response = await fetch(API_URL + "/v1/events/geotagging", { 
+      const response = await fetch(API_URL + "/v1/events/geotagging", {
         method: "post",
         headers: new Headers({
           Authorization: "Bearer " + token,
@@ -289,48 +289,50 @@ export const GratitudeScreen = (props: MapScreenProps) => {
   };
 
   const mapPlusClick = () => {
-    var height = setCircle.height - 100
-    var width = setCircle.width - 100
-    setCircleHightWidth({ height, width });
-    geoTaggingAPI(location);
-    // map?.current?.getCamera().then((cam: Camera) => {
-    //   console.log("--------------onZoomInPress------------------");
-    //   cam.altitude = altitude + 5000;
-    //   radius = radius - 5000;
-    //   cam.pitch = pitch + 5;
-    //   // heading = heading + 5;
-    //   cam.zoom = zoom + 5;
-    //   map?.current?.animateCamera(cam);
-    //   console.log(cam);
-    //   setPitchOnMap(cam.pitch);
-    //   // setHeadingOnMap(heading);
-    //   setZoomOnMap(cam.zoom);
-    //   setAltitudeOnMap(cam.altitude);
-    //   geoTaggingAPI(location);
-    // });
+    // var height = setCircle.height - 100
+    // var width = setCircle.width - 100
+    // setCircleHightWidth({ height, width });
+    // geoTaggingAPITwo(location);
+    map?.current?.getCamera().then((cam: Camera) => {
+      console.log("--------------onZoomInPress------------------",cam);
+      cam.altitude = altitude + 5000;
+      radius = radius - 5000;
+      cam.pitch = pitch + 5;
+      // heading = heading + 5;
+      cam.zoom = zoom + 5;
+      map?.current?.animateCamera(cam);
+      console.log(cam);
+      setPitchOnMap(cam.pitch);
+      // setHeadingOnMap(heading);
+      setZoomOnMap(cam.zoom);
+      setAltitudeOnMap(cam.altitude);
+      geoTaggingAPI(location);
+    });
   };
 
   const mapMinusClick = () => {
-    var height = setCircle.height + 100
-    var width = setCircle.width + 100
-    setCircleHightWidth({ height, width });
-    geoTaggingAPI(location);
+    // var height = setCircle.height + 100
+    // var width = setCircle.width + 100
+    // setCircleHightWidth({ height, width });
+    // geoTaggingAPITwo(location);
     map?.current?.getCamera().then((cam: Camera) => {
-      console.log("--------------onZoomOutPress------------------",cam);
-      // cam.altitude = altitude - 5000;
-      // radius = radius + 5000;
-      // cam.pitch = pitch - 5;
-      // // heading = heading + 5;
-      // cam.zoom = zoom - 5;
-      // map?.current?.animateCamera(cam);
-      // console.log(cam);
-      // setPitchOnMap(cam.pitch);
-      // // setHeadingOnMap(heading);
-      // setZoomOnMap(cam.zoom);
-      // setAltitudeOnMap(cam.altitude);
-      // geoTaggingAPI(location);
+      console.log("--------------onZoomOutPress------------------", cam);
+      cam.altitude = altitude - 5000;
+      radius = radius + 5000;
+      cam.pitch = pitch - 5;
+      // heading = heading + 5;
+      cam.zoom = zoom - 5;
+      map?.current?.animateCamera(cam);
+      console.log(cam);
+      setPitchOnMap(cam.pitch);
+      // setHeadingOnMap(heading);
+      setZoomOnMap(cam.zoom);
+      setAltitudeOnMap(cam.altitude);
+      geoTaggingAPI(location);
     });
   };
+
+ 
 
   const onConfirmStrtTime = (res: any) => {
     console.log(res);
@@ -363,7 +365,7 @@ export const GratitudeScreen = (props: MapScreenProps) => {
     LodingData(true);
     geoTaggingAPI(location);
   };
-  
+
   const onMarkerClick = (mapEventData: any) => {
     console.log("markerIndex", mapEventData);
     mileStoneSwiperRef?.current?.scrollTo(mapEventData);
@@ -428,24 +430,23 @@ export const GratitudeScreen = (props: MapScreenProps) => {
           latitudeDelta: 0.0922,
           longitudeDelta: 0.0421,
         }}
+                onRegionChangeComplete={region => {
+                    console.log(region,'region region')
+                }}
       >
-        {/* <Circle
+        <Circle
           key={"1"}
           center={latLong}
           radius={5000}
           strokeWidth={4}
           strokeColor={"black"}
-        ></Circle> */}
+          lineCap={'round'}
+        ></Circle>
         {eventList.map((eventList: any, jindex) => {
           return (
             <Marker
               key={jindex}
-              draggable
-              onDragEnd={(e) =>
-                console.log(e.nativeEvent.coordinate, "get data")
-              }
-              onPress={(value) => onMarkerClick(value)}
-              // pinColor={setEventIndex === jindex ? "red" : "black"}
+              onPress={() => onMarkerClick(jindex)}
               pinColor={eventList.isActive ? "red" : "black"}
               coordinate={{
                 latitude: eventList?.location?.coordinates[1],
@@ -454,27 +455,6 @@ export const GratitudeScreen = (props: MapScreenProps) => {
             ></Marker>
           );
         })}
-
-        <Marker
-          coordinate={{
-            latitude: location?.latitude,
-            longitude: location?.longitude,
-          }}
-          // fillColor="rgba(101,75,169,0.5)"
-          draggable
-          onDragEnd={(e) => {onCircleDragDrop(e.nativeEvent)}}
-          onPress={(e) => {}}
-        >
-          <View
-            style={{
-              width: setCircle.width,
-              height: setCircle.height,
-              borderRadius: setCircle.width/2,
-              borderColor: "black",
-              borderWidth: 4,
-            }}
-          />
-        </Marker>
       </MapView>
 
       <Callout style={styles.buttonCallout}>
