@@ -440,5 +440,23 @@ export const createStyleSheet = (theme: ThemeProps) => {
      width:20
     },
 
+    circle: {
+     height:200,
+     width:200
+    },
+   
+    map: {
+      flex: 1
+    },
+    type1:{
+     
+    },
+    type2:{
+
+    },
+    iconSelected:{
+
+    }
+
   });
 };

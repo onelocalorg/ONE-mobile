@@ -21,7 +21,6 @@ import {
   View,
 } from "react-native";
 import { useStringsAndLabels } from "@app-hooks/use-strings-and-labels";
-import MapView, { Callout, Camera, Circle, Marker } from "react-native-maps";
 import { ImageComponent } from "@components/image-component";
 import {
   Search,
@@ -63,6 +62,10 @@ import { DatePickerModal, TimePickerModal } from "react-native-paper-dates";
 import GetLocation from "react-native-get-location";
 import { Loader } from "@components/loader";
 import Swiper from "react-native-swiper";
+import ActiveEnv from '@config/env/env.dev.json';
+import Mapbox, { Callout, CircleLayer, MarkerView } from '@rnmapbox/maps';
+
+Mapbox.setAccessToken(ActiveEnv.MAP_ACCESS_TOKEN); 
 
 import { API_URL } from "@network/constant";
 interface MapScreenProps {
@@ -116,7 +119,7 @@ export const GratitudeScreen = (props: MapScreenProps) => {
     height: 200,
     width: 200,
   });
-  const map: LegacyRef<MapView> = useRef(null);
+  const map: LegacyRef<Mapbox.MapView> = useRef(null);
 
   const dispatch = useDispatch();
 
@@ -288,49 +291,49 @@ export const GratitudeScreen = (props: MapScreenProps) => {
     navigation.navigate(navigations.EVENT_DETAIL, { id: item?._id });
   };
 
-  const mapPlusClick = () => {
-    // var height = setCircle.height - 100
-    // var width = setCircle.width - 100
-    // setCircleHightWidth({ height, width });
-    // geoTaggingAPITwo(location);
-    map?.current?.getCamera().then((cam: Camera) => {
-      console.log("--------------onZoomInPress------------------",cam);
-      cam.altitude = altitude + 5000;
-      radius = radius - 5000;
-      cam.pitch = pitch + 5;
-      // heading = heading + 5;
-      cam.zoom = zoom + 5;
-      map?.current?.animateCamera(cam);
-      console.log(cam);
-      setPitchOnMap(cam.pitch);
-      // setHeadingOnMap(heading);
-      setZoomOnMap(cam.zoom);
-      setAltitudeOnMap(cam.altitude);
-      geoTaggingAPI(location);
-    });
-  };
+  // const mapPlusClick = () => {
+  //   // var height = setCircle.height - 100
+  //   // var width = setCircle.width - 100
+  //   // setCircleHightWidth({ height, width });
+  //   // geoTaggingAPITwo(location);
+  //   map?.current?.getCamera().then((cam: Camera) => {
+  //     console.log("--------------onZoomInPress------------------",cam);
+  //     cam.altitude = altitude + 5000;
+  //     radius = radius - 5000;
+  //     cam.pitch = pitch + 5;
+  //     // heading = heading + 5;
+  //     cam.zoom = zoom + 5;
+  //     map?.current?.animateCamera(cam);
+  //     console.log(cam);
+  //     setPitchOnMap(cam.pitch);
+  //     // setHeadingOnMap(heading);
+  //     setZoomOnMap(cam.zoom);
+  //     setAltitudeOnMap(cam.altitude);
+  //     geoTaggingAPI(location);
+  //   });
+  // };
 
-  const mapMinusClick = () => {
-    // var height = setCircle.height + 100
-    // var width = setCircle.width + 100
-    // setCircleHightWidth({ height, width });
-    // geoTaggingAPITwo(location);
-    map?.current?.getCamera().then((cam: Camera) => {
-      console.log("--------------onZoomOutPress------------------", cam);
-      cam.altitude = altitude - 5000;
-      radius = radius + 5000;
-      cam.pitch = pitch - 5;
-      // heading = heading + 5;
-      cam.zoom = zoom - 5;
-      map?.current?.animateCamera(cam);
-      console.log(cam);
-      setPitchOnMap(cam.pitch);
-      // setHeadingOnMap(heading);
-      setZoomOnMap(cam.zoom);
-      setAltitudeOnMap(cam.altitude);
-      geoTaggingAPI(location);
-    });
-  };
+  // const mapMinusClick = () => {
+  //   // var height = setCircle.height + 100
+  //   // var width = setCircle.width + 100
+  //   // setCircleHightWidth({ height, width });
+  //   // geoTaggingAPITwo(location);
+  //   map?.current?.getCamera().then((cam: Camera) => {
+  //     console.log("--------------onZoomOutPress------------------", cam);
+  //     cam.altitude = altitude - 5000;
+  //     radius = radius + 5000;
+  //     cam.pitch = pitch - 5;
+  //     // heading = heading + 5;
+  //     cam.zoom = zoom - 5;
+  //     map?.current?.animateCamera(cam);
+  //     console.log(cam);
+  //     setPitchOnMap(cam.pitch);
+  //     // setHeadingOnMap(heading);
+  //     setZoomOnMap(cam.zoom);
+  //     setAltitudeOnMap(cam.altitude);
+  //     geoTaggingAPI(location);
+  //   });
+  // };
 
  
 
@@ -372,7 +375,7 @@ export const GratitudeScreen = (props: MapScreenProps) => {
     setEventIndexData(mapEventData);
   };
 
-  const onCircleDragDrop = (circleLatLog: any) => {
+  const onPressMarker = (circleLatLog: any) => {
     console.log("markerIndex", circleLatLog);
     // geoTaggingAPI(circleLatLog);
   }
@@ -384,7 +387,6 @@ export const GratitudeScreen = (props: MapScreenProps) => {
     resultTemp[indexMarker].isActive = true;
     eventDataStore(resultTemp);
   };
-
   return (
     <View style={{ flex: 1 }}>
       <Loader visible={isLoading} showOverlay />
@@ -417,7 +419,29 @@ export const GratitudeScreen = (props: MapScreenProps) => {
         </View>
       </TouchableOpacity>
 
-      <MapView
+      <Mapbox.MapView style={styles.map} >
+
+
+      {eventList.map((eventList: any, jindex) => {
+          return (
+            <MarkerView
+              key={jindex}
+              onTouchEnd={() => onMarkerClick(jindex)}
+              isSelected
+              // pinColor={eventList.isActive ? "red" : "black"}
+              coordinate={[eventList?.location?.coordinates[1], eventList?.location?.coordinates[0]]}
+            ></MarkerView>
+          );
+        })}
+
+        <CircleLayer
+        id="circle"
+        // style={styles.circle}
+        minZoomLevel={15}
+        ></CircleLayer>
+      </Mapbox.MapView>
+
+      {/* <MapView
         ref={map}
         style={{ flex: 1 }}
         camera={Camera}
@@ -442,29 +466,17 @@ export const GratitudeScreen = (props: MapScreenProps) => {
           strokeColor={"black"}
           lineCap={'round'}
         ></Circle>
-        {eventList.map((eventList: any, jindex) => {
-          return (
-            <Marker
-              key={jindex}
-              onPress={() => onMarkerClick(jindex)}
-              pinColor={eventList.isActive ? "red" : "black"}
-              coordinate={{
-                latitude: eventList?.location?.coordinates[1],
-                longitude: eventList?.location?.coordinates[0],
-              }}
-            ></Marker>
-          );
-        })}
-      </MapView>
+        
+      </MapView> */}
 
-      <Callout style={styles.buttonCallout}>
+      {/* <MapCallout style={styles.buttonCallout}>
         <TouchableOpacity style={[styles.touchable]} onPress={mapMinusClick}>
           <Image style={styles.plusClass} source={plus}></Image>
         </TouchableOpacity>
         <TouchableOpacity style={[styles.touchable]} onPress={mapPlusClick}>
           <Image style={styles.plusClass} source={minus}></Image>
         </TouchableOpacity>
-      </Callout>
+      </MapCallout> */}
 
       {eventData.length != 0 ? (
         <View style={styles.avatarContainer}>
@@ -528,5 +540,6 @@ export const GratitudeScreen = (props: MapScreenProps) => {
         <></>
       )}
     </View>
+    
   );
 };
