@@ -1,0 +1,19 @@
+{
+    "logs": [
+        {
+            "outputFile": "com.oneboulder.app-mergeDebugResources-97:/values-ji/values-ji.xml",
+            "map": [
+                {
+                    "source": "/Users/sanandiyavipul/.gradle/caches/transforms-3/a9a96c8d286636d9efe9ac060ad09e0d/transformed/jetified-hcaptcha-20.37.4/res/values-ji/values-ji.xml",
+                    "from": {
+                        "startLines": "2",
+                        "startColumns": "4",
+                        "startOffsets": "55",
+                        "endColumns": "85",
+                        "endOffsets": "136"
+                    }
+                }
+            ]
+        }
+    ]
+}

@@ -1,346 +1,466 @@
 [
     {
-        "merged": "com.oneboulder.app-merged_res-94:/drawable-mdpi_src_assets_images_mapservice.png.flat",
-        "source": "com.oneboulder.app-main-96:/drawable-mdpi/src_assets_images_mapservice.png"
+        "merged": "/Users/sanandiyavipul/.gradle/daemon/8.0.1/com.oneboulder.app-merged_res-99:/drawable-mdpi_src_assets_images_moving.png.flat",
+        "source": "/Users/sanandiyavipul/.gradle/daemon/8.0.1/com.oneboulder.app-main-101:/drawable-mdpi/src_assets_images_moving.png"
     },
     {
-        "merged": "com.oneboulder.app-merged_res-94:/drawable-mdpi_src_assets_images_vector.png.flat",
-        "source": "com.oneboulder.app-main-96:/drawable-mdpi/src_assets_images_vector.png"
+        "merged": "com.oneboulder.app-merged_res-99:/drawable-xxhdpi_node_modules_reactnativecalendars_src_img_down.png.flat",
+        "source": "com.oneboulder.app-main-101:/drawable-xxhdpi/node_modules_reactnativecalendars_src_img_down.png"
     },
     {
-        "merged": "com.oneboulder.app-merged_res-94:/drawable-mdpi_src_assets_images_inactiveradio.png.flat",
-        "source": "com.oneboulder.app-main-96:/drawable-mdpi/src_assets_images_inactiveradio.png"
+        "merged": "com.oneboulder.app-merged_res-99:/drawable-xhdpi_node_modules_reactnativecalendars_src_calendar_img_previous.png.flat",
+        "source": "com.oneboulder.app-main-101:/drawable-xhdpi/node_modules_reactnativecalendars_src_calendar_img_previous.png"
     },
     {
-        "merged": "com.oneboulder.app-merged_res-94:/drawable-mdpi_src_assets_images_closecard.png.flat",
-        "source": "com.oneboulder.app-main-96:/drawable-mdpi/src_assets_images_closecard.png"
+        "merged": "com.oneboulder.app-merged_res-99:/drawable-hdpi_node_modules_reactnativecalendars_src_img_up.png.flat",
+        "source": "com.oneboulder.app-main-101:/drawable-hdpi/node_modules_reactnativecalendars_src_img_up.png"
     },
     {
-        "merged": "com.oneboulder.app-merged_res-94:/drawable-mdpi_src_assets_images_ticket.png.flat",
-        "source": "com.oneboulder.app-main-96:/drawable-mdpi/src_assets_images_ticket.png"
+        "merged": "/Users/sanandiyavipul/.gradle/daemon/8.0.1/com.oneboulder.app-merged_res-99:/drawable-xxhdpi_node_modules_reactnativegoogleplacesautocomplete_images_powered_by_google_on_white.png.flat",
+        "source": "/Users/sanandiyavipul/.gradle/daemon/8.0.1/com.oneboulder.app-main-101:/drawable-xxhdpi/node_modules_reactnativegoogleplacesautocomplete_images_powered_by_google_on_white.png"
     },
     {
-        "merged": "com.oneboulder.app-merged_res-94:/drawable-mdpi_src_assets_images_loginlogo.png.flat",
-        "source": "com.oneboulder.app-main-96:/drawable-mdpi/src_assets_images_loginlogo.png"
+        "merged": "com.oneboulder.app-merged_res-99:/drawable-xxxhdpi_node_modules_reactnativecalendars_src_img_down.png.flat",
+        "source": "com.oneboulder.app-main-101:/drawable-xxxhdpi/node_modules_reactnativecalendars_src_img_down.png"
     },
     {
-        "merged": "com.oneboulder.app-merged_res-94:/drawable-mdpi_src_assets_images_logoblack.png.flat",
-        "source": "com.oneboulder.app-main-96:/drawable-mdpi/src_assets_images_logoblack.png"
+        "merged": "/Users/sanandiyavipul/.gradle/daemon/8.0.1/com.oneboulder.app-merged_res-99:/drawable-mdpi_src_assets_images_gratitudeblack.png.flat",
+        "source": "/Users/sanandiyavipul/.gradle/daemon/8.0.1/com.oneboulder.app-main-101:/drawable-mdpi/src_assets_images_gratitudeblack.png"
     },
     {
-        "merged": "com.oneboulder.app-merged_res-94:/drawable-mdpi_src_assets_images_minus.png.flat",
-        "source": "com.oneboulder.app-main-96:/drawable-mdpi/src_assets_images_minus.png"
+        "merged": "/Users/sanandiyavipul/.gradle/daemon/8.0.1/com.oneboulder.app-merged_res-99:/drawable-mdpi_src_assets_images_addgreen.png.flat",
+        "source": "/Users/sanandiyavipul/.gradle/daemon/8.0.1/com.oneboulder.app-main-101:/drawable-mdpi/src_assets_images_addgreen.png"
     },
     {
-        "merged": "com.oneboulder.app-merged_res-94:/drawable-mdpi_src_assets_images_eventblack.png.flat",
-        "source": "com.oneboulder.app-main-96:/drawable-mdpi/src_assets_images_eventblack.png"
+        "merged": "/Users/sanandiyavipul/.gradle/daemon/8.0.1/com.oneboulder.app-merged_res-99:/drawable-mdpi_src_assets_images_gratitude.png.flat",
+        "source": "/Users/sanandiyavipul/.gradle/daemon/8.0.1/com.oneboulder.app-main-101:/drawable-mdpi/src_assets_images_gratitude.png"
     },
     {
-        "merged": "com.oneboulder.app-merged_res-94:/drawable-mdpi_node_modules_reactnavigation_elements_src_assets_backicon.png.flat",
-        "source": "com.oneboulder.app-main-96:/drawable-mdpi/node_modules_reactnavigation_elements_src_assets_backicon.png"
+        "merged": "/Users/sanandiyavipul/.gradle/daemon/8.0.1/com.oneboulder.app-merged_res-99:/drawable-mdpi_node_modules_reactnavigation_elements_src_assets_backicon.png.flat",
+        "source": "/Users/sanandiyavipul/.gradle/daemon/8.0.1/com.oneboulder.app-main-101:/drawable-mdpi/node_modules_reactnavigation_elements_src_assets_backicon.png"
     },
     {
-        "merged": "com.oneboulder.app-merged_res-94:/drawable-mdpi_src_assets_images_arrowleft.png.flat",
-        "source": "com.oneboulder.app-main-96:/drawable-mdpi/src_assets_images_arrowleft.png"
+        "merged": "/Users/sanandiyavipul/.gradle/daemon/8.0.1/com.oneboulder.app-merged_res-99:/drawable-mdpi_src_assets_images_activeradio.png.flat",
+        "source": "/Users/sanandiyavipul/.gradle/daemon/8.0.1/com.oneboulder.app-main-101:/drawable-mdpi/src_assets_images_activeradio.png"
     },
     {
-        "merged": "com.oneboulder.app-merged_res-94:/drawable-mdpi_src_assets_images_mapgifting.png.flat",
-        "source": "com.oneboulder.app-main-96:/drawable-mdpi/src_assets_images_mapgifting.png"
+        "merged": "/Users/sanandiyavipul/.gradle/daemon/8.0.1/com.oneboulder.app-merged_res-99:/drawable-mdpi_node_modules_reactnavigation_elements_src_assets_backiconmask.png.flat",
+        "source": "/Users/sanandiyavipul/.gradle/daemon/8.0.1/com.oneboulder.app-main-101:/drawable-mdpi/node_modules_reactnavigation_elements_src_assets_backiconmask.png"
     },
     {
-        "merged": "com.oneboulder.app-merged_res-94:/drawable_rn_edit_text_material.xml.flat",
-        "source": "com.oneboulder.app-main-96:/drawable/rn_edit_text_material.xml"
+        "merged": "/Users/sanandiyavipul/.gradle/daemon/8.0.1/com.oneboulder.app-merged_res-99:/drawable-mdpi_src_assets_images_painting.png.flat",
+        "source": "/Users/sanandiyavipul/.gradle/daemon/8.0.1/com.oneboulder.app-main-101:/drawable-mdpi/src_assets_images_painting.png"
     },
     {
-        "merged": "com.oneboulder.app-merged_res-94:/drawable-mdpi_src_assets_images_eventtwo.png.flat",
-        "source": "com.oneboulder.app-main-96:/drawable-mdpi/src_assets_images_eventtwo.png"
+        "merged": "com.oneboulder.app-merged_res-99:/drawable-xhdpi_node_modules_reactnativecalendars_src_calendar_img_next.png.flat",
+        "source": "com.oneboulder.app-main-101:/drawable-xhdpi/node_modules_reactnativecalendars_src_calendar_img_next.png"
     },
     {
-        "merged": "com.oneboulder.app-merged_res-94:/drawable-mdpi_src_assets_images_buttonarrow.png.flat",
-        "source": "com.oneboulder.app-main-96:/drawable-mdpi/src_assets_images_buttonarrow.png"
+        "merged": "/Users/sanandiyavipul/.gradle/daemon/8.0.1/com.oneboulder.app-merged_res-99:/drawable-mdpi_src_assets_images_plus.png.flat",
+        "source": "/Users/sanandiyavipul/.gradle/daemon/8.0.1/com.oneboulder.app-main-101:/drawable-mdpi/src_assets_images_plus.png"
     },
     {
-        "merged": "com.oneboulder.app-merged_res-94:/drawable-mdpi_src_assets_images_bell.png.flat",
-        "source": "com.oneboulder.app-main-96:/drawable-mdpi/src_assets_images_bell.png"
+        "merged": "/Users/sanandiyavipul/.gradle/daemon/8.0.1/com.oneboulder.app-merged_res-99:/drawable-mdpi_src_assets_images_dummy.png.flat",
+        "source": "/Users/sanandiyavipul/.gradle/daemon/8.0.1/com.oneboulder.app-main-101:/drawable-mdpi/src_assets_images_dummy.png"
     },
     {
-        "merged": "com.oneboulder.app-merged_res-94:/mipmap-mdpi_ic_launcher.png.flat",
-        "source": "com.oneboulder.app-main-96:/mipmap-mdpi/ic_launcher.png"
+        "merged": "/Users/sanandiyavipul/.gradle/daemon/8.0.1/com.oneboulder.app-merged_res-99:/drawable-mdpi_src_assets_images_bell.png.flat",
+        "source": "/Users/sanandiyavipul/.gradle/daemon/8.0.1/com.oneboulder.app-main-101:/drawable-mdpi/src_assets_images_bell.png"
     },
     {
-        "merged": "com.oneboulder.app-merged_res-94:/drawable-mdpi_src_assets_images_activeradio.png.flat",
-        "source": "com.oneboulder.app-main-96:/drawable-mdpi/src_assets_images_activeradio.png"
+        "merged": "com.oneboulder.app-merged_res-99:/drawable-mdpi_src_assets_images_selectpic.png.flat",
+        "source": "com.oneboulder.app-main-101:/drawable-mdpi/src_assets_images_selectpic.png"
     },
     {
-        "merged": "com.oneboulder.app-merged_res-94:/drawable-mdpi_src_assets_images_downimg.png.flat",
-        "source": "com.oneboulder.app-main-96:/drawable-mdpi/src_assets_images_downimg.png"
+        "merged": "com.oneboulder.app-merged_res-99:/drawable-xxxhdpi_node_modules_reactnativecalendars_src_img_up.png.flat",
+        "source": "com.oneboulder.app-main-101:/drawable-xxxhdpi/node_modules_reactnativecalendars_src_img_up.png"
     },
     {
-        "merged": "com.oneboulder.app-merged_res-94:/mipmap-xxhdpi_ic_launcher.png.flat",
-        "source": "com.oneboulder.app-main-96:/mipmap-xxhdpi/ic_launcher.png"
+        "merged": "/Users/sanandiyavipul/.gradle/daemon/8.0.1/com.oneboulder.app-merged_res-99:/drawable-mdpi_src_assets_images_error.png.flat",
+        "source": "/Users/sanandiyavipul/.gradle/daemon/8.0.1/com.oneboulder.app-main-101:/drawable-mdpi/src_assets_images_error.png"
     },
     {
-        "merged": "com.oneboulder.app-merged_res-94:/drawable-mdpi_src_assets_images_hamburger.png.flat",
-        "source": "com.oneboulder.app-main-96:/drawable-mdpi/src_assets_images_hamburger.png"
+        "merged": "com.oneboulder.app-merged_res-99:/drawable-mdpi_src_assets_images_edit2.png.flat",
+        "source": "com.oneboulder.app-main-101:/drawable-mdpi/src_assets_images_edit2.png"
     },
     {
-        "merged": "com.oneboulder.app-merged_res-94:/drawable-mdpi_src_assets_images_moving.png.flat",
-        "source": "com.oneboulder.app-main-96:/drawable-mdpi/src_assets_images_moving.png"
+        "merged": "/Users/sanandiyavipul/.gradle/daemon/8.0.1/com.oneboulder.app-merged_res-99:/drawable-mdpi_src_assets_images_hamburger.png.flat",
+        "source": "/Users/sanandiyavipul/.gradle/daemon/8.0.1/com.oneboulder.app-main-101:/drawable-mdpi/src_assets_images_hamburger.png"
     },
     {
-        "merged": "com.oneboulder.app-merged_res-94:/drawable-mdpi_src_assets_images_onelogo.png.flat",
-        "source": "com.oneboulder.app-main-96:/drawable-mdpi/src_assets_images_onelogo.png"
+        "merged": "/Users/sanandiyavipul/.gradle/daemon/8.0.1/com.oneboulder.app-merged_res-99:/drawable-xhdpi_node_modules_reactnativegoogleplacesautocomplete_images_powered_by_google_on_white.png.flat",
+        "source": "/Users/sanandiyavipul/.gradle/daemon/8.0.1/com.oneboulder.app-main-101:/drawable-xhdpi/node_modules_reactnativegoogleplacesautocomplete_images_powered_by_google_on_white.png"
     },
     {
-        "merged": "com.oneboulder.app-merged_res-94:/mipmap-xxhdpi_ic_launcher_round.png.flat",
-        "source": "com.oneboulder.app-main-96:/mipmap-xxhdpi/ic_launcher_round.png"
+        "merged": "/Users/sanandiyavipul/.gradle/daemon/8.0.1/com.oneboulder.app-merged_res-99:/drawable-mdpi_src_assets_images_home.png.flat",
+        "source": "/Users/sanandiyavipul/.gradle/daemon/8.0.1/com.oneboulder.app-main-101:/drawable-mdpi/src_assets_images_home.png"
     },
     {
-        "merged": "com.oneboulder.app-merged_res-94:/drawable-mdpi_src_assets_images_copy.png.flat",
-        "source": "com.oneboulder.app-main-96:/drawable-mdpi/src_assets_images_copy.png"
+        "merged": "/Users/sanandiyavipul/.gradle/daemon/8.0.1/com.oneboulder.app-merged_res-99:/drawable-mdpi_node_modules_reactnativepaper_src_assets_backchevron.png.flat",
+        "source": "/Users/sanandiyavipul/.gradle/daemon/8.0.1/com.oneboulder.app-main-101:/drawable-mdpi/node_modules_reactnativepaper_src_assets_backchevron.png"
     },
     {
-        "merged": "com.oneboulder.app-merged_res-94:/drawable-mdpi_src_assets_images_calendartime.png.flat",
-        "source": "com.oneboulder.app-main-96:/drawable-mdpi/src_assets_images_calendartime.png"
+        "merged": "com.oneboulder.app-merged_res-99:/drawable-xxhdpi_node_modules_reactnativecalendars_src_calendar_img_next.png.flat",
+        "source": "com.oneboulder.app-main-101:/drawable-xxhdpi/node_modules_reactnativecalendars_src_calendar_img_next.png"
     },
     {
-        "merged": "com.oneboulder.app-merged_res-94:/drawable-mdpi_src_assets_images_pin.png.flat",
-        "source": "com.oneboulder.app-main-96:/drawable-mdpi/src_assets_images_pin.png"
+        "merged": "/Users/sanandiyavipul/.gradle/daemon/8.0.1/com.oneboulder.app-merged_res-99:/mipmap-mdpi_ic_launcher_round.png.flat",
+        "source": "/Users/sanandiyavipul/.gradle/daemon/8.0.1/com.oneboulder.app-main-101:/mipmap-mdpi/ic_launcher_round.png"
     },
     {
-        "merged": "com.oneboulder.app-merged_res-94:/drawable-mdpi_src_assets_images_offer.png.flat",
-        "source": "com.oneboulder.app-main-96:/drawable-mdpi/src_assets_images_offer.png"
+        "merged": "/Users/sanandiyavipul/.gradle/daemon/8.0.1/com.oneboulder.app-merged_res-99:/drawable-mdpi_node_modules_reactnativegoogleplacesautocomplete_images_powered_by_google_on_white.png.flat",
+        "source": "/Users/sanandiyavipul/.gradle/daemon/8.0.1/com.oneboulder.app-main-101:/drawable-mdpi/node_modules_reactnativegoogleplacesautocomplete_images_powered_by_google_on_white.png"
     },
     {
-        "merged": "com.oneboulder.app-merged_res-94:/mipmap-hdpi_ic_launcher.png.flat",
-        "source": "com.oneboulder.app-main-96:/mipmap-hdpi/ic_launcher.png"
+        "merged": "/Users/sanandiyavipul/.gradle/daemon/8.0.1/com.oneboulder.app-merged_res-99:/drawable-mdpi_src_assets_images_downimg.png.flat",
+        "source": "/Users/sanandiyavipul/.gradle/daemon/8.0.1/com.oneboulder.app-main-101:/drawable-mdpi/src_assets_images_downimg.png"
     },
     {
-        "merged": "com.oneboulder.app-merged_res-94:/drawable-mdpi_src_assets_images_home.png.flat",
-        "source": "com.oneboulder.app-main-96:/drawable-mdpi/src_assets_images_home.png"
+        "merged": "/Users/sanandiyavipul/.gradle/daemon/8.0.1/com.oneboulder.app-merged_res-99:/drawable-mdpi_src_assets_images_explorer.png.flat",
+        "source": "/Users/sanandiyavipul/.gradle/daemon/8.0.1/com.oneboulder.app-main-101:/drawable-mdpi/src_assets_images_explorer.png"
     },
     {
-        "merged": "com.oneboulder.app-merged_res-94:/drawable-mdpi_src_assets_images_calendarwhite.png.flat",
-        "source": "com.oneboulder.app-main-96:/drawable-mdpi/src_assets_images_calendarwhite.png"
+        "merged": "/Users/sanandiyavipul/.gradle/daemon/8.0.1/com.oneboulder.app-merged_res-99:/drawable-mdpi_src_assets_images_loginlogo.png.flat",
+        "source": "/Users/sanandiyavipul/.gradle/daemon/8.0.1/com.oneboulder.app-main-101:/drawable-mdpi/src_assets_images_loginlogo.png"
     },
     {
-        "merged": "com.oneboulder.app-merged_res-94:/drawable-mdpi_src_assets_images_error.png.flat",
-        "source": "com.oneboulder.app-main-96:/drawable-mdpi/src_assets_images_error.png"
+        "merged": "/Users/sanandiyavipul/.gradle/daemon/8.0.1/com.oneboulder.app-merged_res-99:/mipmap-hdpi_ic_launcher.png.flat",
+        "source": "/Users/sanandiyavipul/.gradle/daemon/8.0.1/com.oneboulder.app-main-101:/mipmap-hdpi/ic_launcher.png"
     },
     {
-        "merged": "com.oneboulder.app-merged_res-94:/drawable-mdpi_src_assets_images_gratitudeblack.png.flat",
-        "source": "com.oneboulder.app-main-96:/drawable-mdpi/src_assets_images_gratitudeblack.png"
+        "merged": "/Users/sanandiyavipul/.gradle/daemon/8.0.1/com.oneboulder.app-merged_res-99:/drawable-mdpi_src_assets_images_pinwhite.png.flat",
+        "source": "/Users/sanandiyavipul/.gradle/daemon/8.0.1/com.oneboulder.app-main-101:/drawable-mdpi/src_assets_images_pinwhite.png"
     },
     {
-        "merged": "com.oneboulder.app-merged_res-94:/drawable-mdpi_node_modules_reactnavigation_elements_src_assets_backiconmask.png.flat",
-        "source": "com.oneboulder.app-main-96:/drawable-mdpi/node_modules_reactnavigation_elements_src_assets_backiconmask.png"
+        "merged": "/Users/sanandiyavipul/.gradle/daemon/8.0.1/com.oneboulder.app-merged_res-99:/drawable-mdpi_src_assets_images_postimage.png.flat",
+        "source": "/Users/sanandiyavipul/.gradle/daemon/8.0.1/com.oneboulder.app-main-101:/drawable-mdpi/src_assets_images_postimage.png"
     },
     {
-        "merged": "com.oneboulder.app-merged_res-94:/drawable-mdpi_src_assets_images_mapevent.png.flat",
-        "source": "com.oneboulder.app-main-96:/drawable-mdpi/src_assets_images_mapevent.png"
+        "merged": "/Users/sanandiyavipul/.gradle/daemon/8.0.1/com.oneboulder.app-merged_res-99:/drawable-mdpi_src_assets_images_buttonarrowblue.png.flat",
+        "source": "/Users/sanandiyavipul/.gradle/daemon/8.0.1/com.oneboulder.app-main-101:/drawable-mdpi/src_assets_images_buttonarrowblue.png"
     },
     {
-        "merged": "com.oneboulder.app-merged_res-94:/drawable-mdpi_src_assets_images_gratis.png.flat",
-        "source": "com.oneboulder.app-main-96:/drawable-mdpi/src_assets_images_gratis.png"
+        "merged": "/Users/sanandiyavipul/.gradle/daemon/8.0.1/com.oneboulder.app-merged_res-99:/drawable-mdpi_src_assets_images_headerbg.png.flat",
+        "source": "/Users/sanandiyavipul/.gradle/daemon/8.0.1/com.oneboulder.app-main-101:/drawable-mdpi/src_assets_images_headerbg.png"
     },
     {
-        "merged": "com.oneboulder.app-merged_res-94:/drawable-hdpi_node_modules_reactnavigation_elements_src_assets_backicon.png.flat",
-        "source": "com.oneboulder.app-main-96:/drawable-hdpi/node_modules_reactnavigation_elements_src_assets_backicon.png"
+        "merged": "com.oneboulder.app-merged_res-99:/drawable-mdpi_src_assets_images_sendpayoutimg.png.flat",
+        "source": "com.oneboulder.app-main-101:/drawable-mdpi/src_assets_images_sendpayoutimg.png"
     },
     {
-        "merged": "com.oneboulder.app-merged_res-94:/drawable-mdpi_src_assets_images_send.png.flat",
-        "source": "com.oneboulder.app-main-96:/drawable-mdpi/src_assets_images_send.png"
+        "merged": "/Users/sanandiyavipul/.gradle/daemon/8.0.1/com.oneboulder.app-merged_res-99:/drawable-mdpi_src_assets_images_eventblack.png.flat",
+        "source": "/Users/sanandiyavipul/.gradle/daemon/8.0.1/com.oneboulder.app-main-101:/drawable-mdpi/src_assets_images_eventblack.png"
     },
     {
-        "merged": "com.oneboulder.app-merged_res-94:/drawable-mdpi_src_assets_images_comment.png.flat",
-        "source": "com.oneboulder.app-main-96:/drawable-mdpi/src_assets_images_comment.png"
+        "merged": "com.oneboulder.app-merged_res-99:/drawable-mdpi_src_assets_images_apple.png.flat",
+        "source": "com.oneboulder.app-main-101:/drawable-mdpi/src_assets_images_apple.png"
     },
     {
-        "merged": "com.oneboulder.app-merged_res-94:/drawable-mdpi_src_assets_images_explorer.png.flat",
-        "source": "com.oneboulder.app-main-96:/drawable-mdpi/src_assets_images_explorer.png"
+        "merged": "/Users/sanandiyavipul/.gradle/daemon/8.0.1/com.oneboulder.app-merged_res-99:/mipmap-xxhdpi_ic_launcher.png.flat",
+        "source": "/Users/sanandiyavipul/.gradle/daemon/8.0.1/com.oneboulder.app-main-101:/mipmap-xxhdpi/ic_launcher.png"
     },
     {
-        "merged": "com.oneboulder.app-merged_res-94:/drawable-mdpi_src_assets_images_postimage.png.flat",
-        "source": "com.oneboulder.app-main-96:/drawable-mdpi/src_assets_images_postimage.png"
+        "merged": "/Users/sanandiyavipul/.gradle/daemon/8.0.1/com.oneboulder.app-merged_res-99:/drawable-mdpi_src_assets_images_gratis.png.flat",
+        "source": "/Users/sanandiyavipul/.gradle/daemon/8.0.1/com.oneboulder.app-main-101:/drawable-mdpi/src_assets_images_gratis.png"
     },
     {
-        "merged": "com.oneboulder.app-merged_res-94:/drawable-mdpi_src_assets_images_greenoffer.png.flat",
-        "source": "com.oneboulder.app-main-96:/drawable-mdpi/src_assets_images_greenoffer.png"
+        "merged": "/Users/sanandiyavipul/.gradle/daemon/8.0.1/com.oneboulder.app-merged_res-99:/drawable-xxhdpi_node_modules_reactnavigation_elements_src_assets_backicon.png.flat",
+        "source": "/Users/sanandiyavipul/.gradle/daemon/8.0.1/com.oneboulder.app-main-101:/drawable-xxhdpi/node_modules_reactnavigation_elements_src_assets_backicon.png"
     },
     {
-        "merged": "com.oneboulder.app-merged_res-94:/mipmap-xxxhdpi_ic_launcher.png.flat",
-        "source": "com.oneboulder.app-main-96:/mipmap-xxxhdpi/ic_launcher.png"
+        "merged": "/Users/sanandiyavipul/.gradle/daemon/8.0.1/com.oneboulder.app-merged_res-99:/drawable-mdpi_src_assets_images_eventtwo.png.flat",
+        "source": "/Users/sanandiyavipul/.gradle/daemon/8.0.1/com.oneboulder.app-main-101:/drawable-mdpi/src_assets_images_eventtwo.png"
     },
     {
-        "merged": "com.oneboulder.app-merged_res-94:/mipmap-mdpi_ic_launcher_round.png.flat",
-        "source": "com.oneboulder.app-main-96:/mipmap-mdpi/ic_launcher_round.png"
+        "merged": "/Users/sanandiyavipul/.gradle/daemon/8.0.1/com.oneboulder.app-merged_res-99:/drawable-mdpi_src_assets_images_buttonarrow.png.flat",
+        "source": "/Users/sanandiyavipul/.gradle/daemon/8.0.1/com.oneboulder.app-main-101:/drawable-mdpi/src_assets_images_buttonarrow.png"
     },
     {
-        "merged": "com.oneboulder.app-merged_res-94:/mipmap-xhdpi_ic_launcher.png.flat",
-        "source": "com.oneboulder.app-main-96:/mipmap-xhdpi/ic_launcher.png"
+        "merged": "/Users/sanandiyavipul/.gradle/daemon/8.0.1/com.oneboulder.app-merged_res-99:/drawable-mdpi_src_assets_images_calendar.png.flat",
+        "source": "/Users/sanandiyavipul/.gradle/daemon/8.0.1/com.oneboulder.app-main-101:/drawable-mdpi/src_assets_images_calendar.png"
     },
     {
-        "merged": "com.oneboulder.app-merged_res-94:/drawable-mdpi_src_assets_images_blackoffer.png.flat",
-        "source": "com.oneboulder.app-main-96:/drawable-mdpi/src_assets_images_blackoffer.png"
+        "merged": "com.oneboulder.app-merged_res-99:/drawable-xxxhdpi_node_modules_reactnativecalendars_src_calendar_img_next.png.flat",
+        "source": "com.oneboulder.app-main-101:/drawable-xxxhdpi/node_modules_reactnativecalendars_src_calendar_img_next.png"
     },
     {
-        "merged": "com.oneboulder.app-merged_res-94:/drawable-mdpi_src_assets_images_headerbg.png.flat",
-        "source": "com.oneboulder.app-main-96:/drawable-mdpi/src_assets_images_headerbg.png"
+        "merged": "com.oneboulder.app-merged_res-99:/drawable-mdpi_src_assets_images_notificationtwo.png.flat",
+        "source": "com.oneboulder.app-main-101:/drawable-mdpi/src_assets_images_notificationtwo.png"
     },
     {
-        "merged": "com.oneboulder.app-merged_res-94:/drawable-xhdpi_node_modules_reactnativegoogleplacesautocomplete_images_powered_by_google_on_white.png.flat",
-        "source": "com.oneboulder.app-main-96:/drawable-xhdpi/node_modules_reactnativegoogleplacesautocomplete_images_powered_by_google_on_white.png"
+        "merged": "/Users/sanandiyavipul/.gradle/daemon/8.0.1/com.oneboulder.app-merged_res-99:/drawable-mdpi_src_assets_images_apple.png.flat",
+        "source": "/Users/sanandiyavipul/.gradle/daemon/8.0.1/com.oneboulder.app-main-101:/drawable-mdpi/src_assets_images_apple.png"
     },
     {
-        "merged": "com.oneboulder.app-merged_res-94:/drawable-xhdpi_node_modules_reactnavigation_elements_src_assets_backicon.png.flat",
-        "source": "com.oneboulder.app-main-96:/drawable-xhdpi/node_modules_reactnavigation_elements_src_assets_backicon.png"
+        "merged": "com.oneboulder.app-merged_res-99:/drawable-mdpi_src_assets_images_onelogo.png.flat",
+        "source": "com.oneboulder.app-main-101:/drawable-mdpi/src_assets_images_onelogo.png"
     },
     {
-        "merged": "com.oneboulder.app-merged_res-94:/drawable-mdpi_src_assets_images_arrowdown.png.flat",
-        "source": "com.oneboulder.app-main-96:/drawable-mdpi/src_assets_images_arrowdown.png"
+        "merged": "/Users/sanandiyavipul/.gradle/daemon/8.0.1/com.oneboulder.app-merged_res-99:/drawable-mdpi_src_assets_images_buttonarrowgreen.png.flat",
+        "source": "/Users/sanandiyavipul/.gradle/daemon/8.0.1/com.oneboulder.app-main-101:/drawable-mdpi/src_assets_images_buttonarrowgreen.png"
     },
     {
-        "merged": "com.oneboulder.app-merged_res-94:/drawable-mdpi_src_assets_images_serviceprovider.png.flat",
-        "source": "com.oneboulder.app-main-96:/drawable-mdpi/src_assets_images_serviceprovider.png"
+        "merged": "/Users/sanandiyavipul/.gradle/daemon/8.0.1/com.oneboulder.app-merged_res-99:/drawable-mdpi_src_assets_images_closecard.png.flat",
+        "source": "/Users/sanandiyavipul/.gradle/daemon/8.0.1/com.oneboulder.app-main-101:/drawable-mdpi/src_assets_images_closecard.png"
     },
     {
-        "merged": "com.oneboulder.app-merged_res-94:/drawable-mdpi_src_assets_images_event.png.flat",
-        "source": "com.oneboulder.app-main-96:/drawable-mdpi/src_assets_images_event.png"
+        "merged": "com.oneboulder.app-merged_res-99:/drawable-mdpi_src_assets_images_requestgreen.png.flat",
+        "source": "com.oneboulder.app-main-101:/drawable-mdpi/src_assets_images_requestgreen.png"
     },
     {
-        "merged": "com.oneboulder.app-merged_res-94:/drawable-mdpi_src_assets_images_buttonarrowgreen.png.flat",
-        "source": "com.oneboulder.app-main-96:/drawable-mdpi/src_assets_images_buttonarrowgreen.png"
+        "merged": "com.oneboulder.app-merged_res-99:/drawable-mdpi_src_assets_images_saveicon.png.flat",
+        "source": "com.oneboulder.app-main-101:/drawable-mdpi/src_assets_images_saveicon.png"
     },
     {
-        "merged": "com.oneboulder.app-merged_res-94:/drawable-xxhdpi_node_modules_reactnativegoogleplacesautocomplete_images_powered_by_google_on_white.png.flat",
-        "source": "com.oneboulder.app-main-96:/drawable-xxhdpi/node_modules_reactnativegoogleplacesautocomplete_images_powered_by_google_on_white.png"
+        "merged": "com.oneboulder.app-merged_res-99:/drawable-mdpi_node_modules_reactnativecalendars_src_img_up.png.flat",
+        "source": "com.oneboulder.app-main-101:/drawable-mdpi/node_modules_reactnativecalendars_src_img_up.png"
     },
     {
-        "merged": "com.oneboulder.app-merged_res-94:/drawable-mdpi_src_assets_images_postcalender.png.flat",
-        "source": "com.oneboulder.app-main-96:/drawable-mdpi/src_assets_images_postcalender.png"
+        "merged": "/Users/sanandiyavipul/.gradle/daemon/8.0.1/com.oneboulder.app-merged_res-99:/drawable-mdpi_src_assets_images_event.png.flat",
+        "source": "/Users/sanandiyavipul/.gradle/daemon/8.0.1/com.oneboulder.app-main-101:/drawable-mdpi/src_assets_images_event.png"
     },
     {
-        "merged": "com.oneboulder.app-merged_res-94:/drawable-mdpi_src_assets_images_apple.png.flat",
-        "source": "com.oneboulder.app-main-96:/drawable-mdpi/src_assets_images_apple.png"
+        "merged": "/Users/sanandiyavipul/.gradle/daemon/8.0.1/com.oneboulder.app-merged_res-99:/drawable-mdpi_src_assets_images_arrowdown.png.flat",
+        "source": "/Users/sanandiyavipul/.gradle/daemon/8.0.1/com.oneboulder.app-main-101:/drawable-mdpi/src_assets_images_arrowdown.png"
     },
     {
-        "merged": "com.oneboulder.app-merged_res-94:/drawable-mdpi_src_assets_images_pinwhite.png.flat",
-        "source": "com.oneboulder.app-main-96:/drawable-mdpi/src_assets_images_pinwhite.png"
+        "merged": "/Users/sanandiyavipul/.gradle/daemon/8.0.1/com.oneboulder.app-merged_res-99:/drawable-mdpi_src_assets_images_onelogo.png.flat",
+        "source": "/Users/sanandiyavipul/.gradle/daemon/8.0.1/com.oneboulder.app-main-101:/drawable-mdpi/src_assets_images_onelogo.png"
     },
     {
-        "merged": "com.oneboulder.app-merged_res-94:/drawable-mdpi_src_assets_images_notification.png.flat",
-        "source": "com.oneboulder.app-main-96:/drawable-mdpi/src_assets_images_notification.png"
+        "merged": "/Users/sanandiyavipul/.gradle/daemon/8.0.1/com.oneboulder.app-merged_res-99:/drawable-mdpi_src_assets_images_ticket.png.flat",
+        "source": "/Users/sanandiyavipul/.gradle/daemon/8.0.1/com.oneboulder.app-main-101:/drawable-mdpi/src_assets_images_ticket.png"
     },
     {
-        "merged": "com.oneboulder.app-merged_res-94:/drawable-mdpi_src_assets_images_painting.png.flat",
-        "source": "com.oneboulder.app-main-96:/drawable-mdpi/src_assets_images_painting.png"
+        "merged": "/Users/sanandiyavipul/.gradle/daemon/8.0.1/com.oneboulder.app-merged_res-99:/drawable-mdpi_src_assets_images_greenoffer.png.flat",
+        "source": "/Users/sanandiyavipul/.gradle/daemon/8.0.1/com.oneboulder.app-main-101:/drawable-mdpi/src_assets_images_greenoffer.png"
     },
     {
-        "merged": "com.oneboulder.app-merged_res-94:/mipmap-hdpi_ic_launcher_round.png.flat",
-        "source": "com.oneboulder.app-main-96:/mipmap-hdpi/ic_launcher_round.png"
+        "merged": "/Users/sanandiyavipul/.gradle/daemon/8.0.1/com.oneboulder.app-merged_res-99:/drawable-mdpi_src_assets_images_blackoffer.png.flat",
+        "source": "/Users/sanandiyavipul/.gradle/daemon/8.0.1/com.oneboulder.app-main-101:/drawable-mdpi/src_assets_images_blackoffer.png"
     },
     {
-        "merged": "com.oneboulder.app-merged_res-94:/drawable-mdpi_src_assets_images_dummy.png.flat",
-        "source": "com.oneboulder.app-main-96:/drawable-mdpi/src_assets_images_dummy.png"
+        "merged": "/Users/sanandiyavipul/.gradle/daemon/8.0.1/com.oneboulder.app-merged_res-99:/drawable-mdpi_src_assets_images_offer.png.flat",
+        "source": "/Users/sanandiyavipul/.gradle/daemon/8.0.1/com.oneboulder.app-main-101:/drawable-mdpi/src_assets_images_offer.png"
     },
     {
-        "merged": "com.oneboulder.app-merged_res-94:/drawable-mdpi_src_assets_images_greenimage.png.flat",
-        "source": "com.oneboulder.app-main-96:/drawable-mdpi/src_assets_images_greenimage.png"
+        "merged": "/Users/sanandiyavipul/.gradle/daemon/8.0.1/com.oneboulder.app-merged_res-99:/mipmap-xhdpi_ic_launcher_round.png.flat",
+        "source": "/Users/sanandiyavipul/.gradle/daemon/8.0.1/com.oneboulder.app-main-101:/mipmap-xhdpi/ic_launcher_round.png"
     },
     {
-        "merged": "com.oneboulder.app-merged_res-94:/drawable-mdpi_src_assets_images_close.png.flat",
-        "source": "com.oneboulder.app-main-96:/drawable-mdpi/src_assets_images_close.png"
+        "merged": "/Users/sanandiyavipul/.gradle/daemon/8.0.1/com.oneboulder.app-merged_res-99:/drawable-mdpi_src_assets_images_close.png.flat",
+        "source": "/Users/sanandiyavipul/.gradle/daemon/8.0.1/com.oneboulder.app-main-101:/drawable-mdpi/src_assets_images_close.png"
     },
     {
-        "merged": "com.oneboulder.app-merged_res-94:/drawable-mdpi_src_assets_images_eventwhite.png.flat",
-        "source": "com.oneboulder.app-main-96:/drawable-mdpi/src_assets_images_eventwhite.png"
+        "merged": "/Users/sanandiyavipul/.gradle/daemon/8.0.1/com.oneboulder.app-merged_res-99:/drawable-mdpi_src_assets_images_headertitle.png.flat",
+        "source": "/Users/sanandiyavipul/.gradle/daemon/8.0.1/com.oneboulder.app-main-101:/drawable-mdpi/src_assets_images_headertitle.png"
     },
     {
-        "merged": "com.oneboulder.app-merged_res-94:/drawable-mdpi_src_assets_images_save.png.flat",
-        "source": "com.oneboulder.app-main-96:/drawable-mdpi/src_assets_images_save.png"
+        "merged": "/Users/sanandiyavipul/.gradle/daemon/8.0.1/com.oneboulder.app-merged_res-99:/drawable-mdpi_src_assets_images_vector.png.flat",
+        "source": "/Users/sanandiyavipul/.gradle/daemon/8.0.1/com.oneboulder.app-main-101:/drawable-mdpi/src_assets_images_vector.png"
     },
     {
-        "merged": "com.oneboulder.app-merged_res-94:/drawable-mdpi_src_assets_images_edit.png.flat",
-        "source": "com.oneboulder.app-main-96:/drawable-mdpi/src_assets_images_edit.png"
+        "merged": "/Users/sanandiyavipul/.gradle/daemon/8.0.1/com.oneboulder.app-merged_res-99:/drawable-mdpi_src_assets_images_calendartime.png.flat",
+        "source": "/Users/sanandiyavipul/.gradle/daemon/8.0.1/com.oneboulder.app-main-101:/drawable-mdpi/src_assets_images_calendartime.png"
     },
     {
-        "merged": "com.oneboulder.app-merged_res-94:/drawable-mdpi_src_assets_images_addgreen.png.flat",
-        "source": "com.oneboulder.app-main-96:/drawable-mdpi/src_assets_images_addgreen.png"
+        "merged": "/Users/sanandiyavipul/.gradle/daemon/8.0.1/com.oneboulder.app-merged_res-99:/mipmap-mdpi_ic_launcher.png.flat",
+        "source": "/Users/sanandiyavipul/.gradle/daemon/8.0.1/com.oneboulder.app-main-101:/mipmap-mdpi/ic_launcher.png"
     },
     {
-        "merged": "com.oneboulder.app-merged_res-94:/drawable-mdpi_src_assets_images_operator.png.flat",
-        "source": "com.oneboulder.app-main-96:/drawable-mdpi/src_assets_images_operator.png"
+        "merged": "/Users/sanandiyavipul/.gradle/daemon/8.0.1/com.oneboulder.app-merged_res-99:/mipmap-xxhdpi_ic_launcher_round.png.flat",
+        "source": "/Users/sanandiyavipul/.gradle/daemon/8.0.1/com.oneboulder.app-main-101:/mipmap-xxhdpi/ic_launcher_round.png"
     },
     {
-        "merged": "com.oneboulder.app-merged_res-94:/mipmap-xhdpi_ic_launcher_round.png.flat",
-        "source": "com.oneboulder.app-main-96:/mipmap-xhdpi/ic_launcher_round.png"
+        "merged": "/Users/sanandiyavipul/.gradle/daemon/8.0.1/com.oneboulder.app-merged_res-99:/mipmap-xxxhdpi_ic_launcher_round.png.flat",
+        "source": "/Users/sanandiyavipul/.gradle/daemon/8.0.1/com.oneboulder.app-main-101:/mipmap-xxxhdpi/ic_launcher_round.png"
     },
     {
-        "merged": "com.oneboulder.app-merged_res-94:/drawable-mdpi_src_assets_images_google.png.flat",
-        "source": "com.oneboulder.app-main-96:/drawable-mdpi/src_assets_images_google.png"
+        "merged": "/Users/sanandiyavipul/.gradle/daemon/8.0.1/com.oneboulder.app-merged_res-99:/mipmap-xhdpi_ic_launcher.png.flat",
+        "source": "/Users/sanandiyavipul/.gradle/daemon/8.0.1/com.oneboulder.app-main-101:/mipmap-xhdpi/ic_launcher.png"
     },
     {
-        "merged": "com.oneboulder.app-merged_res-94:/drawable-mdpi_src_assets_images_plus.png.flat",
-        "source": "com.oneboulder.app-main-96:/drawable-mdpi/src_assets_images_plus.png"
+        "merged": "com.oneboulder.app-merged_res-99:/drawable-xxxhdpi_node_modules_reactnativecalendars_src_calendar_img_previous.png.flat",
+        "source": "com.oneboulder.app-main-101:/drawable-xxxhdpi/node_modules_reactnativecalendars_src_calendar_img_previous.png"
     },
     {
-        "merged": "com.oneboulder.app-merged_res-94:/drawable-mdpi_node_modules_reactnativepaper_src_assets_backchevron.png.flat",
-        "source": "com.oneboulder.app-main-96:/drawable-mdpi/node_modules_reactnativepaper_src_assets_backchevron.png"
+        "merged": "/Users/sanandiyavipul/.gradle/daemon/8.0.1/com.oneboulder.app-merged_res-99:/mipmap-xxxhdpi_ic_launcher.png.flat",
+        "source": "/Users/sanandiyavipul/.gradle/daemon/8.0.1/com.oneboulder.app-main-101:/mipmap-xxxhdpi/ic_launcher.png"
     },
     {
-        "merged": "com.oneboulder.app-merged_res-94:/drawable-xxxhdpi_node_modules_reactnavigation_elements_src_assets_backicon.png.flat",
-        "source": "com.oneboulder.app-main-96:/drawable-xxxhdpi/node_modules_reactnavigation_elements_src_assets_backicon.png"
+        "merged": "com.oneboulder.app-merged_res-99:/drawable-hdpi_node_modules_reactnativecalendars_src_img_down.png.flat",
+        "source": "com.oneboulder.app-main-101:/drawable-hdpi/node_modules_reactnativecalendars_src_img_down.png"
     },
     {
-        "merged": "com.oneboulder.app-merged_res-94:/drawable-mdpi_src_assets_images_gratitude.png.flat",
-        "source": "com.oneboulder.app-main-96:/drawable-mdpi/src_assets_images_gratitude.png"
+        "merged": "/Users/sanandiyavipul/.gradle/daemon/8.0.1/com.oneboulder.app-merged_res-99:/drawable-mdpi_src_assets_images_addcard.png.flat",
+        "source": "/Users/sanandiyavipul/.gradle/daemon/8.0.1/com.oneboulder.app-main-101:/drawable-mdpi/src_assets_images_addcard.png"
     },
     {
-        "merged": "com.oneboulder.app-merged_res-94:/drawable-mdpi_src_assets_images_buttonarrowblue.png.flat",
-        "source": "com.oneboulder.app-main-96:/drawable-mdpi/src_assets_images_buttonarrowblue.png"
+        "merged": "/Users/sanandiyavipul/.gradle/daemon/8.0.1/com.oneboulder.app-merged_res-99:/drawable-mdpi_src_assets_images_comment.png.flat",
+        "source": "/Users/sanandiyavipul/.gradle/daemon/8.0.1/com.oneboulder.app-main-101:/drawable-mdpi/src_assets_images_comment.png"
     },
     {
-        "merged": "com.oneboulder.app-merged_res-94:/drawable-mdpi_src_assets_images_chat.png.flat",
-        "source": "com.oneboulder.app-main-96:/drawable-mdpi/src_assets_images_chat.png"
+        "merged": "/Users/sanandiyavipul/.gradle/daemon/8.0.1/com.oneboulder.app-merged_res-99:/drawable-mdpi_src_assets_images_greenimage.png.flat",
+        "source": "/Users/sanandiyavipul/.gradle/daemon/8.0.1/com.oneboulder.app-main-101:/drawable-mdpi/src_assets_images_greenimage.png"
     },
     {
-        "merged": "com.oneboulder.app-merged_res-94:/drawable-mdpi_src_assets_images_request.png.flat",
-        "source": "com.oneboulder.app-main-96:/drawable-mdpi/src_assets_images_request.png"
+        "merged": "com.oneboulder.app-merged_res-99:/drawable-mdpi_node_modules_reactnativecalendars_src_img_down.png.flat",
+        "source": "com.oneboulder.app-main-101:/drawable-mdpi/node_modules_reactnativecalendars_src_img_down.png"
     },
     {
-        "merged": "com.oneboulder.app-merged_res-94:/drawable-mdpi_src_assets_images_money.png.flat",
-        "source": "com.oneboulder.app-main-96:/drawable-mdpi/src_assets_images_money.png"
+        "merged": "/Users/sanandiyavipul/.gradle/daemon/8.0.1/com.oneboulder.app-merged_res-99:/drawable-mdpi_src_assets_images_money.png.flat",
+        "source": "/Users/sanandiyavipul/.gradle/daemon/8.0.1/com.oneboulder.app-main-101:/drawable-mdpi/src_assets_images_money.png"
     },
     {
-        "merged": "com.oneboulder.app-merged_res-94:/drawable-mdpi_src_assets_images_headertitle.png.flat",
-        "source": "com.oneboulder.app-main-96:/drawable-mdpi/src_assets_images_headertitle.png"
+        "merged": "/Users/sanandiyavipul/.gradle/daemon/8.0.1/com.oneboulder.app-merged_res-99:/drawable-mdpi_src_assets_images_chat.png.flat",
+        "source": "/Users/sanandiyavipul/.gradle/daemon/8.0.1/com.oneboulder.app-main-101:/drawable-mdpi/src_assets_images_chat.png"
     },
     {
-        "merged": "com.oneboulder.app-merged_res-94:/mipmap-xxxhdpi_ic_launcher_round.png.flat",
-        "source": "com.oneboulder.app-main-96:/mipmap-xxxhdpi/ic_launcher_round.png"
+        "merged": "/Users/sanandiyavipul/.gradle/daemon/8.0.1/com.oneboulder.app-merged_res-99:/drawable-mdpi_src_assets_images_serviceprovider.png.flat",
+        "source": "/Users/sanandiyavipul/.gradle/daemon/8.0.1/com.oneboulder.app-main-101:/drawable-mdpi/src_assets_images_serviceprovider.png"
     },
     {
-        "merged": "com.oneboulder.app-merged_res-94:/drawable-mdpi_src_assets_images_bucket.png.flat",
-        "source": "com.oneboulder.app-main-96:/drawable-mdpi/src_assets_images_bucket.png"
+        "merged": "/Users/sanandiyavipul/.gradle/daemon/8.0.1/com.oneboulder.app-merged_res-99:/drawable-mdpi_src_assets_images_postcalender.png.flat",
+        "source": "/Users/sanandiyavipul/.gradle/daemon/8.0.1/com.oneboulder.app-main-101:/drawable-mdpi/src_assets_images_postcalender.png"
     },
     {
-        "merged": "com.oneboulder.app-merged_res-94:/drawable-mdpi_src_assets_images_calendar.png.flat",
-        "source": "com.oneboulder.app-main-96:/drawable-mdpi/src_assets_images_calendar.png"
+        "merged": "/Users/sanandiyavipul/.gradle/daemon/8.0.1/com.oneboulder.app-merged_res-99:/drawable-mdpi_src_assets_images_inactiveradio.png.flat",
+        "source": "/Users/sanandiyavipul/.gradle/daemon/8.0.1/com.oneboulder.app-main-101:/drawable-mdpi/src_assets_images_inactiveradio.png"
     },
     {
-        "merged": "com.oneboulder.app-merged_res-94:/drawable-mdpi_node_modules_reactnativegoogleplacesautocomplete_images_powered_by_google_on_white.png.flat",
-        "source": "com.oneboulder.app-main-96:/drawable-mdpi/node_modules_reactnativegoogleplacesautocomplete_images_powered_by_google_on_white.png"
+        "merged": "/Users/sanandiyavipul/.gradle/daemon/8.0.1/com.oneboulder.app-merged_res-99:/drawable-mdpi_src_assets_images_mapgifting.png.flat",
+        "source": "/Users/sanandiyavipul/.gradle/daemon/8.0.1/com.oneboulder.app-main-101:/drawable-mdpi/src_assets_images_mapgifting.png"
     },
     {
-        "merged": "com.oneboulder.app-merged_res-94:/drawable-xxhdpi_node_modules_reactnavigation_elements_src_assets_backicon.png.flat",
-        "source": "com.oneboulder.app-main-96:/drawable-xxhdpi/node_modules_reactnavigation_elements_src_assets_backicon.png"
+        "merged": "/Users/sanandiyavipul/.gradle/daemon/8.0.1/com.oneboulder.app-merged_res-99:/drawable-mdpi_src_assets_images_mapservice.png.flat",
+        "source": "/Users/sanandiyavipul/.gradle/daemon/8.0.1/com.oneboulder.app-main-101:/drawable-mdpi/src_assets_images_mapservice.png"
     },
     {
-        "merged": "com.oneboulder.app-merged_res-94:/drawable-mdpi_src_assets_images_search.png.flat",
-        "source": "com.oneboulder.app-main-96:/drawable-mdpi/src_assets_images_search.png"
+        "merged": "/Users/sanandiyavipul/.gradle/daemon/8.0.1/com.oneboulder.app-merged_res-99:/drawable-mdpi_src_assets_images_operator.png.flat",
+        "source": "/Users/sanandiyavipul/.gradle/daemon/8.0.1/com.oneboulder.app-main-101:/drawable-mdpi/src_assets_images_operator.png"
     },
     {
-        "merged": "com.oneboulder.app-merged_res-94:/drawable-mdpi_src_assets_images_addcard.png.flat",
-        "source": "com.oneboulder.app-main-96:/drawable-mdpi/src_assets_images_addcard.png"
+        "merged": "com.oneboulder.app-merged_res-99:/drawable-xxhdpi_node_modules_reactnativecalendars_src_calendar_img_previous.png.flat",
+        "source": "com.oneboulder.app-main-101:/drawable-xxhdpi/node_modules_reactnativecalendars_src_calendar_img_previous.png"
+    },
+    {
+        "merged": "/Users/sanandiyavipul/.gradle/daemon/8.0.1/com.oneboulder.app-merged_res-99:/drawable-mdpi_src_assets_images_copy.png.flat",
+        "source": "/Users/sanandiyavipul/.gradle/daemon/8.0.1/com.oneboulder.app-main-101:/drawable-mdpi/src_assets_images_copy.png"
+    },
+    {
+        "merged": "/Users/sanandiyavipul/.gradle/daemon/8.0.1/com.oneboulder.app-merged_res-99:/drawable-mdpi_src_assets_images_save.png.flat",
+        "source": "/Users/sanandiyavipul/.gradle/daemon/8.0.1/com.oneboulder.app-main-101:/drawable-mdpi/src_assets_images_save.png"
+    },
+    {
+        "merged": "com.oneboulder.app-merged_res-99:/drawable-mdpi_src_assets_images_reddeleteicon.png.flat",
+        "source": "com.oneboulder.app-main-101:/drawable-mdpi/src_assets_images_reddeleteicon.png"
+    },
+    {
+        "merged": "/Users/sanandiyavipul/.gradle/daemon/8.0.1/com.oneboulder.app-merged_res-99:/drawable-mdpi_src_assets_images_logoblack.png.flat",
+        "source": "/Users/sanandiyavipul/.gradle/daemon/8.0.1/com.oneboulder.app-main-101:/drawable-mdpi/src_assets_images_logoblack.png"
+    },
+    {
+        "merged": "/Users/sanandiyavipul/.gradle/daemon/8.0.1/com.oneboulder.app-merged_res-99:/drawable-mdpi_src_assets_images_calendarwhite.png.flat",
+        "source": "/Users/sanandiyavipul/.gradle/daemon/8.0.1/com.oneboulder.app-main-101:/drawable-mdpi/src_assets_images_calendarwhite.png"
+    },
+    {
+        "merged": "/Users/sanandiyavipul/.gradle/daemon/8.0.1/com.oneboulder.app-merged_res-99:/drawable_rn_edit_text_material.xml.flat",
+        "source": "/Users/sanandiyavipul/.gradle/daemon/8.0.1/com.oneboulder.app-main-101:/drawable/rn_edit_text_material.xml"
+    },
+    {
+        "merged": "/Users/sanandiyavipul/.gradle/daemon/8.0.1/com.oneboulder.app-merged_res-99:/drawable-mdpi_src_assets_images_notification.png.flat",
+        "source": "/Users/sanandiyavipul/.gradle/daemon/8.0.1/com.oneboulder.app-main-101:/drawable-mdpi/src_assets_images_notification.png"
+    },
+    {
+        "merged": "com.oneboulder.app-merged_res-99:/drawable-hdpi_node_modules_reactnativecalendars_src_calendar_img_previous.png.flat",
+        "source": "com.oneboulder.app-main-101:/drawable-hdpi/node_modules_reactnativecalendars_src_calendar_img_previous.png"
+    },
+    {
+        "merged": "/Users/sanandiyavipul/.gradle/daemon/8.0.1/com.oneboulder.app-merged_res-99:/drawable-mdpi_src_assets_images_bucket.png.flat",
+        "source": "/Users/sanandiyavipul/.gradle/daemon/8.0.1/com.oneboulder.app-main-101:/drawable-mdpi/src_assets_images_bucket.png"
+    },
+    {
+        "merged": "/Users/sanandiyavipul/.gradle/daemon/8.0.1/com.oneboulder.app-merged_res-99:/drawable-mdpi_src_assets_images_search.png.flat",
+        "source": "/Users/sanandiyavipul/.gradle/daemon/8.0.1/com.oneboulder.app-main-101:/drawable-mdpi/src_assets_images_search.png"
+    },
+    {
+        "merged": "com.oneboulder.app-merged_res-99:/drawable-mdpi_src_assets_images_payoutclose.png.flat",
+        "source": "com.oneboulder.app-main-101:/drawable-mdpi/src_assets_images_payoutclose.png"
+    },
+    {
+        "merged": "/Users/sanandiyavipul/.gradle/daemon/8.0.1/com.oneboulder.app-merged_res-99:/drawable-mdpi_src_assets_images_mapevent.png.flat",
+        "source": "/Users/sanandiyavipul/.gradle/daemon/8.0.1/com.oneboulder.app-main-101:/drawable-mdpi/src_assets_images_mapevent.png"
+    },
+    {
+        "merged": "/Users/sanandiyavipul/.gradle/daemon/8.0.1/com.oneboulder.app-merged_res-99:/drawable-mdpi_src_assets_images_edit.png.flat",
+        "source": "/Users/sanandiyavipul/.gradle/daemon/8.0.1/com.oneboulder.app-main-101:/drawable-mdpi/src_assets_images_edit.png"
+    },
+    {
+        "merged": "/Users/sanandiyavipul/.gradle/daemon/8.0.1/com.oneboulder.app-merged_res-99:/drawable-xxxhdpi_node_modules_reactnavigation_elements_src_assets_backicon.png.flat",
+        "source": "/Users/sanandiyavipul/.gradle/daemon/8.0.1/com.oneboulder.app-main-101:/drawable-xxxhdpi/node_modules_reactnavigation_elements_src_assets_backicon.png"
+    },
+    {
+        "merged": "/Users/sanandiyavipul/.gradle/daemon/8.0.1/com.oneboulder.app-merged_res-99:/drawable-mdpi_src_assets_images_request.png.flat",
+        "source": "/Users/sanandiyavipul/.gradle/daemon/8.0.1/com.oneboulder.app-main-101:/drawable-mdpi/src_assets_images_request.png"
+    },
+    {
+        "merged": "/Users/sanandiyavipul/.gradle/daemon/8.0.1/com.oneboulder.app-merged_res-99:/drawable-mdpi_src_assets_images_pin.png.flat",
+        "source": "/Users/sanandiyavipul/.gradle/daemon/8.0.1/com.oneboulder.app-main-101:/drawable-mdpi/src_assets_images_pin.png"
+    },
+    {
+        "merged": "com.oneboulder.app-merged_res-99:/drawable-mdpi_src_assets_images_eventtwo.png.flat",
+        "source": "com.oneboulder.app-main-101:/drawable-mdpi/src_assets_images_eventtwo.png"
+    },
+    {
+        "merged": "com.oneboulder.app-merged_res-99:/drawable-xhdpi_node_modules_reactnativecalendars_src_img_up.png.flat",
+        "source": "com.oneboulder.app-main-101:/drawable-xhdpi/node_modules_reactnativecalendars_src_img_up.png"
+    },
+    {
+        "merged": "/Users/sanandiyavipul/.gradle/daemon/8.0.1/com.oneboulder.app-merged_res-99:/drawable-mdpi_src_assets_images_eventwhite.png.flat",
+        "source": "/Users/sanandiyavipul/.gradle/daemon/8.0.1/com.oneboulder.app-main-101:/drawable-mdpi/src_assets_images_eventwhite.png"
+    },
+    {
+        "merged": "com.oneboulder.app-merged_res-99:/drawable-xxhdpi_node_modules_reactnativecalendars_src_img_up.png.flat",
+        "source": "com.oneboulder.app-main-101:/drawable-xxhdpi/node_modules_reactnativecalendars_src_img_up.png"
+    },
+    {
+        "merged": "/Users/sanandiyavipul/.gradle/daemon/8.0.1/com.oneboulder.app-merged_res-99:/drawable-mdpi_src_assets_images_google.png.flat",
+        "source": "/Users/sanandiyavipul/.gradle/daemon/8.0.1/com.oneboulder.app-main-101:/drawable-mdpi/src_assets_images_google.png"
+    },
+    {
+        "merged": "com.oneboulder.app-merged_res-99:/drawable-mdpi_src_assets_images_gratisgreen.png.flat",
+        "source": "com.oneboulder.app-main-101:/drawable-mdpi/src_assets_images_gratisgreen.png"
+    },
+    {
+        "merged": "com.oneboulder.app-merged_res-99:/drawable-hdpi_node_modules_reactnativecalendars_src_calendar_img_next.png.flat",
+        "source": "com.oneboulder.app-main-101:/drawable-hdpi/node_modules_reactnativecalendars_src_calendar_img_next.png"
+    },
+    {
+        "merged": "/Users/sanandiyavipul/.gradle/daemon/8.0.1/com.oneboulder.app-merged_res-99:/drawable-mdpi_src_assets_images_send.png.flat",
+        "source": "/Users/sanandiyavipul/.gradle/daemon/8.0.1/com.oneboulder.app-main-101:/drawable-mdpi/src_assets_images_send.png"
+    },
+    {
+        "merged": "/Users/sanandiyavipul/.gradle/daemon/8.0.1/com.oneboulder.app-merged_res-99:/drawable-mdpi_src_assets_images_arrowleft.png.flat",
+        "source": "/Users/sanandiyavipul/.gradle/daemon/8.0.1/com.oneboulder.app-main-101:/drawable-mdpi/src_assets_images_arrowleft.png"
+    },
+    {
+        "merged": "/Users/sanandiyavipul/.gradle/daemon/8.0.1/com.oneboulder.app-merged_res-99:/drawable-hdpi_node_modules_reactnavigation_elements_src_assets_backicon.png.flat",
+        "source": "/Users/sanandiyavipul/.gradle/daemon/8.0.1/com.oneboulder.app-main-101:/drawable-hdpi/node_modules_reactnavigation_elements_src_assets_backicon.png"
+    },
+    {
+        "merged": "/Users/sanandiyavipul/.gradle/daemon/8.0.1/com.oneboulder.app-merged_res-99:/drawable-mdpi_src_assets_images_minus.png.flat",
+        "source": "/Users/sanandiyavipul/.gradle/daemon/8.0.1/com.oneboulder.app-main-101:/drawable-mdpi/src_assets_images_minus.png"
+    },
+    {
+        "merged": "/Users/sanandiyavipul/.gradle/daemon/8.0.1/com.oneboulder.app-merged_res-99:/drawable-xhdpi_node_modules_reactnavigation_elements_src_assets_backicon.png.flat",
+        "source": "/Users/sanandiyavipul/.gradle/daemon/8.0.1/com.oneboulder.app-main-101:/drawable-xhdpi/node_modules_reactnavigation_elements_src_assets_backicon.png"
+    },
+    {
+        "merged": "/Users/sanandiyavipul/.gradle/daemon/8.0.1/com.oneboulder.app-merged_res-99:/mipmap-hdpi_ic_launcher_round.png.flat",
+        "source": "/Users/sanandiyavipul/.gradle/daemon/8.0.1/com.oneboulder.app-main-101:/mipmap-hdpi/ic_launcher_round.png"
+    },
+    {
+        "merged": "com.oneboulder.app-merged_res-99:/drawable-xhdpi_node_modules_reactnativecalendars_src_img_down.png.flat",
+        "source": "com.oneboulder.app-main-101:/drawable-xhdpi/node_modules_reactnativecalendars_src_img_down.png"
     }
 ]

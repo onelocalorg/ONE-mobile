@@ -1,10 +1,10 @@
 {
     "logs": [
         {
-            "outputFile": "com.oneboulder.app-mergeDebugResources-92:/values-in-rID/values-in-rID.xml",
+            "outputFile": "com.oneboulder.app-mergeDebugResources-97:/values-in-rID/values-in-rID.xml",
             "map": [
                 {
-                    "source": "/Users/sanandiyavipul/.gradle/caches/transforms-3/f087ab2e88a8a7abc5897345e3d34ab6/transformed/jetified-stripe-3ds2-android-6.1.7/res/values-in-rID/values-in-rID.xml",
+                    "source": "/Users/sanandiyavipul/.gradle/caches/transforms-3/a0b5a6f04a492e2576cc030c5bbfd93f/transformed/jetified-stripe-3ds2-android-6.1.8/res/values-in-rID/values-in-rID.xml",
                     "from": {
                         "startLines": "2,3,4,5,6,7,8",
                         "startColumns": "4,4,4,4,4,4,4",

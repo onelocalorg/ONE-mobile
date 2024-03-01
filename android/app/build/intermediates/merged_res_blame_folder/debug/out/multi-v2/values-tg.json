@@ -1,8 +1,25 @@
 {
     "logs": [
         {
-            "outputFile": "com.oneboulder.app-mergeDebugResources-92:/values-tg/values-tg.xml",
+            "outputFile": "com.oneboulder.app-mergeDebugResources-97:/values-tg/values-tg.xml",
             "map": [
+                {
+                    "source": "/Users/sanandiyavipul/.gradle/caches/transforms-3/a9a96c8d286636d9efe9ac060ad09e0d/transformed/jetified-hcaptcha-20.37.4/res/values-tg/values-tg.xml",
+                    "from": {
+                        "startLines": "2",
+                        "startColumns": "4",
+                        "startOffsets": "55",
+                        "endColumns": "88",
+                        "endOffsets": "139"
+                    },
+                    "to": {
+                        "startLines": "8",
+                        "startColumns": "4",
+                        "startOffsets": "506",
+                        "endColumns": "88",
+                        "endOffsets": "590"
+                    }
+                },
                 {
                     "source": "/Users/sanandiyavipul/.gradle/caches/transforms-3/2c64e76a01331c76fc0f1d46f9e60f65/transformed/jetified-react-android-0.73.1-debug/res/values-tg/values-tg.xml",
                     "from": {

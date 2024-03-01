@@ -1,7 +1,7 @@
 {
     "logs": [
         {
-            "outputFile": "com.oneboulder.app-mergeDebugResources-92:/values-xlarge-v4/values-xlarge-v4.xml",
+            "outputFile": "com.oneboulder.app-mergeDebugResources-97:/values-xlarge-v4/values-xlarge-v4.xml",
             "map": [
                 {
                     "source": "/Users/sanandiyavipul/.gradle/caches/transforms-3/3a82d7226139b573ef0c274db30c8615/transformed/appcompat-1.6.1/res/values-xlarge-v4/values-xlarge-v4.xml",

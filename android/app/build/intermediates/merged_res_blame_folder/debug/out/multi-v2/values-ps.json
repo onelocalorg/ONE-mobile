@@ -1,7 +1,7 @@
 {
     "logs": [
         {
-            "outputFile": "com.oneboulder.app-mergeDebugResources-92:/values-ps/values-ps.xml",
+            "outputFile": "com.oneboulder.app-mergeDebugResources-97:/values-ps/values-ps.xml",
             "map": [
                 {
                     "source": "/Users/sanandiyavipul/.gradle/caches/transforms-3/2c64e76a01331c76fc0f1d46f9e60f65/transformed/jetified-react-android-0.73.1-debug/res/values-ps/values-ps.xml",
@@ -11,6 +11,23 @@
                         "startOffsets": "55,132,199,279,346,414,490",
                         "endColumns": "76,66,79,66,67,75,72",
                         "endOffsets": "127,194,274,341,409,485,558"
+                    }
+                },
+                {
+                    "source": "/Users/sanandiyavipul/.gradle/caches/transforms-3/a9a96c8d286636d9efe9ac060ad09e0d/transformed/jetified-hcaptcha-20.37.4/res/values-ps/values-ps.xml",
+                    "from": {
+                        "startLines": "2",
+                        "startColumns": "4",
+                        "startOffsets": "55",
+                        "endColumns": "82",
+                        "endOffsets": "133"
+                    },
+                    "to": {
+                        "startLines": "9",
+                        "startColumns": "4",
+                        "startOffsets": "563",
+                        "endColumns": "82",
+                        "endOffsets": "641"
                     }
                 }
             ]

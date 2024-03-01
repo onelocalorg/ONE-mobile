@@ -1,7 +1,7 @@
 {
     "logs": [
         {
-            "outputFile": "com.oneboulder.app-mergeDebugResources-92:/values-cb/values-cb.xml",
+            "outputFile": "com.oneboulder.app-mergeDebugResources-97:/values-cb/values-cb.xml",
             "map": [
                 {
                     "source": "/Users/sanandiyavipul/.gradle/caches/transforms-3/2c64e76a01331c76fc0f1d46f9e60f65/transformed/jetified-react-android-0.73.1-debug/res/values-cb/values-cb.xml",

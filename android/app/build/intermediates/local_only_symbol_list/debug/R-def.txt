@@ -1,5 +1,9 @@
 R_DEF: Internal format may change without notice
 local
+drawable node_modules_reactnativecalendars_src_calendar_img_next
+drawable node_modules_reactnativecalendars_src_calendar_img_previous
+drawable node_modules_reactnativecalendars_src_img_down
+drawable node_modules_reactnativecalendars_src_img_up
 drawable node_modules_reactnativegoogleplacesautocomplete_images_powered_by_google_on_white
 drawable node_modules_reactnativepaper_src_assets_backchevron
 drawable node_modules_reactnavigation_elements_src_assets_backicon
@@ -28,6 +32,7 @@ drawable src_assets_images_copy
 drawable src_assets_images_downimg
 drawable src_assets_images_dummy
 drawable src_assets_images_edit
+drawable src_assets_images_edit2
 drawable src_assets_images_error
 drawable src_assets_images_event
 drawable src_assets_images_eventblack
@@ -36,6 +41,7 @@ drawable src_assets_images_eventwhite
 drawable src_assets_images_explorer
 drawable src_assets_images_google
 drawable src_assets_images_gratis
+drawable src_assets_images_gratisgreen
 drawable src_assets_images_gratitude
 drawable src_assets_images_gratitudeblack
 drawable src_assets_images_greenimage
@@ -54,19 +60,26 @@ drawable src_assets_images_minus
 drawable src_assets_images_money
 drawable src_assets_images_moving
 drawable src_assets_images_notification
+drawable src_assets_images_notificationtwo
 drawable src_assets_images_offer
 drawable src_assets_images_onelogo
 drawable src_assets_images_operator
 drawable src_assets_images_painting
+drawable src_assets_images_payoutclose
 drawable src_assets_images_pin
 drawable src_assets_images_pinwhite
 drawable src_assets_images_plus
 drawable src_assets_images_postcalender
 drawable src_assets_images_postimage
+drawable src_assets_images_reddeleteicon
 drawable src_assets_images_request
+drawable src_assets_images_requestgreen
 drawable src_assets_images_save
+drawable src_assets_images_saveicon
 drawable src_assets_images_search
+drawable src_assets_images_selectpic
 drawable src_assets_images_send
+drawable src_assets_images_sendpayoutimg
 drawable src_assets_images_serviceprovider
 drawable src_assets_images_ticket
 drawable src_assets_images_vector
@@ -76,3 +89,4 @@ mipmap ic_launcher
 mipmap ic_launcher_round
 string app_name
 style AppTheme
+style Theme.MyApp

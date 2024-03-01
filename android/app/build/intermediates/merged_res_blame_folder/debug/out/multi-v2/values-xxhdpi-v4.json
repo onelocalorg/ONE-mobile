@@ -1,10 +1,10 @@
 {
     "logs": [
         {
-            "outputFile": "com.oneboulder.app-mergeDebugResources-92:/values-xxhdpi-v4/values-xxhdpi-v4.xml",
+            "outputFile": "com.oneboulder.app-mergeDebugResources-97:/values-xxhdpi-v4/values-xxhdpi-v4.xml",
             "map": [
                 {
-                    "source": "/Users/sanandiyavipul/.gradle/caches/transforms-3/2beb52a3583864a863b91ee0000189a6/transformed/jetified-payments-core-20.25.8/res/values-xxhdpi-v4/values-xxhdpi-v4.xml",
+                    "source": "/Users/sanandiyavipul/.gradle/caches/transforms-3/23ef3d7f9fecced2071c373c7c6fe6cb/transformed/jetified-payments-core-20.37.4/res/values-xxhdpi-v4/values-xxhdpi-v4.xml",
                     "from": {
                         "startLines": "2",
                         "startColumns": "4",
