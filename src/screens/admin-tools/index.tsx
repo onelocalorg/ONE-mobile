@@ -128,12 +128,13 @@ export const AdminToolsScreen = (props: AdminToolsScreenProps) => {
   });
   const { mutateAsync } = useUpdateEvent();
   const [isLoading, LodingData] = useState(false);
+  const [setLocation, setAddressLocation]:any = useState();
   const { mutateAsync: createEvent, isLoading: createEventLoading } =
     useCreateEvent();
 
   useEffect(() => {
     LogBox.ignoreAllLogs();
-    requestLocationPermission();
+    // requestLocationPermission();
     setEventDetails({ ...eventDetails, start_date: startDateValue.toString() });
   }, [startDateValue, endDateValue]);
 
@@ -256,8 +257,8 @@ export const AdminToolsScreen = (props: AdminToolsScreenProps) => {
         ...eventDetails,
         tickets: tickets?.map((ele) => ele?.id ?? ""),
         eventImage,
-        latitude: location.latitude,
-        longitude: location.longitude,
+        latitude: setLocation.lat,
+        longitude: setLocation.lng,
         type: setFilter,
       },
     });
@@ -296,10 +297,10 @@ export const AdminToolsScreen = (props: AdminToolsScreenProps) => {
       request = { ...request, about: about };
     }
     // if (location.latitude) {
-    request = { ...request, latitude: location.latitude };
+    request = { ...request, latitude: setLocation.lat };
     // }
     // if (location.longitude) {
-    request = { ...request, longitude: location.longitude };
+    request = { ...request, longitude: setLocation.lng };
 
     request = { ...request, type: setFilter };
     // }
@@ -587,10 +588,16 @@ export const AdminToolsScreen = (props: AdminToolsScreenProps) => {
                       }}
                       listViewDisplayed={false}
                       placeholder="where is this offer located?"
+
+                      GooglePlacesDetailsQuery={{ fields: "geometry" }}
+                      fetchDetails={true}
+
                       onPress={(data: any, details = null) => {
                         handleText(data.description, "full_address");
-                        console.log(data);
-                        console.log(details); // description
+                        console.log(JSON.stringify(data));
+                        console.log(JSON.stringify(details)); // description
+                        console.log(JSON.stringify(details?.geometry?.location));
+                        setAddressLocation(details?.geometry?.location)
                       }}
                       query={{
                         key: "AIzaSyCobkVCxli93gBohNPhJhuHBoWThs1pZlo", // client

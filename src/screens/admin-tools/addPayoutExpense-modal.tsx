@@ -76,6 +76,7 @@ export const AddPayoutExpenseScreen = (
     setDescriptions("");
     setAmount("");
     setImageSelectArray([]);
+    setImageSelectArrayKey([]);
     SetuserData({});
     recentlyJoinUser([]);
   };

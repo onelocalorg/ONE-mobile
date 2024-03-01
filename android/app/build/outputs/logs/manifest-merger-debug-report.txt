@@ -2,9 +2,9 @@
 manifest
 ADDED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/main/AndroidManifest.xml:1:1-33:12
 MERGED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/main/AndroidManifest.xml:1:1-33:12
-INJECTED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/debug/AndroidManifest.xml:2:1-13:12
-INJECTED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/debug/AndroidManifest.xml:2:1-13:12
-INJECTED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/debug/AndroidManifest.xml:2:1-13:12
+INJECTED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/debug/AndroidManifest.xml:2:1-14:12
+INJECTED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/debug/AndroidManifest.xml:2:1-14:12
+INJECTED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/debug/AndroidManifest.xml:2:1-14:12
 MERGED from [com.facebook.flipper:flipper-network-plugin:0.182.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/a3ce37a3c29467b933f10da7cc34f5f2/transformed/jetified-flipper-network-plugin-0.182.0/AndroidManifest.xml:8:1-15:12
 MERGED from [com.facebook.flipper:flipper-fresco-plugin:0.182.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/66440c45d39d1f9cc2c74a6292b6c3b2/transformed/jetified-flipper-fresco-plugin-0.182.0/AndroidManifest.xml:8:1-15:12
 MERGED from [com.facebook.flipper:flipper:0.182.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/487a105ae29e7c2a29179f136ff1d2f9/transformed/jetified-flipper-0.182.0/AndroidManifest.xml:8:1-18:12
@@ -248,7 +248,7 @@ application
 ADDED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/main/AndroidManifest.xml:14:5-32:19
 MERGED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/main/AndroidManifest.xml:14:5-32:19
 MERGED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/main/AndroidManifest.xml:14:5-32:19
-INJECTED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/debug/AndroidManifest.xml:7:5-12:19
+INJECTED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/debug/AndroidManifest.xml:7:5-13:19
 MERGED from [com.stripe:paymentsheet:20.37.4] /Users/sanandiyavipul/.gradle/caches/transforms-3/b966fd94163ce3b4e65ccab3f86e410b/transformed/jetified-paymentsheet-20.37.4/AndroidManifest.xml:7:5-39:19
 MERGED from [com.stripe:paymentsheet:20.37.4] /Users/sanandiyavipul/.gradle/caches/transforms-3/b966fd94163ce3b4e65ccab3f86e410b/transformed/jetified-paymentsheet-20.37.4/AndroidManifest.xml:7:5-39:19
 MERGED from [com.stripe:link:20.37.4] /Users/sanandiyavipul/.gradle/caches/transforms-3/588804d7a71351e9a091b078f97e5a7e/transformed/jetified-link-20.37.4/AndroidManifest.xml:7:5-32:19
@@ -396,14 +396,20 @@ MERGED from [com.facebook.react:react-android:0.73.1] /Users/sanandiyavipul/.gra
 MERGED from [com.facebook.react:react-android:0.73.1] /Users/sanandiyavipul/.gradle/caches/transforms-3/2c64e76a01331c76fc0f1d46f9e60f65/transformed/jetified-react-android-0.73.1-debug/AndroidManifest.xml:16:5-78
 	android:name
 		ADDED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/debug/AndroidManifest.xml:5:22-75
+meta-data#com.google.android.geo.API_KEY
+ADDED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/debug/AndroidManifest.xml:11:9-123
+	android:value
+		ADDED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/debug/AndroidManifest.xml:11:66-121
+	android:name
+		ADDED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/debug/AndroidManifest.xml:11:20-65
 activity#com.facebook.react.devsupport.DevSettingsActivity
-ADDED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/debug/AndroidManifest.xml:11:9-111
+ADDED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/debug/AndroidManifest.xml:12:9-111
 MERGED from [com.facebook.react:react-android:0.73.1] /Users/sanandiyavipul/.gradle/caches/transforms-3/2c64e76a01331c76fc0f1d46f9e60f65/transformed/jetified-react-android-0.73.1-debug/AndroidManifest.xml:19:9-21:40
 MERGED from [com.facebook.react:react-android:0.73.1] /Users/sanandiyavipul/.gradle/caches/transforms-3/2c64e76a01331c76fc0f1d46f9e60f65/transformed/jetified-react-android-0.73.1-debug/AndroidManifest.xml:19:9-21:40
 	android:exported
-		ADDED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/debug/AndroidManifest.xml:11:84-108
+		ADDED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/debug/AndroidManifest.xml:12:84-108
 	android:name
-		ADDED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/debug/AndroidManifest.xml:11:19-83
+		ADDED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/debug/AndroidManifest.xml:12:19-83
 uses-sdk
 INJECTED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/debug/AndroidManifest.xml reason: use-sdk injection requested
 INJECTED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/debug/AndroidManifest.xml
@@ -1097,7 +1103,7 @@ ADDED from [:react-native-image-crop-picker] /Users/sanandiyavipul/Projects/ONE-
 	android:name
 		ADDED from [:react-native-image-crop-picker] /Users/sanandiyavipul/Projects/ONE-mobile/node_modules/react-native-image-crop-picker/android/build/intermediates/merged_manifest/debug/AndroidManifest.xml:27:13-60
 uses-permission#android.permission.READ_EXTERNAL_STORAGE
-IMPLIED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/debug/AndroidManifest.xml:2:1-13:12 reason: com.reactnative.ivpusic.imagepicker requested WRITE_EXTERNAL_STORAGE
+IMPLIED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/debug/AndroidManifest.xml:2:1-14:12 reason: com.reactnative.ivpusic.imagepicker requested WRITE_EXTERNAL_STORAGE
 provider#com.imagepicker.ImagePickerProvider
 ADDED from [:react-native-image-picker] /Users/sanandiyavipul/Projects/ONE-mobile/node_modules/react-native-image-picker/android/build/intermediates/merged_manifest/debug/AndroidManifest.xml:8:9-16:20
 	android:grantUriPermissions

@@ -122,7 +122,6 @@ export const HomeScreen = (props: HomeScreenProps) => {
   useFocusEffect(
     useCallback(() => {
       LogBox.ignoreAllLogs();
-      getRecentlyJoinUserAPI();
       requestLocationPermission();
       getUserProfileAPI();
       setPage(1);
@@ -152,6 +151,7 @@ export const HomeScreen = (props: HomeScreenProps) => {
     })
       .then((location) => {
         setUserLocation(location);
+        getRecentlyJoinUserAPI();
         console.log(
           "---------------------location---------------------",
           location
