@@ -138,8 +138,6 @@ export const HomeScreen = (props: HomeScreenProps) => {
 
   useEffect(() => {
     LogBox.ignoreAllLogs();
-
-    
     requestLocationPermission();
     eventTypeData(type);
   }, [type, range?.startDate, range?.endDate, searchQuery]);
@@ -151,15 +149,19 @@ export const HomeScreen = (props: HomeScreenProps) => {
     })
       .then((location) => {
         setUserLocation(location);
-        getRecentlyJoinUserAPI();
+       
         console.log(
           "---------------------location---------------------",
           location
         );
-        if (location) {
+        if (location.latitude && location.longitude) {
+          getRecentlyJoinUserAPI(location);
+        }else{
+          getRecentlyJoinUserAPI('');
         }
       })
       .catch((error) => {
+        getRecentlyJoinUserAPI('');
         console.log("---------------------error---------------------", error);
         const { code, message } = error;
         console.log(code, message);
@@ -316,13 +318,23 @@ export const HomeScreen = (props: HomeScreenProps) => {
     }
   }
 
-  async function getRecentlyJoinUserAPI() {
+  async function getRecentlyJoinUserAPI(getLocation:any) {
     const token = await AsyncStorage.getItem("token");
-    var data: any = {
-      radius: 25,
-      user_lat: location?.latitude,
-      user_long: location?.longitude,
-    };
+
+    if(getLocation != ''){
+      var data: any = {
+        radius: 25,
+        user_lat: getLocation?.latitude,
+        user_long: getLocation?.longitude,
+      };
+    }else{
+      var data: any = {
+        radius: 25,
+      };
+    }
+   
+    console.log(data,'getRecentlyJoinUserAPI')
+   
     try {
       const response = await fetch(API_URL + "/v1/users/recently-joined", {
         method: "post",

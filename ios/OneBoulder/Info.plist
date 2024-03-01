@@ -2,10 +2,6 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-<key>LSApplicationQueriesSchemes</key>
-	<array>
-		<string>itms-apps</string>
-	</array>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleDisplayName</key>
@@ -40,6 +36,10 @@
 	<key>INIntentsSupported</key>
 	<array>
 		<string>Intent</string>
+	</array>
+	<key>LSApplicationQueriesSchemes</key>
+	<array>
+		<string>itms-apps</string>
 	</array>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>

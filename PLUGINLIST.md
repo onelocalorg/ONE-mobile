@@ -9,6 +9,12 @@ npm i react-native-google-places-autocomplete
 npm i react-native-image-slider-box
 
 
+For Android 
+0.37.0
+
+For IOS
+0.28.0
+
 
 
 
@@ -31,3 +37,6 @@ env:
   CERTIFICATE_PASSWORD: ${{ secrets.CERTIFICATE_PASSWORD }}
   DISTRIBUTION_PROFILE_PROD:${{secrets.APPLE_DISTRIBUTION_PROFILE }}
   KEY_PWD: ${{ secrets.KEY_PWD }}
+
+
+

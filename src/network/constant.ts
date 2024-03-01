@@ -13,7 +13,7 @@ export const getData = (key:any) => {
 
 export const setData = (key:any, value:any) => {
   dataObject[key] = value;
-};
+}; 
  
 export const apiConstants = {
   login: '/v1/auth/login',
@@ -56,8 +56,8 @@ export const apiKeys = {
 };
 
 export const API_URL = ActiveEnv.BASE_URL
-export const IOS_VERSION = '7.8.3'
-export const ANDROID_VERSION = '7.8.3'
+export const IOS_VERSION = '7.8.4'
+export const ANDROID_VERSION = '7.8.4'
 export const STIPE_BASE_URL = ActiveEnv.STIPE_BASE_URL
 export const STRIPE_PUBLIC_KEY = ActiveEnv.STRIPE_PUBLISHABLE_KEY
 export const STRIPE_SECRET_KEY = ActiveEnv.STRIPE_SECRET_KEY
