@@ -7,3 +7,7 @@ npm i react-native-google-places-autocomplete
 
 3. Slider on Map
 npm i react-native-image-slider-box
+
+4.MapBox
+https://github.com/rnmapbox/maps
+npm install @rnmapbox/maps

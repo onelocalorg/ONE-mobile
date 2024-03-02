@@ -440,23 +440,37 @@ export const createStyleSheet = (theme: ThemeProps) => {
      width:20
     },
 
-    circle: {
-     height:200,
-     width:200
-    },
    
     map: {
       flex: 1
     },
     type1:{
-     
+      flex: 1
     },
-    type2:{
-
+    pinRed:{
+      height: 20,
+      width: 20,
+      backgroundColor: theme.colors.red,
+      borderColor: 'black',
+      borderWidth: 2,
+      borderRadius: 50, 
     },
-    iconSelected:{
+    pinBlack:{
+      height: 20,
+      width: 20,
+      backgroundColor: theme.colors.green,
+      borderColor: 'black',
+      borderWidth: 2,
+      borderRadius: 50, 
+    },
 
-    }
+    addressContainer: {
+      // position: 'absolute',
+      // flex: 1,
+      // width: '100%',
+      // height: '20%',
+      // zIndex: 1,
+    },
 
   });
 };

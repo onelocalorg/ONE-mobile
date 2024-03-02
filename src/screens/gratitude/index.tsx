@@ -38,6 +38,7 @@ import {
   minus,
   onelogo,
   pin,
+  pinWhite,
   plus,
 } from "@assets/images";
 import { useDispatch, useSelector } from "react-redux";
@@ -63,11 +64,13 @@ import GetLocation from "react-native-get-location";
 import { Loader } from "@components/loader";
 import Swiper from "react-native-swiper";
 import ActiveEnv from '@config/env/env.dev.json';
-import Mapbox, { Callout, CircleLayer, MarkerView } from '@rnmapbox/maps';
+import MapboxGL, { Callout, CircleLayer, MarkerView } from '@rnmapbox/maps';
 
-Mapbox.setAccessToken(ActiveEnv.MAP_ACCESS_TOKEN); 
+
+MapboxGL.setAccessToken(ActiveEnv.MAP_ACCESS_TOKEN);
 
 import { API_URL } from "@network/constant";
+import { MapCircle } from "react-native-maps";
 interface MapScreenProps {
   navigation: NavigationContainerRef<ParamListBase>;
 }
@@ -99,9 +102,9 @@ export const GratitudeScreen = (props: MapScreenProps) => {
   const [eventType, eventTypeData] = useState("event");
   const [profileData, setUserProfile]: any = useState("");
   const [isLoading, LodingData] = useState(false);
-  const [setEventIndex, setEventIndexData] = useState(0);
   const { navigation } = props || {};
   const mileStoneSwiperRef: any = useRef(null);
+  const [calloutVisible, setCalloutVisible] = useState(false);
   const { user } = useSelector<StoreType, UserProfileState>(
     (state) => state.userProfileReducer
   ) as { user: { id: string; pic: string } };
@@ -119,7 +122,7 @@ export const GratitudeScreen = (props: MapScreenProps) => {
     height: 200,
     width: 200,
   });
-  const map: LegacyRef<Mapbox.MapView> = useRef(null);
+  const map: LegacyRef<MapboxGL.MapView> = useRef(null);
 
   const dispatch = useDispatch();
 
@@ -148,7 +151,7 @@ export const GratitudeScreen = (props: MapScreenProps) => {
     setHeadingOnMap(heading);
     setZoomOnMap(zoom);
     setAltitudeOnMap(altitude);
-    requestLocationPermission();
+    // requestLocationPermission();
     // setUserLocation(location);
   }, [radius, eventType, circleradius, pitch, heading, zoom, altitude]);
 
@@ -171,7 +174,7 @@ export const GratitudeScreen = (props: MapScreenProps) => {
           location
         );
         setTimeout(() => {
-          if (location) {
+          if (location?.latitude && location?.longitude) {
             geoTaggingAPI(location);
           }
         }, 3000);
@@ -247,15 +250,13 @@ export const GratitudeScreen = (props: MapScreenProps) => {
       radius: radius,
     };
     // var data: any = {
-    //   end_date: '2024-02-02',
+    //   start_date: moment(range.startDate).format("YYYY-MM-DD"),
+    //   end_date: moment(range.endDate).format("YYYY-MM-DD"),
     //   radius: 25,
-    //   start_date: '2024-01-24',
     //   type: 'event',
-    //   user_lat: 23.0497594,
-    //   user_long: 72.5141551,
+    //   user_lat: 72.52067196032797,
+    //   user_long: 23.01715137677574,
     // };
-
-    console.log("=========== Geo Tagging API Request ==============");
     console.log(data);
     try {
       const response = await fetch(API_URL + "/v1/events/geotagging", {
@@ -335,7 +336,7 @@ export const GratitudeScreen = (props: MapScreenProps) => {
   //   });
   // };
 
- 
+
 
   const onConfirmStrtTime = (res: any) => {
     console.log(res);
@@ -364,7 +365,6 @@ export const GratitudeScreen = (props: MapScreenProps) => {
   };
 
   const onswipeSetEventIndex = (eventIndex: any) => {
-    setEventIndexData(eventIndex);
     LodingData(true);
     geoTaggingAPI(location);
   };
@@ -372,13 +372,14 @@ export const GratitudeScreen = (props: MapScreenProps) => {
   const onMarkerClick = (mapEventData: any) => {
     console.log("markerIndex", mapEventData);
     mileStoneSwiperRef?.current?.scrollTo(mapEventData);
-    setEventIndexData(mapEventData);
+    const resultTemp: any = [...eventList];
+    for (let index = 0; index < resultTemp.length; index++) {
+      resultTemp[index].isActive = false;
+    }
+    resultTemp[mapEventData].isActive = true;
+    eventDataStore(resultTemp);
   };
 
-  const onPressMarker = (circleLatLog: any) => {
-    console.log("markerIndex", circleLatLog);
-    // geoTaggingAPI(circleLatLog);
-  }
   const changeMarkerColor = (indexMarker: any) => {
     const resultTemp: any = [...eventList];
     for (let index = 0; index < resultTemp.length; index++) {
@@ -387,6 +388,48 @@ export const GratitudeScreen = (props: MapScreenProps) => {
     resultTemp[indexMarker].isActive = true;
     eventDataStore(resultTemp);
   };
+
+  const state = {
+    selectedPinID: null
+  }
+
+  // {
+  //   eventList.map((event: any, jindex) => {
+  const shape: any = {
+    'type': 'FeatureCollection',
+    'features': [{
+      'type': 'Feature',
+      'geometry': {
+        'type': 'Point',
+        'coordinates': [72.49908909999999,23.0504131]
+      }
+    }]
+  };
+  //   })
+  // }
+
+
+  const layerStyles = {
+    pin: {
+      iconImage: pin,
+      iconSize: 0.5,
+      iconOpacity: 1,
+      iconAllowOverlap: false,
+      iconIgnorePlacement: false
+    },
+    pinSelected: {
+      iconImage: pinWhite,
+      iconSize: 0.5,
+      iconOpacity: 1,
+      iconAllowOverlap: true,
+      iconIgnorePlacement: true
+    }
+  }
+
+  const onMarkerPress = () => {
+    setCalloutVisible(true);
+  };
+
   return (
     <View style={{ flex: 1 }}>
       <Loader visible={isLoading} showOverlay />
@@ -419,64 +462,51 @@ export const GratitudeScreen = (props: MapScreenProps) => {
         </View>
       </TouchableOpacity>
 
-      <Mapbox.MapView style={styles.map} >
+
+      <MapboxGL.MapView
+        style={styles.map}
+      >
+        <MapboxGL.UserLocation />
+        <MapboxGL.Camera
+          zoomLevel={7}
+          followUserLocation={false}
+          centerCoordinate={[72.49908909999999,23.0504131]} />
+        <MapboxGL.ShapeSource
+          existing
+          id="symbolLocationSource"
+          hitbox={{ width: 30, height: 30 }}
+          shape={shape}
+        >
+
+          <MapboxGL.CircleLayer
+            id='sf2010CircleFill'
+            sourceLayerID='sf2010'
+            style={{
+              visibility: 'visible',
+              circleRadius: 100,
+              circleColor: '#70448B',
+              circleStrokeColor: '#000000',
+              circleStrokeWidth: 3,
+              circleOpacity: 0.5
+            }} />
+        </MapboxGL.ShapeSource>
 
 
-      {eventList.map((eventList: any, jindex) => {
+        {eventList.map((event: any, jindex) => {
           return (
-            <MarkerView
-              key={jindex}
-              onTouchEnd={() => onMarkerClick(jindex)}
-              isSelected
-              // pinColor={eventList.isActive ? "red" : "black"}
-              coordinate={[eventList?.location?.coordinates[1], eventList?.location?.coordinates[0]]}
-            ></MarkerView>
+
+            <MapboxGL.PointAnnotation key={event.id}
+              id={'event.id'} onSelected={() => onMarkerClick(jindex)} coordinate={[event?.location?.coordinates[0], event?.location?.coordinates[1]]}>
+              <View
+                style={[event?.isActive === true ? styles.pinRed : styles.pinBlack]}
+              ></View>
+            </MapboxGL.PointAnnotation>
+
           );
         })}
+      </MapboxGL.MapView>
 
-        <CircleLayer
-        id="circle"
-        // style={styles.circle}
-        minZoomLevel={15}
-        ></CircleLayer>
-      </Mapbox.MapView>
 
-      {/* <MapView
-        ref={map}
-        style={{ flex: 1 }}
-        camera={Camera}
-        showsUserLocation={false}
-        // minZoomLevel={2}
-        // maxZoomLevel={15}
-        initialRegion={{
-          latitude: location?.latitude,
-          longitude: location?.longitude,
-          latitudeDelta: 0.0922,
-          longitudeDelta: 0.0421,
-        }}
-                onRegionChangeComplete={region => {
-                    console.log(region,'region region')
-                }}
-      >
-        <Circle
-          key={"1"}
-          center={latLong}
-          radius={5000}
-          strokeWidth={4}
-          strokeColor={"black"}
-          lineCap={'round'}
-        ></Circle>
-        
-      </MapView> */}
-
-      {/* <MapCallout style={styles.buttonCallout}>
-        <TouchableOpacity style={[styles.touchable]} onPress={mapMinusClick}>
-          <Image style={styles.plusClass} source={plus}></Image>
-        </TouchableOpacity>
-        <TouchableOpacity style={[styles.touchable]} onPress={mapPlusClick}>
-          <Image style={styles.plusClass} source={minus}></Image>
-        </TouchableOpacity>
-      </MapCallout> */}
 
       {eventData.length != 0 ? (
         <View style={styles.avatarContainer}>
@@ -488,7 +518,7 @@ export const GratitudeScreen = (props: MapScreenProps) => {
             }}
             ref={mileStoneSwiperRef}
             loop={false}
-            // centeredSlides={false}
+            // centeredSlides={false} 
             showsPagination={false}
             bounces={true}
             removeClippedSubviews={false}
@@ -496,7 +526,7 @@ export const GratitudeScreen = (props: MapScreenProps) => {
             {eventData.map((eventData: any) => {
               return (
                 <TouchableOpacity
-                  activeOpacity={0.8}
+                  activeOpacity={1}
                   style={styles.listContainer}
                   onPress={() => onNavigateEventDetail(eventData)}
                 >
@@ -540,6 +570,6 @@ export const GratitudeScreen = (props: MapScreenProps) => {
         <></>
       )}
     </View>
-    
+
   );
 };
