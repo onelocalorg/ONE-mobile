@@ -421,10 +421,8 @@ export const createStyleSheet = (theme: ThemeProps) => {
       flexDirection:'row'
     },
     buttonCallout: {
-      flex: 1,
-      // flexDirection:'row',
       position:'absolute',
-      top:230,
+      top:160,
       right:0,
       alignSelf: "center",
       justifyContent: "space-between",

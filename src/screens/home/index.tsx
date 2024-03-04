@@ -122,7 +122,6 @@ export const HomeScreen = (props: HomeScreenProps) => {
   useFocusEffect(
     useCallback(() => {
       LogBox.ignoreAllLogs();
-      getRecentlyJoinUserAPI();
       requestLocationPermission();
       getUserProfileAPI();
       setPage(1);
@@ -139,8 +138,6 @@ export const HomeScreen = (props: HomeScreenProps) => {
 
   useEffect(() => {
     LogBox.ignoreAllLogs();
-
-    
     requestLocationPermission();
     eventTypeData(type);
   }, [type, range?.startDate, range?.endDate, searchQuery]);
@@ -152,14 +149,19 @@ export const HomeScreen = (props: HomeScreenProps) => {
     })
       .then((location) => {
         setUserLocation(location);
+
         console.log(
           "---------------------location---------------------",
           location
         );
-        if (location) {
+        if (location.latitude && location.longitude) {
+          getRecentlyJoinUserAPI(location);
+        } else {
+          getRecentlyJoinUserAPI('');
         }
       })
       .catch((error) => {
+        getRecentlyJoinUserAPI('');
         console.log("---------------------error---------------------", error);
         const { code, message } = error;
         console.log(code, message);
@@ -265,7 +267,7 @@ export const HomeScreen = (props: HomeScreenProps) => {
       }
     } catch (error) {
       LodingData(false);
-      console.error("--------error--------" +URL,error);
+      console.error("--------error--------" + URL, error);
     }
   }
 
@@ -316,13 +318,23 @@ export const HomeScreen = (props: HomeScreenProps) => {
     }
   }
 
-  async function getRecentlyJoinUserAPI() {
+  async function getRecentlyJoinUserAPI(getLocation: any) {
     const token = await AsyncStorage.getItem("token");
-    var data: any = {
-      radius: 25,
-      user_lat: location?.latitude,
-      user_long: location?.longitude,
-    };
+
+    if (getLocation != '') {
+      var data: any = {
+        radius: 25,
+        user_lat: getLocation?.latitude,
+        user_long: getLocation?.longitude,
+      };
+    } else {
+      var data: any = {
+        radius: 25,
+      };
+    }
+
+    console.log(data, 'getRecentlyJoinUserAPI')
+
     try {
       const response = await fetch(API_URL + "/v1/users/recently-joined", {
         method: "post",
@@ -620,8 +632,8 @@ export const HomeScreen = (props: HomeScreenProps) => {
   };
 
   const onCloseCommentListModal = (setGraisTwo: any, commentTwo: any) => {
-    console.log(setGraisTwo,'111111');
-    console.log(commentTwo,'222222');
+    console.log(setGraisTwo, '111111');
+    console.log(commentTwo, '222222');
 
     setPostCommentData(commentTwo)
     setPostGratisData(setGraisTwo)
@@ -673,7 +685,7 @@ export const HomeScreen = (props: HomeScreenProps) => {
   const renderLoader = () => {
     return (
       loading ?
-        <View style={{marginVertical: 26,alignItems: "center",}}>
+        <View style={{ marginVertical: 26, alignItems: "center", }}>
           <ActivityIndicator size="large" color="#aaa" />
         </View> : null
     );
@@ -696,7 +708,7 @@ export const HomeScreen = (props: HomeScreenProps) => {
               placeholderTextColor="#FFFF"
               placeholder="Search"
               style={styles.searchInput}
-              onChangeText={(value) => { 
+              onChangeText={(value) => {
                 console.log(value);
                 setSerchValue(value);
               }}
@@ -748,58 +760,58 @@ export const HomeScreen = (props: HomeScreenProps) => {
           endFillColor="red"
           contentContainerStyle={styles.scrollView}
           ListFooterComponent={renderLoader}
-          ListHeaderComponent={
-            <View>
-              {userList.length !== 0 ? (
-                <View style={styles.avatarContainer}>
-                  <ScrollView
-                    horizontal={true}
-                    showsHorizontalScrollIndicator={false}
-                  >
-                    {userList.map((userList: any) => {
-                      return (
-                        <TouchableOpacity
-                          onPress={() => recentUserProfilePress(userList.id)}
-                        >
-                          <ImageComponent
-                            style={styles.avatarImage}
-                            isUrl={!!userList?.pic}
-                            resizeMode="cover"
-                            uri={userList?.pic}
-                          ></ImageComponent>
-                        </TouchableOpacity>
-                      );
-                    })}
-                  </ScrollView>
-                </View>
-              ) : (
-                <View></View>
-              )}
+        ListHeaderComponent={
+          <View>
+            {userList.length !== 0 ? (
+              <View style={styles.avatarContainer}>
+                <ScrollView
+                  horizontal={true}
+                  showsHorizontalScrollIndicator={false}
+                >
+                  {userList.map((userList: any) => {
+                    return (
+                      <TouchableOpacity
+                        onPress={() => recentUserProfilePress(userList.id)}
+                      >
+                        <ImageComponent
+                          style={styles.avatarImage}
+                          isUrl={!!userList?.pic}
+                          resizeMode="cover"
+                          uri={userList?.pic}
+                        ></ImageComponent>
+                      </TouchableOpacity>
+                    );
+                  })}
+                </ScrollView>
+              </View>
+            ) : (
+              <View></View>
+            )}
 
-              <TouchableOpacity
-                activeOpacity={0.8}
-                style={styles.mainPostCont}
-                onPress={onNavigateToCreatePost}
-              >
-                <View style={styles.postContainer}>
-                  <ImageComponent
-                    style={styles.avatar}
-                    resizeMode="cover"
-                    isUrl={!!user?.pic}
-                    source={dummy}
-                    uri={ProfileData?.pic}
-                  ></ImageComponent>
-                  <View style={styles.postInput}>
-                    <Text style={{ textAlign: "left", color: "gray" }}>
-                      What do you want to post?
-                    </Text>
-                  </View>
+            <TouchableOpacity
+              activeOpacity={0.8}
+              style={styles.mainPostCont}
+              onPress={onNavigateToCreatePost}
+            >
+              <View style={styles.postContainer}>
+                <ImageComponent
+                  style={styles.avatar}
+                  resizeMode="cover"
+                  isUrl={!!user?.pic}
+                  source={dummy}
+                  uri={ProfileData?.pic}
+                ></ImageComponent>
+                <View style={styles.postInput}>
+                  <Text style={{ textAlign: "left", color: "gray" }}>
+                    What do you want to post?
+                  </Text>
                 </View>
-              </TouchableOpacity>
-            </View>
-          }
+              </View>
+            </TouchableOpacity>
+          </View>
+        }
         ></FlatList>
-        
+
       </View>
 
       <Modal transparent onDismiss={OfferModalClose} visible={offerModal}>
