@@ -266,11 +266,22 @@ export const SignUp = (props: SignUpProps) => {
   };
 
   const ProfileImageUploadAPI = async (fileItem: any, base64Item: any) => {
-    var pic: any = {
-      uploadKey: 'signup_pic',
-      imageName: fileItem,
-      base64String: 'data:image/jpeg;base64,' + base64Item,
-    };
+    if(Platform.OS === 'ios'){
+      var pic: any = {
+        uploadKey: 'signup_pic',
+        imageName: fileItem,
+        base64String: 'data:image/jpeg;base64,' + base64Item,
+      };
+    } else {
+      var isImg: any = '.JPG'
+      var pic: any = {
+        uploadKey: 'signup_pic',
+        imageName: Math.random().toString() + isImg,
+        base64String: 'data:image/jpeg;base64,' + base64Item,
+      };
+    }
+    
+    
     ImageOptionModal(false);
     console.log('=================Request=================', pic);
     console.log(API_URL + '/v1/users/upload/file');
@@ -293,9 +304,11 @@ export const SignUp = (props: SignUpProps) => {
     }
   };
   const BackgroundImageUploadAPI = async (fileItem: any, base64Item: any) => {
+    var isImg: any = '.JPG'
     var pic: any = {
       uploadKey: 'signup_cover_image',
-      imageName: fileItem,
+      imageName: Math.random().toString() + isImg,
+      // imageName: fileItem,
       base64String: 'data:image/jpeg;base64,' + base64Item,
     };
     ImageOptionModal(false);

@@ -227,6 +227,7 @@ export const onUpdateEvent = async (props: UpdateEventProps) => {
     const endPoint = `${apiConstants.createEvent}/${eventId}`;
     console.log(endPoint,'------------------endPoint Save event detail---------------------')
     const data = await API.homeService.patch(endPoint, attachment);
+    console.log(data,'------------------data---------------------')
     response = getApiResponse(data);
     console.log(response,'------------------endPoint Save event detail---------------------')
   } catch (error: any) {
@@ -254,6 +255,7 @@ interface CreateEventProps {
 }
 
 export const onCreateEvent = async (props: CreateEventProps) => {
+  console.log(props)
   console.log('333333')
   const { bodyParams } = props || {};
   const {
@@ -290,14 +292,17 @@ console.log(bodyParams)
   attachment.append('event_lat', latitude);
   attachment.append('event_lng', longitude);
   attachment.append('event_type', type);
-  console.log(attachment,'--------------------------create event request-------------------------')
+  console.log(JSON.stringify(attachment),'--------------------------create event request-------------------------')
   try {
+    console.log('---------------try-------------------')
     const endPoint = `${apiConstants.createEvent}`;
+    console.log(endPoint,'--------------------------create event url-------------------------')
     const data = await API.homeService.post(endPoint, attachment);
     console.log(endPoint,'--------------------------create event url-------------------------')
     console.log(attachment,'--------------------------create event request-------------------------')
     response = getApiResponse(data);
   } catch (error: any) {
+    console.log('---------------catch-------------------')
     response = getApiResponse(error);
   }
   console.log('res===', response);

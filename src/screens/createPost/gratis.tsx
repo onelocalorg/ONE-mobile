@@ -546,6 +546,7 @@ export const CreatePostGratisScreen = (props: CreatePostGratisScreenProps) => {
                   multiline
                   placeholder="What do you want to say?"
                   placeholderTextColor="darkgray"
+                  textAlignVertical={'top'}
                   value={content}
                   onChangeText={text => createPostcontent(text)}
                   style={styles.postinput}></TextInput>
@@ -627,7 +628,7 @@ export const CreatePostGratisScreen = (props: CreatePostGratisScreenProps) => {
                               }}
                               resizeMode="cover"
                               source={{uri: item?.pic}}></ImageComponent>
-                            <Text  numberOfLines={1} style={{alignSelf: 'center',flexShrink: 1, width: 125}}>
+                            <Text  numberOfLines={1} style={{alignSelf: 'center',flexShrink: 1, width: 125, color: theme.colors.black}}>
                               {item?.first_name} {item?.last_name}
                             </Text>
                           </View>

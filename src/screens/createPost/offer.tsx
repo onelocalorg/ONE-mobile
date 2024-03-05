@@ -668,8 +668,15 @@ const removeSelectImage = (imageUrl: any) => {
                     predefinedPlacesDescription: {
                       color: 'black',
                     },
+                    description:{
+                      color: 'black',
+                      fontSize:14,
+                    },
                   }}
                   listViewDisplayed={false}
+                  textInputProps={{
+                    placeholderTextColor: 'gray',
+                  }}
                   placeholder="where is this offer located?"
                   onPress={(data: any, details = null) => {
                     createPostwhereAddress(data.description);
@@ -695,6 +702,7 @@ const removeSelectImage = (imageUrl: any) => {
                 <TextInput
                   multiline
                   placeholderTextColor="darkgray"
+                  textAlignVertical={'top'}
                   value={content}
                   onChangeText={text => createPostcontent(text)}
                   style={styles.postinput}></TextInput>
@@ -817,6 +825,7 @@ const removeSelectImage = (imageUrl: any) => {
                                 alignSelf: 'center',
                                 flexShrink: 1,
                                 width: 125,
+                                color: theme.colors.black
                               }}>
                               {item?.first_name} {item?.last_name}
                             </Text>

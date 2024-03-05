@@ -220,16 +220,15 @@ export const createStyleSheet = (theme: ThemeProps) => {
       justifyContent: 'center'
     },
     container3: {
-      borderRadius: theme.borderRadius.radius20,
+      // borderRadius: theme.borderRadius.radius20,
       paddingVertical: verticalScale(6),
       paddingHorizontal: normalScale(6),
       flexDirection: 'row',
-      // justifyContent: 'space-between',
       alignItems: 'center',
       marginRight: normalScale(2),
       marginLeft: normalScale(2),
       width: 110,
-      elevation: 5,
+      // elevation: 5,
     },
     time: {
       fontFamily: theme.fontType.light,
@@ -590,6 +589,7 @@ export const createStyleSheet = (theme: ThemeProps) => {
       borderColor:theme.colors.black,
       borderWidth:theme.borderWidth.borderWidth1,
       backgroundColor: theme.colors.lightgrayTwo,
+      color: theme.colors.black,
     },
     postInputToType: {
       borderRadius: 10,
@@ -601,7 +601,8 @@ export const createStyleSheet = (theme: ThemeProps) => {
       borderColor:theme.colors.black,
       borderWidth:theme.borderWidth.borderWidth1,
       backgroundColor: theme.colors.lightgrayTwo,
-      marginRight:8
+      marginRight:8,
+      color: theme.colors.black
     },
 
     postdate: {
@@ -676,11 +677,14 @@ export const createStyleSheet = (theme: ThemeProps) => {
     postinput:{
       height:160,
       marginTop:5,
+      textAlign: 'left',
+      verticalAlign: 'top',
       borderRadius:12,
       paddingHorizontal:5,
       borderColor:theme.colors.black,
       borderWidth:theme.borderWidth.borderWidth1,
       backgroundColor: theme.colors.lightgrayTwo,
+      color: theme.colors.black,
     },
     tagCont:{
       marginTop:10,
@@ -693,9 +697,11 @@ export const createStyleSheet = (theme: ThemeProps) => {
     borderRadius:8,
     paddingHorizontal:5,
     marginLeft:10,
+    paddingVertical: 2,
     borderColor:theme.colors.black,
     borderWidth:theme.borderWidth.borderWidth1,
     backgroundColor: theme.colors.lightgrayTwo,
+    color: theme.colors.black
     },
     imagesCont:{
       flexDirection:'row',

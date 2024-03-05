@@ -49,8 +49,6 @@ export const GetAdmintoolsDropDownScreen = (
     addItemRef.current?.onOpenModal();
   };
 
-  console.log(eventId, "------------------eventId11111111---------------");
-
   useFocusEffect(
     useCallback(() => {
       console.log(eventId, "------------getPayoutAPI--------------");

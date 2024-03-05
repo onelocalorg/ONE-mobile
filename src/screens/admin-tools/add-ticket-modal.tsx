@@ -60,11 +60,6 @@ const AddTicketModalComp = (
   const { mutateAsync: editTicket, isLoading: editTicketLoading } =
     useEditTicket();
 
-  console.log(
-    ticketData,
-    "-----------------------ticketData----------------------"
-  );
-
   useFocusEffect(
     useCallback(() => {
       if (ticketData && isEdit) {

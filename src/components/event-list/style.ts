@@ -38,7 +38,7 @@ export const createStyleSheet = (theme: ThemeProps) => {
       fontFamily: theme.fontType.medium,
       fontSize: theme.fontSize.font16,
       color: theme.colors.black,
-      marginBottom: verticalScale(7),
+      // marginBottom: verticalScale(7),
       maxWidth: normalScale(200),
       flexShrink:1
     },
@@ -55,12 +55,14 @@ export const createStyleSheet = (theme: ThemeProps) => {
       height: normalScale(14),
       width: normalScale(14),
       marginRight: normalScale(8),
+      marginTop: normalScale(6)
     },
     location: {
       fontFamily: theme.fontType.light,
       fontSize: theme.fontSize.font12,
       color: theme.colors.black,
-      flexShrink:1
+      flexShrink:1,
+      marginTop: normalScale(6)
     },
     fullAddress: {
       fontFamily: theme.fontType.light,

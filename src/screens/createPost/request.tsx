@@ -619,6 +619,13 @@ export const CreatePostRequestScreen = (
                     predefinedPlacesDescription: {
                       color: 'black',
                     },
+                    description:{
+                      color: 'black',
+                      fontSize:14,
+                    },
+                  }}
+                  textInputProps={{
+                    placeholderTextColor: 'gray',
                   }}
                   placeholder="where do you need this?"
                   onPress={(data: any, details = null) => {
@@ -643,6 +650,7 @@ export const CreatePostRequestScreen = (
                   multiline
                   // placeholder="What do you want to say?"
                   placeholderTextColor="darkgray"
+                  textAlignVertical={'top'}
                   value={content}
                   onChangeText={text => createPostcontent(text)}
                   style={styles.postinput}></TextInput>
@@ -771,7 +779,7 @@ export const CreatePostRequestScreen = (
                               }}
                               resizeMode="cover"
                               source={{uri: item?.pic}}></ImageComponent>
-                            <Text  numberOfLines={1} style={{alignSelf: 'center',flexShrink: 1, width: 125}}>
+                            <Text  numberOfLines={1} style={{alignSelf: 'center',flexShrink: 1, width: 125, color: theme.colors.black}}>
                               {item?.first_name} {item?.last_name}
                             </Text>
                           </View>

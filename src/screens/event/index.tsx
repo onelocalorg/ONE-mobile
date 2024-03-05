@@ -6,6 +6,7 @@ import {
   ActivityIndicator,
   ListRenderItem,
   LogBox,
+  Platform,
   Text,
   TouchableOpacity,
   View,
@@ -380,14 +381,25 @@ export const EventListScreen = (props: EventListScreenProps) => {
         <View style={styles.toggleCont}>
           <Text style={styles.villageLbl}>Village Friendly </Text>
           <View style={styles.switchToggle}>
-            <Switch
-              // trackColor={{ false: "#767577", true: "#81b0ff" }}
-              style={{ transform: [{ scaleX: 0.9 }, { scaleY: 0.5 }] }}
-              thumbColor={'white'}
-              ios_backgroundColor="#008000"
-              onChange={() => toggleSwitch(isEnabled)}
-              value={isEnabled}
-            />
+              {Platform.OS === "ios" ?  
+               <Switch
+                  style={{ transform: [{ scaleX: 0.9 }, { scaleY: 0.5 }] }}
+                  thumbColor={"white"}
+                  ios_backgroundColor="#008000"
+                  onChange={() => toggleSwitch(isEnabled)}
+                  value={isEnabled}
+                /> 
+                : 
+                <Switch
+                  style={{ transform: [{ scaleX: 1.2 }, { scaleY: 1.0 }] }}
+                  trackColor={{ false: "#008000", true: "#008000" }}
+                  thumbColor={"white"}
+                  ios_backgroundColor="#008000"
+                  onChange={() => toggleSwitch(isEnabled)}
+                  value={isEnabled}
+                />
+                }
+
           </View>
           <Text style={styles.villageLbl}> Adult Oriented</Text>
         </View>

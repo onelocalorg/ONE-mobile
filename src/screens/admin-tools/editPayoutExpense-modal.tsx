@@ -571,6 +571,7 @@ export const editPayoutModalScreen = (props: EditBreakDownModalProps, ref: React
                                 alignSelf: 'center',
                                 flexShrink: 1,
                                 width: 150,
+                                color: theme.colors.black
                               }}>
                               {item?.first_name} {item?.last_name}
                             </Text>

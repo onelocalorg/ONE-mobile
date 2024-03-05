@@ -72,6 +72,7 @@ import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplet
 import { GetAdmintoolsDropDownScreen } from "./getAdmintoolsDropdown";
 import { ScrollView } from "react-native-gesture-handler";
 import { width } from "@theme/device/device";
+import { Platform } from "react-native";
 
 interface AdminToolsScreenProps {
   navigation?: NavigationContainerRef<ParamListBase>;
@@ -252,6 +253,7 @@ export const AdminToolsScreen = (props: AdminToolsScreenProps) => {
     LodingData(true);
     console.log("1111111wdeee");
     Keyboard.dismiss();
+    console.log()
     const res = await createEvent({
       bodyParams: {
         ...eventDetails,
@@ -262,6 +264,7 @@ export const AdminToolsScreen = (props: AdminToolsScreenProps) => {
         type: setFilter,
       },
     });
+    console.log('--------------bodyParams------------------', res)
     console.log(setFilter);
     if (res?.success) {
       LodingData(false);
@@ -489,13 +492,25 @@ export const AdminToolsScreen = (props: AdminToolsScreenProps) => {
             <View style={styles.toggleContainer}>
               <Text style={styles.villageLblTwo}>Village Friendly </Text>
               <View style={styles.switchToggle}>
-                <Switch
+              {Platform.OS === "ios" ?  
+               <Switch
                   style={{ transform: [{ scaleX: 0.9 }, { scaleY: 0.5 }] }}
                   thumbColor={"white"}
                   ios_backgroundColor="#008000"
                   onChange={() => toggleSwitch(isEnabled)}
                   value={isEnabled}
+                /> 
+                : 
+                <Switch
+                  style={{ transform: [{ scaleX: 1.2 }, { scaleY: 1.0 }] }}
+                  trackColor={{ false: "#008000", true: "#008000" }}
+                  thumbColor={"white"}
+                  ios_backgroundColor="#008000"
+                  onChange={() => toggleSwitch(isEnabled)}
+                  value={isEnabled}
                 />
+                }
+                
               </View>
               <Text style={styles.villageLblTwo}> Adult Oriented</Text>
             </View>
@@ -575,6 +590,7 @@ export const AdminToolsScreen = (props: AdminToolsScreenProps) => {
                           fontSize: 14,
                           borderColor: theme.colors.black,
                           borderWidth: theme.borderWidth.borderWidth1,
+                          placeholderTextColor: theme.colors.black
                         },
                         listView: {
                           color: "black", //To see where exactly the list is
@@ -585,10 +601,16 @@ export const AdminToolsScreen = (props: AdminToolsScreenProps) => {
                         predefinedPlacesDescription: {
                           color: "black",
                         },
+                        description:{
+                          color: 'black',
+                          fontSize:14,
+                        },
                       }}
                       listViewDisplayed={false}
+                      textInputProps={{
+                        placeholderTextColor: 'gray',
+                      }}
                       placeholder="where is this offer located?"
-
                       GooglePlacesDetailsQuery={{ fields: "geometry" }}
                       fetchDetails={true}
 

@@ -347,9 +347,10 @@ export const createStyleSheet = (theme: ThemeProps) => {
       paddingHorizontal: 10,
       height: 35,
       justifyContent: 'center',
+      color: theme.colors.black
     },
     whoCont: {
-      fontFamily: theme.fontType.medium,
+      fontFamily: theme.fontType.light,
       color: theme.colors.black,
       fontSize: theme.fontSize.font14,
       marginTop: 8,
@@ -391,55 +392,24 @@ export const createStyleSheet = (theme: ThemeProps) => {
       color: theme.colors.black,
       fontSize: theme.fontSize.font14,
     },
-    // amountCont: {
-    //   flexDirection: 'row',
-    //   justifyContent: 'space-between',
-    //   marginRight: 25,
-    //   marginTop: 5,
-    //   borderBottomWidth: 1,
-    //   borderColor: 'lightgrey',
-    //   paddingVertical: 3,
-    // },
     amountLbl: {
       fontFamily: theme.fontType.light,
       color: theme.colors.black,
       fontSize: theme.fontSize.font14,
     },
-    // dollarSign: {
-    //   fontFamily: theme.fontType.light,
-    //   color: theme.colors.black,
-    //   fontSize: theme.fontSize.font14,
-    //   borderWidth: 1,
-    //   borderColor: 'lightGrey',
-    //   borderRadius: 50,
-    //   // padding: 5,
-    // },
-
-    // priceContainer: {
-    //   borderRadius: 100,
-    //    borderWidth: 1,
-    //    padding: 3,
-    //    borderColor: 'lightGrey',
-    //    height: 24,
-    //    width: 24,
-    //    justifyContent: 'center',
-    //   //  paddingTop: 2
-      
-    // },
-    // percentageSign: {
-    //   fontFamily: theme.fontType.light,
-    //   color: theme.colors.black,
-    //   fontSize: theme.fontSize.font14,
-    //   textAlign: 'center',
-    // },
     dollarRupees: {
       fontFamily: theme.fontType.light,
       color: theme.colors.black,
       fontSize: theme.fontSize.font14,
       width: 35,
-      height: 20,
+      // height: 20,
       // backgroundColor: theme.colors.lightgrayTwo,
-      textAlign: 'left'
+      textAlign: 'left',
+      fontWeight: "400",
+      justifyContent: 'flex-start',
+      paddingVertical: 0,
+
+
     },
     dollarIcon: {
       fontFamily: theme.fontType.light,

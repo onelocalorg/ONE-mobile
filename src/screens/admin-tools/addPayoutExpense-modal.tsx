@@ -23,6 +23,7 @@ import { Loader } from "@components/loader";
 import { launchImageLibrary } from "react-native-image-picker";
 import { ButtonComponent } from "@components/button-component";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import { color } from "react-native-elements/dist/helpers";
 
 interface AddPayoutExpenseScreenProps {
   id: string;
@@ -448,6 +449,7 @@ export const AddPayoutExpenseScreen = (
                               alignSelf: "center",
                               flexShrink: 1,
                               width: 150,
+                              color: theme.colors.black
                             }}
                           >
                             {item?.first_name} {item?.last_name}
@@ -546,10 +548,12 @@ export const AddPayoutExpenseScreen = (
                   {priceData === 1 ? "$ " : "% "}
                 </Text>
                 <TextInput
+                  style={styles.dollarRupees}
                   value={amount}
                   keyboardType="number-pad"
-                  onChangeText={(text) => setAmount(text)}
-                  style={styles.dollarRupees}
+                  onChangeText={(text) =>{console.log(text);
+                    setAmount(text)} 
+                  }
                 ></TextInput>
               </View>
             </View>

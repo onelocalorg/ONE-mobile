@@ -192,7 +192,9 @@ export const createStyleSheet = (theme: ThemeProps) => {
     },
     gratisClass:{
       alignSelf:'center',
-      marginRight:5
+      marginRight:5,
+      color: theme.colors.black,
+      fontSize: theme.fontSize.font14
     },
     commentsContainer:{
       flexDirection:'row',
@@ -208,7 +210,9 @@ export const createStyleSheet = (theme: ThemeProps) => {
       width:20,
     },
     commentClass:{
-      marginRight:5
+      marginRight:5,
+      color: theme.colors.black,
+      fontSize: theme.fontSize.font14
     },
     avatarContainer: {
       marginLeft: 11,
@@ -818,7 +822,7 @@ export const createStyleSheet = (theme: ThemeProps) => {
       marginLeft: normalScale(10),
     },
     gratiescontainer:{
-      height:180,
+      // height:180,
       borderColor:'green',
       borderWidth:2,
       borderRadius:10,
@@ -859,7 +863,8 @@ export const createStyleSheet = (theme: ThemeProps) => {
       paddingVertical:5,
       marginVertical:10,
       marginHorizontal:10,
-      padding:10
+      padding:10,
+      color: theme.colors.black
     },
     commentContainer:{
       height:200,

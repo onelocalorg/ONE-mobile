@@ -4893,6 +4893,7 @@ menu stripe_add_payment_method
 menu stripe_payment_auth_web_view_menu
 menu ucrop_menu_activity
 mipmap ic_launcher
+mipmap ic_launcher_foreground
 mipmap ic_launcher_round
 plurals mtrl_badge_content_description
 plurals stripe_account_picker_cta_link

@@ -1,7 +1,7 @@
 -- Merging decision tree log ---
 manifest
-ADDED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/main/AndroidManifest.xml:1:1-33:12
-MERGED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/main/AndroidManifest.xml:1:1-33:12
+ADDED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/main/AndroidManifest.xml:1:1-35:12
+MERGED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/main/AndroidManifest.xml:1:1-35:12
 INJECTED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/debug/AndroidManifest.xml:2:1-14:12
 INJECTED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/debug/AndroidManifest.xml:2:1-14:12
 INJECTED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/debug/AndroidManifest.xml:2:1-14:12
@@ -214,8 +214,14 @@ MERGED from [:react-native-camera] /Users/sanandiyavipul/Projects/ONE-mobile/nod
 		ADDED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/main/AndroidManifest.xml:5:9-33
 	android:name
 		ADDED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/main/AndroidManifest.xml:4:9-47
+uses-feature#android.hardware.camera.front
+ADDED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/main/AndroidManifest.xml:6:9-95
+	android:required
+		ADDED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/main/AndroidManifest.xml:6:68-92
+	android:name
+		ADDED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/main/AndroidManifest.xml:6:23-67
 uses-permission#android.permission.INTERNET
-ADDED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/main/AndroidManifest.xml:7:5-67
+ADDED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/main/AndroidManifest.xml:8:5-67
 MERGED from [com.facebook.flipper:flipper:0.182.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/487a105ae29e7c2a29179f136ff1d2f9/transformed/jetified-flipper-0.182.0/AndroidManifest.xml:15:5-67
 MERGED from [com.facebook.flipper:flipper:0.182.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/487a105ae29e7c2a29179f136ff1d2f9/transformed/jetified-flipper-0.182.0/AndroidManifest.xml:15:5-67
 MERGED from [com.stripe:financial-connections:20.37.4] /Users/sanandiyavipul/.gradle/caches/transforms-3/c340c66a1199316bcf5b6ea8859d3c10/transformed/jetified-financial-connections-20.37.4/AndroidManifest.xml:7:5-67
@@ -227,27 +233,37 @@ MERGED from [com.google.android.gms:play-services-maps:18.2.0] /Users/sanandiyav
 MERGED from [com.google.android.datatransport:transport-backend-cct:2.3.3] /Users/sanandiyavipul/.gradle/caches/transforms-3/21785bd8316a6b6a93269b7812e9ee54/transformed/jetified-transport-backend-cct-2.3.3/AndroidManifest.xml:26:5-67
 MERGED from [com.google.android.datatransport:transport-backend-cct:2.3.3] /Users/sanandiyavipul/.gradle/caches/transforms-3/21785bd8316a6b6a93269b7812e9ee54/transformed/jetified-transport-backend-cct-2.3.3/AndroidManifest.xml:26:5-67
 	android:name
-		ADDED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/main/AndroidManifest.xml:7:22-64
+		ADDED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/main/AndroidManifest.xml:8:22-64
 uses-permission#android.permission.ACCESS_FINE_LOCATION
-ADDED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/main/AndroidManifest.xml:8:5-78
+ADDED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/main/AndroidManifest.xml:9:5-78
 	android:name
-		ADDED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/main/AndroidManifest.xml:8:22-76
+		ADDED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/main/AndroidManifest.xml:9:22-76
 uses-permission#android.permission.ACCESS_COARSE_LOCATION
-ADDED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/main/AndroidManifest.xml:9:7-82
+ADDED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/main/AndroidManifest.xml:10:7-82
 MERGED from [:react-native-get-location] /Users/sanandiyavipul/Projects/ONE-mobile/node_modules/react-native-get-location/android/build/intermediates/merged_manifest/debug/AndroidManifest.xml:7:5-81
 MERGED from [:react-native-get-location] /Users/sanandiyavipul/Projects/ONE-mobile/node_modules/react-native-get-location/android/build/intermediates/merged_manifest/debug/AndroidManifest.xml:7:5-81
 	android:name
-		ADDED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/main/AndroidManifest.xml:9:24-80
+		ADDED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/main/AndroidManifest.xml:10:24-80
 uses-permission#android.permission.CAMERA
-ADDED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/main/AndroidManifest.xml:10:7-67
+ADDED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/main/AndroidManifest.xml:11:7-67
 MERGED from [:react-native-camera] /Users/sanandiyavipul/Projects/ONE-mobile/node_modules/react-native-camera/android/build/intermediates/merged_manifest/generalDebug/AndroidManifest.xml:7:5-65
 MERGED from [:react-native-camera] /Users/sanandiyavipul/Projects/ONE-mobile/node_modules/react-native-camera/android/build/intermediates/merged_manifest/generalDebug/AndroidManifest.xml:7:5-65
 	android:name
-		ADDED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/main/AndroidManifest.xml:10:24-64
+		ADDED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/main/AndroidManifest.xml:11:24-64
+uses-permission#android.permission.READ_MEDIA_IMAGES
+ADDED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/main/AndroidManifest.xml:12:7-77
+	android:name
+		ADDED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/main/AndroidManifest.xml:12:24-75
+uses-permission#android.permission.WRITE_EXTERNAL_STORAGE
+ADDED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/main/AndroidManifest.xml:13:6-81
+MERGED from [:react-native-image-crop-picker] /Users/sanandiyavipul/Projects/ONE-mobile/node_modules/react-native-image-crop-picker/android/build/intermediates/merged_manifest/debug/AndroidManifest.xml:13:5-81
+MERGED from [:react-native-image-crop-picker] /Users/sanandiyavipul/Projects/ONE-mobile/node_modules/react-native-image-crop-picker/android/build/intermediates/merged_manifest/debug/AndroidManifest.xml:13:5-81
+	android:name
+		ADDED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/main/AndroidManifest.xml:13:23-79
 application
-ADDED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/main/AndroidManifest.xml:14:5-32:19
-MERGED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/main/AndroidManifest.xml:14:5-32:19
-MERGED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/main/AndroidManifest.xml:14:5-32:19
+ADDED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/main/AndroidManifest.xml:16:5-34:19
+MERGED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/main/AndroidManifest.xml:16:5-34:19
+MERGED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/main/AndroidManifest.xml:16:5-34:19
 INJECTED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/debug/AndroidManifest.xml:7:5-13:19
 MERGED from [com.stripe:paymentsheet:20.37.4] /Users/sanandiyavipul/.gradle/caches/transforms-3/b966fd94163ce3b4e65ccab3f86e410b/transformed/jetified-paymentsheet-20.37.4/AndroidManifest.xml:7:5-39:19
 MERGED from [com.stripe:paymentsheet:20.37.4] /Users/sanandiyavipul/.gradle/caches/transforms-3/b966fd94163ce3b4e65ccab3f86e410b/transformed/jetified-paymentsheet-20.37.4/AndroidManifest.xml:7:5-39:19
@@ -348,48 +364,48 @@ MERGED from [com.google.android.instantapps:instantapps:1.1.0] /Users/sanandiyav
 	android:appComponentFactory
 		ADDED from [androidx.core:core:1.12.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/481e6fc6c03a5e66dc9dc87ea34e6342/transformed/core-1.12.0/AndroidManifest.xml:28:18-86
 	android:label
-		ADDED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/main/AndroidManifest.xml:16:7-39
-		ADDED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/main/AndroidManifest.xml:16:7-39
+		ADDED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/main/AndroidManifest.xml:18:7-39
+		ADDED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/main/AndroidManifest.xml:18:7-39
 	tools:ignore
 		ADDED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/debug/AndroidManifest.xml:10:9-48
 	android:roundIcon
-		ADDED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/main/AndroidManifest.xml:18:7-52
-		ADDED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/main/AndroidManifest.xml:18:7-52
+		ADDED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/main/AndroidManifest.xml:20:7-52
+		ADDED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/main/AndroidManifest.xml:20:7-52
 	tools:targetApi
 		ADDED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/debug/AndroidManifest.xml:9:9-29
 	android:icon
-		ADDED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/main/AndroidManifest.xml:17:7-41
-		ADDED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/main/AndroidManifest.xml:17:7-41
+		ADDED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/main/AndroidManifest.xml:19:7-41
+		ADDED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/main/AndroidManifest.xml:19:7-41
 	android:theme
-		ADDED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/main/AndroidManifest.xml:19:7-38
-		ADDED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/main/AndroidManifest.xml:19:7-38
+		ADDED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/main/AndroidManifest.xml:21:7-38
+		ADDED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/main/AndroidManifest.xml:21:7-38
 	android:usesCleartextTraffic
 		ADDED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/debug/AndroidManifest.xml:8:9-44
 	android:name
-		ADDED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/main/AndroidManifest.xml:15:7-38
-		ADDED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/main/AndroidManifest.xml:15:7-38
+		ADDED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/main/AndroidManifest.xml:17:7-38
+		ADDED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/main/AndroidManifest.xml:17:7-38
 activity#com.oneboulder.MainActivity
-ADDED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/main/AndroidManifest.xml:21:7-31:18
+ADDED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/main/AndroidManifest.xml:23:7-33:18
 	android:launchMode
-		ADDED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/main/AndroidManifest.xml:24:9-40
+		ADDED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/main/AndroidManifest.xml:26:9-40
 	android:windowSoftInputMode
-		ADDED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/main/AndroidManifest.xml:25:9-51
+		ADDED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/main/AndroidManifest.xml:27:9-51
 	android:exported
-		ADDED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/main/AndroidManifest.xml:26:9-32
+		ADDED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/main/AndroidManifest.xml:28:9-32
 	android:configChanges
-		ADDED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/main/AndroidManifest.xml:23:9-118
+		ADDED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/main/AndroidManifest.xml:25:9-118
 	android:name
-		ADDED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/main/AndroidManifest.xml:22:9-37
+		ADDED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/main/AndroidManifest.xml:24:9-37
 intent-filter#action:name:android.intent.action.MAIN+category:name:android.intent.category.LAUNCHER
-ADDED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/main/AndroidManifest.xml:27:9-30:25
+ADDED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/main/AndroidManifest.xml:29:9-32:25
 action#android.intent.action.MAIN
-ADDED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/main/AndroidManifest.xml:28:13-65
+ADDED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/main/AndroidManifest.xml:30:13-65
 	android:name
-		ADDED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/main/AndroidManifest.xml:28:21-62
+		ADDED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/main/AndroidManifest.xml:30:21-62
 category#android.intent.category.LAUNCHER
-ADDED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/main/AndroidManifest.xml:29:13-73
+ADDED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/main/AndroidManifest.xml:31:13-73
 	android:name
-		ADDED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/main/AndroidManifest.xml:29:23-70
+		ADDED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/main/AndroidManifest.xml:31:23-70
 uses-permission#android.permission.SYSTEM_ALERT_WINDOW
 ADDED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/debug/AndroidManifest.xml:5:5-77
 MERGED from [com.facebook.react:react-android:0.73.1] /Users/sanandiyavipul/.gradle/caches/transforms-3/2c64e76a01331c76fc0f1d46f9e60f65/transformed/jetified-react-android-0.73.1-debug/AndroidManifest.xml:16:5-78
@@ -1076,10 +1092,6 @@ action#android.media.action.IMAGE_CAPTURE
 ADDED from [:react-native-image-crop-picker] /Users/sanandiyavipul/Projects/ONE-mobile/node_modules/react-native-image-crop-picker/android/build/intermediates/merged_manifest/debug/AndroidManifest.xml:9:13-73
 	android:name
 		ADDED from [:react-native-image-crop-picker] /Users/sanandiyavipul/Projects/ONE-mobile/node_modules/react-native-image-crop-picker/android/build/intermediates/merged_manifest/debug/AndroidManifest.xml:9:21-70
-uses-permission#android.permission.WRITE_EXTERNAL_STORAGE
-ADDED from [:react-native-image-crop-picker] /Users/sanandiyavipul/Projects/ONE-mobile/node_modules/react-native-image-crop-picker/android/build/intermediates/merged_manifest/debug/AndroidManifest.xml:13:5-81
-	android:name
-		ADDED from [:react-native-image-crop-picker] /Users/sanandiyavipul/Projects/ONE-mobile/node_modules/react-native-image-crop-picker/android/build/intermediates/merged_manifest/debug/AndroidManifest.xml:13:22-78
 provider#com.reactnative.ivpusic.imagepicker.IvpusicImagePickerFileProvider
 ADDED from [:react-native-image-crop-picker] /Users/sanandiyavipul/Projects/ONE-mobile/node_modules/react-native-image-crop-picker/android/build/intermediates/merged_manifest/debug/AndroidManifest.xml:16:9-24:20
 	android:grantUriPermissions

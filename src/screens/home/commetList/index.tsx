@@ -681,6 +681,7 @@ export const CommentList = (props: commentListProps) => {
                     <TextInput
                       style={styles.commentInput}
                       placeholder="Make a Comment"
+                      placeholderTextColor='gray'
                       value={addnewCmt}
                       onChangeText={(text) => onAddComment(text)}
                     ></TextInput>
