@@ -418,7 +418,7 @@ export const HomeScreen = (props: HomeScreenProps) => {
   };
 
   const recentUserProfilePress = (id: any) => {
-    AsyncStorage.setItem("recentUserId", id);
+    AsyncStorage.setItem('recentUserId', id);
     navigation.navigate(navigations.RECENTUSERPROFILE);
   };
 

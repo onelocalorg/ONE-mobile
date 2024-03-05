@@ -305,12 +305,23 @@ export const ProfileScreen = (props: ProfileScreenProps) => {
   };
 
   const ProfileImageUploadAPI = async (fileItem: any, base64Item: any) => {
-    var pic: any = {
-      uploadKey: "pic",
-      userId: user.id,
-      imageName: fileItem,
-      base64String: "data:image/jpeg;base64," + base64Item,
-    };
+    if(Platform.OS === 'ios'){
+      var pic: any = {
+        uploadKey: "pic",
+        userId: user.id,
+        imageName: fileItem,
+        base64String: "data:image/jpeg;base64," + base64Item,
+      };
+    } else {
+      var isImg: any = '.JPG'
+      var pic: any = {
+        uploadKey: "pic",
+        userId: user.id,
+        imageName: Math.random().toString() + isImg,
+        base64String: "data:image/jpeg;base64," + base64Item,
+      };
+    }
+   
     ImageOptionModal(false);
     console.log("=================Request=================");
     console.log(pic);

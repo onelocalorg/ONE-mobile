@@ -352,7 +352,7 @@ export const LoginScreen = (props: LoginScreenProps) => {
       console.log(userinfo);
 
       if (userinfo?.success === false) {
-        Toast.show("Please Connect to Admin", Toast.LONG, {
+        Toast.show(userinfo?.message, Toast.LONG, {
           backgroundColor: "black",
         });
         LodingData(false);

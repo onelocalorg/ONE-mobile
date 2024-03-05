@@ -104,8 +104,8 @@ export const GratitudeScreen = (props: MapScreenProps) => {
   const [isLoading, LodingData] = useState(false);
   const { navigation } = props || {};
   const mileStoneSwiperRef: any = useRef(null);
-  const [calloutVisible, setCalloutVisible] = useState(false);
-  const [shape, setShapData]:any = useState();
+  const [setZoomLevel, setCameraZoomLevel] = useState(12);
+  const [shape, setShapData]: any = useState();
   const { user } = useSelector<StoreType, UserProfileState>(
     (state) => state.userProfileReducer
   ) as { user: { id: string; pic: string } };
@@ -118,16 +118,11 @@ export const GratitudeScreen = (props: MapScreenProps) => {
     startDate: new Date(),
     endDate: makeDate,
   });
-
-  const [setCircle, setCircleHightWidth] = useState(100);
-  const map: LegacyRef<MapboxGL.MapView> = useRef(null);
+  const [CircleHeight, setCircleHight] = useState(200);
+  const [CircleWidth, setCircleWidth] = useState(200);
+  const mapRef: LegacyRef<MapboxGL.MapView> = useRef(null);
 
   const dispatch = useDispatch();
-
-  const latLong = {
-    latitude: location?.latitude,
-    longitude: location?.longitude,
-  };
 
   var Camera = {
     center: {
@@ -149,16 +144,27 @@ export const GratitudeScreen = (props: MapScreenProps) => {
     setHeadingOnMap(heading);
     setZoomOnMap(zoom);
     setAltitudeOnMap(altitude);
-    // requestLocationPermission();
+    requestLocationPermission();
+    setCircleHight(CircleHeight)
+      setCircleWidth(CircleWidth)
     // setUserLocation(location);
-  }, [radius, eventType, circleradius, pitch, heading, zoom, altitude]);
+  }, [radius, eventType, circleradius, pitch, heading, zoom, altitude,CircleHeight, CircleWidth]);
 
   useFocusEffect(
     useCallback(() => {
-      requestLocationPermission();
+      console.log('CircleHeight:',CircleHeight,'CircleWidth:',CircleWidth)
       getUserProfileAPI();
-    }, [])
+      setCircleHight(CircleHeight)
+      setCircleWidth(CircleWidth)
+      
+    }, [CircleHeight, CircleWidth])
   );
+
+  useEffect(() => {
+    console.log('Count updated:', CircleHeight, '----',CircleWidth);
+    // You can perform side effects based on the updated count here
+  }, [CircleHeight, CircleWidth]);
+
 
   const requestLocationPermission = async () => {
     GetLocation.getCurrentPosition({
@@ -171,25 +177,23 @@ export const GratitudeScreen = (props: MapScreenProps) => {
           "---------------------location---------------------",
           location
         );
-        setTimeout(() => {
-          if (location?.latitude && location?.longitude) {
-            geoTaggingAPI(location);
-            const shape: any = {
-              'type': 'FeatureCollection',
-              'features': [{
-                'type': 'Feature',
-                'geometry': {
-                  'type': 'Point',
-                  'coordinates': [location?.longitude, location?.latitude]
-                }
-              }]
-            };
-            setShapData(shape)
-            console.log(JSON.stringify(shape?.features[0]?.geometry?.coordinates[0]),'longitude 11111')
-            console.log(JSON.stringify(shape?.features[0]?.geometry?.coordinates[1]),'latitude 1111')
-            console.log(JSON.stringify(shape),'shape shape shape')
-          }
-        }, 3000);
+        if (location?.latitude && location?.longitude) {
+          geoTaggingAPI(location);
+          const shape: any = {
+            'type': 'FeatureCollection',
+            'features': [{
+              'type': 'Feature',
+              'geometry': {
+                'type': 'Point',
+                'coordinates': [location?.longitude, location?.latitude]
+              }
+            }]
+          };
+          setShapData(shape)
+          console.log(JSON.stringify(shape?.features[0]?.geometry?.coordinates[0]), 'longitude 11111')
+          console.log(JSON.stringify(shape?.features[0]?.geometry?.coordinates[1]), 'latitude 1111')
+          console.log(JSON.stringify(shape), 'shape shape shape')
+        }
       })
       .catch((error) => {
         console.log("---------------------error---------------------", error);
@@ -294,15 +298,306 @@ export const GratitudeScreen = (props: MapScreenProps) => {
     }
   }
 
+  async function geoTaggingAPITwo(location: any) {
+    const token = await AsyncStorage.getItem("token");
+    var data: any = {
+      start_date: moment(range.startDate).format("YYYY-MM-DD"),
+      end_date: moment(range.endDate).format("YYYY-MM-DD"),
+      type: eventType,
+      user_lat: location?.coordinates[0],
+      user_long: location?.coordinates[1],
+      radius: radius,
+    };
+    //   user_lat: 72.52067196032797,23.01715137677574
+    //   user_long: 23.01715137677574,
+    console.log(data);
+    eventDataStore([]);
+    try {
+      const response = await fetch(API_URL + "/v1/events/geotagging", {
+        method: "post",
+        headers: new Headers({
+          Authorization: "Bearer " + token,
+          "Content-Type": "application/json",
+        }),
+        body: JSON.stringify(data),
+      });
+      const dataItem = await response.json();
+      console.log("=========== Geo Tagging API Response ==============");
+      LodingData(false);
+      console.log(dataItem);
+      eventDetail(dataItem?.data);
+
+      if (dataItem?.data.length !== 0) {
+        const resultTemp = dataItem?.data?.map((item: any) => {
+          return { ...item, isActive: false };
+        });
+        resultTemp[0].isActive = true;
+        eventDataStore(resultTemp);
+        console.log(dataItem?.data[0]);
+      }
+      console.log(dataItem?.data);
+    } catch (error) {
+      LodingData(false);
+      console.error(error);
+    }
+  }
+
   const onNavigateEventDetail = (item: any) => {
     navigation.navigate(navigations.EVENT_DETAIL, { id: item?._id });
   };
 
+  const handleRegionChange = async (event: any) => {
+    const newZoomLevel = event.properties.zoomLevel;
+    let integerValue = parseInt(newZoomLevel);
+    console.log(integerValue)
+    setCameraZoomLevel(integerValue)
+    if (integerValue === 12) {
+      var height = 100
+      var width = 100
+      setCircleHight(height)
+      setCircleWidth(width)
+    } else if (integerValue === 13) {
+      var height = 110
+      var width = 110
+      setCircleHight(height)
+      setCircleWidth(width)
+    } else if (integerValue === 14) {
+      var height = 120
+      var width = 120
+      setCircleHight(height)
+      setCircleWidth(width)
+    } else if (integerValue === 15) {
+      var height = 130
+      var width = 130
+      setCircleHight(height)
+      setCircleWidth(width)
+    } else if (integerValue === 16) {
+      var height = 140
+      var width = 140
+      setCircleHight(height)
+      setCircleWidth(width)
+    } else if (integerValue === 17) {
+      var height = 150
+      var width = 150
+      setCircleHight(height)
+      setCircleWidth(width)
+    } else if (integerValue === 18) {
+      var height = 160
+      var width = 160
+      setCircleHight(height)
+      setCircleWidth(width)
+    } else if (integerValue === 19) {
+      var height = 170
+      var width = 170
+      setCircleHight(height)
+      setCircleWidth(width)
+    } else if (integerValue === 20) {
+      var height = 180
+      var width = 180
+      setCircleHight(height)
+      setCircleWidth(width)
+    } else if (integerValue === 21) {
+      var height = 190
+      var width = 190
+      setCircleHight(height)
+      setCircleWidth(width)
+    } else if (integerValue === 22) {
+      var height = 200
+      var width = 200
+      setCircleHight(height)
+      setCircleWidth(width)
+    } else if (integerValue === 11) {
+      var height = 95
+      var width = 95
+      setCircleHight(height)
+      setCircleWidth(width)
+    } else if (integerValue === 10) {
+      var height = 90
+      var width = 90
+      setCircleHight(height)
+      setCircleWidth(width)
+    } else if (integerValue === 9) {
+      var height = 80
+      var width = 80
+      setCircleHight(height)
+      setCircleWidth(width)
+    } else if (integerValue === 8) {
+      var height = 70
+      var width = 70
+      setCircleHight(height)
+      setCircleWidth(width)
+    } else if (integerValue === 7) {
+      var height = 60
+      var width = 60
+      setCircleHight(height)
+      setCircleWidth(width)
+    } else if (integerValue === 6) {
+      var height = 50
+      var width = 50
+      setCircleHight(height)
+      setCircleWidth(width)
+    } else if (integerValue === 5) {
+      var height = 40
+      var width = 40
+      setCircleHight(height)
+      setCircleWidth(width)
+    } else if (integerValue === 4) {
+      var height = 30
+      var width = 30
+      setCircleHight(height)
+      setCircleWidth(width)
+    } else if (integerValue === 3) {
+      var height = 20
+      var width = 20
+      setCircleHight(height)
+      setCircleWidth(width)
+    } else if (integerValue === 2) {
+      var height = 10
+      var width = 10
+      setCircleHight(height)
+      setCircleWidth(width)
+    } else if (integerValue === 1) {
+      var height = 5
+      var width = 5
+      setCircleHight(height)
+      setCircleWidth(width)
+    } else if (integerValue === 0) {
+      var height = 0
+      var width = 0
+      setCircleHight(height)
+      setCircleWidth(width)
+    }
+    console.log('Zoom level:', JSON.stringify(newZoomLevel));
+    console.log(JSON.stringify(event))
+    // Call your method or execute code based on the zoom level
+  };
+
   const mapPlusClick = () => {
-    if(setCircle > 100){
-    var radious = setCircle - 100
-    // var width = setCircle.width - 100
-    setCircleHightWidth(radious);
+
+    // if (mapRef.current) {
+    //   mapRef.current._onCameraChanged({
+    //     zoom: 14, // Set the desired zoom level
+    //   });
+    // }
+    console.log(setZoomLevel,'setZoomLevel 1')
+    setCameraZoomLevel(prevCount => prevCount + 1);
+    console.log(CircleHeight);
+    if (setZoomLevel === 12) {
+      var height = 100
+      var width = 100
+      setCircleHight(height)
+      setCircleWidth(width)
+      console.log('1111111')
+    } else if (setZoomLevel === 13) {
+      var height = 110
+      var width = 110
+      setCircleHight(height)
+      setCircleWidth(width)
+    } else if (setZoomLevel === 14) {
+      var height = 120
+      var width = 120
+      setCircleHight(height)
+      setCircleWidth(width)
+    } else if (setZoomLevel === 15) {
+      var height = 130
+      var width = 130
+      setCircleHight(height)
+      setCircleWidth(width)
+    } else if (setZoomLevel === 16) {
+      var height = 140
+      var width = 140
+      setCircleHight(height)
+      setCircleWidth(width)
+    } else if (setZoomLevel === 17) {
+      var height = 150
+      var width = 150
+      setCircleHight(height)
+      setCircleWidth(width)
+    } else if (setZoomLevel === 18) {
+      var height = 160
+      var width = 160
+      setCircleHight(height)
+      setCircleWidth(width)
+    } else if (setZoomLevel === 19) {
+      var height = 170
+      var width = 170
+      setCircleHight(height)
+      setCircleWidth(width)
+    } else if (setZoomLevel === 20) {
+      var height = 180
+      var width = 180
+      setCircleHight(height)
+      setCircleWidth(width)
+    } else if (setZoomLevel === 21) {
+      var height = 190
+      var width = 190
+      setCircleHight(height)
+      setCircleWidth(width)
+    } else if (setZoomLevel === 22) {
+      var height = 200
+      var width = 200
+      setCircleHight(height)
+      setCircleWidth(width)
+    } else if (setZoomLevel === 11) {
+      var height = 95
+      var width = 95
+      setCircleHight(height)
+      setCircleWidth(width)
+    } else if (setZoomLevel === 10) {
+      var height = 90
+      var width = 90
+      setCircleHight(height)
+      setCircleWidth(width)
+    } else if (setZoomLevel === 9) {
+      var height = 80
+      var width = 80
+      setCircleHight(height)
+      setCircleWidth(width)
+    } else if (setZoomLevel === 8) {
+      var height = 70
+      var width = 70
+      setCircleHight(height)
+      setCircleWidth(width)
+    } else if (setZoomLevel === 7) {
+      var height = 60
+      var width = 60
+      setCircleHight(height)
+      setCircleWidth(width)
+    } else if (setZoomLevel === 6) {
+      var height = 50
+      var width = 50
+      setCircleHight(height)
+      setCircleWidth(width)
+    } else if (setZoomLevel === 5) {
+      var height = 40
+      var width = 40
+      setCircleHight(height)
+      setCircleWidth(width)
+    } else if (setZoomLevel === 4) {
+      var height = 30
+      var width = 30
+      setCircleHight(height)
+      setCircleWidth(width)
+    } else if (setZoomLevel === 3) {
+      var height = 20
+      var width = 20
+      setCircleHight(height)
+      setCircleWidth(width)
+    } else if (setZoomLevel === 2) {
+      var height = 10
+      var width = 10
+      setCircleHight(height)
+      setCircleWidth(width)
+    } else if (setZoomLevel === 1) {
+      var height = 5
+      var width = 5
+      setCircleHight(height)
+      setCircleWidth(width)
+    } else if (setZoomLevel === 0) {
+      var height = 0
+      var width = 0
+      setCircleHight(height)
+      setCircleWidth(width)
     }
     // geoTaggingAPITwo(location);
     // map?.current?._onCameraChanged.then((cam: Camera) => {
@@ -323,9 +618,129 @@ export const GratitudeScreen = (props: MapScreenProps) => {
   };
 
   const mapMinusClick = () => {
-    var radious = setCircle + 100
-    // var width = setCircle.width + 100
-    setCircleHightWidth(radious);
+
+    // if (mapRef.current) {
+    //   mapRef.current.setCamera({
+    //     zoom: 10, // Set the desired zoom level
+    //   });
+    // }
+    console.log(setZoomLevel,'setZoomLevel')
+    if (setZoomLevel === 12) {
+      var height = 100
+      var width = 100
+      setCircleHight(height)
+      setCircleWidth(width)
+    } else if (setZoomLevel === 13) {
+      var height = 110
+      var width = 110
+      setCircleHight(height)
+      setCircleWidth(width)
+    } else if (setZoomLevel === 14) {
+      var height = 120
+      var width = 120
+      setCircleHight(height)
+      setCircleWidth(width)
+    } else if (setZoomLevel === 15) {
+      var height = 130
+      var width = 130
+      setCircleHight(height)
+      setCircleWidth(width)
+    } else if (setZoomLevel === 16) {
+      var height = 140
+      var width = 140
+      setCircleHight(height)
+      setCircleWidth(width)
+    } else if (setZoomLevel === 17) {
+      var height = 150
+      var width = 150
+      setCircleHight(height)
+      setCircleWidth(width)
+    } else if (setZoomLevel === 18) {
+      var height = 160
+      var width = 160
+      setCircleHight(height)
+      setCircleWidth(width)
+    } else if (setZoomLevel === 19) {
+      var height = 170
+      var width = 170
+      setCircleHight(height)
+      setCircleWidth(width)
+    } else if (setZoomLevel === 20) {
+      var height = 180
+      var width = 180
+      setCircleHight(height)
+      setCircleWidth(width)
+    } else if (setZoomLevel === 21) {
+      var height = 190
+      var width = 190
+      setCircleHight(height)
+      setCircleWidth(width)
+    } else if (setZoomLevel === 22) {
+      var height = 200
+      var width = 200
+      setCircleHight(height)
+      setCircleWidth(width)
+    } else if (setZoomLevel === 11) {
+      var height = 95
+      var width = 95
+      setCircleHight(height)
+      setCircleWidth(width)
+    } else if (setZoomLevel === 10) {
+      var height = 90
+      var width = 90
+      setCircleHight(height)
+      setCircleWidth(width)
+    } else if (setZoomLevel === 9) {
+      var height = 80
+      var width = 80
+      setCircleHight(height)
+      setCircleWidth(width)
+    } else if (setZoomLevel === 8) {
+      var height = 70
+      var width = 70
+      setCircleHight(height)
+      setCircleWidth(width)
+    } else if (setZoomLevel === 7) {
+      var height = 60
+      var width = 60
+      setCircleHight(height)
+      setCircleWidth(width)
+    } else if (setZoomLevel === 6) {
+      var height = 50
+      var width = 50
+      setCircleHight(height)
+      setCircleWidth(width)
+    } else if (setZoomLevel === 5) {
+      var height = 40
+      var width = 40
+      setCircleHight(height)
+      setCircleWidth(width)
+    } else if (setZoomLevel === 4) {
+      var height = 30
+      var width = 30
+      setCircleHight(height)
+      setCircleWidth(width)
+    } else if (setZoomLevel === 3) {
+      var height = 20
+      var width = 20
+      setCircleHight(height)
+      setCircleWidth(width)
+    } else if (setZoomLevel === 2) {
+      var height = 10
+      var width = 10
+      setCircleHight(height)
+      setCircleWidth(width)
+    } else if (setZoomLevel === 1) {
+      var height = 5
+      var width = 5
+      setCircleHight(height)
+      setCircleWidth(width)
+    } else if (setZoomLevel === 0) {
+      var height = 0
+      var width = 0
+      setCircleHight(height)
+      setCircleWidth(width)
+    }
     // geoTaggingAPITwo(location);
     // map?.current?.getCamera().then((cam: Camera) => {
     //   console.log("--------------onZoomOutPress------------------", cam);
@@ -364,26 +779,9 @@ export const GratitudeScreen = (props: MapScreenProps) => {
     eventDataStore(resultTemp);
   };
 
-
-  const layerStyles = {
-    pin: {
-      iconImage: pin,
-      iconSize: 0.5,
-      iconOpacity: 1,
-      iconAllowOverlap: false,
-      iconIgnorePlacement: false
-    },
-    pinSelected: {
-      iconImage: pinWhite,
-      iconSize: 0.5,
-      iconOpacity: 1,
-      iconAllowOverlap: true,
-      iconIgnorePlacement: true
-    }
-  }
-
-  const onMarkerPress = () => {
-    setCalloutVisible(true);
+  const onCircleDrag = (event: any) => {
+    geoTaggingAPITwo(event?.geometry)
+    console.log(event)
   };
 
   return (
@@ -420,59 +818,47 @@ export const GratitudeScreen = (props: MapScreenProps) => {
 
       <MapboxGL.MapView
         style={styles.map}
+        onRegionDidChange={handleRegionChange}
+      // zoomEnabled={false}
+      ref={mapRef}
       >
         <MapboxGL.UserLocation />
-        {location?.latitude && location?.longitude ?  <View>
-        <MapboxGL.Camera
-          zoomLevel={7}
-          followUserLocation={false} 
-          centerCoordinate={[ 72.52067196032797,23.01715137677574]}
-          // centerCoordinate={[shape?.features[0]?.geometry?.coordinates[0], shape?.features[0]?.geometry?.coordinates[1]]}
-           />
+        {location?.latitude && location?.longitude ? <View>
+          <MapboxGL.Camera
+            zoomLevel={12}
+            followZoomLevel={15}
+            followUserLocation={false}
+            centerCoordinate={shape?.features[0]?.geometry?.coordinates[0] !== undefined ? [shape?.features[0]?.geometry?.coordinates[0], shape?.features[0]?.geometry?.coordinates[1]] : [-122.4194, 37.7749]}
+          />
         </View> : <></>}
 
-        <MapboxGL.ShapeSource
-
-          existing
-          id="symbolLocationSource"
-          hitbox={{ width: 30, height: 30, }}
-          shape={shape}
-        >
-
-          <MapboxGL.CircleLayer 
-            id='symbolLocationSource'
-            sourceLayerID='sf2010'
-            style={{
-              visibility: 'visible',
-              circleRadius: setCircle,
-              circleColor: '#70448B',
-              circleStrokeColor: '#000000',
-              circleStrokeWidth: 3,
-              circleOpacity: 0.5
-            }} />
-        </MapboxGL.ShapeSource>
-
+        <MapboxGL.PointAnnotation id='marker' coordinate={shape?.features[0]?.geometry?.coordinates[0] !== undefined ? [shape?.features[0]?.geometry?.coordinates[0], shape?.features[0]?.geometry?.coordinates[1]] : [-122.4194, 37.7749]} draggable onDragEnd={onCircleDrag}>
+          <View
+            style={{ height: CircleHeight, width: CircleWidth, borderWidth: 3, borderRadius: CircleHeight * 2, borderColor: '#000000', backgroundColor: '#70448B', opacity: 0.5 }}
+          >
+          </View>
+        </MapboxGL.PointAnnotation>
 
         {eventList.map((event: any, jindex) => (
           <MapboxGL.MarkerView
-            // coordinate={[event?.location?.coordinates[0], event?.location?.coordinates[1]]} 
-            coordinate={[72.52067196032797,23.01715137677574]} 
+            coordinate={[event?.location?.coordinates[0], event?.location?.coordinates[1]]}
             id={event._id}
-            >
+          >
             <TouchableOpacity onPress={() => onMarkerClick(jindex)}>
-            <Image
-              source={event?.isActive ? pin : pinWhite}
-              style={{ width: 20, height: 20 }}
-            /></TouchableOpacity> 
+              <Text style={{ color: 'purple', fontSize: 20 }}>{event?.name}</Text>
+              <Image
+                source={event?.isActive ? pin : pinWhite}
+                style={{ width: 20, height: 20 }}
+              /></TouchableOpacity>
           </MapboxGL.MarkerView>
         ))}
       </MapboxGL.MapView>
 
       <View style={styles.buttonCallout}>
-        <TouchableOpacity style={[styles.touchable]} onPress={mapMinusClick}>
+        <TouchableOpacity style={[styles.touchable]} onPress={mapPlusClick}>
           <Image style={styles.plusClass} source={plus}></Image>
         </TouchableOpacity>
-        <TouchableOpacity style={[styles.touchable]} onPress={mapPlusClick}>
+        <TouchableOpacity style={[styles.touchable]} onPress={mapMinusClick}>
           <Image style={styles.plusClass} source={minus}></Image>
         </TouchableOpacity>
       </View>
