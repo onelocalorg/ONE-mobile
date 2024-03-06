@@ -312,41 +312,38 @@ const TicketCheckoutModalComp = (
   }
 
   const createNewCardAPI = async (cardId: any) => {
-    const token = await AsyncStorage.getItem('token');
+    const token = await AsyncStorage.getItem("token");
     var cardtokenData: any = {
       token: cardId,
     };
 
     console.log(
-      '-------------------Create New Card Detail API Request---------------------',
+      "-------------------Create New Card Detail API Request---------------------"
     );
     try {
-      const response = await fetch(
-        API_URL + '/v1/subscriptions/cards/create',
-        {
-          method: 'post',
-          headers: new Headers({
-            Authorization: 'Bearer ' + token,
-            'Content-Type': 'application/json',
-          }),
-          body: JSON.stringify(cardtokenData)
-        },
-      );
+      const response = await fetch(API_URL + "/v1/subscriptions/cards/create", {
+        method: "post",
+        headers: new Headers({
+          Authorization: "Bearer " + token,
+          "Content-Type": "application/json",
+        }),
+        body: JSON.stringify(cardtokenData),
+      });
       const dataItem = await response.json();
       console.log(
-        '-------------------Create New Card Detail API Response---------------------',
+        "-------------------Create New Card Detail API Response---------------------"
       );
       isLoading(false);
       console.log(dataItem);
       if (dataItem?.success === true) {
         addNewCardModal(false);
         Toast.show(dataItem?.message, Toast.LONG, {
-          backgroundColor: 'black',
+          backgroundColor: "black",
         });
         getCardDetailAPI();
       } else {
         Toast.show(dataItem?.message, Toast.LONG, {
-          backgroundColor: 'black',
+          backgroundColor: "black",
         });
       }
     } catch (error) {
@@ -461,145 +458,160 @@ const TicketCheckoutModalComp = (
 
   return (
     <>
-      <ModalComponent ref={ref} title={strings.ticketCheckout}>
-        <Loader showOverlay visible={setLoader || loader}></Loader>
-        <View style={styles.modalContainer}>
-          <ScrollView showsVerticalScrollIndicator={false}>
-            <EventList data={eventData} />
-            <Text style={styles.amount}>
-              {eventData?.tickets?.[selectedRadioIndex]?.price}
-            </Text>
-            {eventData?.tickets.map((ele, index) => {
-              if (ele?.is_ticket_purchased) {
-                return <></>;
-              }
-              return (
-                <TouchableOpacity
-                  key={ele?.name.toString()}
-                  activeOpacity={0.8}
-                  onPress={() => onSelectTicket(index, ele)}
-                  style={[styles.row, styles.marginTop]}>
-                  <ImageComponent
-                    source={
-                      index === selectedRadioIndex ? activeRadio : inactiveRadio
-                    }
-                    style={styles.radio}
-                  />
-                  <Text
-                    style={
-                      styles.text
-                    }>{`$${ele?.price} - ${ele?.name}`}</Text>
-                  {ele?.available_quantity !== 0 ? (
-                    <View style={styles.quantityContainer}>
-                      <TouchableOpacity
-                        onPress={() => OnMinusClick(index, ele)}>
-                        <ImageComponent
-                          style={styles.quantityIcon}
-                          source={minus}></ImageComponent>
-                      </TouchableOpacity>
-                      <Text style={styles.quantityText}>
-                        {index === selectedRadioIndex ? quantityticket : 1}
-                      </Text>
-                      <TouchableOpacity onPress={() => OnPlusClick(index, ele)}>
-                        <ImageComponent
-                          style={styles.quantityIcon}
-                          source={plus}></ImageComponent>
-                      </TouchableOpacity>
-                    </View>
-                  ) : (
-                    <View></View>
-                  )}
-                </TouchableOpacity>
-              );
-            })}
-
-            <View style={styles.line} />
-            {!buttonDisable ? (
-              <View style={{marginVertical: 4}}>
-                <View style={styles.subTotalContainer}>
-                  <Text style={styles.subTotalLbl}>{strings.subTotal}</Text>
-                  <Text style={styles.subTotalLbl}>${setValue?.sub_total}</Text>
-                </View>
-                <View style={styles.subTotalContainer}>
-                  <Text style={styles.subTotalLbl}>{strings.platformFee}</Text>
-                  <Text style={styles.subTotalLbl}>${setValue?.platformFee}</Text>
-                </View>
-                <View style={styles.subTotalContainer}>
-                  <Text style={styles.subTotalLbl}>{strings.salesTax}</Text>
-                  <Text style={styles.subTotalLbl}>
-                    {setValue?.salesTax}
-                  </Text>
-                </View>
-                <View style={styles.subTotalContainer}>
-                  <Text style={styles.subTotalLbl}>{strings.paymentFee}</Text>
-                  <Text style={styles.subTotalLbl}>
-                    ${setValue?.paymentFee}
-                  </Text>
-                </View>
-                <View style={styles.subTotalContainer}>
-                  <Text style={styles.subTotalLbl}>{strings.total}</Text>
-                  <Text style={styles.subTotalLbl}>${setValue?.total}</Text>
-                </View>
-              </View>
-            ) : (
-              <Text style={styles.soldOutClass}>Ticket Sold out</Text>
-            )}
-            <View></View>
-            <View style={styles.lineSpace} />
-            {/* <View style={styles.lineTwo} /> */}
-            <ButtonComponent
-              disabled={buttonDisable}
-              onPress={() => onOpenModal()}
-              // onPress={() =>
-              //   onPurchase(
-              //     setPrice,
-              //     eventData?.tickets?.[selectedRadioIndex]?.id ?? '',
-              //     eventData?.tickets?.[selectedRadioIndex]?.name,
-              //     quantityticket,
-              //   )
-              // }
-              title={strings.purchase}
-            />
-          </ScrollView>
-        </View>
-        <Modal transparent onDismiss={addCardModalHide} visible={addcard}>
-        <Loader showOverlay visible={loader}></Loader>
-          <GestureRecognizer
-            onSwipeDown={addCardModalHide}
-            style={styles.gesture}>
-            <TouchableOpacity
-              style={styles.containerGallery}
-              activeOpacity={1}
-              onPress={addCardModalHide}
-            />
-          </GestureRecognizer>
-          <Loader visible={setLoader} showOverlay />
-          <KeyboardAvoidingView
-            behavior={Platform.OS === 'ios' ? 'position' : 'height'}
-            style={styles.keyboardViewTwo}>
-            <View style={styles.addCardBorderContainer}>
-              <View>
-                <Text style={styles.addCardTitle}>{strings.purchase}</Text>
-                <View>
-
+        <ModalComponent ref={ref} title={strings.ticketCheckout}>
+          <Loader showOverlay visible={setLoader || loader}></Loader>
+          <View style={styles.modalContainer}>
+            <ScrollView showsVerticalScrollIndicator={false}>
+              <EventList data={eventData} />
+              <Text style={styles.amount}>
+                {eventData?.tickets?.[selectedRadioIndex]?.price}
+              </Text>
+              {eventData?.tickets.map((ele, index) => {
+                if (ele?.is_ticket_purchased) {
+                  return <></>;
+                }
+                return (
                   <TouchableOpacity
+                    key={ele?.name.toString()}
                     activeOpacity={0.8}
-                    onPress={() => addNewCardDetailModal()}
-                    style={styles.cardContainer}>
+                    onPress={() => onSelectTicket(index, ele)}
+                    style={[styles.row, styles.marginTop]}
+                  >
                     <ImageComponent
-                      style={styles.greenBtn}
-                      source={addGreen}></ImageComponent>
+                      source={
+                        index === selectedRadioIndex
+                          ? activeRadio
+                          : inactiveRadio
+                      }
+                      style={styles.radio}
+                    />
+                    <Text
+                      style={styles.text}
+                    >{`$${ele?.price} - ${ele?.name}`}</Text>
+                    {ele?.available_quantity !== 0 ? (
+                      <View style={styles.quantityContainer}>
+                        <TouchableOpacity
+                          onPress={() => OnMinusClick(index, ele)}
+                        >
+                          <ImageComponent
+                            style={styles.quantityIcon}
+                            source={minus}
+                          ></ImageComponent>
+                        </TouchableOpacity>
+                        <Text style={styles.quantityText}>
+                          {index === selectedRadioIndex ? quantityticket : 1}
+                        </Text>
+                        <TouchableOpacity
+                          onPress={() => OnPlusClick(index, ele)}
+                        >
+                          <ImageComponent
+                            style={styles.quantityIcon}
+                            source={plus}
+                          ></ImageComponent>
+                        </TouchableOpacity>
+                      </View>
+                    ) : (
+                      <View></View>
+                    )}
                   </TouchableOpacity>
-                 
+                );
+              })}
+
+              <View style={styles.line} />
+              {!buttonDisable ? (
+                <View style={{ marginVertical: 4 }}>
+                  <View style={styles.subTotalContainer}>
+                    <Text style={styles.subTotalLbl}>{strings.subTotal}</Text>
+                    <Text style={styles.subTotalLbl}>
+                      ${setValue?.sub_total}
+                    </Text>
+                  </View>
+                  <View style={styles.subTotalContainer}>
+                    <Text style={styles.subTotalLbl}>
+                      {strings.platformFee}
+                    </Text>
+                    <Text style={styles.subTotalLbl}>
+                      ${setValue?.platformFee}
+                    </Text>
+                  </View>
+                  <View style={styles.subTotalContainer}>
+                    <Text style={styles.subTotalLbl}>{strings.salesTax}</Text>
+                    <Text style={styles.subTotalLbl}>{setValue?.salesTax}</Text>
+                  </View>
+                  <View style={styles.subTotalContainer}>
+                    <Text style={styles.subTotalLbl}>{strings.paymentFee}</Text>
+                    <Text style={styles.subTotalLbl}>
+                      ${setValue?.paymentFee}
+                    </Text>
+                  </View>
+                  <View style={styles.subTotalContainer}>
+                    <Text style={styles.subTotalLbl}>{strings.total}</Text>
+                    <Text style={styles.subTotalLbl}>${setValue?.total}</Text>
+                  </View>
+                </View>
+              ) : (
+                <Text style={styles.soldOutClass}>Ticket Sold out</Text>
+              )}
+              <View></View>
+              <View style={styles.lineSpace} />
+              {/* <View style={styles.lineTwo} /> */}
+              <ButtonComponent
+                disabled={buttonDisable}
+                onPress={() => onOpenModal()}
+                // onPress={() =>
+                //   onPurchase(
+                //     setPrice,
+                //     eventData?.tickets?.[selectedRadioIndex]?.id ?? '',
+                //     eventData?.tickets?.[selectedRadioIndex]?.name,
+                //     quantityticket,
+                //   )
+                // }
+                title={strings.purchase}
+              />
+            </ScrollView>
+          </View>
+          <Modal transparent onDismiss={addCardModalHide} visible={addcard}>
+            <Loader showOverlay visible={loader}></Loader>
+            <GestureRecognizer
+              onSwipeDown={addCardModalHide}
+              style={styles.gesture}
+            >
+              <TouchableOpacity
+                style={styles.containerGallery}
+                activeOpacity={1}
+                onPress={addCardModalHide}
+              />
+            </GestureRecognizer>
+            <Loader visible={setLoader} showOverlay />
+            <KeyboardAvoidingView
+              behavior={Platform.OS === "ios" ? "position" : "height"}
+              style={styles.keyboardViewTwo}
+            >
+              <View style={styles.addCardBorderContainer}>
+                <View>
+                  <Text style={styles.addCardTitle}>{strings.purchase}</Text>
+                  <View>
+                    <TouchableOpacity
+                      activeOpacity={0.8}
+                      onPress={() => addNewCardDetailModal()}
+                      style={styles.cardContainer}
+                    >
+                      <ImageComponent
+                        style={styles.greenBtn}
+                        source={addGreen}
+                      ></ImageComponent>
+                    </TouchableOpacity>
+
                     <ScrollView showsHorizontalScrollIndicator={false}>
-                      <View style={{height: 'auto',maxHeight:150}}>
+                      <View style={{ height: "auto", maxHeight: 150 }}>
                         <FlatList
                           data={setCard}
-                          renderItem={({item, index}) => (
+                          renderItem={({ item, index }) => (
                             <TouchableOpacity
-                              onPress={() => onSelectCard(index, item)}>
+                              onPress={() => onSelectCard(index, item)}
+                            >
                               <View style={styles.cardListContainer}>
-                                <View style={{flexDirection: 'row'}}>
+                                <View style={{ flexDirection: "row" }}>
                                   <ImageComponent
                                     source={
                                       index === SelectCardIndex
@@ -628,19 +640,18 @@ const TicketCheckoutModalComp = (
                                 </View>
                               </View>
                             </TouchableOpacity>
-                          )}></FlatList>
+                          )}
+                        ></FlatList>
                       </View>
                     </ScrollView>
-                </View>
+                  </View>
 
-               
                   <View>
                     <TouchableOpacity
-                      onPress={() =>
-                        OnCardValidation()
-                      }
+                      onPress={() => OnCardValidation()}
                       activeOpacity={0.8}
-                      style={styles.addCardContainer}>
+                      style={styles.addCardContainer}
+                    >
                       <View />
                       <Text style={styles.titleTwo}>
                         {strings.pay} ${setPrice}
@@ -651,13 +662,13 @@ const TicketCheckoutModalComp = (
                       />
                     </TouchableOpacity>
                   </View>
+                </View>
               </View>
-            </View>
-          </KeyboardAvoidingView>
+            </KeyboardAvoidingView>
 
-          {/* Add Card Detail Modal */}
-
-          <Modal transparent onDismiss={addNewCardDetial} visible={addNewcard}>
+            {/* Add Card Detail Modal */}
+                                        
+            <Modal transparent onDismiss={addNewCardDetial} visible={addNewcard}>
             <GestureRecognizer
               onSwipeDown={addNewCardDetial}
               style={styles.gesture}>
@@ -668,15 +679,16 @@ const TicketCheckoutModalComp = (
               />
             </GestureRecognizer>
             <Loader visible={setLoader} showOverlay />
-            <KeyboardAvoidingView
-              behavior={Platform.OS === 'ios' ? 'height' : 'height'}
-              style={styles.keyboardViewTwo}>
                 <TouchableOpacity activeOpacity={1} onPress={keyboardDismiss}>
               <View style={styles.addCardNewBorderContainer}>
               <KeyboardAwareScrollView
                       showsVerticalScrollIndicator={false}
                       horizontal={false}>
                 <View>
+                <ScrollView
+                    showsVerticalScrollIndicator={false}
+                    horizontal={false}
+                  >
                   <Text style={styles.addCardTitle}>{strings.purchase}</Text>
                   <Text style={styles.addCardInfo}>{strings.cardinfo}</Text>
                   <View>
@@ -832,13 +844,13 @@ const TicketCheckoutModalComp = (
                       icon={buttonArrowBlue} 
                     />
                   </View>
+                  </ScrollView>
                 </View>
                 </KeyboardAwareScrollView> 
               </View></TouchableOpacity>
-            </KeyboardAvoidingView>
           </Modal>
-        </Modal>
-      </ModalComponent>
+          </Modal>
+        </ModalComponent>
     </>
   );
 };

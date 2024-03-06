@@ -232,7 +232,6 @@ lastName:{
       borderTopRightRadius: theme.borderRadius.radius16,
       borderTopLeftRadius: theme.borderRadius.radius16,
       paddingVertical: verticalScale(20),
-      maxHeight: verticalScale(300),
       borderColor: theme.colors.black,
       backgroundColor: theme.colors.white,
       borderTopWidth: theme.borderWidth.borderWidth6,

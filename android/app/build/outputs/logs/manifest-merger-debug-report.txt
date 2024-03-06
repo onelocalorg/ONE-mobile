@@ -1,7 +1,7 @@
 -- Merging decision tree log ---
 manifest
-ADDED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/main/AndroidManifest.xml:1:1-35:12
-MERGED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/main/AndroidManifest.xml:1:1-35:12
+ADDED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/main/AndroidManifest.xml:1:1-36:12
+MERGED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/main/AndroidManifest.xml:1:1-36:12
 INJECTED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/debug/AndroidManifest.xml:2:1-14:12
 INJECTED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/debug/AndroidManifest.xml:2:1-14:12
 INJECTED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/debug/AndroidManifest.xml:2:1-14:12
@@ -261,9 +261,9 @@ MERGED from [:react-native-image-crop-picker] /Users/sanandiyavipul/Projects/ONE
 	android:name
 		ADDED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/main/AndroidManifest.xml:13:23-79
 application
-ADDED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/main/AndroidManifest.xml:16:5-34:19
-MERGED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/main/AndroidManifest.xml:16:5-34:19
-MERGED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/main/AndroidManifest.xml:16:5-34:19
+ADDED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/main/AndroidManifest.xml:16:5-35:19
+MERGED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/main/AndroidManifest.xml:16:5-35:19
+MERGED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/main/AndroidManifest.xml:16:5-35:19
 INJECTED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/debug/AndroidManifest.xml:7:5-13:19
 MERGED from [com.stripe:paymentsheet:20.37.4] /Users/sanandiyavipul/.gradle/caches/transforms-3/b966fd94163ce3b4e65ccab3f86e410b/transformed/jetified-paymentsheet-20.37.4/AndroidManifest.xml:7:5-39:19
 MERGED from [com.stripe:paymentsheet:20.37.4] /Users/sanandiyavipul/.gradle/caches/transforms-3/b966fd94163ce3b4e65ccab3f86e410b/transformed/jetified-paymentsheet-20.37.4/AndroidManifest.xml:7:5-39:19

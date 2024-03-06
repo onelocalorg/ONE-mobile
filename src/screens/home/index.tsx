@@ -757,7 +757,7 @@ export const HomeScreen = (props: HomeScreenProps) => {
           removeClippedSubviews={true}
           initialNumToRender={initialLoadNumber}
           renderItem={renderItem}
-          endFillColor="red"
+          // endFillColor="red"
           contentContainerStyle={styles.scrollView}
           ListFooterComponent={renderLoader}
           ListHeaderComponent={

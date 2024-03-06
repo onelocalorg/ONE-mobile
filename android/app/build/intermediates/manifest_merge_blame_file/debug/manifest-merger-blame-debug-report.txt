@@ -123,7 +123,7 @@
 65-->[com.android.installreferrer:installreferrer:1.1.2] /Users/sanandiyavipul/.gradle/caches/transforms-3/1edd3400f1364c76a748504de66c6c10/transformed/jetified-installreferrer-1.1.2/AndroidManifest.xml:9:22-107
 66
 67    <application
-67-->/Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/main/AndroidManifest.xml:16:5-34:19
+67-->/Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/main/AndroidManifest.xml:16:5-35:19
 68        android:name="com.oneboulder.MainApplication"
 68-->/Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/main/AndroidManifest.xml:17:7-38
 69        android:appComponentFactory="androidx.core.app.CoreComponentFactory"

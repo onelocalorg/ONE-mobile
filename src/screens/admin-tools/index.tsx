@@ -320,6 +320,7 @@ export const AdminToolsScreen = (props: AdminToolsScreenProps) => {
 
     const res = await mutateAsync({ bodyParams: request, eventId: id });
     if (res?.success) {
+      console.log(request, '-------------requestSuccess---------------')
       LodingData(false);
       navigation?.goBack();
     } else {

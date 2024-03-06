@@ -337,10 +337,10 @@ export const createStyleSheet = (theme: ThemeProps) => {
       // height:40
     },
     addCardNewBorderContainer: {
-      position: 'absolute',
-      left: 0,
-      right: 0,
-      bottom: 0,
+      // position: 'absolute',
+      // left: 0,
+      // right: 0,
+      // bottom: 0,
       borderTopRightRadius: theme.borderRadius.radius16,
       borderTopLeftRadius: theme.borderRadius.radius16,
       paddingVertical: verticalScale(20),

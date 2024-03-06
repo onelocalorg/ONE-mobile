@@ -40,7 +40,7 @@ export const App = () => {
         <QueryClientProvider client={queryClient}>
           <Provider store={store}>
             <InternetConnectionHandle />
-            <StatusBar backgroundColor={'white'} barStyle={'light-content'} translucent={false} />
+            <StatusBar backgroundColor={'#003333'} barStyle={'light-content'} translucent={true} />
             <AppNavigation />
           </Provider>
         </QueryClientProvider>
