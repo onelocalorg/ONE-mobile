@@ -52,6 +52,7 @@ import {navigations} from '@config/app-navigation/constant';
 import {FlatListComponent} from '@components/flatlist-component';
 import {Pill} from '@components/pill';
 import {API_URL} from '@network/constant';
+import ActiveEnv from '@config/env/env.dev.json';
 
 interface CreatePostRequestScreenProps {
   navigation?: NavigationContainerRef<ParamListBase>;
@@ -633,7 +634,7 @@ export const CreatePostRequestScreen = (
                     console.log(data); // description
                   }}
                   query={{
-                    key: 'AIzaSyCobkVCxli93gBohNPhJhuHBoWThs1pZlo', // client
+                    key: ActiveEnv.GOOGLE_KEY, // client
                   }}
                   // keepResultsAfterBlur={true}
                   // currentLocation={true}

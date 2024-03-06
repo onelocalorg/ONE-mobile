@@ -73,6 +73,7 @@ import { GetAdmintoolsDropDownScreen } from "./getAdmintoolsDropdown";
 import { ScrollView } from "react-native-gesture-handler";
 import { width } from "@theme/device/device";
 import { Platform } from "react-native";
+import ActiveEnv from '@config/env/env.dev.json';
 
 interface AdminToolsScreenProps {
   navigation?: NavigationContainerRef<ParamListBase>;
@@ -264,12 +265,13 @@ export const AdminToolsScreen = (props: AdminToolsScreenProps) => {
         type: setFilter,
       },
     });
-    console.log('--------------bodyParams------------------', res)
     console.log(setFilter);
     if (res?.success) {
+      console.log(res,'res res res')
       LodingData(false);
       navigation?.goBack();
     } else {
+      console.log(res,'res error res error res error')
       LodingData(false);
     }
   };
@@ -623,7 +625,7 @@ export const AdminToolsScreen = (props: AdminToolsScreenProps) => {
                         setAddressLocation(details?.geometry?.location)
                       }}
                       query={{
-                        key: "AIzaSyCobkVCxli93gBohNPhJhuHBoWThs1pZlo", // client
+                        key: ActiveEnv.GOOGLE_KEY, // client
                       }}
                       currentLocationLabel="Current location"
                     />

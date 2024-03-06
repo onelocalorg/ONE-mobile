@@ -56,5 +56,10 @@ pod 'react-native-google-maps', :path => rn_maps_path
       config[:reactNativePath],
       :mac_catalyst_enabled => false
     )
+    $RNMapboxMaps.post_install(installer)
   end
 end
+pre_install do |installer|
+  $RNMapboxMaps.pre_install(installer)
+end
+

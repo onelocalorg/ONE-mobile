@@ -54,6 +54,7 @@ import {DatePickerModal} from 'react-native-paper-dates';
 import {FlatListComponent} from '@components/flatlist-component';
 import {Pill} from '@components/pill';
 import {API_URL} from '@network/constant';
+import ActiveEnv from '@config/env/env.dev.json';
 
 interface CreatePostOfferScreenProps {
   navigation?: NavigationContainerRef<ParamListBase>;
@@ -684,7 +685,7 @@ const removeSelectImage = (imageUrl: any) => {
                     console.log(details); // description
                   }}
                   query={{
-                    key: 'AIzaSyCobkVCxli93gBohNPhJhuHBoWThs1pZlo', // client
+                    key: ActiveEnv.GOOGLE_KEY, // client
                   }}
                   // keepResultsAfterBlur={true}
                   // currentLocation={true}

@@ -421,10 +421,8 @@ export const createStyleSheet = (theme: ThemeProps) => {
       flexDirection:'row'
     },
     buttonCallout: {
-      flex: 1,
-      // flexDirection:'row',
       position:'absolute',
-      top:230,
+      top:160,
       right:0,
       alignSelf: "center",
       justifyContent: "space-between",
@@ -438,6 +436,38 @@ export const createStyleSheet = (theme: ThemeProps) => {
     plusClass: {
      height:20,
      width:20
+    },
+
+   
+    map: {
+      flex: 1
+    },
+    type1:{
+      flex: 1
+    },
+    pinRed:{
+      height: 20,
+      width: 20,
+      backgroundColor: theme.colors.red,
+      borderColor: 'black',
+      borderWidth: 2,
+      borderRadius: 50, 
+    },
+    pinBlack:{
+      height: 20,
+      width: 20,
+      backgroundColor: theme.colors.green,
+      borderColor: 'black',
+      borderWidth: 2,
+      borderRadius: 50, 
+    },
+
+    addressContainer: {
+      // position: 'absolute',
+      // flex: 1,
+      // width: '100%',
+      // height: '20%',
+      // zIndex: 1,
     },
 
   });
