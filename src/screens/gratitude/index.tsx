@@ -146,7 +146,7 @@ export const GratitudeScreen = (props: MapScreenProps) => {
     setZoomOnMap(zoom);
     setAltitudeOnMap(altitude);
     setCircleHight(CircleHeight);
-      setCircleWidth(CircleWidth);
+    setCircleWidth(CircleWidth);
     requestLocationPermission();
     // setUserLocation(location);
   }, [radius, eventType, circleradius, pitch, heading, zoom, altitude,]);

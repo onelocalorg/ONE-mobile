@@ -159,3 +159,4 @@ vendor/
 
 ios/ 
 android/
+android/app/build/outputs/apk/debug/app-debug.apk
