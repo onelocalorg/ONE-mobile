@@ -91,17 +91,11 @@ export const HomeScreen = (props: HomeScreenProps) => {
   const [reportPost, addReportReason] = useState("");
   const [setGratis, setPostGratisData] = useState();
   const [setComment, setPostCommentData] = useState();
-  const [type, eventTypeData] = useState("offer");
   const [post_index, setPostCommentIndexTwo]: any = useState();
   const [showCommentListModal, setShowCommentListData] = useState(false);
   const [Post_Id, setPostDataId] = useState("");
 
-  const [offset, setOffset] = useState(1); //Its Like Page number
-  const [messages, setMessages] = useState<[]>([]); //Contains the whole data
-  const [dataSource, setDataSource] = useState<[]>([]); //Contains limited number of data
-  const windowSize = messages.length > 50 ? messages.length / 4 : 21;
-  let num = 100; // This is the number which defines how many data will be loaded for every 'onReachEnd'
-  let initialLoadNumber = 40;
+  
 
   const { user } = useSelector<StoreType, UserProfileState>(
     (state) => state.userProfileReducer
@@ -136,12 +130,6 @@ export const HomeScreen = (props: HomeScreenProps) => {
     }, [page, searchQuery])
   );
 
-  useEffect(() => {
-    LogBox.ignoreAllLogs();
-    requestLocationPermission();
-    eventTypeData(type);
-  }, [type, range?.startDate, range?.endDate, searchQuery]);
-
   const requestLocationPermission = async () => {
     GetLocation.getCurrentPosition({
       enableHighAccuracy: true,
@@ -149,14 +137,14 @@ export const HomeScreen = (props: HomeScreenProps) => {
     })
       .then((location) => {
         setUserLocation(location);
-       
+
         console.log(
           "---------------------location---------------------",
           location
         );
         if (location.latitude && location.longitude) {
           getRecentlyJoinUserAPI(location);
-        }else{
+        } else {
           getRecentlyJoinUserAPI('');
         }
       })
@@ -258,7 +246,12 @@ export const HomeScreen = (props: HomeScreenProps) => {
         body: JSON.stringify(data),
       });
       const dataItem = await response.json();
-      postListData([...postList, ...dataItem?.data?.results]);
+      if (page == 1) {
+        postListData(dataItem?.data?.results);
+      } else {
+        postListData([...postList, ...dataItem?.data?.results]);
+      }
+
       onPageLoad(false);
       isMoreDataLoad(true);
       LodingData(false);
@@ -267,7 +260,7 @@ export const HomeScreen = (props: HomeScreenProps) => {
       }
     } catch (error) {
       LodingData(false);
-      console.error("--------error--------" +URL,error);
+      console.error("--------error--------" + URL, error);
     }
   }
 
@@ -318,23 +311,23 @@ export const HomeScreen = (props: HomeScreenProps) => {
     }
   }
 
-  async function getRecentlyJoinUserAPI(getLocation:any) {
+  async function getRecentlyJoinUserAPI(getLocation: any) {
     const token = await AsyncStorage.getItem("token");
 
-    if(getLocation != ''){
+    if (getLocation != '') {
       var data: any = {
         radius: 25,
         user_lat: getLocation?.latitude,
         user_long: getLocation?.longitude,
       };
-    }else{
+    } else {
       var data: any = {
         radius: 25,
       };
     }
-   
-    console.log(data,'getRecentlyJoinUserAPI')
-   
+
+    console.log(data, 'getRecentlyJoinUserAPI')
+
     try {
       const response = await fetch(API_URL + "/v1/users/recently-joined", {
         method: "post",
@@ -354,15 +347,15 @@ export const HomeScreen = (props: HomeScreenProps) => {
     }
   }
 
-  const postDataLoad = () => {
+  function postDataLoad(){
     console.log(
       "fasdfasfajsdofhajsdjfhaskdjfasjkdbfajksdbfajksdbfasjbsajkbdjfbasj"
     );
-    if (ismoreData) {
+    if (ismoreData && postList.length > 0) {
       onPageLoad(true);
       setPage(page + 1);
     }
-  };
+  }
 
   async function blockUserAPI(postID: any, selectOP: any) {
     const token = await AsyncStorage.getItem("token");
@@ -418,7 +411,7 @@ export const HomeScreen = (props: HomeScreenProps) => {
   };
 
   const recentUserProfilePress = (id: any) => {
-    AsyncStorage.setItem("recentUserId", id);
+    AsyncStorage.setItem('recentUserId', id);
     navigation.navigate(navigations.RECENTUSERPROFILE);
   };
 
@@ -632,8 +625,8 @@ export const HomeScreen = (props: HomeScreenProps) => {
   };
 
   const onCloseCommentListModal = (setGraisTwo: any, commentTwo: any) => {
-    console.log(setGraisTwo,'111111');
-    console.log(commentTwo,'222222');
+    console.log(setGraisTwo, '111111');
+    console.log(commentTwo, '222222');
 
     setPostCommentData(commentTwo)
     setPostGratisData(setGraisTwo)
@@ -672,20 +665,17 @@ export const HomeScreen = (props: HomeScreenProps) => {
     }
   };
 
-  const setSerchValue = useCallback(
-    (searchData: any) => {
-      setSearchQuery(searchData);
-      postListAPI();
-      postListData([]);
-      setPage(1);
-    },
-    [searchQuery]
-  );
+  const setSerchValue = (searchData: any) => {
+    setPage(1);
+    setSearchQuery(searchData);
+  }
+
+
 
   const renderLoader = () => {
     return (
       loading ?
-        <View style={{marginVertical: 26,alignItems: "center",}}>
+        <View style={{ marginVertical: 26, alignItems: "center", }}>
           <ActivityIndicator size="large" color="#aaa" />
         </View> : null
     );
@@ -708,7 +698,7 @@ export const HomeScreen = (props: HomeScreenProps) => {
               placeholderTextColor="#FFFF"
               placeholder="Search"
               style={styles.searchInput}
-              onChangeText={(value) => { 
+              onChangeText={(value) => {
                 console.log(value);
                 setSerchValue(value);
               }}
@@ -745,19 +735,8 @@ export const HomeScreen = (props: HomeScreenProps) => {
         <FlatList
           data={postList}
           keyExtractor={(item, index) => item.key}
-          onEndReached={() => {
-            return postDataLoad();
-          }}
-          windowSize={windowSize} //If you have scroll stuttering but working fine when 'disableVirtualization = true' then use this windowSize, it fix the stuttering problem.
-          maxToRenderPerBatch={num}
-          updateCellsBatchingPeriod={num / 2}
-          onEndReachedThreshold={
-            offset < 10 ? offset * (offset == 1 ? 2 : 2) : 20
-          } //While you scolling the offset number and your data number will increases.So endReached will be triggered earlier because our data will be too many
-          removeClippedSubviews={true}
-          initialNumToRender={initialLoadNumber}
+          onEndReached={postDataLoad} 
           renderItem={renderItem}
-          // endFillColor="red"
           contentContainerStyle={styles.scrollView}
           ListFooterComponent={renderLoader}
           ListHeaderComponent={
@@ -811,7 +790,7 @@ export const HomeScreen = (props: HomeScreenProps) => {
             </View>
           }
         ></FlatList>
-        
+
       </View>
 
       <Modal transparent onDismiss={OfferModalClose} visible={offerModal}>
