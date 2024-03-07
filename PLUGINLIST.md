@@ -12,6 +12,10 @@ npm i react-native-image-slider-box
 https://github.com/rnmapbox/maps?tab=readme-ov-file
 npm install @rnmapbox/maps
 
+5. datepicker ios issue
+npm install @react-native-community/datetimepicker --save
+https://github.com/react-native-datetimepicker/datetimepicker/issues/866
+
 For Android 
 0.37.0
 
