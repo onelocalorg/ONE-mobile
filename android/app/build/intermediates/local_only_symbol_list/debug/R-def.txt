@@ -1,5 +1,7 @@
 R_DEF: Internal format may change without notice
 local
+color primary_dark
+drawable launch_screen
 drawable node_modules_reactnativecalendars_src_calendar_img_next
 drawable node_modules_reactnativecalendars_src_calendar_img_previous
 drawable node_modules_reactnativecalendars_src_img_down
@@ -8,6 +10,7 @@ drawable node_modules_reactnativegoogleplacesautocomplete_images_powered_by_goog
 drawable node_modules_reactnativepaper_src_assets_backchevron
 drawable node_modules_reactnavigation_elements_src_assets_backicon
 drawable node_modules_reactnavigation_elements_src_assets_backiconmask
+drawable node_modules_rnmapbox_maps_src_assets_heading
 drawable rn_edit_text_material
 drawable src_assets_images_activeradio
 drawable src_assets_images_addcard
@@ -17,6 +20,7 @@ drawable src_assets_images_arrowdown
 drawable src_assets_images_arrowleft
 drawable src_assets_images_bell
 drawable src_assets_images_blackoffer
+drawable src_assets_images_blackpin
 drawable src_assets_images_bucket
 drawable src_assets_images_buttonarrow
 drawable src_assets_images_buttonarrowblue
@@ -72,6 +76,7 @@ drawable src_assets_images_plus
 drawable src_assets_images_postcalender
 drawable src_assets_images_postimage
 drawable src_assets_images_reddeleteicon
+drawable src_assets_images_redpin
 drawable src_assets_images_request
 drawable src_assets_images_requestgreen
 drawable src_assets_images_save
@@ -85,6 +90,7 @@ drawable src_assets_images_ticket
 drawable src_assets_images_vector
 integer react_native_dev_server_port
 integer react_native_inspector_proxy_port
+layout launch_screen
 mipmap ic_launcher
 mipmap ic_launcher_foreground
 mipmap ic_launcher_round

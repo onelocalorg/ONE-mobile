@@ -412,9 +412,9 @@ export const EventDetailScreen = (props: EventDetailScreenProps) => {
           <View>
             {tickets?.map(ele => (
               <View key={ele?.price.toString()} style={styles.rowOnly}>
-                <Text style={styles.ticket}>{`${ele?.name} - ${
-                  ele?.price
-                } ${getDate(ele?.end_date)}`}</Text>
+                <Text style={styles.ticket}>{`$${ele?.price} - ${
+                  ele?.name
+                }`}</Text>
                 <TouchableOpacity
                   onPress={() =>
                     copyPaymentLink(ele?.ticket_purchase_link ?? '')

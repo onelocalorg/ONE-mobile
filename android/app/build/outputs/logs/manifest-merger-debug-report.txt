@@ -1,7 +1,7 @@
 -- Merging decision tree log ---
 manifest
-ADDED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/main/AndroidManifest.xml:1:1-35:12
-MERGED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/main/AndroidManifest.xml:1:1-35:12
+ADDED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/main/AndroidManifest.xml:1:1-37:12
+MERGED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/main/AndroidManifest.xml:1:1-37:12
 INJECTED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/debug/AndroidManifest.xml:2:1-14:12
 INJECTED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/debug/AndroidManifest.xml:2:1-14:12
 INJECTED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/debug/AndroidManifest.xml:2:1-14:12
@@ -28,6 +28,7 @@ MERGED from [:react-native-community_datetimepicker] /Users/sanandiyavipul/Proje
 MERGED from [:react-native-community_geolocation] /Users/sanandiyavipul/Projects/ONE-mobile/node_modules/@react-native-community/geolocation/android/build/intermediates/merged_manifest/debug/AndroidManifest.xml:2:1-7:12
 MERGED from [:react-native-community_netinfo] /Users/sanandiyavipul/Projects/ONE-mobile/node_modules/@react-native-community/netinfo/android/build/intermediates/merged_manifest/debug/AndroidManifest.xml:2:1-10:12
 MERGED from [:react-native-google-signin_google-signin] /Users/sanandiyavipul/Projects/ONE-mobile/node_modules/@react-native-google-signin/google-signin/android/build/intermediates/merged_manifest/debug/AndroidManifest.xml:2:1-7:12
+MERGED from [:rnmapbox_maps] /Users/sanandiyavipul/Projects/ONE-mobile/node_modules/@rnmapbox/maps/android/build/intermediates/merged_manifest/debug/AndroidManifest.xml:2:1-11:12
 MERGED from [:react-native-camera] /Users/sanandiyavipul/Projects/ONE-mobile/node_modules/react-native-camera/android/build/intermediates/merged_manifest/generalDebug/AndroidManifest.xml:2:1-16:12
 MERGED from [:react-native-device-info] /Users/sanandiyavipul/Projects/ONE-mobile/node_modules/react-native-device-info/android/build/intermediates/merged_manifest/debug/AndroidManifest.xml:2:1-7:12
 MERGED from [:react-native-fast-image] /Users/sanandiyavipul/Projects/ONE-mobile/node_modules/react-native-fast-image/android/build/intermediates/merged_manifest/debug/AndroidManifest.xml:2:1-7:12
@@ -40,6 +41,7 @@ MERGED from [:react-native-maps] /Users/sanandiyavipul/Projects/ONE-mobile/node_
 MERGED from [:react-native-permissions] /Users/sanandiyavipul/Projects/ONE-mobile/node_modules/react-native-permissions/android/build/intermediates/merged_manifest/debug/AndroidManifest.xml:2:1-7:12
 MERGED from [:react-native-reanimated] /Users/sanandiyavipul/Projects/ONE-mobile/node_modules/react-native-reanimated/android/build/intermediates/merged_manifest/debug/AndroidManifest.xml:2:1-7:12
 MERGED from [:react-native-safe-area-context] /Users/sanandiyavipul/Projects/ONE-mobile/node_modules/react-native-safe-area-context/android/build/intermediates/merged_manifest/debug/AndroidManifest.xml:2:1-7:12
+MERGED from [:react-native-splash-screen] /Users/sanandiyavipul/Projects/ONE-mobile/node_modules/react-native-splash-screen/android/build/intermediates/merged_manifest/debug/AndroidManifest.xml:2:1-7:12
 MERGED from [:react-native-svg] /Users/sanandiyavipul/Projects/ONE-mobile/node_modules/react-native-svg/android/build/intermediates/merged_manifest/debug/AndroidManifest.xml:2:1-7:12
 MERGED from [:react-native-vector-icons] /Users/sanandiyavipul/Projects/ONE-mobile/node_modules/react-native-vector-icons/android/build/intermediates/merged_manifest/debug/AndroidManifest.xml:2:1-7:12
 MERGED from [:react-native-webview] /Users/sanandiyavipul/Projects/ONE-mobile/node_modules/react-native-webview/android/build/intermediates/merged_manifest/debug/AndroidManifest.xml:2:1-19:12
@@ -48,20 +50,31 @@ MERGED from [com.facebook.react:hermes-android:0.73.1] /Users/sanandiyavipul/.gr
 MERGED from [androidx.appcompat:appcompat-resources:1.6.1] /Users/sanandiyavipul/.gradle/caches/transforms-3/e4e477a82e608cd5f68f96e0f39eaa53/transformed/jetified-appcompat-resources-1.6.1/AndroidManifest.xml:17:1-22:12
 MERGED from [com.stripe:financial-connections:20.37.4] /Users/sanandiyavipul/.gradle/caches/transforms-3/c340c66a1199316bcf5b6ea8859d3c10/transformed/jetified-financial-connections-20.37.4/AndroidManifest.xml:2:1-83:12
 MERGED from [com.github.yalantis:ucrop:2.2.6-native] /Users/sanandiyavipul/.gradle/caches/transforms-3/3924b192f8fd4352d4a27c07ee77ed42/transformed/jetified-ucrop-2.2.6-native/AndroidManifest.xml:2:1-11:12
+MERGED from [com.mapbox.maps:android:11.0.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/8710725259e15e2494454a90a25ae64b/transformed/jetified-android-11.0.0/AndroidManifest.xml:2:1-7:12
+MERGED from [com.mapbox.plugin:maps-annotation:11.0.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/4f10c17e2e498c2a87af7e983ac152d4/transformed/jetified-maps-annotation-11.0.0/AndroidManifest.xml:2:1-7:12
+MERGED from [com.mapbox.extension:maps-localization:11.0.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/4220607323d54e5466a339e852f3d9b6/transformed/jetified-maps-localization-11.0.0/AndroidManifest.xml:2:1-7:12
+MERGED from [com.mapbox.extension:maps-style:11.0.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/729e8c6274f78c0ef370b50a3ae74ae9/transformed/jetified-maps-style-11.0.0/AndroidManifest.xml:2:1-7:12
+MERGED from [com.mapbox.plugin:maps-logo:11.0.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/2cbcb141b01ac64e62591466a5809bc6/transformed/jetified-maps-logo-11.0.0/AndroidManifest.xml:2:1-7:12
+MERGED from [com.mapbox.plugin:maps-compass:11.0.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/43290b397acebc9c908d731f040e57ff/transformed/jetified-maps-compass-11.0.0/AndroidManifest.xml:2:1-7:12
+MERGED from [com.mapbox.plugin:maps-gestures:11.0.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/05b301e1e98be48e7f67c92d23495b51/transformed/jetified-maps-gestures-11.0.0/AndroidManifest.xml:2:1-7:12
+MERGED from [com.mapbox.plugin:maps-attribution:11.0.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/0c1e0d148a0f069bd3e67c98707d4b38/transformed/jetified-maps-attribution-11.0.0/AndroidManifest.xml:2:1-7:12
+MERGED from [com.mapbox.plugin:maps-viewport:11.0.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/1d0addafc5691e9361fb3aec2d5a3baa/transformed/jetified-maps-viewport-11.0.0/AndroidManifest.xml:2:1-7:12
+MERGED from [com.mapbox.plugin:maps-locationcomponent:11.0.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/d73cd8a206b9847652caaa9396391579/transformed/jetified-maps-locationcomponent-11.0.0/AndroidManifest.xml:2:1-7:12
+MERGED from [com.mapbox.plugin:maps-scalebar:11.0.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/0003d3f4e33142739c632c046307f1e9/transformed/jetified-maps-scalebar-11.0.0/AndroidManifest.xml:2:1-7:12
+MERGED from [com.mapbox.plugin:maps-overlay:11.0.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/e8b47028162ac642626382424104b5fb/transformed/jetified-maps-overlay-11.0.0/AndroidManifest.xml:2:1-7:12
 MERGED from [com.stripe:payments-model:20.37.4] /Users/sanandiyavipul/.gradle/caches/transforms-3/d7372d93f240d80df44355b69974097d/transformed/jetified-payments-model-20.37.4/AndroidManifest.xml:2:1-7:12
 MERGED from [com.airbnb.android:mavericks-compose:3.0.9] /Users/sanandiyavipul/.gradle/caches/transforms-3/bc7c6cde1457435aab7244616007a3dd/transformed/jetified-mavericks-compose-3.0.9/AndroidManifest.xml:2:1-7:12
 MERGED from [com.airbnb.android:mavericks:3.0.9] /Users/sanandiyavipul/.gradle/caches/transforms-3/1042b2402c9cecf446871573361c4031/transformed/jetified-mavericks-3.0.9/AndroidManifest.xml:2:1-9:12
 MERGED from [androidx.constraintlayout:constraintlayout:2.1.4] /Users/sanandiyavipul/.gradle/caches/transforms-3/0a0273f0de76a126e94810488b0217c3/transformed/constraintlayout-2.1.4/AndroidManifest.xml:2:1-11:12
 MERGED from [com.stripe:hcaptcha:20.37.4] /Users/sanandiyavipul/.gradle/caches/transforms-3/a9a96c8d286636d9efe9ac060ad09e0d/transformed/jetified-hcaptcha-20.37.4/AndroidManifest.xml:2:1-7:12
 MERGED from [androidx.appcompat:appcompat:1.6.1] /Users/sanandiyavipul/.gradle/caches/transforms-3/3a82d7226139b573ef0c274db30c8615/transformed/appcompat-1.6.1/AndroidManifest.xml:17:1-22:12
-MERGED from [com.facebook.fresco:imagepipeline-okhttp3:3.1.3] /Users/sanandiyavipul/.gradle/caches/transforms-3/6ef4830f7ef9f01df37b4553e390ee5d/transformed/jetified-imagepipeline-okhttp3-3.1.3/AndroidManifest.xml:2:1-7:12
-MERGED from [com.github.bumptech.glide:okhttp3-integration:4.12.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/872797bc99c5c30d6699c1fc0d853859/transformed/jetified-okhttp3-integration-4.12.0/AndroidManifest.xml:2:1-16:12
 MERGED from [androidx.navigation:navigation-common:2.7.6] /Users/sanandiyavipul/.gradle/caches/transforms-3/9e691ffc3dfd36e6378a1df7ddb6b8d0/transformed/navigation-common-2.7.6/AndroidManifest.xml:17:1-22:12
 MERGED from [androidx.navigation:navigation-runtime:2.7.6] /Users/sanandiyavipul/.gradle/caches/transforms-3/2ce2653bd592adf33bada805c28721f9/transformed/navigation-runtime-2.7.6/AndroidManifest.xml:17:1-22:12
 MERGED from [androidx.navigation:navigation-common-ktx:2.7.6] /Users/sanandiyavipul/.gradle/caches/transforms-3/38be40283d94f8979aa118ce19919d9d/transformed/navigation-common-ktx-2.7.6/AndroidManifest.xml:2:1-7:12
 MERGED from [androidx.navigation:navigation-runtime-ktx:2.7.6] /Users/sanandiyavipul/.gradle/caches/transforms-3/2231fa3fbad4a882919b479f07c7a763/transformed/navigation-runtime-ktx-2.7.6/AndroidManifest.xml:2:1-7:12
 MERGED from [androidx.navigation:navigation-compose:2.7.6] /Users/sanandiyavipul/.gradle/caches/transforms-3/9addea1450491b1a78989f8066b98488/transformed/jetified-navigation-compose-2.7.6/AndroidManifest.xml:2:1-7:12
 MERGED from [com.google.android.gms:play-services-auth:20.5.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/aecea58ce8979c0a3801796b5aecff6f/transformed/jetified-play-services-auth-20.5.0/AndroidManifest.xml:17:1-40:12
+MERGED from [com.github.bumptech.glide:okhttp3-integration:4.12.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/872797bc99c5c30d6699c1fc0d853859/transformed/jetified-okhttp3-integration-4.12.0/AndroidManifest.xml:2:1-16:12
 MERGED from [com.github.bumptech.glide:glide:4.12.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/bd228d655127d43dea5781508a714825/transformed/jetified-glide-4.12.0/AndroidManifest.xml:2:1-12:12
 MERGED from [androidx.legacy:legacy-support-v4:1.0.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/843ea2c00fcc35468abbcf5743c36a37/transformed/legacy-support-v4-1.0.0/AndroidManifest.xml:17:1-22:12
 MERGED from [com.google.android.gms:play-services-location:21.0.1] /Users/sanandiyavipul/.gradle/caches/transforms-3/be0b673cfc3b6c0c8c4c9bcee671b662/transformed/jetified-play-services-location-21.0.1/AndroidManifest.xml:2:1-9:12
@@ -126,6 +139,7 @@ MERGED from [androidx.lifecycle:lifecycle-viewmodel-compose:2.7.0] /Users/sanand
 MERGED from [androidx.compose.ui:ui-android:1.5.4] /Users/sanandiyavipul/.gradle/caches/transforms-3/412d27f4d5052b258275bc1aee827af5/transformed/jetified-ui-release/AndroidManifest.xml:2:1-7:12
 MERGED from [androidx.autofill:autofill:1.1.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/39ed6b7f3d6e8c8b813968859666b78e/transformed/jetified-autofill-1.1.0/AndroidManifest.xml:17:1-24:12
 MERGED from [androidx.swiperefreshlayout:swiperefreshlayout:1.1.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/cf2a935b349869ccd1965a0c16a4ae4e/transformed/swiperefreshlayout-1.1.0/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.asynclayoutinflater:asynclayoutinflater:1.0.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/d34b421412efd1641ecf2d309522090f/transformed/asynclayoutinflater-1.0.0/AndroidManifest.xml:17:1-22:12
 MERGED from [androidx.coordinatorlayout:coordinatorlayout:1.2.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/c10aad6bd9259d3eadf6996cff6b19ed/transformed/coordinatorlayout-1.2.0/AndroidManifest.xml:17:1-24:12
 MERGED from [androidx.webkit:webkit:1.4.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/4e1e2b18bbb75ddfce5e9b0042858aee/transformed/webkit-1.4.0/AndroidManifest.xml:17:1-24:12
 MERGED from [androidx.viewpager:viewpager:1.0.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/6ae720aed4cc0310ef9824d908ce5d8f/transformed/viewpager-1.0.0/AndroidManifest.xml:17:1-22:12
@@ -136,6 +150,7 @@ MERGED from [androidx.customview:customview:1.1.0] /Users/sanandiyavipul/.gradle
 MERGED from [com.facebook.fresco:stetho:2.6.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/14a4e37e840111a226605fe86ae54998/transformed/jetified-stetho-2.6.0/AndroidManifest.xml:2:1-9:12
 MERGED from [com.facebook.fresco:flipper:2.6.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/9ed2b2dee8b9d59f509ba1036990af39/transformed/jetified-flipper-2.6.0/AndroidManifest.xml:2:1-9:12
 MERGED from [com.facebook.fresco:fresco:3.1.3] /Users/sanandiyavipul/.gradle/caches/transforms-3/9d9ad197602107da050b96137af36249/transformed/jetified-fresco-3.1.3/AndroidManifest.xml:2:1-7:12
+MERGED from [com.facebook.fresco:imagepipeline-okhttp3:3.1.3] /Users/sanandiyavipul/.gradle/caches/transforms-3/6ef4830f7ef9f01df37b4553e390ee5d/transformed/jetified-imagepipeline-okhttp3-3.1.3/AndroidManifest.xml:2:1-7:12
 MERGED from [com.facebook.fresco:drawee:3.1.3] /Users/sanandiyavipul/.gradle/caches/transforms-3/0014a8371279944f8780dcf34264ee11/transformed/jetified-drawee-3.1.3/AndroidManifest.xml:2:1-7:12
 MERGED from [com.facebook.fresco:nativeimagefilters:3.1.3] /Users/sanandiyavipul/.gradle/caches/transforms-3/2ca3a7c403feb8c060a7251da338e3df/transformed/jetified-nativeimagefilters-3.1.3/AndroidManifest.xml:2:1-7:12
 MERGED from [com.facebook.fresco:memory-type-native:3.1.3] /Users/sanandiyavipul/.gradle/caches/transforms-3/29a3b56bd9e71fc92f2fa74f2e0c8222/transformed/jetified-memory-type-native-3.1.3/AndroidManifest.xml:2:1-7:12
@@ -151,9 +166,15 @@ MERGED from [com.facebook.fresco:soloader:3.1.3] /Users/sanandiyavipul/.gradle/c
 MERGED from [com.facebook.fresco:fbcore:3.1.3] /Users/sanandiyavipul/.gradle/caches/transforms-3/00bdc1ac3e53b32324857f547a500a36/transformed/jetified-fbcore-3.1.3/AndroidManifest.xml:2:1-7:12
 MERGED from [androidx.browser:browser:1.7.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/233084daae7b9b45ff96ce0d85945840/transformed/browser-1.7.0/AndroidManifest.xml:2:1-7:12
 MERGED from [androidx.media:media:1.0.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/f0c2d383174fb8261890d0f424128cab/transformed/media-1.0.0/AndroidManifest.xml:17:1-22:12
-MERGED from [androidx.asynclayoutinflater:asynclayoutinflater:1.0.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/d34b421412efd1641ecf2d309522090f/transformed/asynclayoutinflater-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [com.mapbox.plugin:maps-animation:11.0.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/5299a03036adb0c1bdde7e3295cb7f7d/transformed/jetified-maps-animation-11.0.0/AndroidManifest.xml:2:1-7:12
+MERGED from [com.mapbox.plugin:maps-lifecycle:11.0.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/e6c8c8dbe1aa149ea753bd1fa8a6daa0/transformed/jetified-maps-lifecycle-11.0.0/AndroidManifest.xml:2:1-7:12
 MERGED from [androidx.customview:customview-poolingcontainer:1.0.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/e1ad80c711378e818f651db666ab520a/transformed/jetified-customview-poolingcontainer-1.0.0/AndroidManifest.xml:17:1-23:12
 MERGED from [androidx.core:core-ktx:1.12.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/611ede6e331157e458ad99792c39cfd3/transformed/jetified-core-ktx-1.12.0/AndroidManifest.xml:2:1-7:12
+MERGED from [com.mapbox.module:maps-telemetry:11.0.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/92051e0c8135bba4b1e55da45ec19063/transformed/jetified-maps-telemetry-11.0.0/AndroidManifest.xml:2:1-7:12
+MERGED from [com.mapbox.maps:base:11.0.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/5dfe4466ec8b3c06b1025944e78304a3/transformed/jetified-base-11.0.0/AndroidManifest.xml:2:1-12:12
+MERGED from [com.mapbox.mapboxsdk:mapbox-android-gestures:0.8.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/c66b4cb508f8fe4c07724712c7468de9/transformed/jetified-mapbox-android-gestures-0.8.0/AndroidManifest.xml:2:1-9:12
+MERGED from [com.mapbox.maps:android-core:11.0.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/28fac22c2fa708f78ac1753e5a5701fa/transformed/jetified-android-core-11.0.0/AndroidManifest.xml:2:1-33:12
+MERGED from [com.mapbox.common:common:24.0.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/3cbab85f1d593e428d97012e3fb82f3d/transformed/jetified-common-24.0.0/AndroidManifest.xml:2:1-38:12
 MERGED from [androidx.core:core:1.12.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/481e6fc6c03a5e66dc9dc87ea34e6342/transformed/core-1.12.0/AndroidManifest.xml:17:1-30:12
 MERGED from [androidx.lifecycle:lifecycle-runtime:2.7.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/12339b599c9a84d531fd8b76740fc8aa/transformed/lifecycle-runtime-2.7.0/AndroidManifest.xml:2:1-7:12
 MERGED from [com.google.android.gms:play-services-tasks:18.0.2] /Users/sanandiyavipul/.gradle/caches/transforms-3/629d363955d8686e628b99512bcff3c3/transformed/jetified-play-services-tasks-18.0.2/AndroidManifest.xml:2:1-6:12
@@ -179,6 +200,9 @@ MERGED from [androidx.sqlite:sqlite:2.2.0] /Users/sanandiyavipul/.gradle/caches/
 MERGED from [androidx.cursoradapter:cursoradapter:1.0.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/f6aa016c6ea73bedbd2c2af12db5e64b/transformed/cursoradapter-1.0.0/AndroidManifest.xml:17:1-22:12
 MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.1] /Users/sanandiyavipul/.gradle/caches/transforms-3/d790c44601ef66901e3df4c85ce8047f/transformed/versionedparcelable-1.1.1/AndroidManifest.xml:17:1-27:12
 MERGED from [androidx.interpolator:interpolator:1.0.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/f8702547f417edba06969c0a045f352c/transformed/interpolator-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [com.mapbox.common:logger:0.8.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/e85289ab34797a0a6d70903d2b53860f/transformed/jetified-logger-0.8.0/AndroidManifest.xml:2:1-9:12
+MERGED from [com.mapbox.common:loader:0.8.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/016734113bec4964d4a64aa4a8255d16/transformed/jetified-loader-0.8.0/AndroidManifest.xml:2:1-9:12
+MERGED from [com.mapbox.base:common:0.8.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/635c013f14449a1a006a14b23f014979/transformed/jetified-common-0.8.0/AndroidManifest.xml:2:1-9:12
 MERGED from [com.github.bumptech.glide:gifdecoder:4.12.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/d3b37099b101fdb658d2578ac9405c78/transformed/jetified-gifdecoder-4.12.0/AndroidManifest.xml:2:1-11:12
 MERGED from [com.google.android.datatransport:transport-backend-cct:2.3.3] /Users/sanandiyavipul/.gradle/caches/transforms-3/21785bd8316a6b6a93269b7812e9ee54/transformed/jetified-transport-backend-cct-2.3.3/AndroidManifest.xml:15:1-38:12
 MERGED from [com.google.android.datatransport:transport-runtime:2.2.6] /Users/sanandiyavipul/.gradle/caches/transforms-3/c7785fca29326d5c2399cce4af79bcb4/transformed/jetified-transport-runtime-2.2.6/AndroidManifest.xml:15:1-41:12
@@ -224,46 +248,76 @@ uses-permission#android.permission.INTERNET
 ADDED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/main/AndroidManifest.xml:8:5-67
 MERGED from [com.facebook.flipper:flipper:0.182.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/487a105ae29e7c2a29179f136ff1d2f9/transformed/jetified-flipper-0.182.0/AndroidManifest.xml:15:5-67
 MERGED from [com.facebook.flipper:flipper:0.182.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/487a105ae29e7c2a29179f136ff1d2f9/transformed/jetified-flipper-0.182.0/AndroidManifest.xml:15:5-67
+MERGED from [:rnmapbox_maps] /Users/sanandiyavipul/Projects/ONE-mobile/node_modules/@rnmapbox/maps/android/build/intermediates/merged_manifest/debug/AndroidManifest.xml:7:5-67
+MERGED from [:rnmapbox_maps] /Users/sanandiyavipul/Projects/ONE-mobile/node_modules/@rnmapbox/maps/android/build/intermediates/merged_manifest/debug/AndroidManifest.xml:7:5-67
 MERGED from [com.stripe:financial-connections:20.37.4] /Users/sanandiyavipul/.gradle/caches/transforms-3/c340c66a1199316bcf5b6ea8859d3c10/transformed/jetified-financial-connections-20.37.4/AndroidManifest.xml:7:5-67
 MERGED from [com.stripe:financial-connections:20.37.4] /Users/sanandiyavipul/.gradle/caches/transforms-3/c340c66a1199316bcf5b6ea8859d3c10/transformed/jetified-financial-connections-20.37.4/AndroidManifest.xml:7:5-67
 MERGED from [com.google.android.gms:play-services-iid:17.0.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/31c4c9b463646ab863341afff0946d25/transformed/jetified-play-services-iid-17.0.0/AndroidManifest.xml:24:5-67
 MERGED from [com.google.android.gms:play-services-iid:17.0.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/31c4c9b463646ab863341afff0946d25/transformed/jetified-play-services-iid-17.0.0/AndroidManifest.xml:24:5-67
 MERGED from [com.google.android.gms:play-services-maps:18.2.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/0ba08d6875e242e9200c9576a6816253/transformed/jetified-play-services-maps-18.2.0/AndroidManifest.xml:24:5-67
 MERGED from [com.google.android.gms:play-services-maps:18.2.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/0ba08d6875e242e9200c9576a6816253/transformed/jetified-play-services-maps-18.2.0/AndroidManifest.xml:24:5-67
+MERGED from [com.mapbox.maps:android-core:11.0.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/28fac22c2fa708f78ac1753e5a5701fa/transformed/jetified-android-core-11.0.0/AndroidManifest.xml:17:5-67
+MERGED from [com.mapbox.maps:android-core:11.0.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/28fac22c2fa708f78ac1753e5a5701fa/transformed/jetified-android-core-11.0.0/AndroidManifest.xml:17:5-67
+MERGED from [com.mapbox.common:common:24.0.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/3cbab85f1d593e428d97012e3fb82f3d/transformed/jetified-common-24.0.0/AndroidManifest.xml:8:5-67
+MERGED from [com.mapbox.common:common:24.0.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/3cbab85f1d593e428d97012e3fb82f3d/transformed/jetified-common-24.0.0/AndroidManifest.xml:8:5-67
 MERGED from [com.google.android.datatransport:transport-backend-cct:2.3.3] /Users/sanandiyavipul/.gradle/caches/transforms-3/21785bd8316a6b6a93269b7812e9ee54/transformed/jetified-transport-backend-cct-2.3.3/AndroidManifest.xml:26:5-67
 MERGED from [com.google.android.datatransport:transport-backend-cct:2.3.3] /Users/sanandiyavipul/.gradle/caches/transforms-3/21785bd8316a6b6a93269b7812e9ee54/transformed/jetified-transport-backend-cct-2.3.3/AndroidManifest.xml:26:5-67
 	android:name
 		ADDED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/main/AndroidManifest.xml:8:22-64
-uses-permission#android.permission.ACCESS_FINE_LOCATION
-ADDED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/main/AndroidManifest.xml:9:5-78
+uses-permission#android.permission.ACCESS_NETWORK_STATE
+ADDED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/main/AndroidManifest.xml:9:5-79
+MERGED from [:react-native-community_netinfo] /Users/sanandiyavipul/Projects/ONE-mobile/node_modules/@react-native-community/netinfo/android/build/intermediates/merged_manifest/debug/AndroidManifest.xml:7:5-79
+MERGED from [:react-native-community_netinfo] /Users/sanandiyavipul/Projects/ONE-mobile/node_modules/@react-native-community/netinfo/android/build/intermediates/merged_manifest/debug/AndroidManifest.xml:7:5-79
+MERGED from [com.google.android.gms:play-services-maps:18.2.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/0ba08d6875e242e9200c9576a6816253/transformed/jetified-play-services-maps-18.2.0/AndroidManifest.xml:23:5-79
+MERGED from [com.google.android.gms:play-services-maps:18.2.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/0ba08d6875e242e9200c9576a6816253/transformed/jetified-play-services-maps-18.2.0/AndroidManifest.xml:23:5-79
+MERGED from [com.stripe:stripe-core:20.37.4] /Users/sanandiyavipul/.gradle/caches/transforms-3/7f182b4afb90b4faa81d6f0bab46c511/transformed/jetified-stripe-core-20.37.4/AndroidManifest.xml:7:5-79
+MERGED from [com.stripe:stripe-core:20.37.4] /Users/sanandiyavipul/.gradle/caches/transforms-3/7f182b4afb90b4faa81d6f0bab46c511/transformed/jetified-stripe-core-20.37.4/AndroidManifest.xml:7:5-79
+MERGED from [androidx.work:work-runtime:2.7.1] /Users/sanandiyavipul/.gradle/caches/transforms-3/c6119206d18db30cf8c5f27bed6b7abb/transformed/work-runtime-2.7.1/AndroidManifest.xml:26:5-79
+MERGED from [androidx.work:work-runtime:2.7.1] /Users/sanandiyavipul/.gradle/caches/transforms-3/c6119206d18db30cf8c5f27bed6b7abb/transformed/work-runtime-2.7.1/AndroidManifest.xml:26:5-79
+MERGED from [com.mapbox.maps:android-core:11.0.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/28fac22c2fa708f78ac1753e5a5701fa/transformed/jetified-android-core-11.0.0/AndroidManifest.xml:18:5-79
+MERGED from [com.mapbox.maps:android-core:11.0.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/28fac22c2fa708f78ac1753e5a5701fa/transformed/jetified-android-core-11.0.0/AndroidManifest.xml:18:5-79
+MERGED from [com.mapbox.common:common:24.0.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/3cbab85f1d593e428d97012e3fb82f3d/transformed/jetified-common-24.0.0/AndroidManifest.xml:9:5-79
+MERGED from [com.mapbox.common:common:24.0.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/3cbab85f1d593e428d97012e3fb82f3d/transformed/jetified-common-24.0.0/AndroidManifest.xml:9:5-79
+MERGED from [com.google.android.datatransport:transport-backend-cct:2.3.3] /Users/sanandiyavipul/.gradle/caches/transforms-3/21785bd8316a6b6a93269b7812e9ee54/transformed/jetified-transport-backend-cct-2.3.3/AndroidManifest.xml:25:5-79
+MERGED from [com.google.android.datatransport:transport-backend-cct:2.3.3] /Users/sanandiyavipul/.gradle/caches/transforms-3/21785bd8316a6b6a93269b7812e9ee54/transformed/jetified-transport-backend-cct-2.3.3/AndroidManifest.xml:25:5-79
+MERGED from [com.google.android.datatransport:transport-runtime:2.2.6] /Users/sanandiyavipul/.gradle/caches/transforms-3/c7785fca29326d5c2399cce4af79bcb4/transformed/jetified-transport-runtime-2.2.6/AndroidManifest.xml:22:5-79
+MERGED from [com.google.android.datatransport:transport-runtime:2.2.6] /Users/sanandiyavipul/.gradle/caches/transforms-3/c7785fca29326d5c2399cce4af79bcb4/transformed/jetified-transport-runtime-2.2.6/AndroidManifest.xml:22:5-79
 	android:name
 		ADDED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/main/AndroidManifest.xml:9:22-76
+uses-permission#android.permission.ACCESS_FINE_LOCATION
+ADDED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/main/AndroidManifest.xml:10:5-78
+MERGED from [:rnmapbox_maps] /Users/sanandiyavipul/Projects/ONE-mobile/node_modules/@rnmapbox/maps/android/build/intermediates/merged_manifest/debug/AndroidManifest.xml:9:5-79
+MERGED from [:rnmapbox_maps] /Users/sanandiyavipul/Projects/ONE-mobile/node_modules/@rnmapbox/maps/android/build/intermediates/merged_manifest/debug/AndroidManifest.xml:9:5-79
+	android:name
+		ADDED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/main/AndroidManifest.xml:10:22-76
 uses-permission#android.permission.ACCESS_COARSE_LOCATION
-ADDED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/main/AndroidManifest.xml:10:7-82
+ADDED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/main/AndroidManifest.xml:11:7-82
+MERGED from [:rnmapbox_maps] /Users/sanandiyavipul/Projects/ONE-mobile/node_modules/@rnmapbox/maps/android/build/intermediates/merged_manifest/debug/AndroidManifest.xml:8:5-81
+MERGED from [:rnmapbox_maps] /Users/sanandiyavipul/Projects/ONE-mobile/node_modules/@rnmapbox/maps/android/build/intermediates/merged_manifest/debug/AndroidManifest.xml:8:5-81
 MERGED from [:react-native-get-location] /Users/sanandiyavipul/Projects/ONE-mobile/node_modules/react-native-get-location/android/build/intermediates/merged_manifest/debug/AndroidManifest.xml:7:5-81
 MERGED from [:react-native-get-location] /Users/sanandiyavipul/Projects/ONE-mobile/node_modules/react-native-get-location/android/build/intermediates/merged_manifest/debug/AndroidManifest.xml:7:5-81
 	android:name
-		ADDED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/main/AndroidManifest.xml:10:24-80
+		ADDED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/main/AndroidManifest.xml:11:24-80
 uses-permission#android.permission.CAMERA
-ADDED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/main/AndroidManifest.xml:11:7-67
+ADDED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/main/AndroidManifest.xml:12:7-67
 MERGED from [:react-native-camera] /Users/sanandiyavipul/Projects/ONE-mobile/node_modules/react-native-camera/android/build/intermediates/merged_manifest/generalDebug/AndroidManifest.xml:7:5-65
 MERGED from [:react-native-camera] /Users/sanandiyavipul/Projects/ONE-mobile/node_modules/react-native-camera/android/build/intermediates/merged_manifest/generalDebug/AndroidManifest.xml:7:5-65
 	android:name
-		ADDED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/main/AndroidManifest.xml:11:24-64
+		ADDED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/main/AndroidManifest.xml:12:24-64
 uses-permission#android.permission.READ_MEDIA_IMAGES
-ADDED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/main/AndroidManifest.xml:12:7-77
+ADDED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/main/AndroidManifest.xml:13:7-77
 	android:name
-		ADDED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/main/AndroidManifest.xml:12:24-75
+		ADDED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/main/AndroidManifest.xml:13:24-75
 uses-permission#android.permission.WRITE_EXTERNAL_STORAGE
-ADDED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/main/AndroidManifest.xml:13:6-81
+ADDED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/main/AndroidManifest.xml:14:6-81
 MERGED from [:react-native-image-crop-picker] /Users/sanandiyavipul/Projects/ONE-mobile/node_modules/react-native-image-crop-picker/android/build/intermediates/merged_manifest/debug/AndroidManifest.xml:13:5-81
 MERGED from [:react-native-image-crop-picker] /Users/sanandiyavipul/Projects/ONE-mobile/node_modules/react-native-image-crop-picker/android/build/intermediates/merged_manifest/debug/AndroidManifest.xml:13:5-81
 	android:name
-		ADDED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/main/AndroidManifest.xml:13:23-79
+		ADDED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/main/AndroidManifest.xml:14:23-79
 application
-ADDED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/main/AndroidManifest.xml:16:5-34:19
-MERGED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/main/AndroidManifest.xml:16:5-34:19
-MERGED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/main/AndroidManifest.xml:16:5-34:19
+ADDED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/main/AndroidManifest.xml:17:5-36:19
+MERGED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/main/AndroidManifest.xml:17:5-36:19
+MERGED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/main/AndroidManifest.xml:17:5-36:19
 INJECTED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/debug/AndroidManifest.xml:7:5-13:19
 MERGED from [com.stripe:paymentsheet:20.37.4] /Users/sanandiyavipul/.gradle/caches/transforms-3/b966fd94163ce3b4e65ccab3f86e410b/transformed/jetified-paymentsheet-20.37.4/AndroidManifest.xml:7:5-39:19
 MERGED from [com.stripe:paymentsheet:20.37.4] /Users/sanandiyavipul/.gradle/caches/transforms-3/b966fd94163ce3b4e65ccab3f86e410b/transformed/jetified-paymentsheet-20.37.4/AndroidManifest.xml:7:5-39:19
@@ -293,10 +347,10 @@ MERGED from [com.airbnb.android:mavericks:3.0.9] /Users/sanandiyavipul/.gradle/c
 MERGED from [com.airbnb.android:mavericks:3.0.9] /Users/sanandiyavipul/.gradle/caches/transforms-3/1042b2402c9cecf446871573361c4031/transformed/jetified-mavericks-3.0.9/AndroidManifest.xml:7:5-20
 MERGED from [androidx.constraintlayout:constraintlayout:2.1.4] /Users/sanandiyavipul/.gradle/caches/transforms-3/0a0273f0de76a126e94810488b0217c3/transformed/constraintlayout-2.1.4/AndroidManifest.xml:9:5-20
 MERGED from [androidx.constraintlayout:constraintlayout:2.1.4] /Users/sanandiyavipul/.gradle/caches/transforms-3/0a0273f0de76a126e94810488b0217c3/transformed/constraintlayout-2.1.4/AndroidManifest.xml:9:5-20
-MERGED from [com.github.bumptech.glide:okhttp3-integration:4.12.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/872797bc99c5c30d6699c1fc0d853859/transformed/jetified-okhttp3-integration-4.12.0/AndroidManifest.xml:10:5-14:19
-MERGED from [com.github.bumptech.glide:okhttp3-integration:4.12.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/872797bc99c5c30d6699c1fc0d853859/transformed/jetified-okhttp3-integration-4.12.0/AndroidManifest.xml:10:5-14:19
 MERGED from [com.google.android.gms:play-services-auth:20.5.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/aecea58ce8979c0a3801796b5aecff6f/transformed/jetified-play-services-auth-20.5.0/AndroidManifest.xml:22:5-38:19
 MERGED from [com.google.android.gms:play-services-auth:20.5.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/aecea58ce8979c0a3801796b5aecff6f/transformed/jetified-play-services-auth-20.5.0/AndroidManifest.xml:22:5-38:19
+MERGED from [com.github.bumptech.glide:okhttp3-integration:4.12.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/872797bc99c5c30d6699c1fc0d853859/transformed/jetified-okhttp3-integration-4.12.0/AndroidManifest.xml:10:5-14:19
+MERGED from [com.github.bumptech.glide:okhttp3-integration:4.12.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/872797bc99c5c30d6699c1fc0d853859/transformed/jetified-okhttp3-integration-4.12.0/AndroidManifest.xml:10:5-14:19
 MERGED from [com.github.bumptech.glide:glide:4.12.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/bd228d655127d43dea5781508a714825/transformed/jetified-glide-4.12.0/AndroidManifest.xml:10:5-20
 MERGED from [com.github.bumptech.glide:glide:4.12.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/bd228d655127d43dea5781508a714825/transformed/jetified-glide-4.12.0/AndroidManifest.xml:10:5-20
 MERGED from [com.google.android.gms:play-services-location:21.0.1] /Users/sanandiyavipul/.gradle/caches/transforms-3/be0b673cfc3b6c0c8c4c9bcee671b662/transformed/jetified-play-services-location-21.0.1/AndroidManifest.xml:7:5-20
@@ -331,6 +385,10 @@ MERGED from [androidx.emoji2:emoji2:1.3.0] /Users/sanandiyavipul/.gradle/caches/
 MERGED from [androidx.emoji2:emoji2:1.3.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/dc17cef77b9b6167ceca3336c3f77f05/transformed/jetified-emoji2-1.3.0/AndroidManifest.xml:23:5-33:19
 MERGED from [androidx.lifecycle:lifecycle-process:2.7.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/0d3b7c1cb8b0dbb88274f54162fb249a/transformed/jetified-lifecycle-process-2.7.0/AndroidManifest.xml:23:5-33:19
 MERGED from [androidx.lifecycle:lifecycle-process:2.7.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/0d3b7c1cb8b0dbb88274f54162fb249a/transformed/jetified-lifecycle-process-2.7.0/AndroidManifest.xml:23:5-33:19
+MERGED from [com.mapbox.maps:android-core:11.0.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/28fac22c2fa708f78ac1753e5a5701fa/transformed/jetified-android-core-11.0.0/AndroidManifest.xml:21:5-31:19
+MERGED from [com.mapbox.maps:android-core:11.0.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/28fac22c2fa708f78ac1753e5a5701fa/transformed/jetified-android-core-11.0.0/AndroidManifest.xml:21:5-31:19
+MERGED from [com.mapbox.common:common:24.0.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/3cbab85f1d593e428d97012e3fb82f3d/transformed/jetified-common-24.0.0/AndroidManifest.xml:11:5-36:19
+MERGED from [com.mapbox.common:common:24.0.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/3cbab85f1d593e428d97012e3fb82f3d/transformed/jetified-common-24.0.0/AndroidManifest.xml:11:5-36:19
 MERGED from [androidx.core:core:1.12.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/481e6fc6c03a5e66dc9dc87ea34e6342/transformed/core-1.12.0/AndroidManifest.xml:28:5-89
 MERGED from [androidx.core:core:1.12.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/481e6fc6c03a5e66dc9dc87ea34e6342/transformed/core-1.12.0/AndroidManifest.xml:28:5-89
 MERGED from [com.google.android.gms:play-services-tasks:18.0.2] /Users/sanandiyavipul/.gradle/caches/transforms-3/629d363955d8686e628b99512bcff3c3/transformed/jetified-play-services-tasks-18.0.2/AndroidManifest.xml:5:5-20
@@ -364,48 +422,48 @@ MERGED from [com.google.android.instantapps:instantapps:1.1.0] /Users/sanandiyav
 	android:appComponentFactory
 		ADDED from [androidx.core:core:1.12.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/481e6fc6c03a5e66dc9dc87ea34e6342/transformed/core-1.12.0/AndroidManifest.xml:28:18-86
 	android:label
-		ADDED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/main/AndroidManifest.xml:18:7-39
-		ADDED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/main/AndroidManifest.xml:18:7-39
+		ADDED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/main/AndroidManifest.xml:19:7-39
+		ADDED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/main/AndroidManifest.xml:19:7-39
 	tools:ignore
 		ADDED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/debug/AndroidManifest.xml:10:9-48
 	android:roundIcon
-		ADDED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/main/AndroidManifest.xml:20:7-52
-		ADDED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/main/AndroidManifest.xml:20:7-52
+		ADDED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/main/AndroidManifest.xml:21:7-52
+		ADDED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/main/AndroidManifest.xml:21:7-52
 	tools:targetApi
 		ADDED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/debug/AndroidManifest.xml:9:9-29
 	android:icon
-		ADDED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/main/AndroidManifest.xml:19:7-41
-		ADDED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/main/AndroidManifest.xml:19:7-41
+		ADDED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/main/AndroidManifest.xml:20:7-41
+		ADDED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/main/AndroidManifest.xml:20:7-41
 	android:theme
-		ADDED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/main/AndroidManifest.xml:21:7-38
-		ADDED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/main/AndroidManifest.xml:21:7-38
+		ADDED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/main/AndroidManifest.xml:22:7-38
+		ADDED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/main/AndroidManifest.xml:22:7-38
 	android:usesCleartextTraffic
-		ADDED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/debug/AndroidManifest.xml:8:9-44
+		ADDED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/main/AndroidManifest.xml:23:7-42
 	android:name
-		ADDED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/main/AndroidManifest.xml:17:7-38
-		ADDED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/main/AndroidManifest.xml:17:7-38
+		ADDED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/main/AndroidManifest.xml:18:7-38
+		ADDED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/main/AndroidManifest.xml:18:7-38
 activity#com.oneboulder.MainActivity
-ADDED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/main/AndroidManifest.xml:23:7-33:18
+ADDED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/main/AndroidManifest.xml:25:7-35:18
 	android:launchMode
-		ADDED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/main/AndroidManifest.xml:26:9-40
+		ADDED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/main/AndroidManifest.xml:28:9-40
 	android:windowSoftInputMode
-		ADDED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/main/AndroidManifest.xml:27:9-51
+		ADDED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/main/AndroidManifest.xml:29:9-51
 	android:exported
-		ADDED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/main/AndroidManifest.xml:28:9-32
+		ADDED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/main/AndroidManifest.xml:30:9-32
 	android:configChanges
-		ADDED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/main/AndroidManifest.xml:25:9-118
+		ADDED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/main/AndroidManifest.xml:27:9-118
 	android:name
-		ADDED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/main/AndroidManifest.xml:24:9-37
+		ADDED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/main/AndroidManifest.xml:26:9-37
 intent-filter#action:name:android.intent.action.MAIN+category:name:android.intent.category.LAUNCHER
-ADDED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/main/AndroidManifest.xml:29:9-32:25
+ADDED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/main/AndroidManifest.xml:31:9-34:25
 action#android.intent.action.MAIN
-ADDED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/main/AndroidManifest.xml:30:13-65
+ADDED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/main/AndroidManifest.xml:32:13-65
 	android:name
-		ADDED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/main/AndroidManifest.xml:30:21-62
+		ADDED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/main/AndroidManifest.xml:32:21-62
 category#android.intent.category.LAUNCHER
-ADDED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/main/AndroidManifest.xml:31:13-73
+ADDED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/main/AndroidManifest.xml:33:13-73
 	android:name
-		ADDED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/main/AndroidManifest.xml:31:23-70
+		ADDED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/main/AndroidManifest.xml:33:23-70
 uses-permission#android.permission.SYSTEM_ALERT_WINDOW
 ADDED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/debug/AndroidManifest.xml:5:5-77
 MERGED from [com.facebook.react:react-android:0.73.1] /Users/sanandiyavipul/.gradle/caches/transforms-3/2c64e76a01331c76fc0f1d46f9e60f65/transformed/jetified-react-android-0.73.1-debug/AndroidManifest.xml:16:5-78
@@ -476,6 +534,8 @@ MERGED from [:react-native-community_netinfo] /Users/sanandiyavipul/Projects/ONE
 MERGED from [:react-native-community_netinfo] /Users/sanandiyavipul/Projects/ONE-mobile/node_modules/@react-native-community/netinfo/android/build/intermediates/merged_manifest/debug/AndroidManifest.xml:5:5-44
 MERGED from [:react-native-google-signin_google-signin] /Users/sanandiyavipul/Projects/ONE-mobile/node_modules/@react-native-google-signin/google-signin/android/build/intermediates/merged_manifest/debug/AndroidManifest.xml:5:5-44
 MERGED from [:react-native-google-signin_google-signin] /Users/sanandiyavipul/Projects/ONE-mobile/node_modules/@react-native-google-signin/google-signin/android/build/intermediates/merged_manifest/debug/AndroidManifest.xml:5:5-44
+MERGED from [:rnmapbox_maps] /Users/sanandiyavipul/Projects/ONE-mobile/node_modules/@rnmapbox/maps/android/build/intermediates/merged_manifest/debug/AndroidManifest.xml:5:5-44
+MERGED from [:rnmapbox_maps] /Users/sanandiyavipul/Projects/ONE-mobile/node_modules/@rnmapbox/maps/android/build/intermediates/merged_manifest/debug/AndroidManifest.xml:5:5-44
 MERGED from [:react-native-camera] /Users/sanandiyavipul/Projects/ONE-mobile/node_modules/react-native-camera/android/build/intermediates/merged_manifest/generalDebug/AndroidManifest.xml:5:5-44
 MERGED from [:react-native-camera] /Users/sanandiyavipul/Projects/ONE-mobile/node_modules/react-native-camera/android/build/intermediates/merged_manifest/generalDebug/AndroidManifest.xml:5:5-44
 MERGED from [:react-native-device-info] /Users/sanandiyavipul/Projects/ONE-mobile/node_modules/react-native-device-info/android/build/intermediates/merged_manifest/debug/AndroidManifest.xml:5:5-44
@@ -500,6 +560,8 @@ MERGED from [:react-native-reanimated] /Users/sanandiyavipul/Projects/ONE-mobile
 MERGED from [:react-native-reanimated] /Users/sanandiyavipul/Projects/ONE-mobile/node_modules/react-native-reanimated/android/build/intermediates/merged_manifest/debug/AndroidManifest.xml:5:5-44
 MERGED from [:react-native-safe-area-context] /Users/sanandiyavipul/Projects/ONE-mobile/node_modules/react-native-safe-area-context/android/build/intermediates/merged_manifest/debug/AndroidManifest.xml:5:5-44
 MERGED from [:react-native-safe-area-context] /Users/sanandiyavipul/Projects/ONE-mobile/node_modules/react-native-safe-area-context/android/build/intermediates/merged_manifest/debug/AndroidManifest.xml:5:5-44
+MERGED from [:react-native-splash-screen] /Users/sanandiyavipul/Projects/ONE-mobile/node_modules/react-native-splash-screen/android/build/intermediates/merged_manifest/debug/AndroidManifest.xml:5:5-44
+MERGED from [:react-native-splash-screen] /Users/sanandiyavipul/Projects/ONE-mobile/node_modules/react-native-splash-screen/android/build/intermediates/merged_manifest/debug/AndroidManifest.xml:5:5-44
 MERGED from [:react-native-svg] /Users/sanandiyavipul/Projects/ONE-mobile/node_modules/react-native-svg/android/build/intermediates/merged_manifest/debug/AndroidManifest.xml:5:5-44
 MERGED from [:react-native-svg] /Users/sanandiyavipul/Projects/ONE-mobile/node_modules/react-native-svg/android/build/intermediates/merged_manifest/debug/AndroidManifest.xml:5:5-44
 MERGED from [:react-native-vector-icons] /Users/sanandiyavipul/Projects/ONE-mobile/node_modules/react-native-vector-icons/android/build/intermediates/merged_manifest/debug/AndroidManifest.xml:5:5-44
@@ -516,6 +578,30 @@ MERGED from [com.stripe:financial-connections:20.37.4] /Users/sanandiyavipul/.gr
 MERGED from [com.stripe:financial-connections:20.37.4] /Users/sanandiyavipul/.gradle/caches/transforms-3/c340c66a1199316bcf5b6ea8859d3c10/transformed/jetified-financial-connections-20.37.4/AndroidManifest.xml:5:5-44
 MERGED from [com.github.yalantis:ucrop:2.2.6-native] /Users/sanandiyavipul/.gradle/caches/transforms-3/3924b192f8fd4352d4a27c07ee77ed42/transformed/jetified-ucrop-2.2.6-native/AndroidManifest.xml:7:5-9:41
 MERGED from [com.github.yalantis:ucrop:2.2.6-native] /Users/sanandiyavipul/.gradle/caches/transforms-3/3924b192f8fd4352d4a27c07ee77ed42/transformed/jetified-ucrop-2.2.6-native/AndroidManifest.xml:7:5-9:41
+MERGED from [com.mapbox.maps:android:11.0.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/8710725259e15e2494454a90a25ae64b/transformed/jetified-android-11.0.0/AndroidManifest.xml:5:5-44
+MERGED from [com.mapbox.maps:android:11.0.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/8710725259e15e2494454a90a25ae64b/transformed/jetified-android-11.0.0/AndroidManifest.xml:5:5-44
+MERGED from [com.mapbox.plugin:maps-annotation:11.0.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/4f10c17e2e498c2a87af7e983ac152d4/transformed/jetified-maps-annotation-11.0.0/AndroidManifest.xml:5:5-44
+MERGED from [com.mapbox.plugin:maps-annotation:11.0.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/4f10c17e2e498c2a87af7e983ac152d4/transformed/jetified-maps-annotation-11.0.0/AndroidManifest.xml:5:5-44
+MERGED from [com.mapbox.extension:maps-localization:11.0.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/4220607323d54e5466a339e852f3d9b6/transformed/jetified-maps-localization-11.0.0/AndroidManifest.xml:5:5-44
+MERGED from [com.mapbox.extension:maps-localization:11.0.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/4220607323d54e5466a339e852f3d9b6/transformed/jetified-maps-localization-11.0.0/AndroidManifest.xml:5:5-44
+MERGED from [com.mapbox.extension:maps-style:11.0.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/729e8c6274f78c0ef370b50a3ae74ae9/transformed/jetified-maps-style-11.0.0/AndroidManifest.xml:5:5-44
+MERGED from [com.mapbox.extension:maps-style:11.0.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/729e8c6274f78c0ef370b50a3ae74ae9/transformed/jetified-maps-style-11.0.0/AndroidManifest.xml:5:5-44
+MERGED from [com.mapbox.plugin:maps-logo:11.0.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/2cbcb141b01ac64e62591466a5809bc6/transformed/jetified-maps-logo-11.0.0/AndroidManifest.xml:5:5-44
+MERGED from [com.mapbox.plugin:maps-logo:11.0.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/2cbcb141b01ac64e62591466a5809bc6/transformed/jetified-maps-logo-11.0.0/AndroidManifest.xml:5:5-44
+MERGED from [com.mapbox.plugin:maps-compass:11.0.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/43290b397acebc9c908d731f040e57ff/transformed/jetified-maps-compass-11.0.0/AndroidManifest.xml:5:5-44
+MERGED from [com.mapbox.plugin:maps-compass:11.0.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/43290b397acebc9c908d731f040e57ff/transformed/jetified-maps-compass-11.0.0/AndroidManifest.xml:5:5-44
+MERGED from [com.mapbox.plugin:maps-gestures:11.0.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/05b301e1e98be48e7f67c92d23495b51/transformed/jetified-maps-gestures-11.0.0/AndroidManifest.xml:5:5-44
+MERGED from [com.mapbox.plugin:maps-gestures:11.0.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/05b301e1e98be48e7f67c92d23495b51/transformed/jetified-maps-gestures-11.0.0/AndroidManifest.xml:5:5-44
+MERGED from [com.mapbox.plugin:maps-attribution:11.0.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/0c1e0d148a0f069bd3e67c98707d4b38/transformed/jetified-maps-attribution-11.0.0/AndroidManifest.xml:5:5-44
+MERGED from [com.mapbox.plugin:maps-attribution:11.0.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/0c1e0d148a0f069bd3e67c98707d4b38/transformed/jetified-maps-attribution-11.0.0/AndroidManifest.xml:5:5-44
+MERGED from [com.mapbox.plugin:maps-viewport:11.0.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/1d0addafc5691e9361fb3aec2d5a3baa/transformed/jetified-maps-viewport-11.0.0/AndroidManifest.xml:5:5-44
+MERGED from [com.mapbox.plugin:maps-viewport:11.0.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/1d0addafc5691e9361fb3aec2d5a3baa/transformed/jetified-maps-viewport-11.0.0/AndroidManifest.xml:5:5-44
+MERGED from [com.mapbox.plugin:maps-locationcomponent:11.0.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/d73cd8a206b9847652caaa9396391579/transformed/jetified-maps-locationcomponent-11.0.0/AndroidManifest.xml:5:5-44
+MERGED from [com.mapbox.plugin:maps-locationcomponent:11.0.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/d73cd8a206b9847652caaa9396391579/transformed/jetified-maps-locationcomponent-11.0.0/AndroidManifest.xml:5:5-44
+MERGED from [com.mapbox.plugin:maps-scalebar:11.0.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/0003d3f4e33142739c632c046307f1e9/transformed/jetified-maps-scalebar-11.0.0/AndroidManifest.xml:5:5-44
+MERGED from [com.mapbox.plugin:maps-scalebar:11.0.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/0003d3f4e33142739c632c046307f1e9/transformed/jetified-maps-scalebar-11.0.0/AndroidManifest.xml:5:5-44
+MERGED from [com.mapbox.plugin:maps-overlay:11.0.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/e8b47028162ac642626382424104b5fb/transformed/jetified-maps-overlay-11.0.0/AndroidManifest.xml:5:5-44
+MERGED from [com.mapbox.plugin:maps-overlay:11.0.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/e8b47028162ac642626382424104b5fb/transformed/jetified-maps-overlay-11.0.0/AndroidManifest.xml:5:5-44
 MERGED from [com.stripe:payments-model:20.37.4] /Users/sanandiyavipul/.gradle/caches/transforms-3/d7372d93f240d80df44355b69974097d/transformed/jetified-payments-model-20.37.4/AndroidManifest.xml:5:5-44
 MERGED from [com.stripe:payments-model:20.37.4] /Users/sanandiyavipul/.gradle/caches/transforms-3/d7372d93f240d80df44355b69974097d/transformed/jetified-payments-model-20.37.4/AndroidManifest.xml:5:5-44
 MERGED from [com.airbnb.android:mavericks-compose:3.0.9] /Users/sanandiyavipul/.gradle/caches/transforms-3/bc7c6cde1457435aab7244616007a3dd/transformed/jetified-mavericks-compose-3.0.9/AndroidManifest.xml:5:5-44
@@ -528,10 +614,6 @@ MERGED from [com.stripe:hcaptcha:20.37.4] /Users/sanandiyavipul/.gradle/caches/t
 MERGED from [com.stripe:hcaptcha:20.37.4] /Users/sanandiyavipul/.gradle/caches/transforms-3/a9a96c8d286636d9efe9ac060ad09e0d/transformed/jetified-hcaptcha-20.37.4/AndroidManifest.xml:5:5-44
 MERGED from [androidx.appcompat:appcompat:1.6.1] /Users/sanandiyavipul/.gradle/caches/transforms-3/3a82d7226139b573ef0c274db30c8615/transformed/appcompat-1.6.1/AndroidManifest.xml:20:5-44
 MERGED from [androidx.appcompat:appcompat:1.6.1] /Users/sanandiyavipul/.gradle/caches/transforms-3/3a82d7226139b573ef0c274db30c8615/transformed/appcompat-1.6.1/AndroidManifest.xml:20:5-44
-MERGED from [com.facebook.fresco:imagepipeline-okhttp3:3.1.3] /Users/sanandiyavipul/.gradle/caches/transforms-3/6ef4830f7ef9f01df37b4553e390ee5d/transformed/jetified-imagepipeline-okhttp3-3.1.3/AndroidManifest.xml:5:5-44
-MERGED from [com.facebook.fresco:imagepipeline-okhttp3:3.1.3] /Users/sanandiyavipul/.gradle/caches/transforms-3/6ef4830f7ef9f01df37b4553e390ee5d/transformed/jetified-imagepipeline-okhttp3-3.1.3/AndroidManifest.xml:5:5-44
-MERGED from [com.github.bumptech.glide:okhttp3-integration:4.12.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/872797bc99c5c30d6699c1fc0d853859/transformed/jetified-okhttp3-integration-4.12.0/AndroidManifest.xml:6:5-8:41
-MERGED from [com.github.bumptech.glide:okhttp3-integration:4.12.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/872797bc99c5c30d6699c1fc0d853859/transformed/jetified-okhttp3-integration-4.12.0/AndroidManifest.xml:6:5-8:41
 MERGED from [androidx.navigation:navigation-common:2.7.6] /Users/sanandiyavipul/.gradle/caches/transforms-3/9e691ffc3dfd36e6378a1df7ddb6b8d0/transformed/navigation-common-2.7.6/AndroidManifest.xml:20:5-44
 MERGED from [androidx.navigation:navigation-common:2.7.6] /Users/sanandiyavipul/.gradle/caches/transforms-3/9e691ffc3dfd36e6378a1df7ddb6b8d0/transformed/navigation-common-2.7.6/AndroidManifest.xml:20:5-44
 MERGED from [androidx.navigation:navigation-runtime:2.7.6] /Users/sanandiyavipul/.gradle/caches/transforms-3/2ce2653bd592adf33bada805c28721f9/transformed/navigation-runtime-2.7.6/AndroidManifest.xml:20:5-44
@@ -544,6 +626,8 @@ MERGED from [androidx.navigation:navigation-compose:2.7.6] /Users/sanandiyavipul
 MERGED from [androidx.navigation:navigation-compose:2.7.6] /Users/sanandiyavipul/.gradle/caches/transforms-3/9addea1450491b1a78989f8066b98488/transformed/jetified-navigation-compose-2.7.6/AndroidManifest.xml:5:5-44
 MERGED from [com.google.android.gms:play-services-auth:20.5.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/aecea58ce8979c0a3801796b5aecff6f/transformed/jetified-play-services-auth-20.5.0/AndroidManifest.xml:20:5-44
 MERGED from [com.google.android.gms:play-services-auth:20.5.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/aecea58ce8979c0a3801796b5aecff6f/transformed/jetified-play-services-auth-20.5.0/AndroidManifest.xml:20:5-44
+MERGED from [com.github.bumptech.glide:okhttp3-integration:4.12.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/872797bc99c5c30d6699c1fc0d853859/transformed/jetified-okhttp3-integration-4.12.0/AndroidManifest.xml:6:5-8:41
+MERGED from [com.github.bumptech.glide:okhttp3-integration:4.12.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/872797bc99c5c30d6699c1fc0d853859/transformed/jetified-okhttp3-integration-4.12.0/AndroidManifest.xml:6:5-8:41
 MERGED from [com.github.bumptech.glide:glide:4.12.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/bd228d655127d43dea5781508a714825/transformed/jetified-glide-4.12.0/AndroidManifest.xml:6:5-8:41
 MERGED from [com.github.bumptech.glide:glide:4.12.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/bd228d655127d43dea5781508a714825/transformed/jetified-glide-4.12.0/AndroidManifest.xml:6:5-8:41
 MERGED from [androidx.legacy:legacy-support-v4:1.0.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/843ea2c00fcc35468abbcf5743c36a37/transformed/legacy-support-v4-1.0.0/AndroidManifest.xml:20:5-44
@@ -672,6 +756,8 @@ MERGED from [androidx.autofill:autofill:1.1.0] /Users/sanandiyavipul/.gradle/cac
 MERGED from [androidx.autofill:autofill:1.1.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/39ed6b7f3d6e8c8b813968859666b78e/transformed/jetified-autofill-1.1.0/AndroidManifest.xml:20:5-22:41
 MERGED from [androidx.swiperefreshlayout:swiperefreshlayout:1.1.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/cf2a935b349869ccd1965a0c16a4ae4e/transformed/swiperefreshlayout-1.1.0/AndroidManifest.xml:20:5-22:41
 MERGED from [androidx.swiperefreshlayout:swiperefreshlayout:1.1.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/cf2a935b349869ccd1965a0c16a4ae4e/transformed/swiperefreshlayout-1.1.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.asynclayoutinflater:asynclayoutinflater:1.0.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/d34b421412efd1641ecf2d309522090f/transformed/asynclayoutinflater-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.asynclayoutinflater:asynclayoutinflater:1.0.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/d34b421412efd1641ecf2d309522090f/transformed/asynclayoutinflater-1.0.0/AndroidManifest.xml:20:5-44
 MERGED from [androidx.coordinatorlayout:coordinatorlayout:1.2.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/c10aad6bd9259d3eadf6996cff6b19ed/transformed/coordinatorlayout-1.2.0/AndroidManifest.xml:20:5-22:41
 MERGED from [androidx.coordinatorlayout:coordinatorlayout:1.2.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/c10aad6bd9259d3eadf6996cff6b19ed/transformed/coordinatorlayout-1.2.0/AndroidManifest.xml:20:5-22:41
 MERGED from [androidx.webkit:webkit:1.4.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/4e1e2b18bbb75ddfce5e9b0042858aee/transformed/webkit-1.4.0/AndroidManifest.xml:20:5-22:41
@@ -692,6 +778,8 @@ MERGED from [com.facebook.fresco:flipper:2.6.0] /Users/sanandiyavipul/.gradle/ca
 MERGED from [com.facebook.fresco:flipper:2.6.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/9ed2b2dee8b9d59f509ba1036990af39/transformed/jetified-flipper-2.6.0/AndroidManifest.xml:5:5-7:41
 MERGED from [com.facebook.fresco:fresco:3.1.3] /Users/sanandiyavipul/.gradle/caches/transforms-3/9d9ad197602107da050b96137af36249/transformed/jetified-fresco-3.1.3/AndroidManifest.xml:5:5-44
 MERGED from [com.facebook.fresco:fresco:3.1.3] /Users/sanandiyavipul/.gradle/caches/transforms-3/9d9ad197602107da050b96137af36249/transformed/jetified-fresco-3.1.3/AndroidManifest.xml:5:5-44
+MERGED from [com.facebook.fresco:imagepipeline-okhttp3:3.1.3] /Users/sanandiyavipul/.gradle/caches/transforms-3/6ef4830f7ef9f01df37b4553e390ee5d/transformed/jetified-imagepipeline-okhttp3-3.1.3/AndroidManifest.xml:5:5-44
+MERGED from [com.facebook.fresco:imagepipeline-okhttp3:3.1.3] /Users/sanandiyavipul/.gradle/caches/transforms-3/6ef4830f7ef9f01df37b4553e390ee5d/transformed/jetified-imagepipeline-okhttp3-3.1.3/AndroidManifest.xml:5:5-44
 MERGED from [com.facebook.fresco:drawee:3.1.3] /Users/sanandiyavipul/.gradle/caches/transforms-3/0014a8371279944f8780dcf34264ee11/transformed/jetified-drawee-3.1.3/AndroidManifest.xml:5:5-44
 MERGED from [com.facebook.fresco:drawee:3.1.3] /Users/sanandiyavipul/.gradle/caches/transforms-3/0014a8371279944f8780dcf34264ee11/transformed/jetified-drawee-3.1.3/AndroidManifest.xml:5:5-44
 MERGED from [com.facebook.fresco:nativeimagefilters:3.1.3] /Users/sanandiyavipul/.gradle/caches/transforms-3/2ca3a7c403feb8c060a7251da338e3df/transformed/jetified-nativeimagefilters-3.1.3/AndroidManifest.xml:5:5-44
@@ -722,12 +810,24 @@ MERGED from [androidx.browser:browser:1.7.0] /Users/sanandiyavipul/.gradle/cache
 MERGED from [androidx.browser:browser:1.7.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/233084daae7b9b45ff96ce0d85945840/transformed/browser-1.7.0/AndroidManifest.xml:5:5-44
 MERGED from [androidx.media:media:1.0.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/f0c2d383174fb8261890d0f424128cab/transformed/media-1.0.0/AndroidManifest.xml:20:5-44
 MERGED from [androidx.media:media:1.0.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/f0c2d383174fb8261890d0f424128cab/transformed/media-1.0.0/AndroidManifest.xml:20:5-44
-MERGED from [androidx.asynclayoutinflater:asynclayoutinflater:1.0.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/d34b421412efd1641ecf2d309522090f/transformed/asynclayoutinflater-1.0.0/AndroidManifest.xml:20:5-44
-MERGED from [androidx.asynclayoutinflater:asynclayoutinflater:1.0.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/d34b421412efd1641ecf2d309522090f/transformed/asynclayoutinflater-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [com.mapbox.plugin:maps-animation:11.0.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/5299a03036adb0c1bdde7e3295cb7f7d/transformed/jetified-maps-animation-11.0.0/AndroidManifest.xml:5:5-44
+MERGED from [com.mapbox.plugin:maps-animation:11.0.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/5299a03036adb0c1bdde7e3295cb7f7d/transformed/jetified-maps-animation-11.0.0/AndroidManifest.xml:5:5-44
+MERGED from [com.mapbox.plugin:maps-lifecycle:11.0.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/e6c8c8dbe1aa149ea753bd1fa8a6daa0/transformed/jetified-maps-lifecycle-11.0.0/AndroidManifest.xml:5:5-44
+MERGED from [com.mapbox.plugin:maps-lifecycle:11.0.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/e6c8c8dbe1aa149ea753bd1fa8a6daa0/transformed/jetified-maps-lifecycle-11.0.0/AndroidManifest.xml:5:5-44
 MERGED from [androidx.customview:customview-poolingcontainer:1.0.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/e1ad80c711378e818f651db666ab520a/transformed/jetified-customview-poolingcontainer-1.0.0/AndroidManifest.xml:20:5-21:38
 MERGED from [androidx.customview:customview-poolingcontainer:1.0.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/e1ad80c711378e818f651db666ab520a/transformed/jetified-customview-poolingcontainer-1.0.0/AndroidManifest.xml:20:5-21:38
 MERGED from [androidx.core:core-ktx:1.12.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/611ede6e331157e458ad99792c39cfd3/transformed/jetified-core-ktx-1.12.0/AndroidManifest.xml:5:5-44
 MERGED from [androidx.core:core-ktx:1.12.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/611ede6e331157e458ad99792c39cfd3/transformed/jetified-core-ktx-1.12.0/AndroidManifest.xml:5:5-44
+MERGED from [com.mapbox.module:maps-telemetry:11.0.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/92051e0c8135bba4b1e55da45ec19063/transformed/jetified-maps-telemetry-11.0.0/AndroidManifest.xml:5:5-44
+MERGED from [com.mapbox.module:maps-telemetry:11.0.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/92051e0c8135bba4b1e55da45ec19063/transformed/jetified-maps-telemetry-11.0.0/AndroidManifest.xml:5:5-44
+MERGED from [com.mapbox.maps:base:11.0.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/5dfe4466ec8b3c06b1025944e78304a3/transformed/jetified-base-11.0.0/AndroidManifest.xml:5:5-44
+MERGED from [com.mapbox.maps:base:11.0.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/5dfe4466ec8b3c06b1025944e78304a3/transformed/jetified-base-11.0.0/AndroidManifest.xml:5:5-44
+MERGED from [com.mapbox.mapboxsdk:mapbox-android-gestures:0.8.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/c66b4cb508f8fe4c07724712c7468de9/transformed/jetified-mapbox-android-gestures-0.8.0/AndroidManifest.xml:5:5-7:41
+MERGED from [com.mapbox.mapboxsdk:mapbox-android-gestures:0.8.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/c66b4cb508f8fe4c07724712c7468de9/transformed/jetified-mapbox-android-gestures-0.8.0/AndroidManifest.xml:5:5-7:41
+MERGED from [com.mapbox.maps:android-core:11.0.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/28fac22c2fa708f78ac1753e5a5701fa/transformed/jetified-android-core-11.0.0/AndroidManifest.xml:6:5-8:41
+MERGED from [com.mapbox.maps:android-core:11.0.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/28fac22c2fa708f78ac1753e5a5701fa/transformed/jetified-android-core-11.0.0/AndroidManifest.xml:6:5-8:41
+MERGED from [com.mapbox.common:common:24.0.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/3cbab85f1d593e428d97012e3fb82f3d/transformed/jetified-common-24.0.0/AndroidManifest.xml:6:5-44
+MERGED from [com.mapbox.common:common:24.0.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/3cbab85f1d593e428d97012e3fb82f3d/transformed/jetified-common-24.0.0/AndroidManifest.xml:6:5-44
 MERGED from [androidx.core:core:1.12.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/481e6fc6c03a5e66dc9dc87ea34e6342/transformed/core-1.12.0/AndroidManifest.xml:20:5-44
 MERGED from [androidx.core:core:1.12.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/481e6fc6c03a5e66dc9dc87ea34e6342/transformed/core-1.12.0/AndroidManifest.xml:20:5-44
 MERGED from [androidx.lifecycle:lifecycle-runtime:2.7.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/12339b599c9a84d531fd8b76740fc8aa/transformed/lifecycle-runtime-2.7.0/AndroidManifest.xml:5:5-44
@@ -778,6 +878,12 @@ MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.1] /Users/sana
 MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.1] /Users/sanandiyavipul/.gradle/caches/transforms-3/d790c44601ef66901e3df4c85ce8047f/transformed/versionedparcelable-1.1.1/AndroidManifest.xml:20:5-22:41
 MERGED from [androidx.interpolator:interpolator:1.0.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/f8702547f417edba06969c0a045f352c/transformed/interpolator-1.0.0/AndroidManifest.xml:20:5-44
 MERGED from [androidx.interpolator:interpolator:1.0.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/f8702547f417edba06969c0a045f352c/transformed/interpolator-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [com.mapbox.common:logger:0.8.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/e85289ab34797a0a6d70903d2b53860f/transformed/jetified-logger-0.8.0/AndroidManifest.xml:5:5-7:41
+MERGED from [com.mapbox.common:logger:0.8.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/e85289ab34797a0a6d70903d2b53860f/transformed/jetified-logger-0.8.0/AndroidManifest.xml:5:5-7:41
+MERGED from [com.mapbox.common:loader:0.8.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/016734113bec4964d4a64aa4a8255d16/transformed/jetified-loader-0.8.0/AndroidManifest.xml:5:5-7:41
+MERGED from [com.mapbox.common:loader:0.8.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/016734113bec4964d4a64aa4a8255d16/transformed/jetified-loader-0.8.0/AndroidManifest.xml:5:5-7:41
+MERGED from [com.mapbox.base:common:0.8.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/635c013f14449a1a006a14b23f014979/transformed/jetified-common-0.8.0/AndroidManifest.xml:5:5-7:41
+MERGED from [com.mapbox.base:common:0.8.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/635c013f14449a1a006a14b23f014979/transformed/jetified-common-0.8.0/AndroidManifest.xml:5:5-7:41
 MERGED from [com.github.bumptech.glide:gifdecoder:4.12.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/d3b37099b101fdb658d2578ac9405c78/transformed/jetified-gifdecoder-4.12.0/AndroidManifest.xml:5:5-7:41
 MERGED from [com.github.bumptech.glide:gifdecoder:4.12.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/d3b37099b101fdb658d2578ac9405c78/transformed/jetified-gifdecoder-4.12.0/AndroidManifest.xml:5:5-7:41
 MERGED from [com.google.android.datatransport:transport-backend-cct:2.3.3] /Users/sanandiyavipul/.gradle/caches/transforms-3/21785bd8316a6b6a93269b7812e9ee54/transformed/jetified-transport-backend-cct-2.3.3/AndroidManifest.xml:19:5-21:41
@@ -820,6 +926,8 @@ uses-permission#android.permission.ACCESS_WIFI_STATE
 ADDED from [com.facebook.flipper:flipper:0.182.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/487a105ae29e7c2a29179f136ff1d2f9/transformed/jetified-flipper-0.182.0/AndroidManifest.xml:16:5-76
 MERGED from [:react-native-community_netinfo] /Users/sanandiyavipul/Projects/ONE-mobile/node_modules/@react-native-community/netinfo/android/build/intermediates/merged_manifest/debug/AndroidManifest.xml:8:5-76
 MERGED from [:react-native-community_netinfo] /Users/sanandiyavipul/Projects/ONE-mobile/node_modules/@react-native-community/netinfo/android/build/intermediates/merged_manifest/debug/AndroidManifest.xml:8:5-76
+MERGED from [com.mapbox.maps:android-core:11.0.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/28fac22c2fa708f78ac1753e5a5701fa/transformed/jetified-android-core-11.0.0/AndroidManifest.xml:19:5-76
+MERGED from [com.mapbox.maps:android-core:11.0.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/28fac22c2fa708f78ac1753e5a5701fa/transformed/jetified-android-core-11.0.0/AndroidManifest.xml:19:5-76
 	android:name
 		ADDED from [com.facebook.flipper:flipper:0.182.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/487a105ae29e7c2a29179f136ff1d2f9/transformed/jetified-flipper-0.182.0/AndroidManifest.xml:16:22-73
 activity#com.stripe.android.paymentsheet.PaymentSheetActivity
@@ -1066,20 +1174,6 @@ ADDED from [com.stripe:stripe-3ds2-android:6.1.8] /Users/sanandiyavipul/.gradle/
 		ADDED from [com.stripe:stripe-3ds2-android:6.1.8] /Users/sanandiyavipul/.gradle/caches/transforms-3/a0b5a6f04a492e2576cc030c5bbfd93f/transformed/jetified-stripe-3ds2-android-6.1.8/AndroidManifest.xml:11:13-51
 	android:name
 		ADDED from [com.stripe:stripe-3ds2-android:6.1.8] /Users/sanandiyavipul/.gradle/caches/transforms-3/a0b5a6f04a492e2576cc030c5bbfd93f/transformed/jetified-stripe-3ds2-android-6.1.8/AndroidManifest.xml:9:13-81
-uses-permission#android.permission.ACCESS_NETWORK_STATE
-ADDED from [:react-native-community_netinfo] /Users/sanandiyavipul/Projects/ONE-mobile/node_modules/@react-native-community/netinfo/android/build/intermediates/merged_manifest/debug/AndroidManifest.xml:7:5-79
-MERGED from [com.google.android.gms:play-services-maps:18.2.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/0ba08d6875e242e9200c9576a6816253/transformed/jetified-play-services-maps-18.2.0/AndroidManifest.xml:23:5-79
-MERGED from [com.google.android.gms:play-services-maps:18.2.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/0ba08d6875e242e9200c9576a6816253/transformed/jetified-play-services-maps-18.2.0/AndroidManifest.xml:23:5-79
-MERGED from [com.stripe:stripe-core:20.37.4] /Users/sanandiyavipul/.gradle/caches/transforms-3/7f182b4afb90b4faa81d6f0bab46c511/transformed/jetified-stripe-core-20.37.4/AndroidManifest.xml:7:5-79
-MERGED from [com.stripe:stripe-core:20.37.4] /Users/sanandiyavipul/.gradle/caches/transforms-3/7f182b4afb90b4faa81d6f0bab46c511/transformed/jetified-stripe-core-20.37.4/AndroidManifest.xml:7:5-79
-MERGED from [androidx.work:work-runtime:2.7.1] /Users/sanandiyavipul/.gradle/caches/transforms-3/c6119206d18db30cf8c5f27bed6b7abb/transformed/work-runtime-2.7.1/AndroidManifest.xml:26:5-79
-MERGED from [androidx.work:work-runtime:2.7.1] /Users/sanandiyavipul/.gradle/caches/transforms-3/c6119206d18db30cf8c5f27bed6b7abb/transformed/work-runtime-2.7.1/AndroidManifest.xml:26:5-79
-MERGED from [com.google.android.datatransport:transport-backend-cct:2.3.3] /Users/sanandiyavipul/.gradle/caches/transforms-3/21785bd8316a6b6a93269b7812e9ee54/transformed/jetified-transport-backend-cct-2.3.3/AndroidManifest.xml:25:5-79
-MERGED from [com.google.android.datatransport:transport-backend-cct:2.3.3] /Users/sanandiyavipul/.gradle/caches/transforms-3/21785bd8316a6b6a93269b7812e9ee54/transformed/jetified-transport-backend-cct-2.3.3/AndroidManifest.xml:25:5-79
-MERGED from [com.google.android.datatransport:transport-runtime:2.2.6] /Users/sanandiyavipul/.gradle/caches/transforms-3/c7785fca29326d5c2399cce4af79bcb4/transformed/jetified-transport-runtime-2.2.6/AndroidManifest.xml:22:5-79
-MERGED from [com.google.android.datatransport:transport-runtime:2.2.6] /Users/sanandiyavipul/.gradle/caches/transforms-3/c7785fca29326d5c2399cce4af79bcb4/transformed/jetified-transport-runtime-2.2.6/AndroidManifest.xml:22:5-79
-	android:name
-		ADDED from [:react-native-community_netinfo] /Users/sanandiyavipul/Projects/ONE-mobile/node_modules/@react-native-community/netinfo/android/build/intermediates/merged_manifest/debug/AndroidManifest.xml:7:22-76
 uses-feature#android.hardware.camera.autofocus
 ADDED from [:react-native-camera] /Users/sanandiyavipul/Projects/ONE-mobile/node_modules/react-native-camera/android/build/intermediates/merged_manifest/generalDebug/AndroidManifest.xml:12:5-14:36
 	android:required
@@ -1178,12 +1272,6 @@ ADDED from [com.stripe:financial-connections:20.37.4] /Users/sanandiyavipul/.gra
 		ADDED from [com.stripe:financial-connections:20.37.4] /Users/sanandiyavipul/.gradle/caches/transforms-3/c340c66a1199316bcf5b6ea8859d3c10/transformed/jetified-financial-connections-20.37.4/AndroidManifest.xml:79:13-37
 	android:name
 		ADDED from [com.stripe:financial-connections:20.37.4] /Users/sanandiyavipul/.gradle/caches/transforms-3/c340c66a1199316bcf5b6ea8859d3c10/transformed/jetified-financial-connections-20.37.4/AndroidManifest.xml:77:13-114
-meta-data#com.bumptech.glide.integration.okhttp3.OkHttpGlideModule
-ADDED from [com.github.bumptech.glide:okhttp3-integration:4.12.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/872797bc99c5c30d6699c1fc0d853859/transformed/jetified-okhttp3-integration-4.12.0/AndroidManifest.xml:11:9-13:43
-	android:value
-		ADDED from [com.github.bumptech.glide:okhttp3-integration:4.12.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/872797bc99c5c30d6699c1fc0d853859/transformed/jetified-okhttp3-integration-4.12.0/AndroidManifest.xml:13:13-40
-	android:name
-		ADDED from [com.github.bumptech.glide:okhttp3-integration:4.12.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/872797bc99c5c30d6699c1fc0d853859/transformed/jetified-okhttp3-integration-4.12.0/AndroidManifest.xml:12:13-84
 activity#com.google.android.gms.auth.api.signin.internal.SignInHubActivity
 ADDED from [com.google.android.gms:play-services-auth:20.5.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/aecea58ce8979c0a3801796b5aecff6f/transformed/jetified-play-services-auth-20.5.0/AndroidManifest.xml:23:9-27:75
 	android:excludeFromRecents
@@ -1204,6 +1292,12 @@ ADDED from [com.google.android.gms:play-services-auth:20.5.0] /Users/sanandiyavi
 		ADDED from [com.google.android.gms:play-services-auth:20.5.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/aecea58ce8979c0a3801796b5aecff6f/transformed/jetified-play-services-auth-20.5.0/AndroidManifest.xml:36:13-107
 	android:name
 		ADDED from [com.google.android.gms:play-services-auth:20.5.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/aecea58ce8979c0a3801796b5aecff6f/transformed/jetified-play-services-auth-20.5.0/AndroidManifest.xml:34:13-89
+meta-data#com.bumptech.glide.integration.okhttp3.OkHttpGlideModule
+ADDED from [com.github.bumptech.glide:okhttp3-integration:4.12.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/872797bc99c5c30d6699c1fc0d853859/transformed/jetified-okhttp3-integration-4.12.0/AndroidManifest.xml:11:9-13:43
+	android:value
+		ADDED from [com.github.bumptech.glide:okhttp3-integration:4.12.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/872797bc99c5c30d6699c1fc0d853859/transformed/jetified-okhttp3-integration-4.12.0/AndroidManifest.xml:13:13-40
+	android:name
+		ADDED from [com.github.bumptech.glide:okhttp3-integration:4.12.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/872797bc99c5c30d6699c1fc0d853859/transformed/jetified-okhttp3-integration-4.12.0/AndroidManifest.xml:12:13-84
 service#com.google.mlkit.common.internal.MlKitComponentDiscoveryService
 ADDED from [com.google.android.gms:play-services-mlkit-barcode-scanning:16.2.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/1d879a608a9c8e4289b47a40262244f9/transformed/jetified-play-services-mlkit-barcode-scanning-16.2.0/AndroidManifest.xml:9:9-15:19
 MERGED from [com.google.android.gms:play-services-mlkit-face-detection:16.2.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/0d186d21cd308efa929a00491a7c7eb6/transformed/jetified-play-services-mlkit-face-detection-16.2.0/AndroidManifest.xml:9:9-15:19
@@ -1254,6 +1348,9 @@ MERGED from [com.google.android.gms:play-services-basement:18.2.0] /Users/sanand
 		ADDED from [com.google.maps.android:android-maps-utils:3.8.2] /Users/sanandiyavipul/.gradle/caches/transforms-3/9857562dce147af28b01610f6172a191/transformed/jetified-android-maps-utils-3.8.2/AndroidManifest.xml:9:13-58
 uses-feature#0x00020000
 ADDED from [com.google.android.gms:play-services-maps:18.2.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/0ba08d6875e242e9200c9576a6816253/transformed/jetified-play-services-maps-18.2.0/AndroidManifest.xml:26:5-28:35
+MERGED from [com.mapbox.maps:android-core:11.0.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/28fac22c2fa708f78ac1753e5a5701fa/transformed/jetified-android-core-11.0.0/AndroidManifest.xml:10:5-12:35
+MERGED from [com.mapbox.maps:android-core:11.0.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/28fac22c2fa708f78ac1753e5a5701fa/transformed/jetified-android-core-11.0.0/AndroidManifest.xml:10:5-12:35
+REJECTED from /Users/sanandiyavipul/Projects/ONE-mobile/android/app/src/debug/AndroidManifest.xml
 	android:glEsVersion
 		ADDED from [com.google.android.gms:play-services-maps:18.2.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/0ba08d6875e242e9200c9576a6816253/transformed/jetified-play-services-maps-18.2.0/AndroidManifest.xml:27:9-41
 	android:required
@@ -1316,6 +1413,10 @@ MERGED from [androidx.emoji2:emoji2:1.3.0] /Users/sanandiyavipul/.gradle/caches/
 MERGED from [androidx.emoji2:emoji2:1.3.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/dc17cef77b9b6167ceca3336c3f77f05/transformed/jetified-emoji2-1.3.0/AndroidManifest.xml:24:9-32:20
 MERGED from [androidx.lifecycle:lifecycle-process:2.7.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/0d3b7c1cb8b0dbb88274f54162fb249a/transformed/jetified-lifecycle-process-2.7.0/AndroidManifest.xml:24:9-32:20
 MERGED from [androidx.lifecycle:lifecycle-process:2.7.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/0d3b7c1cb8b0dbb88274f54162fb249a/transformed/jetified-lifecycle-process-2.7.0/AndroidManifest.xml:24:9-32:20
+MERGED from [com.mapbox.maps:android-core:11.0.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/28fac22c2fa708f78ac1753e5a5701fa/transformed/jetified-android-core-11.0.0/AndroidManifest.xml:22:9-30:20
+MERGED from [com.mapbox.maps:android-core:11.0.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/28fac22c2fa708f78ac1753e5a5701fa/transformed/jetified-android-core-11.0.0/AndroidManifest.xml:22:9-30:20
+MERGED from [com.mapbox.common:common:24.0.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/3cbab85f1d593e428d97012e3fb82f3d/transformed/jetified-common-24.0.0/AndroidManifest.xml:12:9-22:20
+MERGED from [com.mapbox.common:common:24.0.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/3cbab85f1d593e428d97012e3fb82f3d/transformed/jetified-common-24.0.0/AndroidManifest.xml:12:9-22:20
 MERGED from [androidx.profileinstaller:profileinstaller:1.3.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/2a35425ca565482fe2fb4955f8fb65c8/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:24:9-32:20
 MERGED from [androidx.profileinstaller:profileinstaller:1.3.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/2a35425ca565482fe2fb4955f8fb65c8/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:24:9-32:20
 MERGED from [androidx.startup:startup-runtime:1.1.1] /Users/sanandiyavipul/.gradle/caches/transforms-3/f3304ab187760dbb6a3b5aafb1e7a1e9/transformed/jetified-startup-runtime-1.1.1/AndroidManifest.xml:26:9-30:34
@@ -1544,6 +1645,50 @@ ADDED from [androidx.lifecycle:lifecycle-process:2.7.0] /Users/sanandiyavipul/.g
 		ADDED from [androidx.lifecycle:lifecycle-process:2.7.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/0d3b7c1cb8b0dbb88274f54162fb249a/transformed/jetified-lifecycle-process-2.7.0/AndroidManifest.xml:31:17-49
 	android:name
 		ADDED from [androidx.lifecycle:lifecycle-process:2.7.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/0d3b7c1cb8b0dbb88274f54162fb249a/transformed/jetified-lifecycle-process-2.7.0/AndroidManifest.xml:30:17-78
+uses-feature#0x00030000
+ADDED from [com.mapbox.maps:base:11.0.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/5dfe4466ec8b3c06b1025944e78304a3/transformed/jetified-base-11.0.0/AndroidManifest.xml:8:5-10:35
+	android:glEsVersion
+		ADDED from [com.mapbox.maps:base:11.0.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/5dfe4466ec8b3c06b1025944e78304a3/transformed/jetified-base-11.0.0/AndroidManifest.xml:9:9-41
+	android:required
+		ADDED from [com.mapbox.maps:base:11.0.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/5dfe4466ec8b3c06b1025944e78304a3/transformed/jetified-base-11.0.0/AndroidManifest.xml:10:9-32
+uses-feature#android.hardware.wifi
+ADDED from [com.mapbox.maps:android-core:11.0.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/28fac22c2fa708f78ac1753e5a5701fa/transformed/jetified-android-core-11.0.0/AndroidManifest.xml:13:5-15:36
+	android:required
+		ADDED from [com.mapbox.maps:android-core:11.0.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/28fac22c2fa708f78ac1753e5a5701fa/transformed/jetified-android-core-11.0.0/AndroidManifest.xml:15:9-33
+	android:name
+		ADDED from [com.mapbox.maps:android-core:11.0.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/28fac22c2fa708f78ac1753e5a5701fa/transformed/jetified-android-core-11.0.0/AndroidManifest.xml:14:9-45
+meta-data#com.mapbox.maps.loader.MapboxMapsInitializer
+ADDED from [com.mapbox.maps:android-core:11.0.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/28fac22c2fa708f78ac1753e5a5701fa/transformed/jetified-android-core-11.0.0/AndroidManifest.xml:27:13-29:52
+	android:value
+		ADDED from [com.mapbox.maps:android-core:11.0.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/28fac22c2fa708f78ac1753e5a5701fa/transformed/jetified-android-core-11.0.0/AndroidManifest.xml:29:17-49
+	android:name
+		ADDED from [com.mapbox.maps:android-core:11.0.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/28fac22c2fa708f78ac1753e5a5701fa/transformed/jetified-android-core-11.0.0/AndroidManifest.xml:28:17-76
+meta-data#com.mapbox.common.MapboxSDKCommonInitializer
+ADDED from [com.mapbox.common:common:24.0.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/3cbab85f1d593e428d97012e3fb82f3d/transformed/jetified-common-24.0.0/AndroidManifest.xml:19:13-21:52
+	android:value
+		ADDED from [com.mapbox.common:common:24.0.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/3cbab85f1d593e428d97012e3fb82f3d/transformed/jetified-common-24.0.0/AndroidManifest.xml:21:17-49
+	android:name
+		ADDED from [com.mapbox.common:common:24.0.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/3cbab85f1d593e428d97012e3fb82f3d/transformed/jetified-common-24.0.0/AndroidManifest.xml:20:17-76
+receiver#com.mapbox.common.location.LocationUpdatesReceiver
+ADDED from [com.mapbox.common:common:24.0.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/3cbab85f1d593e428d97012e3fb82f3d/transformed/jetified-common-24.0.0/AndroidManifest.xml:24:9-31:20
+	android:enabled
+		ADDED from [com.mapbox.common:common:24.0.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/3cbab85f1d593e428d97012e3fb82f3d/transformed/jetified-common-24.0.0/AndroidManifest.xml:26:13-35
+	android:exported
+		ADDED from [com.mapbox.common:common:24.0.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/3cbab85f1d593e428d97012e3fb82f3d/transformed/jetified-common-24.0.0/AndroidManifest.xml:27:13-37
+	android:name
+		ADDED from [com.mapbox.common:common:24.0.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/3cbab85f1d593e428d97012e3fb82f3d/transformed/jetified-common-24.0.0/AndroidManifest.xml:25:13-78
+intent-filter#action:name:com.mapbox.common.location.LocationUpdatesReceiver.ACTION_PROCESS_LOCATION_UPDATES
+ADDED from [com.mapbox.common:common:24.0.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/3cbab85f1d593e428d97012e3fb82f3d/transformed/jetified-common-24.0.0/AndroidManifest.xml:28:13-30:29
+action#com.mapbox.common.location.LocationUpdatesReceiver.ACTION_PROCESS_LOCATION_UPDATES
+ADDED from [com.mapbox.common:common:24.0.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/3cbab85f1d593e428d97012e3fb82f3d/transformed/jetified-common-24.0.0/AndroidManifest.xml:29:17-125
+	android:name
+		ADDED from [com.mapbox.common:common:24.0.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/3cbab85f1d593e428d97012e3fb82f3d/transformed/jetified-common-24.0.0/AndroidManifest.xml:29:25-122
+service#com.mapbox.common.LifecycleService
+ADDED from [com.mapbox.common:common:24.0.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/3cbab85f1d593e428d97012e3fb82f3d/transformed/jetified-common-24.0.0/AndroidManifest.xml:33:9-35:40
+	android:exported
+		ADDED from [com.mapbox.common:common:24.0.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/3cbab85f1d593e428d97012e3fb82f3d/transformed/jetified-common-24.0.0/AndroidManifest.xml:35:13-37
+	android:name
+		ADDED from [com.mapbox.common:common:24.0.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/3cbab85f1d593e428d97012e3fb82f3d/transformed/jetified-common-24.0.0/AndroidManifest.xml:34:13-62
 permission#${applicationId}.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION
 ADDED from [androidx.core:core:1.12.0] /Users/sanandiyavipul/.gradle/caches/transforms-3/481e6fc6c03a5e66dc9dc87ea34e6342/transformed/core-1.12.0/AndroidManifest.xml:22:5-24:47
 	android:protectionLevel

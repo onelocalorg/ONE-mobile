@@ -34,6 +34,8 @@ export interface Result {
   start_time_label:string;
   start_date_label:string;
   events:[];
+  lat:number | undefined;
+  long:number | undefined;
 }
 
 interface EventProducer {

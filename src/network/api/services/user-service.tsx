@@ -65,7 +65,6 @@ export const onEditUserProfile = async (props: EditProfileProps) => {
   console.log('*********************************',skills)
   try {
     console.log('-------------55555---------')
-    const attachment = new FormData();
 
     const picData = { 
       uri: profile,
@@ -91,35 +90,7 @@ export const onEditUserProfile = async (props: EditProfileProps) => {
     }
     console.log('----------------attachments--------------',attachments)
     console.log('----------------attachments pic--------------',attachments.pic)
-    if (profile) {
-      console.log('-------------6666---------')
-      attachment.append('pic', {
-        uri: profile,
-        type: 'jpg',
-        name: 'profile.jpg',
-      });
-    }
-    if (coverImage) {
-      console.log('-------------7777---------')
-      attachment.append('cover_image', {
-        uri: coverImage,
-        type: 'jpg',
-        name: 'coverImage.jpg',
-      });
-    }
-    if (about) {
-      console.log('-------------8888---------')
-      attachment.append('about', about);
-    }
-    if (skills?.length) {
-      console.log('-------------9999---------')
-      attachment.append('skills', skills);
-    }
-    if (bio) {
-      console.log('-------------10101010---------')
-      attachment.append('bio', bio);
-    }
-console.log(attachment,'response=== attachment attachment request')
+ 
     const endPoint = `${apiConstants.editProfile}${userId}`;
     console.log('-------------12 12 12 12---------')
     console.log(endPoint)

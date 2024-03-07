@@ -30,6 +30,8 @@ export interface EventDetails {
   start_date_label:string;
   start_time_label:string;
   events:[];
+  lat:number | undefined;
+  long:number | undefined;
 }
 
 interface EventProducer {

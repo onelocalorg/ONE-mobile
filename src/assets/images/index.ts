@@ -72,6 +72,8 @@ export {default as redDeleteIcon} from './redDeleteIcon.png';
 export {default as saveIcon} from './saveIcon.png';
 export {default as edit2} from './edit2.png';
 export {default as payoutClose} from './payoutClose.png';
+export {default as blackPin} from './blackPin.png';
+export {default as redPin} from './redPin.png';
 
 
 

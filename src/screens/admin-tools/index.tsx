@@ -73,7 +73,7 @@ import { GetAdmintoolsDropDownScreen } from "./getAdmintoolsDropdown";
 import { ScrollView } from "react-native-gesture-handler";
 import { width } from "@theme/device/device";
 import { Platform } from "react-native";
-import ActiveEnv from '@config/env/env.dev.json';
+import ActiveEnv from "@config/env/env.dev.json";
 
 interface AdminToolsScreenProps {
   navigation?: NavigationContainerRef<ParamListBase>;
@@ -108,6 +108,8 @@ export const AdminToolsScreen = (props: AdminToolsScreenProps) => {
   const {
     name,
     address,
+    lat,
+    long,
     start_date,
     end_date,
     tickets,
@@ -130,7 +132,7 @@ export const AdminToolsScreen = (props: AdminToolsScreenProps) => {
   });
   const { mutateAsync } = useUpdateEvent();
   const [isLoading, LodingData] = useState(false);
-  const [setLocation, setAddressLocation]:any = useState();
+  const [setLocation, setAddressLocation]: any = useState();
   const { mutateAsync: createEvent, isLoading: createEventLoading } =
     useCreateEvent();
 
@@ -214,6 +216,113 @@ export const AdminToolsScreen = (props: AdminToolsScreenProps) => {
     }
   }
 
+  async function CreateEventAPI() {
+    LodingData(true);
+    const token = await AsyncStorage.getItem("token");
+
+    const eventImageData = {
+      uri: eventImage,
+      type: "jpg",
+      name: "eventImage.jpg",
+    };
+
+    const attachments = {
+      address: address,
+      about: about,
+      full_address: full_address,
+      email_confirmation_body: email_confirmation_body,
+      tickets: tickets?.map((ele) => ele?.id ?? ""),
+      name: name,
+      end_date: new Date(end_date).toISOString(),
+      start_date: new Date(start_date).toISOString(),
+      event_lat: setLocation.lat,
+      event_lng: setLocation.lng,
+      event_type: setFilter,
+      event_image: eventImageData,
+    };
+    const attachment = new FormData();
+    attachment.append("event_image", {
+      uri: eventImage,
+      type: "image/jpg",
+      name: "eventImage.jpg",
+    });
+    attachment.append("address", address);
+    attachment.append("about", about);
+    attachment.append("full_address", full_address);
+    attachment.append("email_confirmation_body", email_confirmation_body);
+    attachment.append(
+      "tickets",
+      tickets?.map((ele) => ele?.id ?? "")
+    );
+    attachment.append("name", name);
+    attachment.append("end_date", new Date(end_date).toISOString());
+    attachment.append("start_date", new Date(start_date).toISOString());
+    attachment.append("event_lat", setLocation.lat);
+    attachment.append("event_lng", setLocation.lng);
+    attachment.append("event_type", setFilter);
+    console.log(
+      JSON.stringify(attachment),
+      "--------------------------create event request 111-------------------------"
+    );
+
+    console.log("=========== Event Create API Request ==============");
+    console.log(API_URL + "/v1/events");
+
+    sendXmlHttpRequest(attachment);
+    // try {
+    //   const response = await fetch(API_URL + "/v1/events", {
+    //     method: "post",
+    //     headers: {
+    //       Authorization: "Bearer " + token,
+    //       "Content-Type": "", 
+    //     },
+    //     body: attachment,
+    //   });
+    //   console.log(attachment, "attachments attachments request");
+    //   const dataItem = await response.json();
+    //   console.log("=========== Create Event API Response ==============");
+    //   console.log(dataItem);
+
+    //   Toast.show(dataItem?.message, Toast.LONG, {
+    //     backgroundColor: "black",
+    //   });
+    //   // if (dataItem?.success === true) {
+    //   //   LodingData(false);
+    //   //   navigation?.goBack();
+    //   // } else {
+    //   //   LodingData(false);
+    //   // }
+    //   LodingData(false);
+    //   // postListAPI();
+    // } catch (error) {
+    //   LodingData(false);
+    //   console.error(error, "erroronerror");
+    // }
+  }
+
+  
+
+  function sendXmlHttpRequest(data:any) {
+    const xhr = new XMLHttpRequest();
+  
+    return new Promise((resolve, reject) => {
+      xhr.onreadystatechange = e => {
+        if (xhr.readyState !== 4) {
+          return;
+        }
+  
+        if (xhr.status === 200) {
+          resolve(JSON.parse(xhr.responseText));
+        } else {
+          reject("Request Failed");
+        }
+      };
+      xhr.open("POST", API_URL + "/v1/events");
+      xhr.setRequestHeader('Content-Type','application/json; charset=UTF-8');
+      xhr.send(data);
+    });
+  }
+
   const onBackPress = () => {
     navigation?.goBack();
   };
@@ -254,24 +363,24 @@ export const AdminToolsScreen = (props: AdminToolsScreenProps) => {
     LodingData(true);
     console.log("1111111wdeee");
     Keyboard.dismiss();
-    console.log()
+    console.log();
     const res = await createEvent({
       bodyParams: {
         ...eventDetails,
         tickets: tickets?.map((ele) => ele?.id ?? ""),
         eventImage,
-        latitude: setLocation.lat,
-        longitude: setLocation.lng,
+        latitude: lat?.toString(),
+        longitude: long?.toString(),
         type: setFilter,
       },
     });
     console.log(setFilter);
     if (res?.success) {
-      console.log(res,'res res res')
+      console.log(res, "res res res");
       LodingData(false);
       navigation?.goBack();
     } else {
-      console.log(res,'res error res error res error')
+      console.log(res, "res error res error res error");
       LodingData(false);
     }
   };
@@ -301,11 +410,8 @@ export const AdminToolsScreen = (props: AdminToolsScreenProps) => {
     if (about !== eventData?.about) {
       request = { ...request, about: about };
     }
-    // if (location.latitude) {
-    request = { ...request, latitude: setLocation.lat };
-    // }
-    // if (location.longitude) {
-    request = { ...request, longitude: setLocation.lng };
+    request = { ...request, latitude: lat };
+    request = { ...request, longitude: long };
 
     request = { ...request, type: setFilter };
     // }
@@ -322,7 +428,7 @@ export const AdminToolsScreen = (props: AdminToolsScreenProps) => {
 
     const res = await mutateAsync({ bodyParams: request, eventId: id });
     if (res?.success) {
-      console.log(request, '-------------requestSuccess---------------')
+      console.log(request, "-------------requestSuccess---------------");
       LodingData(false);
       navigation?.goBack();
     } else {
@@ -495,25 +601,24 @@ export const AdminToolsScreen = (props: AdminToolsScreenProps) => {
             <View style={styles.toggleContainer}>
               <Text style={styles.villageLblTwo}>Village Friendly </Text>
               <View style={styles.switchToggle}>
-              {Platform.OS === "ios" ?  
-               <Switch
-                  style={{ transform: [{ scaleX: 0.9 }, { scaleY: 0.5 }] }}
-                  thumbColor={"white"}
-                  ios_backgroundColor="#008000"
-                  onChange={() => toggleSwitch(isEnabled)}
-                  value={isEnabled}
-                /> 
-                : 
-                <Switch
-                  style={{ transform: [{ scaleX: 1.2 }, { scaleY: 1.0 }] }}
-                  trackColor={{ false: "#008000", true: "#008000" }}
-                  thumbColor={"white"}
-                  ios_backgroundColor="#008000"
-                  onChange={() => toggleSwitch(isEnabled)}
-                  value={isEnabled}
-                />
-                }
-                
+                {Platform.OS === "ios" ? (
+                  <Switch
+                    style={{ transform: [{ scaleX: 0.9 }, { scaleY: 0.5 }] }}
+                    thumbColor={"white"}
+                    ios_backgroundColor="#008000"
+                    onChange={() => toggleSwitch(isEnabled)}
+                    value={isEnabled}
+                  />
+                ) : (
+                  <Switch
+                    style={{ transform: [{ scaleX: 1.2 }, { scaleY: 1.0 }] }}
+                    trackColor={{ false: "#008000", true: "#008000" }}
+                    thumbColor={"white"}
+                    ios_backgroundColor="#008000"
+                    onChange={() => toggleSwitch(isEnabled)}
+                    value={isEnabled}
+                  />
+                )}
               </View>
               <Text style={styles.villageLblTwo}> Adult Oriented</Text>
             </View>
@@ -593,7 +698,7 @@ export const AdminToolsScreen = (props: AdminToolsScreenProps) => {
                           fontSize: 14,
                           borderColor: theme.colors.black,
                           borderWidth: theme.borderWidth.borderWidth1,
-                          placeholderTextColor: theme.colors.black
+                          placeholderTextColor: theme.colors.black,
                         },
                         listView: {
                           color: "black", //To see where exactly the list is
@@ -604,25 +709,28 @@ export const AdminToolsScreen = (props: AdminToolsScreenProps) => {
                         predefinedPlacesDescription: {
                           color: "black",
                         },
-                        description:{
-                          color: 'black',
-                          fontSize:14,
+                        description: {
+                          color: "black",
+                          fontSize: 14,
                         },
                       }}
                       listViewDisplayed={false}
                       textInputProps={{
-                        placeholderTextColor: 'gray',
+                        placeholderTextColor: "gray",
                       }}
                       placeholder="where is this offer located?"
                       GooglePlacesDetailsQuery={{ fields: "geometry" }}
                       fetchDetails={true}
-
                       onPress={(data: any, details = null) => {
-                        handleText(data.description, "full_address");
+                        // handleText(data.description, "full_address");
                         console.log(JSON.stringify(data));
                         console.log(JSON.stringify(details)); // description
-                        console.log(JSON.stringify(details?.geometry?.location));
-                        setAddressLocation(details?.geometry?.location)
+                        console.log(
+                          JSON.stringify(details?.geometry?.location)
+                        );
+                        // setAddressLocation(details?.geometry?.location);
+                        setEventDetails({ ...eventDetails, full_address:data.description,
+                          lat: details?.geometry?.location.lat, long: details?.geometry?.location.lng });
                       }}
                       query={{
                         key: ActiveEnv.GOOGLE_KEY, // client
@@ -711,8 +819,8 @@ export const AdminToolsScreen = (props: AdminToolsScreenProps) => {
               <Text style={styles.uniqueViewLbl}>Unique Views</Text>
               <Text style={styles.uniqueCount}>{viewCount}</Text>
             </View>
- 
-            <GetAdmintoolsDropDownScreen eventId={id}/>
+
+            <GetAdmintoolsDropDownScreen eventId={id} />
 
             <TouchableOpacity
               activeOpacity={0.8}
