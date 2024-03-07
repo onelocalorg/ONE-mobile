@@ -25,6 +25,8 @@ import com.reactnativecommunity.geolocation.GeolocationPackage;
 import com.reactnativecommunity.netinfo.NetInfoPackage;
 // @react-native-google-signin/google-signin
 import com.reactnativegooglesignin.RNGoogleSigninPackage;
+// @rnmapbox/maps
+import com.rnmapbox.rnmbx.RNMBXPackage;
 // @stripe/stripe-react-native
 import com.reactnativestripesdk.StripeSdkPackage;
 // react-native-camera
@@ -53,6 +55,8 @@ import com.swmansion.reanimated.ReanimatedPackage;
 import com.th3rdwave.safeareacontext.SafeAreaContextPackage;
 // react-native-screens
 import com.swmansion.rnscreens.RNScreensPackage;
+// react-native-splash-screen
+import org.devio.rn.splashscreen.SplashScreenReactPackage;
 // react-native-svg
 import com.horcrux.svg.SvgPackage;
 // react-native-vector-icons
@@ -111,6 +115,7 @@ public class PackageList {
       new GeolocationPackage(),
       new NetInfoPackage(),
       new RNGoogleSigninPackage(),
+      new RNMBXPackage(),
       new StripeSdkPackage(),
       new RNCameraPackage(),
       new RNDeviceInfo(),
@@ -125,6 +130,7 @@ public class PackageList {
       new ReanimatedPackage(),
       new SafeAreaContextPackage(),
       new RNScreensPackage(),
+      new SplashScreenReactPackage(),
       new SvgPackage(),
       new VectorIconsPackage(),
       new RNCWebViewPackage()

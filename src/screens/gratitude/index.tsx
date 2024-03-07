@@ -157,6 +157,7 @@ export const GratitudeScreen = (props: MapScreenProps) => {
       getUserProfileAPI();
     }, [])
   );
+  
 
   useEffect(() => {
     console.log('Count updated:', CircleHeight, '----',CircleWidth);
@@ -778,6 +779,7 @@ export const GratitudeScreen = (props: MapScreenProps) => {
   };
 
   const onCircleDrag = (event: any) => {
+    LodingData(true)
     geoTaggingAPITwo(event?.geometry)
     console.log(event)
   };
