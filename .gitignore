@@ -9,3 +9,5 @@ ios/
 
 # Ignore environment-specific files
 .env
+node_modules/
+
