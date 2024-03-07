@@ -108,9 +108,11 @@ export const CommentList = (props: commentListProps) => {
 
   useFocusEffect(
     useCallback(() => { 
-      setCommentListData([]);
-      setCmtPage(1)
-      getCommentListAPI(1);
+      if (post_id) {
+        setCommentListData([]);
+        setCmtPage(1)
+        getCommentListAPI(1);  
+      }
     }, [post_id])
   );
 

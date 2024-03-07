@@ -15,8 +15,6 @@ import axios from 'axios';
 import {API} from '@network/api';
 import {StripeProvider} from '@stripe/stripe-react-native';
 import ActiveEnv from '@config/env/env.json';
-import SplashScreen from 'react-native-splash-screen';
-import { LoginScreen } from '@screens/login';
 
 export const queryClient = new QueryClient(queryConfig);
 const theme = getTheme(light);
@@ -26,7 +24,6 @@ export const App = () => {
 
   useEffect(() => {
     initializeStripe();
-    SplashScreen?.hide();
   }, []);
 
   useEffect(() => {

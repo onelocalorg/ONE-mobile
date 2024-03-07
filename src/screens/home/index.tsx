@@ -115,6 +115,7 @@ export const HomeScreen = (props: HomeScreenProps) => {
 
   useFocusEffect(
     useCallback(() => {
+      console.log('---------useFocusEffect 1-----------');
       LogBox.ignoreAllLogs();
       requestLocationPermission();
       getUserProfileAPI();
@@ -126,6 +127,7 @@ export const HomeScreen = (props: HomeScreenProps) => {
 
   useFocusEffect(
     useCallback(() => {
+      console.log('---------useFocusEffect 2-----------');
       postListAPI();
     }, [page, searchQuery])
   );
@@ -137,11 +139,6 @@ export const HomeScreen = (props: HomeScreenProps) => {
     })
       .then((location) => {
         setUserLocation(location);
-
-        console.log(
-          "---------------------location---------------------",
-          location
-        );
         if (location.latitude && location.longitude) {
           getRecentlyJoinUserAPI(location);
         } else {
@@ -150,9 +147,7 @@ export const HomeScreen = (props: HomeScreenProps) => {
       })
       .catch((error) => {
         getRecentlyJoinUserAPI('');
-        console.log("---------------------error---------------------", error);
         const { code, message } = error;
-        console.log(code, message);
       });
   };
 
@@ -192,7 +187,6 @@ export const HomeScreen = (props: HomeScreenProps) => {
     if (user?.id) {
       refetch().then((res) => {
         const userData = userProfileParsedData(res?.data?.data);
-        console.log("check1===", userData);
         dispatch(onSetUser(userData));
       });
     }
@@ -201,7 +195,6 @@ export const HomeScreen = (props: HomeScreenProps) => {
 
   const getUserProfileAPI = async () => {
     const token = await AsyncStorage.getItem("token");
-    console.log("token", token);
     try {
       const response = await fetch(API_URL + "/v1/users/" + user.id, {
         method: "get",
@@ -211,9 +204,6 @@ export const HomeScreen = (props: HomeScreenProps) => {
         }),
       });
       const dataItem = await response.json();
-      console.log("-----------------Response User Profile API------------");
-      console.log(dataItem);
-      console.log(dataItem.data.pic);
       setUserProfile(dataItem.data);
       if (dataItem?.data?.isEventActiveSubscription === true) {
         AsyncStorage.setItem("isEventActive", "true");
@@ -235,7 +225,6 @@ export const HomeScreen = (props: HomeScreenProps) => {
 
     var URL = API_URL + "/v1/posts/list?limit=5&page=" + page;
     console.log(URL);
-    console.log(data);
     try {
       const response = await fetch(URL, {
         method: "post",
@@ -260,7 +249,9 @@ export const HomeScreen = (props: HomeScreenProps) => {
       }
     } catch (error) {
       LodingData(false);
-      console.error("--------error--------" + URL, error);
+      console.error("--------error postListAPI--------" + URL, error);
+
+
     }
   }
 
@@ -271,8 +262,6 @@ export const HomeScreen = (props: HomeScreenProps) => {
       postId: postId,
       points: gratisNo,
     };
-    console.log(API_URL + "/v1/posts/gratis-sharing");
-    console.log(data);
     try {
       const response = await fetch(API_URL + "/v1/posts/gratis-sharing", {
         method: "post",
@@ -285,8 +274,6 @@ export const HomeScreen = (props: HomeScreenProps) => {
           .join("&"),
       });
       const dataItem = await response.json();
-      console.log("=========== Gratis Data API Response ==============");
-      console.log(dataItem);
       if (dataItem?.success === true) {
         let markers = [...postList];
         markers[gratisIndex] = {
@@ -295,9 +282,6 @@ export const HomeScreen = (props: HomeScreenProps) => {
         };
         postListData(markers);
       }
-
-      console.log(dataItem?.data?.data?.postGratis);
-      console.log(postList, "------------post List---------------");
       if (dataItem?.success === false) {
         Toast.show(dataItem?.message, Toast.LONG, {
           backgroundColor: "black",
@@ -326,7 +310,6 @@ export const HomeScreen = (props: HomeScreenProps) => {
       };
     }
 
-    console.log(data, 'getRecentlyJoinUserAPI')
 
     try {
       const response = await fetch(API_URL + "/v1/users/recently-joined", {
@@ -340,7 +323,6 @@ export const HomeScreen = (props: HomeScreenProps) => {
           .join("&"),
       });
       const dataItem = await response.json();
-      console.log(dataItem);
       recentlyJoinUser(dataItem?.data);
     } catch (error) {
       console.error(error);
@@ -348,9 +330,7 @@ export const HomeScreen = (props: HomeScreenProps) => {
   }
 
   function postDataLoad(){
-    console.log(
-      "fasdfasfajsdofhajsdjfhaskdjfasjkdbfajksdbfajksdbfasjbsajkbdjfbasj"
-    );
+    console.log("----------postDataLoad-----------");
     if (ismoreData && postList.length > 0) {
       onPageLoad(true);
       setPage(page + 1);
@@ -359,7 +339,6 @@ export const HomeScreen = (props: HomeScreenProps) => {
 
   async function blockUserAPI(postID: any, selectOP: any) {
     const token = await AsyncStorage.getItem("token");
-    console.log(token);
     try {
       const response = await fetch(API_URL + "/v1/posts/block-user/" + postID, {
         method: "post",
@@ -367,28 +346,19 @@ export const HomeScreen = (props: HomeScreenProps) => {
           Authorization: "Bearer " + token,
           "Content-Type": "application/x-www-form-urlencoded",
         }),
-        // body: JSON.stringify({
-        //   "comment" : "blockUser"
-        // }),
       });
       const dataItem = await response.json();
-      console.log("===========Block User data Response==============");
-      console.log(API_URL + "/v1/posts/block-user/" + postID);
       LodingData(false);
-      console.log(dataItem);
       if (dataItem.success === true) {
         if (selectOP === 1) {
-          // postListAPI();
           Toast.show("User Block successfully", Toast.LONG, {
             backgroundColor: "black",
           });
         } else if (selectOP === 2) {
-          // postListAPI();
           Toast.show("Report Submit successfully", Toast.LONG, {
             backgroundColor: "black",
           });
         } else {
-          // postListAPI();
           Toast.show("Post Hide successfully", Toast.LONG, {
             backgroundColor: "black",
           });
@@ -463,14 +433,11 @@ export const HomeScreen = (props: HomeScreenProps) => {
   };
   const postHideOptionSelect = (postSelectType: any) => {
     if (postSelectType === 1) {
-      console.log(postSelectType, "-------postSelectType--------");
       blockUserAlert(postSelectType);
     } else if (postSelectType === 2) {
-      console.log(postSelectType, "-------postSelectType--------");
       addReportReason("");
       reportModalShowHide(true);
     } else if (postSelectType === 3) {
-      console.log(postSelectType, "-------postSelectType--------");
       hideUserAlert(postSelectType);
     }
   };
@@ -625,8 +592,6 @@ export const HomeScreen = (props: HomeScreenProps) => {
   };
 
   const onCloseCommentListModal = (setGraisTwo: any, commentTwo: any) => {
-    console.log(setGraisTwo, '111111');
-    console.log(commentTwo, '222222');
 
     setPostCommentData(commentTwo)
     setPostGratisData(setGraisTwo)
@@ -641,14 +606,11 @@ export const HomeScreen = (props: HomeScreenProps) => {
   };
 
   const onCommentListModal = (item: any, post_index: any) => {
-    console.log("open comment modal");
     AsyncStorage.setItem("postID", item.id);
     setPostCommentIndexTwo(post_index);
     setPostDataId(item.id);
     setPostGratisData(item.gratis);
     setPostCommentData(item.comment);
-    console.log(item.gratis);
-    console.log(item.comment);
     setShowCommentListData(true);
   };
 
@@ -659,7 +621,6 @@ export const HomeScreen = (props: HomeScreenProps) => {
       });
     } else {
       blockUserAPI(postHideId, 2);
-      console.log("blockUserAPI");
       postContentModal(false);
       reportModalShowHide(false);
     }
@@ -699,7 +660,6 @@ export const HomeScreen = (props: HomeScreenProps) => {
               placeholder="Search"
               style={styles.searchInput}
               onChangeText={(value) => {
-                console.log(value);
                 setSerchValue(value);
               }}
             ></TextInput>

@@ -625,13 +625,11 @@ export const editPayoutModalScreen = (props: EditBreakDownModalProps, ref: React
                       </Text>
                     </TouchableOpacity>
                   }
-
-
                 </View>
               </View>
 
               <View style={styles.amountCont}>
-                <Text style={styles.amountLbl}>Ammount</Text>
+                <Text style={styles.amountLbl}>Amount</Text>
                 <TouchableOpacity
                   activeOpacity={0.8}
                   onPress={() => priceClick(1)}>
