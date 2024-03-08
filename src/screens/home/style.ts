@@ -440,6 +440,13 @@ export const createStyleSheet = (theme: ThemeProps) => {
       shadowRadius: 8,  
       elevation: 5
     },
+    feedPostContainer:{
+      marginHorizontal: 10,
+      marginVertical: 6,
+      paddingBottom: 14,
+      paddingTop: 8,
+      backgroundColor:theme.colors.white,
+    },
     postfilterImage: {
       height: 22,
       width: 22,
@@ -599,12 +606,11 @@ export const createStyleSheet = (theme: ThemeProps) => {
       // overflow:'hidden'
     },
     bottomButton: {
-    justifyContent:'flex-end', 
+      justifyContent: 'flex-end',
       paddingHorizontal: normalScale(16),
       backgroundColor: theme.colors.white,
       paddingBottom: verticalScale(25),
       paddingTop: verticalScale(5),
-      // backgroundColor: 'red',
     },
     commentDisplayCont: {
       backgroundColor: '#E6E6E6',
@@ -629,7 +635,7 @@ export const createStyleSheet = (theme: ThemeProps) => {
       marginLeft: 20,
     },
     scrollViewComment:{
-      flex: 1
+      flex: 1,
     },
     replyContainer: {
       flexDirection: 'row',

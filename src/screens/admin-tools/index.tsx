@@ -74,6 +74,7 @@ import { ScrollView } from "react-native-gesture-handler";
 import { width } from "@theme/device/device";
 import { Platform } from "react-native";
 import ActiveEnv from "@config/env/env.dev.json";
+import { emailRegexEx } from "@assets/constants";
 
 interface AdminToolsScreenProps {
   navigation?: NavigationContainerRef<ParamListBase>;
@@ -349,7 +350,7 @@ export const AdminToolsScreen = (props: AdminToolsScreenProps) => {
 
   const checkValidation = () => {
     return !(
-      email_confirmation_body &&
+      emailRegexEx.test(String(email_confirmation_body).toLowerCase()) &&
       name &&
       tickets?.length &&
       address &&
@@ -820,7 +821,7 @@ export const AdminToolsScreen = (props: AdminToolsScreenProps) => {
               <Text style={styles.uniqueCount}>{viewCount}</Text>
             </View>
 
-            <GetAdmintoolsDropDownScreen eventId={id} />
+            <GetAdmintoolsDropDownScreen eventId={id} navigation={navigation}/>
 
             <TouchableOpacity
               activeOpacity={0.8}

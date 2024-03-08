@@ -30,9 +30,12 @@ import {
   event,
   gratisGreen,
   gratitudeBlack,
+  greenImage,
   minus,
   onelogo,
+  pin,
   plus,
+  postCalender,
   send,
 } from "@assets/images";
 import GestureRecognizer from "react-native-swipe-gestures";
@@ -51,12 +54,13 @@ import { useStringsAndLabels } from "@app-hooks/use-strings-and-labels";
 import { Loader } from "@components/loader";
 
 interface commentListProps {
-  navigation: NavigationContainerRef<ParamListBase>;
-  showModal: boolean;
-  onCommentHide: (setGrais: number, setComment: number) => void;
-  post_id: string;
-  setCommentReturn: any;
-  setGratisReturn: any;
+  navigation?: NavigationContainerRef<ParamListBase>;
+  route?: {
+    params: {
+      postData: any;
+      postIndex: any;
+    };
+  };
 }
 
 export const CommentList = (props: commentListProps) => {
@@ -64,14 +68,8 @@ export const CommentList = (props: commentListProps) => {
   const { theme } = useAppTheme();
   const styles = createStyleSheet(theme);
   const { strings } = useStringsAndLabels();
-  const {
-    showModal,
-    onCommentHide,
-    setCommentReturn,
-    setGratisReturn,
-    navigation,
-    post_id,
-  } = props || {};
+  const { navigation, route } = props || {};
+  const { postData, postIndex } = route?.params ?? {};
   const [offerModal, CreateOfferModal] = useState(false);
   const [replyofferModal, openReplyOfferModal] = useState(false);
   var [gratisNo, totalGratisData]: any = useState(10);
@@ -94,33 +92,29 @@ export const CommentList = (props: commentListProps) => {
   const [childjIndex, setChildIndexForGratis]: any = useState();
   const [replyId, commentReplyPostId] = useState("");
   const [replyIndex, setReplayIndex] = useState("");
-  const [setGrais, setGratisData] = useState(props.setGratisReturn);
-  const [setComment, setCommentData] = useState(props.setCommentReturn);
+  const [setGrais, setGratisData] = useState(postData?.gratis);
+  const [setComment, setCommentData] = useState(postData.comment);
   const [postCommentIndexTwo, setPostCommentIndexTwo]: any = useState();
-  const [postIndexTwo, setPostIndexTwo]: any = useState();
+  const [getPostData, setPostDataNew]: any = useState(postData);
   const [commentListScrollEnable, setCommentListScrollEnable] = useState(true);
   const flatListRef: any = React.useRef();
 
   useEffect(() => {
-    setGratisData(props.setGratisReturn)
-    setCommentData(props.setCommentReturn)
-  },[props])
+    setGratisData(getPostData?.gratis);
+    setCommentData(getPostData.comment);
+  }, [props]);
 
   useFocusEffect(
-    useCallback(() => { 
-      if (post_id) {
+    useCallback(() => {
+      if (getPostData?.id) {
         setCommentListData([]);
-        setCmtPage(1)
-        getCommentListAPI(1);  
+        setCmtPage(1);
+        getCommentListAPI(1);
       }
-    }, [post_id])
+    }, [getPostData?.id])
   );
 
   const recentUserProfilePress = (id: any) => {
-    console.log(setGrais,'setGrais setGrais');
-    console.log(setComment,'setComment setComment');
-    onCommentHide(setGrais, setComment);
-
     AsyncStorage.setItem("recentUserId", id);
     navigation?.navigate(navigations.RECENTUSERPROFILE);
   };
@@ -128,7 +122,7 @@ export const CommentList = (props: commentListProps) => {
   async function getCommentListAPI(pageCount: any) {
     const token = await AsyncStorage.getItem("token");
     var data: any = {
-      post_id: post_id,
+      post_id: getPostData?.id,
     };
 
     var APIURL =
@@ -136,7 +130,7 @@ export const CommentList = (props: commentListProps) => {
       "/v1/comments?limit=20&page=" +
       pageCount +
       "&post_id=" +
-      post_id;
+      getPostData?.id;
     console.log(
       "===========Get Comment List API Request ==============",
       APIURL
@@ -185,10 +179,10 @@ export const CommentList = (props: commentListProps) => {
     };
     console.log("===========Comment on Post API Request ==============");
     console.log(data);
-    console.log(API_URL + "/v1/posts/" + post_id + "/comments/create");
+    console.log(API_URL + "/v1/posts/" + getPostData?.id + "/comments/create");
     try {
       const response = await fetch(
-        API_URL + "/v1/posts/" + post_id + "/comments/create",
+        API_URL + "/v1/posts/" + getPostData?.id + "/comments/create",
         {
           method: "post",
           headers: new Headers({
@@ -254,6 +248,9 @@ export const CommentList = (props: commentListProps) => {
         markers[commentIndex]["gratis"] = dataItem?.data?.data?.commentsGratis;
 
         setGratisData(dataItem?.data?.data?.postGratis);
+        let markersTwo = { ...getPostData };
+        markersTwo["gratis"] = dataItem?.data?.data?.postGratis;
+        setPostDataNew(markersTwo);
       }
 
       if (dataItem?.success === false) {
@@ -302,6 +299,9 @@ export const CommentList = (props: commentListProps) => {
           dataItem?.data?.data?.replayGratis;
 
         setGratisData(dataItem?.data?.data?.postGratis);
+        let markersTwo = { ...getPostData };
+        markersTwo["gratis"] = dataItem?.data?.data?.postGratis;
+        setPostDataNew(markersTwo);
         console.log(
           "commentListData 222",
           markers[gratisIndex]["commentListData"]
@@ -328,10 +328,10 @@ export const CommentList = (props: commentListProps) => {
       comment_id: replyId,
     };
     console.log(data);
-    console.log(API_URL + "/v1/posts/" + post_id + "/comments/create");
+    console.log(API_URL + "/v1/posts/" + getPostData?.id + "/comments/create");
     try {
       const response = await fetch(
-        API_URL + "/v1/posts/" + post_id + "/comments/create",
+        API_URL + "/v1/posts/" + getPostData?.id + "/comments/create",
         {
           method: "post",
           headers: new Headers({
@@ -397,6 +397,45 @@ export const CommentList = (props: commentListProps) => {
     console.log("----------cindex----------", cindex);
   };
 
+  async function addGratisAPI() {
+    LodingData(true);
+    const token = await AsyncStorage.getItem("token");
+    var data: any = {
+      postId: postId,
+      points: gratisNo,
+    };
+    try {
+      const response = await fetch(API_URL + "/v1/posts/gratis-sharing", {
+        method: "post",
+        headers: new Headers({
+          Authorization: "Bearer " + token,
+          "Content-Type": "application/x-www-form-urlencoded",
+        }),
+        body: Object.keys(data)
+          .map((key) => key + "=" + data[key])
+          .join("&"),
+      });
+      const dataItem = await response.json();
+      console.log(dataItem);
+      if (dataItem?.success === true) {
+        let markers = { ...getPostData };
+        markers["gratis"] = dataItem?.data?.data?.postGratis;
+        setPostDataNew(markers);
+        setGratisData(dataItem?.data?.data?.postGratis);
+      }
+      if (dataItem?.success === false) {
+        Toast.show(dataItem?.message, Toast.LONG, {
+          backgroundColor: "black",
+        });
+      }
+
+      LodingData(false);
+    } catch (error) {
+      LodingData(false);
+      console.error(error);
+    }
+  }
+
   const OfferModalClose = () => {
     CreateOfferModal(false);
   };
@@ -426,7 +465,7 @@ export const CommentList = (props: commentListProps) => {
   const OfferModalHide = () => {
     CreateOfferModal(false);
 
-    // addGratisAPI();
+    addGratisAPI();
   };
 
   const replyOfferModalHide = () => {
@@ -603,322 +642,487 @@ export const CommentList = (props: commentListProps) => {
     }
   };
 
+  const OfferModalShow = (postIds: any, index: any) => {
+    postIdData(postIds);
+    gratisIndexData(index);
+    CreateOfferModal(true);
+    totalGratisData(10);
+  };
+
+  const onBackPress = () => {
+    navigation?.goBack();
+  };
+
   return (
-    <SafeAreaView>
-      <Modal
-        onDismiss={() => onCommentHide(setGrais, setComment)}
-        transparent
-        visible={showModal}
-        animationType="slide"
+    // <SafeAreaView>
+
+    <View style={{paddingBottom:300}}>
+      <Loader visible={isLoading} showOverlay />
+      <TouchableOpacity style={styles.HeaderContainerTwo} activeOpacity={1}>
+        <TouchableOpacity style={styles.row2} onPress={onBackPress}>
+          <View>
+            <ImageComponent source={arrowLeft} style={styles.arrowLeft} />
+          </View>
+        </TouchableOpacity>
+        <View style={styles.oneContainer}>
+          <ImageComponent
+            style={styles.oneContainerImage}
+            source={onelogo}
+          ></ImageComponent>
+          <View>
+            <Text style={styles.oneContainerText}>NE</Text>
+            <Text style={styles.localText}>L o c a l</Text>
+          </View>
+        </View>
+      </TouchableOpacity>
+      <KeyboardAvoidingView
+      behavior="padding"
+        contentContainerStyle={{ flex:1}}
       >
-        <KeyboardAvoidingView
-          behavior="padding"
-          contentContainerStyle={{ flex: 1 }}
-        >
-          <GestureRecognizer
-            onSwipeDown={() => onCommentHide(setGrais, setComment)}
-            style={styles.gesture}
-          >
-            <TouchableOpacity
-              style={styles.containerGallery}
-              activeOpacity={1}
-              onPress={() => onCommentHide(setGrais, setComment)}
-            />
-          </GestureRecognizer>
-          <Loader visible={isLoading} showOverlay />
-          <View style={styles.commentModalContainer}>
-            <TouchableOpacity
-              onPress={() => onCommentHide(setGrais, setComment)}
-              style={{
-                height: 50,
-                width: 50,
-                position: "absolute",
-                right: 20,
-                top: 50,
-                zIndex: 111111,
-              }}
-            >
-              <ImageComponent
-                source={close}
-                style={{ height: 30, width: 30 }}
-              />
-            </TouchableOpacity>
-
-            <View style={{}}>
-              <View style={styles.notchCont}></View>
-            </View>
-            <View style={{ flex: 1 }}>
-              <View style={styles.scrollViewComment}>
-                <FlatList
-                  data={commentList}
-                  ref={flatListRef}
-                  onEndReachedThreshold={0.005}
-                  keyExtractor={(item, index) => index.toString()}
-                  renderItem={renderItem}
-                  ListFooterComponent={
-                    <TouchableOpacity onPress={postDataLoad}>
-                      {isCommentData && !isLoading ? (
-                        <View>
-                          <Text style={styles.getMoreDataCont}>
-                            Get More Comments
-                          </Text>
-                        </View>
-                      ) : (
-                        <Text
-                          style={{
-                            alignSelf: "center",
-                            paddingVertical: 10,
-                            color: "black",
-                            fontSize: 16,
-                          }}
-                        >
-                          No More Data Found
-                        </Text>
-                      )}
-                    </TouchableOpacity>
-                  }
-                ></FlatList>
-                <View style={styles.bottomButton}>
-                  <View style={{ flexDirection: "row" }}>
-                    <TextInput
-                      style={styles.commentInput}
-                      placeholder="Make a Comment"
-                      placeholderTextColor='gray'
-                      value={addnewCmt}
-                      onChangeText={(text) => onAddComment(text)}
-                    ></TextInput>
-                    <TouchableOpacity
-                      style={{ alignSelf: "center" }}
-                      onPress={() => addCommentHide()}
-                    >
-                      <ImageComponent
-                        style={{ height: 40, width: 40 }}
-                        source={send}
-                      ></ImageComponent>
-                    </TouchableOpacity>
-                  </View>
-                </View>
-              </View>
-            </View>
-
-            <Modal transparent onDismiss={OfferModalClose} visible={offerModal}>
-              <GestureRecognizer
-                onSwipeDown={OfferModalClose}
-                style={styles.gesture}
-              >
-                <TouchableOpacity
-                  style={styles.containerGallery}
-                  activeOpacity={1}
-                  onPress={OfferModalClose}
-                />
-              </GestureRecognizer>
-              <KeyboardAvoidingView
-                behavior={Platform.OS === "ios" ? "padding" : "height"}
-                style={styles.keyboardView}
-              >
-                <TouchableOpacity
-                  activeOpacity={1}
-                  style={styles.gratiescontainer}
-                >
-                  <View>
-                    <Text style={styles.gratiesTitle}>Give some Gratis</Text>
-                    <View style={styles.gratisCont}>
-                      <TouchableOpacity onPress={gratisMinusClick}>
-                        <ImageComponent
-                          source={minus}
-                          style={{
-                            height: 30,
-                            width: 30,
-                            marginRight: 50,
-                          }}
-                        ></ImageComponent>
-                      </TouchableOpacity>
-                      <ImageComponent
-                        resizeMode="cover"
-                        style={styles.gratisimg}
-                        source={Gratis}
-                      ></ImageComponent>
-                      <Text style={styles.gratistext}>{gratisNo}</Text>
-                      <TouchableOpacity onPress={gratisPlusClick}>
-                        <ImageComponent
-                          source={plus}
-                          style={{
-                            height: 30,
-                            width: 30,
-                            marginLeft: 50,
-                          }}
-                        ></ImageComponent>
-                      </TouchableOpacity>
-                    </View>
-                    <TouchableOpacity
-                      onPress={() => OfferModalHide()}
-                      activeOpacity={0.8}
-                      style={styles.purchaseContainer}
-                    >
-                      <View />
-                      <Text style={styles.titleTwo}>Give</Text>
-                      <TouchableOpacity>
-                        <ImageComponent
-                          source={buttonArrowGreen}
-                          style={styles.buttonArrow}
-                        />
-                      </TouchableOpacity>
-                    </TouchableOpacity>
-                  </View>
-                </TouchableOpacity>
-              </KeyboardAvoidingView>
-            </Modal>
-
-            <Modal
-              transparent
-              onDismiss={() => openReplyOfferModal(false)}
-              visible={replyofferModal}
-            >
-              <GestureRecognizer
-                onSwipeDown={() => openReplyOfferModal(false)}
-                style={styles.gesture}
-              >
-                <TouchableOpacity
-                  style={styles.containerGallery}
-                  activeOpacity={1}
-                  onPress={() => openReplyOfferModal(false)}
-                />
-              </GestureRecognizer>
-              <KeyboardAvoidingView
-                behavior={Platform.OS === "ios" ? "padding" : "height"}
-                style={styles.keyboardView}
-              >
-                <TouchableOpacity
-                  activeOpacity={1}
-                  style={styles.gratiescontainer}
-                >
-                  <View>
-                    <Text style={styles.gratiesTitle}>
-                      Give some Gratis Comment
-                    </Text>
-                    <View style={styles.gratisCont}>
-                      <TouchableOpacity onPress={gratisCommrntMinusClick}>
-                        <ImageComponent
-                          source={minus}
-                          style={{
-                            height: 30,
-                            width: 30,
-                            marginRight: 50,
-                          }}
-                        ></ImageComponent>
-                      </TouchableOpacity>
-                      <ImageComponent
-                        resizeMode="cover"
-                        style={styles.gratisimg}
-                        source={Gratis}
-                      ></ImageComponent>
-                      <Text style={styles.gratistext}>{gratisNoComment}</Text>
-                      <TouchableOpacity onPress={gratisCommentPlusClick}>
-                        <ImageComponent
-                          source={plus}
-                          style={{
-                            height: 30,
-                            width: 30,
-                            marginLeft: 50,
-                          }}
-                        ></ImageComponent>
-                      </TouchableOpacity>
-                    </View>
-                    <TouchableOpacity
-                      onPress={() => replyOfferModalHide()}
-                      activeOpacity={0.8}
-                      style={styles.purchaseContainer}
-                    >
-                      <View />
-                      <Text style={styles.titleTwo}>Give</Text>
-                      <TouchableOpacity>
-                        <ImageComponent
-                          source={buttonArrowGreen}
-                          style={styles.buttonArrow}
-                        />
-                      </TouchableOpacity>
-                    </TouchableOpacity>
-                  </View>
-                </TouchableOpacity>
-              </KeyboardAvoidingView>
-            </Modal>
-
-            <Modal
-              transparent={true}
-              visible={offerModal}
-              animationType="slide"
-            ></Modal>
-            <Modal
-              transparent={true}
-              visible={addComment}
-              animationType="slide"
-              //  onDismiss={() => addCommentModal(false)}
-            >
-              <GestureRecognizer
-                // onSwipeDown={() => addCommentModal(false)}
-                style={styles.gesture}
-              >
-                <TouchableOpacity
-                  style={[styles.containerGallery]}
-                  activeOpacity={1}
-                  onPress={keyboardDismiss}
-                />
-              </GestureRecognizer>
-              <KeyboardAvoidingView
-                behavior={Platform.OS === "ios" ? "padding" : "height"}
-                style={[
-                  styles.keyboardView,
-                  { position: "absolute", left: 0, right: 0 },
-                ]}
-              >
-                <TouchableOpacity
-                  activeOpacity={1}
-                  style={styles.commentContainer}
-                >
-                  <View>
+        <View style={styles.commentModalContainer}>
+          <View style={{ flex: 1 }}>
+            <View style={styles.scrollViewComment}>
+              <FlatList
+                data={commentList}
+                ref={flatListRef}
+                onEndReachedThreshold={0.005}
+                keyExtractor={(item, index) => index.toString()}
+                renderItem={renderItem}
+                ListHeaderComponent={
+                  <View style={styles.feedPostContainer}>
+                    <Text style={styles.posttitle}>{getPostData?.type}</Text>
                     <TouchableOpacity
                       style={{
                         position: "absolute",
-                        right: 0,
+                        right: 14,
+                        top: 10,
                         zIndex: 111122,
                       }}
-                      activeOpacity={0.5}
-                      onPress={() => addCommentModal(false)}
-                    >
+                    ></TouchableOpacity>
+                    <View style={styles.userDetailcont}>
+                      <TouchableOpacity
+                        onPress={() =>
+                          recentUserProfilePress(getPostData?.user_id.id)
+                        }
+                      >
+                        <ImageComponent
+                          resizeMode="cover"
+                          style={styles.postProfile}
+                          source={{ uri: getPostData?.user_id?.pic }}
+                        ></ImageComponent>
+                      </TouchableOpacity>
+                      <View>
+                        <View>
+                          {getPostData?.type === "Gratis" ? (
+                            <View>
+                              <Text numberOfLines={1} style={styles.userName}>
+                                {getPostData?.user_id?.first_name}{" "}
+                                {getPostData?.user_id?.last_name}{" "}
+                              </Text>
+                              {getPostData?.to?.users.length !== 0 ? (
+                                <Text
+                                  numberOfLines={1}
+                                  style={styles.sentPointClass}
+                                >
+                                  sent {getPostData?.to?.users[0]?.point} gratis
+                                  to{" "}
+                                  <Text style={styles.userName}>
+                                    {
+                                      getPostData?.to?.users[0]?.user_id[
+                                        "first_name"
+                                      ]
+                                    }{" "}
+                                    {
+                                      getPostData?.to?.users[0]?.user_id[
+                                        "last_name"
+                                      ]
+                                    }{" "}
+                                    {
+                                      getPostData?.to?.users[1]?.user_id[
+                                        "first_name"
+                                      ]
+                                    }{" "}
+                                    {
+                                      getPostData?.to?.users[1]?.user_id[
+                                        "last_name"
+                                      ]
+                                    }
+                                  </Text>
+                                </Text>
+                              ) : (
+                                <></>
+                              )}
+                            </View>
+                          ) : (
+                            <Text numberOfLines={1} style={styles.userName}>
+                              {getPostData?.user_id?.first_name}{" "}
+                              {getPostData?.user_id?.last_name}
+                            </Text>
+                          )}
+                          <Text style={styles.postTime}>
+                            {getPostData?.date}
+                          </Text>
+                        </View>
+                      </View>
+                    </View>
+                    <View style={styles.userListDisplayCont}>
+                      <TouchableOpacity
+                        onPress={() =>
+                          recentUserProfilePress(
+                            getPostData?.to?.users[0]?.user_id["id"]
+                          )
+                        }
+                      >
+                        <ImageComponent
+                          resizeMode="cover"
+                          style={styles.userListDisplay}
+                          source={{
+                            uri: getPostData?.to?.users[0]?.user_id["pic"],
+                          }}
+                        ></ImageComponent>
+                      </TouchableOpacity>
+                      <TouchableOpacity
+                        onPress={() =>
+                          recentUserProfilePress(
+                            getPostData?.to?.users[1]?.user_id["id"]
+                          )
+                        }
+                      >
+                        <ImageComponent
+                          resizeMode="cover"
+                          style={styles.userListDisplay}
+                          source={{
+                            uri: getPostData?.to?.users[1]?.user_id["pic"],
+                          }}
+                        ></ImageComponent>
+                      </TouchableOpacity>
+                    </View>
+                    <Text style={styles.postDes}>{getPostData?.content}</Text>
+                    <ImageComponent
+                      resizeMode="cover"
+                      source={{ uri: getPostData.image[0] }}
+                      style={styles.userPost}
+                    ></ImageComponent>
+                    <View style={styles.postDetailCont}>
+                      <Text style={styles.postDetailTitle}>What:</Text>
                       <ImageComponent
-                        source={closeCard}
-                        style={{ height: 25, width: 25 }}
+                        source={{ uri: getPostData?.what?.icon }}
+                        style={styles.detailImage}
                       ></ImageComponent>
-                    </TouchableOpacity>
-                    <Text style={styles.gratiesTitle}>Add Comment</Text>
-                    <View>
-                      <TextInput
-                        style={styles.commentInput}
-                        placeholder="Comment"
-                        onChangeText={(text) => onAddCommentReply(text)}
-                      ></TextInput>
+                      <Text style={styles.postDetail}>
+                        {getPostData?.what?.name}
+                      </Text>
+                    </View>
+                    <View style={styles.postDetailCont}>
+                      <Text style={styles.postDetailTitle}>For:</Text>
+                      <Image
+                        source={{ uri: getPostData?.for?.icon }}
+                        style={styles.detailImage}
+                      ></Image>
+                      <Text style={styles.postDetail}>
+                        {getPostData?.for?.name}
+                      </Text>
+                    </View>
+                    <View style={styles.postDetailCont}>
+                      <Text style={styles.postDetailTitle}>Where:</Text>
+                      <Image source={pin} style={styles.detailImage}></Image>
+                      <Text style={styles.postDetail}>
+                        {getPostData?.where?.address}
+                      </Text>
+                    </View>
+                    <View style={styles.postDetailCont}>
+                      <Text style={styles.postDetailTitle}>When:</Text>
+                      <Image
+                        source={postCalender}
+                        style={styles.detailImage}
+                      ></Image>
+                      <Text style={styles.postDetail}>{getPostData?.when}</Text>
                     </View>
                     <TouchableOpacity
-                      onPress={() => onReplyClose()}
                       activeOpacity={0.8}
-                      style={styles.purchaseContainer}
+                      style={styles.gratisContainer}
+                      onPress={() => OfferModalShow(getPostData.id, postIndex)}
                     >
-                      <View />
-                      <Text style={styles.titleTwo}>Add Comment</Text>
-                      <View>
-                        <ImageComponent
-                          source={buttonArrowGreen}
-                          style={styles.buttonArrow}
-                        />
-                      </View>
+                      <Text style={styles.gratisClass}>
+                        +{getPostData?.gratis}
+                      </Text>
+                      <ImageComponent
+                        source={gratitudeBlack}
+                        style={styles.commentImgTwo}
+                      ></ImageComponent>
                     </TouchableOpacity>
                   </View>
-                </TouchableOpacity>
-              </KeyboardAvoidingView>
-            </Modal>
+                }
+                ListFooterComponent={
+                  <View>
+                    {commentList.length !== 0 && !isLoading ?
+                    <TouchableOpacity onPress={postDataLoad}>
+                    {isCommentData && !isLoading ? (
+                      <View>
+                        <Text style={styles.getMoreDataCont}>
+                          Get More Comments
+                        </Text>
+                      </View>
+                    ) : (
+                      <Text
+                        style={{
+                          alignSelf: "center",
+                          paddingVertical: 10,
+                          color: "black",
+                          fontSize: 16,
+                        }}
+                      >
+                        No More Data Found
+                      </Text>
+                    )}
+                  </TouchableOpacity> : <View style={{alignSelf:'center'}}>
+                    <Text>No Comment Found</Text>
+                    </View>}
+                    
+                  </View>
+                }
+              ></FlatList>
+              <View style={styles.bottomButton}>
+                <View style={{ flexDirection: "row" }}>
+                  <TextInput
+                    style={styles.commentInput}
+                    placeholder="Make a Comment"
+                    placeholderTextColor="gray"
+                    value={addnewCmt}
+                    onChangeText={(text) => onAddComment(text)}
+                  ></TextInput>
+                  <TouchableOpacity
+                    style={{ alignSelf: "center" }}
+                    onPress={() => addCommentHide()}
+                  >
+                    <ImageComponent
+                      style={{ height: 40, width: 40 }}
+                      source={send}
+                    ></ImageComponent>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            </View>
           </View>
-        </KeyboardAvoidingView>
-      </Modal>
-    </SafeAreaView>
+
+          <Modal transparent onDismiss={OfferModalClose} visible={offerModal}>
+            <GestureRecognizer
+              onSwipeDown={OfferModalClose}
+              style={styles.gesture}
+            >
+              <TouchableOpacity
+                style={styles.containerGallery}
+                activeOpacity={1}
+                onPress={OfferModalClose}
+              />
+            </GestureRecognizer>
+            <KeyboardAvoidingView
+              behavior={Platform.OS === "ios" ? "padding" : "height"}
+              style={styles.keyboardView}
+            >
+              <TouchableOpacity
+                activeOpacity={1}
+                style={styles.gratiescontainer}
+              >
+                <View>
+                  <Text style={styles.gratiesTitle}>Give some Gratis</Text>
+                  <View style={styles.gratisCont}>
+                    <TouchableOpacity onPress={gratisMinusClick}>
+                      <ImageComponent
+                        source={minus}
+                        style={{
+                          height: 30,
+                          width: 30,
+                          marginRight: 50,
+                        }}
+                      ></ImageComponent>
+                    </TouchableOpacity>
+                    <ImageComponent
+                      resizeMode="cover"
+                      style={styles.gratisimg}
+                      source={Gratis}
+                    ></ImageComponent>
+                    <Text style={styles.gratistext}>{gratisNo}</Text>
+                    <TouchableOpacity onPress={gratisPlusClick}>
+                      <ImageComponent
+                        source={plus}
+                        style={{
+                          height: 30,
+                          width: 30,
+                          marginLeft: 50,
+                        }}
+                      ></ImageComponent>
+                    </TouchableOpacity>
+                  </View>
+                  <TouchableOpacity
+                    onPress={() => OfferModalHide()}
+                    activeOpacity={0.8}
+                    style={styles.purchaseContainer}
+                  >
+                    <View />
+                    <Text style={styles.titleTwo}>Give</Text>
+                    <TouchableOpacity>
+                      <ImageComponent
+                        source={buttonArrowGreen}
+                        style={styles.buttonArrow}
+                      />
+                    </TouchableOpacity>
+                  </TouchableOpacity>
+                </View>
+              </TouchableOpacity>
+            </KeyboardAvoidingView>
+          </Modal>
+
+          <Modal
+            transparent
+            onDismiss={() => openReplyOfferModal(false)}
+            visible={replyofferModal}
+          >
+            <GestureRecognizer
+              onSwipeDown={() => openReplyOfferModal(false)}
+              style={styles.gesture}
+            >
+              <TouchableOpacity
+                style={styles.containerGallery}
+                activeOpacity={1}
+                onPress={() => openReplyOfferModal(false)}
+              />
+            </GestureRecognizer>
+            <KeyboardAvoidingView
+              behavior={Platform.OS === "ios" ? "padding" : "height"}
+              style={styles.keyboardView}
+            >
+              <TouchableOpacity
+                activeOpacity={1}
+                style={styles.gratiescontainer}
+              >
+                <View>
+                  <Text style={styles.gratiesTitle}>
+                    Give some Gratis Comment
+                  </Text>
+                  <View style={styles.gratisCont}>
+                    <TouchableOpacity onPress={gratisCommrntMinusClick}>
+                      <ImageComponent
+                        source={minus}
+                        style={{
+                          height: 30,
+                          width: 30,
+                          marginRight: 50,
+                        }}
+                      ></ImageComponent>
+                    </TouchableOpacity>
+                    <ImageComponent
+                      resizeMode="cover"
+                      style={styles.gratisimg}
+                      source={Gratis}
+                    ></ImageComponent>
+                    <Text style={styles.gratistext}>{gratisNoComment}</Text>
+                    <TouchableOpacity onPress={gratisCommentPlusClick}>
+                      <ImageComponent
+                        source={plus}
+                        style={{
+                          height: 30,
+                          width: 30,
+                          marginLeft: 50,
+                        }}
+                      ></ImageComponent>
+                    </TouchableOpacity>
+                  </View>
+                  <TouchableOpacity
+                    onPress={() => replyOfferModalHide()}
+                    activeOpacity={0.8}
+                    style={styles.purchaseContainer}
+                  >
+                    <View />
+                    <Text style={styles.titleTwo}>Give</Text>
+                    <TouchableOpacity>
+                      <ImageComponent
+                        source={buttonArrowGreen}
+                        style={styles.buttonArrow}
+                      />
+                    </TouchableOpacity>
+                  </TouchableOpacity>
+                </View>
+              </TouchableOpacity>
+            </KeyboardAvoidingView>
+          </Modal>
+
+          <Modal
+            transparent={true}
+            visible={offerModal}
+            animationType="slide"
+          ></Modal>
+          <Modal
+            transparent={true}
+            visible={addComment}
+            animationType="slide"
+            //  onDismiss={() => addCommentModal(false)}
+          >
+            <GestureRecognizer
+              // onSwipeDown={() => addCommentModal(false)}
+              style={styles.gesture}
+            >
+              <TouchableOpacity
+                style={[styles.containerGallery]}
+                activeOpacity={1}
+                onPress={keyboardDismiss}
+              />
+            </GestureRecognizer>
+            <KeyboardAvoidingView
+              behavior={Platform.OS === "ios" ? "padding" : "height"}
+              style={[
+                styles.keyboardView,
+                { position: "absolute", left: 0, right: 0 },
+              ]}
+            >
+              <TouchableOpacity
+                activeOpacity={1}
+                style={styles.commentContainer}
+              >
+                <View>
+                  <TouchableOpacity
+                    style={{
+                      position: "absolute",
+                      right: 0,
+                      zIndex: 111122,
+                    }}
+                    activeOpacity={0.5}
+                    onPress={() => addCommentModal(false)}
+                  >
+                    <ImageComponent
+                      source={closeCard}
+                      style={{ height: 25, width: 25 }}
+                    ></ImageComponent>
+                  </TouchableOpacity>
+                  <Text style={styles.gratiesTitle}>Add Comment</Text>
+                  <View>
+                    <TextInput
+                      style={styles.commentInput}
+                      placeholder="Comment"
+                      onChangeText={(text) => onAddCommentReply(text)}
+                    ></TextInput>
+                  </View>
+                  <TouchableOpacity
+                    onPress={() => onReplyClose()}
+                    activeOpacity={0.8}
+                    style={styles.purchaseContainer}
+                  >
+                    <View />
+                    <Text style={styles.titleTwo}>Add Comment</Text>
+                    <View>
+                      <ImageComponent
+                        source={buttonArrowGreen}
+                        style={styles.buttonArrow}
+                      />
+                    </View>
+                  </TouchableOpacity>
+                </View>
+              </TouchableOpacity>
+            </KeyboardAvoidingView>
+          </Modal>
+        </View>
+      </KeyboardAvoidingView>
+    </View>
+    // </SafeAreaView>
   );
 };

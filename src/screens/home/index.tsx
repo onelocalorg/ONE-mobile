@@ -91,6 +91,7 @@ export const HomeScreen = (props: HomeScreenProps) => {
   const [reportPost, addReportReason] = useState("");
   const [setGratis, setPostGratisData] = useState();
   const [setComment, setPostCommentData] = useState();
+  const [postData, setPostDataForComment] = useState();
   const [post_index, setPostCommentIndexTwo]: any = useState();
   const [showCommentListModal, setShowCommentListData] = useState(false);
   const [Post_Id, setPostDataId] = useState("");
@@ -385,6 +386,12 @@ export const HomeScreen = (props: HomeScreenProps) => {
     navigation.navigate(navigations.RECENTUSERPROFILE);
   };
 
+  const onCommentOpen = (item: any, post_index: any) => {
+    navigation.navigate(navigations.COMMENTLIST,{ postData : item,postIndex:post_index});
+    // AsyncStorage.setItem("postID", item.id);
+  };
+
+
   const blockUserAlert = (type: any) => {
     Alert.alert(
       strings.blockUser,
@@ -576,7 +583,7 @@ export const HomeScreen = (props: HomeScreenProps) => {
             </TouchableOpacity>
             <TouchableOpacity
               activeOpacity={0.8}
-              onPress={() => onCommentListModal(item, index)}
+              onPress={() => onCommentOpen(item, index)}
               style={styles.commentsContainer}
             >
               <Text style={styles.commentClass}>{item?.comment}</Text>
@@ -611,6 +618,7 @@ export const HomeScreen = (props: HomeScreenProps) => {
     setPostDataId(item.id);
     setPostGratisData(item.gratis);
     setPostCommentData(item.comment);
+    setPostDataForComment(item)
     setShowCommentListData(true);
   };
 
@@ -891,14 +899,16 @@ export const HomeScreen = (props: HomeScreenProps) => {
         </Modal>
       </Modal>
 
-      <CommentList
+      {/* <CommentList
         post_id={Post_Id}
         setCommentReturn={setComment}
         setGratisReturn={setGratis}
         onCommentHide={onCloseCommentListModal}
         showModal={showCommentListModal}
+        getPostIndex={post_index}
+        getPostDataTwo={postData}
         navigation={navigation}
-      ></CommentList>
+      ></CommentList> */}
     </>
   );
 };

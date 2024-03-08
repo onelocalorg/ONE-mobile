@@ -104,7 +104,6 @@ export const EventListScreen = (props: EventListScreenProps) => {
     userId: user?.id,
   });
 
-
   const dispatch = useDispatch();
 
   useFocusEffect(

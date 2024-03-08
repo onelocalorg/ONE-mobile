@@ -10,14 +10,16 @@ import { API_URL, setData } from "@network/constant";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { FlatList } from "react-native";
 import { Loader } from "@components/loader";
-import { useFocusEffect } from "@react-navigation/native";
+import { NavigationContainerRef, ParamListBase, useFocusEffect } from "@react-navigation/native";
 import { EditPayoutModal } from "./editPayoutExpense-modal";
 import Toast from "react-native-simple-toast";
 import { AddPayoutExpenseModel } from "./addPayoutExpense-modal";
 import { Modal } from "react-native";
 import GestureRecognizer from "react-native-swipe-gestures";
+import { navigations } from "@config/app-navigation/constant";
 
 interface GetAdmintoolsDropDownScreenProps {
+  navigation?: NavigationContainerRef<ParamListBase>;
   eventId: string;
 }
 
@@ -26,7 +28,7 @@ export const GetAdmintoolsDropDownScreen = (
 ) => {
   const { theme } = useAppTheme();
   const styles = createStyleSheet(theme);
-  const { eventId } = props || {};
+  const { eventId,navigation } = props || {};
   const [isLoading, LodingData] = useState(false);
   const addItemRef: React.Ref<ModalRefProps> = useRef(null);
   const editItemRef: React.Ref<ModalRefProps> = useRef(null);
@@ -46,7 +48,7 @@ export const GetAdmintoolsDropDownScreen = (
 
   const openAddBreakDownModal = (id: any) => {
     setUserId(userId);
-    addItemRef.current?.onOpenModal();
+    navigation?.navigate(navigations.ADDPAYOUTEXPENSE, {id: eventId,addPayOutExpense : payoutData?.total_profit});
   };
 
   useFocusEffect(
@@ -98,49 +100,49 @@ export const GetAdmintoolsDropDownScreen = (
     }
   }
 
-  const onSuccessfulCreate = (payoutListData: any) => {
-    addItemRef.current?.onCloseModal();
-    console.log("-------------onSuccessfulCreate--------------");
-    console.log(payoutListData);
+  // const onSuccessfulCreate = (payoutListData: any) => {
+  //   addItemRef.current?.onCloseModal();
+  //   console.log("-------------onSuccessfulCreate--------------");
+  //   console.log(payoutListData);
 
-    if (payoutListData.length == 0 || payoutListData == undefined) {
-      // getPayoutAPI();
-    } else {
-      setPayoutData(payoutListData);
-      setExpenseListData(payoutListData.expenses);
-      setPayoutListData(payoutListData.payouts);
-      setUserId(payoutListData.producer?.user_id);
-      setRevenueAmt(payoutListData.revenue_amount);
-      setExpenseAmt(payoutListData.total_expenses);
-      setTotalProfile(
-        payoutListData.revenue_amount - payoutListData.total_expenses
-      );
-      setpayoutAmt(payoutListData.total_payout);
-      setRemainingAmt(payoutListData.remaining_amount);
-    }
-  };
+  //   if (payoutListData.length == 0 || payoutListData == undefined) {
+  //     // getPayoutAPI();
+  //   } else {
+  //     setPayoutData(payoutListData);
+  //     setExpenseListData(payoutListData.expenses);
+  //     setPayoutListData(payoutListData.payouts);
+  //     setUserId(payoutListData.producer?.user_id);
+  //     setRevenueAmt(payoutListData.revenue_amount);
+  //     setExpenseAmt(payoutListData.total_expenses);
+  //     setTotalProfile(
+  //       payoutListData.revenue_amount - payoutListData.total_expenses
+  //     );
+  //     setpayoutAmt(payoutListData.total_payout);
+  //     setRemainingAmt(payoutListData.remaining_amount);
+  //   }
+  // };
 
-  const onSuccessfulEditDelete = (payoutListData: any) => {
-    editItemRef.current?.onCloseModal();
-    if (payoutListData.length == 0 || payoutListData == undefined) {
-      // getPayoutAPI();
-    } else {
-      console.log("-------------onSuccessfulCreate--------------");
-      console.log(payoutListData);
+  // const onSuccessfulEditDelete = (payoutListData: any) => {
+  //   editItemRef.current?.onCloseModal();
+  //   if (payoutListData.length == 0 || payoutListData == undefined) {
+  //     // getPayoutAPI();
+  //   } else {
+  //     console.log("-------------onSuccessfulCreate--------------");
+  //     console.log(payoutListData);
 
-      setPayoutData(payoutListData);
-      setExpenseListData(payoutListData.expenses);
-      setPayoutListData(payoutListData.payouts);
-      setUserId(payoutListData.producer?.user_id);
-      setRevenueAmt(payoutListData.revenue_amount);
-      setExpenseAmt(payoutListData.total_expenses);
-      setTotalProfile(
-        payoutListData.revenue_amount - payoutListData.total_expenses
-      );
-      setpayoutAmt(payoutListData.total_payout);
-      setRemainingAmt(payoutListData.remaining_amount);
-    }
-  };
+  //     setPayoutData(payoutListData);
+  //     setExpenseListData(payoutListData.expenses);
+  //     setPayoutListData(payoutListData.payouts);
+  //     setUserId(payoutListData.producer?.user_id);
+  //     setRevenueAmt(payoutListData.revenue_amount);
+  //     setExpenseAmt(payoutListData.total_expenses);
+  //     setTotalProfile(
+  //       payoutListData.revenue_amount - payoutListData.total_expenses
+  //     );
+  //     setpayoutAmt(payoutListData.total_payout);
+  //     setRemainingAmt(payoutListData.remaining_amount);
+  //   }
+  // };
 
   //  // </---------------createPayoutAPI--------------------/>
 
@@ -193,7 +195,7 @@ export const GetAdmintoolsDropDownScreen = (
     };
     // console.log(tempData);
     setEditPayoutExpenseObject(tempData);
-    editItemRef.current?.onOpenModal();
+    navigation?.navigate(navigations.EDITPAYOUTEXPENSE, {payoutExpenseObject: tempData, id: eventId})
   };
 
   const sendPayoutModal = () => {
@@ -462,25 +464,6 @@ export const GetAdmintoolsDropDownScreen = (
             </View>
           </View>
         </Modal>
-
-        <EditPayoutModal
-          ref={editItemRef}
-          id={eventId}
-          payoutExpenseObject={editPayoutExpenseObject}
-          onSuccessFulData={onSuccessfulEditDelete}
-        />
-
-        <AddPayoutExpenseModel
-          ref={addItemRef}
-          id={eventId}
-          revenue={payoutData?.revenue_amount}
-          expense={payoutData?.total_expenses}
-          payout={payoutData?.total_payout}
-          profilt={payoutData?.total_profit}
-          remainingAmt={payoutData?.remaining_amount}
-          userId={userId}
-          onSuccessFulData={onSuccessfulCreate}
-        />
       </View>
     </>
   );

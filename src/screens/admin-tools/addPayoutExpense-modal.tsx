@@ -13,9 +13,9 @@ import { ScrollView } from "react-native";
 import { FlatList } from "react-native";
 import { ImageComponent } from "@components/image-component";
 import {
+  arrowLeft,
   buttonArrowGreen,
-  closeCard,
-  redDeleteIcon,
+  onelogo,
   saveIcon,
 } from "@assets/images";
 import Toast from "react-native-simple-toast";
@@ -24,16 +24,16 @@ import { launchImageLibrary } from "react-native-image-picker";
 import { ButtonComponent } from "@components/button-component";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { color } from "react-native-elements/dist/helpers";
+import { NavigationContainerRef, ParamListBase } from "@react-navigation/native";
 
 interface AddPayoutExpenseScreenProps {
-  id: string;
-  revenue: number;
-  expense: number;
-  profilt: number;
-  payout: number;
-  remainingAmt: number;
-  userId: string;
-  onSuccessFulData: (payoutListData: []) => void;
+  navigation?: NavigationContainerRef<ParamListBase>;
+  route?: {
+    params: {
+      id: string;
+      addPayOutExpense: any;
+    };
+  };
 }
 
 export const AddPayoutExpenseScreen = (
@@ -42,8 +42,10 @@ export const AddPayoutExpenseScreen = (
 ) => {
   const { theme } = useAppTheme();
   const { strings } = useStringsAndLabels();
+  const { navigation, route } = props || {};
+  const { id, addPayOutExpense } = route?.params ?? {};
   const styles = createStyleSheet(theme);
-  const { profilt, id, onSuccessFulData } = props || {};
+  // const { profilt, id, onSuccessFulData } = props || {};
   const addItemRef: React.Ref<ModalRefProps> = useRef(null);
   const [isLoading, LodingData] = useState(false);
   const [borderData, setBorderData] = useState("Expense");
@@ -70,7 +72,7 @@ export const AddPayoutExpenseScreen = (
     setPriceData(item);
   };
 
-  
+console.log('-----------addPayOutExpense-------', addPayOutExpense)
 
   const resetState = () => {
     onUserSearch("");
@@ -96,7 +98,7 @@ export const AddPayoutExpenseScreen = (
           pic: item.pic,
           id: item.id,
         };
-        SetuserData(newuserData); 
+        SetuserData(newuserData);
         getUsetList([newuserData]);
         setNewUserIdData(newuserData.id);
       } else {
@@ -104,6 +106,7 @@ export const AddPayoutExpenseScreen = (
           backgroundColor: "black",
         });
       }
+      onUserSearch('');
     } else {
       Toast.show("You can not select more than one users", Toast.LONG, {
         backgroundColor: "black",
@@ -121,7 +124,8 @@ export const AddPayoutExpenseScreen = (
   async function createPayoutAPI() {
     LodingData(true);
     const token = await AsyncStorage.getItem("token");
-    var getAmount = (profilt * amount) / 100;
+    console.log('---------addPayOutExpense?.profilt--------',addPayOutExpense?.profilt)
+    var getAmount = (addPayOutExpense * amount) / 100;
     console.log(getAmount, "---------------getAmount-----------");
     if (priceData === 1) {
       var item: any = {
@@ -162,8 +166,9 @@ export const AddPayoutExpenseScreen = (
       console.log("-------------dataItem--------", dataItem);
       LodingData(false);
       if (dataItem.success) {
-        onSuccessFulData(dataItem.data);
+        // onSuccessFulData(dataItem.data);
         resetState();
+        navigation?.goBack();
       } else {
         Toast.show(dataItem?.message, Toast.LONG, {
           backgroundColor: "black",
@@ -242,7 +247,8 @@ export const AddPayoutExpenseScreen = (
       console.log("-------------dataItem--------", dataItem);
       LodingData(false);
       if (dataItem.success) {
-        onSuccessFulData(dataItem.data);
+        // onSuccessFulData(dataItem.data);
+        navigation?.goBack();
         resetState();
       } else {
         Toast.show(dataItem?.message, Toast.LONG, {
@@ -261,7 +267,7 @@ export const AddPayoutExpenseScreen = (
         backgroundColor: "black",
       });
     } else if (amount <= 0) {
-      Toast.show("Enter Ammount", Toast.LONG, {
+      Toast.show("Enter Amount", Toast.LONG, {
         backgroundColor: "black",
       });
     } else if (descriptions.length === 0) {
@@ -287,10 +293,6 @@ export const AddPayoutExpenseScreen = (
     }
 
     // createExpenseAPI();
-  };
-
-  const closeModal = () => {
-    onSuccessFulData([]);
   };
 
   const openGallary = async () => {
@@ -348,25 +350,39 @@ export const AddPayoutExpenseScreen = (
     }
   };
 
+  const onBackPress = () => {
+    navigation?.goBack();
+  };
+
   return (
     <>
-      <ModalComponent ref={ref}>
+      <View style={{flex: 1}}>
         <Loader visible={isLoading} showOverlay />
+        <TouchableOpacity style={styles.HeaderContainerTwo} activeOpacity={1}>
+          <TouchableOpacity onPress={onBackPress} style={{ zIndex: 11111222222 }}>
+            <View style={styles.row2}>
+              <ImageComponent source={arrowLeft} style={styles.arrowLeft} />
+            </View>
+          </TouchableOpacity>
+          <View style={styles.oneContainer}>
+            <ImageComponent
+              style={styles.oneContainerImage}
+              source={onelogo}></ImageComponent>
+            <View>
+              <Text style={styles.oneContainerText}>NE</Text>
+              <Text style={styles.localText}>L  o  c  a  l</Text>
+            </View>
+          </View>
+        </TouchableOpacity>
         <View style={styles.subBreakdowncont}>
           <KeyboardAwareScrollView
             showsVerticalScrollIndicator={false}
             horizontal={false}
-            style={{height:350}}
-          >
+           >
             <View style={{ marginTop: 5, marginLeft: 0, paddingTop: 5, flexDirection: 'row', alignItems: 'center' }}>
-                <TouchableOpacity onPress={closeModal}>
-                  <ImageComponent
-                    source={closeCard}
-                    style={{ height: 24, width: 26, zIndex: 123 }}
-                  ></ImageComponent>
-                </TouchableOpacity>
-                <Text style={styles.breakdownHeader}>Add Breakdown</Text>
-              </View>
+    
+              <Text style={styles.breakdownHeader}>Add Breakdown</Text>
+            </View>
 
             <View style={styles.payModalContainer}>
               <Text style={styles.whoCont}>Who:</Text>
@@ -543,7 +559,7 @@ export const AddPayoutExpenseScreen = (
               ) : (
                 <View></View>
               )}
-              <View style={{ flexDirection: "row", width:150 }}>
+              <View style={{ flexDirection: "row", width: 150 }}>
                 <Text style={styles.dollarIcon}>
                   {priceData === 1 ? "$ " : "% "}
                 </Text>
@@ -551,8 +567,10 @@ export const AddPayoutExpenseScreen = (
                   style={styles.dollarRupees}
                   value={amount}
                   keyboardType="number-pad"
-                  onChangeText={(text) =>{console.log(text);
-                    setAmount(text)} 
+                  onChangeText={(text) => {
+                    console.log(text);
+                    setAmount(text)
+                  }
                   }
                 ></TextInput>
               </View>
@@ -560,14 +578,16 @@ export const AddPayoutExpenseScreen = (
 
             <View style={styles.descriptionCont}>
               <Text style={styles.descpLbl}>Description</Text>
-              <View>
+             
+            </View>
+            <View>
                 <TextInput
                   value={descriptions}
+                  multiline
                   onChangeText={(text) => setDescriptions(text)}
                   style={styles.payoutDescLbl}
                 ></TextInput>
               </View>
-            </View>
 
             <View
               style={{
@@ -611,9 +631,9 @@ export const AddPayoutExpenseScreen = (
               ></ImageComponent> */}
             </View>
           </KeyboardAwareScrollView>
-        {/* </KeyboardAvoidingView> */}
+          {/* </KeyboardAvoidingView> */}
         </View>
-      </ModalComponent>
+      </View>
     </>
   );
 };

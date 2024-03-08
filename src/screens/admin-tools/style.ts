@@ -243,6 +243,21 @@ export const createStyleSheet = (theme: ThemeProps) => {
       textAlign:'center',
       color:theme.colors.black
     },
+    payoutDescLbl: {
+      fontFamily: theme.fontType.light,
+      color: theme.colors.black,
+      fontSize: theme.fontSize.font14,
+      marginRight: 20,
+      borderWidth: 1,
+      padding: 3,
+      borderColor: theme.colors.gray,
+      // Height:  70,
+      paddingHorizontal: 6,
+      backgroundColor: theme.colors.lightgrayTwo,
+      borderRadius: theme.borderRadius.radius6,
+      marginBottom: 10,
+      height: 60
+    },
 
     HeaderContainerTwo: {
       // borderBottomLeftRadius: theme.borderRadius.radius10,
@@ -429,14 +444,9 @@ export const createStyleSheet = (theme: ThemeProps) => {
       color: theme.colors.black,
       fontSize: theme.fontSize.font14,
     },
-    payoutDescLbl: {
-      fontFamily: theme.fontType.light,
-      color: theme.colors.black,
-      fontSize: theme.fontSize.font14,
-      width: width - 230,
-      // backgroundColor: theme.colors.lightgrayTwo,
-      // height: 26,
-      paddingHorizontal: 6
+    breakDownCont: {
+      // height: 200
+      flex: 1
     },
     dateCont: {
       fontFamily: theme.fontType.light,
@@ -699,37 +709,22 @@ export const createStyleSheet = (theme: ThemeProps) => {
       fontSize: theme.fontSize.font14,
     },
     switchToggle: {},
-
-    breakDownCont: {
-      // height: 200
-    },
-    // subBreakdowncont: {
-    //   borderWidth: 1,
-    //   borderRadius: 5,
-    //   marginHorizontal: 16,
-    //   marginVertical: 25,
-    //   paddingLeft: 20,
-    //   paddingBottom: 20,
-    //   borderColor: theme.colors.gray,
-    // },
-    // breakdownHeader: {
-    //   paddingTop: 2,
-    //   fontFamily: theme.fontType.medium,
-    //   color: theme.colors.black,
-    //   fontSize: theme.fontSize.font14,
-    //   textAlign: 'center',
-    // },
     avatarContainer: {
       marginLeft: 20,
       marginRight: 20, 
-      // backgroundColor:'red'
     },
     avatarImage: {
       height: 60,
       width: 60,
       borderRadius: 100,
       marginLeft: 10,
-      // backgroundColor:'green'
+    },
+    subBreakdowncont: {
+      marginVertical: 25,
+      paddingLeft: 20,
+      paddingBottom: 10,
+      borderColor: theme.colors.gray,
+      flex: 1
     },
     keyboardViewTwo: {
       // position: 'absolute',
@@ -829,16 +824,6 @@ export const createStyleSheet = (theme: ThemeProps) => {
       paddingVertical: 2,
       marginRight: -8,
       backgroundColor: "white",
-    },
-    subBreakdowncont: {
-      // borderWidth: 1,
-      borderRadius: 12,
-      marginHorizontal: 16,
-      marginVertical: 25,
-      paddingLeft: 20,
-      paddingBottom: 10,
-      borderColor: theme.colors.gray,
-      backgroundColor: "#D9D9D9",
     },
     breakdownHeader: {
       fontFamily: theme.fontType.medium,

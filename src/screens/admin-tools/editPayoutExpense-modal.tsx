@@ -12,29 +12,32 @@ import { API_URL, getData } from '@network/constant';
 import { ScrollView } from 'react-native';
 import { FlatList } from 'react-native';
 import { ImageComponent } from '@components/image-component';
-import { buttonArrowGreen, closeCard, redDeleteIcon, saveIcon } from '@assets/images';
+import { arrowLeft, buttonArrowGreen, closeCard, onelogo, redDeleteIcon, saveIcon } from '@assets/images';
 import Toast from 'react-native-simple-toast';
 import { Loader } from '@components/loader';
 import { launchImageLibrary } from 'react-native-image-picker';
 import { ButtonComponent } from '@components/button-component';
-import { useFocusEffect } from '@react-navigation/native';
+import { NavigationContainerRef, ParamListBase, useFocusEffect } from '@react-navigation/native';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 interface EditBreakDownModalProps {
-  id: string;
-  payoutExpenseObject: any,
-  onSuccessFulData: (
-    payoutListData: []
-  ) => void;
+  navigation?: NavigationContainerRef<ParamListBase>;
+  route?: {
+    params: {
+      id: string;
+      payoutExpenseObject: any;
+    };
+  };
 }
 
-// type, userSelectedData, amount, percentageAmount, description, imagearray,EventID, expensePayoutID, revenueAmt
 
 
-export const editPayoutModalScreen = (props: EditBreakDownModalProps, ref: React.Ref<unknown> | undefined) => {
+export const editPayoutModalScreen = (props: EditBreakDownModalProps) => {
 
-  const { payoutExpenseObject, id, onSuccessFulData } = props || {};
   const { theme } = useAppTheme();
   const styles = createStyleSheet(theme);
+  const { navigation, route } = props || {};
+  const { id, payoutExpenseObject } = route?.params ?? {};
   const editItemRef: React.Ref<ModalRefProps> = useRef(null);
   const [isLoading, LodingData] = useState(false);
   const [isExpenseorPayout, setIsExpenseorPayout] = useState('Expense');
@@ -52,7 +55,7 @@ export const editPayoutModalScreen = (props: EditBreakDownModalProps, ref: React
   const [payoutListData, setPayoutListData]: any = useState([]);
   const [expensePayoutID, setExpensePayoutID]: any = useState();
 
-
+console.log('-----------payoutExpenseObject----------',payoutExpenseObject)
   useFocusEffect(
     useCallback(() => {
       console.log('-----------payoutExpenseObject----------------', payoutExpenseObject);
@@ -103,11 +106,13 @@ export const editPayoutModalScreen = (props: EditBreakDownModalProps, ref: React
         SetuserData(newuserData);
         getUsetList([newuserData]);
         setNewUserIdData(newuserData.id)
+
       } else {
         Toast.show('Already Added', Toast.LONG, {
           backgroundColor: 'black',
         });
       }
+      onUserSearch('');
     }
     else {
       Toast.show('You can not select more than one users', Toast.LONG, {
@@ -148,6 +153,7 @@ export const editPayoutModalScreen = (props: EditBreakDownModalProps, ref: React
       userGratiesListData(result);
       console.log(dataItem);
       LodingData(false);
+
     } catch (error) {
       LodingData(false);
       console.error(error);
@@ -186,7 +192,8 @@ export const editPayoutModalScreen = (props: EditBreakDownModalProps, ref: React
       console.log('------------editExpenseAPI response-------------', dataItem)
       LodingData(false);
       if (dataItem.success) {
-        onSuccessFulData(dataItem.data);
+        // onSuccessFulData(dataItem.data);
+        navigation?.goBack();
         resetState();
       } else {
         Toast.show(dataItem?.message, Toast.LONG, {
@@ -245,7 +252,8 @@ export const editPayoutModalScreen = (props: EditBreakDownModalProps, ref: React
       console.log('------------editPayoutAPI response-------------', dataItem)
       LodingData(false);
       if (dataItem.success) {
-        onSuccessFulData(dataItem.data);
+        // onSuccessFulData(dataItem.data);
+        navigation?.goBack();
         resetState();
       } else {
         Toast.show(dataItem?.message, Toast.LONG, {
@@ -260,7 +268,7 @@ export const editPayoutModalScreen = (props: EditBreakDownModalProps, ref: React
   }
 
   // </---------------Delete Expense and Payout--------------------/>
- 
+
   const deleteClick = () => {
     Alert.alert(
       'Delete',
@@ -278,7 +286,7 @@ export const editPayoutModalScreen = (props: EditBreakDownModalProps, ref: React
         {
           text: 'No',
           onPress: () => {
-            
+
           },
         },
       ],
@@ -311,7 +319,8 @@ export const editPayoutModalScreen = (props: EditBreakDownModalProps, ref: React
       console.log('-------------deletePayoutAPI Response--------', dataItem);
       LodingData(false);
       if (dataItem.success) {
-        onSuccessFulData(dataItem.data);
+        // onSuccessFulData(dataItem.data);
+        navigation?.goBack();
         resetState();
       } else {
         Toast.show(dataItem?.message, Toast.LONG, {
@@ -348,7 +357,8 @@ export const editPayoutModalScreen = (props: EditBreakDownModalProps, ref: React
       console.log('-------------deletePayoutAPI Response--------', dataItem);
       LodingData(false);
       if (dataItem.success) {
-        onSuccessFulData(dataItem.data);
+        // onSuccessFulData(dataItem.data);
+        navigation?.goBack();
         resetState();
       } else {
         Toast.show(dataItem?.message, Toast.LONG, {
@@ -420,7 +430,7 @@ export const editPayoutModalScreen = (props: EditBreakDownModalProps, ref: React
 
   const submitClick = () => {
     if (amount < 0) {
-      Toast.show('Enter Ammount', Toast.LONG, {
+      Toast.show('Enter Amount', Toast.LONG, {
         backgroundColor: 'black',
       });
     } else if (descriptions.length === 0) {
@@ -473,26 +483,42 @@ export const editPayoutModalScreen = (props: EditBreakDownModalProps, ref: React
     console.log(newImage)
   };
 
-  const closeModel = () => {
-    console.log('--------close model-----------')
-    onSuccessFulData([]);
-  }
+  const onBackPress = () => {
+    navigation?.goBack();
+  };
+
 
   return (
     <>
-      <View style={styles.breakDownCont}>
-        <ModalComponent ref={ref}>
+      <View style={{flex: 1}}>
+        <View style={styles.breakDownCont}>
           <Loader visible={isLoading} showOverlay />
+          <TouchableOpacity style={styles.HeaderContainerTwo} activeOpacity={1}>
+            <TouchableOpacity onPress={onBackPress} style={{ zIndex: 11111222222 }}>
+              <View style={styles.row2}>
+                <ImageComponent source={arrowLeft} style={styles.arrowLeft} />
+              </View>
+            </TouchableOpacity>
+            <View style={styles.oneContainer}>
+              <ImageComponent
+                style={styles.oneContainerImage}
+                source={onelogo}></ImageComponent>
+              <View>
+                <Text style={styles.oneContainerText}>NE</Text>
+                <Text style={styles.localText}>L  o  c  a  l</Text>
+                {/* <Text style={styles.localText}>[Local]</Text> */}
+              </View>
+            </View>
+          </TouchableOpacity>
           <View style={styles.subBreakdowncont}>
-            <ScrollView showsVerticalScrollIndicator={false}>
+            {/* <ScrollView showsVerticalScrollIndicator={false}> */}
+            <KeyboardAwareScrollView
+              showsVerticalScrollIndicator={false}
+              horizontal={false}
+            >
 
               <View style={{ marginTop: 5, marginLeft: 0, paddingTop: 5, flexDirection: 'row', alignItems: 'center' }}>
-                <TouchableOpacity onPress={closeModel}>
-                  <ImageComponent
-                    source={closeCard}
-                    style={{ height: 24, width: 26, zIndex: 123 }}
-                  ></ImageComponent>
-                </TouchableOpacity>
+
                 <Text style={styles.breakdownHeader}>Add Breakdown</Text>
               </View>
 
@@ -625,6 +651,8 @@ export const editPayoutModalScreen = (props: EditBreakDownModalProps, ref: React
                       </Text>
                     </TouchableOpacity>
                   }
+
+
                 </View>
               </View>
 
@@ -652,7 +680,7 @@ export const editPayoutModalScreen = (props: EditBreakDownModalProps, ref: React
                       <Text style={styles.percentageSign}>%</Text>
                     </View>
                   </TouchableOpacity> : <View></View>}
-                <View style={{ flexDirection: 'row', width:150 }}>
+                <View style={{ flexDirection: 'row', width: 150 }}>
                   <Text style={styles.dollarIcon}>{priceData === 1 ? '$ ' : '% '}</Text>
                   <TextInput
                     value={amount}
@@ -664,13 +692,17 @@ export const editPayoutModalScreen = (props: EditBreakDownModalProps, ref: React
 
               <View style={styles.descriptionCont}>
                 <Text style={styles.descpLbl}>Description</Text>
-                <View>
-                  <TextInput
-                    value={descriptions}
-                    onChangeText={text => setDescriptions(text)}
-                    style={styles.payoutDescLbl}></TextInput>
-                </View>
+                
               </View>
+              <View>
+                <TextInput
+                  value={descriptions}
+                  multiline
+                  onChangeText={(text) => setDescriptions(text)}
+                  style={styles.payoutDescLbl}
+                ></TextInput>
+              </View>
+
 
               <View
                 style={{
@@ -706,9 +738,10 @@ export const editPayoutModalScreen = (props: EditBreakDownModalProps, ref: React
                   <ImageComponent source={redDeleteIcon} style={styles.deleteIcon}></ImageComponent>
                 </TouchableOpacity>
               </View>
-            </ScrollView>
+              {/* </ScrollView> */}
+            </KeyboardAwareScrollView>
           </View>
-        </ModalComponent>
+        </View>
       </View>
     </>
   );

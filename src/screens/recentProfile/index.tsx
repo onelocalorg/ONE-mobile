@@ -136,51 +136,6 @@ export const RecentProfileScreen = (props: RecentProfileScreenProps) => {
   return (
     <View style={styles.container}>
       <Loader visible={isLoading} showOverlay />
-
-      {/* <TouchableOpacity style={styles.HeaderContainerTwo} activeOpacity={1}>
-        <TouchableOpacity style={styles.row2} onPress={onBackPress}>
-          <View>
-            <ImageComponent source={arrowLeft} style={styles.arrowLeft} />
-          </View>
-        </TouchableOpacity>
-        <View style={styles.oneContainer}>
-          <ImageComponent
-            style={styles.oneContainerImage}
-            source={onelogo}></ImageComponent>
-          <Text style={styles.oneContainerText}>NE</Text>
-        </View>
-      </TouchableOpacity> */}
-
-      {/* <View style={styles.profileContainer}>
-        <TouchableOpacity activeOpacity={1}>
-          <ImageComponent
-            isUrl={!!profileUri}
-            resizeMode="cover"
-            uri={profileUri}
-            source={dummy}
-            style={styles.profile}
-          />
-        </TouchableOpacity>
-      </View> */}
-      {/* <View style={styles.center}>
-        <Text style={styles.name}>{name}</Text>
-        <View style={styles.circularView}>
-          <Text style={styles.des}>{status}</Text>
-        </View>
-      </View>
-      <View style={styles.aboutView}>
-        <Input
-          inputStyle={styles.input}
-          value={updatedBio}
-          onChangeText={setBio}
-          multiline
-        />
-      </View> */}
-      {/* <View style={styles.line} /> */}
-      {/* <TabComponent
-        tabs={[strings.about, strings.myEvents, strings.activity]}
-        onPressTab={setSelectedTab}
-      /> */}
       <ScrollView showsVerticalScrollIndicator={false}>
         {selectedTab === 0 && (
           <Recentabout

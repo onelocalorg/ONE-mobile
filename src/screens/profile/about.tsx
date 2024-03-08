@@ -421,10 +421,18 @@ export const About = (props: AboutDataProps) => {
   };
 
   const onAddSkill = (text: any) => {
-    if (text !== "" && text !== undefined) {
-      setSkills([...allSkills, text]);
-      console.log("onSubmitEditing onSubmitEditing", allSkills, text);
-      setSkillValue("");
+    const foundSkill = allSkills.find((data:any) => data == text);
+    if(!foundSkill){
+      if (text !== "" && text !== undefined) {
+        setSkills([...allSkills, text]);
+        console.log("onSubmitEditing onSubmitEditing", allSkills, text);
+        setSkillValue("");
+      }
+    }
+    else{
+      Toast.show('Already Added', Toast.LONG, {
+        backgroundColor: "black",
+      });
     }
   };
 

@@ -21,7 +21,9 @@ export const navigations = {
   CREATEPOSTREQUEST: 'createPostRequest',
   CREATEPOSTGRATIS: 'createPostGratis',
   RECENTUSERPROFILE:'recentUserProfile',
-  COMMENTLIST:'commentList'
+  COMMENTLIST:'commentList',
+  ADDPAYOUTEXPENSE: 'addPayoutExpense',
+  EDITPAYOUTEXPENSE: 'editPayoutExpense'
 };
 
 export const bottomNavigationVisibleScreens = [
