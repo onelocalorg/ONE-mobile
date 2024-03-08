@@ -179,11 +179,11 @@ export const CreatePostGratisScreen = (props: CreatePostGratisScreenProps) => {
       getResourseDataTo(dataItem?.data?.to);
       getResourseDataFrom(dataItem?.data?.from);
       getResourseDataFor(dataItem?.data?.For);
-      getTypeIconWhat(dataItem?.data?.what[1]['icon']);
-      createPostwhatName(dataItem?.data?.what[1]['title'])
+      getTypeIconWhat(dataItem?.data?.what[0]['icon']);
+      createPostwhatName(dataItem?.data?.what[0]['title'])
       getTypeIconTo(dataItem?.data?.to[0]['icon']);
       getToTypeValue(dataItem?.data?.to[0]['value']);
-      getWhatTypeValue(dataItem?.data?.what[1]['value']);
+      getWhatTypeValue(dataItem?.data?.what[0]['value']);
       console.log(
         dataItem?.data[0]['icon'],
         '------------icon image--------------',

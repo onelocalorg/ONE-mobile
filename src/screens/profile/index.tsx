@@ -146,7 +146,7 @@ export const ProfileScreen = (props: ProfileScreenProps) => {
     setFirstName(first_name);
     setLastName(last_name);
     setNickName(nick_name);
-  }, [bio, pic, cover_image, first_name, last_name, nick_name,isActiveSubscription]);
+  }, [bio, pic, cover_image, first_name, last_name, nick_name,isActiveSubscription,profile_answers]);
 
   useEffect(() => {
     const subscription = AppState.addEventListener('change', nextAppState => {

@@ -724,7 +724,10 @@ export const createStyleSheet = (theme: ThemeProps) => {
       paddingLeft: 20,
       paddingBottom: 10,
       borderColor: theme.colors.gray,
-      flex: 1
+      flex: 1,
+      borderRadius:16,
+      borderWidth:2,
+      margin:16
     },
     keyboardViewTwo: {
       // position: 'absolute',

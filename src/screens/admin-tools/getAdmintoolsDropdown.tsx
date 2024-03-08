@@ -30,13 +30,10 @@ export const GetAdmintoolsDropDownScreen = (
   const styles = createStyleSheet(theme);
   const { eventId,navigation } = props || {};
   const [isLoading, LodingData] = useState(false);
-  const addItemRef: React.Ref<ModalRefProps> = useRef(null);
-  const editItemRef: React.Ref<ModalRefProps> = useRef(null);
   const [payoutData, setPayoutData]: any = useState({});
   const [userId, setUserId]: any = useState("");
   const [expenseListData, setExpenseListData]: any = useState([]);
   const [payoutListData, setPayoutListData]: any = useState([]);
-  const [modalData, setModalData] = useState({});
   const [isPayout, setIsPayout] = useState(false);
   const [revenueAmt, setRevenueAmt] = useState(0);
   const [expensesAmt, setExpenseAmt]: any = useState();
@@ -44,7 +41,6 @@ export const GetAdmintoolsDropDownScreen = (
   const [payoutAmt, setpayoutAmt]: any = useState();
   const [remainingAmt, setRemainingAmt]: any = useState();
   const [modalVisible, setModalVisible] = useState(false);
-  const [editPayoutExpenseObject, setEditPayoutExpenseObject]: any = useState();
 
   const openAddBreakDownModal = (id: any) => {
     setUserId(userId);
@@ -100,52 +96,6 @@ export const GetAdmintoolsDropDownScreen = (
     }
   }
 
-  // const onSuccessfulCreate = (payoutListData: any) => {
-  //   addItemRef.current?.onCloseModal();
-  //   console.log("-------------onSuccessfulCreate--------------");
-  //   console.log(payoutListData);
-
-  //   if (payoutListData.length == 0 || payoutListData == undefined) {
-  //     // getPayoutAPI();
-  //   } else {
-  //     setPayoutData(payoutListData);
-  //     setExpenseListData(payoutListData.expenses);
-  //     setPayoutListData(payoutListData.payouts);
-  //     setUserId(payoutListData.producer?.user_id);
-  //     setRevenueAmt(payoutListData.revenue_amount);
-  //     setExpenseAmt(payoutListData.total_expenses);
-  //     setTotalProfile(
-  //       payoutListData.revenue_amount - payoutListData.total_expenses
-  //     );
-  //     setpayoutAmt(payoutListData.total_payout);
-  //     setRemainingAmt(payoutListData.remaining_amount);
-  //   }
-  // };
-
-  // const onSuccessfulEditDelete = (payoutListData: any) => {
-  //   editItemRef.current?.onCloseModal();
-  //   if (payoutListData.length == 0 || payoutListData == undefined) {
-  //     // getPayoutAPI();
-  //   } else {
-  //     console.log("-------------onSuccessfulCreate--------------");
-  //     console.log(payoutListData);
-
-  //     setPayoutData(payoutListData);
-  //     setExpenseListData(payoutListData.expenses);
-  //     setPayoutListData(payoutListData.payouts);
-  //     setUserId(payoutListData.producer?.user_id);
-  //     setRevenueAmt(payoutListData.revenue_amount);
-  //     setExpenseAmt(payoutListData.total_expenses);
-  //     setTotalProfile(
-  //       payoutListData.revenue_amount - payoutListData.total_expenses
-  //     );
-  //     setpayoutAmt(payoutListData.total_payout);
-  //     setRemainingAmt(payoutListData.remaining_amount);
-  //   }
-  // };
-
-  //  // </---------------createPayoutAPI--------------------/>
-
   async function createPayoutAPI() {
     LodingData(true);
     const token = await AsyncStorage.getItem("token");
@@ -193,8 +143,6 @@ export const GetAdmintoolsDropDownScreen = (
       amount: item.amount,
       expensePayoutID: item.key,
     };
-    // console.log(tempData);
-    setEditPayoutExpenseObject(tempData);
     navigation?.navigate(navigations.EDITPAYOUTEXPENSE, {payoutExpenseObject: tempData, id: eventId})
   };
 

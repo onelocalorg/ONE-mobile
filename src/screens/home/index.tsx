@@ -550,19 +550,21 @@ export const HomeScreen = (props: HomeScreenProps) => {
             ></ImageComponent>
             <Text style={styles.postDetail}>{item?.what?.name}</Text>
           </View>
-          <View style={styles.postDetailCont}>
+          {item?.type !== "Gratis" ?   <View style={styles.postDetailCont}>
             <Text style={styles.postDetailTitle}>For:</Text>
             <Image
               source={{ uri: item?.for?.icon }}
               style={styles.detailImage}
             ></Image>
             <Text style={styles.postDetail}>{item?.for?.name}</Text>
-          </View>
-          <View style={styles.postDetailCont}>
+          </View> : <></>}
+          {item?.type !== "Gratis" ?   <View style={styles.postDetailCont}>
             <Text style={styles.postDetailTitle}>Where:</Text>
             <Image source={pin} style={styles.detailImage}></Image>
             <Text style={styles.postDetail}>{item?.where?.address}</Text>
-          </View>
+          </View> : <></>}
+         
+          
           <View style={styles.postDetailCont}>
             <Text style={styles.postDetailTitle}>When:</Text>
             <Image source={postCalender} style={styles.detailImage}></Image>

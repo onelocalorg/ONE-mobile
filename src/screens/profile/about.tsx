@@ -146,7 +146,9 @@ export const About = (props: AboutDataProps) => {
     packageListAPI();
     setAbout(about);
     setSkills(skills);
-  }, [about, skills]);
+    submitAnsState(profileAnswers)
+    submitAnsStateTwo(profileAnswers)
+  }, [about, skills,profileAnswers]);
 
   // =================Update Answer API====================
 
