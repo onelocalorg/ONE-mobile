@@ -531,6 +531,13 @@ export const createStyleSheet = (theme: ThemeProps) => {
       right: 70, 
       top: 77
     },
+
+    userListDisplayContTwo:{
+      flexDirection: 'row',
+      position: 'absolute',
+      right: 70, 
+      top: 85
+    },
     userNameGraties: {
       color: theme.colors.black,
       fontSize: 16,
@@ -661,7 +668,8 @@ export const createStyleSheet = (theme: ThemeProps) => {
     minuteCont: {
       fontSize: 12,
       marginLeft: 8,
-      marginTop: 4
+      marginTop: 4,
+      color:theme.colors.black,
     },
     commentImgProfileTwo: {
       flexDirection: 'row',
@@ -687,7 +695,8 @@ export const createStyleSheet = (theme: ThemeProps) => {
     replyMoreLbl: {
       fontSize: 12,
       marginTop: 4, 
-      marginRight: 50
+      marginRight: 50,
+      color:theme.colors.black,
     },
     textOne:{
       color: theme.colors.black,
@@ -981,6 +990,7 @@ export const createStyleSheet = (theme: ThemeProps) => {
       borderRadius:16,
       padding: 10,
       margin: 10,
+      color:theme.colors.black,
     },
     MainPostContainer:{
       backgroundColor:theme.colors.darkenBlack,

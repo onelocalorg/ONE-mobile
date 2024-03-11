@@ -36,6 +36,7 @@ export interface Result {
   events:[];
   lat:number | undefined;
   long:number | undefined;
+  event_image_id:string;
 }
 
 interface EventProducer {

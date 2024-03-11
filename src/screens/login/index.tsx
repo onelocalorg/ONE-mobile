@@ -604,8 +604,8 @@ export const LoginScreen = (props: LoginScreenProps) => {
           style={styles.appleButton}
           onPress={() => signInWithApple()}
         >
-          <ImageComponent source={apple} style={styles.google} />
-          <Text style={styles.loginGoogle}>{strings.loginApple}</Text>
+          <ImageComponent source={apple} style={styles.apple} />
+          <Text style={styles.loginApple}>{strings.loginApple}</Text>
         </TouchableOpacity>
 
         <SizedBox height={verticalScale(12)} />

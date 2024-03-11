@@ -510,7 +510,7 @@ export const HomeScreen = (props: HomeScreenProps) => {
               </View>
             </View>
           </View>
-          <View style={styles.userListDisplayCont}>
+          <View style={Platform.OS === 'ios' ? styles.userListDisplayCont : styles.userListDisplayContTwo}>
             <TouchableOpacity
               onPress={() =>
                 recentUserProfilePress(item?.to?.users[0]?.user_id["id"])

@@ -120,6 +120,7 @@ export const AdminToolsScreen = (props: AdminToolsScreenProps) => {
     isPayout,
     viewCount,
     about,
+    is_event_owner,
   } = eventDetails || {};
   const datePickerRefStart: React.Ref<DatePickerRefProps> = useRef(null);
   const datePickerRefend: React.Ref<DatePickerRefProps> = useRef(null);
@@ -127,6 +128,7 @@ export const AdminToolsScreen = (props: AdminToolsScreenProps) => {
     (state) => state.userProfileReducer
   ) as { user: { id: string; pic: string; city: string } };
   const [eventImage, setEventImage] = useState("");
+  const [eventImageDisplay, setEventImageDisplay] = useState("");
   const { refetch, data } = useTicketHolderCheckinsList({
     eventId: id,
     queryParams: { pagination: false },
@@ -144,11 +146,13 @@ export const AdminToolsScreen = (props: AdminToolsScreenProps) => {
   }, [startDateValue, endDateValue]);
 
   useEffect(() => {
+    console.log(eventData,'eventData eventData')
     if (!isCreateEvent) {
       refetch();
       if (eventData) {
         setEventDetails(eventData);
-        setEventImage(eventData?.event_image);
+        setEventImageDisplay(eventData?.event_image);
+        setEventImage(eventData?.event_image_id)
       }
     } else {
       setEventDetails({
@@ -217,112 +221,6 @@ export const AdminToolsScreen = (props: AdminToolsScreenProps) => {
     }
   }
 
-  async function CreateEventAPI() {
-    LodingData(true);
-    const token = await AsyncStorage.getItem("token");
-
-    const eventImageData = {
-      uri: eventImage,
-      type: "jpg",
-      name: "eventImage.jpg",
-    };
-
-    const attachments = {
-      address: address,
-      about: about,
-      full_address: full_address,
-      email_confirmation_body: email_confirmation_body,
-      tickets: tickets?.map((ele) => ele?.id ?? ""),
-      name: name,
-      end_date: new Date(end_date).toISOString(),
-      start_date: new Date(start_date).toISOString(),
-      event_lat: setLocation.lat,
-      event_lng: setLocation.lng,
-      event_type: setFilter,
-      event_image: eventImageData,
-    };
-    const attachment = new FormData();
-    attachment.append("event_image", {
-      uri: eventImage,
-      type: "image/jpg",
-      name: "eventImage.jpg",
-    });
-    attachment.append("address", address);
-    attachment.append("about", about);
-    attachment.append("full_address", full_address);
-    attachment.append("email_confirmation_body", email_confirmation_body);
-    attachment.append(
-      "tickets",
-      tickets?.map((ele) => ele?.id ?? "")
-    );
-    attachment.append("name", name);
-    attachment.append("end_date", new Date(end_date).toISOString());
-    attachment.append("start_date", new Date(start_date).toISOString());
-    attachment.append("event_lat", setLocation.lat);
-    attachment.append("event_lng", setLocation.lng);
-    attachment.append("event_type", setFilter);
-    console.log(
-      JSON.stringify(attachment),
-      "--------------------------create event request 111-------------------------"
-    );
-
-    console.log("=========== Event Create API Request ==============");
-    console.log(API_URL + "/v1/events");
-
-    sendXmlHttpRequest(attachment);
-    // try {
-    //   const response = await fetch(API_URL + "/v1/events", {
-    //     method: "post",
-    //     headers: {
-    //       Authorization: "Bearer " + token,
-    //       "Content-Type": "", 
-    //     },
-    //     body: attachment,
-    //   });
-    //   console.log(attachment, "attachments attachments request");
-    //   const dataItem = await response.json();
-    //   console.log("=========== Create Event API Response ==============");
-    //   console.log(dataItem);
-
-    //   Toast.show(dataItem?.message, Toast.LONG, {
-    //     backgroundColor: "black",
-    //   });
-    //   // if (dataItem?.success === true) {
-    //   //   LodingData(false);
-    //   //   navigation?.goBack();
-    //   // } else {
-    //   //   LodingData(false);
-    //   // }
-    //   LodingData(false);
-    //   // postListAPI();
-    // } catch (error) {
-    //   LodingData(false);
-    //   console.error(error, "erroronerror");
-    // }
-  }
-
-  
-
-  function sendXmlHttpRequest(data:any) {
-    const xhr = new XMLHttpRequest();
-  
-    return new Promise((resolve, reject) => {
-      xhr.onreadystatechange = e => {
-        if (xhr.readyState !== 4) {
-          return;
-        }
-  
-        if (xhr.status === 200) {
-          resolve(JSON.parse(xhr.responseText));
-        } else {
-          reject("Request Failed");
-        }
-      };
-      xhr.open("POST", API_URL + "/v1/events");
-      xhr.setRequestHeader('Content-Type','application/json; charset=UTF-8');
-      xhr.send(data);
-    });
-  }
 
   const onBackPress = () => {
     navigation?.goBack();
@@ -356,11 +254,12 @@ export const AdminToolsScreen = (props: AdminToolsScreenProps) => {
       address &&
       full_address &&
       about &&
-      !!eventImage
+      !!eventImageDisplay
     );
   };
 
   const onCreateEvent = async () => {
+    var getTicket:any = tickets?.map((ele) => ele?.id ?? "");
     LodingData(true);
     console.log("1111111wdeee");
     Keyboard.dismiss();
@@ -368,7 +267,7 @@ export const AdminToolsScreen = (props: AdminToolsScreenProps) => {
     const res = await createEvent({
       bodyParams: {
         ...eventDetails,
-        tickets: tickets?.map((ele) => ele?.id ?? ""),
+        tickets: getTicket.join(","),
         eventImage,
         latitude: lat?.toString(),
         longitude: long?.toString(),
@@ -387,38 +286,39 @@ export const AdminToolsScreen = (props: AdminToolsScreenProps) => {
   };
 
   const onUpdateEvent = async () => {
+    var getTicket:any = tickets?.map((ele) => ele?.id ?? "");
     LodingData(true);
     Keyboard.dismiss();
     let request = {};
-    if (name !== eventData?.name) {
+    // if (name !== eventData?.name) {
       request = { ...request, name };
-    }
-    if (address !== eventData?.address) {
+    // }
+    // if (address !== eventData?.address) {
       request = { ...request, address };
-    }
-    if (full_address !== eventData?.full_address) {
+    // }
+    // if (full_address !== eventData?.full_address) {
       request = { ...request, full_address };
-    }
-    if (start_date !== eventData?.start_date) {
+    // }
+    // if (start_date !== eventData?.start_date) {
       request = { ...request, startDate: start_date };
-    }
-    if (end_date !== eventData?.end_date) {
+    // }
+    // if (end_date !== eventData?.end_date) {
       request = { ...request, endDate: end_date };
-    }
-    if (email_confirmation_body !== eventData?.email_confirmation_body) {
+    // }
+    // if (email_confirmation_body !== eventData?.email_confirmation_body) {
       request = { ...request, emailConfirmationBody: email_confirmation_body };
-    }
-    if (about !== eventData?.about) {
+    // }
+    // if (about !== eventData?.about) {
       request = { ...request, about: about };
-    }
-    request = { ...request, latitude: lat };
-    request = { ...request, longitude: long };
+    // }
+    request = { ...request, latitude: lat?.toString() };
+    request = { ...request, longitude: long?.toString() };
 
     request = { ...request, type: setFilter };
     // }
     request = {
       ...request,
-      tickets: tickets?.map((ele) => ele?.id),
+      tickets: getTicket.join(","),
       eventImage,
     };
 
@@ -488,8 +388,43 @@ export const AdminToolsScreen = (props: AdminToolsScreenProps) => {
       maxHeight: 800,
     });
     if (assets) {
-      const img = assets?.[0];
-      setEventImage(img?.uri ?? "");
+      const img = assets?.[0]; 
+      console.log(assets);
+      var fileNameTwo = img?.fileName ?? "";
+      LodingData(true);
+      var output =
+        fileNameTwo.substr(0, fileNameTwo.lastIndexOf(".")) || fileNameTwo;
+      var base64Two = img?.base64 ?? "";
+      ProfileImageUploadAPI(output, base64Two);
+    }
+  };
+
+  const ProfileImageUploadAPI = async (fileItem: any, base64Item: any) => {
+    var pic: any = {
+      uploadKey: "create_event_image",
+      imageName: fileItem,
+      base64String: "data:image/jpeg;base64," + base64Item,
+    };
+
+    console.log("=================Request=================", pic);
+    console.log(API_URL + "/v1/users/upload/file");
+    try {
+      const response = await fetch(API_URL + "/v1/users/upload/file", {
+        method: "post",
+        headers: new Headers({
+          "Content-Type": "application/json",
+        }),
+        body: JSON.stringify(pic),
+      });
+      const dataItem = await response.json();
+      LodingData(false);
+      console.log("-----------------Response------------");
+      setEventImage(dataItem?.data?.key);
+      setEventImageDisplay(dataItem?.data?.imageUrl)
+      console.log(dataItem);
+    } catch (error) {
+      LodingData(false);
+      console.log(error);
     }
   };
 
@@ -566,9 +501,9 @@ export const AdminToolsScreen = (props: AdminToolsScreenProps) => {
           <View>
             <TouchableOpacity activeOpacity={0.8} onPress={onUploadImage}>
               <ImageComponent
-                isUrl={!!eventImage}
+                isUrl={!!eventImageDisplay}
                 resizeMode="cover"
-                uri={eventImage}
+                uri={eventImageDisplay}
                 source={dummy}
                 style={styles.profile}
               />
@@ -730,8 +665,12 @@ export const AdminToolsScreen = (props: AdminToolsScreenProps) => {
                           JSON.stringify(details?.geometry?.location)
                         );
                         // setAddressLocation(details?.geometry?.location);
-                        setEventDetails({ ...eventDetails, full_address:data.description,
-                          lat: details?.geometry?.location.lat, long: details?.geometry?.location.lng });
+                        setEventDetails({
+                          ...eventDetails,
+                          full_address: data.description,
+                          lat: details?.geometry?.location.lat,
+                          long: details?.geometry?.location.lng,
+                        });
                       }}
                       query={{
                         key: ActiveEnv.GOOGLE_KEY, // client
@@ -816,20 +755,29 @@ export const AdminToolsScreen = (props: AdminToolsScreenProps) => {
               )}
             </View>
 
-            <View style={styles.uniqueViewCont}>
-              <Text style={styles.uniqueViewLbl}>Unique Views</Text>
-              <Text style={styles.uniqueCount}>{viewCount}</Text>
-            </View>
+            {is_event_owner ? (
+              <View style={styles.uniqueViewCont}>
+                <Text style={styles.uniqueViewLbl}>Unique Views</Text>
+                <Text style={styles.uniqueCount}>{viewCount}</Text>
+              </View>
+            ) : (
+              <></>
+            )}
 
-            <GetAdmintoolsDropDownScreen eventId={id} navigation={navigation}/>
-
-            <TouchableOpacity
-              activeOpacity={0.8}
-              onPress={() => onCancleEvent(id)}
-              style={styles.cancleEventBtn}
-            >
-              <Text style={styles.cancleEventText}>{strings.cancleEvent}</Text>
-            </TouchableOpacity>
+            <GetAdmintoolsDropDownScreen eventId={id} navigation={navigation} />
+            {is_event_owner ? (
+              <TouchableOpacity
+                activeOpacity={0.8}
+                onPress={() => onCancleEvent(id)}
+                style={styles.cancleEventBtn}
+              >
+                <Text style={styles.cancleEventText}>
+                  {strings.cancleEvent}
+                </Text>
+              </TouchableOpacity>
+            ) : (
+              <></>
+            )}
           </View>
         </TouchableOpacity>
       </KeyboardAwareScrollView>

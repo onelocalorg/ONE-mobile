@@ -39,6 +39,7 @@ export const GetAdmintoolsDropDownScreen = (
   const [expensesAmt, setExpenseAmt]: any = useState();
   const [totalProfile, setTotalProfile]: any = useState();
   const [payoutAmt, setpayoutAmt]: any = useState();
+  const [isAddEditPayout , setISAddEditPayout] = useState(Boolean);
   const [remainingAmt, setRemainingAmt]: any = useState();
   const [modalVisible, setModalVisible] = useState(false);
 
@@ -85,6 +86,7 @@ export const GetAdmintoolsDropDownScreen = (
       setRevenueAmt(dataItem?.data?.revenue_amount);
       setExpenseAmt(dataItem?.data?.total_expenses);
       setIsPayout(dataItem?.data?.isPayout);
+      setISAddEditPayout(dataItem?.data?.isPayoutAddEdit)
       setTotalProfile(
         dataItem?.data?.revenue_amount - dataItem?.data?.total_expenses
       );
@@ -243,14 +245,15 @@ export const GetAdmintoolsDropDownScreen = (
                         }}
                       >
                         <View style={styles.detailsSubCont}>
-                          <TouchableOpacity
+                          {isAddEditPayout ? <TouchableOpacity
                             onPress={() => editClick(item, "Expense")}
                           >
                             <ImageComponent
                               source={edit2}
                               style={styles.editIcon}
                             />
-                          </TouchableOpacity>
+                          </TouchableOpacity> : <></>}
+                          
                           <ImageComponent
                             source={{ uri: item?.user_id?.pic }}
                             resizeMode="cover"
@@ -262,7 +265,7 @@ export const GetAdmintoolsDropDownScreen = (
                               {item?.user_id?.last_name}
                             </Text>
                             <Text style={styles.payoutForLbl}>
-                              Payout for: {item?.description}
+                              Expense for: {item?.description}
                             </Text>
                           </View>
                         </View>
@@ -274,16 +277,17 @@ export const GetAdmintoolsDropDownScreen = (
                   </View>
                 )}
               ></FlatList>
-              <TouchableOpacity
+             {isAddEditPayout ? <TouchableOpacity
                 activeOpacity={1}
                 onPress={() => openAddBreakDownModal(userId)}
                 style={styles.addItemCont}
               >
-                <View style={styles.subAddItemCont}>
+                 <View style={styles.subAddItemCont}>
                   <Text style={styles.plusIcon}>+</Text>
                   <Text style={styles.addItemLbl}>add item</Text>
-                </View>
-              </TouchableOpacity>
+                </View> 
+                
+              </TouchableOpacity>: <></>}
               <View style={styles.borderBottom}></View>
               <View style={styles.rupeesCont}>
                 <Text style={styles.rupeesLbl}>${expensesAmt}</Text>
@@ -308,14 +312,15 @@ export const GetAdmintoolsDropDownScreen = (
                       }}
                     >
                       <View style={styles.detailsSubCont}>
-                        <TouchableOpacity
+                        {isAddEditPayout ? <TouchableOpacity
                           onPress={() => editClick(item, "Payout")}
                         >
                           <ImageComponent
                             source={edit2}
                             style={styles.editIcon}
                           />
-                        </TouchableOpacity>
+                        </TouchableOpacity> : <></>}
+                        
 
                         <ImageComponent
                           source={{ uri: item?.user_id?.pic }}
@@ -343,16 +348,18 @@ export const GetAdmintoolsDropDownScreen = (
                   </View>
                 )}
               ></FlatList>
-              <TouchableOpacity
+              {isAddEditPayout ? <TouchableOpacity
                 activeOpacity={1}
                 onPress={() => openAddBreakDownModal(userId)}
                 style={styles.addItemCont}
               >
+                
                 <View style={styles.subAddItemCont}>
                   <Text style={styles.plusIcon}>+</Text>
                   <Text style={styles.addItemLbl}>add item</Text>
                 </View>
-              </TouchableOpacity>
+              </TouchableOpacity> : <></>} 
+              
               <View style={styles.borderBottom}></View>
               <View style={styles.rupeesCont}>
                 {payoutAmt !== undefined ? (

@@ -61,9 +61,9 @@ export const createStyleSheet = (theme: ThemeProps) => {
       borderRadius: theme.borderRadius.radius18,
       borderWidth: theme.borderWidth.borderWidth2,
       borderColor: theme.colors.black,
-      backgroundColor:theme.colors.gray,
+      backgroundColor:theme.colors.black,
       paddingHorizontal: normalScale(10),
-      paddingVertical: verticalScale(7),
+      paddingVertical: verticalScale(4),
       alignSelf: 'center',
       flexDirection: 'row',
       width:'60%'
@@ -72,10 +72,21 @@ export const createStyleSheet = (theme: ThemeProps) => {
       height: normalScale(24),
       width: normalScale(24),
     },
+    apple: {
+      height: 30,
+      width: 30,
+    },
     loginGoogle: {
       fontSize: theme.fontSize.font14,
       fontFamily: theme.fontType.regular,
       color: theme.colors.black,
+      marginLeft: normalScale(10),
+      alignSelf:'center'
+    },
+    loginApple: {
+      fontSize: theme.fontSize.font14,
+      fontFamily: theme.fontType.regular,
+      color: theme.colors.white,
       marginLeft: normalScale(10),
       alignSelf:'center'
     },

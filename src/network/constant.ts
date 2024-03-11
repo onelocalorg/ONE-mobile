@@ -1,6 +1,6 @@
 
 
-import ActiveEnv from '@config/env/env.prod.json';
+import ActiveEnv from '@config/env/env.dev.json';
 export const dataObject:any = [];
 
 export const getData = (key:any) => { 
@@ -24,7 +24,8 @@ export const apiConstants = {
   refereshToken: '/v1/auth/refresh-tokens',
   ticketHolderCheckins: '/v1/events/getTicketHolders',
   checkedInUser: '/v1/tickets/checkedInEvent',
-  createEvent: '/v1/events',
+  createEvent: '/v2/events',
+  createEventDetail: '/v1/events',
   createStripeCustomer: '/v1/customers',
   createPayoutIntent: '/v1/payment_intents',
   saveCustomerId: '/v1/users/save-customer-id',

@@ -1049,11 +1049,6 @@ export const CommentList = (props: commentListProps) => {
 
           <Modal
             transparent={true}
-            visible={offerModal}
-            animationType="slide"
-          ></Modal>
-          <Modal
-            transparent={true}
             visible={addComment}
             animationType="slide"
             //  onDismiss={() => addCommentModal(false)}
