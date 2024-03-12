@@ -12,6 +12,7 @@ import { Platform } from "react-native";
 export const AppNavigation = () => {
   const [showUpdateIOS, setShowUpdateIOS] = useState(false);
   const [showUpdateAndroid, setShowUpdateAndroind] = useState(false);
+  const [isVersionApiCalled, setisVersionApiCalled] = useState(false);
 
   useEffect(() => {
     setData("isShowPaymentFlow", true);
@@ -29,6 +30,7 @@ export const AppNavigation = () => {
           checkPaymentFlowHideShow(dataItem.data);
           iosVersionCheck(dataItem.data);
         } else {
+          setisVersionApiCalled(true)
           androidVersionCheck(dataItem.data);
         }
         
@@ -37,7 +39,7 @@ export const AppNavigation = () => {
       console.log(error);
     }
   };
-
+ 
   function checkPaymentFlowHideShow(dataItem: any) {
     
     if ("isPaymentFlowShowOne" in dataItem) {
@@ -45,6 +47,7 @@ export const AppNavigation = () => {
       var datatemp = dataItem?.isPaymentFlowShowOne;
       setData("isShowPaymentFlow", datatemp);
     }
+    setisVersionApiCalled(true)
   }
 
   function iosVersionCheck(dataIOS: any) {
@@ -77,7 +80,8 @@ export const AppNavigation = () => {
 
   return (
     <>
-      <Route />
+    {isVersionApiCalled ? <Route /> : <></>}
+      
 
       {Platform.OS === "ios" ? (
         <>{showUpdateIOS && <AppUpdate />}</>

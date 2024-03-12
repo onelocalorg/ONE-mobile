@@ -248,7 +248,6 @@ export const AdminToolsScreen = (props: AdminToolsScreenProps) => {
 
   const checkValidation = () => {
     return !(
-      emailRegexEx.test(String(email_confirmation_body).toLowerCase()) &&
       name &&
       tickets?.length &&
       address &&

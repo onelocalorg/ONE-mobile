@@ -1,5 +1,4 @@
 import axios, {AxiosInstance} from 'axios';
-import ActiveEnv from '@config/env/env.json';
 import {Alert} from 'react-native';
 import {API_URL, STIPE_BASE_URL, apiConstants} from '@network/constant';
 import {store} from '@network/reducers/store';
