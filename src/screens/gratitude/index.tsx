@@ -401,11 +401,11 @@ export const GratitudeScreen = (props: MapScreenProps) => {
 
         <MapboxGL.PointAnnotation style={{flex:1}} key="pointAnnotation" id='pointAnnotation' coordinate={shape?.features[0]?.geometry?.coordinates[0] !== undefined ? [shape?.features[0]?.geometry?.coordinates[0], shape?.features[0]?.geometry?.coordinates[1]] : [-122.4194, 37.7749]} draggable onDragEnd={onCircleDrag}>
           <View
-            style={{ height: 200, width: 200, borderWidth: 3, borderRadius: 200/2, borderColor: '#000000', backgroundColor: '#70448B', opacity: 0.5 }}
+            style={{ height: 200, width: 200, borderWidth: 3, borderRadius: 200/2, borderColor: 'black', backgroundColor: 'rgba(112, 68, 139, 0.7)'}}
           >
           </View>
         </MapboxGL.PointAnnotation>
-
+ 
         {eventList.map((event: any, jindex) => (
           <MapboxGL.MarkerView
             coordinate={[event?.location?.coordinates[0], event?.location?.coordinates[1]]}

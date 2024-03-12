@@ -604,9 +604,7 @@ export const LoginScreen = (props: LoginScreenProps) => {
           <></>
         )}
 
-        
-
-        {isShowPaymentCheck ? (
+        {isShowPaymentCheck  && Platform.OS === 'ios' ? (
           <>
           <SizedBox height={verticalScale(10)} />
           <TouchableOpacity

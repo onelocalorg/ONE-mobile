@@ -96,7 +96,7 @@ export const CreatePostGratisScreen = (props: CreatePostGratisScreenProps) => {
   const [usergratisList, userGratiesListData]: any = useState([]);
   var [location, setUserLocation]: any = useState();
   const [userList, recentlyJoinUser]: any = useState([]);
-  const [userListArray, getUsetList]: any = useState([]);
+  const [userListArray, setuserListArray]: any = useState([]);
   const [imageArray, setImageArray]: any = useState([]);
   const [imageArrayKey, setImageArrayKey]:any = useState([]);
   var [gratisNo, totalGratisData]: any = useState(1);
@@ -350,7 +350,7 @@ export const CreatePostGratisScreen = (props: CreatePostGratisScreenProps) => {
     console.log('--------newPeople---------', newPeople);
 
     recentlyJoinUser(newPeople);
-    getUsetList(newPeople);
+    setuserListArray(newPeople);
   };
 
   const CreateNewPostModal = () => {
@@ -418,13 +418,18 @@ export const CreatePostGratisScreen = (props: CreatePostGratisScreenProps) => {
     />
   );
 
-  const removeSelectImage = (imageUrl: any) => {
-    console.log(imageUrl)
+  const removeSelectImage = (imageItem: any) => {
+    console.log(imageItem, 'image url')
+    console.log(imageArrayKey)
     const newImage = imageArray.filter(
-      (person: any) => person.imageUrl !== imageUrl
+      (person: any) => person.imageUrl !== imageItem?.imageUrl && person.key !== imageItem.key
     );
     setImageArray(newImage);
-    console.log('--------------setImageArray----------------')
+    const newImagekey = imageArrayKey.filter(
+      (person: any) => person !== imageItem?.key
+    );
+    setImageArrayKey(newImagekey)
+    console.log(imageArrayKey)
     }
 
   const handleRemove = (id: any) => {
@@ -471,7 +476,7 @@ export const CreatePostGratisScreen = (props: CreatePostGratisScreenProps) => {
       delete newItems.gratisNo;
       console.log(item.gratisNo);
       const newuserData = {...newItems, point: item.gratisNo, user_id: item.id};
-      getUsetList([...userListArray, newuserData]);
+      setuserListArray([...userListArray, newuserData]);
       
       console.log(userListArray);
     }else{
@@ -721,7 +726,7 @@ export const CreatePostGratisScreen = (props: CreatePostGratisScreenProps) => {
                 {imageArray.map((item: any) => {
                   return (
                     <TouchableOpacity
-                    onPress={() => removeSelectImage(item?.imageUrl)}
+                    onPress={() => removeSelectImage(item)}
                   >
                       <ImageComponent source={{uri: item?.imageUrl}} style={styles.selectImage}></ImageComponent></TouchableOpacity>
                   );

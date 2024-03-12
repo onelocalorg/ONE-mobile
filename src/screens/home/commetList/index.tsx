@@ -656,7 +656,7 @@ export const CommentList = (props: commentListProps) => {
   return (
     // <SafeAreaView>
 
-    <View style={{paddingBottom:300}}>
+    <View style={{ paddingBottom: 300 }}>
       <Loader visible={isLoading} showOverlay />
       <TouchableOpacity style={styles.HeaderContainerTwo} activeOpacity={1}>
         <TouchableOpacity style={styles.row2} onPress={onBackPress}>
@@ -676,8 +676,8 @@ export const CommentList = (props: commentListProps) => {
         </View>
       </TouchableOpacity>
       <KeyboardAvoidingView
-      behavior="padding"
-        contentContainerStyle={{ flex:1}}
+        behavior="padding"
+        contentContainerStyle={{ flex: 1 }}
       >
         <View style={styles.commentModalContainer}>
           <View style={{ flex: 1 }}>
@@ -813,23 +813,33 @@ export const CommentList = (props: commentListProps) => {
                         {getPostData?.what?.name}
                       </Text>
                     </View>
-                    <View style={styles.postDetailCont}>
-                      <Text style={styles.postDetailTitle}>For:</Text>
-                      <Image
-                        source={{ uri: getPostData?.for?.icon }}
-                        style={styles.detailImage}
-                      ></Image>
-                      <Text style={styles.postDetail}>
-                        {getPostData?.for?.name}
-                      </Text>
-                    </View>
-                    <View style={styles.postDetailCont}>
-                      <Text style={styles.postDetailTitle}>Where:</Text>
-                      <Image source={pin} style={styles.detailImage}></Image>
-                      <Text style={styles.postDetail}>
-                        {getPostData?.where?.address}
-                      </Text>
-                    </View>
+                    {getPostData?.type !== "Gratis" ? (
+                      <View style={styles.postDetailCont}>
+                        <Text style={styles.postDetailTitle}>For:</Text>
+                        <Image
+                          source={{ uri: getPostData?.for?.icon }}
+                          style={styles.detailImage}
+                        ></Image>
+                        <Text style={styles.postDetail}>
+                          {getPostData?.for?.name}
+                        </Text>
+                      </View>
+                    ) : (
+                      <></>
+                    )}
+
+                    {getPostData?.type !== "Gratis" ? (
+                      <View style={styles.postDetailCont}>
+                        <Text style={styles.postDetailTitle}>Where:</Text>
+                        <Image source={pin} style={styles.detailImage}></Image>
+                        <Text style={styles.postDetail}>
+                          {getPostData?.where?.address}
+                        </Text>
+                      </View>
+                    ) : (
+                      <></>
+                    )}
+
                     <View style={styles.postDetailCont}>
                       <Text style={styles.postDetailTitle}>When:</Text>
                       <Image
@@ -855,30 +865,32 @@ export const CommentList = (props: commentListProps) => {
                 }
                 ListFooterComponent={
                   <View>
-                    {commentList.length !== 0 && !isLoading ?
-                    <TouchableOpacity onPress={postDataLoad}>
-                    {isCommentData && !isLoading ? (
-                      <View>
-                        <Text style={styles.getMoreDataCont}>
-                          Get More Comments
-                        </Text>
-                      </View>
+                    {commentList.length !== 0 && !isLoading ? (
+                      <TouchableOpacity onPress={postDataLoad}>
+                        {isCommentData && !isLoading ? (
+                          <View>
+                            <Text style={styles.getMoreDataCont}>
+                              Get More Comments
+                            </Text>
+                          </View>
+                        ) : (
+                          <Text
+                            style={{
+                              alignSelf: "center",
+                              paddingVertical: 10,
+                              color: "black",
+                              fontSize: 16,
+                            }}
+                          >
+                            No More Data Found
+                          </Text>
+                        )}
+                      </TouchableOpacity>
                     ) : (
-                      <Text
-                        style={{
-                          alignSelf: "center",
-                          paddingVertical: 10,
-                          color: "black",
-                          fontSize: 16,
-                        }}
-                      >
-                        No More Data Found
-                      </Text>
+                      <View style={{ alignSelf: "center" }}>
+                        <Text>No Comment Found</Text>
+                      </View>
                     )}
-                  </TouchableOpacity> : <View style={{alignSelf:'center'}}>
-                    <Text>No Comment Found</Text>
-                    </View>}
-                    
                   </View>
                 }
               ></FlatList>

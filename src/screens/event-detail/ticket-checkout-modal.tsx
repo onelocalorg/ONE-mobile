@@ -765,7 +765,6 @@ const TicketCheckoutModalComp = (
                         placeholderTextColor="darkgray"
                         value={newCardCountry}
                         maxLength={16}
-                        // keyboardType="numeric"
                         style={styles.addCardNameInput}
                         placeholder="Country or Region"
                         onChangeText={value => {
@@ -777,7 +776,6 @@ const TicketCheckoutModalComp = (
                         placeholderTextColor="darkgray"
                         value={newCardAddress}
                         maxLength={16}
-                        // keyboardType="numeric"
                         style={styles.addCardNameInput}
                         placeholder="Address line 1"
                         onChangeText={value => {
@@ -789,7 +787,6 @@ const TicketCheckoutModalComp = (
                         placeholderTextColor="darkgray"
                         value={newCardAddressTwo}
                         maxLength={16}
-                        // keyboardType="numeric"
                         style={styles.addCardNameInput}
                         placeholder="Address line 2 (optional)"
                         onChangeText={value => {
@@ -801,7 +798,6 @@ const TicketCheckoutModalComp = (
                         placeholderTextColor="darkgray"
                         value={newCardCity}
                         maxLength={16}
-                        // keyboardType="numeric"
                         style={styles.addCardNameInput}
                         placeholder="City"
                         onChangeText={value => {
@@ -813,7 +809,6 @@ const TicketCheckoutModalComp = (
                         placeholderTextColor="darkgray"
                         value={newCardState}
                         maxLength={16}
-                        // keyboardType="numeric"
                         style={styles.addCardNameInput}
                         placeholder="State"
                         onChangeText={value => {
@@ -825,7 +820,7 @@ const TicketCheckoutModalComp = (
                         placeholderTextColor="darkgray"
                         value={newCardZip}
                         maxLength={16}
-                        // keyboardType="numeric"
+                        keyboardType="numeric"
                         style={styles.addCardNameInput}
                         placeholder="ZIP"
                         onChangeText={value => {

@@ -1,7 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { Route } from "./route";
 import { AppUpdate } from "@components/app-update";
-import { ANDROID_VERSION, API_URL, IOS_VERSION, setData } from "@network/constant";
+import {
+  ANDROID_VERSION,
+  API_URL,
+  IOS_VERSION,
+  setData,
+} from "@network/constant";
 import { Platform } from "react-native";
 
 export const AppNavigation = () => {
@@ -9,6 +14,7 @@ export const AppNavigation = () => {
   const [showUpdateAndroid, setShowUpdateAndroind] = useState(false);
 
   useEffect(() => {
+    setData("isShowPaymentFlow", true);
     getAppVersion();
   }, []);
 
@@ -19,19 +25,27 @@ export const AppNavigation = () => {
       const dataItem = await response.json();
       console.log("-----------App Version--------------", dataItem);
       if (dataItem.success) {
-        if (Platform.OS === "ios") { 
+        if (Platform.OS === "ios") {
+          checkPaymentFlowHideShow(dataItem.data);
           iosVersionCheck(dataItem.data);
-        } else { 
+        } else {
           androidVersionCheck(dataItem.data);
         }
-        var datatemp = dataItem?.isPaymentFlowShowOne; 
-
-        setData('isShowPaymentFlow',datatemp);
+        
       }
     } catch (error) {
       console.log(error);
     }
   };
+
+  function checkPaymentFlowHideShow(dataItem: any) {
+    
+    if ("isPaymentFlowShowOne" in dataItem) {
+      console.log("isPaymentFlowShowOne");
+      var datatemp = dataItem?.isPaymentFlowShowOne;
+      setData("isShowPaymentFlow", datatemp);
+    }
+  }
 
   function iosVersionCheck(dataIOS: any) {
     if (IOS_VERSION < dataIOS.ios_version) {

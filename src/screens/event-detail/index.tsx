@@ -435,7 +435,7 @@ export const EventDetailScreen = (props: EventDetailScreenProps) => {
                 />
               ) : (
                 <></>
-              )}{" "}
+              )}
             </>
           ) : (
             <></>
