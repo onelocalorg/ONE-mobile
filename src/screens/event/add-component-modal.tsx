@@ -1,8 +1,8 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import {useAppTheme} from '@app-hooks/use-app-theme';
-import React, {useCallback, useState} from 'react';
-import {createStyleSheet} from './style';
-import {ModalComponent, ModalRefProps} from '@components/modal-component';
+import { useAppTheme } from "@app-hooks/use-app-theme";
+import React, { useCallback, useState } from "react";
+import { createStyleSheet } from "./style";
+import { ModalComponent, ModalRefProps } from "@components/modal-component";
 import {
   Alert,
   StyleProp,
@@ -10,22 +10,22 @@ import {
   TouchableOpacity,
   View,
   ViewStyle,
-} from 'react-native';
-import {ImageComponent} from '@components/image-component';
-import {eventBlack, gratitudeBlack, offer, request} from '@assets/images';
-import {useStringsAndLabels} from '@app-hooks/use-strings-and-labels';
-import {navigations} from '@config/app-navigation/constant';
+} from "react-native";
+import { ImageComponent } from "@components/image-component";
+import { eventBlack, gratitudeBlack, offer, request } from "@assets/images";
+import { useStringsAndLabels } from "@app-hooks/use-strings-and-labels";
+import { navigations } from "@config/app-navigation/constant";
 import {
   NavigationContainerRef,
   ParamListBase,
   useFocusEffect,
-} from '@react-navigation/native';
-import {useSelector} from 'react-redux';
-import {StoreType} from '@network/reducers/store';
-import {UserProfileState} from '@network/reducers/user-profile-reducer';
-import {useUserProfile} from '@network/hooks/user-service-hooks/use-user-profile';
-import { setData } from '@network/constant';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+} from "@react-navigation/native";
+import { useSelector } from "react-redux";
+import { StoreType } from "@network/reducers/store";
+import { UserProfileState } from "@network/reducers/user-profile-reducer";
+import { useUserProfile } from "@network/hooks/user-service-hooks/use-user-profile";
+import { getData, setData } from "@network/constant";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 interface AddComponentModalProps {
   modalRef?: React.Ref<ModalRefProps>;
@@ -33,72 +33,72 @@ interface AddComponentModalProps {
 }
 
 export const AddComponentModal = (props: AddComponentModalProps) => {
-  const {theme} = useAppTheme();
+  const { theme } = useAppTheme();
   const styles = createStyleSheet(theme);
-  const {strings} = useStringsAndLabels();
-  const [isActiveSubs, setIsActiveSubs] = useState(false); 
-  const {modalRef, navigation} = props || {};
-  const {user} = useSelector<StoreType, UserProfileState>(
-    state => state.userProfileReducer,
-  ) as {user: {user_type: string; id: string}};
+  const { strings } = useStringsAndLabels();
+  const [isActiveSubs, setIsActiveSubs] = useState(false);
+  const { modalRef, navigation } = props || {};
+  const { user } = useSelector<StoreType, UserProfileState>(
+    (state) => state.userProfileReducer
+  ) as { user: { user_type: string; id: string } };
 
-  const {data, refetch} = useUserProfile({
+  const { data, refetch } = useUserProfile({
     userId: user?.id,
   });
-  const {isActiveSubscription} = data || {};
+  const { isActiveSubscription } = data || {};
+  const isShowPaymentCheck = getData("isShowPaymentFlow");
   useFocusEffect(
     useCallback(() => {
       if (user?.id) {
         refetch();
       }
-    }, [user,isActiveSubs]),
+    }, [user, isActiveSubs])
   );
- 
+
   useFocusEffect(
     useCallback(() => {
-      console.log('isActiveSubscription isActiveSubscription')
-      if(isActiveSubscription === true){
-        AsyncStorage.setItem('isEventActive','true')
-      }
-      else{
-        AsyncStorage.setItem('isEventActive','false')
+      console.log("isActiveSubscription isActiveSubscription");
+      if (isActiveSubscription === true) {
+        AsyncStorage.setItem("isEventActive", "true");
+      } else {
+        AsyncStorage.setItem("isEventActive", "false");
       }
       setIsActiveSubs(isActiveSubscription);
-    }, [isActiveSubscription]),
+    }, [isActiveSubscription])
   );
 
   //   users API => isActiveSubscription == true
   //  Login API => user_type === 'eventProducer'
 
   const onNavigate = async () => {
-    const isEventPurched = await AsyncStorage.getItem('isEventActive')
-    if (isEventPurched === 'true') {
-      navigation?.navigate(navigations.ADMIN_TOOLS, {isCreateEvent: true});
+    const isEventPurched = await AsyncStorage.getItem("isEventActive");
+    if (isEventPurched === "true") {
+      navigation?.navigate(navigations.ADMIN_TOOLS, { isCreateEvent: true });
     } else {
-      Alert.alert('', strings.purchaseSubscription);
+      Alert.alert("", strings.purchaseSubscription);
     }
-    const ref = modalRef as {current: {onCloseModal: () => void}};
+    const ref = modalRef as { current: { onCloseModal: () => void } };
     ref?.current?.onCloseModal();
   };
 
   const onNavigateOfferPost = () => {
-    setData('POST_TAB_OPEN_INDEX', 1);
-    navigation?.navigate(navigations.CREATEPOST,{selecttypes:1});
-    const ref = modalRef as {current: {onCloseModal: () => void}};
+    setData("POST_TAB_OPEN_INDEX", 1);
+    navigation?.navigate(navigations.CREATEPOST, { selecttypes: 1 });
+    const ref = modalRef as { current: { onCloseModal: () => void } };
     ref?.current?.onCloseModal();
   };
 
   const onNavigateRequestPost = () => {
-    setData('POST_TAB_OPEN_INDEX', 2);
-    navigation?.navigate(navigations.CREATEPOST,{selecttypes:2});
-    const ref = modalRef as {current: {onCloseModal: () => void}};
+    setData("POST_TAB_OPEN_INDEX", 2);
+    navigation?.navigate(navigations.CREATEPOST, { selecttypes: 2 });
+    const ref = modalRef as { current: { onCloseModal: () => void } };
     ref?.current?.onCloseModal();
   };
 
   const onNavigateGratitude = () => {
-    setData('POST_TAB_OPEN_INDEX', 3);
-    navigation?.navigate(navigations.CREATEPOST,{selecttypes:3});
-    const ref = modalRef as {current: {onCloseModal: () => void}};
+    setData("POST_TAB_OPEN_INDEX", 3);
+    navigation?.navigate(navigations.CREATEPOST, { selecttypes: 3 });
+    const ref = modalRef as { current: { onCloseModal: () => void } };
     ref?.current?.onCloseModal();
   };
 
@@ -106,14 +106,15 @@ export const AddComponentModal = (props: AddComponentModalProps) => {
     name: string,
     icon: number,
     enable: boolean,
-    style?: StyleProp<ViewStyle>,
+    style?: StyleProp<ViewStyle>
   ) => {
     return (
       <TouchableOpacity
         activeOpacity={0.8}
         disabled={!enable}
         onPress={onNavigate}
-        style={[styles.view, style]}>
+        style={[styles.view, style]}
+      >
         <ImageComponent source={icon} style={styles.icon} />
         <Text style={styles.name}>{name}</Text>
       </TouchableOpacity>
@@ -124,14 +125,15 @@ export const AddComponentModal = (props: AddComponentModalProps) => {
     name: string,
     icon: number,
     enable: boolean,
-    style?: StyleProp<ViewStyle>,
+    style?: StyleProp<ViewStyle>
   ) => {
     return (
       <TouchableOpacity
         activeOpacity={0.8}
         disabled={!enable}
         onPress={onNavigateOfferPost}
-        style={[styles.view, style]}>
+        style={[styles.view, style]}
+      >
         <ImageComponent source={icon} style={styles.icon} />
         <Text style={styles.name}>{name}</Text>
       </TouchableOpacity>
@@ -142,14 +144,15 @@ export const AddComponentModal = (props: AddComponentModalProps) => {
     name: string,
     icon: number,
     enable: boolean,
-    style?: StyleProp<ViewStyle>,
+    style?: StyleProp<ViewStyle>
   ) => {
     return (
       <TouchableOpacity
         activeOpacity={0.8}
         disabled={!enable}
         onPress={onNavigateRequestPost}
-        style={[styles.view, style]}>
+        style={[styles.view, style]}
+      >
         <ImageComponent source={icon} style={styles.icon} />
         <Text style={styles.name}>{name}</Text>
       </TouchableOpacity>
@@ -160,14 +163,15 @@ export const AddComponentModal = (props: AddComponentModalProps) => {
     name: string,
     icon: number,
     enable: boolean,
-    style?: StyleProp<ViewStyle>,
+    style?: StyleProp<ViewStyle>
   ) => {
     return (
       <TouchableOpacity
         activeOpacity={0.8}
         disabled={!enable}
         onPress={onNavigateGratitude}
-        style={[styles.view, style]}>
+        style={[styles.view, style]}
+      >
         <ImageComponent source={icon} style={styles.icon} />
         <Text style={styles.name}>{name}</Text>
       </TouchableOpacity>
@@ -177,7 +181,12 @@ export const AddComponentModal = (props: AddComponentModalProps) => {
   return (
     <ModalComponent viewStyle={styles.modalContainer} ref={modalRef}>
       <View style={styles.optionsView}>
-        {renderView(strings.event, eventBlack, true)}
+        {isShowPaymentCheck ? (
+          <>{renderView(strings.event, eventBlack, true)}</>
+        ) : (
+          <></>
+        )}
+
         <View style={styles.row}>
           {renderViewOffer(strings.offer, offer, true, styles.greenView)}
           {renderViewRequest(strings.request, request, true, styles.greenView)}
@@ -185,7 +194,7 @@ export const AddComponentModal = (props: AddComponentModalProps) => {
             strings.gratitude,
             gratitudeBlack,
             true,
-            styles.greenView,
+            styles.greenView
           )}
         </View>
       </View>

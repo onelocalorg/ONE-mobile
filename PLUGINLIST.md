@@ -1,4 +1,14 @@
 
+Check Hide Show PayMent Flow
+
+1.Apple And Google Button Hide => Login
+2.MemberShip => Profile
+3.Buy Ticket => Event Detail
+4.Payout Connect => Profile
+5.Create Event => on Plus From Bottom
+
+
+
 1.Current Location
 npm i react-native-get-location
 
@@ -15,6 +25,8 @@ npm install @rnmapbox/maps
 5. datepicker ios issue
 npm install @react-native-community/datetimepicker --save
 https://github.com/react-native-datetimepicker/datetimepicker/issues/866
+
+
 
 For Android 
 0.37.0

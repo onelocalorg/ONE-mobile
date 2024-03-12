@@ -68,7 +68,7 @@ import {
 } from "@components/Calender/calenderComponent";
 
 interface SignUpProps {
-  navigation: NavigationContainerRef<ParamListBase>;
+  navigation?: NavigationContainerRef<ParamListBase>;
   route?: {
     params: {
       email: any;
@@ -184,7 +184,7 @@ export const SignUp = (props: SignUpProps) => {
           dispatch(onSetUser({ ...data, stripeCustomerId: customer_id }));
         }
 
-        navigation.reset({
+        navigation?.reset({
           index: 0,
           routes: [{ name: navigations.BOTTOM_NAVIGATION }],
         });
@@ -324,7 +324,7 @@ export const SignUp = (props: SignUpProps) => {
   };
 
   const onBackPress = () => {
-    navigation.goBack();
+    navigation?.goBack();
   };
 
   const onHandleCheckBox = () => {

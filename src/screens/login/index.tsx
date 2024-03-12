@@ -57,7 +57,7 @@ import {
   statusCodes,
 } from "@react-native-google-signin/google-signin";
 import { Linking } from "react-native";
-import { API_URL } from "@network/constant";
+import { API_URL, getData } from "@network/constant";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
 GoogleSignin.configure({
@@ -68,7 +68,7 @@ GoogleSignin.configure({
 interface LoginScreenProps {
   navigation: NavigationContainerRef<ParamListBase>;
 }
- 
+
 export const LoginScreen = (props: LoginScreenProps) => {
   const { theme } = useAppTheme();
   const styles = createStyleSheet(theme);
@@ -88,8 +88,8 @@ export const LoginScreen = (props: LoginScreenProps) => {
   const [userToken, setUserToken] = useState();
   const [appleAuthAvailable, setAppleAuthAvailable] = useState(false);
 
-  useEffect(() => {
-  }, []);
+  const isShowPaymentCheck = getData("isShowPaymentFlow");
+  useEffect(() => {}, []);
 
   // const onHandleCheckBox = () => {
   //   setIsChecked(!isChecked);
@@ -121,7 +121,7 @@ export const LoginScreen = (props: LoginScreenProps) => {
       } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
         console.log(error.code);
       } else {
-        console.log("error.codddsdsde");
+        console.log("error.codddsdsde", error);
       }
     }
   };
@@ -587,26 +587,39 @@ export const LoginScreen = (props: LoginScreenProps) => {
           <Text style={styles.forgot}>{`${strings.forgotPassword}?`}</Text>
         </TouchableOpacity>
 
-        <SizedBox height={verticalScale(18)} />
+        
 
-        <TouchableOpacity
-          activeOpacity={0.8}
-          style={styles.googleButton}
-          onPress={() => signInWithGoogle()}
-        >
-          <ImageComponent source={google} style={styles.google} />
-          <Text style={styles.loginGoogle}>{strings.loginGoogle}</Text>
-        </TouchableOpacity>
+        {isShowPaymentCheck ? (
+          <>
+          <SizedBox height={verticalScale(18)} />
+          <TouchableOpacity
+            activeOpacity={0.8}
+            style={styles.googleButton}
+            onPress={() => signInWithGoogle()}
+          >
+            <ImageComponent source={google} style={styles.google} />
+            <Text style={styles.loginGoogle}>{strings.loginGoogle}</Text>
+          </TouchableOpacity></>
+        ) : (
+          <></>
+        )}
 
-        <SizedBox height={verticalScale(10)} />
-        <TouchableOpacity
-          activeOpacity={0.8}
-          style={styles.appleButton}
-          onPress={() => signInWithApple()}
-        >
-          <ImageComponent source={apple} style={styles.apple} />
-          <Text style={styles.loginApple}>{strings.loginApple}</Text>
-        </TouchableOpacity>
+        
+
+        {isShowPaymentCheck ? (
+          <>
+          <SizedBox height={verticalScale(10)} />
+          <TouchableOpacity
+            activeOpacity={0.8}
+            style={styles.appleButton}
+            onPress={() => signInWithApple()}
+          >
+            <ImageComponent source={apple} style={styles.apple} />
+            <Text style={styles.loginApple}>{strings.loginApple}</Text>
+          </TouchableOpacity></>
+        ) : (
+          <></>
+        )}
 
         <SizedBox height={verticalScale(12)} />
 

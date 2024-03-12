@@ -63,7 +63,7 @@ import GestureRecognizer from "react-native-swipe-gestures";
 import ImagePicker from "react-native-image-crop-picker";
 import Toast from "react-native-simple-toast";
 import { navigations } from "@config/app-navigation/constant";
-import { API_URL } from "@network/constant";
+import { API_URL, getData } from "@network/constant";
 
 interface UserData {
   id: string;
@@ -107,7 +107,7 @@ export const ProfileScreen = (props: ProfileScreenProps) => {
   const [lastName, setLastName] = useState("");
   const [nickName, setNickName] = useState("");
   const [isLoading, LodingData] = useState(false);
-  
+
   const { user } = useSelector<StoreType, UserProfileState>(
     (state) => state.userProfileReducer
   ) as { user: UserData };
@@ -128,16 +128,14 @@ export const ProfileScreen = (props: ProfileScreenProps) => {
     last_name,
     nick_name,
     isConnectedLinked,
-    isActiveSubscription
+    isActiveSubscription,
   } = user || {};
   const { mutateAsync } = useEditProfile();
   const dispatch = useDispatch();
   const [searchQuery, setSearchQuery] = useState("");
   const appState = useRef(AppState.currentState);
   const [appStateVisible, setAppStateVisible] = useState(appState.current);
-  console.log(user, "--------------User Info--------------");
-  console.log(skills, "888888888888");
-
+  const isShowPaymentCheck = getData("isShowPaymentFlow");
 
   useEffect(() => {
     setBio(bio);
@@ -146,20 +144,29 @@ export const ProfileScreen = (props: ProfileScreenProps) => {
     setFirstName(first_name);
     setLastName(last_name);
     setNickName(nick_name);
-  }, [bio, pic, cover_image, first_name, last_name, nick_name,isActiveSubscription,profile_answers]);
+  }, [
+    bio,
+    pic,
+    cover_image,
+    first_name,
+    last_name,
+    nick_name,
+    isActiveSubscription,
+    profile_answers,
+  ]);
 
   useEffect(() => {
-    const subscription = AppState.addEventListener('change', nextAppState => {
+    const subscription = AppState.addEventListener("change", (nextAppState) => {
       if (
         appState.current.match(/inactive|background/) &&
-        nextAppState === 'active'
+        nextAppState === "active"
       ) {
-        console.log('App has come to the foreground!');
+        console.log("App has come to the foreground!");
       }
 
       appState.current = nextAppState;
       setAppStateVisible(appState.current);
-      console.log('AppState', appState.current);
+      console.log("AppState", appState.current);
     });
 
     return () => {
@@ -169,12 +176,11 @@ export const ProfileScreen = (props: ProfileScreenProps) => {
 
   useFocusEffect(
     React.useCallback(() => {
-      console.log('appState appState appState',appState)
-      // Alert.alert('appState') 
+      console.log("appState appState appState", appState);
+      // Alert.alert('appState')
     }, [appState])
   );
 
- 
   const onBackPress = () => {
     console.log("jdjkshdjkshdkhjakhdajk");
     navigation.goBack();
@@ -184,7 +190,6 @@ export const ProfileScreen = (props: ProfileScreenProps) => {
     selectImage(no);
     ImageOptionModal(true);
   };
-
 
   const imageOptionSelect = async (item: any) => {
     if (item === 1) {
@@ -236,7 +241,7 @@ export const ProfileScreen = (props: ProfileScreenProps) => {
       maxHeight: 800,
     });
     ImageOptionModal(false);
-    console.log('--------assets----------',assets)
+    console.log("--------assets----------", assets);
     if (assets) {
       const img = assets?.[0];
       console.log("---------------assets Gallery 222---------------");
@@ -307,7 +312,7 @@ export const ProfileScreen = (props: ProfileScreenProps) => {
 
   const ProfileImageUploadAPI = async (fileItem: any, base64Item: any) => {
     console.log("=================Request=================");
-    if(Platform.OS === 'ios'){
+    if (Platform.OS === "ios") {
       var pic: any = {
         uploadKey: "pic",
         userId: user.id,
@@ -315,7 +320,7 @@ export const ProfileScreen = (props: ProfileScreenProps) => {
         base64String: "data:image/jpeg;base64," + base64Item,
       };
     } else {
-      var isImg: any = '.JPG'
+      var isImg: any = ".JPG";
       var pic: any = {
         uploadKey: "pic",
         userId: user.id,
@@ -323,7 +328,7 @@ export const ProfileScreen = (props: ProfileScreenProps) => {
         base64String: "data:image/jpeg;base64," + base64Item,
       };
     }
-    
+
     ImageOptionModal(false);
     console.log("=================Request=================");
     console.log(pic);
@@ -347,7 +352,7 @@ export const ProfileScreen = (props: ProfileScreenProps) => {
   };
 
   const BackgroundImageUploadAPI = async (fileItem: any, base64Item: any) => {
-    if(Platform.OS == 'ios'){
+    if (Platform.OS == "ios") {
       var pic: any = {
         uploadKey: "cover_image",
         userId: user.id,
@@ -355,7 +360,7 @@ export const ProfileScreen = (props: ProfileScreenProps) => {
         base64String: "data:image/jpeg;base64," + base64Item,
       };
     } else {
-      var isImg: any = '.JPG'
+      var isImg: any = ".JPG";
       var pic: any = {
         uploadKey: "cover_image",
         userId: user.id,
@@ -363,7 +368,7 @@ export const ProfileScreen = (props: ProfileScreenProps) => {
         base64String: "data:image/jpeg;base64," + base64Item,
       };
     }
-   
+
     ImageOptionModal(false);
     console.log("=================Request=================");
     console.log("-----pic------", pic);
@@ -387,28 +392,25 @@ export const ProfileScreen = (props: ProfileScreenProps) => {
   };
 
   const getPayoutConnectListAPI = async () => {
-    var pic: any = {
-      
-    };
+    var pic: any = {};
 
     LodingData(true);
-    console.log(API_URL + '/v1/users/connect-link')
+    console.log(API_URL + "/v1/users/connect-link");
     try {
-      const token = await AsyncStorage.getItem('token');
+      const token = await AsyncStorage.getItem("token");
       const response = await fetch(API_URL + "/v1/users/connect-link", {
         method: "post",
         headers: new Headers({
-          Authorization: 'Bearer ' + token,
+          Authorization: "Bearer " + token,
           "Content-Type": "application/json",
         }),
-       
       });
       const dataItem = await response.json();
       if (dataItem?.data) {
-        console.log("11111111111",dataItem?.data);
+        console.log("11111111111", dataItem?.data);
         Linking.openURL(dataItem?.data);
       }
-      console.log(dataItem,'dataItem dataItem')
+      console.log(dataItem, "dataItem dataItem");
       LodingData(false);
     } catch (error) {
       LodingData(false);
@@ -601,13 +603,24 @@ export const ProfileScreen = (props: ProfileScreenProps) => {
             <Text style={styles.gratiesNumber}>{points_balance}</Text>
           </View>
 
-          <TouchableOpacity onPress={getPayoutConnectListAPI} activeOpacity={0.8} style={styles.payView}>
-            <ImageComponent
-              style={styles.payoutIcon}
-              source={sendPayoutImg}
-            ></ImageComponent>
-            <Text style={styles.pay}> {isConnectedLinked ? 'Payout Connected' : 'link payout method'}</Text>
-          </TouchableOpacity>
+          {isShowPaymentCheck ? (
+            <TouchableOpacity
+              onPress={getPayoutConnectListAPI}
+              activeOpacity={0.8}
+              style={styles.payView}
+            >
+              <ImageComponent
+                style={styles.payoutIcon}
+                source={sendPayoutImg}
+              ></ImageComponent>
+              <Text style={styles.pay}>
+                {" "}
+                {isConnectedLinked ? "Payout Connected" : "link payout method"}
+              </Text>
+            </TouchableOpacity>
+          ) : (
+            <></>
+          )}
         </View>
 
         <View style={styles.aboutView}>

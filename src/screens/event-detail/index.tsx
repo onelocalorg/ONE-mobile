@@ -49,7 +49,7 @@ import Clipboard from "@react-native-clipboard/clipboard";
 import { TextInput } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Toast from "react-native-simple-toast";
-import { API_URL } from "@network/constant";
+import { API_URL, getData } from "@network/constant";
 
 interface EventDetailScreenProps {
   navigation?: NavigationContainerRef<ParamListBase>;
@@ -98,6 +98,7 @@ export const EventDetailScreen = (props: EventDetailScreenProps) => {
   const { mutateAsync: purchaseTicket, isLoading: purchaseTicketLoading } =
     usePurchaseTicket();
   const [searchQuery, setSearchQuery] = useState("");
+  const isShowPaymentCheck = getData("isShowPaymentFlow");
 
   useFocusEffect(
     useCallback(() => {
@@ -423,12 +424,19 @@ export const EventDetailScreen = (props: EventDetailScreenProps) => {
               </View>
             ))}
           </View>
-          {!is_event_owner ? (
-            <ButtonComponent
-              disabled={cancelled}
-              title={strings.buyTicket}
-              onPress={onBuyTicket}
-            />
+
+          {isShowPaymentCheck ? (
+            <>
+              {!is_event_owner ? (
+                <ButtonComponent
+                  disabled={cancelled}
+                  title={strings.buyTicket}
+                  onPress={onBuyTicket}
+                />
+              ) : (
+                <></>
+              )}{" "}
+            </>
           ) : (
             <></>
           )}
@@ -437,12 +445,8 @@ export const EventDetailScreen = (props: EventDetailScreenProps) => {
           <Text style={styles.event}>{strings.aboutEvent}</Text>
           <Text style={styles.desc}>{about}</Text>
 
-
           {is_event_owner ? (
-            <ButtonComponent
-              title={strings.adminTools}
-              onPress={onBuyTicket}
-            />
+            <ButtonComponent title={strings.adminTools} onPress={onBuyTicket} />
           ) : (
             <></>
           )}
