@@ -477,9 +477,9 @@ export const SignUp = (props: SignUpProps) => {
             value={user.lastName}
             onChangeText={(text) => handleUserData(text, "lastName")}
           />
-          <SizedBox height={verticalScale(14)} />
-          <Text style={styles.texClass}>{strings.birthday}</Text>
-          <TouchableOpacity
+          {/* <SizedBox height={verticalScale(14)} /> */}
+          {/* <Text style={styles.texClass}>{strings.birthday}</Text> */}
+          {/* <TouchableOpacity
             activeOpacity={0.8}
             onPress={() => setOpen(true)}
             style={styles.postInputTwo}
@@ -502,7 +502,7 @@ export const SignUp = (props: SignUpProps) => {
               calendarIcon={calendarWhite}
               editIcon={edit}
             />
-          </TouchableOpacity>
+          </TouchableOpacity> */}
 
           <SizedBox height={verticalScale(14)} />
 
