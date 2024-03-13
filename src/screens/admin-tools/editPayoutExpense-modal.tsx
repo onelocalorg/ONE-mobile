@@ -47,7 +47,7 @@ interface EditBreakDownModalProps {
   };
 }
 
-export const editPayoutModalScreen = (props: EditBreakDownModalProps) => {
+export const EditPayoutModalScreen = (props: EditBreakDownModalProps) => {
   const { theme } = useAppTheme();
   const styles = createStyleSheet(theme);
   const { navigation, route } = props || {};
@@ -804,4 +804,4 @@ export const editPayoutModalScreen = (props: EditBreakDownModalProps) => {
   );
 };
 
-export const EditPayoutModal = forwardRef(editPayoutModalScreen);
+export const EditPayoutModal = forwardRef(EditPayoutModalScreen);

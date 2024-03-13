@@ -135,7 +135,7 @@ export const HomeScreen = (props: HomeScreenProps) => {
 
   const requestLocationPermission = async () => {
     GetLocation.getCurrentPosition({
-      enableHighAccuracy: true,
+      enableHighAccuracy: false,
       timeout: 6000,
     })
       .then((location) => {
@@ -310,7 +310,6 @@ export const HomeScreen = (props: HomeScreenProps) => {
         radius: 25,
       };
     }
-
 
     try {
       const response = await fetch(API_URL + "/v1/users/recently-joined", {
@@ -704,13 +703,14 @@ export const HomeScreen = (props: HomeScreenProps) => {
 
         <FlatList
           data={postList}
+          key={Math.random()}
           keyExtractor={(item, index) => item.key}
           onEndReached={postDataLoad} 
           renderItem={renderItem}
           contentContainerStyle={styles.scrollView}
           ListFooterComponent={renderLoader}
           ListHeaderComponent={
-            <View>
+            <View>  
               {userList.length !== 0 ? (
                 <View style={styles.avatarContainer}>
                   <ScrollView
@@ -720,6 +720,7 @@ export const HomeScreen = (props: HomeScreenProps) => {
                     {userList.map((userList: any) => {
                       return (
                         <TouchableOpacity
+                        key={Math.random()}
                           onPress={() => recentUserProfilePress(userList.id)}
                         >
                           <ImageComponent

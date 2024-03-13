@@ -280,7 +280,7 @@ export const EventListScreen = (props: EventListScreenProps) => {
           <Text style={styles.displayDate}>
             {item?.date_title} {item.day_title}
           </Text>
-        </View>
+        </View> 
 
         {item.events.map((subitem: any) => {
           return (
@@ -288,6 +288,7 @@ export const EventListScreen = (props: EventListScreenProps) => {
               style={styles.listContainer}
               onPress={() => onNavigate(subitem)}
               activeOpacity={0.8}
+              key={Math.random()}
             // disabled={disabled}
             >
               <ImageComponent

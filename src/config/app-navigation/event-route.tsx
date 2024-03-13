@@ -15,7 +15,7 @@ import { CreatePostOfferScreen } from '@screens/createPost/offer';
 import { EventList } from '@components/event-list';
 import { EventListScreen } from '@screens/event';
 import { AddPayoutExpenseScreen } from '@screens/admin-tools/addPayoutExpense-modal';
-import { editPayoutModalScreen } from '@screens/admin-tools/editPayoutExpense-modal';
+import { EditPayoutModalScreen } from '@screens/admin-tools/editPayoutExpense-modal';
 
 const EventStack = createStackNavigator();
 
@@ -66,7 +66,7 @@ export const EventRoute = () => {
       />
        <EventStack.Screen
         name={navigations.EDITPAYOUTEXPENSE}
-        component={editPayoutModalScreen}
+        component={EditPayoutModalScreen}
         options={{header}}
       />
     </EventStack.Navigator>

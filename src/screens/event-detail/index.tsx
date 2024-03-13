@@ -90,7 +90,7 @@ export const EventDetailScreen = (props: EventDetailScreenProps) => {
     start_time_label,
     tickets,
     cancelled,
-    //   isPayout,
+    //   isPayout, 
     // viewCount
   } = data || {};
 
@@ -102,7 +102,6 @@ export const EventDetailScreen = (props: EventDetailScreenProps) => {
 
   useFocusEffect(
     useCallback(() => {
-      console.log("route Name-------------", routeee.name);
       const ticketLength = tickets?.filter(
         (ele) => !ele?.is_ticket_purchased
       )?.length;
@@ -167,7 +166,6 @@ export const EventDetailScreen = (props: EventDetailScreenProps) => {
   const getUserProfileAPI = async () => {
     const token = await AsyncStorage.getItem("token");
     const userId = await AsyncStorage.getItem("userProfileId");
-    console.log("token", token);
     try {
       const response = await fetch(API_URL + "/v1/users/" + userId, {
         method: "get",
@@ -177,9 +175,6 @@ export const EventDetailScreen = (props: EventDetailScreenProps) => {
         }),
       });
       const dataItem = await response.json();
-      console.log("-----------------Response User Profile API------------");
-      console.log(dataItem);
-      console.log(dataItem.data.pic);
       setUserProfile(dataItem.data);
       AsyncStorage.setItem("profile", dataItem.data.pic);
       AsyncStorage.setItem("uniqueId", dataItem.data.user_unique_id);
@@ -206,7 +201,6 @@ export const EventDetailScreen = (props: EventDetailScreenProps) => {
       },
     };
     LoadingData(true);
-    console.log(request, "1111111111");
     const res = await purchaseTicket(request);
     if (res?.success === true) {
       Toast.show(res.message, Toast.LONG, {

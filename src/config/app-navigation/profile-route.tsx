@@ -14,7 +14,7 @@ import { CreatePostRequestScreen } from '@screens/createPost/request';
 import { CreatePostOfferScreen } from '@screens/createPost/offer';
 import { CommentList } from '@screens/home/commetList';
 import { AddPayoutExpenseScreen } from '@screens/admin-tools/addPayoutExpense-modal';
-import { editPayoutModalScreen } from '@screens/admin-tools/editPayoutExpense-modal';
+import { EditPayoutModalScreen } from '@screens/admin-tools/editPayoutExpense-modal';
 
 const ProfileStack = createStackNavigator();
 
@@ -55,7 +55,7 @@ export const ProfileRoute = () => {
       />
        <ProfileStack.Screen
         name={navigations.EDITPAYOUTEXPENSE}
-        component={editPayoutModalScreen}
+        component={EditPayoutModalScreen}
         options={{header}}
       />
       
