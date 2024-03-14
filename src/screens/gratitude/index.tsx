@@ -69,10 +69,15 @@ import { Loader } from "@components/loader";
 import Swiper from "react-native-swiper";
 import ActiveEnv from "@config/env/env.dev.json";
 import MapboxGL, { Callout, CircleLayer, MarkerView } from "@rnmapbox/maps";
+import Toast from "react-native-simple-toast";
 
 MapboxGL.setAccessToken(ActiveEnv.MAP_ACCESS_TOKEN);
 
 import { API_URL } from "@network/constant";
+import {
+  isLocationEnabled,
+  promptForEnableLocationIfNeeded,
+} from "react-native-android-location-enabler";
 
 interface MapScreenProps {
   navigation: NavigationContainerRef<ParamListBase>;
@@ -115,16 +120,18 @@ export const GratitudeScreen = (props: MapScreenProps) => {
 
   useFocusEffect(
     useCallback(() => {
-      // handleCheckPressed();
-      requestLocationPermission();
+      if (Platform.OS === "ios") {
+        requestLocationPermission();
+      } else {
+        userLocationClick();
+      }
       getUserProfileAPI();
     }, [])
   );
-
   useEffect(() => {
     LogBox.ignoreAllLogs();
     if (latitude) {
-      console.log("useEffect " ,zoomLevel);
+      console.log("useEffect ", zoomLevel);
       geoTaggingAPITwo();
     }
   }, [zoomLevel, latitude]);
@@ -155,8 +162,11 @@ export const GratitudeScreen = (props: MapScreenProps) => {
       })
       .catch((error) => {
         const { code, message } = error;
-        console.log('8888')
+        console.log("8888");
         console.log(code, message);
+        Toast.show("Location Permission " + message, Toast.LONG, {
+          backgroundColor: "black",
+        });
       });
   };
 
@@ -272,6 +282,59 @@ export const GratitudeScreen = (props: MapScreenProps) => {
     setLongitude(event.geometry.coordinates[0]);
     setLatitude(event.geometry.coordinates[1]);
   };
+
+  const handleOpenURL = () => {
+    Linking.openSettings();
+  };
+
+  async function userLocationClick() {
+    if (Platform.OS === "ios") {
+      requestLocationPermission();
+    } else {
+      getAndroidLocationPermission();
+    }
+  }
+
+  async function getAndroidLocationPermission() {
+    const checkEnable: Boolean = await isLocationEnabled();
+    const granted = await PermissionsAndroid.request(
+      PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION
+    );
+    if (granted === "never_ask_again") {
+      Alert.alert(
+        "Permission Denied",
+        "To use this feature, please enable location permissions in your device settings.",
+        [
+          {
+            text: "Setting",
+            onPress: () => handleOpenURL(),
+          },
+        ],
+        { cancelable: false }
+      );
+    }
+    if (checkEnable && granted === PermissionsAndroid.RESULTS.GRANTED) {
+      requestLocationPermission();
+    }
+    console.log(granted);
+    if (!checkEnable) {
+      const enableResult = await promptForEnableLocationIfNeeded();
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION
+      );
+      requestLocationPermission();
+    } else if (checkEnable) {
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION
+      );
+      if (granted !== PermissionsAndroid.RESULTS.GRANTED) {
+        const granted = await PermissionsAndroid.request(
+          PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION
+        );
+        requestLocationPermission();
+      }
+    }
+  }
 
   return (
     <View style={{ flex: 1 }}>
@@ -428,7 +491,56 @@ export const GratitudeScreen = (props: MapScreenProps) => {
           </Swiper>
         </View>
       ) : (
-        <></>
+        <>
+          {!longitude && !longitude ? (
+            <>
+            {Platform.OS === 'android' ? <TouchableOpacity
+            onPress={userLocationClick}
+            style={{ backgroundColor: "white", padding: 10 }}
+          >
+            <Text style={styles.locationTitle}>
+              Device location not enabled
+            </Text>
+
+            <View
+              style={{
+                flexDirection: "row",
+                flexWrap: "wrap",
+                paddingHorizontal: 12,
+              }}
+            >
+              <Text style={styles.locationDes}>
+                Tap here to enable your device location for a better
+                experience
+              </Text>
+              <Text style={styles.enableBtn}>Enable</Text>
+            </View>
+          </TouchableOpacity> : <TouchableOpacity
+            onPress={() =>  Linking.openURL('app-settings:')}
+            style={{ backgroundColor: "white", padding: 10 }}
+          >
+            <Text style={styles.locationTitle}>
+              App Location Permission
+            </Text>
+
+            <View
+              style={{
+                flexDirection: "row",
+                flexWrap: "wrap",
+                paddingHorizontal: 12,
+              }}
+            >
+              <Text style={styles.locationDes}>
+                Go to app setting and enable location service to better experience  
+              </Text>
+            </View>
+          </TouchableOpacity>}
+            </>
+            
+          ) : (
+            <></>
+          )}
+        </>
       )}
     </View>
   );

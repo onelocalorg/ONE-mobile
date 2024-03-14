@@ -469,6 +469,23 @@ export const createStyleSheet = (theme: ThemeProps) => {
       // height: '20%',
       // zIndex: 1,
     },
+    locationTitle:{
+      fontSize:18,
+      color:theme.colors.redTwo,
+      paddingHorizontal:12,
+      fontFamily: theme.fontType.regular,
+    },
+    locationDes:{
+      fontFamily: theme.fontType.regular,
+      fontSize:14,
+      color:theme.colors.greyLine
+    },
+    enableBtn:{
+      fontSize:16,
+      color:theme.colors.redTwo,
+      justifyContent:'flex-start',
+      fontFamily: theme.fontType.regular,
+    }
 
   });
 };

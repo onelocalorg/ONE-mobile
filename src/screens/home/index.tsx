@@ -3,6 +3,7 @@ import { createStyleSheet } from "./style";
 import { useAppTheme } from "@app-hooks/use-app-theme";
 import {
   ActivityIndicator,
+  AppState,
   FlatList,
   Image,
   Keyboard,
@@ -10,6 +11,7 @@ import {
   ListRenderItem,
   LogBox,
   Modal,
+  PermissionsAndroid,
   Platform,
   Text,
   TextInput,
@@ -57,6 +59,11 @@ import GestureRecognizer from "react-native-swipe-gestures";
 import { Alert } from "react-native";
 import { API_URL, setData } from "@network/constant";
 import { CommentList } from "./commetList";
+import {
+  isLocationEnabled,
+  promptForEnableLocationIfNeeded,
+} from "react-native-android-location-enabler";
+// import Geolocation from "@react-native-community/geolocation";
 
 interface Range {
   startDate: Date | undefined;
@@ -96,8 +103,6 @@ export const HomeScreen = (props: HomeScreenProps) => {
   const [showCommentListModal, setShowCommentListData] = useState(false);
   const [Post_Id, setPostDataId] = useState("");
 
-  
-
   const { user } = useSelector<StoreType, UserProfileState>(
     (state) => state.userProfileReducer
   ) as { user: { id: string; pic: string; city: string; state: string } };
@@ -116,42 +121,143 @@ export const HomeScreen = (props: HomeScreenProps) => {
 
   useFocusEffect(
     useCallback(() => {
-      console.log('---------useFocusEffect 1-----------');
+      console.log("---------useFocusEffect 1-----------");
       LogBox.ignoreAllLogs();
-      requestLocationPermission();
+      if(Platform.OS === 'android'){
+        getLocation();
+      } else{
+        getCurrentLocation();
+      }
+      
       getUserProfileAPI();
       setPage(1);
       postListData([]);
-      setSearchQuery('')
+      setSearchQuery("");
     }, [range?.startDate, range?.endDate])
   );
 
+  const getLocation = () => {
+    const result = handleEnabledPressed();
+    result.then((res) => {
+      console.log("res is:", res);
+      if (res) {
+        return new Promise((resolve, reject) => {
+          GetLocation.getCurrentPosition({
+            enableHighAccuracy: true,
+            timeout: 15000,
+          })
+            .then((location) => {
+              resolve({ location });
+              console.log(location);
+            })
+            .catch((error) => {
+              reject(error.message);
+            });
+          console.log(location);
+        });
+      } else {
+        handleCheckPressed();
+      }
+    });
+  };
+
   useFocusEffect(
     useCallback(() => {
-      console.log('---------useFocusEffect 2-----------');
+      console.log("---------useFocusEffect 2-----------");
       postListAPI();
     }, [page, searchQuery])
   );
 
   const requestLocationPermission = async () => {
-    GetLocation.getCurrentPosition({
-      enableHighAccuracy: false,
-      timeout: 6000,
-    })
-      .then((location) => {
-        setUserLocation(location);
-        if (location.latitude && location.longitude) {
-          getRecentlyJoinUserAPI(location);
-        } else {
-          getRecentlyJoinUserAPI('');
+    try {
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+        {
+          title: "Location Permission",
+          message: "This app needs access to your location.",
+          buttonNeutral: "Ask Me Later",
+          buttonNegative: "Cancel",
+          buttonPositive: "OK",
         }
-      })
-      .catch((error) => {
-        getRecentlyJoinUserAPI('');
-        const { code, message } = error;
-      });
+      );
+      const checkEnable: Boolean = await isLocationEnabled();
+      if(!checkEnable){
+        const enableResult = await promptForEnableLocationIfNeeded();
+      }
+      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+        return true;
+      } else {
+        return false;
+      }
+    } catch (err) {
+      console.warn(err);
+      return false;
+    }
   };
 
+  const getCurrentLocation = () => {
+    return new Promise((resolve, reject) => {
+      GetLocation.getCurrentPosition({
+        enableHighAccuracy: false,
+        timeout: 15000,
+      })
+        .then((location) => {
+          resolve({ location });
+          console.log(location);
+          setUserLocation(location);
+          if (location.latitude && location.longitude) {
+            getRecentlyJoinUserAPI(location);
+          } else {
+            getRecentlyJoinUserAPI("");
+          }
+        })
+        .catch((error) => {
+          reject(error.message);
+          console.log(error);
+          getRecentlyJoinUserAPI("");
+          const { code, message } = error;
+        });
+    });
+  };
+
+  async function handleCheckPressed() {
+    console.log("location get method 2");
+    if (Platform.OS === "android") {
+      const checkEnable: Boolean = await isLocationEnabled();
+      const checkEnabled = await promptForEnableLocationIfNeeded();
+      requestLocationPermission();
+      if (checkEnable) {
+        
+      } else {
+        handleEnabledPressed();
+      }
+      console.log("checkEnabled", checkEnable);
+    }
+  }
+
+  async function handleEnabledPressed() {
+    if (Platform.OS === "android") {
+      try {
+        const checkEnable: Boolean = await isLocationEnabled();
+        const enableResult = await promptForEnableLocationIfNeeded();
+        console.log("enableResult", enableResult);
+        console.log("checkEnable", checkEnable);
+        if (checkEnable) {
+          // console.log("requestLocationPermission");
+          // requestLocationPermission();
+          return true;
+        } else {
+          // console.log("location get method 1");
+          // handleCheckPressed();
+          return false;
+        }
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          console.error(error.message);
+        }
+      }
+    }
+  }
   const onNavigateToCreatePost = () => {
     setData("POST_TAB_OPEN_INDEX", 1);
     navigation?.navigate(navigations?.CREATEPOST);
@@ -251,8 +357,6 @@ export const HomeScreen = (props: HomeScreenProps) => {
     } catch (error) {
       LodingData(false);
       console.error("--------error postListAPI--------" + URL, error);
-
-
     }
   }
 
@@ -299,7 +403,7 @@ export const HomeScreen = (props: HomeScreenProps) => {
   async function getRecentlyJoinUserAPI(getLocation: any) {
     const token = await AsyncStorage.getItem("token");
 
-    if (getLocation != '') {
+    if (getLocation != "") {
       var data: any = {
         radius: 25,
         user_lat: getLocation?.latitude,
@@ -329,7 +433,7 @@ export const HomeScreen = (props: HomeScreenProps) => {
     }
   }
 
-  function postDataLoad(){
+  function postDataLoad() {
     console.log("----------postDataLoad-----------");
     if (ismoreData && postList.length > 0) {
       onPageLoad(true);
@@ -381,15 +485,17 @@ export const HomeScreen = (props: HomeScreenProps) => {
   };
 
   const recentUserProfilePress = (id: any) => {
-    AsyncStorage.setItem('recentUserId', id);
+    AsyncStorage.setItem("recentUserId", id);
     navigation.navigate(navigations.RECENTUSERPROFILE);
   };
 
   const onCommentOpen = (item: any, post_index: any) => {
-    navigation.navigate(navigations.COMMENTLIST,{ postData : item,postIndex:post_index});
+    navigation.navigate(navigations.COMMENTLIST, {
+      postData: item,
+      postIndex: post_index,
+    });
     // AsyncStorage.setItem("postID", item.id);
   };
-
 
   const blockUserAlert = (type: any) => {
     Alert.alert(
@@ -450,7 +556,7 @@ export const HomeScreen = (props: HomeScreenProps) => {
 
   const renderItem: ListRenderItem<any> = ({ item, index }) => {
     return (
-      <TouchableOpacity activeOpacity={1} onPress={keyboardDismiss}>
+      <TouchableOpacity activeOpacity={1} onPress={keyboardDismiss} key={index}>
         <View style={styles.feedContainer}>
           <Text style={styles.posttitle}>{item?.type}</Text>
           <TouchableOpacity
@@ -509,7 +615,13 @@ export const HomeScreen = (props: HomeScreenProps) => {
               </View>
             </View>
           </View>
-          <View style={Platform.OS === 'ios' ? styles.userListDisplayCont : styles.userListDisplayContTwo}>
+          <View
+            style={
+              Platform.OS === "ios"
+                ? styles.userListDisplayCont
+                : styles.userListDisplayContTwo
+            }
+          >
             <TouchableOpacity
               onPress={() =>
                 recentUserProfilePress(item?.to?.users[0]?.user_id["id"])
@@ -549,21 +661,28 @@ export const HomeScreen = (props: HomeScreenProps) => {
             ></ImageComponent>
             <Text style={styles.postDetail}>{item?.what?.name}</Text>
           </View>
-          {item?.type !== "Gratis" ?   <View style={styles.postDetailCont}>
-            <Text style={styles.postDetailTitle}>For:</Text>
-            <Image
-              source={{ uri: item?.for?.icon }}
-              style={styles.detailImage}
-            ></Image>
-            <Text style={styles.postDetail}>{item?.for?.name}</Text>
-          </View> : <></>}
-          {item?.type !== "Gratis" ?   <View style={styles.postDetailCont}>
-            <Text style={styles.postDetailTitle}>Where:</Text>
-            <Image source={pin} style={styles.detailImage}></Image>
-            <Text style={styles.postDetail}>{item?.where?.address}</Text>
-          </View> : <></>}
-         
-          
+          {item?.type !== "Gratis" ? (
+            <View style={styles.postDetailCont}>
+              <Text style={styles.postDetailTitle}>For:</Text>
+              <Image
+                source={{ uri: item?.for?.icon }}
+                style={styles.detailImage}
+              ></Image>
+              <Text style={styles.postDetail}>{item?.for?.name}</Text>
+            </View>
+          ) : (
+            <></>
+          )}
+          {item?.type !== "Gratis" ? (
+            <View style={styles.postDetailCont}>
+              <Text style={styles.postDetailTitle}>Where:</Text>
+              <Image source={pin} style={styles.detailImage}></Image>
+              <Text style={styles.postDetail}>{item?.where?.address}</Text>
+            </View>
+          ) : (
+            <></>
+          )}
+
           <View style={styles.postDetailCont}>
             <Text style={styles.postDetailTitle}>When:</Text>
             <Image source={postCalender} style={styles.detailImage}></Image>
@@ -600,9 +719,8 @@ export const HomeScreen = (props: HomeScreenProps) => {
   };
 
   const onCloseCommentListModal = (setGraisTwo: any, commentTwo: any) => {
-
-    setPostCommentData(commentTwo)
-    setPostGratisData(setGraisTwo)
+    setPostCommentData(commentTwo);
+    setPostGratisData(setGraisTwo);
 
     setShowCommentListData(false);
     let markers = [...postList];
@@ -619,7 +737,7 @@ export const HomeScreen = (props: HomeScreenProps) => {
     setPostDataId(item.id);
     setPostGratisData(item.gratis);
     setPostCommentData(item.comment);
-    setPostDataForComment(item)
+    setPostDataForComment(item);
     setShowCommentListData(true);
   };
 
@@ -638,17 +756,14 @@ export const HomeScreen = (props: HomeScreenProps) => {
   const setSerchValue = (searchData: any) => {
     setPage(1);
     setSearchQuery(searchData);
-  }
-
-
+  };
 
   const renderLoader = () => {
-    return (
-      loading ?
-        <View style={{ marginVertical: 26, alignItems: "center", }}>
-          <ActivityIndicator size="large" color="#aaa" />
-        </View> : null
-    );
+    return loading ? (
+      <View style={{ marginVertical: 26, alignItems: "center" }}>
+        <ActivityIndicator size="large" color="#aaa" />
+      </View>
+    ) : null;
   };
 
   return (
@@ -703,14 +818,13 @@ export const HomeScreen = (props: HomeScreenProps) => {
 
         <FlatList
           data={postList}
-          key={Math.random()}
           keyExtractor={(item, index) => item.key}
-          onEndReached={postDataLoad} 
+          onEndReached={postDataLoad}
           renderItem={renderItem}
           contentContainerStyle={styles.scrollView}
           ListFooterComponent={renderLoader}
           ListHeaderComponent={
-            <View>  
+            <View>
               {userList.length !== 0 ? (
                 <View style={styles.avatarContainer}>
                   <ScrollView
@@ -720,7 +834,7 @@ export const HomeScreen = (props: HomeScreenProps) => {
                     {userList.map((userList: any) => {
                       return (
                         <TouchableOpacity
-                        key={Math.random()}
+                          key={Math.random()}
                           onPress={() => recentUserProfilePress(userList.id)}
                         >
                           <ImageComponent
@@ -761,7 +875,6 @@ export const HomeScreen = (props: HomeScreenProps) => {
             </View>
           }
         ></FlatList>
-
       </View>
 
       <Modal transparent onDismiss={OfferModalClose} visible={offerModal}>

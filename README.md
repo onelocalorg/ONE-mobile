@@ -91,6 +91,12 @@ cd android
 ./gradlew assembleDebug
 
 
+=> For Release Build
+cd android
+./gradlew clean
+cd ..
+npx react-native run-android
+
 APP Icon Create For IOS And Android
 https://easyappicon.com/
 

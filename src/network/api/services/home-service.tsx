@@ -145,6 +145,7 @@ export const onCheckedInUser = async (props: CheckedInUserProps) => {
   let response;
   try {
     const endPoint = `${apiConstants.checkedInUser}/${checkInUserId}`;
+    console.log(endPoint,'console.log(endPoint)')
     const data = await API.homeService.patch(endPoint, bodyParams);
     response = getApiResponse(data);
     console.log(response, "response response response");

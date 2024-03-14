@@ -299,10 +299,10 @@ export const AdminToolsScreen = (props: AdminToolsScreenProps) => {
       request = { ...request, full_address };
     // }
     // if (start_date !== eventData?.start_date) {
-      request = { ...request, startDate: start_date };
+      request = { ...request, startDate: start_date.toString() };
     // }
     // if (end_date !== eventData?.end_date) {
-      request = { ...request, endDate: end_date };
+      request = { ...request, endDate: end_date.toString() };
     // }
     // if (email_confirmation_body !== eventData?.email_confirmation_body) {
       request = { ...request, emailConfirmationBody: email_confirmation_body };
