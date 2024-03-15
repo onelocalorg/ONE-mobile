@@ -679,7 +679,7 @@ export const CreatePostRequestScreen = (
                   placeholderTextColor="darkgray"
                   value={settoTitle}
                   editable={settoTitle == 'Everyone' ? false : true}
-                  onChangeText={text => gratisUserList(text)}
+                  onChangeText={text => {setToTitleData(text); gratisUserList(text)}}
                   style={styles.postInputTwo}></TextInput>
                   <SizedBox width={10}></SizedBox>
                 <Popover

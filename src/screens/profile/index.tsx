@@ -444,12 +444,17 @@ export const ProfileScreen = (props: ProfileScreenProps) => {
     if (pic !== profileUri) {
       console.log("-------------11111---------");
       body.profile = profileUri;
-    }
+    } 
 
     const res = await mutateAsync({ bodyParams: body, userId: user?.id });
     if (res?.success) {
       console.log("-------------2222---------");
       navigation.goBack();
+    }else{
+      Toast.show(res?.message, Toast.LONG, {
+        backgroundColor: "black",
+      });
+      LodingData(false);
     }
   };
   const keyboardDismiss = () => {

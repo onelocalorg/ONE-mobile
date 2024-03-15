@@ -1111,6 +1111,7 @@ export const CommentList = (props: commentListProps) => {
                     <TextInput
                       style={styles.commentInput}
                       placeholder="Comment"
+                      placeholderTextColor='gray'
                       onChangeText={(text) => onAddCommentReply(text)}
                     ></TextInput>
                   </View>

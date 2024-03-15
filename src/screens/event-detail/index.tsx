@@ -407,14 +407,14 @@ export const EventDetailScreen = (props: EventDetailScreenProps) => {
                 <Text
                   style={styles.ticket}
                 >{`$${ele?.price} - ${ele?.name}`}</Text>
-                {/* <TouchableOpacity
+                <TouchableOpacity
                   onPress={() =>
                     copyPaymentLink(ele?.ticket_purchase_link ?? "  ")
                   }
                   activeOpacity={0.8}
                 >
                   <ImageComponent source={copy} style={styles.copy} />
-                </TouchableOpacity> */}
+                </TouchableOpacity>
               </View>
             ))}
           </View>
