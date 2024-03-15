@@ -57,7 +57,7 @@ import { Loader } from "@components/loader";
 import Toast from "react-native-simple-toast";
 import GestureRecognizer from "react-native-swipe-gestures";
 import { Alert } from "react-native";
-import { API_URL, setData } from "@network/constant";
+import { API_URL, getData, setData } from "@network/constant";
 import { CommentList } from "./commetList";
 import {
   isLocationEnabled,
@@ -119,20 +119,26 @@ export const HomeScreen = (props: HomeScreenProps) => {
 
   const dispatch = useDispatch();
 
+
   useFocusEffect(
     useCallback(() => {
-      console.log("---------useFocusEffect 1-----------");
       LogBox.ignoreAllLogs();
-      if(Platform.OS === 'android'){
-        getLocation();
-      } else{
-        getCurrentLocation();
+      var tempdata = getData('defaultLocation');
+      if (!tempdata?.latitude) {
+        console.log('-------------post 1 time------------');
+        requestLocationPermission();
+      } else {
+        console.log('-------------post 2 time------------');
+        if (tempdata?.latitude) {
+          getRecentlyJoinUserAPI(tempdata);
+        } else {
+          getRecentlyJoinUserAPI('');
+        }
       }
-      
       getUserProfileAPI();
       setPage(1);
       postListData([]);
-      setSearchQuery("");
+      setSearchQuery('')
     }, [range?.startDate, range?.endDate])
   );
 
@@ -163,36 +169,40 @@ export const HomeScreen = (props: HomeScreenProps) => {
 
   useFocusEffect(
     useCallback(() => {
-      console.log("---------useFocusEffect 2-----------");
-      postListAPI();
+      // setGetLatitude(getData("defaultLocation"));
+      var tempdataTwo = getData('defaultLocation');
+      if(tempdataTwo?.latitude){
+        postListAPI(tempdataTwo);
+      }
     }, [page, searchQuery])
   );
 
   const requestLocationPermission = async () => {
-    try {
-      const granted = await PermissionsAndroid.request(
-        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-        {
-          title: "Location Permission",
-          message: "This app needs access to your location.",
-          buttonNeutral: "Ask Me Later",
-          buttonNegative: "Cancel",
-          buttonPositive: "OK",
+    GetLocation.getCurrentPosition({
+      enableHighAccuracy: false,
+      timeout: 6000,
+    })
+      .then((location) => {
+        setUserLocation(location);
+
+        var isLocationDefault = {
+          latitude: location.latitude,
+          longitude: location.longitude,
+          zoomLevel: 11
         }
-      );
-      const checkEnable: Boolean = await isLocationEnabled();
-      if(!checkEnable){
-        const enableResult = await promptForEnableLocationIfNeeded();
-      }
-      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-        return true;
-      } else {
-        return false;
-      }
-    } catch (err) {
-      console.warn(err);
-      return false;
-    }
+        setData('defaultLocation', isLocationDefault)
+        // setGetLatitude(isLocationDefault);
+        if (location.latitude && location.longitude) {
+          getRecentlyJoinUserAPI(location);
+          postListAPI(isLocationDefault);
+        } else {
+          getRecentlyJoinUserAPI('');
+        }
+      })
+      .catch((error) => {
+        getRecentlyJoinUserAPI('');
+        const { code, message } = error;
+      });
   };
 
   const getCurrentLocation = () => {
@@ -324,11 +334,16 @@ export const HomeScreen = (props: HomeScreenProps) => {
     }
   };
 
-  async function postListAPI() {
+  async function postListAPI(location:any) {
     const token = await AsyncStorage.getItem("token");
-    var data: any = {
-      searchtext: searchQuery,
-    };
+      var data: any = {
+        // latitude: location.latitude,
+        // longitude: location.longitude,
+        // zoom_level: location.zoomLevel,
+        // device_type: Platform.OS,
+        searchtext: searchQuery,
+      }
+      console.log('----------------post Location----------------',data)
 
     var URL = API_URL + "/v1/posts/list?limit=5&page=" + page;
     console.log(URL);
@@ -347,7 +362,6 @@ export const HomeScreen = (props: HomeScreenProps) => {
       } else {
         postListData([...postList, ...dataItem?.data?.results]);
       }
-
       onPageLoad(false);
       isMoreDataLoad(true);
       LodingData(false);
@@ -359,7 +373,6 @@ export const HomeScreen = (props: HomeScreenProps) => {
       console.error("--------error postListAPI--------" + URL, error);
     }
   }
-
   async function addGratisAPI() {
     LodingData(true);
     const token = await AsyncStorage.getItem("token");

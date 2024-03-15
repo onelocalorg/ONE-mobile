@@ -61,7 +61,7 @@ import { TextInput } from 'react-native';
 import GetLocation from 'react-native-get-location';
 import { FlatList, ScrollView } from 'react-native-gesture-handler';
 import { Switch } from 'react-native';
-import { API_URL } from '@network/constant';
+import { API_URL, getData } from '@network/constant';
 
 interface Range {
   startDate: Date | undefined;
@@ -123,16 +123,21 @@ export const EventListScreen = (props: EventListScreenProps) => {
   );
 
   const getEventListAPI = async () => {
+
+    const getLatitude = getData("defaultLocation");
     var eventData = {
       start_date: moment(range.startDate).format('YYYY-MM-DD'),
       end_date: moment(range.endDate).format('YYYY-MM-DD'),
       event_type: setFilter,
       only_upcoming: 0,
       searchtext: searchQuery,
+      latitude: getLatitude.latitude,
+      longitude: getLatitude.longitude,
+      zoom_level: getLatitude.zoomLevel,
+      device_type: Platform.OS
     };
-
-    var eventList_url = API_URL + '/v1/events/list?limit=10&page=' + page;
-    console.log('---------------getEventListAPI--------------', page, setFilter);
+    console.log(eventData, '--------------------event location-----------------')
+    var eventList_url = API_URL + '/v2/events/list?limit=10&page=' + page;
     try {
       const token = await AsyncStorage.getItem('token');
       const response = await fetch(eventList_url, {
@@ -144,11 +149,11 @@ export const EventListScreen = (props: EventListScreenProps) => {
         body: JSON.stringify(eventData),
       });
       const dataItem = await response.json();
-      
+
       if (page == 1) {
         var dataTemp = [...eventsList, ...dataItem?.data.results];
         setEventsList(dataTemp);
-      }else{
+      } else {
         manageSameHeader(dataItem?.data.results)
       }
 

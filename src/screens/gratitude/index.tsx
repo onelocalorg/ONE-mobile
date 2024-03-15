@@ -73,7 +73,7 @@ import Toast from "react-native-simple-toast";
 
 MapboxGL.setAccessToken(ActiveEnv.MAP_ACCESS_TOKEN);
 
-import { API_URL } from "@network/constant";
+import { API_URL, getData, setData } from "@network/constant";
 import {
   isLocationEnabled,
   promptForEnableLocationIfNeeded,
@@ -115,26 +115,34 @@ export const GratitudeScreen = (props: MapScreenProps) => {
     endDate: makeDate,
   });
   const mapRef: LegacyRef<MapboxGL.MapView> = useRef(null);
+  const [tempdata, setNewLocation]: any = useState(getData('defaultLocation'));
+
+
+
 
   const dispatch = useDispatch();
 
   useFocusEffect(
     useCallback(() => {
-      if (Platform.OS === "ios") {
+      var tempdataTwo = getData('defaultLocation');
+      console.log('setLocation=>', tempdataTwo);
+      if (!tempdataTwo?.latitude) {
+        console.log('-------------post 1 time------------');
         requestLocationPermission();
-      } else {
-        userLocationClick();
       }
       getUserProfileAPI();
     }, [])
   );
+
   useEffect(() => {
     LogBox.ignoreAllLogs();
-    if (latitude) {
+    var tempdataTwo = getData('defaultLocation');
+    if (tempdataTwo?.latitude) {
       console.log("useEffect ", zoomLevel);
       geoTaggingAPITwo();
     }
-  }, [zoomLevel, latitude]);
+  }, [zoomLevel,tempdata?.latitude]);
+ 
 
   const requestLocationPermission = async () => {
     GetLocation.getCurrentPosition({
@@ -143,6 +151,13 @@ export const GratitudeScreen = (props: MapScreenProps) => {
     })
       .then((location) => {
         if (location?.latitude && location?.longitude) {
+
+          var isLocationDefault = {
+            latitude: location.latitude,
+            longitude: location.longitude,
+            zoomLevel: 11
+          }
+          setData('defaultLocation', isLocationDefault)
           setLongitude(location?.longitude);
           setLatitude(location?.latitude);
           const shape: any = {
@@ -162,11 +177,8 @@ export const GratitudeScreen = (props: MapScreenProps) => {
       })
       .catch((error) => {
         const { code, message } = error;
-        console.log("8888");
+        console.log('8888')
         console.log(code, message);
-        Toast.show("Location Permission " + message, Toast.LONG, {
-          backgroundColor: "black",
-        });
       });
   };
 
@@ -200,18 +212,32 @@ export const GratitudeScreen = (props: MapScreenProps) => {
   };
 
   async function geoTaggingAPITwo() {
+    const userLatLog = getData('defaultLocation')
     const token = await AsyncStorage.getItem("token");
-    var data: any = {
-      start_date: moment(range.startDate).format("YYYY-MM-DD"),
-      end_date: moment(range.endDate).format("YYYY-MM-DD"),
-      type: eventType,
-      user_lat: latitude,
-      user_long: longitude,
-      radius: 25,
-      zoom_level: zoomLevel,
-      device_type: "ios",
-    };
-    console.log("geoTaggingAPITwo request", data);
+    if (userLatLog?.latitude) {
+      var data: any = {
+        start_date: moment(range.startDate).format("YYYY-MM-DD"),
+        end_date: moment(range.endDate).format("YYYY-MM-DD"),
+        type: eventType,
+        user_lat: userLatLog?.latitude,
+        user_long: userLatLog?.longitude,
+        radius: 25,
+        zoom_level: userLatLog?.zoomLevel,
+        device_type: "ios",
+      };
+    } else {
+      var data: any = {
+        start_date: moment(range.startDate).format("YYYY-MM-DD"),
+        end_date: moment(range.endDate).format("YYYY-MM-DD"),
+        type: eventType,
+        user_lat: latitude,
+        user_long: longitude,
+        radius: 25,
+        zoom_level: zoomLevel,
+        device_type: "ios",
+      };
+    }
+    console.log("-----------------map location------------------", data);
     eventDataStore([]);
     try {
       const response = await fetch(API_URL + "/v1/events/geotagging", {
@@ -245,6 +271,7 @@ export const GratitudeScreen = (props: MapScreenProps) => {
     }
   }
 
+
   const onNavigateEventDetail = (item: any) => {
     navigation.navigate(navigations.EVENT_DETAIL, { id: item?._id });
   };
@@ -253,6 +280,13 @@ export const GratitudeScreen = (props: MapScreenProps) => {
     const newZoomLevel = event.properties.zoomLevel;
     console.log("ZoomLevel=>", newZoomLevel);
     setCameraZoomLevel(newZoomLevel);
+    var isMapLocation: any = {
+      latitude: event.geometry.coordinates[1],
+      longitude: event.geometry.coordinates[0],
+      zoomLevel: newZoomLevel, 
+      device_type: Platform.OS
+    }
+    setData('defaultLocation', isMapLocation);
   };
 
   const onMarkerClick = (mapEventData: any) => {
@@ -278,9 +312,19 @@ export const GratitudeScreen = (props: MapScreenProps) => {
   };
 
   const onCircleDrag = (event: any) => {
-    LodingData(true);
-    setLongitude(event.geometry.coordinates[0]);
-    setLatitude(event.geometry.coordinates[1]);
+    var tempdataTwo = getData('defaultLocation');
+    // LodingData(true);
+    console.log(event, 'event circle')
+    var isMapLocation: any = {
+      latitude: event.geometry.coordinates[1],
+      longitude: event.geometry.coordinates[0],
+      zoomLevel: tempdataTwo?.zoomLevel, 
+      device_type: Platform.OS
+    }
+    setNewLocation(tempdataTwo);
+    setData('defaultLocation', isMapLocation);
+    // setLongitude(event.geometry.coordinates[0]);
+    // setLatitude(event.geometry.coordinates[1]);
   };
 
   const handleOpenURL = () => {
@@ -368,7 +412,7 @@ export const GratitudeScreen = (props: MapScreenProps) => {
         </View>
       </TouchableOpacity>
 
-      {latitude && longitude ? (
+      {tempdata?.latitude && tempdata?.longitude ? (
         <MapboxGL.MapView
           style={styles.map}
           onRegionDidChange={handleRegionChange}
@@ -385,7 +429,7 @@ export const GratitudeScreen = (props: MapScreenProps) => {
               maxZoomLevel={14}
               minZoomLevel={5}
               followUserLocation={false}
-              centerCoordinate={[parseFloat(longitude), parseFloat(latitude)]}
+              centerCoordinate={[parseFloat(tempdata?.longitude), parseFloat(tempdata?.latitude)]}
             />
           </View>
 
@@ -393,7 +437,7 @@ export const GratitudeScreen = (props: MapScreenProps) => {
             style={{ flex: 1 }}
             key="pointAnnotation"
             id="pointAnnotation"
-            coordinate={[parseFloat(longitude), parseFloat(latitude)]}
+            coordinate={[parseFloat(tempdata?.longitude), parseFloat(tempdata?.latitude)]}
             draggable
             onDragEnd={onCircleDrag}
           >
@@ -492,7 +536,7 @@ export const GratitudeScreen = (props: MapScreenProps) => {
         </View>
       ) : (
         <>
-          {!longitude && !longitude ? (
+          {!tempdata?.longitude && !tempdata?.longitude ? (
             <>
             {Platform.OS === 'android' ? <TouchableOpacity
             onPress={userLocationClick}
