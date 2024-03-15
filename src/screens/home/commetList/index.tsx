@@ -867,7 +867,12 @@ export const CommentList = (props: commentListProps) => {
                   <View>
                     {commentList.length !== 0 && !isLoading ? (
                       <TouchableOpacity onPress={postDataLoad}>
-                        {isCommentData && !isLoading ? (
+                        <View>
+                          {isCommentData ? <Text style={styles.getMoreDataCont}>
+                              Get More Comments
+                            </Text> : <></>}
+                          </View>
+                        {/* {isCommentData && !isLoading ? (
                           <View>
                             <Text style={styles.getMoreDataCont}>
                               Get More Comments
@@ -884,7 +889,7 @@ export const CommentList = (props: commentListProps) => {
                           >
                             No More Data Found
                           </Text>
-                        )}
+                        )} */}
                       </TouchableOpacity>
                     ) : (
                       <View style={{ alignSelf: "center" }}>

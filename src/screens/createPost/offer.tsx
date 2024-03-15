@@ -722,7 +722,7 @@ const removeSelectImage = (imageItem: any) => {
                   placeholderTextColor="darkgray"
                   value={settoTitle}
                   editable={settoTitle == 'Everyone' ? false : true}
-                  onChangeText={text => gratisUserList(text)}
+                  onChangeText={text =>  {setToTitleData(text); gratisUserList(text)}}
                   style={styles.postInputToType}></TextInput>
                 <Popover
                   isVisible={showToPopover}

@@ -1,6 +1,6 @@
 
 
-import ActiveEnv from '@config/env/env.prod.json';
+import ActiveEnv from '@config/env/env.dev.json';
 export const dataObject:any = [];
 
 export const getData = (key:any) => { 

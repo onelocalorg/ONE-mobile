@@ -63,10 +63,11 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view
 GoogleSignin.configure({
   webClientId:
     "758195278101-qroulgfid8ufuiqlvcfhm5ndnno2jr90.apps.googleusercontent.com",
+    offlineAccess:true
 });
 
 interface LoginScreenProps {
-  navigation: NavigationContainerRef<ParamListBase>;
+  navigation: NavigationContainerRef<ParamListBase>; 
 }
 
 export const LoginScreen = (props: LoginScreenProps) => {
@@ -96,6 +97,7 @@ export const LoginScreen = (props: LoginScreenProps) => {
   // };
 
   const signInWithGoogle = async () => {
+    await GoogleSignin.signOut();
     console.log("google signin clicked");
     try {
       await GoogleSignin.hasPlayServices();
