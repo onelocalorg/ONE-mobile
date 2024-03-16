@@ -14,6 +14,9 @@ import { CreatePostRequestScreen } from '@screens/createPost/request';
 import { CreatePostOfferScreen } from '@screens/createPost/offer';
 import { CommentList } from '@screens/home/commetList';
 import { ProfileRoute } from './profile-route';
+import { EditPostOfferScreen } from '@screens/createEditPost/offerEdit';
+import { EditPostRequestScreen } from '@screens/createEditPost/requestEdit';
+import { EditPostGratisScreen } from '@screens/createEditPost/gratisEdit';
 
 const HomeStack = createStackNavigator();
 
@@ -70,6 +73,21 @@ export const HomeRoute = () => {
         <HomeStack.Screen
         name={navigations.ADMIN_TOOLS}
         component={AdminToolsScreen}
+        options={{header}}
+      />
+      <HomeStack.Screen
+        name={navigations.EDITPOSTOFFER}
+        component={EditPostOfferScreen}
+        options={{header}}
+      />
+      <HomeStack.Screen
+        name={navigations.EDITPOSTREQUEST}
+        component={EditPostRequestScreen}
+        options={{header}}
+      />
+      <HomeStack.Screen
+        name={navigations.EDITPOSTGRATIS}
+        component={EditPostGratisScreen}
         options={{header}}
       />
     </HomeStack.Navigator>

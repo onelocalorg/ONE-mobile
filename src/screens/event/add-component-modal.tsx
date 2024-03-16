@@ -12,7 +12,7 @@ import {
   ViewStyle,
 } from "react-native";
 import { ImageComponent } from "@components/image-component";
-import { eventBlack, gratitudeBlack, offer, request } from "@assets/images";
+import { eventBlack, eventWhite, gratitudeBlack, offer, request } from "@assets/images";
 import { useStringsAndLabels } from "@app-hooks/use-strings-and-labels";
 import { navigations } from "@config/app-navigation/constant";
 import {
@@ -26,6 +26,9 @@ import { UserProfileState } from "@network/reducers/user-profile-reducer";
 import { useUserProfile } from "@network/hooks/user-service-hooks/use-user-profile";
 import { getData, setData } from "@network/constant";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { Modal } from "react-native";
+import GestureRecognizer from "react-native-swipe-gestures";
+import { Subscription } from "@components/subcription";
 
 interface AddComponentModalProps {
   modalRef?: React.Ref<ModalRefProps>;
@@ -37,6 +40,7 @@ export const AddComponentModal = (props: AddComponentModalProps) => {
   const styles = createStyleSheet(theme);
   const { strings } = useStringsAndLabels();
   const [isActiveSubs, setIsActiveSubs] = useState(false);
+  const [iseventProducerModal, setEventProducerModal] = useState(false);
   const { modalRef, navigation } = props || {};
   const { user } = useSelector<StoreType, UserProfileState>(
     (state) => state.userProfileReducer
@@ -70,16 +74,41 @@ export const AddComponentModal = (props: AddComponentModalProps) => {
   //   users API => isActiveSubscription == true
   //  Login API => user_type === 'eventProducer'
 
+  // const onNavigate = async () => {
+  //   const isEventPurched = await AsyncStorage.getItem("isEventActive");
+  //   if (isEventPurched === "true") {
+  //     navigation?.navigate(navigations.ADMIN_TOOLS, { isCreateEvent: true });
+  //   } else {
+  //     Alert.alert("", strings.purchaseSubscription);
+  //   }
+  //   const ref = modalRef as { current: { onCloseModal: () => void } };
+  //   ref?.current?.onCloseModal();
+  // };
+
   const onNavigate = async () => {
     const isEventPurched = await AsyncStorage.getItem("isEventActive");
     if (isEventPurched === "true") {
       navigation?.navigate(navigations.ADMIN_TOOLS, { isCreateEvent: true });
+      const ref = modalRef as { current: { onCloseModal: () => void } };
+      ref?.current?.onCloseModal();
     } else {
-      Alert.alert("", strings.purchaseSubscription);
+      setEventProducerModal(true);
+      // Alert.alert("", strings.purchaseSubscription);
     }
+  };
+
+  const onEventProducer = () => {
+    navigation.navigate("profileroute");
+    setEventProducerModal(false)
     const ref = modalRef as { current: { onCloseModal: () => void } };
     ref?.current?.onCloseModal();
   };
+
+  const onEventDismiss = () => {
+    setEventProducerModal(false)
+    const ref = modalRef as { current: { onCloseModal: () => void } };
+  }
+
 
   const onNavigateOfferPost = () => {
     setData("POST_TAB_OPEN_INDEX", 1);
@@ -198,6 +227,31 @@ export const AddComponentModal = (props: AddComponentModalProps) => {
           )}
         </View>
       </View>
+      <Modal transparent visible={iseventProducerModal} onDismiss={onEventDismiss}>
+        <GestureRecognizer
+          onSwipeDown={onEventDismiss} style={styles.gesture}>
+          <TouchableOpacity
+            style={styles.containerGallery}
+            activeOpacity={1}
+            onPress={onEventDismiss}
+          />
+        </GestureRecognizer>
+        <TouchableOpacity activeOpacity={1} style={styles.modalMainContainer}>
+          <TouchableOpacity style={styles.titleContainer} activeOpacity={0.8}>
+            <ImageComponent source={eventWhite} style={styles.iconEvent} />
+            <Text style={styles.label}>{strings.eventProducer}</Text>
+          </TouchableOpacity>
+
+          <Text style={styles.playerDescription}>{strings.eventDes}</Text>
+
+          <Subscription
+            label={strings.signUp}
+            pillStyle={styles.signUpStyle}
+            backgroundColor="#DB9791"
+            onPressPill={() => onEventProducer()}
+          />
+        </TouchableOpacity>
+      </Modal>
     </ModalComponent>
   );
 };

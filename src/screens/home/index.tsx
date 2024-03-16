@@ -119,26 +119,25 @@ export const HomeScreen = (props: HomeScreenProps) => {
 
   const dispatch = useDispatch();
 
-
   useFocusEffect(
     useCallback(() => {
       LogBox.ignoreAllLogs();
-      var tempdata = getData('defaultLocation');
+      var tempdata = getData("defaultLocation");
       if (!tempdata?.latitude) {
-        console.log('-------------post 1 time------------');
+        console.log("-------------post 1 time------------");
         requestLocationPermission();
       } else {
-        console.log('-------------post 2 time------------');
+        console.log("-------------post 2 time------------");
         if (tempdata?.latitude) {
           getRecentlyJoinUserAPI(tempdata);
         } else {
-          getRecentlyJoinUserAPI('');
+          getRecentlyJoinUserAPI("");
         }
       }
       getUserProfileAPI();
       setPage(1);
       postListData([]);
-      setSearchQuery('')
+      setSearchQuery("");
     }, [range?.startDate, range?.endDate])
   );
 
@@ -170,8 +169,9 @@ export const HomeScreen = (props: HomeScreenProps) => {
   useFocusEffect(
     useCallback(() => {
       // setGetLatitude(getData("defaultLocation"));
-      var tempdataTwo = getData('defaultLocation');
-      if(tempdataTwo?.latitude){
+      var tempdataTwo = getData("defaultLocation");
+      if (tempdataTwo?.latitude) {
+        console.log('sjnsjnsjn')
         postListAPI(tempdataTwo);
       }
     }, [page, searchQuery])
@@ -188,19 +188,19 @@ export const HomeScreen = (props: HomeScreenProps) => {
         var isLocationDefault = {
           latitude: location.latitude,
           longitude: location.longitude,
-          zoomLevel: 11
-        }
-        setData('defaultLocation', isLocationDefault)
+          zoomLevel: 11,
+        };
+        setData("defaultLocation", isLocationDefault);
         // setGetLatitude(isLocationDefault);
         if (location.latitude && location.longitude) {
           getRecentlyJoinUserAPI(location);
           postListAPI(isLocationDefault);
         } else {
-          getRecentlyJoinUserAPI('');
+          getRecentlyJoinUserAPI("");
         }
       })
       .catch((error) => {
-        getRecentlyJoinUserAPI('');
+        getRecentlyJoinUserAPI("");
         const { code, message } = error;
       });
   };
@@ -237,7 +237,6 @@ export const HomeScreen = (props: HomeScreenProps) => {
       const checkEnabled = await promptForEnableLocationIfNeeded();
       requestLocationPermission();
       if (checkEnable) {
-        
       } else {
         handleEnabledPressed();
       }
@@ -334,16 +333,16 @@ export const HomeScreen = (props: HomeScreenProps) => {
     }
   };
 
-  async function postListAPI(location:any) {
+  async function postListAPI(location: any) {
     const token = await AsyncStorage.getItem("token");
-      var data: any = {
-        // latitude: location.latitude,
-        // longitude: location.longitude,
-        // zoom_level: location.zoomLevel,
-        // device_type: Platform.OS,
-        searchtext: searchQuery,
-      }
-      console.log('----------------post Location----------------',data)
+    var data: any = {
+      // latitude: location.latitude,
+      // longitude: location.longitude,
+      // zoom_level: location.zoomLevel,
+      // device_type: Platform.OS,
+      searchtext: searchQuery,
+    };
+    console.log("----------------post Location----------------", data);
 
     var URL = API_URL + "/v1/posts/list?limit=5&page=" + page;
     console.log(URL);
@@ -779,11 +778,30 @@ export const HomeScreen = (props: HomeScreenProps) => {
     ) : null;
   };
 
+  const onEditPost = (postType: any) => {
+    if (postType === "offer") {
+      navigation.navigate(navigations.EDITPOSTOFFER);
+    } else if (postType === "request") {
+      navigation.navigate(navigations.EDITPOSTREQUEST);
+    } else if (postType === "gratis") {
+      navigation.navigate(navigations.EDITPOSTGRATIS);
+    }
+    postContentModal(false);
+  };
+
+  const onDeletePost = () => {};
+
   return (
     <>
       <View style={styles.MainPostContainer}>
         <Loader visible={isLoading} showOverlay />
-
+        {/* <TouchableOpacity onPress={() => openPostModal("item.id")}>
+          <ImageComponent
+            resizeMode="cover"
+            style={styles.postfilterImage}
+            source={greenImage}
+          ></ImageComponent>
+        </TouchableOpacity> */}
         {/* ------------------Header------------------- */}
         <TouchableOpacity style={styles.HeaderContainerTwo} activeOpacity={1}>
           <View style={styles.searchContainer}>
@@ -828,7 +846,7 @@ export const HomeScreen = (props: HomeScreenProps) => {
           </View>
         </TouchableOpacity>
         {/* ------------------Header Tab------------------- */}
-
+        
         <FlatList
           data={postList}
           keyExtractor={(item, index) => item.key}
@@ -965,6 +983,26 @@ export const HomeScreen = (props: HomeScreenProps) => {
           style={styles.keyboardViewTwo}
         >
           <View style={styles.postActionSheet}>
+            <TouchableOpacity onPress={() => onEditPost("offer")}>
+              <Text style={[styles.postText, { color: "white" }]}>
+                Edit Offer
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => onEditPost("request")}>
+              <Text style={[styles.postText, { color: "white" }]}>
+                Edit Request
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => onEditPost("gratis")}>
+              <Text style={[styles.postText, { color: "white" }]}>
+                Edit Gratis
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => onDeletePost()}>
+              <Text style={[styles.postText, { color: "white" }]}>
+                Delete Post
+              </Text>
+            </TouchableOpacity>
             <TouchableOpacity onPress={() => postHideOptionSelect(1)}>
               <Text style={[styles.postText, { color: "white" }]}>Block</Text>
             </TouchableOpacity>

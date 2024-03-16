@@ -23,7 +23,10 @@ export const navigations = {
   RECENTUSERPROFILE:'recentUserProfile',
   COMMENTLIST:'commentList',
   ADDPAYOUTEXPENSE: 'addPayoutExpense',
-  EDITPAYOUTEXPENSE: 'editPayoutExpense'
+  EDITPAYOUTEXPENSE: 'editPayoutExpense',
+  EDITPOSTOFFER:'editPostOffer',
+  EDITPOSTGRATIS:'editPostGratis',
+  EDITPOSTREQUEST:'editPostRequest'
 };
 
 export const bottomNavigationVisibleScreens = [

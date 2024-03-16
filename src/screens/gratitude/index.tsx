@@ -214,15 +214,15 @@ export const GratitudeScreen = (props: MapScreenProps) => {
   async function geoTaggingAPITwo() {
     const userLatLog = getData('defaultLocation')
     const token = await AsyncStorage.getItem("token");
-    if (userLatLog?.latitude) {
+    if (tempdata?.latitude) {
       var data: any = {
         start_date: moment(range.startDate).format("YYYY-MM-DD"),
         end_date: moment(range.endDate).format("YYYY-MM-DD"),
         type: eventType,
-        user_lat: userLatLog?.latitude,
-        user_long: userLatLog?.longitude,
+        user_lat: tempdata?.latitude,
+        user_long: tempdata?.longitude,
         radius: 25,
-        zoom_level: userLatLog?.zoomLevel,
+        zoom_level: tempdata?.zoomLevel,
         device_type: "ios",
       };
     } else {
@@ -286,6 +286,7 @@ export const GratitudeScreen = (props: MapScreenProps) => {
       zoomLevel: newZoomLevel, 
       device_type: Platform.OS
     }
+    setNewLocation(isMapLocation);
     setData('defaultLocation', isMapLocation);
   };
 
@@ -315,13 +316,14 @@ export const GratitudeScreen = (props: MapScreenProps) => {
     var tempdataTwo = getData('defaultLocation');
     // LodingData(true);
     console.log(event, 'event circle')
+    setCameraZoomLevel(tempdataTwo?.zoomLevel)
     var isMapLocation: any = {
       latitude: event.geometry.coordinates[1],
       longitude: event.geometry.coordinates[0],
       zoomLevel: tempdataTwo?.zoomLevel, 
       device_type: Platform.OS
     }
-    setNewLocation(tempdataTwo);
+    setNewLocation(isMapLocation);
     setData('defaultLocation', isMapLocation);
     // setLongitude(event.geometry.coordinates[0]);
     // setLatitude(event.geometry.coordinates[1]);

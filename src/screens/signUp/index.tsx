@@ -533,8 +533,6 @@ export const SignUp = (props: SignUpProps) => {
         </View>
       </KeyboardAwareScrollView>
 
-      <CalenderComponentModal ref={calenderShowRef}></CalenderComponentModal>
-
       <Modal transparent onDismiss={closeModal} visible={imageOption}>
         <GestureRecognizer onSwipeDown={closeModal} style={styles.gesture}>
           <TouchableOpacity

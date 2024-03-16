@@ -285,6 +285,90 @@ export const createStyleSheet = (theme: ThemeProps) => {
       color:theme.colors.black,
       fontFamily:theme.fontType.semiBold,
       fontSize:theme.fontSize.font16
-    }
+    },
+    titleContainer : {
+      borderRadius: theme.borderRadius.radius20,
+      paddingVertical: verticalScale(8),
+      paddingHorizontal: normalScale(8),
+      flexDirection: "row",
+      justifyContent: "center",
+      alignItems: "center",
+      backgroundColor: theme.colors.red,
+      // marginRight: normalScale(8),
+      shadowColor: theme.colors.black,
+      shadowOpacity: theme.opacity.opacity15,
+      shadowRadius: theme.borderRadius.radius8,
+      marginLeft: 20,
+      marginRight: 20,
+      fontSize: theme.fontSize.font24,
+      fontFamily: theme.fontType.medium,
+      borderWidth: theme.borderWidth.borderWidth1,
+      borderColor: theme.colors.white,
+      shadowOffset: {
+        width: 0,
+        height: verticalScale(0),
+      },
+      elevation: 5,
+    },
+    iconEvent: {
+      height: 60,
+      width: 60,
+    },
+    label: {
+      fontFamily: theme.fontType.regular,
+      fontSize: theme.fontSize.font22,
+      color: theme.colors.white,
+      marginLeft: 10,
+    },
+    playerDescription: {
+      textAlign: 'center',
+      // alignSelf: 'center',
+      margin: 20,
+      fontSize: theme.fontSize.font14,
+      fontFamily: theme.fontType.regular,
+      color: theme.colors.black
+    },
+    signUpStyle: {
+      marginLeft: 80,
+      marginRight: 80,
+      marginTop: 10,
+      justifyContent: 'center',
+      borderRadius: theme.borderRadius.radius10,
+      height: 50,
+      fontSize: theme.fontSize.font24,
+      fontFamily: theme.fontType.regular,
+      borderWidth: theme.borderWidth.borderWidth1,
+      borderColor: theme.colors.black,
+    },
+    playerText: {
+      textDecorationLine: 'underline',
+      textAlign: 'center',
+      marginTop: 10,
+      color: theme.colors.black,
+      fontSize: theme.fontSize.font14,
+      fontFamily: theme.fontType.regular,
+    },
+    gesture: {
+      flex: 1,
+    },
+    containerGallery:{
+      position: 'absolute',
+      top: 0,
+      bottom: 0,
+      left: 0,
+      right: 0,
+      backgroundColor: theme.colors.modalOverlay,
+    },
+    modalMainContainer:{
+      position:'absolute',
+      bottom:300,
+      backgroundColor:theme.colors.white,
+      marginHorizontal:12,
+      padding:16,
+      borderColor:theme.colors.lightGreen,
+      borderWidth:4,
+      borderRadius:theme.borderRadius.radius16,
+  }
+
   });
 };

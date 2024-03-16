@@ -129,4 +129,5 @@ export const stringsAndLabels = {
   billingAdd:'Billing address *',
   platformFee: 'Platform Fee',
   paymentFee: 'Payment Fee',
+  eventDes:'You need to sign up as an Event Producer to create Events.'
 };
