@@ -68,6 +68,7 @@ import { height, width } from "@theme/device/device";
 import { useEditProfile } from "@network/hooks/user-service-hooks/use-edit-profile";
 import { ActivityIndicator } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import { SafeAreaComponent } from "@components/safe-area-view";
 
 interface AboutDataProps {
   ref: React.Ref<unknown> | undefined;
@@ -133,15 +134,9 @@ export const About = (props: AboutDataProps) => {
   const [openQues, quesAnsModal] = useState(false);
   const [planId, cancleSubscription] = useState();
   // var [usersId, userIdData] = useState(idUser);
-  console.log("==============usersId==========", idUser);
   var [ansQueData, submitAnsState] = useState(profileAnswers);
   var [ansQueDataTwo, submitAnsStateTwo] = useState(profileAnswers);
   const isShowPaymentCheck = getData("isShowPaymentFlow");
-
-  console.log("==============ansQueData==========", ansQueData);
-  console.log("allSkills==============", allSkills);
-
-  console.log("============s=dada", token);
   const {} = props || {};
   useEffect(() => {
     packageListAPI();
@@ -188,7 +183,6 @@ export const About = (props: AboutDataProps) => {
 
   async function packageListAPI() {
     const token = await AsyncStorage.getItem("token");
-    console.log(token);
     try {
       const response = await fetch(API_URL + "/v1/subscriptions/packages", {
         method: "get",
@@ -199,8 +193,6 @@ export const About = (props: AboutDataProps) => {
       });
       const data = await response.json();
       PackageListData(data?.data);
-      console.log("===========Player List ==============");
-      console.log(data);
     } catch (error) {
       console.error(error);
     }
@@ -250,10 +242,7 @@ export const About = (props: AboutDataProps) => {
       );
       packageIdData(dataId);
       const dataItem = await response.json();
-      console.log("===========Player detail ==============");
-      console.log(dataItem);
       setDataEntries(dataItem?.data);
-      console.log(dataItem, "=============data item===============");
       cancleSubscription(dataItem?.data?.current_plan_id);
     } catch (error) {
       console.error(error);
@@ -395,7 +384,7 @@ export const About = (props: AboutDataProps) => {
   };
 
   const memberShipClick = async (id: any) => {
-    console.log("====id===", id);
+    console.log(id,'event detail');
     setTimeout(() => {
       setMemberModal(true);
     }, 1000);
@@ -804,7 +793,6 @@ export const About = (props: AboutDataProps) => {
             </View>
             <GestureRecognizer>
               <TouchableOpacity
-                // style={{ flex: 1 }}
                 onPressOut={() => {
                   setModalVisible(false);
                 }}
@@ -861,7 +849,6 @@ export const About = (props: AboutDataProps) => {
                               pillStyle={styles.signUpStyle}
                               backgroundColor={postData.color}
                               onPressPill={() => memberShipClick(postData.id)}
-                              // onPressPill={onOpenMemberShip}
                             />
                           ) : (
                             <View></View>
@@ -1544,8 +1531,8 @@ export const About = (props: AboutDataProps) => {
 
         <View>
           <Modal transparent={false} animationType="slide" visible={openQues}>
-            <View style={{ height: "auto" }}>
-              <View style={styles.HeaderContainer}>
+            <View>
+              <View style={Platform.OS === 'ios' ? styles.HeaderContainerIOS : styles.HeaderContainerAdroid}>
                 <TouchableOpacity
                   onPress={() => {
                     updateAnsBack();

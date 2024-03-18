@@ -69,13 +69,8 @@ export const EditPayoutModalScreen = (props: EditBreakDownModalProps) => {
   const [payoutListData, setPayoutListData]: any = useState([]);
   const [expensePayoutID, setExpensePayoutID]: any = useState();
 
-  console.log("-----------payoutExpenseObject----------", payoutExpenseObject);
   useFocusEffect(
     useCallback(() => {
-      console.log(
-        "-----------payoutExpenseObject----------------",
-        payoutExpenseObject
-      );
       if (payoutExpenseObject != undefined) {
         recentlyJoinUser([payoutExpenseObject?.userSelectedData]);
         setNewUserIdData(payoutExpenseObject?.userSelectedData.id);
@@ -157,7 +152,6 @@ export const EditPayoutModalScreen = (props: EditBreakDownModalProps) => {
     };
     onUserSearch(textUser);
     LodingData(true);
-    console.log(datas);
     console.log(API_URL + "/v1/users/search-user?searchtext=" + textUser);
     try {
       const response = await fetch(
@@ -197,9 +191,6 @@ export const EditPayoutModalScreen = (props: EditBreakDownModalProps) => {
       images: imageSelectArrayKey,
       key: expensePayoutID,
     };
-    console.log("------------editExpenseAPI url-------------", url);
-    console.log("------------editExpenseAPI request-------------", item);
-
     try {
       const response = await fetch(url, {
         method: "post",
@@ -234,7 +225,6 @@ export const EditPayoutModalScreen = (props: EditBreakDownModalProps) => {
     var url = API_URL + "/v1/events/event-financial/" + id + "/edit/payout";
 
     var getAmount = (payoutExpenseObject?.profitAmt * amount) / 100;
-    console.log(getAmount, "---------------getAmount-----------");
     if (priceData === 1) {
       var item: any = {
         user_id: newUserId,
@@ -394,10 +384,8 @@ export const EditPayoutModalScreen = (props: EditBreakDownModalProps) => {
       maxWidth: 800,
       maxHeight: 800,
     });
-    console.log(assets);
     if (assets) {
       const img = assets?.[0];
-      console.log(assets);
       var fileNameTwo = img?.fileName ?? "";
       LodingData(true);
       var output =
@@ -429,12 +417,10 @@ export const EditPayoutModalScreen = (props: EditBreakDownModalProps) => {
       var tempData = imageSelectArray;
       tempData.push(dataItem?.data);
       setImageSelectArray(tempData);
-      console.log(" console.log(imageSelectArray)", imageSelectArray);
       var tempTwo = imageSelectArrayKey;
 
       tempTwo.push(dataItem?.data?.key);
       setImageSelectArrayKey(tempTwo);
-      console.log(" console.log(imageSelectArrayKey)", imageSelectArrayKey);
       LodingData(false);
     } catch (error) {
       console.log(error);
@@ -461,14 +447,8 @@ export const EditPayoutModalScreen = (props: EditBreakDownModalProps) => {
       });
     } else {
       if (isExpenseorPayout === "Expense") {
-        console.log(
-          "----------------borderData === Expense--------------------"
-        );
         editExpenseAPI();
       } else {
-        console.log(
-          "----------------borderData === payout--------------------"
-        );
         editPayoutAPI();
       }
     }
@@ -484,7 +464,6 @@ export const EditPayoutModalScreen = (props: EditBreakDownModalProps) => {
   };
 
   const removeSelectImage = (imageItem: any) => {
-    console.log(imageItem);
     const newImage = imageSelectArray.filter(
       (person: any) =>
         person.imageUrl !== imageItem.imageUrl && person.key !== imageItem.key
@@ -497,7 +476,6 @@ export const EditPayoutModalScreen = (props: EditBreakDownModalProps) => {
     );
     setImageSelectArrayKey(newImageKey);
 
-    console.log(newImage);
   };
 
   const onBackPress = () => {

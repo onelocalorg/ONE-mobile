@@ -116,7 +116,6 @@ export const SignUp = (props: SignUpProps) => {
   const calenderShowRef: React.Ref<CalenderRefProps> = useRef(null);
 
   async function onSignUpAPI() {
-    console.log(moment(when).format("YYYY-MM-DD"))
     LodingData(true);
     const userData = {
       first_name: user.firstName,
@@ -133,7 +132,6 @@ export const SignUp = (props: SignUpProps) => {
       pic: profileUri?.key,
       // cover_image: backgroundImageUri?.key,
     };
-    console.log(userData);
     try {
       const response = await fetch(API_URL + "/v1/auth/signup", {
         method: "post",
@@ -143,8 +141,6 @@ export const SignUp = (props: SignUpProps) => {
         body: JSON.stringify(userData),
       });
       const signData = await response.json();
-      console.log("===========Sign UP API==============");
-      console.log(signData);
       const res = await signData;
       LodingData(false);
       Toast.show(signData.message, Toast.LONG, {
@@ -219,7 +215,6 @@ export const SignUp = (props: SignUpProps) => {
   };
 
   const GallerySelect = async () => {
-    console.log("===============111111==================");
     ImagePicker.openPicker({
       width: 300,
       height: 400,
@@ -228,12 +223,8 @@ export const SignUp = (props: SignUpProps) => {
       includeBase64: true,
       cropping: true,
     }).then((image) => {
-      console.log(image);
-      console.log("===============222222==================");
 
       if (image) {
-        console.log("---------------assets Gallery 222---------------");
-        console.log(image);
         var fileNameTwo = image?.filename ?? "";
         LodingData(true);
         var output =
@@ -242,10 +233,6 @@ export const SignUp = (props: SignUpProps) => {
 
         assetsData(output);
         setBase64Path(base64Two);
-        console.log("---------------output---------------");
-        console.log(output);
-        console.log("---------------base64Two---------------");
-        console.log(base64Two);
         if (setimageType === 1) {
           ProfileImageUploadAPI(output, base64Two);
         }
@@ -273,8 +260,6 @@ export const SignUp = (props: SignUpProps) => {
     }
 
     ImageOptionModal(false);
-    console.log("=================Request=================", pic);
-    console.log(API_URL + "/v1/users/upload/file");
     try {
       const response = await fetch(API_URL + "/v1/users/upload/file", {
         method: "post",
@@ -285,9 +270,7 @@ export const SignUp = (props: SignUpProps) => {
       });
       const dataItem = await response.json();
       LodingData(false);
-      console.log("-----------------Response------------");
       setProfileUri(dataItem?.data);
-      console.log(dataItem);
     } catch (error) {
       LodingData(false);
       console.log(error);
@@ -302,8 +285,6 @@ export const SignUp = (props: SignUpProps) => {
       base64String: "data:image/jpeg;base64," + base64Item,
     };
     ImageOptionModal(false);
-    console.log("=================Request=================");
-    console.log(pic);
     try {
       const response = await fetch(API_URL + "/v1/users/upload/file", {
         method: "post",
@@ -314,9 +295,7 @@ export const SignUp = (props: SignUpProps) => {
       });
       const dataItem = await response.json();
       LodingData(false);
-      console.log("-----------------Response------------");
       setbackgroundUri(dataItem?.data);
-      console.log(dataItem);
     } catch (error) {
       LodingData(false);
       console.log(error);
@@ -337,7 +316,6 @@ export const SignUp = (props: SignUpProps) => {
   const loadInBrowser = () => {
     const url = "https://onelocal.one/privacy_policy.html";
     if (url) {
-      console.log("11111111111");
       Linking.openURL(url);
     }
   };
@@ -394,8 +372,6 @@ export const SignUp = (props: SignUpProps) => {
     ImageOptionModal(false);
     if (assets) {
       const img = assets?.[0];
-      console.log("---------------assets Gallery 222---------------");
-      console.log(assets);
       var fileNameTwo = img?.fileName ?? "";
       LodingData(true);
       var output =

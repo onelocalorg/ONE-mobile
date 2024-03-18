@@ -72,7 +72,6 @@ export const AddPayoutExpenseScreen = (
     setPriceData(item);
   };
 
-console.log('-----------addPayOutExpense-------', addPayOutExpense)
 
   const resetState = () => {
     onUserSearch("");
@@ -124,9 +123,7 @@ console.log('-----------addPayOutExpense-------', addPayOutExpense)
   async function createPayoutAPI() {
     LodingData(true);
     const token = await AsyncStorage.getItem("token");
-    console.log('---------addPayOutExpense?.profilt--------',addPayOutExpense?.profilt)
     var getAmount = (addPayOutExpense * amount) / 100;
-    console.log(getAmount, "---------------getAmount-----------");
     if (priceData === 1) {
       var item: any = {
         user_id: newUserId,
@@ -147,7 +144,6 @@ console.log('-----------addPayOutExpense-------', addPayOutExpense)
       };
     }
 
-    console.log("------------createPayoutAPI request-------------", item);
     try {
       const response = await fetch(
         API_URL + "/v1/events/event-financial/" + id + "/draft/payout",
@@ -163,7 +159,6 @@ console.log('-----------addPayOutExpense-------', addPayOutExpense)
       );
 
       const dataItem = await response.json();
-      console.log("-------------dataItem--------", dataItem);
       LodingData(false);
       if (dataItem.success) {
         // onSuccessFulData(dataItem.data);
@@ -182,7 +177,6 @@ console.log('-----------addPayOutExpense-------', addPayOutExpense)
 
   const removeuserSelect = (id: any) => {
     const newPeople = userList.filter((person: any) => person !== id);
-    console.log("--------newPeople---------", newPeople);
     recentlyJoinUser(newPeople);
   };
 
@@ -193,8 +187,6 @@ console.log('-----------addPayOutExpense-------', addPayOutExpense)
     };
     onUserSearch(textUser);
     LodingData(true);
-    console.log(datas);
-    console.log(API_URL + "/v1/users/search-user?searchtext=" + textUser);
     try {
       const response = await fetch(
         API_URL + "/v1/users/search-user?searchtext=" + textUser,
@@ -211,7 +203,6 @@ console.log('-----------addPayOutExpense-------', addPayOutExpense)
         return { ...item };
       });
       userGratiesListData(result);
-      console.log(dataItem);
       LodingData(false);
     } catch (error) {
       LodingData(false);
@@ -229,7 +220,6 @@ console.log('-----------addPayOutExpense-------', addPayOutExpense)
       type: "price",
       images: imageSelectArrayKey,
     };
-    console.log("------------createExpenseAPI request-------------", item);
     try {
       const response = await fetch(
         API_URL + "/v1/events/event-financial/" + id + "/draft/expense",
@@ -244,7 +234,6 @@ console.log('-----------addPayOutExpense-------', addPayOutExpense)
       );
 
       const dataItem = await response.json();
-      console.log("-------------dataItem--------", dataItem);
       LodingData(false);
       if (dataItem.success) {
         // onSuccessFulData(dataItem.data);
@@ -280,14 +269,8 @@ console.log('-----------addPayOutExpense-------', addPayOutExpense)
       });
     } else {
       if (borderData === "Expense") {
-        console.log(
-          "----------------borderData === Expense--------------------"
-        );
         createExpenseAPI();
       } else {
-        console.log(
-          "----------------borderData === payout--------------------"
-        );
         createPayoutAPI();
       }
     }
@@ -302,10 +285,8 @@ console.log('-----------addPayOutExpense-------', addPayOutExpense)
       maxWidth: 800,
       maxHeight: 800,
     });
-    console.log(assets);
     if (assets) {
       const img = assets?.[0];
-      console.log(assets);
       var fileNameTwo = img?.fileName ?? "";
       LodingData(true);
       var output =
@@ -323,7 +304,6 @@ console.log('-----------addPayOutExpense-------', addPayOutExpense)
       base64String: "data:image/jpeg;base64," + base64Item,
     };
 
-    console.log("================ postImageUploadAPI Request=================");
     try {
       const response = await fetch(API_URL + "/v1/users/upload/file", {
         method: "post",
@@ -337,12 +317,10 @@ console.log('-----------addPayOutExpense-------', addPayOutExpense)
       var tempData = imageSelectArray;
       tempData.push(dataItem?.data);
       setImageSelectArray(tempData);
-      console.log(" console.log(imageSelectArray)", imageSelectArray);
       var tempTwo = imageSelectArrayKey;
 
       tempTwo.push(dataItem?.data?.key);
       setImageSelectArrayKey(tempTwo);
-      console.log(" console.log(imageSelectArrayKey)", imageSelectArrayKey);
       LodingData(false);
     } catch (error) {
       console.log(error);
@@ -568,7 +546,6 @@ console.log('-----------addPayOutExpense-------', addPayOutExpense)
                   value={amount}
                   keyboardType="number-pad"
                   onChangeText={(text) => {
-                    console.log(text);
                     setAmount(text)
                   }
                   }

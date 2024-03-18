@@ -61,12 +61,18 @@ import { useUserProfile } from '@network/hooks/user-service-hooks/use-user-profi
 
 interface EditPostRequestScreenProps {
   navigation?: NavigationContainerRef<ParamListBase>;
+  route?: {
+    params: {
+      postData: any;
+    };
+  };
 }
 
 export const EditPostRequestScreen = (
   props: EditPostRequestScreenProps,
 ) => {
-  const {navigation} = props || {};
+  const {navigation,route} = props || {};
+  const { postData } = route?.params ?? {};
   const {theme} = useAppTheme();
   const styles = createStyleSheet(theme);
   const {strings} = useStringsAndLabels();
@@ -118,7 +124,6 @@ export const EditPostRequestScreen = (
   const { refetch } = useUserProfile({
     userId: user?.id,
   });
-
   const keyboardDismiss = () => {
     Keyboard.dismiss();
   };
@@ -127,6 +132,7 @@ export const EditPostRequestScreen = (
     LogBox.ignoreAllLogs();
     requestLocationPermission();
     getResourcesAPI();
+    getPostDetailAPI();
   }, []);
 
   const createPostSetType = (text: any, type: any) => {
@@ -244,7 +250,7 @@ export const EditPostRequestScreen = (
       const dataItem = await response.json();
       console.log('-----------------Response------------');
       var tempData = imageArray;
-      tempData.push(dataItem?.data);
+      tempData.push(dataItem?.data?.imageUrl);
       setImageArray(tempData);
 
       var tempTwo = imageArrayKey;
@@ -258,6 +264,44 @@ export const EditPostRequestScreen = (
       LodingData(false);
     }
   };
+
+  async function getPostDetailAPI() {
+    LodingData(true);
+    const token = await AsyncStorage.getItem("token");
+  
+    console.log(API_URL + "/v2/posts/get/detail/" + postData?.id);
+    try {
+      console.log("222222");
+
+      const response = await fetch(API_URL + "/v2/posts/get/detail/" + postData?.id, {
+        method: "get",
+        headers: new Headers({
+          Authorization: "Bearer " + token,
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        }),
+      });
+      const dataItem = await response.json();
+      console.log("=========== Get detail Post API Response ==============");
+      console.log(dataItem);
+      createPostwhatName(dataItem?.data?.what?.name);
+      createPostwhatQuantity(dataItem?.data?.what?.quantity);
+      getTypeIconWhat(dataItem?.data?.what?.icon);
+      createPostcontent(dataItem?.data?.content);
+      createPostforName(dataItem?.data?.for?.name)
+      createPostforQuantity(dataItem?.data?.for?.quantity)
+      getTypeIconFor(dataItem?.data?.for?.icon)
+      // recentlyJoinUser([]);
+      tagselectArray(dataItem?.data?.tags);
+      setImageArray(dataItem?.data?.image);
+      LodingData(false);
+    } catch (error) {
+      console.log("33333");
+
+      LodingData(false);
+      console.error(error);
+    }
+  }
 
   async function createPostAPI() {
     LodingData(true);
@@ -281,10 +325,10 @@ export const EditPostRequestScreen = (
       from_users:userListArray
     };
 
-    console.log('=========== Create Post API Request ==============');
+    console.log(API_URL + "/v2/posts/update/" + postData?.id);
     console.log(data);
     try {
-      const response = await fetch(API_URL + '/v1/posts/create', {
+      const response = await fetch(API_URL + "/v2/posts/update/" + postData?.id, {
         method: 'post',
         headers: new Headers({
           Authorization: 'Bearer ' + token,
@@ -862,92 +906,6 @@ export const EditPostRequestScreen = (
                           </View>
                         </TouchableOpacity>
                       )}></FlatList>
-
-                    {/* <View
-                      style={{
-                        flexDirection: 'row',
-                        alignItems: 'center',
-                        marginVertical: 5,
-                      }}>
-                      <ImageComponent
-                        style={{
-                          height: 25,
-                          width: 25,
-                          marginRight: 20,
-                          borderRadius: 100,
-                        }}
-                        resizeMode="cover"
-                        source={dummy}></ImageComponent>
-                      <Text>Trevor smith</Text>
-                    </View>
-                    <View
-                      style={{
-                        flexDirection: 'row',
-                        alignItems: 'center',
-                        marginVertical: 5,
-                      }}>
-                      <ImageComponent
-                        style={{
-                          height: 25,
-                          width: 25,
-                          marginRight: 20,
-                          borderRadius: 100,
-                        }}
-                        resizeMode="cover"
-                        source={dummy}></ImageComponent>
-                      <Text>Trevor smith</Text>
-                    </View>
-                    <View
-                      style={{
-                        flexDirection: 'row',
-                        alignItems: 'center',
-                        marginVertical: 5,
-                      }}>
-                      <ImageComponent
-                        style={{
-                          height: 25,
-                          width: 25,
-                          marginRight: 20,
-                          borderRadius: 100,
-                        }}
-                        resizeMode="cover"
-                        source={dummy}></ImageComponent>
-                      <Text>Trevor smith</Text>
-                    </View>
-                    <View
-                      style={{
-                        flexDirection: 'row',
-                        alignItems: 'center',
-                        marginVertical: 5,
-                      }}>
-                      <ImageComponent
-                        style={{
-                          height: 25,
-                          width: 25,
-                          marginRight: 20,
-                          borderRadius: 100,
-                        }}
-                        resizeMode="cover"
-                        source={dummy}></ImageComponent>
-                      <Text>Trevor smith</Text>
-                    </View>
-                    <View
-                      style={{
-                        flexDirection: 'row',
-                        alignItems: 'center',
-                        marginVertical: 5,
-                      }}>
-                      <ImageComponent
-                        style={{
-                          height: 25,
-                          width: 25,
-                          marginRight: 20,
-                          borderRadius: 100,
-                        }}
-                        resizeMode="cover"
-                        source={dummy}></ImageComponent>
-                      <Text>Trevor smith</Text>
-                    </View> */}
                   </ScrollView>
                 </View>
               ) : (
@@ -1018,17 +976,6 @@ export const EditPostRequestScreen = (
                 </TouchableOpacity>
                 
               </View>
-              {/* <View style={styles.quntitiyCont}>
-                <Text style={styles.textOne}>Quantity</Text>
-                <TextInput
-                  keyboardType="numeric"
-                  placeholder="how many?"
-                  value={forQuantity}
-                  placeholderTextColor="darkgray"
-                  onChangeText={text => createPostforQuantity(text)}
-                  style={styles.quntitiyInput}></TextInput>
-              </View> */}
-
               <SizedBox height={verticalScale(10)}></SizedBox>
               <View style={styles.createPostCont}>
                   <Text style={styles.textOne}>When</Text>
@@ -1098,7 +1045,7 @@ export const EditPostRequestScreen = (
                     <TouchableOpacity
                     onPress={() => removeSelectImage(item)}
                   >
-                      <ImageComponent source={{uri: item?.imageUrl}} style={styles.selectImage}></ImageComponent></TouchableOpacity>
+                      <ImageComponent source={{uri: item}} style={styles.selectImage}></ImageComponent></TouchableOpacity>
                   );
                 })}
               </View>

@@ -94,7 +94,6 @@ export const Header = (props: HeaderProps) => {
         <View style={styles.searchContainer}>
           <ImageComponent style={styles.searchIcon} source={Search}></ImageComponent>
           <TextInput value={searchQuery} placeholderTextColor="#FFFF" placeholder='Search' style={styles.searchInput} onChangeText={value => {
-            console.log(value)
             setSearchQuery(value)
           }}></TextInput>
         </View>

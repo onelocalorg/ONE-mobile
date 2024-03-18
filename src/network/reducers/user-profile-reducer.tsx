@@ -23,7 +23,6 @@ const userProfileSlice = createSlice({
       return state;
     },
     onSetCoverImage: (prevState: UserProfileState, action: Action) => {
-      console.log('action===', action);
 
       const state = {...prevState};
       state.user = {...state.user, coverImage: action?.payload};

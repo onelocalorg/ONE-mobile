@@ -102,7 +102,6 @@ export const Recentabout = (props: RecentaboutDataProps) => {
   const {token} = useToken();
   const {id} = route?.params ?? {};
   const [openQues, quesAnsModal] = useState(false);
-  console.log('==============usersId==========', idUser);
   var [ansQueData, submitAnsState] = useState(profileAnswers);
   var [ansQueDataTwo, submitAnsStateTwo] = useState(profileAnswers);
   const {} = props || {};
@@ -119,8 +118,6 @@ export const Recentabout = (props: RecentaboutDataProps) => {
   async function userRecentProfileUpdate() {
     const token = await AsyncStorage.getItem('token');
     const userID = await AsyncStorage.getItem('recentUserId');
-    console.log(token);
-    console.log(userID);
     try {
       const response = await fetch(
         API_URL + '/v1/users/userprofile/'+userID,
@@ -133,16 +130,11 @@ export const Recentabout = (props: RecentaboutDataProps) => {
         },
       );
       const dataItem = await response.json();
-      console.log('===========User Profile data Response==============');
       submitAnsState(dataItem?.data?.profile_answers);
       recentUserDetail(dataItem?.data);
       setAbout(dataItem?.about);
       setSkills(dataItem?.skills);
-      console.log(
-        API_URL + '/v1/users/userprofile/'+userID,
-      );
       LodingData(false)
-      console.log(dataItem);
     } catch (error) {
       LodingData(false)
       console.error(error);
@@ -157,7 +149,6 @@ export const Recentabout = (props: RecentaboutDataProps) => {
 
   const handleRemove = (id: any) => {
     const newPeople = allSkills.filter(person => person !== id);
-    console.log('--------newPeople---------', newPeople);
 
     setSkills(newPeople);
   };
@@ -165,7 +156,6 @@ export const Recentabout = (props: RecentaboutDataProps) => {
   const onAddSkill = (text: any) => {
     if (text !== '' && text !== undefined) {
       setSkills([...allSkills, text]);
-      console.log('onSubmitEditing onSubmitEditing', allSkills, text);
       setSkillValue('');
     }
   };
@@ -204,7 +194,6 @@ export const Recentabout = (props: RecentaboutDataProps) => {
     });
     submitAnsState(newArr);
     submitAnsStateTwo(newArrs);
-    console.log('===========ansQueData 22==========', ansQueData);
   }
 
   const onBackPress = () => {

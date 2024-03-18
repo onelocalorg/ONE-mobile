@@ -43,6 +43,26 @@ export const MapRoute = () => {
         component={AdminToolsScreen}
         options={{header}}
       />
+       <MapStack.Screen
+        name={navigations.CREATEPOST}
+        component={CreatePostScreen}
+        options={{header}}
+      />
+      <MapStack.Screen
+        name={navigations.CREATEPOSTOFFER}
+        component={CreatePostOfferScreen}
+        options={{header}}
+      />
+      <MapStack.Screen
+        name={navigations.CREATEPOSTREQUEST}
+        component={CreatePostRequestScreen}
+        options={{header}}
+      />
+      <MapStack.Screen
+        name={navigations.CREATEPOSTGRATIS}
+        component={CreatePostGratisScreen}
+        options={{header}}
+      />
     </MapStack.Navigator>
   );
 };

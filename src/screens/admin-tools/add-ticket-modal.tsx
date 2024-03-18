@@ -68,7 +68,6 @@ const AddTicketModalComp = (
         setPrice(ticketData?.price);
         setTicketName(ticketData?.name);
         totalTicketQuantity(ticketData?.quantity);
-        console.log(ticketData?.quantity, "============");
       }
     }, [ticketData, isEdit])
   );
@@ -91,13 +90,10 @@ const AddTicketModalComp = (
       quantity: ticketquantity,
     };
     let res;
-    console.log(request, "----------onCreateTicket Request---------");
     if (isEdit) {
       res = await editTicket({ bodyParams: request, ticketId: ticketData?.id });
-      console.log(res, "----------onCreateTicket Response---------");
     } else {
       res = await mutateAsync({ bodyParams: request });
-      console.log(res, "----------onCreateTicket Response---------");
     }
 
     if (res?.success) {

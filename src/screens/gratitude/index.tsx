@@ -234,7 +234,7 @@ export const GratitudeScreen = (props: MapScreenProps) => {
         user_long: longitude,
         radius: 25,
         zoom_level: zoomLevel,
-        device_type: "ios",
+        device_type: Platform.OS,
       };
     }
     console.log("-----------------map location------------------", data);

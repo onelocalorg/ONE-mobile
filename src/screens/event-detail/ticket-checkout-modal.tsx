@@ -88,10 +88,6 @@ const TicketCheckoutModalComp = (
   const [newCardZip, addNewCardZip] = useState('');
 
   var [buttonDisable, buttonDisableCheck] = useState(Boolean);
-  console.log(
-    eventData,
-    '----------------ticket check out--------------------',
-  );
 
   useEffect(() => {
     getCardDetailAPI();
@@ -104,7 +100,6 @@ const TicketCheckoutModalComp = (
       if (eventData?.tickets[0].available_quantity !== 0) {
         buttonDisableCheck(false);
       }
-      console.log(eventData?.tickets[0].available_quantity, '--==-0-=');
       totalPriceCalculation(eventData?.tickets?.[0]?.id, 1);
       PurchaseTicketId(eventData?.tickets?.[0]?.id);
     }
@@ -112,14 +107,12 @@ const TicketCheckoutModalComp = (
 
   async function totalPriceCalculation(ticketId: any, quantityticket: any) {
     const token = await AsyncStorage.getItem('token');
-    console.log(token);
     console.log(
       API_URL + '/v1/tickets/' +
         ticketId +
         '/' +
         quantityticket,
     );
-    console.log(eventData?.id);
     try {
       console.log(
         API_URL + '/v1/tickets/' +
@@ -141,9 +134,6 @@ const TicketCheckoutModalComp = (
         },
       );
       const dataItem = await response.json();
-      console.log(
-        '===========totalPriceCalculation data Response==============',
-      );
       isLoading(false);
       console.log(dataItem);
       totalPriceCalc(dataItem?.data);
@@ -161,9 +151,6 @@ const TicketCheckoutModalComp = (
       totalTicketQuantity(1);
       totalPriceCalculation(item?.id, 1);
     }
-    console.log(item);
-    console.log(ticketId);
-    console.log(item?.available_quantity, 'item?.available_quantity');
     if (item?.available_quantity === 0) {
       buttonDisableCheck(true);
     } else {
@@ -173,7 +160,6 @@ const TicketCheckoutModalComp = (
 
   const onSelectCard = (index: any, item: any) => {
     setSelectedCardRadioIndex(index);
-    console.log(item);
   };
 
   const OnMinusClick = (index: any, maxQuantity: any) => {
@@ -224,10 +210,6 @@ const TicketCheckoutModalComp = (
         },
       );
       const dataItem = await response.json();
-      console.log(
-        '-------------------Get Card Detail API Response---------------------',
-      );
-      console.log(JSON.stringify(dataItem));
       isLoading(false);
       
       setCardData(dataItem?.data?.cards);
@@ -252,9 +234,7 @@ const TicketCheckoutModalComp = (
         },
       );
       const dataItem = await response.json();
-      console.log('-----------------add card config list------------');
       const keyId = dataItem?.data?.stripe?.stripePublicKey;
-      console.log(dataItem);
       setTimeout(() => {
         cardStripeAPI(keyId);
       }, 2000);
@@ -276,7 +256,6 @@ const TicketCheckoutModalComp = (
       'card[cvc]': newCardCvv,
     };
 
-    console.log(genCard);
 
     const results = await fetch('https://api.stripe.com/v1/tokens', {
       method: 'post',
@@ -295,13 +274,8 @@ const TicketCheckoutModalComp = (
     setTimeout(() => {
       if (results.id) {
         createNewCardAPI(card_tok);
-        console.log('============CreateCardAPI============');
       }
     }, 3000);
-
-    console.log('================card stripe api==================');
-    console.log(results);
-
     if (results.error) {
       Toast.show(results.error.message, Toast.LONG, {
         backgroundColor: 'black',
@@ -316,10 +290,6 @@ const TicketCheckoutModalComp = (
     var cardtokenData: any = {
       token: cardId,
     };
-
-    console.log(
-      "-------------------Create New Card Detail API Request---------------------"
-    );
     try {
       const response = await fetch(API_URL + "/v1/subscriptions/cards/create", {
         method: "post",
@@ -330,11 +300,7 @@ const TicketCheckoutModalComp = (
         body: JSON.stringify(cardtokenData),
       });
       const dataItem = await response.json();
-      console.log(
-        "-------------------Create New Card Detail API Response---------------------"
-      );
       isLoading(false);
-      console.log(dataItem);
       if (dataItem?.success === true) {
         addNewCardModal(false);
         Toast.show(dataItem?.message, Toast.LONG, {
@@ -699,7 +665,6 @@ const TicketCheckoutModalComp = (
                       style={styles.addCardNameInput}
                       placeholder="name on card"
                       onChangeText={value => {
-                        console.log(value);
                         addNewCardName(value);
                       }}
                     />
@@ -718,7 +683,6 @@ const TicketCheckoutModalComp = (
                         style={styles.addCardInput}
                         placeholder="card number"
                         onChangeText={value => {
-                          console.log(value);
                           addNewCardNumber(value);
                         }}
                       />
@@ -733,9 +697,6 @@ const TicketCheckoutModalComp = (
                               : text,
                           );
                           const [month, year] = text.split('/');
-                          console.log(month);
-                          console.log(year);
-
                           addNewCardMonth(month);
                           addNewCardYear(year);
                         }}
@@ -754,7 +715,6 @@ const TicketCheckoutModalComp = (
                         style={styles.addCardCVCInput}
                         placeholder="cvc"
                         onChangeText={value => {
-                          console.log(value);
                           addNewCardCvv(value);
                         }}
                       />
@@ -768,7 +728,6 @@ const TicketCheckoutModalComp = (
                         style={styles.addCardNameInput}
                         placeholder="Country or Region"
                         onChangeText={value => {
-                          console.log(value);
                           addNewCardCountry(value);
                         }}
                       />
@@ -779,7 +738,6 @@ const TicketCheckoutModalComp = (
                         style={styles.addCardNameInput}
                         placeholder="Address line 1"
                         onChangeText={value => {
-                          console.log(value);
                           addNewCardAddress(value);
                         }}
                       />
@@ -790,7 +748,6 @@ const TicketCheckoutModalComp = (
                         style={styles.addCardNameInput}
                         placeholder="Address line 2 (optional)"
                         onChangeText={value => {
-                          console.log(value);
                           addNewCardAddressTwo(value);
                         }}
                       />
@@ -801,7 +758,6 @@ const TicketCheckoutModalComp = (
                         style={styles.addCardNameInput}
                         placeholder="City"
                         onChangeText={value => {
-                          console.log(value);
                           addNewCardCity(value);
                         }}
                       />
@@ -812,7 +768,6 @@ const TicketCheckoutModalComp = (
                         style={styles.addCardNameInput}
                         placeholder="State"
                         onChangeText={value => {
-                          console.log(value);
                           addNewCardSate(value);
                         }}
                       />
@@ -824,7 +779,6 @@ const TicketCheckoutModalComp = (
                         style={styles.addCardNameInput}
                         placeholder="ZIP"
                         onChangeText={value => {
-                          console.log(value);
                           addNewCardZip(value);
                         }}
                       />

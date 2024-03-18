@@ -85,12 +85,9 @@ export const RecentProfileScreen = (props: RecentProfileScreenProps) => {
     user || {};
   const dispatch = useDispatch();
   const {token} = useToken();
-  console.log(user, '--------------User Info--------------');
-  console.log(skills, '888888888888');
   useEffect(() => {
     setBio(bio);
     setProfileUri(pic);
-    console.log('------------pic----------', pic);
   }, [bio, pic]);
 
   useEffect(() => {
@@ -106,7 +103,6 @@ export const RecentProfileScreen = (props: RecentProfileScreenProps) => {
 
 
   async function userProfileUpdate() {
-    console.log(token)
     try {
       const response = await fetch(API_URL + '/v1/users/userprofile/5f61a3b16f61450a2bb888e8', {
         method: 'get',
@@ -116,7 +112,6 @@ export const RecentProfileScreen = (props: RecentProfileScreenProps) => {
         })
       });
       const dataItem = await response.json();
-      console.log('===========User Profile data Response==============') 
       submitAnsState(dataItem?.data)
 
       const {success, data} = dataItem || {};
@@ -126,7 +121,6 @@ export const RecentProfileScreen = (props: RecentProfileScreenProps) => {
         } = data || {};
         
       }
-      console.log(dataItem?.data);
     } catch (error) {
       console.error(error);
     }

@@ -69,6 +69,26 @@ export const EventRoute = () => {
         component={EditPayoutModalScreen}
         options={{header}}
       />
+       <EventStack.Screen
+        name={navigations.CREATEPOST}
+        component={CreatePostScreen}
+        options={{header}}
+      />
+      <EventStack.Screen
+        name={navigations.CREATEPOSTOFFER}
+        component={CreatePostOfferScreen}
+        options={{header}}
+      />
+      <EventStack.Screen
+        name={navigations.CREATEPOSTREQUEST}
+        component={CreatePostRequestScreen}
+        options={{header}}
+      />
+      <EventStack.Screen
+        name={navigations.CREATEPOSTGRATIS}
+        component={CreatePostGratisScreen}
+        options={{header}}
+      />
     </EventStack.Navigator>
   );
 };

@@ -146,7 +146,6 @@ export const AdminToolsScreen = (props: AdminToolsScreenProps) => {
   }, [startDateValue, endDateValue]);
 
   useEffect(() => {
-    console.log(eventData,'eventData eventData')
     if (!isCreateEvent) {
       refetch();
       if (eventData) {
@@ -260,9 +259,7 @@ export const AdminToolsScreen = (props: AdminToolsScreenProps) => {
   const onCreateEvent = async () => {
     var getTicket:any = tickets?.map((ele) => ele?.id ?? "");
     LodingData(true);
-    console.log("1111111wdeee");
     Keyboard.dismiss();
-    console.log();
     const res = await createEvent({
       bodyParams: {
         ...eventDetails,
@@ -273,13 +270,10 @@ export const AdminToolsScreen = (props: AdminToolsScreenProps) => {
         type: setFilter,
       },
     });
-    console.log(setFilter);
     if (res?.success) {
-      console.log(res, "res res res");
       LodingData(false);
       navigation?.goBack();
     } else {
-      console.log(res, "res error res error res error");
       LodingData(false);
     }
   };
@@ -328,7 +322,6 @@ export const AdminToolsScreen = (props: AdminToolsScreenProps) => {
 
     const res = await mutateAsync({ bodyParams: request, eventId: id });
     if (res?.success) {
-      console.log(request, "-------------requestSuccess---------------");
       LodingData(false);
       navigation?.goBack();
     } else {
@@ -388,7 +381,6 @@ export const AdminToolsScreen = (props: AdminToolsScreenProps) => {
     });
     if (assets) {
       const img = assets?.[0]; 
-      console.log(assets);
       var fileNameTwo = img?.fileName ?? "";
       LodingData(true);
       var output =
@@ -405,7 +397,6 @@ export const AdminToolsScreen = (props: AdminToolsScreenProps) => {
       base64String: "data:image/jpeg;base64," + base64Item,
     };
 
-    console.log("=================Request=================", pic);
     console.log(API_URL + "/v1/users/upload/file");
     try {
       const response = await fetch(API_URL + "/v1/users/upload/file", {
@@ -417,7 +408,6 @@ export const AdminToolsScreen = (props: AdminToolsScreenProps) => {
       });
       const dataItem = await response.json();
       LodingData(false);
-      console.log("-----------------Response------------");
       setEventImage(dataItem?.data?.key);
       setEventImageDisplay(dataItem?.data?.imageUrl)
       console.log(dataItem);
@@ -435,9 +425,7 @@ export const AdminToolsScreen = (props: AdminToolsScreenProps) => {
     if (isEnabled === false) {
       setIsEnabled(true);
       SetToggleFilter("AO");
-      console.log(setFilter);
     } else {
-      console.log(setFilter);
       setIsEnabled(false);
       SetToggleFilter("VF");
     }
@@ -657,13 +645,6 @@ export const AdminToolsScreen = (props: AdminToolsScreenProps) => {
                       GooglePlacesDetailsQuery={{ fields: "geometry" }}
                       fetchDetails={true}
                       onPress={(data: any, details = null) => {
-                        // handleText(data.description, "full_address");
-                        console.log(JSON.stringify(data));
-                        console.log(JSON.stringify(details)); // description
-                        console.log(
-                          JSON.stringify(details?.geometry?.location)
-                        );
-                        // setAddressLocation(details?.geometry?.location);
                         setEventDetails({
                           ...eventDetails,
                           full_address: data.description,

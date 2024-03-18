@@ -178,9 +178,6 @@ export const EventListScreen = (props: EventListScreenProps) => {
         }),
       });
       const dataItem = await response.json();
-      console.log("-----------------Response User Profile API------------");
-      console.log(dataItem);
-      console.log(dataItem.data.pic);
       setUserProfile(dataItem.data);
       if (dataItem?.data?.isEventActiveSubscription === true) {
         AsyncStorage.setItem("isEventActive", "true");

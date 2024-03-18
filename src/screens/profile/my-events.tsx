@@ -57,7 +57,6 @@ export const MyEvents = (props: MyEventsProps) => {
       userId,
     });
 
-    console.log('---------get API reaponse-------')
     var dataTemp = [...events, ...res?.data.results]; 
     setEvents(dataTemp);
 
@@ -69,9 +68,7 @@ export const MyEvents = (props: MyEventsProps) => {
   };
 
   const onLoadMoreData = () => {
-    console.log('fasdfasfajsdofhajsdjfhaskdjfasjkdbfajksdbfajksdbfasjbsajkbdjfbasj',);
     if (totalPages !== currentPages) {
-      console.log('11111111111111111111111111111111111');
       setPage(page + 1); 
     }
   };

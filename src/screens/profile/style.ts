@@ -721,10 +721,15 @@ lastName:{
       width: normalScale(30),
       marginLeft: normalScale(10),
     },
-    HeaderContainer: {
+    HeaderContainerIOS: {
       flexDirection: 'row',
       justifyContent: 'space-between',
       marginTop: 60,
+     height:60
+    },
+    HeaderContainerAdroid: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
      height:60
     },
     downIcon: {
@@ -805,7 +810,7 @@ lastName:{
       color: 'black'
     },
     ProfileUpdateCont: {
-      alignItems: 'center',
+      alignSelf: 'center',
       color: '#91BAD4',
       fontSize: 16,
       fontFamily: theme.fontType.regular,
@@ -815,9 +820,8 @@ lastName:{
       paddingHorizontal: normalScale(8),
       height: 40,
       borderColor: '#91BAD4',
-      marginHorizontal: 60,
       marginTop: 12,
-      marginBottom: 24
+      marginBottom: 24,
     },
 
     answerDisplayCont: {

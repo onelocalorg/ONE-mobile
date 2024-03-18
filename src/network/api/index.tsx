@@ -81,7 +81,6 @@ const interceptor = (ref: AxiosInstance) => {
         Toast.show(error?.response?.data?.message, Toast.LONG, {
           backgroundColor: 'black',
         });
-        // console.log('Error',error?.response?.data?.message)
       }
 
       return Promise.reject(error?.response);

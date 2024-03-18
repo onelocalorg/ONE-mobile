@@ -133,7 +133,6 @@ export const BottomNavigator = () => {
   };
 
   const getTabbarStyle = (route: RouteProp<ParamListBase, string>) => {
-    console.log('routeName route',route);
     const routeName = getFocusedRouteNameFromRoute(route) ?? '';
     if (
       routeName.length === 0 ||

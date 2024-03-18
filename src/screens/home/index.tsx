@@ -99,7 +99,8 @@ export const HomeScreen = (props: HomeScreenProps) => {
   const [setGratis, setPostGratisData] = useState();
   const [setComment, setPostCommentData] = useState();
   const [postData, setPostDataForComment] = useState();
-  const [post_index, setPostCommentIndexTwo]: any = useState();
+  const [post_index, setPostCommentIndexTwo]: any = useState()
+  const [editPost, setEditPost]: any = useState();
   const [showCommentListModal, setShowCommentListData] = useState(false);
   const [Post_Id, setPostDataId] = useState("");
 
@@ -551,8 +552,9 @@ export const HomeScreen = (props: HomeScreenProps) => {
     postContentModal(false);
   };
 
-  const openPostModal = (postID: any) => {
+  const openPostModal = (postID: any,postData:any) => {
     hidePostContentIDData(postID);
+    setEditPost(postData);
     postContentModal(true);
   };
   const postHideOptionSelect = (postSelectType: any) => {
@@ -579,7 +581,7 @@ export const HomeScreen = (props: HomeScreenProps) => {
               zIndex: 111122,
             }}
           >
-            <TouchableOpacity onPress={() => openPostModal(item.id)}>
+            <TouchableOpacity onPress={() => openPostModal(item.id,item)}>
               <ImageComponent
                 resizeMode="cover"
                 style={styles.postfilterImage}
@@ -778,13 +780,13 @@ export const HomeScreen = (props: HomeScreenProps) => {
     ) : null;
   };
 
-  const onEditPost = (postType: any) => {
-    if (postType === "offer") {
-      navigation.navigate(navigations.EDITPOSTOFFER);
-    } else if (postType === "request") {
-      navigation.navigate(navigations.EDITPOSTREQUEST);
-    } else if (postType === "gratis") {
-      navigation.navigate(navigations.EDITPOSTGRATIS);
+  const onEditPost = () => {
+    if (editPost?.type === "Offer") {
+      navigation.navigate(navigations.EDITPOSTOFFER,{postData:editPost});
+    } else if (editPost?.type === "Request") {
+      navigation.navigate(navigations.EDITPOSTREQUEST,{postData:editPost});
+    } else if (editPost?.type === "Gratis") {
+      navigation.navigate(navigations.EDITPOSTGRATIS,{postData:editPost});
     }
     postContentModal(false);
   };
@@ -983,19 +985,9 @@ export const HomeScreen = (props: HomeScreenProps) => {
           style={styles.keyboardViewTwo}
         >
           <View style={styles.postActionSheet}>
-            <TouchableOpacity onPress={() => onEditPost("offer")}>
+            <TouchableOpacity onPress={() => onEditPost()}>
               <Text style={[styles.postText, { color: "white" }]}>
-                Edit Offer
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => onEditPost("request")}>
-              <Text style={[styles.postText, { color: "white" }]}>
-                Edit Request
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => onEditPost("gratis")}>
-              <Text style={[styles.postText, { color: "white" }]}>
-                Edit Gratis
+                Edit Post
               </Text>
             </TouchableOpacity>
             <TouchableOpacity onPress={() => onDeletePost()}>

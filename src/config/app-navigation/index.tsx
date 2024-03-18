@@ -43,7 +43,6 @@ export const AppNavigation = () => {
   function checkPaymentFlowHideShow(dataItem: any) {
     
     if ("isPaymentFlowShowOne" in dataItem) {
-      console.log("isPaymentFlowShowOne");
       var datatemp = dataItem?.isPaymentFlowShowOne;
       setData("isShowPaymentFlow", datatemp);
     }

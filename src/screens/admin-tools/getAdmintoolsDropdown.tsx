@@ -125,7 +125,6 @@ export const GetAdmintoolsDropDownScreen = (
         backgroundColor: "black",
       });
 
-      console.log(dataItem);
     } catch (error) {
       console.error(error);
       LodingData(false);
@@ -133,7 +132,6 @@ export const GetAdmintoolsDropDownScreen = (
   }
 
   const editClick = (item: any, type: any) => {
-    console.log(item);
     var tempData = {
       isPayoutorExpense: type,
       userSelectedData: item.user_id,

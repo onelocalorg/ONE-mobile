@@ -71,6 +71,11 @@ import {
 
 interface EditPostOfferScreenProps {
   navigation?: NavigationContainerRef<ParamListBase>;
+  route?: {
+    params: {
+      postData: any;
+    };
+  };
 }
 interface Range {
   startDate: Date | undefined;
@@ -78,7 +83,8 @@ interface Range {
 }
 
 export const EditPostOfferScreen = (props: EditPostOfferScreenProps) => {
-  const { navigation } = props || {};
+  const { navigation,route } = props || {};
+  const { postData } = route?.params ?? {};
   const { theme } = useAppTheme();
   const styles = createStyleSheet(theme);
   const { strings } = useStringsAndLabels();
@@ -135,6 +141,8 @@ export const EditPostOfferScreen = (props: EditPostOfferScreenProps) => {
     userId: user?.id,
   });
 
+  console.log(postData);
+
   const datePickerRef: React.Ref<DatePickerRefProps> = useRef(null);
 
   const keyboardDismiss = () => {
@@ -145,6 +153,7 @@ export const EditPostOfferScreen = (props: EditPostOfferScreenProps) => {
     LogBox.ignoreAllLogs();
     requestLocationPermission();
     getResourcesAPI();
+    getPostDetailAPI();
   }, []);
 
   const createPostSetType = (text: any, type: any) => {
@@ -269,7 +278,7 @@ export const EditPostOfferScreen = (props: EditPostOfferScreenProps) => {
       const dataItem = await response.json();
       console.log("-----------------Response------------");
       var tempData = imageArray;
-      tempData.push(dataItem?.data);
+      tempData.push(dataItem?.data?.imageUrl);
       setImageArray(tempData);
 
       var tempTwo = imageArrayKey;
@@ -282,8 +291,46 @@ export const EditPostOfferScreen = (props: EditPostOfferScreenProps) => {
     }
   };
 
+  async function getPostDetailAPI() {
+    LodingData(true);
+    const token = await AsyncStorage.getItem("token");
+  
+    console.log(API_URL + "/v2/posts/get/detail/" + postData?.id);
+    try {
+      console.log("222222");
+
+      const response = await fetch(API_URL + "/v2/posts/get/detail/" + postData?.id, {
+        method: "get",
+        headers: new Headers({
+          Authorization: "Bearer " + token,
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        }),
+      });
+      const dataItem = await response.json();
+      console.log("=========== Get detail Post API Response ==============");
+      console.log(dataItem);
+      createPostwhatName(dataItem?.data?.what?.name);
+      createPostwhatQuantity(dataItem?.data?.what?.quantity);
+      getTypeIconWhat(dataItem?.data?.what?.icon);
+      createPostcontent(dataItem?.data?.content);
+      createPostforName(dataItem?.data?.for?.name)
+      createPostforQuantity(dataItem?.data?.for?.quantity)
+      getTypeIconFor(dataItem?.data?.for?.icon)
+      // recentlyJoinUser([]);
+      tagselectArray(dataItem?.data?.tags);
+      setImageArray(dataItem?.data?.image);
+      LodingData(false);
+    } catch (error) {
+      console.log("33333");
+
+      LodingData(false);
+      console.error(error);
+    }
+  }
+
+
   async function createPostAPI() {
-    console.log("1111111");
     LodingData(true);
     const token = await AsyncStorage.getItem("token");
     var data = {
@@ -305,12 +352,12 @@ export const EditPostOfferScreen = (props: EditPostOfferScreenProps) => {
       to_offer_users: userListArray,
     };
 
-    console.log("=========== Create Post API Request ==============");
+    console.log(API_URL + "/v2/posts/update/" + postData?.id);
     console.log(data);
     try {
       console.log("222222");
 
-      const response = await fetch(API_URL + "/v1/posts/create", {
+      const response = await fetch(API_URL + "/v2/posts/update/" + postData?.id, {
         method: "post",
         headers: new Headers({
           Authorization: "Bearer " + token,
@@ -320,7 +367,7 @@ export const EditPostOfferScreen = (props: EditPostOfferScreenProps) => {
         body: JSON.stringify(data),
       });
       const dataItem = await response.json();
-      console.log("=========== Create Post API Response ==============");
+      console.log("=========== Edit Post API Response ==============");
       console.log(dataItem);
       LodingData(false);
       Toast.show(dataItem?.message, Toast.LONG, {
@@ -571,7 +618,7 @@ export const EditPostOfferScreen = (props: EditPostOfferScreenProps) => {
     console.log(imageArrayKey);
     const newImage = imageArray.filter(
       (person: any) =>
-        person.imageUrl !== imageItem?.imageUrl && person.key !== imageItem.key
+        person.imageUrl !== imageItem && person.key !== imageItem.key
     );
     setImageArray(newImage);
     const newImagekey = imageArrayKey.filter(
@@ -1103,7 +1150,7 @@ export const EditPostOfferScreen = (props: EditPostOfferScreenProps) => {
                   return (
                     <TouchableOpacity onPress={() => removeSelectImage(item)}>
                       <ImageComponent
-                        source={{ uri: item?.imageUrl }}
+                        source={{ uri: item }}
                         style={styles.selectImage}
                       ></ImageComponent>
                     </TouchableOpacity>
@@ -1112,78 +1159,7 @@ export const EditPostOfferScreen = (props: EditPostOfferScreenProps) => {
               </View>
             </View>
             <View>
-              {/* <View style={styles.quntitiyCont}>
-                <Text style={styles.textOne}>Quantity</Text>
-                <TextInput
-                  keyboardType="numeric"
-                  placeholder="how many?"
-                  value={whatQuantity}
-                  placeholderTextColor="darkgray"
-                  onChangeText={text => createPostwhatQuantity(text)}
-                  style={styles.quntitiyInput}></TextInput>
-              </View> */}
-
-              {/* <View style={styles.quntitiyCont}>
-                <Text style={styles.textOne}>Quantity</Text>
-                <TextInput
-                  keyboardType="numeric"
-                  placeholder="how many?"
-                  value={forQuantity}
-                  placeholderTextColor="darkgray"
-                  onChangeText={text => createPostforQuantity(text)}
-                  style={styles.quntitiyInput}></TextInput>
-              </View> */}
-
               <View style={styles.createPostCont}>
-                {/* <Text style={styles.textOne}>When</Text> */}
-                {/* <ImageComponent
-                  resizeMode="cover"
-                  source={postCalender}
-                  style={styles.createImgOne}></ImageComponent> */}
-
-                {/* <TouchableOpacity
-                  activeOpacity={0.8}
-                  onPress={() => setOpen(true)}
-                  style={styles.postInputTwo}>
-                  <Text style={styles.time}>
-                    {`${moment(range.startDate).format('DD MMM YYYY hh:mm A')}`}
-                  </Text>
-
-                
-                </TouchableOpacity> */}
-
-                {/* <View>
-                  <TouchableOpacity activeOpacity={0.8} style={styles.postdate}>
-                    <ImageComponent
-                      source={postCalender}
-                      style={styles.calendar}
-                    />
-                    <ImageComponent
-                      source={arrowDown}
-                      style={{height: 10, width: 10}}
-                    />
-
-                    <TouchableOpacity
-                      activeOpacity={0.8}
-                      onPress={() => setOpen(true)}>
-                      <Text style={styles.time}>
-                        {`${moment(range?.startDate).format(
-                          'h:mma MMM D, YYYY',
-                        )}`}
-                        -
-                      </Text>
-                    </TouchableOpacity>
-
-                    <TouchableOpacity
-                      activeOpacity={0.8}
-                      onPress={() => setOpen(true)}>
-                      <Text style={styles.time}>{`${moment(
-                        range?.endDate,
-                      ).format('h:mma MMM D, YYYY')}`}</Text>
-                    </TouchableOpacity>
-                  </TouchableOpacity>
-                  {/* <Text>+ add an additional timerange</Text> */}
-                {/* </View> */}
               </View>
 
               <TouchableOpacity

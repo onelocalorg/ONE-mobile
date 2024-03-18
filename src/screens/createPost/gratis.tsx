@@ -519,6 +519,7 @@ export const CreatePostGratisScreen = (props: CreatePostGratisScreenProps) => {
                   placeholder="What do you want to offer?"
                   placeholderTextColor="darkgray"
                   value={whatName}
+                  editable={false}
                   onChangeText={text => createPostwhatName(text)}
                   style={styles.postInputTwo}></TextInput>
                   {/* <SizedBox width={10}></SizedBox> */}

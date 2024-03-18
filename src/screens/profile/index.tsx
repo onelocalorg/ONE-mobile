@@ -182,7 +182,6 @@ export const ProfileScreen = (props: ProfileScreenProps) => {
   );
 
   const onBackPress = () => {
-    console.log("jdjkshdjkshdkhjakhdajk");
     navigation.goBack();
   };
 
@@ -281,12 +280,7 @@ export const ProfileScreen = (props: ProfileScreenProps) => {
       includeBase64: true,
       cropping: true,
     }).then((image) => {
-      console.log(image);
-      console.log("===============222222==================");
-
       if (image) {
-        console.log("---------------assets Gallery 222---------------");
-        console.log(image);
         var fileNameTwo = image?.filename ?? "";
         LodingData(true);
         var output =
@@ -295,10 +289,6 @@ export const ProfileScreen = (props: ProfileScreenProps) => {
 
         assetsData(output);
         setBase64Path(base64Two);
-        console.log("---------------output---------------");
-        console.log(output);
-        console.log("---------------base64Two---------------");
-        console.log(base64Two);
         if (setimageType === 1) {
           ProfileImageUploadAPI(output, base64Two);
         }
@@ -311,7 +301,6 @@ export const ProfileScreen = (props: ProfileScreenProps) => {
   };
 
   const ProfileImageUploadAPI = async (fileItem: any, base64Item: any) => {
-    console.log("=================Request=================");
     if (Platform.OS === "ios") {
       var pic: any = {
         uploadKey: "pic",
@@ -330,8 +319,6 @@ export const ProfileScreen = (props: ProfileScreenProps) => {
     }
 
     ImageOptionModal(false);
-    console.log("=================Request=================");
-    console.log(pic);
     try {
       const response = await fetch(API_URL + "/v1/users/upload/file", {
         method: "post",
@@ -342,9 +329,7 @@ export const ProfileScreen = (props: ProfileScreenProps) => {
       });
       const dataItem = await response.json();
       LodingData(false);
-      console.log("-----------------Response------------");
       setProfileUri(dataItem?.data?.imageUrl);
-      console.log("=========dataItem==========", dataItem);
     } catch (error) {
       LodingData(false);
       console.log(error);
@@ -370,8 +355,6 @@ export const ProfileScreen = (props: ProfileScreenProps) => {
     }
 
     ImageOptionModal(false);
-    console.log("=================Request=================");
-    console.log("-----pic------", pic);
     try {
       const response = await fetch(API_URL + "/v1/users/upload/file", {
         method: "post",
@@ -382,9 +365,7 @@ export const ProfileScreen = (props: ProfileScreenProps) => {
       });
       const dataItem = await response.json();
       LodingData(false);
-      console.log("-----------------Response------------");
       setbackgroundUri(dataItem?.data?.imageUrl);
-      console.log(dataItem);
     } catch (error) {
       LodingData(false);
       console.log(error);
@@ -407,10 +388,8 @@ export const ProfileScreen = (props: ProfileScreenProps) => {
       });
       const dataItem = await response.json();
       if (dataItem?.data) {
-        console.log("11111111111", dataItem?.data);
         Linking.openURL(dataItem?.data);
       }
-      console.log(dataItem, "dataItem dataItem");
       LodingData(false);
     } catch (error) {
       LodingData(false);
@@ -422,7 +401,6 @@ export const ProfileScreen = (props: ProfileScreenProps) => {
     about?: string;
     skills?: string[];
   }) => {
-    console.log("============onSaveProfile===============");
     Keyboard.dismiss();
     let body = {
       ...request,
@@ -440,15 +418,12 @@ export const ProfileScreen = (props: ProfileScreenProps) => {
       nick_name?: string;
     };
     LodingData(true);
-    console.log("oooooo", profileUri);
     if (pic !== profileUri) {
-      console.log("-------------11111---------");
       body.profile = profileUri;
     } 
 
     const res = await mutateAsync({ bodyParams: body, userId: user?.id });
     if (res?.success) {
-      console.log("-------------2222---------");
       navigation.goBack();
     }else{
       Toast.show(res?.message, Toast.LONG, {
@@ -501,13 +476,6 @@ export const ProfileScreen = (props: ProfileScreenProps) => {
               <ImageComponent source={arrowLeft} style={styles.arrowLeft} />
             </View>
           </TouchableOpacity>
-          {/* <View style={styles.searchContainer}>
-          <ImageComponent style={styles.searchIcon} source={Search}></ImageComponent>
-          <TextInput value={searchQuery} placeholderTextColor="#FFFF" placeholder='Search' style={styles.searchInput} onChangeText={value => {
-            console.log(value)
-            setSearchQuery(value)
-          }}></TextInput>
-        </View> */}
 
           <TouchableOpacity
             activeOpacity={0.8}

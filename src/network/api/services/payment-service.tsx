@@ -49,8 +49,6 @@ export const onCreatePayoutIntent = async (props: CreatePayoutIntentProps) => {
   let response;
   try {
     const endPoint = apiConstants.createPayoutIntent;
-    console.log(endPoint,'---------------------Stripe Payment--------------------')
-    console.log(bodyParams,'---------------------Stripe Payment Request--------------------')
     const data = await API.paymentService.post(endPoint, bodyParams, {
       headers: {
         Authorization: `Bearer ${STRIPE_SECRET_KEY}`,
@@ -58,7 +56,6 @@ export const onCreatePayoutIntent = async (props: CreatePayoutIntentProps) => {
       },
     });
     response = {data: data?.data, statusCode: data?.status};
-    console.log(response,'---------------------Stripe Payment Response--------------------')
   } catch (error: any) {
     response = error;
   }

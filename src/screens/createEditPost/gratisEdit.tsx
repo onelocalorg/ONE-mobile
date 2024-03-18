@@ -64,10 +64,16 @@ import { useUserProfile } from '@network/hooks/user-service-hooks/use-user-profi
 
 interface EditPostGratisScreenProps {
   navigation?: NavigationContainerRef<ParamListBase>;
+  route?: {
+    params: {
+      postData: any;
+    };
+  };
 }
 
 export const EditPostGratisScreen = (props: EditPostGratisScreenProps) => {
-  const {navigation} = props || {};
+  const {navigation,route} = props || {};
+  const { postData } = route?.params ?? {};
   const {theme} = useAppTheme();
   const styles = createStyleSheet(theme);
   const {strings} = useStringsAndLabels();
@@ -113,7 +119,6 @@ export const EditPostGratisScreen = (props: EditPostGratisScreenProps) => {
   const { refetch } = useUserProfile({
     userId: user?.id,
   });
-
   const keyboardDismiss = () => {
     Keyboard.dismiss();
   };
@@ -122,6 +127,7 @@ export const EditPostGratisScreen = (props: EditPostGratisScreenProps) => {
     LogBox.ignoreAllLogs();
     requestLocationPermission();
     getResourcesAPI();
+    getPostDetailAPI();
   }, []);
 
   const createPostSetType = (text: any, type: any) => {
@@ -141,7 +147,6 @@ export const EditPostGratisScreen = (props: EditPostGratisScreenProps) => {
     setToShowPopover(false);
   };
   const onConfirmStartDateTime = (startDate: Date) => {
-    console.log(startDate);
     createPostwhen(startDate);
     datePickerRef.current?.onOpenModal('end');
   };
@@ -182,10 +187,6 @@ export const EditPostGratisScreen = (props: EditPostGratisScreenProps) => {
         },
       );
       const dataItem = await response.json();
-      console.log(
-        '-------------------Get Resources API Response---------------------',
-      );
-      console.log(dataItem);
       getResourseDatawhat(dataItem?.data?.what);
       getResourseDataTo(dataItem?.data?.to);
       getResourseDataFrom(dataItem?.data?.from);
@@ -195,10 +196,6 @@ export const EditPostGratisScreen = (props: EditPostGratisScreenProps) => {
       getTypeIconTo(dataItem?.data?.to[0]['icon']);
       getToTypeValue(dataItem?.data?.to[0]['value']);
       getWhatTypeValue(dataItem?.data?.what[0]['value']);
-      console.log(
-        dataItem?.data[0]['icon'],
-        '------------icon image--------------',
-      );
     } catch (error) {
       console.error(error);
     }
@@ -212,8 +209,6 @@ export const EditPostGratisScreen = (props: EditPostGratisScreenProps) => {
       base64String: 'data:image/jpeg;base64,' + base64Item,
     };
 
-    console.log('================ postImageUploadAPI Request=================');
-    console.log(pic);
     try {
       const response = await fetch(
         API_URL + '/v1/users/upload/file',
@@ -227,10 +222,9 @@ export const EditPostGratisScreen = (props: EditPostGratisScreenProps) => {
         },
       );
       const dataItem = await response.json();
-      console.log('-----------------Response------------');
 
       var tempData = imageArray;
-      tempData.push(dataItem?.data);
+      tempData.push(dataItem?.data?.imageUrl);
       setImageArray(tempData);
 
       var tempTwo = imageArrayKey;
@@ -238,13 +232,47 @@ export const EditPostGratisScreen = (props: EditPostGratisScreenProps) => {
       setImageArrayKey(tempTwo);
       // setCreatePostUri(dataItem?.data?.imageUrl);
       // selectedImageKey(dataItem?.data?.key);
-      console.log(dataItem);
       LodingData(false);
     } catch (error) {
       console.log(error);
       LodingData(false);
     }
   };
+
+  async function getPostDetailAPI() {
+    LodingData(true);
+    const token = await AsyncStorage.getItem("token");
+  
+    console.log(API_URL + "/v2/posts/get/detail/" + postData?.id);
+    try {
+      console.log("222222");
+
+      const response = await fetch(API_URL + "/v2/posts/get/detail/" + postData?.id, {
+        method: "get",
+        headers: new Headers({
+          Authorization: "Bearer " + token,
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        }),
+      });
+      const dataItem = await response.json();
+      console.log("=========== Get detail Post API Response ==============");
+      console.log(dataItem);
+      LodingData(false);
+      createPostwhatName(dataItem?.data?.what?.name);
+      createPostwhatQuantity(dataItem?.data?.what?.quantity);
+      getTypeIconWhat(dataItem?.data?.what?.icon);
+      createPostcontent(dataItem?.data?.content);
+      // recentlyJoinUser([]);
+      tagselectArray(dataItem?.data?.tags);
+      setImageArray(dataItem?.data?.image);
+    } catch (error) {
+      console.log("33333");
+
+      LodingData(false);
+      console.error(error);
+    }
+  }
 
   async function createPostAPI() {
     LodingData(true);
@@ -261,12 +289,12 @@ export const EditPostGratisScreen = (props: EditPostGratisScreenProps) => {
       post_image: imageArrayKey,
     };
 
-    console.log('=========== Create Post API Request ==============');
+    console.log(API_URL + "/v2/posts/update/" + postData?.id);
 
     console.log(data);
     try {
       const response = await fetch(
-        API_URL + '/v1/posts/create',
+        API_URL + "/v2/posts/update/" + postData?.id,
         {
           method: 'post',
           headers: new Headers({
@@ -287,8 +315,6 @@ export const EditPostGratisScreen = (props: EditPostGratisScreenProps) => {
       if (dataItem?.success === true) {
         navigation?.goBack();
       }
-
-      // postListAPI();
     } catch (error) {
       LodingData(false);
       console.error(error);
@@ -458,21 +484,6 @@ export const EditPostGratisScreen = (props: EditPostGratisScreenProps) => {
     }
   };
 
-  // function handleToggleYourList(item:any, jindex: any,point:any) {
-  //   let newArr = userList.map((item:any, index:any) => {
-  //     const target: Partial<typeof item> = {...item};
-  //     delete target['first_name'];
-  //     delete target['last_name'];
-
-  //     if (index == jindex) {
-  //       return {...target, point: point};
-  //     } else {
-  //       return target;
-  //     }
-  //   });
-  //   recentlyJoinUser(newArr);
-  //   console.log('===========ansQueData 22==========', newArr);
-  // }
 
   const AddUserList = (item: any) => {
     const found = userList.find((element:any) => element.id == item.id);
@@ -800,7 +811,7 @@ export const EditPostGratisScreen = (props: EditPostGratisScreenProps) => {
                     <TouchableOpacity
                     onPress={() => removeSelectImage(item)}
                   >
-                      <ImageComponent source={{uri: item?.imageUrl}} style={styles.selectImage}></ImageComponent></TouchableOpacity>
+                      <ImageComponent source={{uri: item}} style={styles.selectImage}></ImageComponent></TouchableOpacity>
                   );
                 })}
               </View>
