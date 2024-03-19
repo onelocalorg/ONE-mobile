@@ -117,7 +117,7 @@ export const GratitudeScreen = (props: MapScreenProps) => {
   const mapRef: LegacyRef<MapboxGL.MapView> = useRef(null);
   const [tempdata, setNewLocation]: any = useState(getData('defaultLocation'));
 
-
+console.log(tempdata,'location check 111')
 
 
   const dispatch = useDispatch();
@@ -135,6 +135,10 @@ export const GratitudeScreen = (props: MapScreenProps) => {
   );
 
   useEffect(() => {
+    handleEnabledPressed();
+  }, []);
+
+  useEffect(() => {
     LogBox.ignoreAllLogs();
     var tempdataTwo = getData('defaultLocation');
     if (tempdataTwo?.latitude) {
@@ -144,12 +148,44 @@ export const GratitudeScreen = (props: MapScreenProps) => {
   }, [zoomLevel,tempdata?.latitude]);
  
 
+  async function handleEnabledPressed() {
+    if (Platform.OS === "android") {
+      try {
+        const checkEnable: Boolean = await isLocationEnabled();
+        const enableResult = await promptForEnableLocationIfNeeded();
+        const granted = await PermissionsAndroid.request(
+          PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION
+        );
+        const granteds = await PermissionsAndroid.request(
+          PermissionsAndroid.PERMISSIONS.ACCESS_COARSE_LOCATION
+        );
+        console.log("enableResult", enableResult);
+        console.log("checkEnable", checkEnable);
+        if (checkEnable) {
+          // console.log("requestLocationPermission");
+          // requestLocationPermission();
+          return true;
+        } else {
+          // console.log("location get method 1");
+          // handleCheckPressed();
+          return false;
+        }
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          console.error(error.message);
+        }
+      }
+    }
+  }
+
   const requestLocationPermission = async () => {
+    console.log('check 1')
     GetLocation.getCurrentPosition({
       enableHighAccuracy: false,
       timeout: 60000,
     })
       .then((location) => {
+        console.log(location)
         if (location?.latitude && location?.longitude) {
 
           var isLocationDefault = {
@@ -160,6 +196,7 @@ export const GratitudeScreen = (props: MapScreenProps) => {
           setData('defaultLocation', isLocationDefault)
           setLongitude(location?.longitude);
           setLatitude(location?.latitude);
+          setNewLocation(isLocationDefault)
           const shape: any = {
             type: "FeatureCollection",
             features: [
@@ -212,9 +249,10 @@ export const GratitudeScreen = (props: MapScreenProps) => {
   };
 
   async function geoTaggingAPITwo() {
-    const userLatLog = getData('defaultLocation')
+    const userLatLog = getData('defaultLocation');
     const token = await AsyncStorage.getItem("token");
     if (tempdata?.latitude) {
+      console.log('if check')
       var data: any = {
         start_date: moment(range.startDate).format("YYYY-MM-DD"),
         end_date: moment(range.endDate).format("YYYY-MM-DD"),
@@ -223,9 +261,10 @@ export const GratitudeScreen = (props: MapScreenProps) => {
         user_long: tempdata?.longitude,
         radius: 25,
         zoom_level: tempdata?.zoomLevel,
-        device_type: "ios",
+        device_type: Platform.OS,
       };
     } else {
+      console.log('else check')
       var data: any = {
         start_date: moment(range.startDate).format("YYYY-MM-DD"),
         end_date: moment(range.endDate).format("YYYY-MM-DD"),
@@ -277,16 +316,17 @@ export const GratitudeScreen = (props: MapScreenProps) => {
   };
 
   const handleRegionChange = async (event: any) => {
+    console.log(event)
     const newZoomLevel = event.properties.zoomLevel;
     console.log("ZoomLevel=>", newZoomLevel);
     setCameraZoomLevel(newZoomLevel);
     var isMapLocation: any = {
       latitude: event.geometry.coordinates[1],
       longitude: event.geometry.coordinates[0],
-      zoomLevel: newZoomLevel, 
+      zoomLevel: newZoomLevel,
       device_type: Platform.OS
     }
-    setNewLocation(isMapLocation);
+    // setNewLocation(isMapLocation);
     setData('defaultLocation', isMapLocation);
   };
 
@@ -361,6 +401,7 @@ export const GratitudeScreen = (props: MapScreenProps) => {
     }
     if (checkEnable && granted === PermissionsAndroid.RESULTS.GRANTED) {
       requestLocationPermission();
+      console.log('check')
     }
     console.log(granted);
     if (!checkEnable) {
@@ -417,7 +458,8 @@ export const GratitudeScreen = (props: MapScreenProps) => {
       {tempdata?.latitude && tempdata?.longitude ? (
         <MapboxGL.MapView
           style={styles.map}
-          onRegionDidChange={handleRegionChange}
+          // onRegionDidChange={handleRegionChange}
+          onRegionWillChange={handleRegionChange}
           logoEnabled={false}
           scaleBarEnabled={true}
           ref={mapRef}

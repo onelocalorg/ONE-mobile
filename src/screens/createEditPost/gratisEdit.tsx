@@ -263,9 +263,10 @@ export const EditPostGratisScreen = (props: EditPostGratisScreenProps) => {
       createPostwhatQuantity(dataItem?.data?.what?.quantity);
       getTypeIconWhat(dataItem?.data?.what?.icon);
       createPostcontent(dataItem?.data?.content);
-      // recentlyJoinUser([]);
+      // recentlyJoinUser(dataItem?.to?.users); 
       tagselectArray(dataItem?.data?.tags);
-      setImageArray(dataItem?.data?.image);
+      setImageArray(dataItem?.data?.imageUrl);
+      setImageArrayKey(dataItem?.data?.image);
     } catch (error) {
       console.log("33333");
 
@@ -455,18 +456,32 @@ export const EditPostGratisScreen = (props: EditPostGratisScreenProps) => {
     />
   );
 
+  // const removeSelectImage = (imageItem: any) => {
+  //   console.log(imageItem, 'image url')
+  //   console.log(imageArrayKey)
+  //   const newImage = imageArray.filter(
+  //     (person: any) => person.imageUrl !== imageItem?.imageUrl && person.key !== imageItem.key
+  //   );
+  //   setImageArray(newImage);
+  //   const newImagekey = imageArrayKey.filter(
+  //     (person: any) => person !== imageItem?.key
+  //   );
+  //   setImageArrayKey(newImagekey)
+  //   console.log(imageArrayKey)
+  //   }
+
   const removeSelectImage = (imageItem: any) => {
-    console.log(imageItem, 'image url')
-    console.log(imageArrayKey)
+    console.log(imageItem, 'image url');
+    console.log(imageArray,'image 444');
     const newImage = imageArray.filter(
-      (person: any) => person.imageUrl !== imageItem?.imageUrl && person.key !== imageItem.key
+      (person: any) => person !== imageItem
     );
     setImageArray(newImage);
     const newImagekey = imageArrayKey.filter(
       (person: any) => person !== imageItem?.key
     );
     setImageArrayKey(newImagekey)
-    console.log(imageArrayKey)
+    console.log(imageArrayKey,'dswdwd')
     }
 
   const handleRemove = (id: any) => {
@@ -601,7 +616,7 @@ export const EditPostGratisScreen = (props: EditPostGratisScreenProps) => {
                 <TextInput
                   placeholder="What do you want to offer?"
                   placeholderTextColor="darkgray"
-                  value={whatName}
+                  value={whatName} 
                   onChangeText={text => createPostwhatName(text)}
                   style={styles.postInputTwo}></TextInput>
                   {/* <SizedBox width={10}></SizedBox> */}
@@ -661,13 +676,13 @@ export const EditPostGratisScreen = (props: EditPostGratisScreenProps) => {
               </View>
 
               <SizedBox height={verticalScale(10)}></SizedBox>
-
+ 
               <View style={styles.avatarContainer}>
                 <ScrollView
                   horizontal={true}
                   showsHorizontalScrollIndicator={false}>
                   {userList.map((userList: any) => {
-                    return (
+                    return ( 
                       <TouchableOpacity
                         onPress={() => removeuserSelect(userList)}>
                         <ImageComponent

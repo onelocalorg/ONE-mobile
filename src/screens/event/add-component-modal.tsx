@@ -92,8 +92,8 @@ export const AddComponentModal = (props: AddComponentModalProps) => {
       const ref = modalRef as { current: { onCloseModal: () => void } };
       ref?.current?.onCloseModal();
     } else {
-      setEventProducerModal(true);
-      // Alert.alert("", strings.purchaseSubscription);
+      // setEventProducerModal(true);
+      Alert.alert("", strings.purchaseSubscription);
     }
   };
 
@@ -227,7 +227,7 @@ export const AddComponentModal = (props: AddComponentModalProps) => {
           )}
         </View>
       </View>
-      <Modal transparent visible={iseventProducerModal} onDismiss={onEventDismiss}>
+      {/* <Modal transparent visible={iseventProducerModal} onDismiss={onEventDismiss}>
         <GestureRecognizer
           onSwipeDown={onEventDismiss} style={styles.gesture}>
           <TouchableOpacity
@@ -251,7 +251,7 @@ export const AddComponentModal = (props: AddComponentModalProps) => {
             onPressPill={() => onEventProducer()}
           />
         </TouchableOpacity>
-      </Modal>
+      </Modal> */}
     </ModalComponent>
   );
 };

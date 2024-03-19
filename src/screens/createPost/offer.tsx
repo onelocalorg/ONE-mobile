@@ -124,7 +124,6 @@ export const CreatePostOfferScreen = (props: CreatePostOfferScreenProps) => {
 
   useEffect(() => {
     LogBox.ignoreAllLogs();
-    requestLocationPermission();
     getResourcesAPI();
   }, []);
 
@@ -160,28 +159,6 @@ export const CreatePostOfferScreen = (props: CreatePostOfferScreenProps) => {
     console.log(startDate);
     createPostwhen(startDate);
     datePickerRef.current?.onOpenModal('end');
-  };
-
-  const requestLocationPermission = async () => {
-    GetLocation.getCurrentPosition({
-      enableHighAccuracy: true,
-      timeout: 6000,
-    })
-      .then(location => {
-        setUserLocation(location);
-        console.log(
-          '---------------------location---------------------',
-          location,
-        );
-        if (location) {
-          // postListAPI();
-        }
-      })
-      .catch(error => {
-        console.log('---------------------error---------------------', error);
-        const {code, message} = error;
-        console.log(code, message);
-      });
   };
 
   const getResourcesAPI = async () => {
@@ -276,8 +253,8 @@ export const CreatePostOfferScreen = (props: CreatePostOfferScreenProps) => {
       for_name: forName,
       for_quantity: forQuantity,
       where_address: whereAddress,
-      where_lat: location?.latitude?.toString(),
-      where_lng: location?.longitude?.toString(),
+      where_lat: location?.lat?.toString(),
+      where_lng: location?.lng?.toString(),
       when: whenDate.toISOString(),
       content: content,
       tags: tagArray,
@@ -357,8 +334,6 @@ export const CreatePostOfferScreen = (props: CreatePostOfferScreenProps) => {
       const endDate = res?.endDate;
       setOpen(false);
       setRange({startDate, endDate});
-      requestLocationPermission();
-      // LodingData(true);
       console.log(range, '---------------set range ---------------');
     },
     [setOpen, setRange],
@@ -684,8 +659,11 @@ const removeSelectImage = (imageItem: any) => {
                     placeholderTextColor: 'gray',
                   }}
                   placeholder="where is this offer located?"
+                  GooglePlacesDetailsQuery={{ fields: "geometry" }}
+                      fetchDetails={true}
                   onPress={(data: any, details = null) => {
                     createPostwhereAddress(data.description);
+                    setUserLocation(details?.geometry?.location)
                     console.log(data);
                     console.log(details); // description
                   }}

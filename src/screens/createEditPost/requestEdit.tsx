@@ -96,7 +96,7 @@ export const EditPostRequestScreen = (
   var [forQuantity, createPostforQuantity] = useState(1);
   const [whereAddress, createPostwhereAddress] = useState('');
   const [imageKey, selectedImageKey] = useState();
-  const [when, createPostwhen] = useState(new Date());
+  const [when, createPostwhen]:any = useState();
   const [content, createPostcontent] = useState('');
   const [tags, createPosttags]: any = useState('');
   const [tagArray, tagselectArray]: any = useState([]);
@@ -291,9 +291,11 @@ export const EditPostRequestScreen = (
       createPostforName(dataItem?.data?.for?.name)
       createPostforQuantity(dataItem?.data?.for?.quantity)
       getTypeIconFor(dataItem?.data?.for?.icon)
+      createPostwhen(dataItem?.data?.when)
       // recentlyJoinUser([]);
       tagselectArray(dataItem?.data?.tags);
-      setImageArray(dataItem?.data?.image);
+      setImageArray(dataItem?.data?.imageUrl);
+      setImageArrayKey(dataItem?.data?.image);
       LodingData(false);
     } catch (error) {
       console.log("33333");
@@ -490,8 +492,6 @@ export const EditPostRequestScreen = (
         backgroundColor: 'black',
       });
     }
-    
-   
   };
 
   async function gratisUserList(textUser: any) {
@@ -537,17 +537,17 @@ export const EditPostRequestScreen = (
   }
 
   const removeSelectImage = (imageItem: any) => {
-    console.log(imageItem, 'image url')
-    console.log(imageArrayKey)
+    console.log(imageItem, 'image url');
+    console.log(imageArray,'image 444');
     const newImage = imageArray.filter(
-      (person: any) => person.imageUrl !== imageItem?.imageUrl && person.key !== imageItem.key
+      (person: any) => person !== imageItem
     );
     setImageArray(newImage);
     const newImagekey = imageArrayKey.filter(
       (person: any) => person !== imageItem?.key
     );
     setImageArrayKey(newImagekey)
-    console.log(imageArrayKey)
+    console.log(imageArrayKey,'dswdwd')
     }
 
   const gratisPlusClick = (item: any, index: any) => {

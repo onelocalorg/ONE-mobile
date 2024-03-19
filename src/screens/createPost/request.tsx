@@ -114,7 +114,6 @@ export const CreatePostRequestScreen = (
 
   useEffect(() => {
     LogBox.ignoreAllLogs();
-    requestLocationPermission();
     getResourcesAPI();
   }, []);
 
@@ -150,28 +149,6 @@ export const CreatePostRequestScreen = (
     console.log(startDate);
     createPostwhen(startDate);
     datePickerRef.current?.onOpenModal('end');
-  };
-
-  const requestLocationPermission = async () => {
-    GetLocation.getCurrentPosition({
-      enableHighAccuracy: true,
-      timeout: 6000,
-    })
-      .then(location => {
-        setUserLocation(location);
-        console.log(
-          '---------------------location---------------------',
-          location,
-        );
-        if (location) {
-          // postListAPI();
-        }
-      })
-      .catch(error => {
-        console.log('---------------------error---------------------', error);
-        const {code, message} = error;
-        console.log(code, message);
-      });
   };
 
   const getResourcesAPI = async () => {
@@ -260,8 +237,8 @@ export const CreatePostRequestScreen = (
       for_name: forName,
       for_quantity: forQuantity,
       where_address: whereAddress,
-      where_lat: location?.latitude?.toString(),
-      where_lng: location?.longitude?.toString(),
+      where_lat: location?.lat?.toString(),
+      where_lng: location?.lng?.toString(),
       when: when?.toString(),
       content: content,
       tags: tagArray,
@@ -634,9 +611,13 @@ export const CreatePostRequestScreen = (
                     placeholderTextColor: 'gray',
                   }}
                   placeholder="where do you need this?"
+                  GooglePlacesDetailsQuery={{ fields: "geometry" }}
+                      fetchDetails={true}
                   onPress={(data: any, details = null) => {
                     createPostwhereAddress(data.description);
-                    console.log(data); // description
+                    setUserLocation(details?.geometry?.location)
+                    console.log(data);
+                    console.log(details); // description
                   }}
                   query={{
                     key: ActiveEnv.GOOGLE_KEY, // client

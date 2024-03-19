@@ -317,9 +317,11 @@ export const EditPostOfferScreen = (props: EditPostOfferScreenProps) => {
       createPostforName(dataItem?.data?.for?.name)
       createPostforQuantity(dataItem?.data?.for?.quantity)
       getTypeIconFor(dataItem?.data?.for?.icon)
+      createPostwhen(dataItem?.data?.when)
       // recentlyJoinUser([]);
       tagselectArray(dataItem?.data?.tags);
-      setImageArray(dataItem?.data?.image);
+      setImageArray(dataItem?.data?.imageUrl);
+      setImageArrayKey(dataItem?.data?.image);
       LodingData(false);
     } catch (error) {
       console.log("33333");
@@ -613,20 +615,34 @@ export const EditPostOfferScreen = (props: EditPostOfferScreenProps) => {
     }
   };
 
+  // const removeSelectImage = (imageItem: any) => {
+  //   console.log(imageItem, "image url");
+  //   console.log(imageArrayKey);
+  //   const newImage = imageArray.filter(
+  //     (person: any) =>
+  //       person.imageUrl !== imageItem && person.key !== imageItem.key
+  //   );
+  //   setImageArray(newImage);
+  //   const newImagekey = imageArrayKey.filter(
+  //     (person: any) => person !== imageItem?.key
+  //   );
+  //   setImageArrayKey(newImagekey);
+  //   console.log(imageArrayKey);
+  // };
+
   const removeSelectImage = (imageItem: any) => {
-    console.log(imageItem, "image url");
-    console.log(imageArrayKey);
+    console.log(imageItem, 'image url');
+    console.log(imageArray,'image 444');
     const newImage = imageArray.filter(
-      (person: any) =>
-        person.imageUrl !== imageItem && person.key !== imageItem.key
+      (person: any) => person !== imageItem
     );
     setImageArray(newImage);
     const newImagekey = imageArrayKey.filter(
       (person: any) => person !== imageItem?.key
     );
-    setImageArrayKey(newImagekey);
-    console.log(imageArrayKey);
-  };
+    setImageArrayKey(newImagekey)
+    console.log(imageArrayKey,'dswdwd')
+    }
 
   const onNavigateToProfile = () => {
     navigation?.navigate("profileroute");

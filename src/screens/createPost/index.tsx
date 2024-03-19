@@ -103,7 +103,6 @@ export const CreatePostScreen = (props: CreatePostScreenProps) => {
 
   useEffect(() => {
     LogBox.ignoreAllLogs();
-    requestLocationPermission();
     getResourcesAPI();
     // getUserProfileAPI();
   }, []);
@@ -129,28 +128,6 @@ export const CreatePostScreen = (props: CreatePostScreenProps) => {
     console.log(startDate);
     createPostwhen(startDate);
     datePickerRef.current?.onOpenModal('end');
-  };
-
-  const requestLocationPermission = async () => {
-    GetLocation.getCurrentPosition({
-      enableHighAccuracy: true,
-      timeout: 6000,
-    })
-      .then(location => {
-        setUserLocation(location);
-        console.log(
-          '---------------------location---------------------',
-          location,
-        );
-        if (location) {
-          // postListAPI();
-        }
-      })
-      .catch(error => {
-        console.log('---------------------error---------------------', error);
-        const {code, message} = error;
-        console.log(code, message);
-      });
   };
 
   const getResourcesAPI = async () => {

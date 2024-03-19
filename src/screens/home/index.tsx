@@ -135,12 +135,19 @@ export const HomeScreen = (props: HomeScreenProps) => {
           getRecentlyJoinUserAPI("");
         }
       }
+      if(Platform.OS){
+        requestLocationPermission();
+      }
       getUserProfileAPI();
       setPage(1);
       postListData([]);
       setSearchQuery("");
     }, [range?.startDate, range?.endDate])
   );
+
+  useEffect(() => {
+    handleEnabledPressed();
+  }, []);
 
   const getLocation = () => {
     const result = handleEnabledPressed();
@@ -337,10 +344,10 @@ export const HomeScreen = (props: HomeScreenProps) => {
   async function postListAPI(location: any) {
     const token = await AsyncStorage.getItem("token");
     var data: any = {
-      // latitude: location.latitude,
-      // longitude: location.longitude,
-      // zoom_level: location.zoomLevel,
-      // device_type: Platform.OS,
+      latitude: location.latitude,
+      longitude: location.longitude,
+      zoom_level: location.zoomLevel,
+      device_type: Platform.OS,
       searchtext: searchQuery,
     };
     console.log("----------------post Location----------------", data);
@@ -985,7 +992,7 @@ export const HomeScreen = (props: HomeScreenProps) => {
           style={styles.keyboardViewTwo}
         >
           <View style={styles.postActionSheet}>
-            <TouchableOpacity onPress={() => onEditPost()}>
+            {/* <TouchableOpacity onPress={() => onEditPost()}>
               <Text style={[styles.postText, { color: "white" }]}>
                 Edit Post
               </Text>
@@ -994,7 +1001,7 @@ export const HomeScreen = (props: HomeScreenProps) => {
               <Text style={[styles.postText, { color: "white" }]}>
                 Delete Post
               </Text>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
             <TouchableOpacity onPress={() => postHideOptionSelect(1)}>
               <Text style={[styles.postText, { color: "white" }]}>Block</Text>
             </TouchableOpacity>

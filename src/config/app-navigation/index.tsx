@@ -42,8 +42,9 @@ export const AppNavigation = () => {
  
   function checkPaymentFlowHideShow(dataItem: any) {
     
-    if ("isPaymentFlowShowOne" in dataItem) {
-      var datatemp = dataItem?.isPaymentFlowShowOne;
+    if ("isPaymentFlowShowTwo" in dataItem) {
+      console.log("isPaymentFlowShowTwo");
+      var datatemp = dataItem?.isPaymentFlowShowTwo;
       setData("isShowPaymentFlow", datatemp);
     }
     setisVersionApiCalled(true)
