@@ -92,8 +92,9 @@ export const GratitudeScreen = (props: MapScreenProps) => {
   const { theme } = useAppTheme();
   const styles = createStyleSheet(theme);
   var [eventData, eventDetail]: any = useState([]);
-  var [latitude, setLatitude]: any = useState();
-  var [longitude, setLongitude]: any = useState();
+  const [tempdata, setNewLocation]: any = useState(getData('defaultLocation'));
+  var [latitude, setLatitude]: any = useState(tempdata?.latitude);
+  var [longitude, setLongitude]: any = useState(tempdata?.longitude);
   const [eventList, eventDataStore] = useState([]);
   const [eventType, eventTypeData] = useState("event");
   const [profileData, setUserProfile]: any = useState("");
@@ -115,19 +116,12 @@ export const GratitudeScreen = (props: MapScreenProps) => {
     endDate: makeDate,
   });
   const mapRef: LegacyRef<MapboxGL.MapView> = useRef(null);
-  const [tempdata, setNewLocation]: any = useState(getData('defaultLocation'));
-
-console.log(tempdata,'location check 111')
-
 
   const dispatch = useDispatch();
 
   useFocusEffect(
     useCallback(() => {
-      var tempdataTwo = getData('defaultLocation');
-      console.log('setLocation=>', tempdataTwo);
-      if (!tempdataTwo?.latitude) {
-        console.log('-------------post 1 time------------');
+      if (!latitude) {
         requestLocationPermission();
       }
       getUserProfileAPI();
@@ -140,12 +134,10 @@ console.log(tempdata,'location check 111')
 
   useEffect(() => {
     LogBox.ignoreAllLogs();
-    var tempdataTwo = getData('defaultLocation');
-    if (tempdataTwo?.latitude) {
-      console.log("useEffect ", zoomLevel);
+    if (latitude) {
       geoTaggingAPITwo();
     }
-  }, [zoomLevel,tempdata?.latitude]);
+  }, [zoomLevel,latitude,]);
  
 
   async function handleEnabledPressed() {
@@ -159,15 +151,9 @@ console.log(tempdata,'location check 111')
         const granteds = await PermissionsAndroid.request(
           PermissionsAndroid.PERMISSIONS.ACCESS_COARSE_LOCATION
         );
-        console.log("enableResult", enableResult);
-        console.log("checkEnable", checkEnable);
         if (checkEnable) {
-          // console.log("requestLocationPermission");
-          // requestLocationPermission();
           return true;
         } else {
-          // console.log("location get method 1");
-          // handleCheckPressed();
           return false;
         }
       } catch (error: unknown) {
@@ -179,13 +165,11 @@ console.log(tempdata,'location check 111')
   }
 
   const requestLocationPermission = async () => {
-    console.log('check 1')
     GetLocation.getCurrentPosition({
       enableHighAccuracy: false,
       timeout: 60000,
     })
       .then((location) => {
-        console.log(location)
         if (location?.latitude && location?.longitude) {
 
           var isLocationDefault = {
@@ -214,7 +198,6 @@ console.log(tempdata,'location check 111')
       })
       .catch((error) => {
         const { code, message } = error;
-        console.log('8888')
         console.log(code, message);
       });
   };
@@ -249,22 +232,20 @@ console.log(tempdata,'location check 111')
   };
 
   async function geoTaggingAPITwo() {
-    const userLatLog = getData('defaultLocation');
+    LodingData(true)
     const token = await AsyncStorage.getItem("token");
     if (tempdata?.latitude) {
-      console.log('if check')
       var data: any = {
         start_date: moment(range.startDate).format("YYYY-MM-DD"),
         end_date: moment(range.endDate).format("YYYY-MM-DD"),
         type: eventType,
-        user_lat: tempdata?.latitude,
-        user_long: tempdata?.longitude,
+        user_lat: latitude,
+        user_long: longitude,
         radius: 25,
-        zoom_level: tempdata?.zoomLevel,
+        zoom_level: zoomLevel,
         device_type: Platform.OS,
       };
     } else {
-      console.log('else check')
       var data: any = {
         start_date: moment(range.startDate).format("YYYY-MM-DD"),
         end_date: moment(range.endDate).format("YYYY-MM-DD"),
@@ -276,7 +257,7 @@ console.log(tempdata,'location check 111')
         device_type: Platform.OS,
       };
     }
-    console.log("-----------------map location------------------", data);
+    console.log("-----------------map location request------------------", data);
     eventDataStore([]);
     try {
       const response = await fetch(API_URL + "/v1/events/geotagging", {
@@ -288,10 +269,10 @@ console.log(tempdata,'location check 111')
         body: JSON.stringify(data),
       });
       const dataItem = await response.json();
-      console.log(
-        "=========== Geo Tagging API Response ==============",
-        dataItem?.data?.length
-      );
+      // console.log(
+      //   "=========== Geo Tagging API Response ==============",
+      //   dataItem?.data?.length
+      // );
       LodingData(false);
       if (dataItem?.data) {
         eventDetail(dataItem?.data);
@@ -316,17 +297,15 @@ console.log(tempdata,'location check 111')
   };
 
   const handleRegionChange = async (event: any) => {
-    console.log(event)
     const newZoomLevel = event.properties.zoomLevel;
-    console.log("ZoomLevel=>", newZoomLevel);
+    console.log('handleRegionChange newZoomLevel',newZoomLevel)
     setCameraZoomLevel(newZoomLevel);
     var isMapLocation: any = {
-      latitude: event.geometry.coordinates[1],
-      longitude: event.geometry.coordinates[0],
+      latitude: latitude,
+      longitude: longitude,
       zoomLevel: newZoomLevel,
       device_type: Platform.OS
     }
-    // setNewLocation(isMapLocation);
     setData('defaultLocation', isMapLocation);
   };
 
@@ -353,20 +332,18 @@ console.log(tempdata,'location check 111')
   };
 
   const onCircleDrag = (event: any) => {
-    var tempdataTwo = getData('defaultLocation');
-    // LodingData(true);
-    console.log(event, 'event circle')
-    setCameraZoomLevel(tempdataTwo?.zoomLevel)
+    console.log('event circle drag latitude',event.geometry.coordinates[1])
+    console.log('event circle drag longitude',event.geometry.coordinates[0])
     var isMapLocation: any = {
       latitude: event.geometry.coordinates[1],
       longitude: event.geometry.coordinates[0],
-      zoomLevel: tempdataTwo?.zoomLevel, 
+      zoomLevel: zoomLevel, 
       device_type: Platform.OS
     }
     setNewLocation(isMapLocation);
+    setLongitude(event.geometry.coordinates[0]);
+    setLatitude(event.geometry.coordinates[1]);
     setData('defaultLocation', isMapLocation);
-    // setLongitude(event.geometry.coordinates[0]);
-    // setLatitude(event.geometry.coordinates[1]);
   };
 
   const handleOpenURL = () => {
@@ -458,8 +435,8 @@ console.log(tempdata,'location check 111')
       {tempdata?.latitude && tempdata?.longitude ? (
         <MapboxGL.MapView
           style={styles.map}
-          // onRegionDidChange={handleRegionChange}
-          onRegionWillChange={handleRegionChange}
+          onRegionDidChange={handleRegionChange}
+          // onRegionIsChanging={handleRegionChange}
           logoEnabled={false}
           scaleBarEnabled={true}
           ref={mapRef}

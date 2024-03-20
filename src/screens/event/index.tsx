@@ -118,13 +118,14 @@ export const EventListScreen = (props: EventListScreenProps) => {
 
   useFocusEffect(
     useCallback(() => {
-      getEventListAPI();
+      var tempdataTwo = getData("defaultLocation");
+      getEventListAPI(tempdataTwo);
     }, [setFilter, page, range, searchQuery]),
   );
 
-  const getEventListAPI = async () => {
+  const getEventListAPI = async (getLatitude:any) => {
 
-    const getLatitude = getData("defaultLocation");
+    
     var eventData = {
       start_date: moment(range.startDate).format('YYYY-MM-DD'),
       end_date: moment(range.endDate).format('YYYY-MM-DD'),
@@ -136,7 +137,7 @@ export const EventListScreen = (props: EventListScreenProps) => {
       zoom_level: getLatitude.zoomLevel,
       device_type: Platform.OS
     };
-    console.log(eventData, '--------------------event location-----------------')
+    console.log(eventData, '--------------------event location request-----------------')
     var eventList_url = API_URL + '/v2/events/list?limit=10&page=' + page;
     try {
       const token = await AsyncStorage.getItem('token');

@@ -136,7 +136,9 @@ export const HomeScreen = (props: HomeScreenProps) => {
         }
       }
       if(Platform.OS){
+        if (!tempdata?.latitude) {
         requestLocationPermission();
+        }
       }
       getUserProfileAPI();
       setPage(1);
@@ -149,37 +151,11 @@ export const HomeScreen = (props: HomeScreenProps) => {
     handleEnabledPressed();
   }, []);
 
-  const getLocation = () => {
-    const result = handleEnabledPressed();
-    result.then((res) => {
-      console.log("res is:", res);
-      if (res) {
-        return new Promise((resolve, reject) => {
-          GetLocation.getCurrentPosition({
-            enableHighAccuracy: true,
-            timeout: 15000,
-          })
-            .then((location) => {
-              resolve({ location });
-              console.log(location);
-            })
-            .catch((error) => {
-              reject(error.message);
-            });
-          console.log(location);
-        });
-      } else {
-        handleCheckPressed();
-      }
-    });
-  };
-
   useFocusEffect(
     useCallback(() => {
-      // setGetLatitude(getData("defaultLocation"));
       var tempdataTwo = getData("defaultLocation");
       if (tempdataTwo?.latitude) {
-        console.log('sjnsjnsjn')
+        console.log('postListAPI 1')
         postListAPI(tempdataTwo);
       }
     }, [page, searchQuery])
@@ -199,9 +175,9 @@ export const HomeScreen = (props: HomeScreenProps) => {
           zoomLevel: 11,
         };
         setData("defaultLocation", isLocationDefault);
-        // setGetLatitude(isLocationDefault);
         if (location.latitude && location.longitude) {
           getRecentlyJoinUserAPI(location);
+          console.log('postListAPI 2');
           postListAPI(isLocationDefault);
         } else {
           getRecentlyJoinUserAPI("");
@@ -237,20 +213,6 @@ export const HomeScreen = (props: HomeScreenProps) => {
         });
     });
   };
-
-  async function handleCheckPressed() {
-    console.log("location get method 2");
-    if (Platform.OS === "android") {
-      const checkEnable: Boolean = await isLocationEnabled();
-      const checkEnabled = await promptForEnableLocationIfNeeded();
-      requestLocationPermission();
-      if (checkEnable) {
-      } else {
-        handleEnabledPressed();
-      }
-      console.log("checkEnabled", checkEnable);
-    }
-  }
 
   async function handleEnabledPressed() {
     if (Platform.OS === "android") {
