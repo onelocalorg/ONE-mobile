@@ -264,6 +264,12 @@ console.log(dataItem?.data)
       getTypeIconWhat(dataItem?.data?.what?.icon);
       createPostcontent(dataItem?.data?.content);
       recentlyJoinUser(dataItem?.data?.usersArray);
+      let modifiedArray = dataItem?.data?.usersArray.map((obj:any) => {
+        const { first_name, last_name,pic,id,point, ...rest } = obj;
+        return { ...rest, user_id: obj.id,point:obj.point };
+      });
+      console.log(modifiedArray,'getUserIdArray')
+      setuserListArray(modifiedArray) 
       tagselectArray(dataItem?.data?.tags);
       setImageArray(dataItem?.data?.imageUrl);
       setImageArrayKey(dataItem?.data?.image);
@@ -383,12 +389,15 @@ console.log(dataItem?.data)
     }
   };
 
-  const removeuserSelect = (id: any) => {
-    const newPeople = userList.filter((person: any) => person !== id);
+  const removeuserSelect = (userlist: any) => {
+    const newPeople = userList.filter((person: any) => person !== userlist);
     console.log('--------newPeople---------', newPeople);
-
     recentlyJoinUser(newPeople);
-    setuserListArray(newPeople);
+    let modifiedArray = newPeople.map((obj:any) => {
+      const { first_name, last_name,pic,id,gratisNo, ...rest } = obj;
+      return { ...rest, user_id: obj.id,point:obj.gratisNo };
+    });
+    setuserListArray(modifiedArray);
   };
 
   const CreateNewPostModal = () => {
@@ -502,7 +511,7 @@ console.log(dataItem?.data)
       const newuserData = {...newItems, point: item.gratisNo, user_id: item.id};
       setuserListArray([...userListArray, newuserData]);
       
-      console.log(userListArray);
+      console.log(userListArray,'userListArray userListArray');
     }else{
       Toast.show('Already Added', Toast.LONG, { 
         backgroundColor: 'black',
@@ -603,7 +612,8 @@ console.log(dataItem?.data)
                 <TextInput
                   placeholder="What do you want to offer?"
                   placeholderTextColor="darkgray"
-                  value={whatName} 
+                  value={whatName}
+                  editable={false}
                   onChangeText={text => createPostwhatName(text)}
                   style={styles.postInputTwo}></TextInput>
                   {/* <SizedBox width={10}></SizedBox> */}

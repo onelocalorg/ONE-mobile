@@ -165,6 +165,7 @@ export const GratitudeScreen = (props: MapScreenProps) => {
   }
 
   const requestLocationPermission = async () => {
+    console.log('check 2222')
     GetLocation.getCurrentPosition({
       enableHighAccuracy: false,
       timeout: 60000,
@@ -234,7 +235,6 @@ export const GratitudeScreen = (props: MapScreenProps) => {
   async function geoTaggingAPITwo() {
     LodingData(true)
     const token = await AsyncStorage.getItem("token");
-    if (tempdata?.latitude) {
       var data: any = {
         start_date: moment(range.startDate).format("YYYY-MM-DD"),
         end_date: moment(range.endDate).format("YYYY-MM-DD"),
@@ -245,18 +245,6 @@ export const GratitudeScreen = (props: MapScreenProps) => {
         zoom_level: zoomLevel,
         device_type: Platform.OS,
       };
-    } else {
-      var data: any = {
-        start_date: moment(range.startDate).format("YYYY-MM-DD"),
-        end_date: moment(range.endDate).format("YYYY-MM-DD"),
-        type: eventType,
-        user_lat: latitude,
-        user_long: longitude,
-        radius: 25,
-        zoom_level: zoomLevel,
-        device_type: Platform.OS,
-      };
-    }
     console.log("-----------------map location request------------------", data);
     eventDataStore([]);
     try {
@@ -269,10 +257,10 @@ export const GratitudeScreen = (props: MapScreenProps) => {
         body: JSON.stringify(data),
       });
       const dataItem = await response.json();
-      // console.log(
-      //   "=========== Geo Tagging API Response ==============",
-      //   dataItem?.data?.length
-      // );
+      console.log(
+        "=========== Geo Tagging API Response ==============",
+        dataItem?.data?.length
+      );
       LodingData(false);
       if (dataItem?.data) {
         eventDetail(dataItem?.data);
@@ -298,6 +286,9 @@ export const GratitudeScreen = (props: MapScreenProps) => {
 
   const handleRegionChange = async (event: any) => {
     const newZoomLevel = event.properties.zoomLevel;
+    if(newZoomLevel !== zoomLevel){
+      LodingData(true)
+    }
     console.log('handleRegionChange newZoomLevel',newZoomLevel)
     setCameraZoomLevel(newZoomLevel);
     var isMapLocation: any = {

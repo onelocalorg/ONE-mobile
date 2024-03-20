@@ -758,7 +758,8 @@ export const createStyleSheet = (theme: ThemeProps) => {
       flexDirection: 'row',
       alignItems: 'center',
       paddingHorizontal: normalScale(16),
-      marginHorizontal: 45
+      marginHorizontal: 45,
+      marginBottom:25
     },
     titleTwo: {
       fontFamily: theme.fontType.medium,

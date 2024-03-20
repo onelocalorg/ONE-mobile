@@ -234,17 +234,21 @@ export const EditPostOfferScreen = (props: EditPostOfferScreenProps) => {
       getResourseDataTo(dataItem?.data?.to);
       getResourseDataFrom(dataItem?.data?.from);
       getResourseDataFor(dataItem?.data?.for);
-      getTypeIconWhat(dataItem?.data?.what[0]["icon"]);
+      
+      getTypeIconWhat(dataItem?.data?.what?.icon);
+      getTypeIconFor(dataItem?.data?.for?.icon)
+
+      // getTypeIconWhat(dataItem?.data?.what[0]["icon"]);
       getWhatTypeValue(dataItem?.data?.what[0]["value"]);
 
-      getTypeIconFor(dataItem?.data?.for[0]["icon"]);
+      // getTypeIconFor(dataItem?.data?.for[0]["icon"]);
       getForTypeValue(dataItem?.data?.for[0]["value"]);
 
-      getTypeIconTo(dataItem?.data?.to[0]["icon"]);
+      // getTypeIconTo(dataItem?.data?.to[0]["icon"]);
       setToTitleData(dataItem?.data?.to[0]["title"]);
       getToTypeValue(dataItem?.data?.to[0]["value"]);
 
-      getTypeIconFrom(dataItem?.data?.from[0]["icon"]);
+      // getTypeIconFrom(dataItem?.data?.from[0]["icon"]);
       getFromTypeValue(dataItem?.data?.from[0]["value"]);
 
       console.log(
@@ -319,6 +323,12 @@ export const EditPostOfferScreen = (props: EditPostOfferScreenProps) => {
       getTypeIconFor(dataItem?.data?.for?.icon)
       createPostwhen(dataItem?.data?.when)
       recentlyJoinUser(dataItem?.data?.usersArray);
+      let modifiedArray = dataItem?.data?.usersArray.map((obj:any) => {
+        const { first_name, last_name,pic,id, ...rest } = obj;
+        return { ...rest, user_id: obj.id };
+      });
+      console.log(modifiedArray,'getUserIdArray')
+      setuserListArray(modifiedArray) 
       tagselectArray(dataItem?.data?.tags);
       setImageArray(dataItem?.data?.imageUrl);
       setImageArrayKey(dataItem?.data?.image);
@@ -525,30 +535,6 @@ export const EditPostOfferScreen = (props: EditPostOfferScreenProps) => {
     createPostforQuantity(forQuantity);
   };
 
-  const gratisPlusClick = (item: any, index: any) => {
-    // console.log(item)
-    item.gratisNo = item.gratisNo + 1;
-    console.log(item.gratisNo);
-    let markers = [...usergratisList];
-    markers[index] = {
-      ...markers[index],
-      gratisNo: item.gratisNo,
-    };
-    totalGratisData(markers);
-  };
-  const gratisMinusClick = (item: any, index: any) => {
-    // console.log(item)
-    if (item.gratisNo > 1) {
-      item.gratisNo = item.gratisNo - 1;
-      let markers = [...usergratisList];
-      markers[index] = {
-        ...markers[index],
-        gratisNo: item.gratisNo,
-      };
-      totalGratisData(markers);
-    }
-  };
-
   async function gratisUserList(textUser: any) {
     const token = await AsyncStorage.getItem("token");
     var datas: any = {
@@ -572,10 +558,7 @@ export const EditPostOfferScreen = (props: EditPostOfferScreenProps) => {
       );
       const dataItem = await response.json();
       console.log("=========== User List Gratis API Response ==============");
-      const result = dataItem?.data?.map((item: any) => {
-        return { ...item, gratisNo: 1 };
-      });
-      userGratiesListData(result);
+      userGratiesListData(dataItem?.data);
       console.log(dataItem);
       Toast.show(dataItem?.message, Toast.LONG, {
         backgroundColor: "black",
@@ -587,12 +570,24 @@ export const EditPostOfferScreen = (props: EditPostOfferScreenProps) => {
     }
   }
 
-  const removeuserSelect = (id: any) => {
-    const newPeople = userList.filter((person: any) => person !== id);
-    console.log("--------newPeople---------", newPeople);
+  // const removeuserSelect = (id: any) => {
+  //   const newPeople = userList.filter((person: any) => person !== id);
+  //   console.log("--------newPeople---------", newPeople);
+
+  //   recentlyJoinUser(newPeople);
+  //   setuserListArray(newPeople);
+  // };
+
+  const removeuserSelect = (userlist: any) => {
+    const newPeople = userList.filter((person: any) => person !== userlist);
+    console.log('--------newPeople---------', newPeople);
 
     recentlyJoinUser(newPeople);
-    setuserListArray(newPeople);
+    let modifiedArray = newPeople.map((obj:any) => {
+      const { first_name, last_name,pic,id, ...rest } = obj;
+      return { ...rest, user_id: obj.id };
+    });
+    setuserListArray(modifiedArray);
   };
 
   const AddUserList = (item: any) => {

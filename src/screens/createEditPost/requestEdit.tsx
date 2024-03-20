@@ -289,10 +289,17 @@ export const EditPostRequestScreen = (
       getTypeIconWhat(dataItem?.data?.what?.icon);
       createPostcontent(dataItem?.data?.content);
       createPostforName(dataItem?.data?.for?.name)
+      // setToTitleData(dataItem?.data?.to[0]['title']);
       createPostforQuantity(dataItem?.data?.for?.quantity)
       getTypeIconFor(dataItem?.data?.for?.icon)
       createPostwhen(dataItem?.data?.when)
       recentlyJoinUser(dataItem?.data?.usersArray);
+      let modifiedArray = dataItem?.data?.usersArray.map((obj:any) => {
+        const { first_name, last_name,pic,id, ...rest } = obj;
+        return { ...rest, user_id: obj.id };
+      });
+      console.log(modifiedArray,'getUserIdArray')
+      setuserListArray(modifiedArray) 
       tagselectArray(dataItem?.data?.tags);
       setImageArray(dataItem?.data?.imageUrl);
       setImageArrayKey(dataItem?.data?.image);
@@ -463,14 +470,25 @@ export const EditPostRequestScreen = (
     />
   );
 
-  const removeuserSelect = (id: any) => {
-    const newPeople = userList.filter((person: any) => person !== id);
+  // const removeuserSelect = (id: any) => {
+  //   const newPeople = userList.filter((person: any) => person !== id);
+  //   console.log('--------newPeople---------', newPeople);
+
+  //   recentlyJoinUser(newPeople);
+  //   setuserListArray(newPeople);
+  // };
+
+  const removeuserSelect = (userlist: any) => {
+    const newPeople = userList.filter((person: any) => person !== userlist);
     console.log('--------newPeople---------', newPeople);
 
     recentlyJoinUser(newPeople);
-    setuserListArray(newPeople);
+    let modifiedArray = newPeople.map((obj:any) => {
+      const { first_name, last_name,pic,id, ...rest } = obj;
+      return { ...rest, user_id: obj.id };
+    });
+    setuserListArray(modifiedArray);
   };
-
   const AddUserList = (item: any) => {
     const found = userList.find((element:any) => element.id == item.id);
     if (!found) {

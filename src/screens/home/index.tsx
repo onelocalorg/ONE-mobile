@@ -954,7 +954,7 @@ export const HomeScreen = (props: HomeScreenProps) => {
           style={styles.keyboardViewTwo}
         >
           <View style={styles.postActionSheet}>
-            <TouchableOpacity onPress={() => onEditPost()}>
+            {/* <TouchableOpacity onPress={() => onEditPost()}>
               <Text style={[styles.postText, { color: "white" }]}>
                 Edit Post
               </Text>
@@ -963,7 +963,7 @@ export const HomeScreen = (props: HomeScreenProps) => {
               <Text style={[styles.postText, { color: "white" }]}>
                 Delete Post
               </Text>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
             <TouchableOpacity onPress={() => postHideOptionSelect(1)}>
               <Text style={[styles.postText, { color: "white" }]}>Block</Text>
             </TouchableOpacity>
