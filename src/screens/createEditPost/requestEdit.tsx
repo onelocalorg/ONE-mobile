@@ -250,7 +250,7 @@ export const EditPostRequestScreen = (
       const dataItem = await response.json();
       console.log('-----------------Response------------');
       var tempData = imageArray;
-      tempData.push(dataItem?.data?.imageUrl);
+      tempData.push(dataItem?.data);
       setImageArray(tempData);
 
       var tempTwo = imageArrayKey;
@@ -292,7 +292,7 @@ export const EditPostRequestScreen = (
       createPostforQuantity(dataItem?.data?.for?.quantity)
       getTypeIconFor(dataItem?.data?.for?.icon)
       createPostwhen(dataItem?.data?.when)
-      // recentlyJoinUser([]);
+      recentlyJoinUser(dataItem?.data?.usersArray);
       tagselectArray(dataItem?.data?.tags);
       setImageArray(dataItem?.data?.imageUrl);
       setImageArrayKey(dataItem?.data?.image);
@@ -536,18 +536,18 @@ export const EditPostRequestScreen = (
     }
   }
 
-  const removeSelectImage = (imageItem: any) => {
-    console.log(imageItem, 'image url');
-    console.log(imageArray,'image 444');
+   const removeSelectImage = (imageItem: any) => {
+    console.log(imageItem, 'image url')
+    console.log(imageArrayKey)
     const newImage = imageArray.filter(
-      (person: any) => person !== imageItem
+      (person: any) => person.imageUrl !== imageItem?.imageUrl && person.key !== imageItem.key
     );
     setImageArray(newImage);
     const newImagekey = imageArrayKey.filter(
       (person: any) => person !== imageItem?.key
     );
     setImageArrayKey(newImagekey)
-    console.log(imageArrayKey,'dswdwd')
+    console.log(imageArrayKey)
     }
 
   const gratisPlusClick = (item: any, index: any) => {
@@ -1045,7 +1045,7 @@ export const EditPostRequestScreen = (
                     <TouchableOpacity
                     onPress={() => removeSelectImage(item)}
                   >
-                      <ImageComponent source={{uri: item}} style={styles.selectImage}></ImageComponent></TouchableOpacity>
+                      <ImageComponent source={{uri: item?.imageUrl}} style={styles.selectImage}></ImageComponent></TouchableOpacity>
                   );
                 })}
               </View>

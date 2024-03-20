@@ -14,7 +14,7 @@ export const getData = (key:any) => {
 export const setData = (key:any, value:any) => {
   dataObject[key] = value;
 }; 
- 
+  
 export const apiConstants = {
   login: '/v1/auth/login',
   userProfile: '/v1/users',

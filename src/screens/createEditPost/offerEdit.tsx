@@ -278,7 +278,7 @@ export const EditPostOfferScreen = (props: EditPostOfferScreenProps) => {
       const dataItem = await response.json();
       console.log("-----------------Response------------");
       var tempData = imageArray;
-      tempData.push(dataItem?.data?.imageUrl);
+      tempData.push(dataItem?.data);
       setImageArray(tempData);
 
       var tempTwo = imageArrayKey;
@@ -318,7 +318,7 @@ export const EditPostOfferScreen = (props: EditPostOfferScreenProps) => {
       createPostforQuantity(dataItem?.data?.for?.quantity)
       getTypeIconFor(dataItem?.data?.for?.icon)
       createPostwhen(dataItem?.data?.when)
-      // recentlyJoinUser([]);
+      recentlyJoinUser(dataItem?.data?.usersArray);
       tagselectArray(dataItem?.data?.tags);
       setImageArray(dataItem?.data?.imageUrl);
       setImageArrayKey(dataItem?.data?.image);
@@ -615,34 +615,20 @@ export const EditPostOfferScreen = (props: EditPostOfferScreenProps) => {
     }
   };
 
-  // const removeSelectImage = (imageItem: any) => {
-  //   console.log(imageItem, "image url");
-  //   console.log(imageArrayKey);
-  //   const newImage = imageArray.filter(
-  //     (person: any) =>
-  //       person.imageUrl !== imageItem && person.key !== imageItem.key
-  //   );
-  //   setImageArray(newImage);
-  //   const newImagekey = imageArrayKey.filter(
-  //     (person: any) => person !== imageItem?.key
-  //   );
-  //   setImageArrayKey(newImagekey);
-  //   console.log(imageArrayKey);
-  // };
-
   const removeSelectImage = (imageItem: any) => {
-    console.log(imageItem, 'image url');
-    console.log(imageArray,'image 444');
+    console.log(imageItem, "image url");
+    console.log(imageArrayKey);
     const newImage = imageArray.filter(
-      (person: any) => person !== imageItem
+      (person: any) =>
+        person.imageUrl !== imageItem && person.key !== imageItem.key
     );
     setImageArray(newImage);
     const newImagekey = imageArrayKey.filter(
       (person: any) => person !== imageItem?.key
     );
-    setImageArrayKey(newImagekey)
-    console.log(imageArrayKey,'dswdwd')
-    }
+    setImageArrayKey(newImagekey);
+    console.log(imageArrayKey);
+  };
 
   const onNavigateToProfile = () => {
     navigation?.navigate("profileroute");
@@ -1166,7 +1152,7 @@ export const EditPostOfferScreen = (props: EditPostOfferScreenProps) => {
                   return (
                     <TouchableOpacity onPress={() => removeSelectImage(item)}>
                       <ImageComponent
-                        source={{ uri: item }}
+                        source={{ uri: item?.imageUrl }}
                         style={styles.selectImage}
                       ></ImageComponent>
                     </TouchableOpacity>

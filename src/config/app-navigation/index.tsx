@@ -49,9 +49,9 @@ export const AppNavigation = () => {
     }
     setisVersionApiCalled(true)
   }
-
+   
   function iosVersionCheck(dataIOS: any) {
-    if (IOS_VERSION < dataIOS.ios_version) {
+    if (IOS_VERSION < dataIOS.ios_version) { 
       if (dataIOS.isForceforIOS) {
         setShowUpdateIOS(true);
       } else if (dataIOS.inMaintananceIOS) {

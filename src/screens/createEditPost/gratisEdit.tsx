@@ -222,9 +222,9 @@ export const EditPostGratisScreen = (props: EditPostGratisScreenProps) => {
         },
       );
       const dataItem = await response.json();
-
+console.log(dataItem?.data)
       var tempData = imageArray;
-      tempData.push(dataItem?.data?.imageUrl);
+      tempData.push(dataItem?.data);
       setImageArray(tempData);
 
       var tempTwo = imageArrayKey;
@@ -263,7 +263,7 @@ export const EditPostGratisScreen = (props: EditPostGratisScreenProps) => {
       createPostwhatQuantity(dataItem?.data?.what?.quantity);
       getTypeIconWhat(dataItem?.data?.what?.icon);
       createPostcontent(dataItem?.data?.content);
-      // recentlyJoinUser(dataItem?.to?.users); 
+      recentlyJoinUser(dataItem?.data?.usersArray);
       tagselectArray(dataItem?.data?.tags);
       setImageArray(dataItem?.data?.imageUrl);
       setImageArrayKey(dataItem?.data?.image);
@@ -456,33 +456,20 @@ export const EditPostGratisScreen = (props: EditPostGratisScreenProps) => {
     />
   );
 
-  // const removeSelectImage = (imageItem: any) => {
-  //   console.log(imageItem, 'image url')
-  //   console.log(imageArrayKey)
-  //   const newImage = imageArray.filter(
-  //     (person: any) => person.imageUrl !== imageItem?.imageUrl && person.key !== imageItem.key
-  //   );
-  //   setImageArray(newImage);
-  //   const newImagekey = imageArrayKey.filter(
-  //     (person: any) => person !== imageItem?.key
-  //   );
-  //   setImageArrayKey(newImagekey)
-  //   console.log(imageArrayKey)
-  //   }
-
   const removeSelectImage = (imageItem: any) => {
-    console.log(imageItem, 'image url');
-    console.log(imageArray,'image 444');
+    console.log(imageItem, 'image url')
+    console.log(imageArrayKey)
     const newImage = imageArray.filter(
-      (person: any) => person !== imageItem
+      (person: any) => person.imageUrl !== imageItem?.imageUrl && person.key !== imageItem.key
     );
     setImageArray(newImage);
     const newImagekey = imageArrayKey.filter(
       (person: any) => person !== imageItem?.key
     );
     setImageArrayKey(newImagekey)
-    console.log(imageArrayKey,'dswdwd')
+    console.log(imageArrayKey)
     }
+
 
   const handleRemove = (id: any) => {
     const newPeople = tagArray.filter((person: any) => person !== id);
@@ -826,7 +813,7 @@ export const EditPostGratisScreen = (props: EditPostGratisScreenProps) => {
                     <TouchableOpacity
                     onPress={() => removeSelectImage(item)}
                   >
-                      <ImageComponent source={{uri: item}} style={styles.selectImage}></ImageComponent></TouchableOpacity>
+                      <ImageComponent source={{uri: item?.imageUrl}} style={styles.selectImage}></ImageComponent></TouchableOpacity>
                   );
                 })}
               </View>
@@ -842,7 +829,7 @@ export const EditPostGratisScreen = (props: EditPostGratisScreenProps) => {
                   source={buttonArrowGreen}
                   style={styles.buttonArrow}
                 />
-              </TouchableOpacity>
+              </TouchableOpacity> 
             </View>
           </View>
         </TouchableOpacity>
