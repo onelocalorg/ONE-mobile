@@ -117,6 +117,8 @@ export const EditPostRequestScreen = (
   const [usergratisList, userGratiesListData]: any = useState([]);
   const [usertext, onUserSearch] = useState('');
   const [settoTitle, setToTitleData]:any = useState();
+  var [latitude, setLatitude]: any = useState();
+  var [longitude, setLongitude]: any = useState();
   const datePickerRef: React.Ref<DatePickerRefProps> = useRef(null);
   const { user } = useSelector<StoreType, UserProfileState>(
     (state) => state.userProfileReducer
@@ -293,6 +295,8 @@ export const EditPostRequestScreen = (
       createPostforQuantity(dataItem?.data?.for?.quantity)
       getTypeIconFor(dataItem?.data?.for?.icon)
       createPostwhen(dataItem?.data?.when)
+      setLatitude(dataItem?.data?.where?.location?.coordinates[0])
+      setLongitude(dataItem?.data?.where?.location?.coordinates[1])
       recentlyJoinUser(dataItem?.data?.usersArray);
       let modifiedArray = dataItem?.data?.usersArray.map((obj:any) => {
         const { first_name, last_name,pic,id, ...rest } = obj;
@@ -396,10 +400,6 @@ export const EditPostRequestScreen = (
       });
     } else if (forName.length === 0) {
       Toast.show('Enter About For', Toast.LONG, {
-        backgroundColor: 'black',
-      });
-    } else if (whereAddress.length === 0) {
-      Toast.show('Enter Address', Toast.LONG, {
         backgroundColor: 'black',
       });
     } else if (content.length === 0) {
@@ -753,10 +753,15 @@ export const EditPostRequestScreen = (
                   textInputProps={{
                     placeholderTextColor: 'gray',
                   }}
+                  GooglePlacesDetailsQuery={{ fields: "geometry" }}
+                      fetchDetails={true}
                   placeholder="where do you need this?"
                   onPress={(data: any, details = null) => {
                     createPostwhereAddress(data.description);
+                    setLatitude(details?.geometry?.location?.lat)
+                    setLongitude(details?.geometry?.location?.lng)
                     console.log(data); // description
+                    console.log(details); 
                   }}
                   query={{
                     key: ActiveEnv.GOOGLE_KEY, // client
