@@ -143,7 +143,6 @@ export const EditPostOfferScreen = (props: EditPostOfferScreenProps) => {
     userId: user?.id,
   });
 
-  console.log(postData);
 
   const datePickerRef: React.Ref<DatePickerRefProps> = useRef(null);
 
@@ -170,19 +169,25 @@ export const EditPostOfferScreen = (props: EditPostOfferScreenProps) => {
   };
 
   const selectToTypePost = (icon: any, type: any, title: any) => {
-    getTypeIconTo(icon);
     if (title === "Everyone") {
       setToTitleData(title);
     } else {
       setToTitleData();
     }
+    console.log(type)
+    if(type === 'everyone'){
+      recentlyJoinUser([])
+      setuserListArray([])
+    }
     getToTypeValue(type);
+    getTypeIconTo(icon);
     setToShowPopover(false);
   };
 
   const selectForTypePost = (icon: any, type: any) => {
     getTypeIconFor(icon);
     getForTypeValue(type);
+   
     setForShowPopover(false);
   };
 
@@ -241,17 +246,17 @@ export const EditPostOfferScreen = (props: EditPostOfferScreenProps) => {
       getTypeIconFor(dataItem?.data?.for?.icon);
 
       // getTypeIconWhat(dataItem?.data?.what[0]["icon"]);
-      getWhatTypeValue(dataItem?.data?.what[0]["value"]);
+      // getWhatTypeValue(dataItem?.data?.what[0]["value"]);
 
       // getTypeIconFor(dataItem?.data?.for[0]["icon"]);
-      getForTypeValue(dataItem?.data?.for[0]["value"]);
+      // getForTypeValue(dataItem?.data?.for[0]["value"]);
 
       // getTypeIconTo(dataItem?.data?.to[0]["icon"]);
-      setToTitleData(dataItem?.data?.to[0]["title"]);
-      getToTypeValue(dataItem?.data?.to[0]["value"]);
+      // setToTitleData(dataItem?.data?.to[0]["title"]);
+      // getToTypeValue(dataItem?.data?.to[0]["value"]);
 
       // getTypeIconFrom(dataItem?.data?.from[0]["icon"]);
-      getFromTypeValue(dataItem?.data?.from[0]["value"]);
+      // getFromTypeValue(dataItem?.data?.from[0]["value"]);
 
       console.log(
         dataItem?.data[0]["icon"],
@@ -322,8 +327,10 @@ export const EditPostOfferScreen = (props: EditPostOfferScreenProps) => {
       createPostwhatName(dataItem?.data?.what?.name);
       createPostwhatQuantity(dataItem?.data?.what?.quantity);
       getTypeIconWhat(dataItem?.data?.what?.icon);
+      getWhatTypeValue(dataItem?.data?.what?.type);
       createPostcontent(dataItem?.data?.content);
       createPostforName(dataItem?.data?.for?.name);
+      getForTypeValue(dataItem?.data?.for?.type);
       createPostforQuantity(dataItem?.data?.for?.quantity);
       getTypeIconFor(dataItem?.data?.for?.icon);
       createPostwhen(dataItem?.data?.when);
@@ -331,19 +338,21 @@ export const EditPostOfferScreen = (props: EditPostOfferScreenProps) => {
       tagselectArray(dataItem?.data?.tags);
       setImageArray(dataItem?.data?.imageUrl);
       setImageArrayKey(dataItem?.data?.image);
-      setLatitude(dataItem?.data?.where?.location?.coordinates[0])
-      setLongitude(dataItem?.data?.where?.location?.coordinates[1])
+      setLatitude(dataItem?.data?.where?.location?.coordinates[1]);
+      setLongitude(dataItem?.data?.where?.location?.coordinates[0]);
+      createPostwhereAddress(dataItem?.data?.where?.address);
+      getToTypeValue(dataItem?.data?.to_offer.type);
+      getTypeIconTo(dataItem?.data?.to_offer.icon);
       if (dataItem?.data?.to_offer.type === "person") {
         recentlyJoinUser(dataItem?.data?.usersArray);
-        setToTitleData('');
-        getToTypeValue(dataItem?.data?.to_offer.type);
+        setToTitleData();
         let modifiedArray = dataItem?.data?.usersArray.map((obj: any) => {
-          const { first_name, last_name, pic, id, ...rest } = obj;
-          return { ...rest, user_id: obj.id };
+          const { first_name, last_name, pic, id,point, ...rest } = obj;
+          setuserListArray([...userListArray, obj.id]);
         });
         console.log(modifiedArray, "getUserIdArray");
-        setuserListArray(modifiedArray);
       } else {
+        setToTitleData(dataItem?.data?.to_offer.title);
       }
       LodingData(false);
     } catch (error) {
@@ -366,9 +375,9 @@ export const EditPostOfferScreen = (props: EditPostOfferScreenProps) => {
       for_name: forName,
       for_quantity: forQuantity,
       where_address: whereAddress,
-      where_lat: location?.latitude?.toString(),
-      where_lng: location?.longitude?.toString(),
-      when: whenDate.toISOString(),
+      where_lat: latitude?.toString(),
+      where_lng: longitude?.toString(),
+      when: whenDate.toString(),
       content: content,
       tags: tagArray,
       post_image: imageArrayKey,
@@ -388,7 +397,6 @@ export const EditPostOfferScreen = (props: EditPostOfferScreenProps) => {
           headers: new Headers({
             Authorization: "Bearer " + token,
             "Content-Type": "application/json",
-            Accept: "application/json",
           }),
           body: JSON.stringify(data),
         }
@@ -581,24 +589,13 @@ export const EditPostOfferScreen = (props: EditPostOfferScreenProps) => {
     }
   }
 
-  // const removeuserSelect = (id: any) => {
-  //   const newPeople = userList.filter((person: any) => person !== id);
-  //   console.log("--------newPeople---------", newPeople);
-
-  //   recentlyJoinUser(newPeople);
-  //   setuserListArray(newPeople);
-  // };
-
   const removeuserSelect = (userlist: any) => {
     const newPeople = userList.filter((person: any) => person !== userlist);
-    console.log("--------newPeople---------", newPeople);
+    console.log('--------newPeople---------', newPeople);
 
     recentlyJoinUser(newPeople);
-    let modifiedArray = newPeople.map((obj: any) => {
-      const { first_name, last_name, pic, id, ...rest } = obj;
-      return { ...rest, user_id: obj.id };
-    });
-    setuserListArray(modifiedArray);
+    const ids = newPeople.map((obj:any) => obj.id);
+    setuserListArray(ids);
   };
 
   const AddUserList = (item: any) => {
@@ -815,8 +812,8 @@ export const EditPostOfferScreen = (props: EditPostOfferScreenProps) => {
                   placeholder="where is this offer located?"
                   onPress={(data: any, details = null) => {
                     createPostwhereAddress(data.description);
-                    setLatitude(details?.geometry?.location?.lat)
-                    setLongitude(details?.geometry?.location?.lng)
+                    setLatitude(details?.geometry?.location?.lat);
+                    setLongitude(details?.geometry?.location?.lng);
                     console.log(data);
                     console.log(details); // description
                   }}

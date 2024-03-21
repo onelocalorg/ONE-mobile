@@ -160,7 +160,12 @@ export const EditPostRequestScreen = (
     } else {
       setToTitleData();
     }
+    if(type === 'everyone'){
+      recentlyJoinUser([])
+      setuserListArray([])
+    }
     getTypeIconTo(icon);
+    getFromTypeValue(type)
     getToTypeValue(type);
     setFronShowPopover(false);
   };
@@ -212,15 +217,15 @@ export const EditPostRequestScreen = (
       getResourseDataTo(dataItem?.data?.to);
       getResourseDataFrom(dataItem?.data?.from);
       getResourseDataFor(dataItem?.data?.for);
-      getTypeIconWhat(dataItem?.data?.what[0]['icon']);
-      getTypeIconFor(dataItem?.data?.for[0]['icon']);
-      getForTypeValue(dataItem?.data?.for[0]['value']);
-      getTypeIconTo(dataItem?.data?.to[0]['icon']);
-      setToTitleData(dataItem?.data?.to[0]['title']);
-      getToTypeValue(dataItem?.data?.to[0]['value']);
-      getTypeIconFrom(dataItem?.data?.from[0]['icon']);
-      getFromTypeValue(dataItem?.data?.from[0]['value']);
-      getWhatTypeValue(dataItem?.data?.what[0]['value']);
+      // getTypeIconWhat(dataItem?.data?.what[0]['icon']);
+      // getTypeIconFor(dataItem?.data?.for[0]['icon']);
+      // getForTypeValue(dataItem?.data?.for[0]['value']);
+      // getTypeIconTo(dataItem?.data?.to[0]['icon']);
+      // setToTitleData(dataItem?.data?.to[0]['title']);
+      // getToTypeValue(dataItem?.data?.to[0]['value']);
+      // getTypeIconFrom(dataItem?.data?.from[0]['icon']);
+      // getFromTypeValue(dataItem?.data?.from[0]['value']);
+      // getWhatTypeValue(dataItem?.data?.what[0]['value']);
       console.log(
         dataItem?.data[0]['icon'],
         '------------icon image--------------',
@@ -289,21 +294,29 @@ export const EditPostRequestScreen = (
       createPostwhatName(dataItem?.data?.what?.name);
       createPostwhatQuantity(dataItem?.data?.what?.quantity);
       getTypeIconWhat(dataItem?.data?.what?.icon);
+      getWhatTypeValue(dataItem?.data?.what?.type)
       createPostcontent(dataItem?.data?.content);
       createPostforName(dataItem?.data?.for?.name)
-      // setToTitleData(dataItem?.data?.to[0]['title']);
+      getForTypeValue(dataItem?.data?.for?.type)
+      if(dataItem?.data?.from?.type === 'person'){
+        setToTitleData();
+        recentlyJoinUser(dataItem?.data?.usersArray);
+      let modifiedArray = dataItem?.data?.usersArray.map((obj:any) => {
+        const { first_name, last_name,pic,id,point, ...rest } = obj;
+        setuserListArray([...userListArray, obj.id]);
+      });
+      } else{
+        setToTitleData(dataItem?.data?.from?.title);
+      }
+      getFromTypeValue(dataItem?.data?.from?.type)
+      getTypeIconTo(dataItem?.data?.from?.icon)
       createPostforQuantity(dataItem?.data?.for?.quantity)
       getTypeIconFor(dataItem?.data?.for?.icon)
       createPostwhen(dataItem?.data?.when)
-      setLatitude(dataItem?.data?.where?.location?.coordinates[0])
-      setLongitude(dataItem?.data?.where?.location?.coordinates[1])
-      recentlyJoinUser(dataItem?.data?.usersArray);
-      let modifiedArray = dataItem?.data?.usersArray.map((obj:any) => {
-        const { first_name, last_name,pic,id, ...rest } = obj;
-        return { ...rest, user_id: obj.id };
-      });
-      console.log(modifiedArray,'getUserIdArray')
-      setuserListArray(modifiedArray) 
+      setLatitude(dataItem?.data?.where?.location?.coordinates[1])
+      setLongitude(dataItem?.data?.where?.location?.coordinates[0])
+      createPostwhereAddress(dataItem?.data?.where?.address);
+      
       tagselectArray(dataItem?.data?.tags);
       setImageArray(dataItem?.data?.imageUrl);
       setImageArrayKey(dataItem?.data?.image);
@@ -328,8 +341,8 @@ export const EditPostRequestScreen = (
       for_name: forName,
       for_quantity: forQuantity,
       where_address: whereAddress,
-      where_lat: location?.latitude?.toString(),
-      where_lng: location?.longitude?.toString(),
+      where_lat: latitude?.toString(),
+      where_lng: longitude?.toString(),
       when: when?.toString(),
       content: content,
       tags: tagArray,
@@ -470,25 +483,15 @@ export const EditPostRequestScreen = (
     />
   );
 
-  // const removeuserSelect = (id: any) => {
-  //   const newPeople = userList.filter((person: any) => person !== id);
-  //   console.log('--------newPeople---------', newPeople);
-
-  //   recentlyJoinUser(newPeople);
-  //   setuserListArray(newPeople);
-  // };
-
   const removeuserSelect = (userlist: any) => {
     const newPeople = userList.filter((person: any) => person !== userlist);
     console.log('--------newPeople---------', newPeople);
 
     recentlyJoinUser(newPeople);
-    let modifiedArray = newPeople.map((obj:any) => {
-      const { first_name, last_name,pic,id, ...rest } = obj;
-      return { ...rest, user_id: obj.id };
-    });
-    setuserListArray(modifiedArray);
+    const ids = newPeople.map((obj:any) => obj.id);
+    setuserListArray(ids);
   };
+
   const AddUserList = (item: any) => {
     const found = userList.find((element:any) => element.id == item.id);
     if (!found) {
@@ -501,8 +504,7 @@ export const EditPostRequestScreen = (
       delete newItems.id;
       delete newItems.gratisNo;
       console.log(item.gratisNo);
-      const newuserData = {...newItems, point: item.gratisNo, user_id: item.id};
-      setuserListArray([...userListArray, newuserData]);
+      setuserListArray([...userListArray, item.id]);
       
       console.log(userListArray);
     }else{
