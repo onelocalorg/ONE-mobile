@@ -24,7 +24,7 @@ export const colors = {
   sky:"#54C1FF",
   lightgrayTwo:'#E8E8E8',
   darkRed:'#6E1111',
-  darkyellow:'#F6B816',
+  darkyellow:'#BF820A',
   greenBdr:'#159A12',
   redTwo:'#C60000',
   darkenBlack:'#353535',
