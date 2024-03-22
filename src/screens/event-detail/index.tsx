@@ -220,13 +220,25 @@ export const EventDetailScreen = (props: EventDetailScreenProps) => {
     price: any,
     quantityticket: number
   ) => {
-    onPaymentSuccess(
-      cardData,
-      ticketId,
-      ticketName,
-      `${parseFloat(price?.replace("USD", ""))}`,
-      quantityticket
-    );
+    console.log('1111dedede')
+    if(price === 0){
+      onPaymentSuccess(
+        cardData,
+        ticketId,
+        ticketName,
+        price.toString(),
+        quantityticket
+      );
+    } else{
+      onPaymentSuccess(
+        cardData,
+        ticketId,
+        ticketName,
+        `${parseFloat(price?.replace("USD", ""))}`,
+        quantityticket
+      );
+    }
+   
   };
 
   const onPurchaseTicket = async (
@@ -400,7 +412,8 @@ export const EventDetailScreen = (props: EventDetailScreenProps) => {
 
         <SizedBox height={verticalScale(16)} />
         <View style={styles.container}>
-          <Text style={styles.event}>{strings.tickets}</Text>
+        {tickets?.length ? 
+          <Text style={styles.event}>{strings.tickets}</Text> : <></>}
           <View>
             {tickets?.map((ele) => (
               <View key={ele?.price.toString()} style={styles.rowOnly}>
@@ -421,7 +434,7 @@ export const EventDetailScreen = (props: EventDetailScreenProps) => {
 
           {isShowPaymentCheck ? (
             <>
-              {!is_event_owner ? (
+              {!is_event_owner && tickets?.length ? (
                 <ButtonComponent
                   disabled={cancelled}
                   title={strings.buyTicket}
