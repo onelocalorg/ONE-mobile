@@ -83,7 +83,7 @@ interface Range {
 }
 
 export const EditPostOfferScreen = (props: EditPostOfferScreenProps) => {
-  const { navigation,route } = props || {};
+  const { navigation, route } = props || {};
   const { postData } = route?.params ?? {};
   const { theme } = useAppTheme();
   const styles = createStyleSheet(theme);
@@ -127,6 +127,8 @@ export const EditPostOfferScreen = (props: EditPostOfferScreenProps) => {
   const [userList, recentlyJoinUser]: any = useState([]);
   const [userListArray, setuserListArray]: any = useState([]);
   const [usertext, onUserSearch] = useState("");
+  var [latitude, setLatitude]: any = useState();
+  var [longitude, setLongitude]: any = useState();
   const [open, setOpen] = useState(false);
   var [location, setUserLocation]: any = useState();
   var makeDate = new Date();
@@ -141,7 +143,6 @@ export const EditPostOfferScreen = (props: EditPostOfferScreenProps) => {
     userId: user?.id,
   });
 
-  console.log(postData);
 
   const datePickerRef: React.Ref<DatePickerRefProps> = useRef(null);
 
@@ -168,19 +169,25 @@ export const EditPostOfferScreen = (props: EditPostOfferScreenProps) => {
   };
 
   const selectToTypePost = (icon: any, type: any, title: any) => {
-    getTypeIconTo(icon);
     if (title === "Everyone") {
       setToTitleData(title);
     } else {
       setToTitleData();
     }
+    console.log(type)
+    if(type === 'everyone'){
+      recentlyJoinUser([])
+      setuserListArray([])
+    }
     getToTypeValue(type);
+    getTypeIconTo(icon);
     setToShowPopover(false);
   };
 
   const selectForTypePost = (icon: any, type: any) => {
     getTypeIconFor(icon);
     getForTypeValue(type);
+   
     setForShowPopover(false);
   };
 
@@ -234,22 +241,22 @@ export const EditPostOfferScreen = (props: EditPostOfferScreenProps) => {
       getResourseDataTo(dataItem?.data?.to);
       getResourseDataFrom(dataItem?.data?.from);
       getResourseDataFor(dataItem?.data?.for);
-      
+
       getTypeIconWhat(dataItem?.data?.what?.icon);
-      getTypeIconFor(dataItem?.data?.for?.icon)
+      getTypeIconFor(dataItem?.data?.for?.icon);
 
       // getTypeIconWhat(dataItem?.data?.what[0]["icon"]);
-      getWhatTypeValue(dataItem?.data?.what[0]["value"]);
+      // getWhatTypeValue(dataItem?.data?.what[0]["value"]);
 
       // getTypeIconFor(dataItem?.data?.for[0]["icon"]);
-      getForTypeValue(dataItem?.data?.for[0]["value"]);
+      // getForTypeValue(dataItem?.data?.for[0]["value"]);
 
       // getTypeIconTo(dataItem?.data?.to[0]["icon"]);
-      setToTitleData(dataItem?.data?.to[0]["title"]);
-      getToTypeValue(dataItem?.data?.to[0]["value"]);
+      // setToTitleData(dataItem?.data?.to[0]["title"]);
+      // getToTypeValue(dataItem?.data?.to[0]["value"]);
 
       // getTypeIconFrom(dataItem?.data?.from[0]["icon"]);
-      getFromTypeValue(dataItem?.data?.from[0]["value"]);
+      // getFromTypeValue(dataItem?.data?.from[0]["value"]);
 
       console.log(
         dataItem?.data[0]["icon"],
@@ -298,40 +305,55 @@ export const EditPostOfferScreen = (props: EditPostOfferScreenProps) => {
   async function getPostDetailAPI() {
     LodingData(true);
     const token = await AsyncStorage.getItem("token");
-  
+
     console.log(API_URL + "/v2/posts/get/detail/" + postData?.id);
     try {
       console.log("222222");
 
-      const response = await fetch(API_URL + "/v2/posts/get/detail/" + postData?.id, {
-        method: "get",
-        headers: new Headers({
-          Authorization: "Bearer " + token,
-          "Content-Type": "application/json",
-          Accept: "application/json",
-        }),
-      });
+      const response = await fetch(
+        API_URL + "/v2/posts/get/detail/" + postData?.id,
+        {
+          method: "get",
+          headers: new Headers({
+            Authorization: "Bearer " + token,
+            "Content-Type": "application/json",
+            Accept: "application/json",
+          }),
+        }
+      );
       const dataItem = await response.json();
       console.log("=========== Get detail Post API Response ==============");
       console.log(dataItem);
       createPostwhatName(dataItem?.data?.what?.name);
       createPostwhatQuantity(dataItem?.data?.what?.quantity);
       getTypeIconWhat(dataItem?.data?.what?.icon);
+      getWhatTypeValue(dataItem?.data?.what?.type);
       createPostcontent(dataItem?.data?.content);
-      createPostforName(dataItem?.data?.for?.name)
-      createPostforQuantity(dataItem?.data?.for?.quantity)
-      getTypeIconFor(dataItem?.data?.for?.icon)
-      createPostwhen(dataItem?.data?.when)
-      recentlyJoinUser(dataItem?.data?.usersArray);
-      let modifiedArray = dataItem?.data?.usersArray.map((obj:any) => {
-        const { first_name, last_name,pic,id, ...rest } = obj;
-        return { ...rest, user_id: obj.id };
-      });
-      console.log(modifiedArray,'getUserIdArray')
-      setuserListArray(modifiedArray) 
+      createPostforName(dataItem?.data?.for?.name);
+      getForTypeValue(dataItem?.data?.for?.type);
+      createPostforQuantity(dataItem?.data?.for?.quantity);
+      getTypeIconFor(dataItem?.data?.for?.icon);
+      createPostwhen(dataItem?.data?.when);
+
       tagselectArray(dataItem?.data?.tags);
       setImageArray(dataItem?.data?.imageUrl);
       setImageArrayKey(dataItem?.data?.image);
+      setLatitude(dataItem?.data?.where?.location?.coordinates[1]);
+      setLongitude(dataItem?.data?.where?.location?.coordinates[0]);
+      createPostwhereAddress(dataItem?.data?.where?.address);
+      getToTypeValue(dataItem?.data?.to_offer.type);
+      getTypeIconTo(dataItem?.data?.to_offer.icon);
+      if (dataItem?.data?.to_offer.type === "person") {
+        recentlyJoinUser(dataItem?.data?.usersArray);
+        setToTitleData();
+        let modifiedArray = dataItem?.data?.usersArray.map((obj: any) => {
+          const { first_name, last_name, pic, id,point, ...rest } = obj;
+          setuserListArray([...userListArray, obj.id]);
+        });
+        console.log(modifiedArray, "getUserIdArray");
+      } else {
+        setToTitleData(dataItem?.data?.to_offer.title);
+      }
       LodingData(false);
     } catch (error) {
       console.log("33333");
@@ -340,7 +362,6 @@ export const EditPostOfferScreen = (props: EditPostOfferScreenProps) => {
       console.error(error);
     }
   }
-
 
   async function createPostAPI() {
     LodingData(true);
@@ -354,9 +375,9 @@ export const EditPostOfferScreen = (props: EditPostOfferScreenProps) => {
       for_name: forName,
       for_quantity: forQuantity,
       where_address: whereAddress,
-      where_lat: location?.latitude?.toString(),
-      where_lng: location?.longitude?.toString(),
-      when: whenDate.toISOString(),
+      where_lat: latitude?.toString(),
+      where_lng: longitude?.toString(),
+      when: whenDate.toString(),
       content: content,
       tags: tagArray,
       post_image: imageArrayKey,
@@ -369,15 +390,17 @@ export const EditPostOfferScreen = (props: EditPostOfferScreenProps) => {
     try {
       console.log("222222");
 
-      const response = await fetch(API_URL + "/v2/posts/update/" + postData?.id, {
-        method: "post",
-        headers: new Headers({
-          Authorization: "Bearer " + token,
-          "Content-Type": "application/json",
-          Accept: "application/json",
-        }),
-        body: JSON.stringify(data),
-      });
+      const response = await fetch(
+        API_URL + "/v2/posts/update/" + postData?.id,
+        {
+          method: "post",
+          headers: new Headers({
+            Authorization: "Bearer " + token,
+            "Content-Type": "application/json",
+          }),
+          body: JSON.stringify(data),
+        }
+      );
       const dataItem = await response.json();
       console.log("=========== Edit Post API Response ==============");
       console.log(dataItem);
@@ -463,10 +486,6 @@ export const EditPostOfferScreen = (props: EditPostOfferScreenProps) => {
       //   Toast.show('Enter For Quantity', Toast.LONG, {
       //     backgroundColor: 'black',
       //   });
-    } else if (whereAddress.length === 0) {
-      Toast.show("Enter Address", Toast.LONG, {
-        backgroundColor: "black",
-      });
     } else if (content.length === 0) {
       Toast.show("Enter Post Content", Toast.LONG, {
         backgroundColor: "black",
@@ -570,24 +589,13 @@ export const EditPostOfferScreen = (props: EditPostOfferScreenProps) => {
     }
   }
 
-  // const removeuserSelect = (id: any) => {
-  //   const newPeople = userList.filter((person: any) => person !== id);
-  //   console.log("--------newPeople---------", newPeople);
-
-  //   recentlyJoinUser(newPeople);
-  //   setuserListArray(newPeople);
-  // };
-
   const removeuserSelect = (userlist: any) => {
     const newPeople = userList.filter((person: any) => person !== userlist);
     console.log('--------newPeople---------', newPeople);
 
     recentlyJoinUser(newPeople);
-    let modifiedArray = newPeople.map((obj:any) => {
-      const { first_name, last_name,pic,id, ...rest } = obj;
-      return { ...rest, user_id: obj.id };
-    });
-    setuserListArray(modifiedArray);
+    const ids = newPeople.map((obj:any) => obj.id);
+    setuserListArray(ids);
   };
 
   const AddUserList = (item: any) => {
@@ -680,18 +688,11 @@ export const EditPostOfferScreen = (props: EditPostOfferScreenProps) => {
         showsVerticalScrollIndicator={false}
       >
         <View style={styles.postFilter}>
-        <TouchableOpacity
-          style={styles.container3}
-          activeOpacity={1}
-        >
-          <ImageComponent
-            source={greenOffer}
-            style={styles.icon1}
-          />
-          <Text style={styles.label3}>
-            Offer Edit
-          </Text>
-        </TouchableOpacity></View>
+          <TouchableOpacity style={styles.container3} activeOpacity={1}>
+            <ImageComponent source={greenOffer} style={styles.icon1} />
+            <Text style={styles.label3}>Offer Edit</Text>
+          </TouchableOpacity>
+        </View>
         <TouchableOpacity
           onPress={keyboardDismiss}
           activeOpacity={1}
@@ -806,9 +807,13 @@ export const EditPostOfferScreen = (props: EditPostOfferScreenProps) => {
                   textInputProps={{
                     placeholderTextColor: "gray",
                   }}
+                  GooglePlacesDetailsQuery={{ fields: "geometry" }}
+                  fetchDetails={true}
                   placeholder="where is this offer located?"
                   onPress={(data: any, details = null) => {
                     createPostwhereAddress(data.description);
+                    setLatitude(details?.geometry?.location?.lat);
+                    setLongitude(details?.geometry?.location?.lng);
                     console.log(data);
                     console.log(details); // description
                   }}
@@ -1156,8 +1161,7 @@ export const EditPostOfferScreen = (props: EditPostOfferScreenProps) => {
               </View>
             </View>
             <View>
-              <View style={styles.createPostCont}>
-              </View>
+              <View style={styles.createPostCont}></View>
 
               <TouchableOpacity
                 onPress={CreateNewPostModal}

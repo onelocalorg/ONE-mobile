@@ -433,7 +433,7 @@ export const About = (props: AboutDataProps) => {
     if (about !== updatedAbout) {
       request = { ...request, about: updatedAbout };
     }
-    if (allSkills.length) {
+    if (allSkills?.length) {
       request = { ...request, skills: allSkills };
     }
     onEditProfile?.(request);

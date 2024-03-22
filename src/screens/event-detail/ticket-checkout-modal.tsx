@@ -175,9 +175,20 @@ const TicketCheckoutModalComp = (
   };
 
   const onOpenModal = () => {
-    addCardModal(true);
     isLoading(true);
-    getCardDetailAPI();
+    if(setPrice === 0){
+      onPurchase(
+        setCard[SelectCardIndex],
+        eventData?.tickets?.[selectedRadioIndex]?.id ?? '',
+        eventData?.tickets?.[selectedRadioIndex]?.name,
+        setPrice,
+        quantityticket,
+      )
+    }else{
+      addCardModal(true);
+      getCardDetailAPI();
+    }
+   
   };
 
   const addCardModalHide = () => {

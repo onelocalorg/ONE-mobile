@@ -443,30 +443,6 @@ export const CreatePostOfferScreen = (props: CreatePostOfferScreenProps) => {
     createPostforQuantity(forQuantity);
   };
 
-  const gratisPlusClick = (item: any, index: any) => {
-    // console.log(item)
-    item.gratisNo = item.gratisNo + 1;
-    console.log(item.gratisNo);
-    let markers = [...usergratisList];
-    markers[index] = {
-      ...markers[index],
-      gratisNo: item.gratisNo,
-    };
-    totalGratisData(markers);
-  };
-  const gratisMinusClick = (item: any, index: any) => {
-    // console.log(item)
-    if (item.gratisNo > 1) {
-      item.gratisNo = item.gratisNo - 1;
-      let markers = [...usergratisList];
-      markers[index] = {
-        ...markers[index],
-        gratisNo: item.gratisNo,
-      };
-      totalGratisData(markers);
-    }
-  };
-
   async function gratisUserList(textUser: any) {
     const token = await AsyncStorage.getItem('token');
     var datas: any = {

@@ -179,10 +179,8 @@ export const onUpdateEvent = async (props: UpdateEventProps) => {
     event_lat: latitude,
     event_lng: longitude,
     event_type: type,
-    event_image: eventImage
+    event_image: eventImage,
   };
-
-  
 
   try {
     const endPoint = `${apiConstants.createEvent}/${eventId}`;
@@ -213,6 +211,7 @@ interface CreateEventProps {
 }
 
 export const onCreateEvent = async (props: CreateEventProps) => {
+  console.log("2");
   const { bodyParams } = props || {};
   const {
     address,
@@ -230,41 +229,43 @@ export const onCreateEvent = async (props: CreateEventProps) => {
   } = bodyParams || {};
   let response;
 
-  const attachments = {
-    name: name,
-    start_date: new Date(start_date).toISOString(),
-    end_date: new Date(end_date).toISOString(),
-    about: about,
-    address: address,
-    full_address: full_address,
-    email_confirmation_body: email_confirmation_body,
-    tickets: tickets,
-    event_lat: latitude,
-    event_lng: longitude,
-    event_type: type,
-    event_image: eventImage
-  };
-  // const attachment = new FormData();
-  // attachment.append("event_image", {
-  //   uri: eventImage,
-  //   type: "jpg",
-  //   name: "eventImage.jpg",
-  // });
-  // attachment.append("address", address);
-  // attachment.append("about", about);
-  // attachment.append("full_address", full_address);
-  // attachment.append("email_confirmation_body", email_confirmation_body);
-  // attachment.append("tickets", tickets);
-  // attachment.append("name", name);
-  // attachment.append("end_date", new Date(end_date).toISOString());
-  // attachment.append("start_date", new Date(start_date).toISOString());
-  // attachment.append("event_lat", latitude);
-  // attachment.append("event_lng", longitude);
-  // attachment.append("event_type", type);
+  var attachments = {}
+  if(tickets?.length){
+     attachments = {
+      name: name,
+      start_date: new Date(start_date).toISOString(),
+      end_date: new Date(end_date).toISOString(),
+      about: about,
+      address: address,
+      full_address: full_address,
+      email_confirmation_body: email_confirmation_body,
+      tickets: tickets,
+      event_lat: latitude,
+      event_lng: longitude,
+      event_type: type,
+      event_image: eventImage,
+    };
+  }else{
+     attachments = {
+      name: name,
+      start_date: new Date(start_date).toISOString(),
+      end_date: new Date(end_date).toISOString(),
+      about: about,
+      address: address,
+      full_address: full_address,
+      email_confirmation_body: email_confirmation_body,
+      event_lat: latitude,
+      event_lng: longitude,
+      event_type: type,
+      event_image: eventImage,
+    };
+  }
   try {
+    console.log(attachments);
     const endPoint = `${apiConstants.createEvent}`;
     const data = await API.homeService.post(endPoint, attachments);
     response = getApiResponse(data);
+    console.log(response, "response response");
   } catch (error: any) {
     response = getApiResponse(error);
   }
@@ -386,11 +387,12 @@ interface Card {
 export const onPurchaseTicket = async (props: PurchaseTicketProps) => {
   const { bodyParams } = props ?? {};
   let response;
-
+  console.log(bodyParams, "bodyParams");
   try {
     const endPoint = apiConstants.purchaseTicket;
     const data = await API.homeService.post(endPoint, bodyParams);
     response = getApiResponse(data);
+    console.log(response);
   } catch (error: any) {
     response = getApiResponse(error);
   }

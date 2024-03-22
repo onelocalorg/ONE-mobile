@@ -92,7 +92,7 @@ export const GratitudeScreen = (props: MapScreenProps) => {
   const { theme } = useAppTheme();
   const styles = createStyleSheet(theme);
   var [eventData, eventDetail]: any = useState([]);
-  const [tempdata, setNewLocation]: any = useState(getData('defaultLocation'));
+  const [tempdata, setNewLocation]: any = useState(getData("defaultLocation"));
   var [latitude, setLatitude]: any = useState(tempdata?.latitude);
   var [longitude, setLongitude]: any = useState(tempdata?.longitude);
   const [eventList, eventDataStore] = useState([]);
@@ -137,8 +137,7 @@ export const GratitudeScreen = (props: MapScreenProps) => {
     if (latitude) {
       geoTaggingAPITwo();
     }
-  }, [zoomLevel,latitude,]);
- 
+  }, [zoomLevel, latitude]);
 
   async function handleEnabledPressed() {
     if (Platform.OS === "android") {
@@ -165,23 +164,22 @@ export const GratitudeScreen = (props: MapScreenProps) => {
   }
 
   const requestLocationPermission = async () => {
-    console.log('check 2222')
+    console.log("check 2222");
     GetLocation.getCurrentPosition({
       enableHighAccuracy: false,
       timeout: 60000,
     })
       .then((location) => {
         if (location?.latitude && location?.longitude) {
-
           var isLocationDefault = {
             latitude: location.latitude,
             longitude: location.longitude,
-            zoomLevel: 11
-          }
-          setData('defaultLocation', isLocationDefault)
+            zoomLevel: 11,
+          };
+          setData("defaultLocation", isLocationDefault);
           setLongitude(location?.longitude);
           setLatitude(location?.latitude);
-          setNewLocation(isLocationDefault)
+          setNewLocation(isLocationDefault);
           const shape: any = {
             type: "FeatureCollection",
             features: [
@@ -233,19 +231,22 @@ export const GratitudeScreen = (props: MapScreenProps) => {
   };
 
   async function geoTaggingAPITwo() {
-    LodingData(true)
+    LodingData(true);
     const token = await AsyncStorage.getItem("token");
-      var data: any = {
-        start_date: moment(range.startDate).format("YYYY-MM-DD"),
-        end_date: moment(range.endDate).format("YYYY-MM-DD"),
-        type: eventType,
-        user_lat: latitude,
-        user_long: longitude,
-        radius: 25,
-        zoom_level: zoomLevel,
-        device_type: Platform.OS,
-      };
-    console.log("-----------------map location request------------------", data);
+    var data: any = {
+      start_date: moment(range.startDate).format("YYYY-MM-DD"),
+      end_date: moment(range.endDate).format("YYYY-MM-DD"),
+      type: eventType,
+      user_lat: latitude,
+      user_long: longitude,
+      radius: 25,
+      zoom_level: zoomLevel,
+      device_type: Platform.OS,
+    };
+    console.log(
+      "-----------------map location request------------------",
+      data
+    );
     eventDataStore([]);
     try {
       const response = await fetch(API_URL + "/v1/events/geotagging", {
@@ -279,25 +280,24 @@ export const GratitudeScreen = (props: MapScreenProps) => {
     }
   }
 
-
   const onNavigateEventDetail = (item: any) => {
     navigation.navigate(navigations.EVENT_DETAIL, { id: item?._id });
   };
 
   const handleRegionChange = async (event: any) => {
     const newZoomLevel = event.properties.zoomLevel;
-    if(newZoomLevel !== zoomLevel){
-      LodingData(true)
+    if (newZoomLevel !== zoomLevel) {
+      LodingData(true);
     }
-    console.log('handleRegionChange newZoomLevel',newZoomLevel)
+    console.log("handleRegionChange newZoomLevel", newZoomLevel);
     setCameraZoomLevel(newZoomLevel);
     var isMapLocation: any = {
       latitude: latitude,
       longitude: longitude,
       zoomLevel: newZoomLevel,
-      device_type: Platform.OS
-    }
-    setData('defaultLocation', isMapLocation);
+      device_type: Platform.OS,
+    };
+    setData("defaultLocation", isMapLocation);
   };
 
   const onMarkerClick = (mapEventData: any) => {
@@ -323,18 +323,18 @@ export const GratitudeScreen = (props: MapScreenProps) => {
   };
 
   const onCircleDrag = (event: any) => {
-    console.log('event circle drag latitude',event.geometry.coordinates[1])
-    console.log('event circle drag longitude',event.geometry.coordinates[0])
+    console.log("event circle drag latitude", event.geometry.coordinates[1]);
+    console.log("event circle drag longitude", event.geometry.coordinates[0]);
     var isMapLocation: any = {
       latitude: event.geometry.coordinates[1],
       longitude: event.geometry.coordinates[0],
-      zoomLevel: zoomLevel, 
-      device_type: Platform.OS
-    }
+      zoomLevel: zoomLevel,
+      device_type: Platform.OS,
+    };
     setNewLocation(isMapLocation);
     setLongitude(event.geometry.coordinates[0]);
     setLatitude(event.geometry.coordinates[1]);
-    setData('defaultLocation', isMapLocation);
+    setData("defaultLocation", isMapLocation);
   };
 
   const handleOpenURL = () => {
@@ -369,7 +369,7 @@ export const GratitudeScreen = (props: MapScreenProps) => {
     }
     if (checkEnable && granted === PermissionsAndroid.RESULTS.GRANTED) {
       requestLocationPermission();
-      console.log('check')
+      console.log("check");
     }
     console.log(granted);
     if (!checkEnable) {
@@ -441,7 +441,10 @@ export const GratitudeScreen = (props: MapScreenProps) => {
               maxZoomLevel={14}
               minZoomLevel={5}
               followUserLocation={false}
-              centerCoordinate={[parseFloat(tempdata?.longitude), parseFloat(tempdata?.latitude)]}
+              centerCoordinate={[
+                parseFloat(tempdata?.longitude),
+                parseFloat(tempdata?.latitude),
+              ]}
             />
           </View>
 
@@ -449,7 +452,10 @@ export const GratitudeScreen = (props: MapScreenProps) => {
             style={{ flex: 1 }}
             key="pointAnnotation"
             id="pointAnnotation"
-            coordinate={[parseFloat(tempdata?.longitude), parseFloat(tempdata?.latitude)]}
+            coordinate={[
+              parseFloat(tempdata?.longitude),
+              parseFloat(tempdata?.latitude),
+            ]}
             draggable
             onDragEnd={onCircleDrag}
           >
@@ -550,49 +556,53 @@ export const GratitudeScreen = (props: MapScreenProps) => {
         <>
           {!tempdata?.longitude && !tempdata?.longitude ? (
             <>
-            {Platform.OS === 'android' ? <TouchableOpacity
-            onPress={userLocationClick}
-            style={{ backgroundColor: "white", padding: 10 }}
-          >
-            <Text style={styles.locationTitle}>
-              Device location not enabled
-            </Text>
+              {Platform.OS === "android" ? (
+                <TouchableOpacity
+                  onPress={userLocationClick}
+                  style={{ backgroundColor: "white", padding: 10 }}
+                >
+                  <Text style={styles.locationTitle}>
+                    Device location not enabled
+                  </Text>
 
-            <View
-              style={{
-                flexDirection: "row",
-                flexWrap: "wrap",
-                paddingHorizontal: 12,
-              }}
-            >
-              <Text style={styles.locationDes}>
-                Tap here to enable your device location for a better
-                experience
-              </Text>
-              <Text style={styles.enableBtn}>Enable</Text>
-            </View>
-          </TouchableOpacity> : <TouchableOpacity
-            onPress={() =>  Linking.openURL('app-settings:')}
-            style={{ backgroundColor: "white", padding: 10 }}
-          >
-            <Text style={styles.locationTitle}>
-              App Location Permission
-            </Text>
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      flexWrap: "wrap",
+                      paddingHorizontal: 12,
+                    }}
+                  >
+                    <Text style={styles.locationDes}>
+                      Tap here to enable your device location for a better
+                      experience
+                    </Text>
+                    <Text style={styles.enableBtn}>Enable</Text>
+                  </View>
+                </TouchableOpacity>
+              ) : (
+                <TouchableOpacity
+                  onPress={() => Linking.openURL("app-settings:")}
+                  style={{ backgroundColor: "white", padding: 10 }}
+                >
+                  <Text style={styles.locationTitle}>
+                    App Location Permission
+                  </Text>
 
-            <View
-              style={{
-                flexDirection: "row",
-                flexWrap: "wrap",
-                paddingHorizontal: 12,
-              }}
-            >
-              <Text style={styles.locationDes}>
-                Go to app setting and enable location service to better experience  
-              </Text>
-            </View>
-          </TouchableOpacity>}
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      flexWrap: "wrap",
+                      paddingHorizontal: 12,
+                    }}
+                  >
+                    <Text style={styles.locationDes}>
+                      Go to app setting and enable location service to better
+                      experience
+                    </Text>
+                  </View>
+                </TouchableOpacity>
+              )}
             </>
-            
           ) : (
             <></>
           )}
