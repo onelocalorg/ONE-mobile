@@ -588,8 +588,8 @@ export const CommentList = (props: commentListProps) => {
                         color: "#110101",
                       }}
                     >
-                      {subItem.commenter.first_name}{" "}
-                      {subItem.commenter.last_name}
+                      {subItem.commenter?.first_name}{" "}
+                      {subItem.commenter?.last_name}
                     </Text>
                     <Text style={styles.replyMsgCont}>{subItem.content}</Text>
                   </View>
@@ -765,7 +765,9 @@ export const CommentList = (props: commentListProps) => {
                         </View>
                       </View>
                     </View>
-                    <View style={styles.userListDisplayCont}>
+                    <View style={Platform.OS === "ios"
+                ? styles.userListDisplayCont
+                : styles.userListDisplayContTwo}>
                       <TouchableOpacity
                         onPress={() =>
                           recentUserProfilePress(

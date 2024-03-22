@@ -100,7 +100,8 @@ npx react-native run-android
 APP Icon Create For IOS And Android
 https://easyappicon.com/
 
-
+4.Find .netrc file in project
+Go to Project Directory => find . -name ".netrc"
 
 
 

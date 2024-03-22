@@ -331,7 +331,7 @@ export const CreatePostGratisScreen = (props: CreatePostGratisScreenProps) => {
   };
 
   const CreateNewPostModal = () => {
-    if (whatName.length === 0) {
+    if (whatName?.length === 0) {
       Toast.show('Enter About What', Toast.LONG, {
         backgroundColor: 'black',
       });
@@ -343,15 +343,15 @@ export const CreatePostGratisScreen = (props: CreatePostGratisScreenProps) => {
     //   Toast.show('Add User', Toast.LONG, {
     //     backgroundColor: 'black',
     //   });
-    } else if (content.length === 0) {
+    } else if (content?.length === 0) {
       Toast.show('Enter Post Content', Toast.LONG, {
         backgroundColor: 'black',
       });
-    } else if (tagArray.length === 0) {
+    } else if (tagArray?.length === 0) {
       Toast.show('Enter Post Tag', Toast.LONG, { 
         backgroundColor: 'black',
       });
-    } else if (imageArray.length === 0) {
+    } else if (imageArray?.length === 0) {
       Toast.show('Add Image to Post', Toast.LONG, {
         backgroundColor: 'black',
       });

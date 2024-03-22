@@ -326,12 +326,12 @@ export const HomeScreen = (props: HomeScreenProps) => {
         body: JSON.stringify(data),
       });
       const dataItem = await response.json();
+      setRefresh(false);
       if (page == 1) {
         postListData(dataItem?.data?.results);
       } else {
         postListData([...postList, ...dataItem?.data?.results]);
       }
-      setRefresh(false);
       onPageLoad(false);
       isMoreDataLoad(true);
       LodingData(false);
@@ -417,7 +417,6 @@ export const HomeScreen = (props: HomeScreenProps) => {
   }
 
   async function deletePostAPI() {
-    LodingData(true);
     const token = await AsyncStorage.getItem("token");
     console.log(editPost?.id, "delete post id");
     console.log(API_URL + "/v2/posts/delete/" + editPost?.id);
@@ -792,9 +791,23 @@ export const HomeScreen = (props: HomeScreenProps) => {
     }
     postContentModal(false);
   };
-
   const onDeletePost = () => {
-    deletePostAPI();
+
+    Alert.alert(
+      strings.deletePostTitle,
+      strings.deletePost,
+      [
+        { text: strings.no, onPress: () => null, style: "destructive" },
+        {
+          text: strings.yes,
+          onPress: () => {
+            deletePostAPI();
+            LodingData(true);
+          },
+        },
+      ],
+      { cancelable: false }
+    );
     postContentModal(false);
   };
  
@@ -859,17 +872,17 @@ export const HomeScreen = (props: HomeScreenProps) => {
           keyExtractor={(item, index) => item.key}
           onEndReached={postDataLoad}
           renderItem={renderItem}
-          contentContainerStyle={styles.scrollView}
+          contentContainerStyle={styles.scrollView} 
           ListFooterComponent={renderLoader}
           ListHeaderComponent={
             <View>
-              {userList.length !== 0 ? (
+              {userList?.length !== 0 ? (
                 <View style={styles.avatarContainer}>
                   <ScrollView
                     horizontal={true}
                     showsHorizontalScrollIndicator={false}
                   >
-                    {userList.map((userList: any) => {
+                    {userList?.map((userList: any) => {
                       return (
                         <TouchableOpacity
                           key={Math.random()}
