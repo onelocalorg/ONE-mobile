@@ -60,7 +60,7 @@ export {default as buttonArrowGreen} from './buttonArrowGreen.png';
 export {default as logoblack} from './logoblack.png';
 export {default as money} from './money.png';
 export {default as send} from './send.png';
-export {default as close} from './close.png'; 
+export {default as close} from './close.png';
 export {default as apple} from './apple.png';
 export {default as greenImage} from './greenImage.png';
 export {default as selectPic} from './selectPic.png';
@@ -74,8 +74,4 @@ export {default as edit2} from './edit2.png';
 export {default as payoutClose} from './payoutClose.png';
 export {default as blackPin} from './blackPin.png';
 export {default as redPin} from './redPin.png';
-
-
-
-
-
+export {default as confirmedTicket} from './confirmedTicket.png';
