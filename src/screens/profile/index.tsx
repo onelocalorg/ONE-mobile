@@ -135,7 +135,6 @@ export const ProfileScreen = (props: ProfileScreenProps) => {
   const [searchQuery, setSearchQuery] = useState("");
   const appState = useRef(AppState.currentState);
   const [appStateVisible, setAppStateVisible] = useState(appState.current);
-  const isShowPaymentCheck = getData("isShowPaymentFlow");
 
   useEffect(() => {
     setBio(bio);
@@ -183,6 +182,16 @@ export const ProfileScreen = (props: ProfileScreenProps) => {
 
   const onBackPress = () => {
     navigation.goBack();
+  };
+
+  const onCheckReleaseHideShow = () => {
+    if (Platform.OS === "ios") {
+      const isShowPaymentCheck = getData("isShowPaymentFlow");
+      return isShowPaymentCheck
+    } else{
+      const isShowPaymentCheckAndroid = getData("isShowPaymentFlowAndroid");
+      return isShowPaymentCheckAndroid
+    }
   };
 
   const imageSelection = async (no: any) => {
@@ -576,7 +585,7 @@ export const ProfileScreen = (props: ProfileScreenProps) => {
             <Text style={styles.gratiesNumber}>{points_balance}</Text>
           </View>
 
-          {isShowPaymentCheck ? (
+          {onCheckReleaseHideShow() ? (
             <TouchableOpacity
               onPress={getPayoutConnectListAPI}
               activeOpacity={0.8}

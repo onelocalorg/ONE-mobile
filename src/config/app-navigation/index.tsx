@@ -16,6 +16,7 @@ export const AppNavigation = () => {
 
   useEffect(() => {
     setData("isShowPaymentFlow", true);
+    setData("isShowPaymentFlowAndroid", true);
     getAppVersion();
   }, []);
 
@@ -27,25 +28,42 @@ export const AppNavigation = () => {
       console.log("-----------App Version--------------", dataItem);
       if (dataItem.success) {
         if (Platform.OS === "ios") {
-          checkPaymentFlowHideShow(dataItem.data);
+          isReleaseHideShow(dataItem.data)
           iosVersionCheck(dataItem.data);
         } else {
-          setisVersionApiCalled(true)
+          isReleaseHideShow(dataItem.data);
           androidVersionCheck(dataItem.data);
         }
-        
       }
     } catch (error) {
       console.log(error);
     }
   };
+
+  const isReleaseHideShow = (dataItem: any) => {
+    if(Platform.OS === 'ios'){
+      checkPaymentFlowHideShow(dataItem);
+    } else{
+      checkPaymentFlowHideShowAndroid(dataItem);
+    }
+  }
  
   function checkPaymentFlowHideShow(dataItem: any) {
     
-    if ("isPaymentFlowShowTwo" in dataItem) {
-      console.log("isPaymentFlowShowTwo");
-      var datatemp = dataItem?.isPaymentFlowShowTwo;
+    if ("isPaymentFlowShowThree" in dataItem) {
+      console.log("isPaymentFlowShowThree");
+      var datatemp = dataItem?.isPaymentFlowShowThree;
       setData("isShowPaymentFlow", datatemp);
+    }
+    setisVersionApiCalled(true)
+  }
+
+  function checkPaymentFlowHideShowAndroid(dataItem: any) {
+    
+    if ("isPaymentFlowShowTwoAndroid" in dataItem) {
+      console.log("isPaymentFlowShowTwoAndroid");
+      var datatemp = dataItem?.isPaymentFlowShowTwoAndroid;
+      setData("isShowPaymentFlowAndroid", datatemp);
     }
     setisVersionApiCalled(true)
   }

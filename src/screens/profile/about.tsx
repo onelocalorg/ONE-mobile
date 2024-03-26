@@ -136,7 +136,6 @@ export const About = (props: AboutDataProps) => {
   // var [usersId, userIdData] = useState(idUser);
   var [ansQueData, submitAnsState] = useState(profileAnswers);
   var [ansQueDataTwo, submitAnsStateTwo] = useState(profileAnswers);
-  const isShowPaymentCheck = getData("isShowPaymentFlow");
   const {} = props || {};
   useEffect(() => {
     packageListAPI();
@@ -145,6 +144,16 @@ export const About = (props: AboutDataProps) => {
     submitAnsState(profileAnswers);
     submitAnsStateTwo(profileAnswers);
   }, [about, skills, profileAnswers]);
+
+  const onCheckReleaseHideShow = () => {
+    if (Platform.OS === "ios") {
+      const isShowPaymentCheck = getData("isShowPaymentFlow");
+      return isShowPaymentCheck
+    } else{
+      const isShowPaymentCheckAndroid = getData("isShowPaymentFlowAndroid");
+      return isShowPaymentCheckAndroid
+    }
+  };
 
   // =================Update Answer API====================
 
@@ -783,7 +792,7 @@ export const About = (props: AboutDataProps) => {
       <View style={styles.innerConatiner}>
         <Loader visible={false} showOverlay />
 
-        {isShowPaymentCheck ? (
+        {onCheckReleaseHideShow() ? (
           <>
             <View style={styles.rowOnly}>
               <Text style={styles.membership}>{strings.membership}</Text>

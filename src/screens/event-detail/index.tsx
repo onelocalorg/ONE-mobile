@@ -5,6 +5,7 @@ import { createStyleSheet } from "./style";
 import {
   Alert,
   LogBox,
+  Platform,
   ScrollView,
   Text,
   TouchableOpacity,
@@ -98,7 +99,6 @@ export const EventDetailScreen = (props: EventDetailScreenProps) => {
   const { mutateAsync: purchaseTicket, isLoading: purchaseTicketLoading } =
     usePurchaseTicket();
   const [searchQuery, setSearchQuery] = useState("");
-  const isShowPaymentCheck = getData("isShowPaymentFlow");
 
   useFocusEffect(
     useCallback(() => {
@@ -121,6 +121,17 @@ export const EventDetailScreen = (props: EventDetailScreenProps) => {
       refetch();
     }, [])
   );
+
+
+  const onCheckReleaseHideShow = () => {
+    if (Platform.OS === "ios") {
+      const isShowPaymentCheck = getData("isShowPaymentFlow");
+      return isShowPaymentCheck
+    } else{
+      const isShowPaymentCheckAndroid = getData("isShowPaymentFlowAndroid");
+      return isShowPaymentCheckAndroid
+    }
+  };
 
   async function eventViewAPI() {
     // LodingData(true);
@@ -432,7 +443,7 @@ export const EventDetailScreen = (props: EventDetailScreenProps) => {
             ))}
           </View>
 
-          {isShowPaymentCheck ? (
+          {onCheckReleaseHideShow() ? (
             <>
               {!is_event_owner && tickets?.length ? (
                 <ButtonComponent
