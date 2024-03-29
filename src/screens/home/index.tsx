@@ -304,6 +304,9 @@ export const HomeScreen = (props: HomeScreenProps) => {
   };
 
   async function postListAPI(location: any) {
+    if(page === 1){
+      LodingData(true);
+    }
     const token = await AsyncStorage.getItem("token");
     var data: any = {
       latitude: location.latitude,

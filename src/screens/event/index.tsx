@@ -124,7 +124,9 @@ export const EventListScreen = (props: EventListScreenProps) => {
   );
 
   const getEventListAPI = async (getLatitude:any) => {
-
+    if(page === 1){
+      LoadingData(true);
+    }
     
     var eventData = {
       start_date: moment(range.startDate).format('YYYY-MM-DD'),
@@ -163,6 +165,7 @@ export const EventListScreen = (props: EventListScreenProps) => {
       LoadingData(false);
       onPageLoad(true);
     } catch (error) {
+      LoadingData(false);
       console.log(error);
     }
   };
