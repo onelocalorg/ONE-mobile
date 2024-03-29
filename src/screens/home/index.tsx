@@ -113,7 +113,7 @@ export const HomeScreen = (props: HomeScreenProps) => {
   });
   var makeDate = new Date();
   makeDate.setMonth(makeDate.getMonth() - 1);
-  const [range, setRange] = useState<Range>({ 
+  const [range, setRange] = useState<Range>({
     startDate: makeDate,
     endDate: new Date(),
   });
@@ -158,9 +158,9 @@ export const HomeScreen = (props: HomeScreenProps) => {
         console.log("postListAPI 1");
         postListAPI(tempdataTwo);
       }
-    }, [page, searchQuery,refresh])
+    }, [page, searchQuery, refresh])
   );
- 
+
   const requestLocationPermission = async () => {
     GetLocation.getCurrentPosition({
       enableHighAccuracy: false,
@@ -304,7 +304,7 @@ export const HomeScreen = (props: HomeScreenProps) => {
   };
 
   async function postListAPI(location: any) {
-    if(page === 1){
+    if (page === 1) {
       LodingData(true);
     }
     const token = await AsyncStorage.getItem("token");
@@ -795,7 +795,6 @@ export const HomeScreen = (props: HomeScreenProps) => {
     postContentModal(false);
   };
   const onDeletePost = () => {
-
     Alert.alert(
       strings.deletePostTitle,
       strings.deletePost,
@@ -813,7 +812,7 @@ export const HomeScreen = (props: HomeScreenProps) => {
     );
     postContentModal(false);
   };
- 
+
   return (
     <>
       <View style={styles.MainPostContainer}>
@@ -869,13 +868,13 @@ export const HomeScreen = (props: HomeScreenProps) => {
           </View>
         </TouchableOpacity>
         {/* ------------------Header Tab------------------- */}
-
+       
         <FlatList
           data={postList}
           keyExtractor={(item, index) => item.key}
           onEndReached={postDataLoad}
           renderItem={renderItem}
-          contentContainerStyle={styles.scrollView} 
+          contentContainerStyle={styles.scrollView}
           ListFooterComponent={renderLoader}
           ListHeaderComponent={
             <View>
@@ -929,7 +928,16 @@ export const HomeScreen = (props: HomeScreenProps) => {
             </View>
           }
         ></FlatList>
+        <View
+          style={{ flex: 1, justifyContent: "center", alignSelf: "center" }}
+        >
+          <Text style={{ color: "white", fontSize: 18 }}>
+            {postList?.length === 0 ? strings.noPostFound : ""}
+          </Text>
+        </View>
+       
       </View>
+      
 
       <Modal transparent onDismiss={OfferModalClose} visible={offerModal}>
         <GestureRecognizer onSwipeDown={OfferModalClose} style={styles.gesture}>
@@ -1006,18 +1014,23 @@ export const HomeScreen = (props: HomeScreenProps) => {
           style={styles.keyboardViewTwo}
         >
           <View style={styles.postActionSheet}>
-            {editPost?.user_id?.id ===  user?.id ?  <>
-            <TouchableOpacity onPress={() => onEditPost()}>
-              <Text style={[styles.postText, { color: "white" }]}>
-                Edit Post
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => onDeletePost()}>
-              <Text style={[styles.postText, { color: "white" }]}>
-                Delete Post
-              </Text>
-            </TouchableOpacity></> : <></>}
-           
+            {editPost?.user_id?.id === user?.id ? (
+              <>
+                <TouchableOpacity onPress={() => onEditPost()}>
+                  <Text style={[styles.postText, { color: "white" }]}>
+                    Edit Post
+                  </Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => onDeletePost()}>
+                  <Text style={[styles.postText, { color: "white" }]}>
+                    Delete Post
+                  </Text>
+                </TouchableOpacity>
+              </>
+            ) : (
+              <></>
+            )}
+
             <TouchableOpacity onPress={() => postHideOptionSelect(1)}>
               <Text style={[styles.postText, { color: "white" }]}>Block</Text>
             </TouchableOpacity>

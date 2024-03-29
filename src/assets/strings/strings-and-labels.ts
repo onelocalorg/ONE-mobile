@@ -58,6 +58,7 @@ export const stringsAndLabels = {
   deletePost :'Are you sure you want to delete this post ?',
   noDataText: 'No More Data Found',
   noEventsFound: 'No Events Found',
+  noPostFound: 'No Post Found',
   producer: 'Producer',
   selectStartTime: 'Select Start Time',
   selectEndTime: 'Select End Time',
