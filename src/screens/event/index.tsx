@@ -435,10 +435,6 @@ export const EventListScreen = (props: EventListScreenProps) => {
         </TouchableOpacity>
       </View>
 
-      <Text style={styles.noEventLbl}>
-        {eventsList.length === 0 ? strings.noEventsFound : ''}
-      </Text>
-
       <FlatList
         renderItem={renderItem}
         keyExtractor={(item, index) => index.toString()}
@@ -454,6 +450,10 @@ export const EventListScreen = (props: EventListScreenProps) => {
         }}
         onEndReachedThreshold={0.1}
       ></FlatList>
+      {eventsList.length === 0 ?<View style={{ justifyContent:'center',alignItems:'center'}}>
+      <Text style={styles.noEventLbl}>
+        {strings.noEventsFound}
+      </Text></View> : <></>}
     </View>
   );
 };
