@@ -18,10 +18,10 @@ export const AppUpdate = () => {
       }, (err) => console.log(err));
      }
    else{
-    // const link = 'https://play.google.com/store/apps/details?id=com.lyd.bubble';
-    // Linking.canOpenURL(link).then(supported => {
-    //   supported && Linking.openURL(link); 
-    // }, (err) => console.log(err));
+    const link = 'https://play.google.com/store/apps/details?id=one.oneboulder.one';
+    Linking.canOpenURL(link).then(supported => {
+      supported && Linking.openURL(link); 
+    }, (err) => console.log(err));
    }
   };
 

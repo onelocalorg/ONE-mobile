@@ -60,9 +60,9 @@ export const AppNavigation = () => {
 
   function checkPaymentFlowHideShowAndroid(dataItem: any) {
     
-    if ("isPaymentFlowShowTwoAndroid" in dataItem) {
-      console.log("isPaymentFlowShowTwoAndroid");
-      var datatemp = dataItem?.isPaymentFlowShowTwoAndroid;
+    if ("isPaymentFlowShowThreeAndroid" in dataItem) {
+      console.log("isPaymentFlowShowThreeAndroid");
+      var datatemp = dataItem?.isPaymentFlowShowThreeAndroid;
       setData("isShowPaymentFlowAndroid", datatemp);
     }
     setisVersionApiCalled(true)
