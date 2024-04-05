@@ -53,7 +53,7 @@ env:
         run: |
           # create variables
           CERT_PATH=$RUNNER_TEMP/ONELocalCertificate.p12
-          KCHAIN_PATH=$RUNNER_TEMP/"/Library/Keychains/system-keychain-2.db"
+          KCHAIN_PATH=$RUNNER_TEMP/Library/Keychains/system-keychain-2.db
   
           # import certificate and provisioning profile from secrets
           echo -n "$DISTRIBUTION_CERTIFICATE" | base64 - decode - output $APPLE_ONELOCAL_DISTRIBUTION_CERTIFICATE
@@ -61,12 +61,12 @@ env:
           echo -n "$DISTRIBUTION_PROFILE_PROD" | base64 - decode - output $APPLE_ONELOCAL_DISTRIBUTION_PROFILE
           
           # create temporary keychain
-          security create-keychain -p "$OneLocal@123" $/Library/Keychains/System.keychain
+          security create-keychain -p $OneLocal@123 $/Library/Keychains/System.keychain
           security set-keychain-settings -lut 21600 $/Library/Keychains/System.keychain
-          security unlock-keychain -p "OneLocal@123" $/Library/Keychains/System.keychain
+          security unlock-keychain -p OneLocal@123 $/Library/Keychains/System.keychain
           
           # import certificate to keychain
-          security import $CERT_PATH -P "$OneLocal@123" -A -t cert -f pkcs12 -k $/Library/Keychains/System.keychain
+          security import $CERT_PATH -P $OneLocal@123 -A -t cert -f pkcs12 -k $/Library/Keychains/System.keychain
           security list-keychain -d user -s $/Library/Keychains/System.keychain
           
           # apply provisioning profile
