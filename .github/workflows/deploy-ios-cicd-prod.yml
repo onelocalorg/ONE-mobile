@@ -82,7 +82,7 @@ env:
         
       - name: Create build folder
         run: | 
-        mkdir -p build && mkdir -p dev && mkdir -p prod
+         : mkdir -p build && mkdir -p dev && mkdir -p prod
         
       - name: Build Archive
         run: |
