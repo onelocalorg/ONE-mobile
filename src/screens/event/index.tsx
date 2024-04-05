@@ -124,7 +124,9 @@ export const EventListScreen = (props: EventListScreenProps) => {
   );
 
   const getEventListAPI = async (getLatitude:any) => {
-
+    if(page === 1){
+      LoadingData(true);
+    }
     
     var eventData = {
       start_date: moment(range.startDate).format('YYYY-MM-DD'),
@@ -163,6 +165,7 @@ export const EventListScreen = (props: EventListScreenProps) => {
       LoadingData(false);
       onPageLoad(true);
     } catch (error) {
+      LoadingData(false);
       console.log(error);
     }
   };
@@ -432,10 +435,6 @@ export const EventListScreen = (props: EventListScreenProps) => {
         </TouchableOpacity>
       </View>
 
-      <Text style={styles.noEventLbl}>
-        {eventsList.length === 0 ? strings.noEventsFound : ''}
-      </Text>
-
       <FlatList
         renderItem={renderItem}
         keyExtractor={(item, index) => index.toString()}
@@ -451,6 +450,10 @@ export const EventListScreen = (props: EventListScreenProps) => {
         }}
         onEndReachedThreshold={0.1}
       ></FlatList>
+      {eventsList.length === 0 ?<View style={{ justifyContent:'center',alignItems:'center'}}>
+      <Text style={styles.noEventLbl}>
+        {strings.noEventsFound}
+      </Text></View> : <></>}
     </View>
   );
 };

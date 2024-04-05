@@ -5,6 +5,7 @@ import { createStyleSheet } from "./style";
 import { ModalComponent, ModalRefProps } from "@components/modal-component";
 import {
   Alert,
+  Platform,
   StyleProp,
   Text,
   TouchableOpacity,
@@ -50,7 +51,6 @@ export const AddComponentModal = (props: AddComponentModalProps) => {
     userId: user?.id,
   });
   const { isActiveSubscription } = data || {};
-  const isShowPaymentCheck = getData("isShowPaymentFlow");
   useFocusEffect(
     useCallback(() => {
       if (user?.id) {
@@ -70,6 +70,17 @@ export const AddComponentModal = (props: AddComponentModalProps) => {
       setIsActiveSubs(isActiveSubscription);
     }, [isActiveSubscription])
   );
+
+
+  const onCheckReleaseHideShow = () => {
+    if (Platform.OS === "ios") {
+      const isShowPaymentCheck = getData("isShowPaymentFlow");
+      return isShowPaymentCheck
+    } else{
+      const isShowPaymentCheckAndroid = getData("isShowPaymentFlowAndroid");
+      return isShowPaymentCheckAndroid
+    }
+  };
 
   //   users API => isActiveSubscription == true
   //  Login API => user_type === 'eventProducer'
@@ -210,7 +221,7 @@ export const AddComponentModal = (props: AddComponentModalProps) => {
   return (
     <ModalComponent viewStyle={styles.modalContainer} ref={modalRef}>
       <View style={styles.optionsView}>
-        {isShowPaymentCheck ? (
+        {onCheckReleaseHideShow() ? (
           <>{renderView(strings.event, eventBlack, true)}</>
         ) : (
           <></>

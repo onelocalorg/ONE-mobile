@@ -142,6 +142,7 @@ export const CreatePostRequestScreen = (
     }
     getTypeIconTo(icon);
     getToTypeValue(type);
+    getFromTypeValue(type)
     setFronShowPopover(false);
   };
 
@@ -391,30 +392,48 @@ export const CreatePostRequestScreen = (
     setuserListArray(newPeople);
   };
 
+  // const AddUserList = (item: any) => {
+  //   const found = userList.find((element:any) => element.id == item.id);
+  //   if (!found) {
+  //     recentlyJoinUser([...userList, item]); 
+      
+  //     const newItems = {...item};
+  //     delete newItems.first_name;
+  //     delete newItems.last_name;
+  //     delete newItems.pic;
+  //     delete newItems.id;
+  //     delete newItems.gratisNo;
+  //     console.log(item.gratisNo);
+  //     const newuserData = {...newItems, point: item.gratisNo, user_id: item.id};
+  //     setuserListArray([...userListArray, newuserData]);
+      
+  //     console.log(userListArray);
+  //   }else{
+  //     Toast.show('Already Added', Toast.LONG, { 
+  //       backgroundColor: 'black',
+  //     });
+  //   }
+  // };
+
   const AddUserList = (item: any) => {
     const found = userList.find((element:any) => element.id == item.id);
     if (!found) {
-      recentlyJoinUser([...userList, item]); 
-      
-      const newItems = {...item};
-      delete newItems.first_name;
-      delete newItems.last_name;
-      delete newItems.pic;
-      delete newItems.id;
-      delete newItems.gratisNo;
-      console.log(item.gratisNo);
-      const newuserData = {...newItems, point: item.gratisNo, user_id: item.id};
-      setuserListArray([...userListArray, newuserData]);
-      
-      console.log(userListArray);
-    }else{
-      Toast.show('Already Added', Toast.LONG, { 
-        backgroundColor: 'black',
-      });
-    }
-    
-   
-  };
+    recentlyJoinUser([...userList, item]);
+    const newItems = {...item};
+    delete newItems.first_name;
+    delete newItems.last_name;
+    delete newItems.pic;
+    delete newItems.id;
+    delete newItems.gratisNo;
+    console.log(item.gratisNo);
+    setuserListArray([...userListArray, item.id]);
+    console.log(userListArray);
+  } else{
+    Toast.show('Already Added', Toast.LONG, { 
+      backgroundColor: 'black',
+    });
+  }
+};
 
   async function gratisUserList(textUser: any) {
     const token = await AsyncStorage.getItem('token');

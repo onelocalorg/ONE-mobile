@@ -99,9 +99,10 @@ export const HomeScreen = (props: HomeScreenProps) => {
   const [setGratis, setPostGratisData] = useState();
   const [setComment, setPostCommentData] = useState();
   const [postData, setPostDataForComment] = useState();
-  const [post_index, setPostCommentIndexTwo]: any = useState()
+  const [post_index, setPostCommentIndexTwo]: any = useState();
   const [editPost, setEditPost]: any = useState();
   const [showCommentListModal, setShowCommentListData] = useState(false);
+  const [refresh, setRefresh] = useState(false);
   const [Post_Id, setPostDataId] = useState("");
 
   const { user } = useSelector<StoreType, UserProfileState>(
@@ -110,7 +111,6 @@ export const HomeScreen = (props: HomeScreenProps) => {
   const { refetch } = useUserProfile({
     userId: user?.id,
   });
-
   var makeDate = new Date();
   makeDate.setMonth(makeDate.getMonth() - 1);
   const [range, setRange] = useState<Range>({
@@ -135,9 +135,9 @@ export const HomeScreen = (props: HomeScreenProps) => {
           getRecentlyJoinUserAPI("");
         }
       }
-      if(Platform.OS){
+      if (Platform.OS) {
         if (!tempdata?.latitude) {
-        requestLocationPermission();
+          requestLocationPermission();
         }
       }
       getUserProfileAPI();
@@ -155,10 +155,10 @@ export const HomeScreen = (props: HomeScreenProps) => {
     useCallback(() => {
       var tempdataTwo = getData("defaultLocation");
       if (tempdataTwo?.latitude) {
-        console.log('postListAPI 1')
+        console.log("postListAPI 1");
         postListAPI(tempdataTwo);
       }
-    }, [page, searchQuery])
+    }, [page, searchQuery, refresh])
   );
 
   const requestLocationPermission = async () => {
@@ -177,7 +177,7 @@ export const HomeScreen = (props: HomeScreenProps) => {
         setData("defaultLocation", isLocationDefault);
         if (location.latitude && location.longitude) {
           getRecentlyJoinUserAPI(location);
-          console.log('postListAPI 2');
+          console.log("postListAPI 2");
           postListAPI(isLocationDefault);
         } else {
           getRecentlyJoinUserAPI("");
@@ -304,6 +304,9 @@ export const HomeScreen = (props: HomeScreenProps) => {
   };
 
   async function postListAPI(location: any) {
+    if (page === 1) {
+      LodingData(true);
+    }
     const token = await AsyncStorage.getItem("token");
     var data: any = {
       latitude: location.latitude,
@@ -326,6 +329,7 @@ export const HomeScreen = (props: HomeScreenProps) => {
         body: JSON.stringify(data),
       });
       const dataItem = await response.json();
+      setRefresh(false);
       if (page == 1) {
         postListData(dataItem?.data?.results);
       } else {
@@ -411,6 +415,37 @@ export const HomeScreen = (props: HomeScreenProps) => {
       const dataItem = await response.json();
       recentlyJoinUser(dataItem?.data);
     } catch (error) {
+      console.error(error);
+    }
+  }
+
+  async function deletePostAPI() {
+    const token = await AsyncStorage.getItem("token");
+    console.log(editPost?.id, "delete post id");
+    console.log(API_URL + "/v2/posts/delete/" + editPost?.id);
+    try {
+      console.log("222222");
+
+      const response = await fetch(
+        API_URL + "/v2/posts/delete/" + editPost?.id,
+        {
+          method: "post",
+          headers: new Headers({
+            Authorization: "Bearer " + token,
+            "Content-Type": "application/json",
+          }),
+        }
+      );
+      const dataItem = await response.json();
+      console.log("=========== Delete Post API Response ==============");
+      console.log(dataItem);
+      Toast.show(dataItem?.message, Toast.LONG, {
+        backgroundColor: "black",
+      });
+      setRefresh(true);
+      LodingData(false);
+    } catch (error) {
+      LodingData(false);
       console.error(error);
     }
   }
@@ -521,7 +556,7 @@ export const HomeScreen = (props: HomeScreenProps) => {
     postContentModal(false);
   };
 
-  const openPostModal = (postID: any,postData:any) => {
+  const openPostModal = (postID: any, postData: any) => {
     hidePostContentIDData(postID);
     setEditPost(postData);
     postContentModal(true);
@@ -550,7 +585,7 @@ export const HomeScreen = (props: HomeScreenProps) => {
               zIndex: 111122,
             }}
           >
-            <TouchableOpacity onPress={() => openPostModal(item.id,item)}>
+            <TouchableOpacity onPress={() => openPostModal(item.id, item)}>
               <ImageComponent
                 resizeMode="cover"
                 style={styles.postfilterImage}
@@ -751,16 +786,32 @@ export const HomeScreen = (props: HomeScreenProps) => {
 
   const onEditPost = () => {
     if (editPost?.type === "Offer") {
-      navigation.navigate(navigations.EDITPOSTOFFER,{postData:editPost});
+      navigation.navigate(navigations.EDITPOSTOFFER, { postData: editPost });
     } else if (editPost?.type === "Request") {
-      navigation.navigate(navigations.EDITPOSTREQUEST,{postData:editPost});
+      navigation.navigate(navigations.EDITPOSTREQUEST, { postData: editPost });
     } else if (editPost?.type === "Gratis") {
-      navigation.navigate(navigations.EDITPOSTGRATIS,{postData:editPost});
+      navigation.navigate(navigations.EDITPOSTGRATIS, { postData: editPost });
     }
     postContentModal(false);
   };
-
-  const onDeletePost = () => {};
+  const onDeletePost = () => {
+    Alert.alert(
+      strings.deletePostTitle,
+      strings.deletePost,
+      [
+        { text: strings.no, onPress: () => null, style: "destructive" },
+        {
+          text: strings.yes,
+          onPress: () => {
+            deletePostAPI();
+            LodingData(true);
+          },
+        },
+      ],
+      { cancelable: false }
+    );
+    postContentModal(false);
+  };
 
   return (
     <>
@@ -817,7 +868,7 @@ export const HomeScreen = (props: HomeScreenProps) => {
           </View>
         </TouchableOpacity>
         {/* ------------------Header Tab------------------- */}
-        
+       
         <FlatList
           data={postList}
           keyExtractor={(item, index) => item.key}
@@ -827,13 +878,13 @@ export const HomeScreen = (props: HomeScreenProps) => {
           ListFooterComponent={renderLoader}
           ListHeaderComponent={
             <View>
-              {userList.length !== 0 ? (
+              {userList?.length !== 0 ? (
                 <View style={styles.avatarContainer}>
                   <ScrollView
                     horizontal={true}
                     showsHorizontalScrollIndicator={false}
                   >
-                    {userList.map((userList: any) => {
+                    {userList?.map((userList: any) => {
                       return (
                         <TouchableOpacity
                           key={Math.random()}
@@ -877,7 +928,16 @@ export const HomeScreen = (props: HomeScreenProps) => {
             </View>
           }
         ></FlatList>
+        <View
+          style={{ flex: 1, justifyContent: "center", alignSelf: "center" }}
+        >
+          <Text style={{ color: "white", fontSize: 18 }}>
+            {postList?.length === 0 ? strings.noPostFound : ""}
+          </Text>
+        </View>
+       
       </View>
+      
 
       <Modal transparent onDismiss={OfferModalClose} visible={offerModal}>
         <GestureRecognizer onSwipeDown={OfferModalClose} style={styles.gesture}>
@@ -954,16 +1014,23 @@ export const HomeScreen = (props: HomeScreenProps) => {
           style={styles.keyboardViewTwo}
         >
           <View style={styles.postActionSheet}>
-            {/* <TouchableOpacity onPress={() => onEditPost()}>
-              <Text style={[styles.postText, { color: "white" }]}>
-                Edit Post
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => onDeletePost()}>
-              <Text style={[styles.postText, { color: "white" }]}>
-                Delete Post
-              </Text>
-            </TouchableOpacity> */}
+            {editPost?.user_id?.id === user?.id ? (
+              <>
+                <TouchableOpacity onPress={() => onEditPost()}>
+                  <Text style={[styles.postText, { color: "white" }]}>
+                    Edit Post
+                  </Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => onDeletePost()}>
+                  <Text style={[styles.postText, { color: "white" }]}>
+                    Delete Post
+                  </Text>
+                </TouchableOpacity>
+              </>
+            ) : (
+              <></>
+            )}
+
             <TouchableOpacity onPress={() => postHideOptionSelect(1)}>
               <Text style={[styles.postText, { color: "white" }]}>Block</Text>
             </TouchableOpacity>

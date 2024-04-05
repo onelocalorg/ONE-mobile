@@ -248,7 +248,7 @@ export const AdminToolsScreen = (props: AdminToolsScreenProps) => {
   const checkValidation = () => {
     return !(
       name &&
-      tickets?.length &&
+      // tickets?.length &&
       address &&
       full_address &&
       about &&
@@ -257,19 +257,30 @@ export const AdminToolsScreen = (props: AdminToolsScreenProps) => {
   };
 
   const onCreateEvent = async () => {
-    var getTicket:any = tickets?.map((ele) => ele?.id ?? "");
+    var getTicket:any = [];
+    if(tickets?.length){
+      console.log('is ticket',tickets?.length)
+       getTicket = tickets?.map((ele) => ele?.id ?? "");
+       var ticketArray = getTicket.join(",")
+    } else {
+      console.log('not is ticket')
+      var ticketArray:any = ''
+    }
+
     LodingData(true);
     Keyboard.dismiss();
-    const res = await createEvent({
+    const res = await createEvent(
+      {
       bodyParams: {
         ...eventDetails,
-        tickets: getTicket.join(","),
+        tickets: ticketArray,
         eventImage,
         latitude: lat?.toString(),
         longitude: long?.toString(),
         type: setFilter,
       },
     });
+    console.log(res)
     if (res?.success) {
       LodingData(false);
       navigation?.goBack();
