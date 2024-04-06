@@ -29,9 +29,8 @@ env:
   KEY_PWD: ${{ secrets.KEYCHAIN_PWD }}
 
   jobs: 
-    ios-build:
-    name: IOS Production Build
-    runs-on: macos-latest
+    build:
+      runs-on: macos-latest
     
     steps:
       - name: Checkout
