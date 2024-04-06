@@ -16,9 +16,9 @@ env:
   ARTIFACT_NAME: ${{ ‘OneBoulder.ipa’ }}
   ARTIFACT_PATH_STAGING: ${{ ‘/build/dev’ }}
   ARTIFACT_PATH_PROD: ${{ ‘/build/prod’ }}
-  APP_NAME_STAGING: ${{ ‘OneBoulder-iOS/Tuvoc’ }}
-  APP_NAME_PROD: ${{ ‘OneBoulder-iOS/Tuvoc’ }}
-  TESTING_GROUP_STAGING: ${{ ‘Tuvoc’ }}
+  APP_NAME_STAGING: ${{ ‘OneBoulder-iOS/ONELocal_ENV_DEV’ }}
+  APP_NAME_PROD: ${{ ‘OneBoulder-iOS/ONELocal_ENV_DEV’ }}
+  TESTING_GROUP_STAGING: ${{ ‘ONELocal_ENV_DEV’ }}
   TESTING_GROUP_PROD: ${{ ‘Tuvoc’ }}
   UPLOAD_FILE_STAGING: ${{ ‘dev/OneBoulder.ipa’ }}
   UPLOAD_FILE_PROD: ${{ ‘prod/OneBoulder.ipa’ }}
