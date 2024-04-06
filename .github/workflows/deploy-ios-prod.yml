@@ -1,8 +1,7 @@
 name: Deploy-iOS-PROD
 on:
   push:
-     tags:
-       - ‘v7.9.1’
+    branches: main
 env:
   WORKSPACE: ${{ ‘ios/OneBoulder.xcworkspace’ }}
   SCHEME: ${{ ‘OneBoulder’ }}
