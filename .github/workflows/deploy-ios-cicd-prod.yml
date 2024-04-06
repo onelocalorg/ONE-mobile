@@ -53,7 +53,7 @@ env:
         run: |
           # create variables
           CERT_PATH=$RUNNER_TEMP/ONELocalCertificate.p12
-          KCHAIN_PATH=$RUNNER_TEMP/"/Library/Keychains/system-keychain-2.db"
+          KCHAIN_PATH=$RUNNER_TEMP/Library/Keychains/system-keychain-2.db
   
           # import certificate and provisioning profile from secrets
           echo -n "$DISTRIBUTION_CERTIFICATE" | base64 - decode - output $APPLE_ONELOCAL_DISTRIBUTION_CERTIFICATE
