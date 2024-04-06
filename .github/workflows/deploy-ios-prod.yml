@@ -29,9 +29,9 @@ env:
   DISTRIBUTION_PROFILE_STAGING: ${{ secrets.APPLE_AD-HOC_PROFILE }}
   KEY_PWD: ${{ secrets.KEYCHAIN_PWD }}
 
-  jobs:
-  build:
-    name: Build
+  jobs: 
+    ios-build:
+    name: IOS Production Build
     runs-on: macos-latest
     
     steps:
