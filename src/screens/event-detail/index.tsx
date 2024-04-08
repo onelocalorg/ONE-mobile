@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useAppTheme } from "@app-hooks/use-app-theme";
-import React, { useCallback, useRef, useState } from "react";
+import React, { useCallback, useRef, useState, useEffect } from "react";
 import { createStyleSheet } from "./style";
 import {
   Alert,
@@ -10,6 +10,9 @@ import {
   Text,
   TouchableOpacity,
   View,
+  StyleSheet,
+  ActivityIndicator,
+  Image,
 } from "react-native";
 import { Header } from "@components/header";
 import { ImageComponent } from "@components/image-component";
@@ -33,6 +36,9 @@ import {
   useFocusEffect,
   useRoute,
 } from "@react-navigation/native";
+import Going from "../../assets/images/going.png";
+import Cantgo from "../../assets/images/canntgo.png";
+import Maybe from "../../assets/images/maybe.png";
 import { TicketCheckoutModal } from "./ticket-checkout-modal";
 import { navigations } from "@config/app-navigation/constant";
 import { Result } from "@network/hooks/home-service-hooks/use-event-lists";
@@ -61,6 +67,33 @@ interface EventDetailScreenProps {
   };
 }
 
+interface RSVP {
+  _id: string;
+  rsvp: string;
+  user_id: {
+    first_name: string;
+    last_name: string;
+    pic: string;
+    id: string;
+  };
+}
+
+interface RsvpData {
+  success: boolean;
+  code: number;
+  message: string;
+  data: {
+    rsvps: RSVP[];
+    going: number;
+    interested: number;
+    cantgo: number;
+  };
+}
+
+interface User {
+  id: string;
+}
+
 export const EventDetailScreen = (props: EventDetailScreenProps) => {
   const { theme } = useAppTheme();
   const routeee = useRoute();
@@ -72,9 +105,11 @@ export const EventDetailScreen = (props: EventDetailScreenProps) => {
   const [ProfileData, setUserProfile]: any = useState("");
   const [showLoader, LoadingData] = useState(false);
   const [isTicketAvailable, setIsTicketAvailable] = useState(false);
+  const [rsvpData, setRsvpData] = useState<RsvpData | null>(null);
+  const [selectedButton, setSelectedButton] = useState<number | null>(null);
   const { user } = useSelector<StoreType, UserProfileState>(
     (state) => state.userProfileReducer
-  ) as { user: { stripeCustomerId: string; user_type: string } };
+  ) as { user: { stripeCustomerId: string; user_type: string; id: string } };
   const { refetch, isLoading, isRefetching, data } = useEventDetails({
     eventId: id ?? "",
   });
@@ -91,7 +126,7 @@ export const EventDetailScreen = (props: EventDetailScreenProps) => {
     start_time_label,
     tickets,
     cancelled,
-    //   isPayout, 
+    //   isPayout,
     // viewCount
   } = data || {};
 
@@ -99,12 +134,43 @@ export const EventDetailScreen = (props: EventDetailScreenProps) => {
   const { mutateAsync: purchaseTicket, isLoading: purchaseTicketLoading } =
     usePurchaseTicket();
   const [searchQuery, setSearchQuery] = useState("");
+  const isShowPaymentCheck = getData("isShowPaymentFlow");
+  const [issLoading, setLoading] = useState(true);
+
+  //fetching rsvps
+  useEffect(() => {
+    const fetchRsvpData = async () => {
+      try {
+        const token = await AsyncStorage.getItem("token");
+        const response = await fetch(`${API_URL}/v1/events/rsvp/${id}`, {
+          headers: {
+            method: "get",
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        });
+        if (response.ok) {
+          const data = await response.json();
+          setRsvpData(data);
+        } else {
+          console.error("Failed to fetch RSVP data");
+        }
+      } catch (error) {
+        console.error("Error fetching RSVP data:", error);
+      }
+    };
+
+    fetchRsvpData();
+  }, [id]);
 
   useFocusEffect(
     useCallback(() => {
+      console.log("user........................", user);
+
       const ticketLength = tickets?.filter(
         (ele) => !ele?.is_ticket_purchased
       )?.length;
+      console.log("isticket..............", ticketLength);
       LogBox.ignoreAllLogs();
       if (ticketLength > 0) {
         setIsTicketAvailable(true);
@@ -153,6 +219,7 @@ export const EventDetailScreen = (props: EventDetailScreenProps) => {
       const dataItem = await response.json();
       // LodingData(false);
       console.log("=========== eventViewAPI response==============");
+      console.log("id....................", response);
       console.log(dataItem);
     } catch (error) {
       console.error(error);
@@ -217,6 +284,35 @@ export const EventDetailScreen = (props: EventDetailScreenProps) => {
       Toast.show(res.message, Toast.LONG, {
         backgroundColor: "black",
       });
+      //sending rsvp type  to server
+      let rsvp = "";
+      if (selectedButton === 1) {
+        rsvp = "going";
+      } else if (selectedButton === 2) {
+        rsvp = "interested";
+      } else {
+        rsvp = "cantgo";
+      }
+      try {
+        const token = await AsyncStorage.getItem("token");
+        const response = await fetch(`${API_URL}/v1/events/rsvp/${id}`, {
+          method: "post",
+          headers: new Headers({
+            Authorization: "Bearer " + token,
+            "Content-Type": "application/json",
+          }),
+          body: JSON.stringify({ type: rsvp }),
+        });
+        if (response.ok) {
+          console.log("rsvp................", rsvp);
+          Alert.alert("Payment Succeed");
+        } else {
+          Alert.alert("failed");
+        }
+      } catch (error) {
+        console.error("Error while making RSVP:", error);
+      }
+      // End of RSVP API call
       LoadingData(false);
       navigation?.goBack();
     } else {
@@ -316,6 +412,17 @@ export const EventDetailScreen = (props: EventDetailScreenProps) => {
     navigation?.navigate(navigations.PROFILE);
   };
 
+  // Check if the logged-in user's ID is available in RSVP data
+  const isCurrentUserRSVP = (type: string) => {
+    if (rsvpData && rsvpData.data && rsvpData.data.rsvps) {
+      const currentUserRSVP = rsvpData.data.rsvps.find(
+        (rsvp) => rsvp.user_id.id === user?.id
+      );
+      return currentUserRSVP && currentUserRSVP.rsvp === type;
+    }
+    return false;
+  };
+
   return (
     <View>
       <Loader
@@ -369,13 +476,71 @@ export const EventDetailScreen = (props: EventDetailScreenProps) => {
         <View style={styles.container}>
           <Text style={styles.title}>{name}</Text>
           <SizedBox height={verticalScale(16)} />
-          <ImageComponent
-            resizeMode="cover"
-            uri={event_image}
-            isUrl
-            style={styles.eventImage}
-          />
-          <SizedBox height={verticalScale(16)} />
+          <View style={{ position: "relative" }}>
+            <ImageComponent
+              resizeMode="cover"
+              uri={event_image}
+              isUrl
+              style={styles.eventImage}
+            />
+
+            {/* <View style={{position:'absolute',bottom:-10,width:165,height:34,backgroundColor:'#DA9791',alignSelf:'center',borderRadius:7,justifyContent:'center'}}>
+              <TouchableOpacity style={{width:46,height:15,backgroundColor:'black',justifyContent:'center',alignItems:'center'}}>
+                <Text style={{color:'white',textAlign:'center',justifyContent:'center',alignItems:'center',alignSelf:'center'}}>hello</Text>
+              </TouchableOpacity>
+            </View> */}
+            <View style={styles1.container2}>
+              <TouchableOpacity
+                style={[
+                  styles1.button,
+                  selectedButton === 1 && styles1.selectedButton,
+                  isCurrentUserRSVP("going") && { backgroundColor: "#E9B9B4" },
+                ]}
+                onPress={() => setSelectedButton(1)}
+              >
+                <View
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    gap: 10,
+                  }}
+                >
+                  <Text style={styles1.buttonText}>Going</Text>
+                  {isCurrentUserRSVP("going") && (
+                    <Image
+                      source={require("../../assets/images/confirmedTicket.png")}
+                    />
+                  )}
+                </View>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[
+                  styles1.button,
+                  selectedButton === 2 && styles1.selectedButton,
+                  isCurrentUserRSVP("interested") && {
+                    backgroundColor: "#E9B9B4",
+                  },
+                ]}
+                onPress={() => setSelectedButton(2)}
+              >
+                <View
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    gap: 10,
+                  }}
+                >
+                  <Text style={styles1.buttonText}>Maybe</Text>
+                  {isCurrentUserRSVP("interested") && (
+                    <Image
+                      source={require("../../assets/images/confirmedTicket.png")}
+                    />
+                  )}
+                </View>
+              </TouchableOpacity>
+            </View>
+          </View>
+          <SizedBox height={verticalScale(35)} />
           <View style={styles.row}>
             <View style={styles.circularView}>
               <ImageComponent
@@ -458,8 +623,86 @@ export const EventDetailScreen = (props: EventDetailScreenProps) => {
           ) : (
             <></>
           )}
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              marginTop: "5%",
+              justifyContent: "flex-start",
+              gap: 100,
+            }}
+          >
+            <Text style={{ fontSize: 16, color: "black", fontWeight: "600" }}>
+              RSVPS
+            </Text>
+            {rsvpData && rsvpData.data && rsvpData.data.rsvps ? (
+              <View style={{ flexDirection: "column", alignItems: "center" }}>
+                <Text
+                  style={{ fontSize: 16, color: "black", fontWeight: "600" }}
+                >
+                  {
+                    rsvpData.data.rsvps.filter((rsvp) => rsvp.rsvp === "going")
+                      .length
+                  }
+                </Text>
+                <Text
+                  style={{ fontSize: 16, color: "black", fontWeight: "600" }}
+                >
+                  Going
+                </Text>
+              </View>
+            ) : (
+              <Text style={{ fontSize: 16, color: "black", fontWeight: "600" }}>
+                No RSVP data available
+              </Text>
+            )}
+          </View>
+          <View
+            style={{
+              flex: 1,
+              alignItems: "flex-start",
+              marginTop: "8%",
+              width: "100%",
+            }}
+          >
+            {rsvpData && rsvpData.data && rsvpData.data.rsvps ? (
+              <View
+                style={{
+                  flexDirection: "row",
+                  flexWrap: "wrap",
+                  justifyContent: "flex-start",
+                  gap: 5,
+                  width: "100%",
+                }}
+              >
+                {rsvpData.data.rsvps.map((rsvp, index) => (
+                  <View key={index} style={styles1.rsvpContainer}>
+                    <View style={styles1.profilePicContainer}>
+                      <Image
+                        source={{ uri: rsvp.user_id.pic }}
+                        style={styles1.profilePic}
+                      />
+                    </View>
+                    <View style={styles1.rsvpImageContainer}>
+                      {rsvp.rsvp === "going" && (
+                        <Image source={Going} style={styles1.rsvpImage} />
+                      )}
+                      {rsvp.rsvp === "interested" && (
+                        <Image source={Maybe} style={styles1.rsvpImage} />
+                      )}
+                      {rsvp.rsvp === "cantgo" && (
+                        <Image source={Cantgo} style={styles1.rsvpImage} />
+                      )}
+                    </View>
+                  </View>
+                ))}
+              </View>
+            ) : (
+              <Text>No RSVP data available</Text>
+            )}
+          </View>
 
-          <SizedBox height={verticalScale(20)} />
+          <SizedBox height={verticalScale(30)} />
           <Text style={styles.event}>{strings.aboutEvent}</Text>
           <Text style={styles.desc}>{about}</Text>
 
@@ -479,3 +722,61 @@ export const EventDetailScreen = (props: EventDetailScreenProps) => {
     </View>
   );
 };
+const styles1 = StyleSheet.create({
+  container2: {
+    //flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    flexDirection: "row",
+    width: 190,
+    height: 34,
+    position: "absolute",
+    bottom: -15,
+    backgroundColor: "#DA9791",
+    alignSelf: "center",
+    borderRadius: 20,
+    gap: 30,
+  },
+  button: {
+    backgroundColor: "#E9B9B4",
+    width: 66,
+    height: 20,
+    marginVertical: 10,
+    borderRadius: 20,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  buttonText: {
+    color: "white",
+    fontSize: 12,
+    textAlign: "center",
+    fontWeight: "400",
+    fontFamily: "NotoSerif-Regular",
+  },
+  selectedButton: {
+    borderColor: "red",
+    borderWidth: 2,
+  },
+  rsvpContainer: {
+    flexDirection: "row",
+    alignItems: "flex-end",
+  },
+  profilePicContainer: {
+    marginRight: 10,
+  },
+  profilePic: {
+    width: 50,
+    height: 50,
+    borderRadius: 50,
+  },
+  rsvpImageContainer: {
+    position: "absolute",
+    bottom: 0,
+    right: 0,
+  },
+  rsvpImage: {
+    width: 25,
+    height: 25,
+    borderRadius: 50,
+  },
+});
