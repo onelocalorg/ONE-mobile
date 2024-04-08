@@ -75,3 +75,4 @@ export {default as payoutClose} from './payoutClose.png';
 export {default as blackPin} from './blackPin.png';
 export {default as redPin} from './redPin.png';
 export {default as confirmedTicket} from './confirmedTicket.png';
+export {default as startImg} from './startImg.png';

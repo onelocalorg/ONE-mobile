@@ -450,7 +450,7 @@ export const ProfileScreen = (props: ProfileScreenProps) => {
   };
 
   return (
-    <KeyboardAwareScrollView showsVerticalScrollIndicator={true}>
+    <KeyboardAwareScrollView showsVerticalScrollIndicator={false}>
       <TouchableOpacity
         style={styles.container}
         activeOpacity={1}
