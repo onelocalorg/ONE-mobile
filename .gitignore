@@ -1,9 +1,6 @@
 # Android build
 android/
 
-# iOS build
-ios/
-
 # Dependency directories
 /node_modules/
 

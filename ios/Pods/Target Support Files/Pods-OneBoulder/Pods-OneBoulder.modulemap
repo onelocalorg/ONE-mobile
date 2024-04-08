@@ -1,0 +1,6 @@
+module Pods_OneBoulder {
+  umbrella header "Pods-OneBoulder-umbrella.h"
+
+  export *
+  module * { export * }
+}
