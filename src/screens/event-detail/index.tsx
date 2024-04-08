@@ -24,6 +24,7 @@ import {
   dummy,
   onelogo,
   pinWhite,
+  startImg,
 } from "@assets/images";
 import { SizedBox } from "@components/sized-box";
 import { verticalScale } from "@theme/device/normalize";
@@ -100,13 +101,14 @@ export const EventDetailScreen = (props: EventDetailScreenProps) => {
   const { strings } = useStringsAndLabels();
   const { navigation, route } = props || {};
   const { id } = route?.params ?? {};
+  const [Loading, LodingData] = useState(false);
   const styles = createStyleSheet(theme);
   const modalRef: React.Ref<ModalRefProps> = useRef(null);
   const [ProfileData, setUserProfile]: any = useState("");
   const [showLoader, LoadingData] = useState(false);
   const [isTicketAvailable, setIsTicketAvailable] = useState(false);
   const [rsvpData, setRsvpData] = useState<RsvpData | null>(null);
-  const [selectedButton, setSelectedButton] = useState<number | null>(null);
+  const [selectedButton, setSelectedButton] = useState<string | null>(null);
   const { user } = useSelector<StoreType, UserProfileState>(
     (state) => state.userProfileReducer
   ) as { user: { stripeCustomerId: string; user_type: string; id: string } };
@@ -130,6 +132,7 @@ export const EventDetailScreen = (props: EventDetailScreenProps) => {
     // viewCount
   } = data || {};
 
+  console.log(id, '-------------id-------------')
   const { mutateAsync: createPayoutIntent } = useCreatePayoutIntent();
   const { mutateAsync: purchaseTicket, isLoading: purchaseTicketLoading } =
     usePurchaseTicket();
@@ -139,29 +142,34 @@ export const EventDetailScreen = (props: EventDetailScreenProps) => {
 
   //fetching rsvps
   useEffect(() => {
-    const fetchRsvpData = async () => {
-      try {
-        const token = await AsyncStorage.getItem("token");
-        const response = await fetch(`${API_URL}/v1/events/rsvp/${id}`, {
-          headers: {
-            method: "get",
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        });
-        if (response.ok) {
-          const data = await response.json();
-          setRsvpData(data);
-        } else {
-          console.error("Failed to fetch RSVP data");
-        }
-      } catch (error) {
-        console.error("Error fetching RSVP data:", error);
-      }
-    };
-
-    fetchRsvpData();
+    fetchRsvpDataAPI();
   }, [id]);
+
+
+  const fetchRsvpDataAPI = async () => {
+    LodingData(true);
+    const token = await AsyncStorage.getItem("token");
+    try {
+      const response = await fetch(`${API_URL}/v1/events/rsvp/${id}`, {
+        headers: {
+          method: "get",
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setRsvpData(data);
+        LodingData(false);
+        console.log(JSON.stringify(data), '--------------fetchRsvpData---------------')
+      } else {
+        console.error("Failed to fetch RSVP data");
+      }
+    } catch (error) {
+      console.error("Error fetching RSVP data:", error);
+    }
+  };
+
 
   useFocusEffect(
     useCallback(() => {
@@ -193,7 +201,7 @@ export const EventDetailScreen = (props: EventDetailScreenProps) => {
     if (Platform.OS === "ios") {
       const isShowPaymentCheck = getData("isShowPaymentFlow");
       return isShowPaymentCheck
-    } else{
+    } else {
       const isShowPaymentCheckAndroid = getData("isShowPaymentFlowAndroid");
       return isShowPaymentCheckAndroid
     }
@@ -226,6 +234,39 @@ export const EventDetailScreen = (props: EventDetailScreenProps) => {
       // LodingData(false);
     }
   }
+
+  //----------------rsvpFilterAPI--------------------
+  async function rsvpFilterAPI(type: any) {
+    LodingData(true);
+    const token = await AsyncStorage.getItem("token");
+
+console.log(type, '-----------type-----------')
+    try {
+      const response = await fetch(`${API_URL}/v1/events/rsvp/${id}`, {
+        method: "post",
+        headers: new Headers({
+          Authorization: "Bearer " + token,
+          "Content-Type": "application/json",
+        }),
+        body: JSON.stringify({ type: type }),
+      });
+      const isDataItem = await response.json();
+      Toast.show(isDataItem?.message, Toast.LONG, {
+        backgroundColor: "black",
+      });
+      if (response.ok) {
+        fetchRsvpDataAPI();
+        console.log("rsvp................", type);
+        LodingData(false);
+        
+      } else {
+        console.error("Error fetching RSVP data:");
+      }
+    } catch (error) {
+      console.error("Error while making RSVP:", error);
+    }
+  }
+
 
   const onBuyTicket = () => {
     if (is_event_owner) {
@@ -284,35 +325,7 @@ export const EventDetailScreen = (props: EventDetailScreenProps) => {
       Toast.show(res.message, Toast.LONG, {
         backgroundColor: "black",
       });
-      //sending rsvp type  to server
-      let rsvp = "";
-      if (selectedButton === 1) {
-        rsvp = "going";
-      } else if (selectedButton === 2) {
-        rsvp = "interested";
-      } else {
-        rsvp = "cantgo";
-      }
-      try {
-        const token = await AsyncStorage.getItem("token");
-        const response = await fetch(`${API_URL}/v1/events/rsvp/${id}`, {
-          method: "post",
-          headers: new Headers({
-            Authorization: "Bearer " + token,
-            "Content-Type": "application/json",
-          }),
-          body: JSON.stringify({ type: rsvp }),
-        });
-        if (response.ok) {
-          console.log("rsvp................", rsvp);
-          Alert.alert("Payment Succeed");
-        } else {
-          Alert.alert("failed");
-        }
-      } catch (error) {
-        console.error("Error while making RSVP:", error);
-      }
-      // End of RSVP API call
+     
       LoadingData(false);
       navigation?.goBack();
     } else {
@@ -328,7 +341,7 @@ export const EventDetailScreen = (props: EventDetailScreenProps) => {
     quantityticket: number
   ) => {
     console.log('1111dedede')
-    if(price === 0){
+    if (price === 0) {
       onPaymentSuccess(
         cardData,
         ticketId,
@@ -336,7 +349,7 @@ export const EventDetailScreen = (props: EventDetailScreenProps) => {
         price.toString(),
         quantityticket
       );
-    } else{
+    } else {
       onPaymentSuccess(
         cardData,
         ticketId,
@@ -345,7 +358,7 @@ export const EventDetailScreen = (props: EventDetailScreenProps) => {
         quantityticket
       );
     }
-   
+
   };
 
   const onPurchaseTicket = async (
@@ -414,6 +427,7 @@ export const EventDetailScreen = (props: EventDetailScreenProps) => {
 
   // Check if the logged-in user's ID is available in RSVP data
   const isCurrentUserRSVP = (type: string) => {
+    
     if (rsvpData && rsvpData.data && rsvpData.data.rsvps) {
       const currentUserRSVP = rsvpData.data.rsvps.find(
         (rsvp) => rsvp.user_id.id === user?.id
@@ -423,10 +437,24 @@ export const EventDetailScreen = (props: EventDetailScreenProps) => {
     return false;
   };
 
+const rsvpsFilter = (type: any) => {
+  if(type == selectedButton){
+    setSelectedButton(null)
+  } else {
+    setSelectedButton(type)
+  }
+  if(type == 'interested' || type == 'going'){
+    console.log('---------type-------------------')
+    rsvpFilterAPI(type)
+  }
+ 
+}
+
+
   return (
     <View>
       <Loader
-        visible={isLoading || isRefetching || purchaseTicketLoading}
+        visible={isLoading || isRefetching || purchaseTicketLoading || Loading}
         showOverlay
       />
       <TouchableOpacity style={styles.HeaderContainerTwo} activeOpacity={1}>
@@ -489,56 +517,7 @@ export const EventDetailScreen = (props: EventDetailScreenProps) => {
                 <Text style={{color:'white',textAlign:'center',justifyContent:'center',alignItems:'center',alignSelf:'center'}}>hello</Text>
               </TouchableOpacity>
             </View> */}
-            <View style={styles1.container2}>
-              <TouchableOpacity
-                style={[
-                  styles1.button,
-                  selectedButton === 1 && styles1.selectedButton,
-                  isCurrentUserRSVP("going") && { backgroundColor: "#E9B9B4" },
-                ]}
-                onPress={() => setSelectedButton(1)}
-              >
-                <View
-                  style={{
-                    flexDirection: "row",
-                    alignItems: "center",
-                    gap: 10,
-                  }}
-                >
-                  <Text style={styles1.buttonText}>Going</Text>
-                  {isCurrentUserRSVP("going") && (
-                    <Image
-                      source={require("../../assets/images/confirmedTicket.png")}
-                    />
-                  )}
-                </View>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={[
-                  styles1.button,
-                  selectedButton === 2 && styles1.selectedButton,
-                  isCurrentUserRSVP("interested") && {
-                    backgroundColor: "#E9B9B4",
-                  },
-                ]}
-                onPress={() => setSelectedButton(2)}
-              >
-                <View
-                  style={{
-                    flexDirection: "row",
-                    alignItems: "center",
-                    gap: 10,
-                  }}
-                >
-                  <Text style={styles1.buttonText}>Maybe</Text>
-                  {isCurrentUserRSVP("interested") && (
-                    <Image
-                      source={require("../../assets/images/confirmedTicket.png")}
-                    />
-                  )}
-                </View>
-              </TouchableOpacity>
-            </View>
+
           </View>
           <SizedBox height={verticalScale(35)} />
           <View style={styles.row}>
@@ -588,8 +567,8 @@ export const EventDetailScreen = (props: EventDetailScreenProps) => {
 
         <SizedBox height={verticalScale(16)} />
         <View style={styles.container}>
-        {tickets?.length ? 
-          <Text style={styles.event}>{strings.tickets}</Text> : <></>}
+          {tickets?.length ?
+            <Text style={styles.event}>{strings.tickets}</Text> : <></>}
           <View>
             {tickets?.map((ele) => (
               <View key={ele?.price.toString()} style={styles.rowOnly}>
@@ -623,27 +602,84 @@ export const EventDetailScreen = (props: EventDetailScreenProps) => {
           ) : (
             <></>
           )}
+
+          <View style={styles1.container2}>
+            <TouchableOpacity
+              style={[
+                styles1.button,
+                selectedButton === 'going' && styles1.selectedButton,
+                isCurrentUserRSVP("going") && { backgroundColor: "#E9B9B4" },
+              ]}
+              onPress={() => rsvpsFilter("going") }
+            >
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  gap: 10,
+                }}
+              >
+                <Text style={styles1.buttonText}>Going</Text>
+              </View>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[
+                styles1.button,
+                selectedButton === 'interested' && styles1.selectedButton,
+                isCurrentUserRSVP("interested") && {
+                  backgroundColor: "#E9B9B4",
+                },
+              ]}
+              onPress={() => rsvpsFilter("interested")}
+            >
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  gap: 10,
+                }}
+              >
+                <Text style={styles1.buttonText}>Maybe</Text>
+              </View>
+            </TouchableOpacity>
+            <TouchableOpacity
+            activeOpacity={1}
+              style={[
+                styles1.button,
+                 { backgroundColor: "#E9B9B4" },
+              ]}
+            >
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  gap: 10,
+                }}
+              >
+                <Text style={styles1.buttonText}>Invite</Text>
+              </View>
+            </TouchableOpacity>
+          </View>
+
           <View
             style={{
               flexDirection: "row",
               alignItems: "center",
               marginTop: "5%",
-              justifyContent: "flex-start",
+              justifyContent: "space-between",
               gap: 100,
             }}
           >
-            <Text style={{ fontSize: 16, color: "black", fontWeight: "600" }}>
+            <Text style={{ fontSize: 20, color: "black", fontWeight: "600" }}>
               RSVPS
             </Text>
-            {rsvpData && rsvpData.data && rsvpData.data.rsvps ? (
+  
+              <View style={{flexDirection: 'row', columnGap: 20}}>
               <View style={{ flexDirection: "column", alignItems: "center" }}>
                 <Text
                   style={{ fontSize: 16, color: "black", fontWeight: "600" }}
                 >
-                  {
-                    rsvpData.data.rsvps.filter((rsvp) => rsvp.rsvp === "going")
-                      .length
-                  }
+                 {rsvpData?.data?.going}
                 </Text>
                 <Text
                   style={{ fontSize: 16, color: "black", fontWeight: "600" }}
@@ -651,11 +687,18 @@ export const EventDetailScreen = (props: EventDetailScreenProps) => {
                   Going
                 </Text>
               </View>
-            ) : (
-              <Text style={{ fontSize: 16, color: "black", fontWeight: "600" }}>
-                No RSVP data available
+              <View style={{ flexDirection: "column", alignItems: "center" }}>
+              <Text
+                style={{ fontSize: 16, color: "black", fontWeight: "600" }}>
+               {rsvpData?.data?.interested}
               </Text>
-            )}
+              <Text
+                style={{ fontSize: 16, color: "black", fontWeight: "600" }}
+              >
+                Maybe
+              </Text>
+            </View>
+            </View>
           </View>
           <View
             style={{
@@ -676,7 +719,8 @@ export const EventDetailScreen = (props: EventDetailScreenProps) => {
                 }}
               >
                 {rsvpData.data.rsvps.map((rsvp, index) => (
-                  <View key={index} style={styles1.rsvpContainer}>
+                  <View key={index}
+                  style={styles1.rsvpContainer}>
                     <View style={styles1.profilePicContainer}>
                       <Image
                         source={{ uri: rsvp.user_id.pic }}
@@ -688,10 +732,7 @@ export const EventDetailScreen = (props: EventDetailScreenProps) => {
                         <Image source={Going} style={styles1.rsvpImage} />
                       )}
                       {rsvp.rsvp === "interested" && (
-                        <Image source={Maybe} style={styles1.rsvpImage} />
-                      )}
-                      {rsvp.rsvp === "cantgo" && (
-                        <Image source={Cantgo} style={styles1.rsvpImage} />
+                        <Image source={startImg} style={styles1.rsvpImage} />
                       )}
                     </View>
                   </View>
@@ -724,14 +765,13 @@ export const EventDetailScreen = (props: EventDetailScreenProps) => {
 };
 const styles1 = StyleSheet.create({
   container2: {
-    //flex: 1,
+    flex: 1,
     justifyContent: "center",
     alignItems: "center",
     flexDirection: "row",
-    width: 190,
-    height: 34,
-    position: "absolute",
-    bottom: -15,
+    width: 300,
+    height: 50,
+    marginTop: 20,
     backgroundColor: "#DA9791",
     alignSelf: "center",
     borderRadius: 20,
@@ -739,10 +779,10 @@ const styles1 = StyleSheet.create({
   },
   button: {
     backgroundColor: "#E9B9B4",
-    width: 66,
-    height: 20,
+    width: 65,
+    height: 30,
     marginVertical: 10,
-    borderRadius: 20,
+    borderRadius: 10,
     alignItems: "center",
     justifyContent: "center",
   },
@@ -754,7 +794,7 @@ const styles1 = StyleSheet.create({
     fontFamily: "NotoSerif-Regular",
   },
   selectedButton: {
-    borderColor: "red",
+    borderColor: "green",
     borderWidth: 2,
   },
   rsvpContainer: {

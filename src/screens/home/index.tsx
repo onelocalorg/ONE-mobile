@@ -118,6 +118,7 @@ export const HomeScreen = (props: HomeScreenProps) => {
     endDate: new Date(),
   });
 
+  console.log(user.id, '-----------userId----------')
   const dispatch = useDispatch();
 
   useFocusEffect(
