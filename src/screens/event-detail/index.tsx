@@ -160,8 +160,12 @@ export const EventDetailScreen = (props: EventDetailScreenProps) => {
       if (response.ok) {
         const data = await response.json();
         setRsvpData(data);
+        findItemById(data);
         LodingData(false);
-        console.log(JSON.stringify(data), '--------------fetchRsvpData---------------')
+        console.log(
+          JSON.stringify(data),
+          "--------------fetchRsvpData---------------"
+        );
       } else {
         console.error("Failed to fetch RSVP data");
       }
@@ -169,7 +173,6 @@ export const EventDetailScreen = (props: EventDetailScreenProps) => {
       console.error("Error fetching RSVP data:", error);
     }
   };
-
 
   useFocusEffect(
     useCallback(() => {
@@ -196,14 +199,13 @@ export const EventDetailScreen = (props: EventDetailScreenProps) => {
     }, [])
   );
 
-
   const onCheckReleaseHideShow = () => {
     if (Platform.OS === "ios") {
       const isShowPaymentCheck = getData("isShowPaymentFlow");
-      return isShowPaymentCheck
+      return isShowPaymentCheck;
     } else {
       const isShowPaymentCheckAndroid = getData("isShowPaymentFlowAndroid");
-      return isShowPaymentCheckAndroid
+      return isShowPaymentCheckAndroid;
     }
   };
 
@@ -240,7 +242,7 @@ export const EventDetailScreen = (props: EventDetailScreenProps) => {
     LodingData(true);
     const token = await AsyncStorage.getItem("token");
 
-console.log(type, '-----------type-----------')
+    console.log(type, "-----------type-----------");
     try {
       const response = await fetch(`${API_URL}/v1/events/rsvp/${id}`, {
         method: "post",
@@ -258,7 +260,6 @@ console.log(type, '-----------type-----------')
         fetchRsvpDataAPI();
         console.log("rsvp................", type);
         LodingData(false);
-        
       } else {
         console.error("Error fetching RSVP data:");
       }
@@ -266,7 +267,6 @@ console.log(type, '-----------type-----------')
       console.error("Error while making RSVP:", error);
     }
   }
-
 
   const onBuyTicket = () => {
     if (is_event_owner) {
@@ -325,7 +325,7 @@ console.log(type, '-----------type-----------')
       Toast.show(res.message, Toast.LONG, {
         backgroundColor: "black",
       });
-     
+
       LoadingData(false);
       navigation?.goBack();
     } else {
@@ -340,7 +340,7 @@ console.log(type, '-----------type-----------')
     price: any,
     quantityticket: number
   ) => {
-    console.log('1111dedede')
+    console.log("1111dedede");
     if (price === 0) {
       onPaymentSuccess(
         cardData,
@@ -358,7 +358,6 @@ console.log(type, '-----------type-----------')
         quantityticket
       );
     }
-
   };
 
   const onPurchaseTicket = async (
@@ -427,7 +426,6 @@ console.log(type, '-----------type-----------')
 
   // Check if the logged-in user's ID is available in RSVP data
   const isCurrentUserRSVP = (type: string) => {
-    
     if (rsvpData && rsvpData.data && rsvpData.data.rsvps) {
       const currentUserRSVP = rsvpData.data.rsvps.find(
         (rsvp) => rsvp.user_id.id === user?.id
@@ -437,19 +435,29 @@ console.log(type, '-----------type-----------')
     return false;
   };
 
-const rsvpsFilter = (type: any) => {
-  if(type == selectedButton){
-    setSelectedButton(null)
-  } else {
-    setSelectedButton(type)
-  }
-  if(type == 'interested' || type == 'going'){
-    console.log('---------type-------------------')
-    rsvpFilterAPI(type)
-  }
- 
-}
+  const rsvpsFilter = (type: any) => {
+    if (type == selectedButton) {
+      setSelectedButton(null);
+    } else {
+      setSelectedButton(type);
+    }
+    if (type == "interested" || type == "going") {
+      console.log("---------type-------------------");
+      rsvpFilterAPI(type);
+    }
+  };
 
+  const findItemById = (rsvpDatas:any) => {
+    const foundItem: any = rsvpDatas?.data?.rsvps.find(
+      (item: any) => item?.user_id?.id === user?.id
+    );
+    console.log(foundItem, "-------------user list-------------");
+    if (foundItem) {
+      setSelectedButton(foundItem?.rsvp);
+    } else {
+      setSelectedButton(null);
+    }
+  };
 
   return (
     <View>
@@ -517,7 +525,6 @@ const rsvpsFilter = (type: any) => {
                 <Text style={{color:'white',textAlign:'center',justifyContent:'center',alignItems:'center',alignSelf:'center'}}>hello</Text>
               </TouchableOpacity>
             </View> */}
-
           </View>
           <SizedBox height={verticalScale(35)} />
           <View style={styles.row}>
@@ -567,8 +574,11 @@ const rsvpsFilter = (type: any) => {
 
         <SizedBox height={verticalScale(16)} />
         <View style={styles.container}>
-          {tickets?.length ?
-            <Text style={styles.event}>{strings.tickets}</Text> : <></>}
+          {tickets?.length ? (
+            <Text style={styles.event}>{strings.tickets}</Text>
+          ) : (
+            <></>
+          )}
           <View>
             {tickets?.map((ele) => (
               <View key={ele?.price.toString()} style={styles.rowOnly}>
@@ -607,10 +617,10 @@ const rsvpsFilter = (type: any) => {
             <TouchableOpacity
               style={[
                 styles1.button,
-                selectedButton === 'going' && styles1.selectedButton,
+                selectedButton === "going" && styles1.selectedButton,
                 isCurrentUserRSVP("going") && { backgroundColor: "#E9B9B4" },
               ]}
-              onPress={() => rsvpsFilter("going") }
+              onPress={() => rsvpsFilter("going")}
             >
               <View
                 style={{
@@ -625,7 +635,7 @@ const rsvpsFilter = (type: any) => {
             <TouchableOpacity
               style={[
                 styles1.button,
-                selectedButton === 'interested' && styles1.selectedButton,
+                selectedButton === "interested" && styles1.selectedButton,
                 isCurrentUserRSVP("interested") && {
                   backgroundColor: "#E9B9B4",
                 },
@@ -643,11 +653,8 @@ const rsvpsFilter = (type: any) => {
               </View>
             </TouchableOpacity>
             <TouchableOpacity
-            activeOpacity={1}
-              style={[
-                styles1.button,
-                 { backgroundColor: "#E9B9B4" },
-              ]}
+              activeOpacity={1}
+              style={[styles1.button, { backgroundColor: "#E9B9B4" }]}
             >
               <View
                 style={{
@@ -673,13 +680,13 @@ const rsvpsFilter = (type: any) => {
             <Text style={{ fontSize: 20, color: "black", fontWeight: "600" }}>
               RSVPS
             </Text>
-  
-              <View style={{flexDirection: 'row', columnGap: 20}}>
+
+            <View style={{ flexDirection: "row", columnGap: 20 }}>
               <View style={{ flexDirection: "column", alignItems: "center" }}>
                 <Text
                   style={{ fontSize: 16, color: "black", fontWeight: "600" }}
                 >
-                 {rsvpData?.data?.going}
+                  {rsvpData?.data?.going}
                 </Text>
                 <Text
                   style={{ fontSize: 16, color: "black", fontWeight: "600" }}
@@ -688,16 +695,17 @@ const rsvpsFilter = (type: any) => {
                 </Text>
               </View>
               <View style={{ flexDirection: "column", alignItems: "center" }}>
-              <Text
-                style={{ fontSize: 16, color: "black", fontWeight: "600" }}>
-               {rsvpData?.data?.interested}
-              </Text>
-              <Text
-                style={{ fontSize: 16, color: "black", fontWeight: "600" }}
-              >
-                Maybe
-              </Text>
-            </View>
+                <Text
+                  style={{ fontSize: 16, color: "black", fontWeight: "600" }}
+                >
+                  {rsvpData?.data?.interested}
+                </Text>
+                <Text
+                  style={{ fontSize: 16, color: "black", fontWeight: "600" }}
+                >
+                  Maybe
+                </Text>
+              </View>
             </View>
           </View>
           <View
@@ -719,8 +727,7 @@ const rsvpsFilter = (type: any) => {
                 }}
               >
                 {rsvpData.data.rsvps.map((rsvp, index) => (
-                  <View key={index}
-                  style={styles1.rsvpContainer}>
+                  <View key={index} style={styles1.rsvpContainer}>
                     <View style={styles1.profilePicContainer}>
                       <Image
                         source={{ uri: rsvp.user_id.pic }}
