@@ -17,6 +17,7 @@ interface Root {
   is_active_subscription: boolean;
   isEventActiveSubscription:boolean;
   cover_image: string;
+  eventProducerPackageId:string
 }
 
 interface ParsedData {
@@ -28,7 +29,7 @@ interface ParsedData {
   skills: string[];
   userType: string;
   isActiveSubscription: boolean;
-  
+  eventProducerID:string
   coverImage: string;
 }
 
@@ -38,6 +39,7 @@ export const userProfileParsedData = (data: Root) => {
     name: `${data?.first_name} ${data?.last_name}`,
     userType: data?.user_type,
     isActiveSubscription: data?.isEventActiveSubscription,
+    eventProducerID:data?.eventProducerPackageId,
     coverImage: data?.cover_image,
   } as ParsedData;
 };

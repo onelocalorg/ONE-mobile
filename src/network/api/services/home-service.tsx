@@ -182,6 +182,7 @@ export const onUpdateEvent = async (props: UpdateEventProps) => {
     event_image: eventImage,
   };
 
+  console.log(attachments,'-------------------update event request--------------------');
   try {
     const endPoint = `${apiConstants.createEvent}/${eventId}`;
     const data = await API.homeService.patch(endPoint, attachments);
@@ -260,6 +261,7 @@ export const onCreateEvent = async (props: CreateEventProps) => {
       event_image: eventImage,
     };
   }
+  console.log(attachments,'-------------------create event request start date--------------------');
   try {
     console.log(attachments);
     const endPoint = `${apiConstants.createEvent}`;

@@ -50,9 +50,9 @@ export const AppNavigation = () => {
  
   function checkPaymentFlowHideShow(dataItem: any) {
     
-    if ("isPaymentFlowShowThree" in dataItem) {
-      console.log("isPaymentFlowShowThree");
-      var datatemp = dataItem?.isPaymentFlowShowThree;
+    if ("isPaymentFlowShowFour" in dataItem) {
+      console.log("isPaymentFlowShowFour");
+      var datatemp = dataItem?.isPaymentFlowShowFour;
       setData("isShowPaymentFlow", datatemp);
     }
     setisVersionApiCalled(true)
@@ -60,9 +60,9 @@ export const AppNavigation = () => {
 
   function checkPaymentFlowHideShowAndroid(dataItem: any) {
     
-    if ("isPaymentFlowShowFourAndroid" in dataItem) {
-      console.log("isPaymentFlowShowFourAndroid");
-      var datatemp = dataItem?.isPaymentFlowShowFourAndroid;
+    if ("isPaymentFlowShowFiveAndroid" in dataItem) {
+      console.log("isPaymentFlowShowFiveAndroid");
+      var datatemp = dataItem?.isPaymentFlowShowFiveAndroid;
       setData("isShowPaymentFlowAndroid", datatemp);
     }
     setisVersionApiCalled(true)

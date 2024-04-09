@@ -69,6 +69,7 @@ import { useEditProfile } from "@network/hooks/user-service-hooks/use-edit-profi
 import { ActivityIndicator } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { SafeAreaComponent } from "@components/safe-area-view";
+import { MembershipCheckoutModal } from "./membership-checkout-modal";
 
 interface AboutDataProps {
   ref: React.Ref<unknown> | undefined;
@@ -258,64 +259,6 @@ export const About = (props: AboutDataProps) => {
     }
   }
 
-  // ================= Purchase API ====================
-
-  async function onPurchaseAPI() {
-    LodingData(true);
-    if (isBilledMonthly) {
-      var purchesData: any = {
-        plan_id: monthlyPlan.plan_id,
-        price_id: monthlyPlan.price_id,
-        totalUnitsMonthly: monthPrice,
-      };
-    } else if (!isBilledMonthly) {
-      var purchesData: any = {
-        plan_id: yearlyPlan.plan_id,
-        price_id: yearlyPlan.price_id,
-        totalUnitsMonthly: YerlyPrice,
-      };
-    }
-
-    console.log(purchesData);
-
-    console.log(idPackage);
-
-    try {
-      const response = await fetch(
-        API_URL + "/v1/subscriptions/" + idPackage + "/purchase",
-        {
-          method: "post",
-          headers: new Headers({
-            Authorization: "Bearer " + token,
-            "Content-Type": "application/x-www-form-urlencoded",
-          }),
-          body: Object.keys(purchesData)
-            .map((key) => key + "=" + purchesData[key])
-            .join("&"),
-        }
-      );
-      const dataItem = await response.json();
-      LodingData(false);
-      console.log("=========== Purchase API ==============");
-      console.log(dataItem);
-      if (dataItem.success == true) {
-        packageListAPI();
-        userProfileUpdate();
-        setModalVisible(false);
-        setMemberModal(false);
-        Toast.show(dataItem.message, Toast.LONG, {
-          backgroundColor: "black",
-        });
-      } else {
-        Toast.show(dataItem.message, Toast.LONG, {
-          backgroundColor: "black",
-        });
-      }
-    } catch (error) {
-      LodingData(false);
-      console.error(error);
-    }
-  }
 
   // ================= Cancle Subscription API ====================
 
@@ -397,12 +340,19 @@ export const About = (props: AboutDataProps) => {
     setTimeout(() => {
       setMemberModal(true);
     }, 1000);
-    memberShipCheckoutAPI(id);
+    // memberShipCheckoutAPI(id);
   };
 
   const memberShipHide = () => {
     setMemberModal(false);
   };
+
+  const memberShipModalClose = () => {
+    setMemberModal(false);
+    setModalVisible(false);
+    packageListAPI();
+    userProfileUpdate();
+  }
 
   const addCardModalHide = () => {
     addCardModal(false);
@@ -530,51 +480,6 @@ export const About = (props: AboutDataProps) => {
     };
   };
 
-  const onOpenModal = () => {
-    // addcardRef.current?.onOpenModal();
-    addCardModal(true);
-  };
-
-  // =================MemberShip Checkout API====================
-
-  async function memberShipCheckoutAPI(dataId: any) {
-    MembershipCheckOutID(dataId);
-    console.log(dataId, "dataId dataId------------------------------------");
-    try {
-      const response = await fetch(
-        API_URL + "/v1/subscriptions/packages/" + dataId + "/checkout",
-        {
-          method: "get",
-          headers: new Headers({
-            Authorization: "Bearer " + token,
-            "Content-Type": "application/x-www-form-urlencoded",
-          }),
-        }
-      );
-      const dataItems = await response.json();
-      memberShipData(dataItems);
-      console.log("===========MemberShip checkout==============");
-      console.log(dataItems);
-      // setDatacheckout(dataItem);
-      monthlyPlanData(dataItems?.data?.plans[0]);
-      yearlyPlanData(dataItems?.data?.plans[1]);
-      monthlyPrice(
-        dataItems?.data?.customerBill?.billSummaryMonthly?.totalUnitsMonthly
-      );
-      yearlyPrices(
-        dataItems?.data?.customerBill?.billSummaryYearly?.totalUnitsYearly
-      );
-      descriptionData(dataItems.data.description);
-      addCardList(dataItems?.data?.card);
-      console.log("=======================dsd==ds=d==========");
-      console.log(monthlyPlan);
-      console.log(yearlyPlan);
-      console.log(description);
-    } catch (error) {
-      console.error(error);
-    }
-  }
-
   useEffect(() => {
     LogBox.ignoreAllLogs();
     const checkToken = async () => {
@@ -682,7 +587,7 @@ export const About = (props: AboutDataProps) => {
       cardExpYears("");
       cardCVVData("");
       setDate("");
-      memberShipCheckoutAPI(membershipId);
+      // memberShipCheckoutAPI(membershipId);
       if (dataItem.success == true) {
         addCardModal(false);
       }
@@ -842,10 +747,10 @@ export const About = (props: AboutDataProps) => {
                             activeOpacity={0.8}
                           >
                             <ImageComponent
-                              source={{ uri: postData.role_image }}
+                              source={{ uri: postData?.role_image }}
                               style={[styles.icon]}
                             />
-                            <Text style={styles.label}>{postData.title}</Text>
+                            <Text style={styles.label}>{postData?.title}</Text>
                           </TouchableOpacity>
 
                           <Text style={styles.playerDescription}>
@@ -881,565 +786,13 @@ export const About = (props: AboutDataProps) => {
                     );
                   })} */}
                   </KeyboardAvoidingView>
-                  <Modal
-                    transparent
-                    onDismiss={memberShipHide}
-                    visible={memberModal}
-                  >
-                    <GestureRecognizer
-                      onSwipeDown={memberShipHide}
-                      style={styles.gesture}
-                    >
-                      <TouchableOpacity
-                        style={styles.containerGallery}
-                        activeOpacity={1}
-                        onPress={memberShipHide}
-                      />
-                    </GestureRecognizer>
-                    <Loader visible={isLoading} showOverlay />
 
-                    {Platform.OS === "android" ? (
-                      <View>
-                        <View style={styles.packageModalMembership}>
-                          <ScrollView
-                            overScrollMode="always"
-                            showsVerticalScrollIndicator={false}
-                            horizontal={false}
-                          >
-                            <TouchableOpacity
-                              disabled
-                              activeOpacity={0}
-                              onPress={() => {
-                                memberShipHide();
-                              }}
-                            >
-                              <Text style={styles.memberTitle}>
-                                {strings.membershipCheckout}
-                              </Text>
-
-                              <View style={styles.modalContainer}>
-                                <TouchableOpacity
-                                  style={[
-                                    styles.memberShipCheckputContainer,
-                                    { backgroundColor: postData.color },
-                                  ]}
-                                  activeOpacity={0.8}
-                                >
-                                  <ImageComponent
-                                    source={{ uri: postData.role_image }}
-                                    style={[styles.icon1]}
-                                  />
-                                  <Text style={styles.label1}>
-                                    {postData.title}
-                                  </Text>
-                                </TouchableOpacity>
-                                <View style={styles.selectContainer}>
-                                  <TouchableOpacity
-                                    activeOpacity={0.8}
-                                    style={[
-                                      styles.selectView,
-                                      isBilledMonthly &&
-                                        styles.selectedSelectView,
-                                    ]}
-                                    onPress={() =>
-                                      handleBillingSubscription(true)
-                                    }
-                                  >
-                                    {monthlyPlan?.price?.$numberDecimal ? (
-                                      <Text style={styles.amount}>
-                                        {`$${parseInt(
-                                          monthlyPlan?.price?.$numberDecimal,
-                                          10
-                                        )}`}
-                                      </Text>
-                                    ) : (
-                                      <Text style={styles.amount}>$00</Text>
-                                    )}
-
-                                    <Text style={styles.bill}>
-                                      {monthlyPlan?.name}
-                                    </Text>
-                                  </TouchableOpacity>
-                                  <TouchableOpacity
-                                    activeOpacity={0.8}
-                                    style={[
-                                      styles.selectView,
-                                      !isBilledMonthly &&
-                                        styles.selectedSelectView,
-                                    ]}
-                                    onPress={() =>
-                                      handleBillingSubscription(false)
-                                    }
-                                  >
-                                    {yearlyPlan?.price?.$numberDecimal ? (
-                                      <Text style={styles.amount}>{`$${parseInt(
-                                        yearlyPlan?.price?.$numberDecimal,
-                                        10
-                                      )}`}</Text>
-                                    ) : (
-                                      <Text style={styles.amount}>$00</Text>
-                                    )}
-                                    <Text style={styles.bill}>
-                                      {yearlyPlan?.name}
-                                    </Text>
-                                  </TouchableOpacity>
-                                </View>
-                                <Text style={styles.playerDescription}>
-                                  {description}
-                                </Text>
-
-                                <View>
-                                  <Text style={styles.paymentInfo}>
-                                    {strings.paymentinfo}
-                                  </Text>
-                                </View>
-                                {cardData?.brand ? (
-                                  <View>
-                                    <View style={styles.cardList}>
-                                      <Text style={styles.cardNum}>
-                                        {cardData?.brand}
-                                      </Text>
-                                      <Text style={styles.dotclass}>
-                                        {strings.dot}
-                                      </Text>
-                                      <Text style={styles.cardNum}>
-                                        {cardData?.last4}
-                                      </Text>
-                                    </View>
-                                    <View style={styles.cardList}>
-                                      <Text style={styles.CardexpDate}>
-                                        {strings.exp}
-                                      </Text>
-                                      <Text style={styles.CardexpDate}>
-                                        {cardData?.exp_month}
-                                        {strings.slash}
-                                        {cardData?.exp_year}
-                                      </Text>
-                                    </View>
-                                  </View>
-                                ) : (
-                                  <View></View>
-                                )}
-
-                                <TouchableOpacity
-                                  activeOpacity={0.8}
-                                  onPress={onOpenModal}
-                                  style={styles.addViewcard}
-                                >
-                                  <Text style={styles.addCard}>
-                                    {strings.addCard}
-                                  </Text>
-                                </TouchableOpacity>
-                                <View style={styles.purchesButton}>
-                                  <TouchableOpacity
-                                    onPress={onPurchaseAPI}
-                                    activeOpacity={0.8}
-                                    style={styles.purchaseContainer}
-                                  >
-                                    <View />
-                                    <Text style={styles.title}>
-                                      {strings.purchase}
-                                    </Text>
-                                    <ImageComponent
-                                      source={buttonArrow}
-                                      style={styles.buttonArrow}
-                                    />
-                                  </TouchableOpacity>
-                                </View>
-                              </View>
-                            </TouchableOpacity>
-                          </ScrollView>
-                        </View>
-
-                        <Modal
-                          transparent
-                          onDismiss={addCardModalHide}
-                          visible={addcard}
-                        >
-                          <GestureRecognizer
-                            onSwipeDown={addCardModalHide}
-                            style={styles.gesture}
-                          >
-                            <TouchableOpacity
-                              style={styles.containerGallery}
-                              activeOpacity={1}
-                              onPress={addCardModalHide}
-                            />
-                          </GestureRecognizer>
-                          <Loader visible={isLoading} showOverlay />
-                          <KeyboardAvoidingView style={styles.keyboardViewTwo}>
-                            <View style={styles.addCardBorderContainer}>
-                              <View>
-                                <TouchableOpacity
-                                  onPress={() => {
-                                    addCardModalHide();
-                                  }}
-                                >
-                                  <ImageComponent
-                                    style={styles.closeCardCont}
-                                    source={closeCard}
-                                  ></ImageComponent>
-                                </TouchableOpacity>
-
-                                <Text style={styles.addCardTitle}>
-                                  {strings.addCardOne}
-                                </Text>
-                                <Text style={styles.addCardInfo}>
-                                  {strings.cardinfo}
-                                </Text>
-                                <View>
-                                  <ImageComponent
-                                    source={addCard}
-                                    style={styles.addCardLogo}
-                                  />
-                                  <TextInput
-                                    placeholderTextColor="darkgray"
-                                    value={cardnumber}
-                                    maxLength={16}
-                                    keyboardType="numeric"
-                                    style={styles.addCardInput}
-                                    placeholder="card number"
-                                    onChangeText={(value) => {
-                                      console.log(value);
-                                      cardNumberData(value);
-                                    }}
-                                  />
-                                  <View style={styles.cardView}>
-                                    <TextInput
-                                      placeholderTextColor="darkgray"
-                                      onChangeText={(text) => {
-                                        setDate(
-                                          text.length === 3 &&
-                                            !text.includes("/")
-                                            ? `${text.substring(
-                                                0,
-                                                2
-                                              )}/${text.substring(2)}`
-                                            : text
-                                        );
-                                        const [month, year] = text.split("/");
-                                        console.log(month);
-                                        console.log(year);
-
-                                        cardExpMonth(month);
-                                        cardExpYears(year);
-                                      }}
-                                      placeholder="mm/yy"
-                                      keyboardType="number-pad"
-                                      maxLength={5}
-                                      style={styles.addCardDateInput}
-                                      value={date}
-                                    />
-
-                                    <TextInput
-                                      placeholderTextColor="darkgray"
-                                      value={cardCvv}
-                                      maxLength={3}
-                                      keyboardType="numeric"
-                                      style={styles.addCardCVCInput}
-                                      placeholder="cvc"
-                                      onChangeText={(value) => {
-                                        console.log(value);
-                                        cardCVVData(value);
-                                      }}
-                                    />
-                                  </View>
-                                </View>
-
-                                <View>
-                                  <ButtonComponent
-                                    onPress={onCheckValidation}
-                                    title={strings.addCardTwo}
-                                    buttonStyle={styles.addCardContainer}
-                                    icon={buttonArrowBlue}
-                                  />
-                                </View>
-                              </View>
-                            </View>
-                          </KeyboardAvoidingView>
-                        </Modal>
-                      </View>
-                    ) : (
-                      <View></View>
-                    )}
-
-                    {Platform.OS === "ios" ? (
-                      <KeyboardAvoidingView
-                        behavior={Platform.OS === "ios" ? "padding" : "height"}
-                        style={styles.keyboardViewTwo}
-                      >
-                        <View>
-                          <View style={styles.packageModalMembership}>
-                            <ScrollView
-                              overScrollMode="always"
-                              showsVerticalScrollIndicator={false}
-                              horizontal={false}
-                            >
-                              <TouchableOpacity
-                                disabled
-                                activeOpacity={0}
-                                onPress={() => {
-                                  memberShipHide();
-                                }}
-                              >
-                                <Text style={styles.memberTitle}>
-                                  {strings.membershipCheckout}
-                                </Text>
-
-                                <View style={styles.modalContainer}>
-                                  <TouchableOpacity
-                                    style={[
-                                      styles.memberShipCheckputContainer,
-                                      { backgroundColor: postData.color },
-                                    ]}
-                                    activeOpacity={0.8}
-                                  >
-                                    <ImageComponent
-                                      source={{ uri: postData.role_image }}
-                                      style={[styles.icon1]}
-                                    />
-                                    <Text style={styles.label1}>
-                                      {postData.title}
-                                    </Text>
-                                  </TouchableOpacity>
-                                  <View style={styles.selectContainer}>
-                                    <TouchableOpacity
-                                      activeOpacity={0.8}
-                                      style={[
-                                        styles.selectView,
-                                        isBilledMonthly &&
-                                          styles.selectedSelectView,
-                                      ]}
-                                      onPress={() =>
-                                        handleBillingSubscription(true)
-                                      }
-                                    >
-                                      {monthlyPlan?.price?.$numberDecimal ? (
-                                        <Text style={styles.amount}>
-                                          {`$${parseInt(
-                                            monthlyPlan?.price?.$numberDecimal,
-                                            10
-                                          )}`}
-                                        </Text>
-                                      ) : (
-                                        <Text style={styles.amount}>$00</Text>
-                                      )}
-
-                                      <Text style={styles.bill}>
-                                        {monthlyPlan?.name}
-                                      </Text>
-                                    </TouchableOpacity>
-                                    <TouchableOpacity
-                                      activeOpacity={0.8}
-                                      style={[
-                                        styles.selectView,
-                                        !isBilledMonthly &&
-                                          styles.selectedSelectView,
-                                      ]}
-                                      onPress={() =>
-                                        handleBillingSubscription(false)
-                                      }
-                                    >
-                                      {yearlyPlan?.price?.$numberDecimal ? (
-                                        <Text
-                                          style={styles.amount}
-                                        >{`$${parseInt(
-                                          yearlyPlan?.price?.$numberDecimal,
-                                          10
-                                        )}`}</Text>
-                                      ) : (
-                                        <Text style={styles.amount}>$00</Text>
-                                      )}
-                                      <Text style={styles.bill}>
-                                        {yearlyPlan?.name}
-                                      </Text>
-                                    </TouchableOpacity>
-                                  </View>
-                                  <Text style={styles.playerDescription}>
-                                    {description}
-                                  </Text>
-
-                                  <View>
-                                    <Text style={styles.paymentInfo}>
-                                      {strings.paymentinfo}
-                                    </Text>
-                                  </View>
-                                  {cardData?.brand ? (
-                                    <View>
-                                      <View style={styles.cardList}>
-                                        <Text style={styles.cardNum}>
-                                          {cardData?.brand}
-                                        </Text>
-                                        <Text style={styles.dotclass}>
-                                          {strings.dot}
-                                        </Text>
-                                        <Text style={styles.cardNum}>
-                                          {cardData?.last4}
-                                        </Text>
-                                      </View>
-                                      <View style={styles.cardList}>
-                                        <Text style={styles.CardexpDate}>
-                                          {strings.exp}
-                                        </Text>
-                                        <Text style={styles.CardexpDate}>
-                                          {cardData?.exp_month}
-                                          {strings.slash}
-                                          {cardData?.exp_year}
-                                        </Text>
-                                      </View>
-                                    </View>
-                                  ) : (
-                                    <View></View>
-                                  )}
-
-                                  <TouchableOpacity
-                                    activeOpacity={0.8}
-                                    onPress={onOpenModal}
-                                    style={styles.addViewcard}
-                                  >
-                                    <Text style={styles.addCard}>
-                                      {strings.addCard}
-                                    </Text>
-                                  </TouchableOpacity>
-                                  <View style={styles.purchesButton}>
-                                    <TouchableOpacity
-                                      onPress={onPurchaseAPI}
-                                      activeOpacity={0.8}
-                                      style={styles.purchaseContainer}
-                                    >
-                                      <View />
-                                      <Text style={styles.title}>
-                                        {strings.purchase}
-                                      </Text>
-                                      <ImageComponent
-                                        source={buttonArrow}
-                                        style={styles.buttonArrow}
-                                      />
-                                    </TouchableOpacity>
-                                  </View>
-                                </View>
-                              </TouchableOpacity>
-                            </ScrollView>
-                          </View>
-
-                          <Modal
-                            transparent
-                            onDismiss={addCardModalHide}
-                            visible={addcard}
-                          >
-                            <GestureRecognizer
-                              onSwipeDown={addCardModalHide}
-                              style={styles.gesture}
-                            >
-                              <TouchableOpacity
-                                style={styles.containerGallery}
-                                activeOpacity={1}
-                                onPress={addCardModalHide}
-                              />
-                            </GestureRecognizer>
-                            <Loader visible={isLoading} showOverlay />
-                            <KeyboardAvoidingView
-                              behavior={
-                                Platform.OS === "ios" ? "position" : "height"
-                              }
-                              style={styles.keyboardViewTwo}
-                            >
-                              <View style={styles.addCardBorderContainer}>
-                                <View>
-                                  <TouchableOpacity
-                                    onPress={() => {
-                                      addCardModalHide();
-                                    }}
-                                  >
-                                    <ImageComponent
-                                      style={styles.closeCardCont}
-                                      source={closeCard}
-                                    ></ImageComponent>
-                                  </TouchableOpacity>
-
-                                  <Text style={styles.addCardTitle}>
-                                    {strings.addCardOne}
-                                  </Text>
-                                  <Text style={styles.addCardInfo}>
-                                    {strings.cardinfo}
-                                  </Text>
-                                  <View>
-                                    <ImageComponent
-                                      source={addCard}
-                                      style={styles.addCardLogo}
-                                    />
-                                    <TextInput
-                                      placeholderTextColor="darkgray"
-                                      value={cardnumber}
-                                      maxLength={16}
-                                      keyboardType="numeric"
-                                      style={styles.addCardInput}
-                                      placeholder="card number"
-                                      onChangeText={(value) => {
-                                        console.log(value);
-                                        cardNumberData(value);
-                                      }}
-                                    />
-                                    <View style={styles.cardView}>
-                                      <TextInput
-                                        placeholderTextColor="darkgray"
-                                        onChangeText={(text) => {
-                                          setDate(
-                                            text.length === 3 &&
-                                              !text.includes("/")
-                                              ? `${text.substring(
-                                                  0,
-                                                  2
-                                                )}/${text.substring(2)}`
-                                              : text
-                                          );
-                                          const [month, year] = text.split("/");
-                                          console.log(month);
-                                          console.log(year);
-
-                                          cardExpMonth(month);
-                                          cardExpYears(year);
-                                        }}
-                                        placeholder="mm/yy"
-                                        keyboardType="number-pad"
-                                        maxLength={5}
-                                        style={styles.addCardDateInput}
-                                        value={date}
-                                      />
-
-                                      <TextInput
-                                        placeholderTextColor="darkgray"
-                                        value={cardCvv}
-                                        maxLength={3}
-                                        keyboardType="numeric"
-                                        style={styles.addCardCVCInput}
-                                        placeholder="cvc"
-                                        onChangeText={(value) => {
-                                          console.log(value);
-                                          cardCVVData(value);
-                                        }}
-                                      />
-                                    </View>
-                                  </View>
-
-                                  <View>
-                                    <ButtonComponent
-                                      onPress={onCheckValidation}
-                                      title={strings.addCardTwo}
-                                      buttonStyle={styles.addCardContainer}
-                                      icon={buttonArrowBlue}
-                                    />
-                                  </View>
-                                </View>
-                              </View>
-                            </KeyboardAvoidingView>
-                          </Modal>
-                        </View>
-                      </KeyboardAvoidingView>
-                    ) : (
-                      <View></View>
-                    )}
-                  </Modal>
+                <MembershipCheckoutModal
+                memberModal = {memberModal}
+                onCancel={memberShipHide}
+                dataId={postData.id}
+                successData={memberShipModalClose}
+                /> 
                 </Modal>
               </TouchableOpacity>
             </GestureRecognizer>

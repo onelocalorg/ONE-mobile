@@ -139,6 +139,8 @@ export const AdminToolsScreen = (props: AdminToolsScreenProps) => {
   const { mutateAsync: createEvent, isLoading: createEventLoading } =
     useCreateEvent();
 
+    console.log(start_date,'-----------------event detail start date------------------')
+    console.log(end_date,'-----------------event detail end date------------------')
   useEffect(() => {
     LogBox.ignoreAllLogs();
     // requestLocationPermission();
