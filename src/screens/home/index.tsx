@@ -169,12 +169,14 @@ export const HomeScreen = (props: HomeScreenProps) => {
     })
       .then((location) => {
         setUserLocation(location);
-
         var isLocationDefault = {
           latitude: location.latitude,
           longitude: location.longitude,
-          zoomLevel: 11,
+          zoomLevel: getData('mapCircleRadius')
         };
+
+
+        console.log(isLocationDefault, '-------------isLocationDefault-------------')
         setData("defaultLocation", isLocationDefault);
         if (location.latitude && location.longitude) {
           getRecentlyJoinUserAPI(location);

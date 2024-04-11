@@ -30,9 +30,11 @@ export const AppNavigation = () => {
         if (Platform.OS === "ios") {
           isReleaseHideShow(dataItem.data)
           iosVersionCheck(dataItem.data);
+          setData('mapCircleRadius', dataItem.data.mapCircleRadius)
         } else {
           isReleaseHideShow(dataItem.data);
           androidVersionCheck(dataItem.data);
+          setData('mapCircleRadius', dataItem.data.mapCircleRadius)
         }
       }
     } catch (error) {

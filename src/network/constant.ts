@@ -57,7 +57,7 @@ export const apiKeys = {
 };
 
 export const API_URL = ActiveEnv.BASE_URL
-export const IOS_VERSION = '7.9.0'
+export const IOS_VERSION = '7.9.1'
 export const ANDROID_VERSION = '1.0.3'
 export const STIPE_BASE_URL = ActiveEnv.STIPE_BASE_URL
 export const STRIPE_PUBLIC_KEY = ActiveEnv.STRIPE_PUBLISHABLE_KEY

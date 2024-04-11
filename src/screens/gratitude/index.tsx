@@ -101,7 +101,8 @@ export const GratitudeScreen = (props: MapScreenProps) => {
   const [isLoading, LodingData] = useState(false);
   const { navigation } = props || {};
   const mileStoneSwiperRef: any = useRef(null);
-  const [zoomLevel, setCameraZoomLevel] = useState(11);
+  var zoomLeveDefault = getData("mapCircleRadius")
+  const [zoomLevel, setCameraZoomLevel] = useState(zoomLeveDefault);
   const [shape, setShapData]: any = useState();
   const { user } = useSelector<StoreType, UserProfileState>(
     (state) => state.userProfileReducer
@@ -110,12 +111,15 @@ export const GratitudeScreen = (props: MapScreenProps) => {
     userId: user?.id,
   });
   var makeDate = new Date();
-  makeDate.setMonth(makeDate.getMonth() + 1);
+  makeDate.setMonth(makeDate.getMonth() + 1); 
   const [range, setRange] = useState<Range>({
     startDate: new Date(),
     endDate: makeDate,
   });
-  const mapRef: LegacyRef<MapboxGL.MapView> = useRef(null);
+  const mapRef =  useRef(null);
+  const [mapLoaded, setMapLoaded] = useState(false);
+
+  // const mapRef = useRef(null);
 
   const dispatch = useDispatch();
 
@@ -174,7 +178,7 @@ export const GratitudeScreen = (props: MapScreenProps) => {
           var isLocationDefault = {
             latitude: location.latitude,
             longitude: location.longitude,
-            zoomLevel: 11,
+            zoomLevel: getData('mapCircleRadius'),
           };
           setData("defaultLocation", isLocationDefault);
           setLongitude(location?.longitude);
@@ -285,7 +289,8 @@ export const GratitudeScreen = (props: MapScreenProps) => {
   };
 
   const handleRegionChange = async (event: any) => {
-    const newZoomLevel = event.properties.zoomLevel;
+    if(mapLoaded){
+      const newZoomLevel = event.properties.zoomLevel;
     if (newZoomLevel !== zoomLevel) {
       LodingData(true);
     }
@@ -297,7 +302,10 @@ export const GratitudeScreen = (props: MapScreenProps) => {
       zoomLevel: newZoomLevel,
       device_type: Platform.OS,
     };
+
     setData("defaultLocation", isMapLocation);
+    }
+    
   };
 
   const onMarkerClick = (mapEventData: any) => {
@@ -427,7 +435,7 @@ export const GratitudeScreen = (props: MapScreenProps) => {
         <MapboxGL.MapView
           style={styles.map}
           onRegionDidChange={handleRegionChange}
-          // onRegionIsChanging={handleRegionChange}
+          onDidFinishLoadingMap={()=> setMapLoaded(true)}
           logoEnabled={false}
           scaleBarEnabled={true}
           ref={mapRef}
