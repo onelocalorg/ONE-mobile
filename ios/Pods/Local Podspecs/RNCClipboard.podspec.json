@@ -15,10 +15,14 @@
   "osx": {
     "source_files": "macos/**/*.{h,m,mm}"
   },
+  "visionos": {
+    "source_files": "ios/**/*.{h,m,mm}"
+  },
   "platforms": {
     "ios": "9.0",
     "tvos": "9.0",
-    "osx": "10.14"
+    "osx": "10.14",
+    "visionos": "1.0"
   },
   "dependencies": {
     "React-Core": [
