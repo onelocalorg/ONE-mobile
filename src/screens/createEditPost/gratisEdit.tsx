@@ -59,7 +59,6 @@ import { ScrollView } from "react-native";
 import { Pill } from "~/components/pill";
 import { FlatListComponent } from "~/components/flatlist-component";
 import { width } from "~/theme/device/device";
-
 import { useSelector } from "react-redux";
 import { StoreType } from "~/network/reducers/store";
 import { UserProfileState } from "~/network/reducers/user-profile-reducer";

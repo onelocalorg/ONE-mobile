@@ -56,7 +56,6 @@ import { navigations } from "~/config/app-navigation/constant";
 import { DatePickerModal } from "react-native-paper-dates";
 import { FlatListComponent } from "~/components/flatlist-component";
 import { Pill } from "~/components/pill";
-
 import { useSelector } from "react-redux";
 import { StoreType } from "~/network/reducers/store";
 import {

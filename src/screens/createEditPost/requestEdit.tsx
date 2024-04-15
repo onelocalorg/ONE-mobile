@@ -55,7 +55,6 @@ import { Loader } from "~/components/loader";
 import { navigations } from "~/config/app-navigation/constant";
 import { FlatListComponent } from "~/components/flatlist-component";
 import { Pill } from "~/components/pill";
-
 import { useSelector } from "react-redux";
 import { StoreType } from "~/network/reducers/store";
 import { UserProfileState } from "~/network/reducers/user-profile-reducer";

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Route } from "./route";
 import { AppUpdate } from "~/components/app-update";
-import { ANDROID_VERSION, IS_VERSION, setData } from "~/network/constant";
+import { ANDROID_VERSION, IOS_VERSION, setData } from "~/network/constant";
 import { Platform } from "react-native";
 
 export const AppNavigation = () => {
