@@ -18,8 +18,7 @@ need a secret access token that will go in your home directory.
 
 ### Get .env file
 
-You will need a `.env` file which contains the keys defined in `.env.template.local`.
-This can be obtained by talking to one of the lead devs.
+Obtain a copy of the `.env.development.local` file from one of the lead devs.
 
 ## Step 2: Start the Metro Server
 
