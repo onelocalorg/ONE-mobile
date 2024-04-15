@@ -14,7 +14,7 @@
     "buildProd": "npm run env:prod && cd android && ./gradlew app:assembleRelease && cd ..",
     "env:prod": "cp src/config/env/env.prod.json src/config/env/env.json",
     "env:dev": "cp src/config/env/env.dev.json src/config/env/env.json",
-    "build:ios": "react-native bundle --entry-file='index.js' --bundle-output='./ios/main.jsbundle' --dev=false --platform='iOS'"
+    "build:ios": "react-native bundle --entry-file='index.js' --bundle-output='./ios/main.jsbundle' --dev=false --platform='ios'"
   },
   "dependencies": {
     "@invertase/react-native-apple-authentication": "^2.3.0",
