@@ -4,8 +4,8 @@
   "private": true,
   "scripts": {
     "start": "npm run start:development",
-    "start:development": "NODE_ENV=development react-native start",
-    "start:production": "NODE_ENV=production react-native start",
+    "start:development": "NODE_ENV=development react-native start -- --reset-cache",
+    "start:production": "NODE_ENV=production react-native start -- --reset-cache",
     "ios": "react-native run-ios",
     "android": "react-native run-android",
     "lint": "eslint .",
