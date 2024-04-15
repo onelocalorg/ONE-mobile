@@ -1,9 +1,9 @@
 import {
   UserProfileProps,
   onGetUserProfile,
-} from '@network/api/services/user-service';
-import {apiKeys} from '@network/constant';
-import {useQuery} from '@tanstack/react-query';
+} from "@network/api/services/user-service";
+import { apiKeys } from "@network/constant";
+import { useQuery } from "@tanstack/react-query";
 
 interface Root {
   bio: string;
@@ -15,9 +15,9 @@ interface Root {
   about: string;
   skills: string[];
   is_active_subscription: boolean;
-  isEventActiveSubscription:boolean;
+  isEventActiveSubscription: boolean;
   cover_image: string;
-  eventProducerPackageId:string
+  eventProducerPackageId: string;
 }
 
 interface ParsedData {
@@ -29,7 +29,7 @@ interface ParsedData {
   skills: string[];
   userType: string;
   isActiveSubscription: boolean;
-  eventProducerID:string
+  eventProducerID: string;
   coverImage: string;
 }
 
@@ -39,7 +39,7 @@ export const userProfileParsedData = (data: Root) => {
     name: `${data?.first_name} ${data?.last_name}`,
     userType: data?.user_type,
     isActiveSubscription: data?.isEventActiveSubscription,
-    eventProducerID:data?.eventProducerPackageId,
+    eventProducerID: data?.eventProducerPackageId,
     coverImage: data?.cover_image,
   } as ParsedData;
 };
@@ -51,5 +51,5 @@ export const useUserProfile = (props: UserProfileProps) => {
     enabled: false,
   });
 
-  return {...query, data: userProfileParsedData(query?.data?.data)};
+  return { ...query, data: userProfileParsedData(query?.data?.data) };
 };

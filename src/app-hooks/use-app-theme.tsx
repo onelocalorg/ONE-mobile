@@ -1,9 +1,9 @@
-import {getTheme} from '@theme/index';
+import { getTheme } from "@theme/index";
 
-type ThemeProps = 'light' | 'dark';
+type ThemeProps = "light" | "dark";
 
 export const useAppTheme = () => {
-  const themeType: ThemeProps = 'light';
+  const themeType: ThemeProps = "light";
   return {
     themeType,
     changeAppTheme: (type: ThemeProps) => type,

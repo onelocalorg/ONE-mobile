@@ -1,12 +1,12 @@
-import {methods} from '@network/constant';
+import { methods } from "@network/constant";
 
-export const getMethod = (request: {method: string}) => {
+export const getMethod = (request: { method: string }) => {
   switch (request.method) {
     case methods.get:
-      return 'onGet';
+      return "onGet";
     case methods.post:
-      return 'onPost';
+      return "onPost";
     default:
-      return 'onGet';
+      return "onGet";
   }
 };

@@ -1,6 +1,6 @@
-import {STRIPE_SECRET_KEY, apiConstants} from '@network/constant';
-import {API} from '..';
-import ActiveEnv from '@config/env/env.json';
+import { STRIPE_SECRET_KEY, apiConstants } from "@network/constant";
+import { API } from "..";
+import ActiveEnv from "@config/env/env.json";
 
 interface CreateStripeCustomerProps {
   bodyParams: {
@@ -11,9 +11,9 @@ interface CreateStripeCustomerProps {
 }
 
 export const onCreateStripeCustomer = async (
-  props: CreateStripeCustomerProps,
+  props: CreateStripeCustomerProps
 ) => {
-  const {bodyParams} = props || {};
+  const { bodyParams } = props || {};
 
   let response;
   try {
@@ -21,11 +21,11 @@ export const onCreateStripeCustomer = async (
     const data = await API.paymentService.post(endPoint, bodyParams, {
       headers: {
         Authorization: `Bearer ${STRIPE_SECRET_KEY}`,
-        'Content-Type': 'application/x-www-form-urlencoded',
+        "Content-Type": "application/x-www-form-urlencoded",
       },
     });
 
-    response = {data: data?.data, statusCode: data?.status};
+    response = { data: data?.data, statusCode: data?.status };
   } catch (error: any) {
     response = error;
   }
@@ -37,14 +37,14 @@ interface CreatePayoutIntentProps {
   bodyParams: {
     amount: number;
     currency: string;
-    'automatic_payment_methods[enabled]': boolean;
+    "automatic_payment_methods[enabled]": boolean;
     customer: string;
     description: string;
   };
 }
 
 export const onCreatePayoutIntent = async (props: CreatePayoutIntentProps) => {
-  const {bodyParams} = props || {};
+  const { bodyParams } = props || {};
 
   let response;
   try {
@@ -52,10 +52,10 @@ export const onCreatePayoutIntent = async (props: CreatePayoutIntentProps) => {
     const data = await API.paymentService.post(endPoint, bodyParams, {
       headers: {
         Authorization: `Bearer ${STRIPE_SECRET_KEY}`,
-        'Content-Type': 'application/x-www-form-urlencoded',
+        "Content-Type": "application/x-www-form-urlencoded",
       },
     });
-    response = {data: data?.data, statusCode: data?.status};
+    response = { data: data?.data, statusCode: data?.status };
   } catch (error: any) {
     response = error;
   }
@@ -68,13 +68,13 @@ interface CreateSubscriptionProps {
     mode: string;
     success_url: string;
     customer: string;
-    'line_items[0][price]': string;
-    'line_items[0][quantity]': number;
+    "line_items[0][price]": string;
+    "line_items[0][quantity]": number;
   };
 }
 
 export const onCreateSubscription = async (props: CreateSubscriptionProps) => {
-  const {bodyParams} = props || {};
+  const { bodyParams } = props || {};
 
   let response;
   try {
@@ -82,10 +82,10 @@ export const onCreateSubscription = async (props: CreateSubscriptionProps) => {
     const data = await API.paymentService.post(endPoint, bodyParams, {
       headers: {
         Authorization: `Bearer ${STRIPE_SECRET_KEY}`,
-        'Content-Type': 'application/x-www-form-urlencoded',
+        "Content-Type": "application/x-www-form-urlencoded",
       },
     });
-    response = {data: data?.data, statusCode: data?.status};
+    response = { data: data?.data, statusCode: data?.status };
   } catch (error: any) {
     response = error;
   }

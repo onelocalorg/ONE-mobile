@@ -1,7 +1,7 @@
-import {createSlice} from '@reduxjs/toolkit';
+import { createSlice } from "@reduxjs/toolkit";
 
 const logoutSlice = createSlice({
-  name: 'logout',
+  name: "logout",
   initialState: {},
   reducers: {
     clearReducer() {},
@@ -10,4 +10,4 @@ const logoutSlice = createSlice({
 
 export const logoutReducer = logoutSlice.reducer;
 
-export const {clearReducer} = logoutSlice.actions;
+export const { clearReducer } = logoutSlice.actions;

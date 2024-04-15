@@ -28,13 +28,13 @@ export const AppNavigation = () => {
       console.log("-----------App Version--------------", dataItem);
       if (dataItem.success) {
         if (Platform.OS === "ios") {
-          isReleaseHideShow(dataItem.data)
+          isReleaseHideShow(dataItem.data);
           iosVersionCheck(dataItem.data);
-          setData('mapCircleRadius', dataItem.data.mapCircleRadius)
+          setData("mapCircleRadius", dataItem.data.mapCircleRadius);
         } else {
           isReleaseHideShow(dataItem.data);
           androidVersionCheck(dataItem.data);
-          setData('mapCircleRadius', dataItem.data.mapCircleRadius)
+          setData("mapCircleRadius", dataItem.data.mapCircleRadius);
         }
       }
     } catch (error) {
@@ -43,35 +43,33 @@ export const AppNavigation = () => {
   };
 
   const isReleaseHideShow = (dataItem: any) => {
-    if(Platform.OS === 'ios'){
+    if (Platform.OS === "ios") {
       checkPaymentFlowHideShow(dataItem);
-    } else{
+    } else {
       checkPaymentFlowHideShowAndroid(dataItem);
     }
-  }
- 
+  };
+
   function checkPaymentFlowHideShow(dataItem: any) {
-    
     if ("isPaymentFlowShowFour" in dataItem) {
       console.log("isPaymentFlowShowFour");
       var datatemp = dataItem?.isPaymentFlowShowFour;
       setData("isShowPaymentFlow", datatemp);
     }
-    setisVersionApiCalled(true)
+    setisVersionApiCalled(true);
   }
 
   function checkPaymentFlowHideShowAndroid(dataItem: any) {
-    
     if ("isPaymentFlowShowFiveAndroid" in dataItem) {
       console.log("isPaymentFlowShowFiveAndroid");
       var datatemp = dataItem?.isPaymentFlowShowFiveAndroid;
       setData("isShowPaymentFlowAndroid", datatemp);
     }
-    setisVersionApiCalled(true)
+    setisVersionApiCalled(true);
   }
-   
+
   function iosVersionCheck(dataIOS: any) {
-    if (IOS_VERSION < dataIOS.ios_version) { 
+    if (IOS_VERSION < dataIOS.ios_version) {
       if (dataIOS.isForceforIOS) {
         setShowUpdateIOS(true);
       } else if (dataIOS.inMaintananceIOS) {
@@ -100,8 +98,7 @@ export const AppNavigation = () => {
 
   return (
     <>
-    {isVersionApiCalled ? <Route /> : <></>}
-      
+      {isVersionApiCalled ? <Route /> : <></>}
 
       {Platform.OS === "ios" ? (
         <>{showUpdateIOS && <AppUpdate />}</>

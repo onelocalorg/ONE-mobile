@@ -65,7 +65,7 @@ export const AddComponentModal = (props: AddComponentModalProps) => {
     userId: user?.id,
   });
   const { isActiveSubscription, eventProducerID } = data || {};
-  console.log(data,'user data444');
+  console.log(data, "user data444");
 
   useFocusEffect(
     useCallback(() => {
@@ -77,8 +77,8 @@ export const AddComponentModal = (props: AddComponentModalProps) => {
   );
 
   useEffect(() => {
-packageDetailAPI();
-  },[])
+    packageDetailAPI();
+  }, []);
   useFocusEffect(
     useCallback(() => {
       console.log("isActiveSubscription isActiveSubscription");
@@ -168,9 +168,7 @@ packageDetailAPI();
   async function packageDetailAPI() {
     const token = await AsyncStorage.getItem("token");
     console.log(token);
-    console.log(
-      API_URL + "/v1/subscriptions/packages/" + eventProducerID
-    );
+    console.log(API_URL + "/v1/subscriptions/packages/" + eventProducerID);
     try {
       const response = await fetch(
         API_URL + "/v1/subscriptions/packages/" + eventProducerID,

@@ -2,7 +2,13 @@ import { useAppTheme } from "@app-hooks/use-app-theme";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { View, Text } from "react-native";
 import { createStyleSheet } from "./style";
-import { buttonArrowGreen, dummy, edit2, payoutClose, sendPayoutImg } from "@assets/images";
+import {
+  buttonArrowGreen,
+  dummy,
+  edit2,
+  payoutClose,
+  sendPayoutImg,
+} from "@assets/images";
 import { ImageComponent } from "@components/image-component";
 import { ModalRefProps } from "@components/modal-component";
 import { TouchableOpacity } from "react-native";
@@ -10,7 +16,11 @@ import { API_URL, setData } from "@network/constant";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { FlatList } from "react-native";
 import { Loader } from "@components/loader";
-import { NavigationContainerRef, ParamListBase, useFocusEffect } from "@react-navigation/native";
+import {
+  NavigationContainerRef,
+  ParamListBase,
+  useFocusEffect,
+} from "@react-navigation/native";
 import { EditPayoutModal } from "./editPayoutExpense-modal";
 import Toast from "react-native-simple-toast";
 import { AddPayoutExpenseModel } from "./addPayoutExpense-modal";
@@ -28,7 +38,7 @@ export const GetAdmintoolsDropDownScreen = (
 ) => {
   const { theme } = useAppTheme();
   const styles = createStyleSheet(theme);
-  const { eventId,navigation } = props || {};
+  const { eventId, navigation } = props || {};
   const [isLoading, LodingData] = useState(false);
   const [payoutData, setPayoutData]: any = useState({});
   const [userId, setUserId]: any = useState("");
@@ -39,13 +49,16 @@ export const GetAdmintoolsDropDownScreen = (
   const [expensesAmt, setExpenseAmt]: any = useState();
   const [totalProfile, setTotalProfile]: any = useState();
   const [payoutAmt, setpayoutAmt]: any = useState();
-  const [isAddEditPayout , setISAddEditPayout] = useState(Boolean);
+  const [isAddEditPayout, setISAddEditPayout] = useState(Boolean);
   const [remainingAmt, setRemainingAmt]: any = useState();
   const [modalVisible, setModalVisible] = useState(false);
 
   const openAddBreakDownModal = (id: any) => {
     setUserId(userId);
-    navigation?.navigate(navigations.ADDPAYOUTEXPENSE, {id: eventId,addPayOutExpense : payoutData?.total_profit});
+    navigation?.navigate(navigations.ADDPAYOUTEXPENSE, {
+      id: eventId,
+      addPayOutExpense: payoutData?.total_profit,
+    });
   };
 
   useFocusEffect(
@@ -86,7 +99,7 @@ export const GetAdmintoolsDropDownScreen = (
       setRevenueAmt(dataItem?.data?.revenue_amount);
       setExpenseAmt(dataItem?.data?.total_expenses);
       setIsPayout(dataItem?.data?.isPayout);
-      setISAddEditPayout(dataItem?.data?.isPayoutAddEdit)
+      setISAddEditPayout(dataItem?.data?.isPayoutAddEdit);
       setTotalProfile(
         dataItem?.data?.revenue_amount - dataItem?.data?.total_expenses
       );
@@ -124,7 +137,6 @@ export const GetAdmintoolsDropDownScreen = (
       Toast.show(dataItem?.message, Toast.LONG, {
         backgroundColor: "black",
       });
-
     } catch (error) {
       console.error(error);
       LodingData(false);
@@ -143,7 +155,10 @@ export const GetAdmintoolsDropDownScreen = (
       amount: item.amount,
       expensePayoutID: item.key,
     };
-    navigation?.navigate(navigations.EDITPAYOUTEXPENSE, {payoutExpenseObject: tempData, id: eventId})
+    navigation?.navigate(navigations.EDITPAYOUTEXPENSE, {
+      payoutExpenseObject: tempData,
+      id: eventId,
+    });
   };
 
   const sendPayoutModal = () => {
@@ -158,8 +173,6 @@ export const GetAdmintoolsDropDownScreen = (
     setModalVisible(false);
     createPayoutAPI();
   };
-
-  
 
   return (
     <>
@@ -243,15 +256,19 @@ export const GetAdmintoolsDropDownScreen = (
                         }}
                       >
                         <View style={styles.detailsSubCont}>
-                          {isAddEditPayout ? <TouchableOpacity
-                            onPress={() => editClick(item, "Expense")}
-                          >
-                            <ImageComponent
-                              source={edit2}
-                              style={styles.editIcon}
-                            />
-                          </TouchableOpacity> : <></>}
-                          
+                          {isAddEditPayout ? (
+                            <TouchableOpacity
+                              onPress={() => editClick(item, "Expense")}
+                            >
+                              <ImageComponent
+                                source={edit2}
+                                style={styles.editIcon}
+                              />
+                            </TouchableOpacity>
+                          ) : (
+                            <></>
+                          )}
+
                           <ImageComponent
                             source={{ uri: item?.user_id?.pic }}
                             resizeMode="cover"
@@ -275,17 +292,20 @@ export const GetAdmintoolsDropDownScreen = (
                   </View>
                 )}
               ></FlatList>
-             {isAddEditPayout ? <TouchableOpacity
-                activeOpacity={1}
-                onPress={() => openAddBreakDownModal(userId)}
-                style={styles.addItemCont}
-              >
-                 <View style={styles.subAddItemCont}>
-                  <Text style={styles.plusIcon}>+</Text>
-                  <Text style={styles.addItemLbl}>add item</Text>
-                </View> 
-                
-              </TouchableOpacity>: <></>}
+              {isAddEditPayout ? (
+                <TouchableOpacity
+                  activeOpacity={1}
+                  onPress={() => openAddBreakDownModal(userId)}
+                  style={styles.addItemCont}
+                >
+                  <View style={styles.subAddItemCont}>
+                    <Text style={styles.plusIcon}>+</Text>
+                    <Text style={styles.addItemLbl}>add item</Text>
+                  </View>
+                </TouchableOpacity>
+              ) : (
+                <></>
+              )}
               <View style={styles.borderBottom}></View>
               <View style={styles.rupeesCont}>
                 <Text style={styles.rupeesLbl}>${expensesAmt}</Text>
@@ -310,15 +330,18 @@ export const GetAdmintoolsDropDownScreen = (
                       }}
                     >
                       <View style={styles.detailsSubCont}>
-                        {isAddEditPayout ? <TouchableOpacity
-                          onPress={() => editClick(item, "Payout")}
-                        >
-                          <ImageComponent
-                            source={edit2}
-                            style={styles.editIcon}
-                          />
-                        </TouchableOpacity> : <></>}
-                        
+                        {isAddEditPayout ? (
+                          <TouchableOpacity
+                            onPress={() => editClick(item, "Payout")}
+                          >
+                            <ImageComponent
+                              source={edit2}
+                              style={styles.editIcon}
+                            />
+                          </TouchableOpacity>
+                        ) : (
+                          <></>
+                        )}
 
                         <ImageComponent
                           source={{ uri: item?.user_id?.pic }}
@@ -346,18 +369,21 @@ export const GetAdmintoolsDropDownScreen = (
                   </View>
                 )}
               ></FlatList>
-              {isAddEditPayout ? <TouchableOpacity
-                activeOpacity={1}
-                onPress={() => openAddBreakDownModal(userId)}
-                style={styles.addItemCont}
-              >
-                
-                <View style={styles.subAddItemCont}>
-                  <Text style={styles.plusIcon}>+</Text>
-                  <Text style={styles.addItemLbl}>add item</Text>
-                </View>
-              </TouchableOpacity> : <></>} 
-              
+              {isAddEditPayout ? (
+                <TouchableOpacity
+                  activeOpacity={1}
+                  onPress={() => openAddBreakDownModal(userId)}
+                  style={styles.addItemCont}
+                >
+                  <View style={styles.subAddItemCont}>
+                    <Text style={styles.plusIcon}>+</Text>
+                    <Text style={styles.addItemLbl}>add item</Text>
+                  </View>
+                </TouchableOpacity>
+              ) : (
+                <></>
+              )}
+
               <View style={styles.borderBottom}></View>
               <View style={styles.rupeesCont}>
                 {payoutAmt !== undefined ? (
@@ -382,16 +408,13 @@ export const GetAdmintoolsDropDownScreen = (
             setModalVisible(!modalVisible);
           }}
         >
-          <GestureRecognizer
-                onSwipeDown={closeModal}
-                style={styles.gesture}
-              >
-                <TouchableOpacity
-                  style={styles.containerGallery}
-                  activeOpacity={1}
-                  onPress={closeModal}
-                />
-              </GestureRecognizer>
+          <GestureRecognizer onSwipeDown={closeModal} style={styles.gesture}>
+            <TouchableOpacity
+              style={styles.containerGallery}
+              activeOpacity={1}
+              onPress={closeModal}
+            />
+          </GestureRecognizer>
           <View style={styles.modalContainerTwo}>
             <View style={styles.modalView}>
               <Text style={styles.sendPayoutLblTwo}>
@@ -400,19 +423,22 @@ export const GetAdmintoolsDropDownScreen = (
               <Text style={styles.sendingTextLbl}>
                 (you won't be able to make changes after sending)
               </Text>
-              <TouchableOpacity onPress={sendPayoutClick} style={styles.payoutButtonCont}>
+              <TouchableOpacity
+                onPress={sendPayoutClick}
+                style={styles.payoutButtonCont}
+              >
                 <Text style={styles.sendPayoutButton}>Send Payout</Text>
                 <ImageComponent
                   style={styles.sendIcon}
                   source={buttonArrowGreen}
                 />
               </TouchableOpacity>
-              <TouchableOpacity onPress={closeModal} style={styles.cancelButtonCont}>
+              <TouchableOpacity
+                onPress={closeModal}
+                style={styles.cancelButtonCont}
+              >
                 <Text style={styles.sendPayoutButton}>Cancel</Text>
-                <ImageComponent
-                  style={styles.sendIcon}
-                  source={payoutClose}
-                />
+                <ImageComponent style={styles.sendIcon} source={payoutClose} />
               </TouchableOpacity>
             </View>
           </View>

@@ -1,7 +1,7 @@
-import {AxiosResponse} from 'axios';
+import { AxiosResponse } from "axios";
 
 export const getApiResponse = (data: AxiosResponse) => {
-  const {success, data: resData, message, code} = data?.data || {};
+  const { success, data: resData, message, code } = data?.data || {};
 
   const res = {
     success,

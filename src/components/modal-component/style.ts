@@ -1,6 +1,6 @@
-import {normalScale, verticalScale} from '@theme/device/normalize';
-import {ThemeProps} from '@theme/theme';
-import {StyleSheet} from 'react-native';
+import { normalScale, verticalScale } from "@theme/device/normalize";
+import { ThemeProps } from "@theme/theme";
+import { StyleSheet } from "react-native";
 
 export const createStyleSheet = (theme: ThemeProps) =>
   StyleSheet.create({
@@ -8,7 +8,7 @@ export const createStyleSheet = (theme: ThemeProps) =>
       flex: 1,
     },
     container: {
-      position: 'absolute',
+      position: "absolute",
       top: 0,
       bottom: 0,
       left: 0,
@@ -16,7 +16,7 @@ export const createStyleSheet = (theme: ThemeProps) =>
       backgroundColor: theme.colors.modalOverlay,
     },
     keyboardView: {
-      position: 'absolute',
+      position: "absolute",
       bottom: 0,
       left: 0,
       right: 0,
@@ -35,13 +35,13 @@ export const createStyleSheet = (theme: ThemeProps) =>
     swipeIcon: {
       height: verticalScale(10),
       width: normalScale(30),
-      alignSelf: 'center',
+      alignSelf: "center",
     },
     title: {
       fontFamily: theme.fontType.regular,
       fontSize: theme.fontSize.font24,
       color: theme.colors.black,
       paddingHorizontal: normalScale(16),
-      alignSelf: 'center',
+      alignSelf: "center",
     },
   });

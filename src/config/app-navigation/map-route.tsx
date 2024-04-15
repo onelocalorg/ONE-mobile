@@ -1,20 +1,20 @@
-import React from 'react';
-import {createStackNavigator} from '@react-navigation/stack';
-import {HomeScreen} from '@screens/home';
-import {navigations} from './constant';
-import {EventDetailScreen} from '@screens/event-detail';
-import {ProfileScreen} from '@screens/profile';
-import {AdminToolsScreen} from '@screens/admin-tools';
-import {CheckInScreen} from '@screens/check-in';
-import {PaymentScreen} from '@screens/payment-screen';
-import { CreatePostScreen } from '@screens/createPost';
-import { RecentProfileScreen } from '@screens/recentProfile';
-import { CreatePostGratisScreen } from '@screens/createPost/gratis';
-import { CreatePostRequestScreen } from '@screens/createPost/request';
-import { CreatePostOfferScreen } from '@screens/createPost/offer';
-import { EventList } from '@components/event-list';
-import { EventListScreen } from '@screens/event';
-import { GratitudeScreen } from '@screens/gratitude';
+import React from "react";
+import { createStackNavigator } from "@react-navigation/stack";
+import { HomeScreen } from "@screens/home";
+import { navigations } from "./constant";
+import { EventDetailScreen } from "@screens/event-detail";
+import { ProfileScreen } from "@screens/profile";
+import { AdminToolsScreen } from "@screens/admin-tools";
+import { CheckInScreen } from "@screens/check-in";
+import { PaymentScreen } from "@screens/payment-screen";
+import { CreatePostScreen } from "@screens/createPost";
+import { RecentProfileScreen } from "@screens/recentProfile";
+import { CreatePostGratisScreen } from "@screens/createPost/gratis";
+import { CreatePostRequestScreen } from "@screens/createPost/request";
+import { CreatePostOfferScreen } from "@screens/createPost/offer";
+import { EventList } from "@components/event-list";
+import { EventListScreen } from "@screens/event";
+import { GratitudeScreen } from "@screens/gratitude";
 
 const MapStack = createStackNavigator();
 
@@ -26,42 +26,42 @@ export const MapRoute = () => {
       <MapStack.Screen
         name={navigations.GRATITUDE}
         component={GratitudeScreen}
-        options={{header}}
+        options={{ header }}
       />
       <MapStack.Screen
         name={navigations.EVENT_DETAIL}
         component={EventDetailScreen}
-        options={{header}}
+        options={{ header }}
       />
       <MapStack.Screen
         name={navigations.PROFILE}
         component={ProfileScreen}
-        options={{header}}
+        options={{ header }}
       />
       <MapStack.Screen
         name={navigations.ADMIN_TOOLS}
         component={AdminToolsScreen}
-        options={{header}}
+        options={{ header }}
       />
-       <MapStack.Screen
+      <MapStack.Screen
         name={navigations.CREATEPOST}
         component={CreatePostScreen}
-        options={{header}}
+        options={{ header }}
       />
       <MapStack.Screen
         name={navigations.CREATEPOSTOFFER}
         component={CreatePostOfferScreen}
-        options={{header}}
+        options={{ header }}
       />
       <MapStack.Screen
         name={navigations.CREATEPOSTREQUEST}
         component={CreatePostRequestScreen}
-        options={{header}}
+        options={{ header }}
       />
       <MapStack.Screen
         name={navigations.CREATEPOSTGRATIS}
         component={CreatePostGratisScreen}
-        options={{header}}
+        options={{ header }}
       />
     </MapStack.Navigator>
   );

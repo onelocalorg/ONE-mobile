@@ -132,7 +132,7 @@ export const EventDetailScreen = (props: EventDetailScreenProps) => {
     // viewCount
   } = data || {};
 
-  console.log(id, '-------------id-------------')
+  console.log(id, "-------------id-------------");
   const { mutateAsync: createPayoutIntent } = useCreatePayoutIntent();
   const { mutateAsync: purchaseTicket, isLoading: purchaseTicketLoading } =
     usePurchaseTicket();
@@ -144,7 +144,6 @@ export const EventDetailScreen = (props: EventDetailScreenProps) => {
   useEffect(() => {
     fetchRsvpDataAPI();
   }, [id]);
-
 
   const fetchRsvpDataAPI = async () => {
     LodingData(true);
@@ -447,7 +446,7 @@ export const EventDetailScreen = (props: EventDetailScreenProps) => {
     }
   };
 
-  const findItemById = (rsvpDatas:any) => {
+  const findItemById = (rsvpDatas: any) => {
     const foundItem: any = rsvpDatas?.data?.rsvps.find(
       (item: any) => item?.user_id?.id === user?.id
     );

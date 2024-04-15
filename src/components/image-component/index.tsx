@@ -1,8 +1,8 @@
-import {contain, cover, stretch} from '@assets/constants';
-import React, {FC} from 'react';
-import {StyleProp} from 'react-native';
-import FastImage, {FastImageProps, ImageStyle} from 'react-native-fast-image';
-import {SvgUri} from 'react-native-svg';
+import { contain, cover, stretch } from "@assets/constants";
+import React, { FC } from "react";
+import { StyleProp } from "react-native";
+import FastImage, { FastImageProps, ImageStyle } from "react-native-fast-image";
+import { SvgUri } from "react-native-svg";
 
 export interface ImageProps extends FastImageProps {
   style?: StyleProp<ImageStyle>;
@@ -11,7 +11,7 @@ export interface ImageProps extends FastImageProps {
   hide?: boolean;
 }
 
-export const ImageComponent: FC<ImageProps> = props => {
+export const ImageComponent: FC<ImageProps> = (props) => {
   const {
     style,
     resizeMode = contain,
@@ -25,9 +25,9 @@ export const ImageComponent: FC<ImageProps> = props => {
   let isSvg = false;
 
   if (isUrl) {
-    const uriArray = uri?.split('.') || [];
+    const uriArray = uri?.split(".") || [];
 
-    if (uriArray[uriArray.length - 1] === 'svg') {
+    if (uriArray[uriArray.length - 1] === "svg") {
       isSvg = true;
     } else {
       src = {

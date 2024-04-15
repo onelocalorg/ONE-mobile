@@ -7,7 +7,15 @@ import { Keyboard, Text, TouchableOpacity, View } from "react-native";
 import { EventList } from "@components/event-list";
 import { Input } from "@components/input";
 import { ImageComponent } from "@components/image-component";
-import { activeRadio, arrowDown, calendar, dummy, event, pin, save } from "@assets/images";
+import {
+  activeRadio,
+  arrowDown,
+  calendar,
+  dummy,
+  event,
+  pin,
+  save,
+} from "@assets/images";
 import {
   DatePickerRefProps,
   DateRangePicker,

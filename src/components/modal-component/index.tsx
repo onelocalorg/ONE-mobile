@@ -1,4 +1,4 @@
-import React, {forwardRef, useImperativeHandle, useState} from 'react';
+import React, { forwardRef, useImperativeHandle, useState } from "react";
 import {
   KeyboardAvoidingView,
   Modal,
@@ -9,10 +9,10 @@ import {
   TouchableOpacity,
   View,
   ViewStyle,
-} from 'react-native';
-import {createStyleSheet} from './style';
-import {useAppTheme} from '@app-hooks/use-app-theme';
-import GestureRecognizer from 'react-native-swipe-gestures';
+} from "react-native";
+import { createStyleSheet } from "./style";
+import { useAppTheme } from "@app-hooks/use-app-theme";
+import GestureRecognizer from "react-native-swipe-gestures";
 
 export interface ModalProps {
   children?: JSX.Element | JSX.Element[];
@@ -28,9 +28,9 @@ export type ModalRefProps = {
 };
 
 const ModalView = (props: ModalProps, ref: React.Ref<unknown> | undefined) => {
-  const {theme} = useAppTheme();
+  const { theme } = useAppTheme();
   const styles = createStyleSheet(theme);
-  const {children, title, viewStyle, titleStyle, callBack} = props;
+  const { children, title, viewStyle, titleStyle, callBack } = props;
   const [isVisible, setVisibility] = useState(false);
 
   const closeModal = () => {
@@ -59,8 +59,9 @@ const ModalView = (props: ModalProps, ref: React.Ref<unknown> | undefined) => {
         />
       </GestureRecognizer>
       <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        style={styles.keyboardView}>
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        style={styles.keyboardView}
+      >
         <View style={[styles.gradient, viewStyle]}>
           {!!title && <Text style={[styles.title, titleStyle]}>{title}</Text>}
           {children}

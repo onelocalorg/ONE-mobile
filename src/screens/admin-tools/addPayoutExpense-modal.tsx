@@ -12,19 +12,17 @@ import { API_URL } from "@network/constant";
 import { ScrollView } from "react-native";
 import { FlatList } from "react-native";
 import { ImageComponent } from "@components/image-component";
-import {
-  arrowLeft,
-  buttonArrowGreen,
-  onelogo,
-  saveIcon,
-} from "@assets/images";
+import { arrowLeft, buttonArrowGreen, onelogo, saveIcon } from "@assets/images";
 import Toast from "react-native-simple-toast";
 import { Loader } from "@components/loader";
 import { launchImageLibrary } from "react-native-image-picker";
 import { ButtonComponent } from "@components/button-component";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { color } from "react-native-elements/dist/helpers";
-import { NavigationContainerRef, ParamListBase } from "@react-navigation/native";
+import {
+  NavigationContainerRef,
+  ParamListBase,
+} from "@react-navigation/native";
 
 interface AddPayoutExpenseScreenProps {
   navigation?: NavigationContainerRef<ParamListBase>;
@@ -72,7 +70,6 @@ export const AddPayoutExpenseScreen = (
     setPriceData(item);
   };
 
-
   const resetState = () => {
     onUserSearch("");
     setDescriptions("");
@@ -105,7 +102,7 @@ export const AddPayoutExpenseScreen = (
           backgroundColor: "black",
         });
       }
-      onUserSearch('');
+      onUserSearch("");
     } else {
       Toast.show("You can not select more than one users", Toast.LONG, {
         backgroundColor: "black",
@@ -334,10 +331,13 @@ export const AddPayoutExpenseScreen = (
 
   return (
     <>
-      <View style={{flex: 1}}>
+      <View style={{ flex: 1 }}>
         <Loader visible={isLoading} showOverlay />
         <TouchableOpacity style={styles.HeaderContainerTwo} activeOpacity={1}>
-          <TouchableOpacity onPress={onBackPress} style={{ zIndex: 11111222222 }}>
+          <TouchableOpacity
+            onPress={onBackPress}
+            style={{ zIndex: 11111222222 }}
+          >
             <View style={styles.row2}>
               <ImageComponent source={arrowLeft} style={styles.arrowLeft} />
             </View>
@@ -345,10 +345,11 @@ export const AddPayoutExpenseScreen = (
           <View style={styles.oneContainer}>
             <ImageComponent
               style={styles.oneContainerImage}
-              source={onelogo}></ImageComponent>
+              source={onelogo}
+            ></ImageComponent>
             <View>
               <Text style={styles.oneContainerText}>NE</Text>
-              <Text style={styles.localText}>L  o  c  a  l</Text>
+              <Text style={styles.localText}>L o c a l</Text>
             </View>
           </View>
         </TouchableOpacity>
@@ -356,9 +357,16 @@ export const AddPayoutExpenseScreen = (
           <KeyboardAwareScrollView
             showsVerticalScrollIndicator={false}
             horizontal={false}
-           >
-            <View style={{ marginTop: 5, marginLeft: 0, paddingTop: 5, flexDirection: 'row', alignItems: 'center' }}>
-    
+          >
+            <View
+              style={{
+                marginTop: 5,
+                marginLeft: 0,
+                paddingTop: 5,
+                flexDirection: "row",
+                alignItems: "center",
+              }}
+            >
               <Text style={styles.breakdownHeader}>Add Breakdown</Text>
             </View>
 
@@ -443,7 +451,7 @@ export const AddPayoutExpenseScreen = (
                               alignSelf: "center",
                               flexShrink: 1,
                               width: 150,
-                              color: theme.colors.black
+                              color: theme.colors.black,
                             }}
                           >
                             {item?.first_name} {item?.last_name}
@@ -546,25 +554,23 @@ export const AddPayoutExpenseScreen = (
                   value={amount}
                   keyboardType="number-pad"
                   onChangeText={(text) => {
-                    setAmount(text)
-                  }
-                  }
+                    setAmount(text);
+                  }}
                 ></TextInput>
               </View>
             </View>
 
             <View style={styles.descriptionCont}>
               <Text style={styles.descpLbl}>Description</Text>
-             
             </View>
             <View>
-                <TextInput
-                  value={descriptions}
-                  multiline
-                  onChangeText={(text) => setDescriptions(text)}
-                  style={styles.payoutDescLbl}
-                ></TextInput>
-              </View>
+              <TextInput
+                value={descriptions}
+                multiline
+                onChangeText={(text) => setDescriptions(text)}
+                style={styles.payoutDescLbl}
+              ></TextInput>
+            </View>
 
             <View
               style={{

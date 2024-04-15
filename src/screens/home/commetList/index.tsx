@@ -765,9 +765,13 @@ export const CommentList = (props: commentListProps) => {
                         </View>
                       </View>
                     </View>
-                    <View style={Platform.OS === "ios"
-                ? styles.userListDisplayCont
-                : styles.userListDisplayContTwo}>
+                    <View
+                      style={
+                        Platform.OS === "ios"
+                          ? styles.userListDisplayCont
+                          : styles.userListDisplayContTwo
+                      }
+                    >
                       <TouchableOpacity
                         onPress={() =>
                           recentUserProfilePress(
@@ -870,10 +874,14 @@ export const CommentList = (props: commentListProps) => {
                     {commentList.length !== 0 && !isLoading ? (
                       <TouchableOpacity onPress={postDataLoad}>
                         <View>
-                          {isCommentData ? <Text style={styles.getMoreDataCont}>
+                          {isCommentData ? (
+                            <Text style={styles.getMoreDataCont}>
                               Get More Comments
-                            </Text> : <></>}
-                          </View>
+                            </Text>
+                          ) : (
+                            <></>
+                          )}
+                        </View>
                         {/* {isCommentData && !isLoading ? (
                           <View>
                             <Text style={styles.getMoreDataCont}>
@@ -1113,7 +1121,7 @@ export const CommentList = (props: commentListProps) => {
                     <TextInput
                       style={styles.commentInput}
                       placeholder="Comment"
-                      placeholderTextColor='gray'
+                      placeholderTextColor="gray"
                       onChangeText={(text) => onAddCommentReply(text)}
                     ></TextInput>
                   </View>

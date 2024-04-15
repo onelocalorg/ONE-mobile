@@ -1,4 +1,4 @@
-import {createSlice} from '@reduxjs/toolkit';
+import { createSlice } from "@reduxjs/toolkit";
 
 export interface InternetConnectionState {
   isConnected: boolean;
@@ -16,19 +16,19 @@ const initialState = {
 };
 
 const internetConnectionHandleSlice = createSlice({
-  name: 'internetConnectionHandle',
+  name: "internetConnectionHandle",
   initialState,
   reducers: {
     checkConnectivity: (prevState: InternetConnectionState, action: Action) => {
-      const state = {...prevState};
+      const state = { ...prevState };
       state.isConnected = action?.payload || true;
       return state;
     },
     handleInternetComponentVisibility: (
       prevState: InternetConnectionState,
-      action: Action,
+      action: Action
     ) => {
-      const state = {...prevState};
+      const state = { ...prevState };
       state.isShowInternetComponent = action?.payload || false;
       return state;
     },
@@ -37,7 +37,7 @@ const internetConnectionHandleSlice = createSlice({
 
 const internetConnectionHandleReducer = internetConnectionHandleSlice.reducer;
 
-const {checkConnectivity, handleInternetComponentVisibility} =
+const { checkConnectivity, handleInternetComponentVisibility } =
   internetConnectionHandleSlice.actions;
 
 export {

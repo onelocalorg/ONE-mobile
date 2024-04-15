@@ -517,10 +517,10 @@ export const LoginScreen = (props: LoginScreenProps) => {
   const onCheckReleaseHideShow = () => {
     if (Platform.OS === "ios") {
       const isShowPaymentCheck = getData("isShowPaymentFlow");
-      return isShowPaymentCheck
-    } else{
+      return isShowPaymentCheck;
+    } else {
       const isShowPaymentCheckAndroid = getData("isShowPaymentFlowAndroid");
-      return isShowPaymentCheckAndroid
+      return isShowPaymentCheckAndroid;
     }
   };
 

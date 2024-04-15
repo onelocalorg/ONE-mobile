@@ -1,9 +1,12 @@
-import {NavigationContainerRef, ParamListBase} from '@react-navigation/native';
+import {
+  NavigationContainerRef,
+  ParamListBase,
+} from "@react-navigation/native";
 
 export let navigatorRef: NavigationContainerRef<ReactNavigation.RootParamList> | null;
 
 export const setNavigator = (
-  nav: NavigationContainerRef<ReactNavigation.RootParamList> | null,
+  nav: NavigationContainerRef<ReactNavigation.RootParamList> | null
 ) => {
   navigatorRef = nav;
 };

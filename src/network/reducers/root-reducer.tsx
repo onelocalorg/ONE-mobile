@@ -1,9 +1,9 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import {AnyAction, combineReducers} from 'redux';
-import {persistReducer} from 'redux-persist';
-import {internetConnectionHandleReducer} from './internet-connection-handle-reducer';
-import {userProfileReducer} from './user-profile-reducer';
-import {logoutReducer} from './logout-reducer';
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { AnyAction, combineReducers } from "redux";
+import { persistReducer } from "redux-persist";
+import { internetConnectionHandleReducer } from "./internet-connection-handle-reducer";
+import { userProfileReducer } from "./user-profile-reducer";
+import { logoutReducer } from "./logout-reducer";
 
 const combinedReducer = combineReducers({
   internetConnectionHandleReducer,
@@ -15,7 +15,7 @@ export type RootState = ReturnType<typeof combinedReducer>;
 
 const rootReducer = (state: RootState, action: AnyAction) => {
   let stateData = state;
-  if (action.type === 'logout/clearReducer') {
+  if (action.type === "logout/clearReducer") {
     stateData = {} as RootState;
   }
 
@@ -23,9 +23,9 @@ const rootReducer = (state: RootState, action: AnyAction) => {
 };
 
 const persistConfig = {
-  key: 'root',
+  key: "root",
   storage: AsyncStorage,
-  whitelist: ['userProfileReducer'],
+  whitelist: ["userProfileReducer"],
 };
 
 export const persistedReducer = persistReducer(persistConfig, rootReducer);

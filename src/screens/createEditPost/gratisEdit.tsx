@@ -1,6 +1,6 @@
-import React, {useEffect, useRef, useState} from 'react';
-import {createStyleSheet} from './style';
-import {useAppTheme} from '@app-hooks/use-app-theme';
+import React, { useEffect, useRef, useState } from "react";
+import { createStyleSheet } from "./style";
+import { useAppTheme } from "@app-hooks/use-app-theme";
 import {
   Alert,
   FlatList,
@@ -12,9 +12,9 @@ import {
   TextInput,
   TouchableOpacity,
   View,
-} from 'react-native';
-import {useStringsAndLabels} from '@app-hooks/use-strings-and-labels';
-import {ImageComponent} from '@components/image-component';
+} from "react-native";
+import { useStringsAndLabels } from "@app-hooks/use-strings-and-labels";
+import { ImageComponent } from "@components/image-component";
 import {
   Gratis,
   addGreen,
@@ -34,33 +34,36 @@ import {
   plus,
   postCalender,
   request,
-} from '@assets/images';
-import {NavigationContainerRef, ParamListBase} from '@react-navigation/native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import moment from 'moment';
-import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
-import GetLocation from 'react-native-get-location';
-import Popover, {PopoverPlacement, Rect} from 'react-native-popover-view';
-import {SizedBox} from '@components/sized-box';
-import {verticalScale} from '@theme/device/normalize';
+} from "@assets/images";
+import {
+  NavigationContainerRef,
+  ParamListBase,
+} from "@react-navigation/native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import moment from "moment";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import GetLocation from "react-native-get-location";
+import Popover, { PopoverPlacement, Rect } from "react-native-popover-view";
+import { SizedBox } from "@components/sized-box";
+import { verticalScale } from "@theme/device/normalize";
 import {
   DatePickerRefProps,
   DateRangePicker,
-} from '@components/date-range-picker';
-import {launchImageLibrary} from 'react-native-image-picker';
-import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete';
-import Toast from 'react-native-simple-toast';
-import {Loader} from '@components/loader';
-import {navigations} from '@config/app-navigation/constant';
-import {ScrollView} from 'react-native';
-import {Pill} from '@components/pill';
-import {FlatListComponent} from '@components/flatlist-component';
-import {width} from '@theme/device/device';
-import { API_URL } from '@network/constant';
-import { useSelector } from 'react-redux';
-import { StoreType } from '@network/reducers/store';
-import { UserProfileState } from '@network/reducers/user-profile-reducer';
-import { useUserProfile } from '@network/hooks/user-service-hooks/use-user-profile';
+} from "@components/date-range-picker";
+import { launchImageLibrary } from "react-native-image-picker";
+import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
+import Toast from "react-native-simple-toast";
+import { Loader } from "@components/loader";
+import { navigations } from "@config/app-navigation/constant";
+import { ScrollView } from "react-native";
+import { Pill } from "@components/pill";
+import { FlatListComponent } from "@components/flatlist-component";
+import { width } from "@theme/device/device";
+import { API_URL } from "@network/constant";
+import { useSelector } from "react-redux";
+import { StoreType } from "@network/reducers/store";
+import { UserProfileState } from "@network/reducers/user-profile-reducer";
+import { useUserProfile } from "@network/hooks/user-service-hooks/use-user-profile";
 
 interface EditPostGratisScreenProps {
   navigation?: NavigationContainerRef<ParamListBase>;
@@ -72,13 +75,13 @@ interface EditPostGratisScreenProps {
 }
 
 export const EditPostGratisScreen = (props: EditPostGratisScreenProps) => {
-  const {navigation,route} = props || {};
+  const { navigation, route } = props || {};
   const { postData } = route?.params ?? {};
-  const {theme} = useAppTheme();
+  const { theme } = useAppTheme();
   const styles = createStyleSheet(theme);
-  const {strings} = useStringsAndLabels();
+  const { strings } = useStringsAndLabels();
   const [selecttype, createPostSelectType] = useState(1);
-  const [type, createPostType] = useState('offer');
+  const [type, createPostType] = useState("offer");
   const [typeIconWhat, getTypeIconWhat]: any = useState();
   const [showWhatPopover, setWhatShowPopover] = useState(false);
   const [getResourcewhatList, getResourseDatawhat]: any = useState([]);
@@ -87,17 +90,17 @@ export const EditPostGratisScreen = (props: EditPostGratisScreenProps) => {
   const [getResourceForLis, getResourseDataFor]: any = useState([]);
   const [whatSelectType, getWhatTypeValue]: any = useState();
   const [postImage, setCreatePostUri]: any = useState([]);
-  const [forName, createPostforName] = useState('');
-  const [forQuantity, createPostforQuantity] = useState('');
-  const [whereAddress, createPostwhereAddress] = useState('');
+  const [forName, createPostforName] = useState("");
+  const [forQuantity, createPostforQuantity] = useState("");
+  const [whereAddress, createPostwhereAddress] = useState("");
   const [imageKey, selectedImageKey] = useState();
   const [when, createPostwhen] = useState(new Date());
-  const [content, createPostcontent] = useState('');
-  const [tags, createPosttags]: any = useState('');
+  const [content, createPostcontent] = useState("");
+  const [tags, createPosttags]: any = useState("");
   const [tagArray, tagselectArray]: any = useState([]);
-  const [whatName, createPostwhatName] = useState('');
-  const [addnewCmt, onAddComment] = useState('');
-  const [addnewCmtReply, onAddCommentReply] = useState('');
+  const [whatName, createPostwhatName] = useState("");
+  const [addnewCmt, onAddComment] = useState("");
+  const [addnewCmtReply, onAddCommentReply] = useState("");
   var [whatQuantity, createPostwhatQuantity] = useState(1);
   const [typeIconTo, getTypeIconTo]: any = useState();
   const [typrTovalue, getToTypeValue]: any = useState();
@@ -109,9 +112,9 @@ export const EditPostGratisScreen = (props: EditPostGratisScreenProps) => {
   const [userList, recentlyJoinUser]: any = useState([]);
   const [userListArray, setuserListArray]: any = useState([]);
   const [imageArray, setImageArray]: any = useState([]);
-  const [imageArrayKey, setImageArrayKey]:any = useState([]);
+  const [imageArrayKey, setImageArrayKey]: any = useState([]);
   var [gratisNo, totalGratisData]: any = useState(1);
-  const [usertext, onUserSearch] = useState('');
+  const [usertext, onUserSearch] = useState("");
   const datePickerRef: React.Ref<DatePickerRefProps> = useRef(null);
   const { user } = useSelector<StoreType, UserProfileState>(
     (state) => state.userProfileReducer
@@ -148,7 +151,7 @@ export const EditPostGratisScreen = (props: EditPostGratisScreenProps) => {
   };
   const onConfirmStartDateTime = (startDate: Date) => {
     createPostwhen(startDate);
-    datePickerRef.current?.onOpenModal('end');
+    datePickerRef.current?.onOpenModal("end");
   };
 
   const requestLocationPermission = async () => {
@@ -156,79 +159,73 @@ export const EditPostGratisScreen = (props: EditPostGratisScreenProps) => {
       enableHighAccuracy: true,
       timeout: 6000,
     })
-      .then(location => {
+      .then((location) => {
         setUserLocation(location);
         console.log(
-          '---------------------location---------------------',
-          location,
+          "---------------------location---------------------",
+          location
         );
         if (location) {
           // postListAPI();
         }
       })
-      .catch(error => {
-        console.log('---------------------error---------------------', error);
-        const {code, message} = error;
+      .catch((error) => {
+        console.log("---------------------error---------------------", error);
+        const { code, message } = error;
         console.log(code, message);
       });
   };
 
   const getResourcesAPI = async () => {
-    const token = await AsyncStorage.getItem('token');
+    const token = await AsyncStorage.getItem("token");
     try {
-      const response = await fetch(
-        API_URL + '/v1/posts/resources',
-        {
-          method: 'get',
-          headers: new Headers({
-            Authorization: 'Bearer ' + token,
-            'Content-Type': 'application/json',
-          }),
-        },
-      );
+      const response = await fetch(API_URL + "/v1/posts/resources", {
+        method: "get",
+        headers: new Headers({
+          Authorization: "Bearer " + token,
+          "Content-Type": "application/json",
+        }),
+      });
       const dataItem = await response.json();
       getResourseDatawhat(dataItem?.data?.what);
       getResourseDataTo(dataItem?.data?.to);
       getResourseDataFrom(dataItem?.data?.from);
       getResourseDataFor(dataItem?.data?.For);
-      getTypeIconWhat(dataItem?.data?.what[0]['icon']);
-      createPostwhatName(dataItem?.data?.what[0]['title'])
-      getTypeIconTo(dataItem?.data?.to[0]['icon']);
-      getToTypeValue(dataItem?.data?.to[0]['value']);
-      getWhatTypeValue(dataItem?.data?.what[0]['value']);
+      getTypeIconWhat(dataItem?.data?.what[0]["icon"]);
+      createPostwhatName(dataItem?.data?.what[0]["title"]);
+      getTypeIconTo(dataItem?.data?.to[0]["icon"]);
+      getToTypeValue(dataItem?.data?.to[0]["value"]);
+      getWhatTypeValue(dataItem?.data?.what[0]["value"]);
     } catch (error) {
       console.error(error);
     }
   };
 
   const postImageUploadAPI = async (fileItem: any, base64Item: any) => {
-    const token = await AsyncStorage.getItem('token');
+    const token = await AsyncStorage.getItem("token");
     var pic: any = {
-      uploadKey: 'createPostImg',
+      uploadKey: "createPostImg",
       imageName: fileItem,
-      base64String: 'data:image/jpeg;base64,' + base64Item,
+      base64String: "data:image/jpeg;base64," + base64Item,
     };
 
     try {
-      const response = await fetch(
-        API_URL + '/v1/users/upload/file',
-        {
-          method: 'post',
-          headers: new Headers({
-            Authorization: 'Bearer ' + token,
-            'Content-Type': 'application/json',
-          }),
-          body: JSON.stringify(pic),
-        },
-      );
+      const response = await fetch(API_URL + "/v1/users/upload/file", {
+        method: "post",
+        headers: new Headers({
+          Authorization: "Bearer " + token,
+          "Content-Type": "application/json",
+        }),
+        body: JSON.stringify(pic),
+      });
       const dataItem = await response.json();
-console.log(dataItem?.data)
+      console.log(dataItem?.data);
       var tempData = imageArray;
       tempData.push(dataItem?.data);
       setImageArray(tempData);
 
       var tempTwo = imageArrayKey;
-      tempTwo.push(dataItem?.data?.key)
+      tempTwo.push(dataItem?.data?.key);
       setImageArrayKey(tempTwo);
       // setCreatePostUri(dataItem?.data?.imageUrl);
       // selectedImageKey(dataItem?.data?.key);
@@ -242,19 +239,22 @@ console.log(dataItem?.data)
   async function getPostDetailAPI() {
     LodingData(true);
     const token = await AsyncStorage.getItem("token");
-  
+
     console.log(API_URL + "/v2/posts/get/detail/" + postData?.id);
     try {
       console.log("222222");
 
-      const response = await fetch(API_URL + "/v2/posts/get/detail/" + postData?.id, {
-        method: "get",
-        headers: new Headers({
-          Authorization: "Bearer " + token,
-          "Content-Type": "application/json",
-          Accept: "application/json",
-        }),
-      });
+      const response = await fetch(
+        API_URL + "/v2/posts/get/detail/" + postData?.id,
+        {
+          method: "get",
+          headers: new Headers({
+            Authorization: "Bearer " + token,
+            "Content-Type": "application/json",
+            Accept: "application/json",
+          }),
+        }
+      );
       const dataItem = await response.json();
       console.log("=========== Get detail Post API Response ==============");
       console.log(dataItem);
@@ -264,12 +264,12 @@ console.log(dataItem?.data)
       getTypeIconWhat(dataItem?.data?.what?.icon);
       createPostcontent(dataItem?.data?.content);
       recentlyJoinUser(dataItem?.data?.usersArray);
-      let modifiedArray = dataItem?.data?.usersArray.map((obj:any) => {
-        const { first_name, last_name,pic,id,point, ...rest } = obj;
-        return { ...rest, user_id: obj.id,point:obj.point };
+      let modifiedArray = dataItem?.data?.usersArray.map((obj: any) => {
+        const { first_name, last_name, pic, id, point, ...rest } = obj;
+        return { ...rest, user_id: obj.id, point: obj.point };
       });
-      console.log(modifiedArray,'getUserIdArray')
-      setuserListArray(modifiedArray) 
+      console.log(modifiedArray, "getUserIdArray");
+      setuserListArray(modifiedArray);
       tagselectArray(dataItem?.data?.tags);
       setImageArray(dataItem?.data?.imageUrl);
       setImageArrayKey(dataItem?.data?.image);
@@ -283,9 +283,9 @@ console.log(dataItem?.data)
 
   async function createPostAPI() {
     LodingData(true);
-    const token = await AsyncStorage.getItem('token');
+    const token = await AsyncStorage.getItem("token");
     var data: any = {
-      type: 'gratis',
+      type: "gratis",
       what_type: whatSelectType,
       what_name: whatName,
       what_quantity: whatQuantity,
@@ -303,21 +303,21 @@ console.log(dataItem?.data)
       const response = await fetch(
         API_URL + "/v2/posts/update/" + postData?.id,
         {
-          method: 'post',
+          method: "post",
           headers: new Headers({
-            Authorization: 'Bearer ' + token,
-            'Content-Type': 'application/json',
-            Accept: 'application/json',
+            Authorization: "Bearer " + token,
+            "Content-Type": "application/json",
+            Accept: "application/json",
           }),
           body: JSON.stringify(data),
-        },
+        }
       );
       const dataItem = await response.json();
-      console.log('=========== Create Post API Response ==============');
+      console.log("=========== Create Post API Response ==============");
       console.log(dataItem);
       LodingData(false);
       Toast.show(dataItem?.message, Toast.LONG, {
-        backgroundColor: 'black',
+        backgroundColor: "black",
       });
       if (dataItem?.success === true) {
         navigation?.goBack();
@@ -329,38 +329,34 @@ console.log(dataItem?.data)
   }
 
   async function gratisUserList(textUser: any) {
-    const token = await AsyncStorage.getItem('token');
+    const token = await AsyncStorage.getItem("token");
     var datas: any = {
       searchtext: textUser,
     };
     onUserSearch(textUser);
-    LodingData(true)
-    console.log('=========== User List Gratis API Request ==============');
+    LodingData(true);
+    console.log("=========== User List Gratis API Request ==============");
     console.log(datas);
-    console.log(
-      API_URL + '/v1/users/search-user?searchtext=' +
-        textUser,
-    );
+    console.log(API_URL + "/v1/users/search-user?searchtext=" + textUser);
     try {
       const response = await fetch(
-        API_URL + '/v1/users/search-user?searchtext=' +
-        textUser,
+        API_URL + "/v1/users/search-user?searchtext=" + textUser,
         {
-          method: 'get',
+          method: "get",
           headers: new Headers({
-            Authorization: 'Bearer ' + token,
-            'Content-Type': 'application/x-www-form-urlencoded',
+            Authorization: "Bearer " + token,
+            "Content-Type": "application/x-www-form-urlencoded",
           }),
-        },
+        }
       );
       const dataItem = await response.json();
-      console.log('=========== User List Gratis API Response ==============');
+      console.log("=========== User List Gratis API Response ==============");
       const result = dataItem?.data?.map((item: any) => {
-        return {...item, gratisNo: 1};
+        return { ...item, gratisNo: 1 };
       });
       userGratiesListData(result);
       console.log(dataItem);
-      LodingData(false)
+      LodingData(false);
     } catch (error) {
       LodingData(false);
       console.error(error);
@@ -368,8 +364,8 @@ console.log(dataItem?.data)
   }
 
   const GallerySelect = async () => {
-    const {assets} = await launchImageLibrary({
-      mediaType: 'photo',
+    const { assets } = await launchImageLibrary({
+      mediaType: "photo",
       // selectionLimit: 2,
       includeBase64: true,
       maxWidth: 800,
@@ -378,52 +374,52 @@ console.log(dataItem?.data)
     console.log(assets);
     if (assets) {
       const img = assets?.[0];
-      console.log('---------------assets Gallery 222---------------');
+      console.log("---------------assets Gallery 222---------------");
       console.log(assets);
-      var fileNameTwo = img?.fileName ?? '';
+      var fileNameTwo = img?.fileName ?? "";
       LodingData(true);
       var output =
-        fileNameTwo.substr(0, fileNameTwo.lastIndexOf('.')) || fileNameTwo;
-      var base64Two = img?.base64 ?? '';
+        fileNameTwo.substr(0, fileNameTwo.lastIndexOf(".")) || fileNameTwo;
+      var base64Two = img?.base64 ?? "";
       postImageUploadAPI(output, base64Two);
     }
   };
 
   const removeuserSelect = (userlist: any) => {
     const newPeople = userList.filter((person: any) => person !== userlist);
-    console.log('--------newPeople---------', newPeople);
+    console.log("--------newPeople---------", newPeople);
     recentlyJoinUser(newPeople);
-    let modifiedArray = newPeople.map((obj:any) => {
-      const { first_name, last_name,pic,id,gratisNo, ...rest } = obj;
-      return { ...rest, user_id: obj.id,point:obj.gratisNo };
+    let modifiedArray = newPeople.map((obj: any) => {
+      const { first_name, last_name, pic, id, gratisNo, ...rest } = obj;
+      return { ...rest, user_id: obj.id, point: obj.gratisNo };
     });
     setuserListArray(modifiedArray);
   };
 
   const CreateNewPostModal = () => {
     if (whatName.length === 0) {
-      Toast.show('Enter About What', Toast.LONG, {
-        backgroundColor: 'black',
+      Toast.show("Enter About What", Toast.LONG, {
+        backgroundColor: "black",
       });
-    // } else if (whatQuantity.length === 0) {
-    //   Toast.show('Enter What Quantity', Toast.LONG, {
-    //     backgroundColor: 'black',
-    //   });
-    // } else if (userList.length === 0) {
-    //   Toast.show('Add User', Toast.LONG, {
-    //     backgroundColor: 'black',
-    //   });
+      // } else if (whatQuantity.length === 0) {
+      //   Toast.show('Enter What Quantity', Toast.LONG, {
+      //     backgroundColor: 'black',
+      //   });
+      // } else if (userList.length === 0) {
+      //   Toast.show('Add User', Toast.LONG, {
+      //     backgroundColor: 'black',
+      //   });
     } else if (content.length === 0) {
-      Toast.show('Enter Post Content', Toast.LONG, {
-        backgroundColor: 'black',
+      Toast.show("Enter Post Content", Toast.LONG, {
+        backgroundColor: "black",
       });
     } else if (tagArray.length === 0) {
-      Toast.show('Enter Post Tag', Toast.LONG, { 
-        backgroundColor: 'black',
+      Toast.show("Enter Post Tag", Toast.LONG, {
+        backgroundColor: "black",
       });
     } else if (imageArray.length === 0) {
-      Toast.show('Add Image to Post', Toast.LONG, {
-        backgroundColor: 'black',
+      Toast.show("Add Image to Post", Toast.LONG, {
+        backgroundColor: "black",
       });
     } else {
       createPostAPI();
@@ -456,7 +452,7 @@ console.log(dataItem?.data)
     }
   };
 
-  const renderItem: ListRenderItem<string> = ({item}) => (
+  const renderItem: ListRenderItem<string> = ({ item }) => (
     <Pill
       onPressPill={() => handleRemove(item)}
       pillStyle={styles.marginBottom}
@@ -466,55 +462,58 @@ console.log(dataItem?.data)
   );
 
   const removeSelectImage = (imageItem: any) => {
-    console.log(imageItem, 'image url')
-    console.log(imageArrayKey)
+    console.log(imageItem, "image url");
+    console.log(imageArrayKey);
     const newImage = imageArray.filter(
-      (person: any) => person.imageUrl !== imageItem?.imageUrl && person.key !== imageItem.key
+      (person: any) =>
+        person.imageUrl !== imageItem?.imageUrl && person.key !== imageItem.key
     );
     setImageArray(newImage);
     const newImagekey = imageArrayKey.filter(
       (person: any) => person !== imageItem?.key
     );
-    setImageArrayKey(newImagekey)
-    console.log(imageArrayKey)
-    }
-
+    setImageArrayKey(newImagekey);
+    console.log(imageArrayKey);
+  };
 
   const handleRemove = (id: any) => {
     const newPeople = tagArray.filter((person: any) => person !== id);
-    console.log('--------newPeople---------', newPeople);
+    console.log("--------newPeople---------", newPeople);
 
     tagselectArray(newPeople);
   };
 
   const onAddSkill = (text: any) => {
-    if (text !== '' && text !== undefined) {
+    if (text !== "" && text !== undefined) {
       tagselectArray([...tagArray, text]);
-      console.log('onSubmitEditing onSubmitEditing', tags, tagArray, text);
-      createPosttags('');
+      console.log("onSubmitEditing onSubmitEditing", tags, tagArray, text);
+      createPosttags("");
     }
   };
 
-
   const AddUserList = (item: any) => {
-    const found = userList.find((element:any) => element.id == item.id);
+    const found = userList.find((element: any) => element.id == item.id);
     if (!found) {
-      recentlyJoinUser([...userList, item]); 
-      
-      const newItems = {...item};
+      recentlyJoinUser([...userList, item]);
+
+      const newItems = { ...item };
       delete newItems.first_name;
       delete newItems.last_name;
       delete newItems.pic;
       delete newItems.id;
       delete newItems.gratisNo;
       console.log(item.gratisNo);
-      const newuserData = {...newItems, point: item.gratisNo, user_id: item.id};
+      const newuserData = {
+        ...newItems,
+        point: item.gratisNo,
+        user_id: item.id,
+      };
       setuserListArray([...userListArray, newuserData]);
-      
-      console.log(userListArray,'userListArray userListArray');
-    }else{
-      Toast.show('Already Added', Toast.LONG, { 
-        backgroundColor: 'black',
+
+      console.log(userListArray, "userListArray userListArray");
+    } else {
+      Toast.show("Already Added", Toast.LONG, {
+        backgroundColor: "black",
       });
     }
   };
@@ -524,20 +523,20 @@ console.log(dataItem?.data)
   };
 
   const whatQtyMinus = () => {
-    if(whatQuantity > 1){
-      whatQuantity = whatQuantity - 1
-      createPostwhatQuantity(whatQuantity)
+    if (whatQuantity > 1) {
+      whatQuantity = whatQuantity - 1;
+      createPostwhatQuantity(whatQuantity);
     }
-  }
+  };
 
   const onBackPress = () => {
     navigation?.goBack();
   };
 
   const whatQtyPlus = () => {
-    whatQuantity = whatQuantity + 1
-    createPostwhatQuantity(whatQuantity)
-  }
+    whatQuantity = whatQuantity + 1;
+    createPostwhatQuantity(whatQuantity);
+  };
 
   return (
     <>
@@ -587,24 +586,23 @@ console.log(dataItem?.data)
       </TouchableOpacity>
       <KeyboardAwareScrollView
         keyboardShouldPersistTaps="always"
-        showsVerticalScrollIndicator={false}>
-          <View style={styles.postFilter}>
-          <TouchableOpacity
-              style={styles.container3}
-              activeOpacity={1}>
-              <ImageComponent
-                resizeMode="cover"
-                source={gratisGreen}
-                style={styles.icon1}
-              />
-              <Text style={styles.label3}>
-                Gratis Edit
-              </Text>
-            </TouchableOpacity></View>
+        showsVerticalScrollIndicator={false}
+      >
+        <View style={styles.postFilter}>
+          <TouchableOpacity style={styles.container3} activeOpacity={1}>
+            <ImageComponent
+              resizeMode="cover"
+              source={gratisGreen}
+              style={styles.icon1}
+            />
+            <Text style={styles.label3}>Gratis Edit</Text>
+          </TouchableOpacity>
+        </View>
         <TouchableOpacity
           onPress={keyboardDismiss}
           activeOpacity={1}
-          style={styles.createPostModal}>
+          style={styles.createPostModal}
+        >
           <View>
             <View style={styles.postClass}>
               <View style={styles.createPostCont}>
@@ -614,10 +612,11 @@ console.log(dataItem?.data)
                   placeholderTextColor="darkgray"
                   value={whatName}
                   editable={false}
-                  onChangeText={text => createPostwhatName(text)}
-                  style={styles.postInputTwo}></TextInput>
-                  {/* <SizedBox width={10}></SizedBox> */}
-                  <View style={styles.QuantityContainer}>
+                  onChangeText={(text) => createPostwhatName(text)}
+                  style={styles.postInputTwo}
+                ></TextInput>
+                {/* <SizedBox width={10}></SizedBox> */}
+                <View style={styles.QuantityContainer}>
                   <TouchableOpacity onPress={whatQtyMinus}>
                     <Text style={styles.QuantityMinus}>-</Text>
                   </TouchableOpacity>
@@ -626,18 +625,18 @@ console.log(dataItem?.data)
                     <Text style={styles.QuantityPlus}>+</Text>
                   </TouchableOpacity>
                 </View>
-               
+
                 <SizedBox width={10}></SizedBox>
                 <TouchableOpacity
                   activeOpacity={1}
                   // onPress={() => setWhatShowPopover(true)}
-                  >
+                >
                   <ImageComponent
                     resizeMode="cover"
-                    source={{uri: typeIconWhat}}
-                    style={styles.createImgOne}></ImageComponent>
+                    source={{ uri: typeIconWhat }}
+                    style={styles.createImgOne}
+                  ></ImageComponent>
                 </TouchableOpacity>
-               
               </View>
               <SizedBox height={10}></SizedBox>
               <View style={styles.postCont}>
@@ -646,47 +645,52 @@ console.log(dataItem?.data)
                   multiline
                   placeholder="What do you want to say?"
                   placeholderTextColor="darkgray"
-                  textAlignVertical={'top'}
+                  textAlignVertical={"top"}
                   value={content}
-                  onChangeText={text => createPostcontent(text)}
-                  style={styles.postinput}></TextInput>
+                  onChangeText={(text) => createPostcontent(text)}
+                  style={styles.postinput}
+                ></TextInput>
               </View>
               <SizedBox height={10}></SizedBox>
-              
+
               <View style={styles.createPostCont}>
                 <Text style={styles.textOne}>To:</Text>
-                
+
                 <TextInput
                   placeholder="who do you want to send gratis to?"
                   placeholderTextColor="darkgray"
                   value={usertext}
-                  onChangeText={text => gratisUserList(text)}
-                  style={styles.postInputToType}></TextInput>
-               
+                  onChangeText={(text) => gratisUserList(text)}
+                  style={styles.postInputToType}
+                ></TextInput>
+
                 <TouchableOpacity activeOpacity={1}>
                   <ImageComponent
                     resizeMode="stretch"
-                    source={{uri: typeIconTo}}
-                    style={styles.createImgOne}></ImageComponent>
+                    source={{ uri: typeIconTo }}
+                    style={styles.createImgOne}
+                  ></ImageComponent>
                 </TouchableOpacity>
-               
               </View>
 
               <SizedBox height={verticalScale(10)}></SizedBox>
- 
+
               <View style={styles.avatarContainer}>
                 <ScrollView
                   horizontal={true}
-                  showsHorizontalScrollIndicator={false}>
+                  showsHorizontalScrollIndicator={false}
+                >
                   {userList.map((userList: any) => {
-                    return ( 
+                    return (
                       <TouchableOpacity
-                        onPress={() => removeuserSelect(userList)}>
+                        onPress={() => removeuserSelect(userList)}
+                      >
                         <ImageComponent
                           style={styles.avatarImage}
                           isUrl={!!userList?.pic}
                           resizeMode="cover"
-                          uri={userList?.pic}></ImageComponent>
+                          uri={userList?.pic}
+                        ></ImageComponent>
                       </TouchableOpacity>
                     );
                   })}
@@ -700,24 +704,28 @@ console.log(dataItem?.data)
                     marginVertical: 10,
                     borderRadius: 10,
                     maxHeight: 275,
-                    overflow: 'hidden',
-                    height: 'auto',
-                  }}>
+                    overflow: "hidden",
+                    height: "auto",
+                  }}
+                >
                   <ScrollView showsVerticalScrollIndicator={false}>
                     <FlatList
                       data={usergratisList}
-                      renderItem={({item, index}) => (
+                      renderItem={({ item, index }) => (
                         <TouchableOpacity
                           activeOpacity={1}
                           style={{
-                            flexDirection: 'row',
-                            alignItems: 'center',
+                            flexDirection: "row",
+                            alignItems: "center",
                             marginVertical: 5,
                             borderBottomWidth: 1,
-                            borderColor: 'gray',
+                            borderColor: "gray",
                             paddingVertical: 8,
-                          }}>
-                          <View style={{flexDirection: 'row', marginRight: 50}}>
+                          }}
+                        >
+                          <View
+                            style={{ flexDirection: "row", marginRight: 50 }}
+                          >
                             <ImageComponent
                               style={{
                                 height: 30,
@@ -727,73 +735,89 @@ console.log(dataItem?.data)
                                 borderRadius: 100,
                               }}
                               resizeMode="cover"
-                              source={{uri: item?.pic}}></ImageComponent>
-                            <Text  numberOfLines={1} style={{alignSelf: 'center',flexShrink: 1, width: 125, color: theme.colors.black}}>
+                              source={{ uri: item?.pic }}
+                            ></ImageComponent>
+                            <Text
+                              numberOfLines={1}
+                              style={{
+                                alignSelf: "center",
+                                flexShrink: 1,
+                                width: 125,
+                                color: theme.colors.black,
+                              }}
+                            >
                               {item?.first_name} {item?.last_name}
                             </Text>
                           </View>
 
                           <View style={styles.gratisCont}>
                             <TouchableOpacity
-                              onPress={() => gratisMinusClick(item, index)}>
+                              onPress={() => gratisMinusClick(item, index)}
+                            >
                               <ImageComponent
                                 source={minus}
                                 style={{
                                   height: 20,
                                   width: 20,
                                   marginHorizontal: 15,
-                                }}></ImageComponent>
+                                }}
+                              ></ImageComponent>
                             </TouchableOpacity>
                             <Text style={styles.gratistext}>
                               {item?.gratisNo}
                             </Text>
                             <TouchableOpacity
-                              onPress={() => gratisPlusClick(item, index)}>
+                              onPress={() => gratisPlusClick(item, index)}
+                            >
                               <ImageComponent
                                 source={plus}
                                 style={{
                                   height: 20,
                                   width: 20,
                                   marginHorizontal: 15,
-                                }}></ImageComponent>
+                                }}
+                              ></ImageComponent>
                             </TouchableOpacity>
-                            <TouchableOpacity
-                              onPress={() => AddUserList(item)}>
+                            <TouchableOpacity onPress={() => AddUserList(item)}>
                               <ImageComponent
                                 style={{
                                   height: 20,
                                   width: 20,
                                 }}
-                                source={buttonArrowGreen}></ImageComponent>
+                                source={buttonArrowGreen}
+                              ></ImageComponent>
                             </TouchableOpacity>
                           </View>
                         </TouchableOpacity>
-                      )}></FlatList>
+                      )}
+                    ></FlatList>
                   </ScrollView>
                 </View>
               ) : (
                 <View></View>
               )}
 
-            
               <View style={styles.tagCont}>
                 <Text style={styles.textOne}>Tags</Text>
                 <TextInput
                   placeholder="add tags or people"
                   placeholderTextColor="darkgray"
                   value={tags}
-                  onChangeText={text => createPosttags(text)}
-                  style={styles.tagInput}></TextInput>
+                  onChangeText={(text) => createPosttags(text)}
+                  style={styles.tagInput}
+                ></TextInput>
               </View>
-              {tags !== '' ? (
+              {tags !== "" ? (
                 <TouchableOpacity
-                  style={{zIndex: 1111111}}
+                  style={{ zIndex: 1111111 }}
                   onPress={() => {
                     onAddSkill(tags);
-                  }}>
+                  }}
+                >
                   <ImageComponent
                     style={styles.skillAddImage}
-                    source={addGreen}></ImageComponent>
+                    source={addGreen}
+                  ></ImageComponent>
                 </TouchableOpacity>
               ) : (
                 <View></View>
@@ -802,7 +826,7 @@ console.log(dataItem?.data)
               <View style={styles.row}>
                 <FlatListComponent
                   data={tagArray}
-                  keyExtractor={item => item.toString()}
+                  keyExtractor={(item) => item.toString()}
                   renderItem={renderItem}
                   numColumns={100}
                   showsHorizontalScrollIndicator={false}
@@ -811,7 +835,8 @@ console.log(dataItem?.data)
               </View>
               <TouchableOpacity
                 onPress={GallerySelect}
-                style={styles.imagesCont}>
+                style={styles.imagesCont}
+              >
                 <Text style={styles.textTwo}>Image</Text>
                 <Text style={styles.textTwo}>+</Text>
                 <Text style={styles.textThree}>add images</Text>
@@ -820,10 +845,12 @@ console.log(dataItem?.data)
               <View style={styles.multipleImagecont}>
                 {imageArray.map((item: any) => {
                   return (
-                    <TouchableOpacity
-                    onPress={() => removeSelectImage(item)}
-                  >
-                      <ImageComponent source={{uri: item?.imageUrl}} style={styles.selectImage}></ImageComponent></TouchableOpacity>
+                    <TouchableOpacity onPress={() => removeSelectImage(item)}>
+                      <ImageComponent
+                        source={{ uri: item?.imageUrl }}
+                        style={styles.selectImage}
+                      ></ImageComponent>
+                    </TouchableOpacity>
                   );
                 })}
               </View>
@@ -832,14 +859,15 @@ console.log(dataItem?.data)
               <TouchableOpacity
                 onPress={CreateNewPostModal}
                 activeOpacity={0.8}
-                style={styles.purchaseContainer}>
+                style={styles.purchaseContainer}
+              >
                 <View />
                 <Text style={styles.titleTwo}>{strings.postOffer}</Text>
                 <ImageComponent
                   source={buttonArrowGreen}
                   style={styles.buttonArrow}
                 />
-              </TouchableOpacity> 
+              </TouchableOpacity>
             </View>
           </View>
         </TouchableOpacity>

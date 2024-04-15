@@ -23,7 +23,7 @@
       "@screens/*": ["src/screens/*"],
       "@network/*": ["src/network/*"],
       "@app-hooks/*": ["src/app-hooks/*"],
-      "@store/*": ["src/store/*"],
+      "@store/*": ["src/store/*"]
     },
     "noEmit": true,
     "target": "esnext"

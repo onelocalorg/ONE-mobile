@@ -43,8 +43,10 @@ export const CheckInList = (props: CheckInListProps) => {
           />
         </View>
         <View style={styles.row}>
-          <View style={{flexDirection:'row',justifyContent:'space-between'}}>
-          <Text style={styles.name}>
+          <View
+            style={{ flexDirection: "row", justifyContent: "space-between" }}
+          >
+            <Text style={styles.name}>
               {is_app_user
                 ? `${user?.first_name} ${user?.last_name}`
                 : user?.name}
@@ -52,10 +54,11 @@ export const CheckInList = (props: CheckInListProps) => {
             <Text style={styles.name}>{`$${ticket_total_price}`}</Text>
           </View>
           <View>
-            <Text numberOfLines={2} style={styles.eventName}>{event?.name}</Text>
+            <Text numberOfLines={2} style={styles.eventName}>
+              {event?.name}
+            </Text>
             <Text style={styles.name}>{ticket_name}</Text>
           </View>
-          
         </View>
       </View>
       <SizedBox height={verticalScale(2)} />

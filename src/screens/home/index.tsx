@@ -118,7 +118,7 @@ export const HomeScreen = (props: HomeScreenProps) => {
     endDate: new Date(),
   });
 
-  console.log(user.id, '-----------userId----------')
+  console.log(user.id, "-----------userId----------");
   const dispatch = useDispatch();
 
   useFocusEffect(
@@ -172,11 +172,13 @@ export const HomeScreen = (props: HomeScreenProps) => {
         var isLocationDefault = {
           latitude: location.latitude,
           longitude: location.longitude,
-          zoomLevel: getData('mapCircleRadius')
+          zoomLevel: getData("mapCircleRadius"),
         };
 
-
-        console.log(isLocationDefault, '-------------isLocationDefault-------------')
+        console.log(
+          isLocationDefault,
+          "-------------isLocationDefault-------------"
+        );
         setData("defaultLocation", isLocationDefault);
         if (location.latitude && location.longitude) {
           getRecentlyJoinUserAPI(location);
@@ -871,7 +873,7 @@ export const HomeScreen = (props: HomeScreenProps) => {
           </View>
         </TouchableOpacity>
         {/* ------------------Header Tab------------------- */}
-       
+
         <FlatList
           data={postList}
           keyExtractor={(item, index) => item.key}
@@ -938,9 +940,7 @@ export const HomeScreen = (props: HomeScreenProps) => {
             {postList?.length === 0 ? strings.noPostFound : ""}
           </Text>
         </View>
-       
       </View>
-      
 
       <Modal transparent onDismiss={OfferModalClose} visible={offerModal}>
         <GestureRecognizer onSwipeDown={OfferModalClose} style={styles.gesture}>

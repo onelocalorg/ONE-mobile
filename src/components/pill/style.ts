@@ -1,6 +1,6 @@
-import {normalScale, verticalScale} from '@theme/device/normalize';
-import {ThemeProps} from '@theme/theme';
-import {StyleSheet} from 'react-native';
+import { normalScale, verticalScale } from "@theme/device/normalize";
+import { ThemeProps } from "@theme/theme";
+import { StyleSheet } from "react-native";
 
 export const createStyleSheet = (theme: ThemeProps) => {
   return StyleSheet.create({
@@ -8,9 +8,9 @@ export const createStyleSheet = (theme: ThemeProps) => {
       borderRadius: theme.borderRadius.radius20,
       paddingVertical: verticalScale(8),
       paddingHorizontal: normalScale(8),
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-      alignItems: 'center',
+      flexDirection: "row",
+      justifyContent: "space-between",
+      alignItems: "center",
       marginRight: normalScale(8),
       shadowColor: theme.colors.black,
       shadowOpacity: theme.opacity.opacity15,
@@ -39,9 +39,9 @@ export const subscriptionStyleSheet = (theme: ThemeProps) => {
       borderRadius: theme.borderRadius.radius20,
       paddingVertical: verticalScale(8),
       paddingHorizontal: normalScale(8),
-      flexDirection: 'row',
+      flexDirection: "row",
       // justifyContent: 'space-between',
-      alignItems: 'center',
+      alignItems: "center",
       marginRight: normalScale(8),
       shadowColor: theme.colors.black,
       shadowOpacity: theme.opacity.opacity15,

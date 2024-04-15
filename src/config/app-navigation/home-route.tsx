@@ -1,22 +1,22 @@
-import React from 'react';
-import {createStackNavigator} from '@react-navigation/stack';
-import {HomeScreen} from '@screens/home';
-import {navigations} from './constant';
-import {EventDetailScreen} from '@screens/event-detail';
-import {ProfileScreen} from '@screens/profile';
-import {AdminToolsScreen} from '@screens/admin-tools';
-import {CheckInScreen} from '@screens/check-in';
-import {PaymentScreen} from '@screens/payment-screen';
-import { CreatePostScreen } from '@screens/createPost';
-import { RecentProfileScreen } from '@screens/recentProfile';
-import { CreatePostGratisScreen } from '@screens/createPost/gratis';
-import { CreatePostRequestScreen } from '@screens/createPost/request';
-import { CreatePostOfferScreen } from '@screens/createPost/offer';
-import { CommentList } from '@screens/home/commetList';
-import { ProfileRoute } from './profile-route';
-import { EditPostOfferScreen } from '@screens/createEditPost/offerEdit';
-import { EditPostRequestScreen } from '@screens/createEditPost/requestEdit';
-import { EditPostGratisScreen } from '@screens/createEditPost/gratisEdit';
+import React from "react";
+import { createStackNavigator } from "@react-navigation/stack";
+import { HomeScreen } from "@screens/home";
+import { navigations } from "./constant";
+import { EventDetailScreen } from "@screens/event-detail";
+import { ProfileScreen } from "@screens/profile";
+import { AdminToolsScreen } from "@screens/admin-tools";
+import { CheckInScreen } from "@screens/check-in";
+import { PaymentScreen } from "@screens/payment-screen";
+import { CreatePostScreen } from "@screens/createPost";
+import { RecentProfileScreen } from "@screens/recentProfile";
+import { CreatePostGratisScreen } from "@screens/createPost/gratis";
+import { CreatePostRequestScreen } from "@screens/createPost/request";
+import { CreatePostOfferScreen } from "@screens/createPost/offer";
+import { CommentList } from "@screens/home/commetList";
+import { ProfileRoute } from "./profile-route";
+import { EditPostOfferScreen } from "@screens/createEditPost/offerEdit";
+import { EditPostRequestScreen } from "@screens/createEditPost/requestEdit";
+import { EditPostGratisScreen } from "@screens/createEditPost/gratisEdit";
 
 const HomeStack = createStackNavigator();
 
@@ -28,7 +28,7 @@ export const HomeRoute = () => {
       <HomeStack.Screen
         name={navigations.HOMESCREEN}
         component={HomeScreen}
-        options={{header}}
+        options={{ header }}
       />
       {/* <HomeStack.Screen
         name={navigations.PROFILE}
@@ -36,59 +36,59 @@ export const HomeRoute = () => {
         options={{header}}
       /> */}
       <HomeStack.Screen
-        name={'profileroute'}
+        name={"profileroute"}
         component={ProfileRoute}
-        options={{header}}
+        options={{ header }}
       />
       <HomeStack.Screen
         name={navigations.CREATEPOST}
         component={CreatePostScreen}
-        options={{header}}
+        options={{ header }}
       />
       <HomeStack.Screen
         name={navigations.CREATEPOSTOFFER}
         component={CreatePostOfferScreen}
-        options={{header}}
+        options={{ header }}
       />
       <HomeStack.Screen
         name={navigations.CREATEPOSTREQUEST}
         component={CreatePostRequestScreen}
-        options={{header}}
+        options={{ header }}
       />
       <HomeStack.Screen
         name={navigations.CREATEPOSTGRATIS}
         component={CreatePostGratisScreen}
-        options={{header}}
+        options={{ header }}
       />
-       <HomeStack.Screen
+      <HomeStack.Screen
         name={navigations.RECENTUSERPROFILE}
         component={RecentProfileScreen}
-        options={{header}}
+        options={{ header }}
       />
-       <HomeStack.Screen
+      <HomeStack.Screen
         name={navigations.COMMENTLIST}
         component={CommentList}
-        options={{header}}
+        options={{ header }}
       />
-        <HomeStack.Screen
+      <HomeStack.Screen
         name={navigations.ADMIN_TOOLS}
         component={AdminToolsScreen}
-        options={{header}}
+        options={{ header }}
       />
       <HomeStack.Screen
         name={navigations.EDITPOSTOFFER}
         component={EditPostOfferScreen}
-        options={{header}}
+        options={{ header }}
       />
       <HomeStack.Screen
         name={navigations.EDITPOSTREQUEST}
         component={EditPostRequestScreen}
-        options={{header}}
+        options={{ header }}
       />
       <HomeStack.Screen
         name={navigations.EDITPOSTGRATIS}
         component={EditPostGratisScreen}
-        options={{header}}
+        options={{ header }}
       />
     </HomeStack.Navigator>
   );

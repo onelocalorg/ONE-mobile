@@ -1,10 +1,10 @@
-import {useAppTheme} from '@app-hooks/use-app-theme';
-import {getTheme} from '@theme/index';
-import React, {FC} from 'react';
-import {StyleProp, Text, View, ViewStyle} from 'react-native';
-import {ImageComponent} from '../image-component';
-import {createStyleSheet} from './style';
-import {error} from '@assets/images';
+import { useAppTheme } from "@app-hooks/use-app-theme";
+import { getTheme } from "@theme/index";
+import React, { FC } from "react";
+import { StyleProp, Text, View, ViewStyle } from "react-native";
+import { ImageComponent } from "../image-component";
+import { createStyleSheet } from "./style";
+import { error } from "@assets/images";
 
 export interface InputErrorProps {
   errorMsg?: string;
@@ -13,9 +13,9 @@ export interface InputErrorProps {
   isError?: boolean;
 }
 
-export const InputError: FC<InputErrorProps> = props => {
-  const {errorMsg, image, viewStyle, isError} = props;
-  const {themeType} = useAppTheme();
+export const InputError: FC<InputErrorProps> = (props) => {
+  const { errorMsg, image, viewStyle, isError } = props;
+  const { themeType } = useAppTheme();
   const theme = getTheme(themeType);
   const styles = createStyleSheet(theme);
 

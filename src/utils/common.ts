@@ -1,3 +1,3 @@
 export const formatPrice = (price: string) => {
-  return `$${price?.replace('USD', '')}`;
+  return `$${price?.replace("USD", "")}`;
 };

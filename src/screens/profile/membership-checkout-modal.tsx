@@ -26,22 +26,27 @@ import { API_URL, persistKeys } from "@network/constant";
 import { useToken } from "@app-hooks/use-token";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Toast from "react-native-simple-toast";
-import { addCard, buttonArrow, buttonArrowBlue, closeCard } from "@assets/images";
+import {
+  addCard,
+  buttonArrow,
+  buttonArrowBlue,
+  closeCard,
+} from "@assets/images";
 import { ButtonComponent } from "@components/button-component";
 import { useFocusEffect } from "@react-navigation/native";
 
 interface membershipModalProps {
   memberModal: boolean;
   onCancel?: () => void;
-  dataId:number | string;
-  successData?: () => void
+  dataId: number | string;
+  successData?: () => void;
 }
 
 export const MembershipCheckoutModal = (props: membershipModalProps) => {
   const { theme } = useAppTheme();
   const { strings } = useStringsAndLabels();
   const styles = createStyleSheet(theme);
-  const {memberModal, onCancel, dataId, successData} = props || {};
+  const { memberModal, onCancel, dataId, successData } = props || {};
   const [modalVisible, setModalVisible] = useState(false);
   // const [memberModal, setMemberModal] = useState(false);
   // const [postData, setDataEntries]: any = useState({});
@@ -68,25 +73,28 @@ export const MembershipCheckoutModal = (props: membershipModalProps) => {
   // const [tokens, setToken] = useState("");
   const [cardExpmonth, cardExpMonth] = useState("");
   const [cardExpyear, cardExpYears] = useState("");
-  const [MemberShipTitle, setMemberShipTitle]:any = useState();
+  const [MemberShipTitle, setMemberShipTitle]: any = useState();
 
   useEffect(() => {
-    console.log(memberModal, '--------------memberModal12345---------------')
+    console.log(memberModal, "--------------memberModal12345---------------");
     LogBox.ignoreAllLogs();
-    memberShipCheckoutAPI()
+    memberShipCheckoutAPI();
   }, []);
 
   // =================MemberShip Checkout API====================
 
   async function memberShipCheckoutAPI() {
     const token = await AsyncStorage.getItem("token");
-    console.log(token, '--------------------------')
+    console.log(token, "--------------------------");
     try {
-      console.log(dataId, "---------------dataId dataId------------------------------------");
+      console.log(
+        dataId,
+        "---------------dataId dataId------------------------------------"
+      );
       const response = await fetch(
         API_URL + "/v1/subscriptions/packages/" + dataId + "/checkout",
         // API_URL + "/v1/subscriptions/packages/" + '655f484562030949923d50c3' + "/checkout",
-        
+
         {
           method: "get",
           headers: new Headers({
@@ -101,7 +109,7 @@ export const MembershipCheckoutModal = (props: membershipModalProps) => {
       console.log("===========MemberShip checkout==============");
       console.log(dataItems);
       // setDatacheckout(dataItem);
-      setMemberShipTitle(dataItems?.data)
+      setMemberShipTitle(dataItems?.data);
       monthlyPlanData(dataItems?.data?.plans[0]);
       yearlyPlanData(dataItems?.data?.plans[1]);
       monthlyPrice(
@@ -113,75 +121,73 @@ export const MembershipCheckoutModal = (props: membershipModalProps) => {
       descriptionData(dataItems.data.description);
       addCardList(dataItems?.data?.card);
       console.log("=======================dsd==ds=d==========");
-      console.log(monthlyPlan, '-------------monthlyPlan-----------------');
-      console.log(yearlyPlan, '-------------yearlyPlan-------------');
+      console.log(monthlyPlan, "-------------monthlyPlan-----------------");
+      console.log(yearlyPlan, "-------------yearlyPlan-------------");
       console.log(description);
     } catch (error) {
       console.error(error);
     }
   }
 
+  // ================= Purchase API ====================
 
-    // ================= Purchase API ====================
-
-    async function onPurchaseAPI() {
-      LodingData(true);
-      if (isBilledMonthly) {
-        var purchesData: any = {
-          plan_id: monthlyPlan.plan_id,
-          price_id: monthlyPlan.price_id,
-          totalUnitsMonthly: monthPrice,
-        };
-      } else if (!isBilledMonthly) {
-        var purchesData: any = {
-          plan_id: yearlyPlan.plan_id,
-          price_id: yearlyPlan.price_id, 
-          totalUnitsMonthly: YerlyPrice,
-        };
-      }
-  
-      console.log(purchesData);
-  
-      console.log(idPackage);
-  
-      try {
-        const response = await fetch(
-          API_URL + "/v1/subscriptions/" + dataId + "/purchase",
-          // API_URL + "/v1/subscriptions/" + idPackage + "/purchase",
-          {
-            method: "post",
-            headers: new Headers({
-              Authorization: "Bearer " + token,
-              "Content-Type": "application/x-www-form-urlencoded",
-            }),
-            body: Object.keys(purchesData)
-              .map((key) => key + "=" + purchesData[key])
-              .join("&"),
-          }
-        );
-        const dataItem = await response.json();
-        LodingData(false);
-        console.log("=========== Purchase API ==============");
-        console.log(dataItem);
-        if (dataItem.success == true) {
-          // packageListAPI();
-          // userProfileUpdate();
-        
-          successData?.();
-          Toast.show(dataItem.message, Toast.LONG, {
-            backgroundColor: "black",
-          });
-        } else {
-          Toast.show(dataItem.message, Toast.LONG, {
-            backgroundColor: "black",
-          });
-        }
-      } catch (error) {
-        LodingData(false);
-        console.error(error);
-      }
+  async function onPurchaseAPI() {
+    LodingData(true);
+    if (isBilledMonthly) {
+      var purchesData: any = {
+        plan_id: monthlyPlan.plan_id,
+        price_id: monthlyPlan.price_id,
+        totalUnitsMonthly: monthPrice,
+      };
+    } else if (!isBilledMonthly) {
+      var purchesData: any = {
+        plan_id: yearlyPlan.plan_id,
+        price_id: yearlyPlan.price_id,
+        totalUnitsMonthly: YerlyPrice,
+      };
     }
 
+    console.log(purchesData);
+
+    console.log(idPackage);
+
+    try {
+      const response = await fetch(
+        API_URL + "/v1/subscriptions/" + dataId + "/purchase",
+        // API_URL + "/v1/subscriptions/" + idPackage + "/purchase",
+        {
+          method: "post",
+          headers: new Headers({
+            Authorization: "Bearer " + token,
+            "Content-Type": "application/x-www-form-urlencoded",
+          }),
+          body: Object.keys(purchesData)
+            .map((key) => key + "=" + purchesData[key])
+            .join("&"),
+        }
+      );
+      const dataItem = await response.json();
+      LodingData(false);
+      console.log("=========== Purchase API ==============");
+      console.log(dataItem);
+      if (dataItem.success == true) {
+        // packageListAPI();
+        // userProfileUpdate();
+
+        successData?.();
+        Toast.show(dataItem.message, Toast.LONG, {
+          backgroundColor: "black",
+        });
+      } else {
+        Toast.show(dataItem.message, Toast.LONG, {
+          backgroundColor: "black",
+        });
+      }
+    } catch (error) {
+      LodingData(false);
+      console.error(error);
+    }
+  }
 
   async function onCheckValidation() {
     LodingData(true);
@@ -205,130 +211,129 @@ export const MembershipCheckoutModal = (props: membershipModalProps) => {
     }
   }
 
-
-    // ======================Config API=========================
-    const ConfigListAPI = async () => {
-      const token = await AsyncStorage.getItem("token");
-      try {
-        const response = await fetch(API_URL + "/v1/config/list", {
-          method: "get",
-          headers: new Headers({
-            Authorization: "Bearer " + token,
-            "Content-Type": "application/x-www-form-urlencoded",
-          }),
-        });
-        const dataItem = await response.json();
-        console.log("-----------------add card config list------------");
-        const keyId = dataItem?.data?.stripe?.stripePublicKey;
-        console.log(dataItem);
-        setTimeout(() => {
-          cardStripeAPI(keyId);
-        }, 2000);
-        setTimeout(() => {
-          LodingData(false);
-        }, 7000);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-  
-    // ======================Stripe API=========================
-  
-    async function cardStripeAPI(stripeId: any) {
-      const genCard: any = {
-        "card[number]": cardnumber,
-        "card[exp_month]": cardExpmonth,
-        "card[exp_year]": cardExpyear,
-        "card[cvc]": cardCvv,
-      };
-  
-      console.log(genCard);
-  
-      const results = await fetch("https://api.stripe.com/v1/tokens", {
-        method: "post",
-        headers: {
-          Accept: "application/json",
+  // ======================Config API=========================
+  const ConfigListAPI = async () => {
+    const token = await AsyncStorage.getItem("token");
+    try {
+      const response = await fetch(API_URL + "/v1/config/list", {
+        method: "get",
+        headers: new Headers({
+          Authorization: "Bearer " + token,
           "Content-Type": "application/x-www-form-urlencoded",
-          Authorization: "Bearer " + stripeId,
-        },
-        body: Object.keys(genCard)
-          .map((key) => key + "=" + genCard[key])
-          .join("&"),
-      }).then((response) => response.json());
-  
-      const card_tok = results.id;
-  
+        }),
+      });
+      const dataItem = await response.json();
+      console.log("-----------------add card config list------------");
+      const keyId = dataItem?.data?.stripe?.stripePublicKey;
+      console.log(dataItem);
       setTimeout(() => {
-        if (results.id) {
-          CreateCardAPI(card_tok);
-          console.log("============CreateCardAPI============");
-        }
-      }, 3000);
-  
-      console.log("================card stripe api==================");
-      console.log(results);
-  
-      if (results.error) {
-        Toast.show(results.error.message, Toast.LONG, {
-          backgroundColor: "black",
-        });
-      }
-  
-      return;
+        cardStripeAPI(keyId);
+      }, 2000);
+      setTimeout(() => {
+        LodingData(false);
+      }, 7000);
+    } catch (error) {
+      console.error(error);
     }
-  
-    // ======================Create Card API=========================
-    async function CreateCardAPI(cardId: any) {
-      const token = await AsyncStorage.getItem("token");
-      var cardtokenData: any = {
-        token: cardId,
-      };
-      try {
-        const response = await fetch(API_URL + "/v1/subscriptions/cards/create", {
-          method: "post",
-          headers: new Headers({
-            Authorization: "Bearer " + token,
-            "Content-Type": "application/x-www-form-urlencoded",
-          }),
-          body: Object.keys(cardtokenData)
-            .map((key) => key + "=" + cardtokenData[key])
-            .join("&"),
-        });
-        console.log(cardId);
-        const dataItem = await response.json();
-        console.log("-----------------create card------------");
-        console.log(dataItem);
-        cardNumberData("");
-        cardExpMonth("");
-        cardExpYears("");
-        cardCVVData("");
-        setDate("");
-        memberShipCheckoutAPI();
-        if (dataItem.success == true) {
-          addCardModal(false);
-        }
-        Toast.show(dataItem.message, Toast.LONG, {
-          backgroundColor: "black",
-        });
-      } catch (error) {
-        console.error(error);
+  };
+
+  // ======================Stripe API=========================
+
+  async function cardStripeAPI(stripeId: any) {
+    const genCard: any = {
+      "card[number]": cardnumber,
+      "card[exp_month]": cardExpmonth,
+      "card[exp_year]": cardExpyear,
+      "card[cvc]": cardCvv,
+    };
+
+    console.log(genCard);
+
+    const results = await fetch("https://api.stripe.com/v1/tokens", {
+      method: "post",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/x-www-form-urlencoded",
+        Authorization: "Bearer " + stripeId,
+      },
+      body: Object.keys(genCard)
+        .map((key) => key + "=" + genCard[key])
+        .join("&"),
+    }).then((response) => response.json());
+
+    const card_tok = results.id;
+
+    setTimeout(() => {
+      if (results.id) {
+        CreateCardAPI(card_tok);
+        console.log("============CreateCardAPI============");
       }
+    }, 3000);
+
+    console.log("================card stripe api==================");
+    console.log(results);
+
+    if (results.error) {
+      Toast.show(results.error.message, Toast.LONG, {
+        backgroundColor: "black",
+      });
     }
 
-    const addCardModalHide = () => {
-      addCardModal(false);
+    return;
+  }
+
+  // ======================Create Card API=========================
+  async function CreateCardAPI(cardId: any) {
+    const token = await AsyncStorage.getItem("token");
+    var cardtokenData: any = {
+      token: cardId,
+    };
+    try {
+      const response = await fetch(API_URL + "/v1/subscriptions/cards/create", {
+        method: "post",
+        headers: new Headers({
+          Authorization: "Bearer " + token,
+          "Content-Type": "application/x-www-form-urlencoded",
+        }),
+        body: Object.keys(cardtokenData)
+          .map((key) => key + "=" + cardtokenData[key])
+          .join("&"),
+      });
+      console.log(cardId);
+      const dataItem = await response.json();
+      console.log("-----------------create card------------");
+      console.log(dataItem);
       cardNumberData("");
       cardExpMonth("");
       cardExpYears("");
       cardCVVData("");
       setDate("");
-    };
+      memberShipCheckoutAPI();
+      if (dataItem.success == true) {
+        addCardModal(false);
+      }
+      Toast.show(dataItem.message, Toast.LONG, {
+        backgroundColor: "black",
+      });
+    } catch (error) {
+      console.error(error);
+    }
+  }
 
-    const onOpenModal = () => {
-      // addcardRef.current?.onOpenModal();
-      addCardModal(true);
-    };
-    
+  const addCardModalHide = () => {
+    addCardModal(false);
+    cardNumberData("");
+    cardExpMonth("");
+    cardExpYears("");
+    cardCVVData("");
+    setDate("");
+  };
+
+  const onOpenModal = () => {
+    // addcardRef.current?.onOpenModal();
+    addCardModal(true);
+  };
+
   const memberShipHide = () => {
     onCancel?.();
     // setMemberModal(false);
@@ -607,7 +612,9 @@ export const MembershipCheckoutModal = (props: membershipModalProps) => {
                         source={{ uri: MemberShipTitle?.role_image }}
                         style={[styles.icon1]}
                       />
-                      <Text style={styles.label1}>{MemberShipTitle?.title}</Text>
+                      <Text style={styles.label1}>
+                        {MemberShipTitle?.title}
+                      </Text>
                     </TouchableOpacity>
                     <View style={styles.selectContainer}>
                       <TouchableOpacity

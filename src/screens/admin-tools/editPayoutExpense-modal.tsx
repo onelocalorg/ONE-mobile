@@ -475,7 +475,6 @@ export const EditPayoutModalScreen = (props: EditBreakDownModalProps) => {
       (person: any) => person !== imageItem.key
     );
     setImageSelectArrayKey(newImageKey);
-
   };
 
   const onBackPress = () => {

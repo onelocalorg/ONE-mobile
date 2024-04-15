@@ -1,11 +1,11 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, {useCallback} from 'react';
-import {PaymentSheet, useStripe} from '@stripe/stripe-react-native';
+import React, { useCallback } from "react";
+import { PaymentSheet, useStripe } from "@stripe/stripe-react-native";
 import {
   NavigationContainerRef,
   ParamListBase,
   useFocusEffect,
-} from '@react-navigation/native';
+} from "@react-navigation/native";
 
 interface PaymentScreenProps {
   navigation?: NavigationContainerRef<ParamListBase>;
@@ -18,17 +18,20 @@ interface PaymentScreenProps {
 }
 
 export const PaymentScreen = (props: PaymentScreenProps) => {
-  const {route, navigation} = props || {};
-  const {clientSecret, onSuccess} = route?.params ?? {};
-  const {initPaymentSheet, presentPaymentSheet} = useStripe();
+  const { route, navigation } = props || {};
+  const { clientSecret, onSuccess } = route?.params ?? {};
+  const { initPaymentSheet, presentPaymentSheet } = useStripe();
 
   const initializePaymentSheet = async () => {
-    console.log('-------------------------initializePaymentSheet---------------------',initPaymentSheet)
+    console.log(
+      "-------------------------initializePaymentSheet---------------------",
+      initPaymentSheet
+    );
     try {
       await initPaymentSheet({
-        paymentIntentClientSecret: clientSecret ?? '',
-        merchantDisplayName: 'Bold Boulder',
-        style: 'automatic',
+        paymentIntentClientSecret: clientSecret ?? "",
+        merchantDisplayName: "Bold Boulder",
+        style: "automatic",
         billingDetailsCollectionConfiguration: {
           address: PaymentSheet.AddressCollectionMode.FULL,
           name: PaymentSheet.CollectionMode.ALWAYS,
@@ -46,11 +49,17 @@ export const PaymentScreen = (props: PaymentScreenProps) => {
   const openPaymentSheet = async () => {
     try {
       const res = await presentPaymentSheet();
-      console.log('-------------------------openPaymentSheet---------------------',res)
-      if (res?.error?.code === 'Canceled') {
+      console.log(
+        "-------------------------openPaymentSheet---------------------",
+        res
+      );
+      if (res?.error?.code === "Canceled") {
         navigation?.goBack();
       } else {
-        console.log('-----------------onSuccess call-----------------',onSuccess)
+        console.log(
+          "-----------------onSuccess call-----------------",
+          onSuccess
+        );
         onSuccess?.();
       }
     } catch (err) {
@@ -63,7 +72,7 @@ export const PaymentScreen = (props: PaymentScreenProps) => {
       if (clientSecret) {
         initializePaymentSheet();
       }
-    }, [clientSecret]),
+    }, [clientSecret])
   );
 
   return <></>;

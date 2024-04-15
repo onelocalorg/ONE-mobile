@@ -1,23 +1,23 @@
-import {screenHeight} from '@assets/constants';
-import {verticalScale} from '@theme/device/normalize';
-import {ThemeProps} from '@theme/theme';
-import {StyleSheet} from 'react-native';
+import { screenHeight } from "@assets/constants";
+import { verticalScale } from "@theme/device/normalize";
+import { ThemeProps } from "@theme/theme";
+import { StyleSheet } from "react-native";
 
 export const createStyleSheet = (theme: ThemeProps) =>
   StyleSheet.create({
     container: {
-      alignItems: 'center',
-      justifyContent: 'center',
+      alignItems: "center",
+      justifyContent: "center",
       backgroundColor: theme.colors.white,
       flex: 1,
-      position: 'absolute',
+      position: "absolute",
       top: 0,
       bottom: 0,
       left: 0,
       right: 0,
       zIndex: 1000,
       // height: screenHeight,
-      height: '100%',
+      height: "100%",
     },
     overlay: {
       zIndex: 10,
@@ -25,8 +25,8 @@ export const createStyleSheet = (theme: ThemeProps) =>
     },
     spinner: {
       height: verticalScale(40),
-      justifyContent: 'center',
-      alignItems: 'center',
-      width: '100%',
+      justifyContent: "center",
+      alignItems: "center",
+      width: "100%",
     },
   });

@@ -1,13 +1,13 @@
 import {
   checkConnectivity,
   InternetConnectionState,
-} from '@network/reducers/internet-connection-handle-reducer';
-import {StoreType} from '@network/reducers/store';
-import {useDispatch, useSelector} from 'react-redux';
+} from "@network/reducers/internet-connection-handle-reducer";
+import { StoreType } from "@network/reducers/store";
+import { useDispatch, useSelector } from "react-redux";
 
 export const useInternetConnectionHandle = () => {
-  const {isConnected} = useSelector<StoreType, InternetConnectionState>(
-    state => state.internetConnectionHandleReducer,
+  const { isConnected } = useSelector<StoreType, InternetConnectionState>(
+    (state) => state.internetConnectionHandleReducer
   );
   const dispatch = useDispatch();
 
@@ -15,5 +15,5 @@ export const useInternetConnectionHandle = () => {
     dispatch(checkConnectivity(payload));
   };
 
-  return {isConnected, checkConnectivity: updateConnectivityState};
+  return { isConnected, checkConnectivity: updateConnectivityState };
 };

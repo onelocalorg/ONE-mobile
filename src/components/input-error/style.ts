@@ -1,12 +1,12 @@
-import {lineHeightScale, normalScale} from '@theme/device/normalize';
-import {ThemeProps} from '@theme/theme';
-import {StyleSheet} from 'react-native';
+import { lineHeightScale, normalScale } from "@theme/device/normalize";
+import { ThemeProps } from "@theme/theme";
+import { StyleSheet } from "react-native";
 
 export const createStyleSheet = (theme: ThemeProps) =>
   StyleSheet.create({
     container: {
-      flexDirection: 'row',
-      alignItems: 'center',
+      flexDirection: "row",
+      alignItems: "center",
     },
     errorIcon: {
       width: normalScale(15),

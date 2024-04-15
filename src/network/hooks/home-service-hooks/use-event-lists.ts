@@ -1,5 +1,5 @@
-import {onFetchEvents} from '@network/api/services/home-service';
-import {useMutation} from '@tanstack/react-query';
+import { onFetchEvents } from "@network/api/services/home-service";
+import { useMutation } from "@tanstack/react-query";
 
 interface Root {
   results: Result[];
@@ -23,20 +23,20 @@ export interface Result {
   tickets: Ticket[];
   id: string;
   is_event_owner: boolean;
-  quantity:string
-  max_quantity_to_show:string
-  available_quantity:string
-  cancelled:boolean;
-  date_title:string;
-  day_title:string;
+  quantity: string;
+  max_quantity_to_show: string;
+  available_quantity: string;
+  cancelled: boolean;
+  date_title: string;
+  day_title: string;
   isPayout: boolean;
-  viewCount:number;
-  start_time_label:string;
-  start_date_label:string;
-  events:[];
-  lat:number | undefined;
-  long:number | undefined;
-  event_image_id:string;
+  viewCount: number;
+  start_time_label: string;
+  start_date_label: string;
+  events: [];
+  lat: number | undefined;
+  long: number | undefined;
+  event_image_id: string;
 }
 
 interface EventProducer {
@@ -63,9 +63,9 @@ export interface Ticket {
   price: string;
   id?: string;
   is_ticket_purchased?: string;
-  quantity:string;
-  max_quantity_to_show:string
-  available_quantity:any
+  quantity: string;
+  max_quantity_to_show: string;
+  available_quantity: any;
 }
 
 const parsedEventLists = (data: Root) => {
@@ -75,5 +75,5 @@ const parsedEventLists = (data: Root) => {
 export const useEventLists = () => {
   const query = useMutation(onFetchEvents);
 
-  return {...query, data: parsedEventLists(query?.data?.data)};
+  return { ...query, data: parsedEventLists(query?.data?.data) };
 };

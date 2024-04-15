@@ -1,7 +1,7 @@
-import {light} from '@assets/constants';
-import {colors} from './colors';
-import {borderRadius, borderWidth, opacity, size, type} from './fonts';
-import {ThemeProps} from './theme';
+import { light } from "@assets/constants";
+import { colors } from "./colors";
+import { borderRadius, borderWidth, opacity, size, type } from "./fonts";
+import { ThemeProps } from "./theme";
 
 const defaultTheme: ThemeProps = {
   fontType: type,
@@ -12,7 +12,7 @@ const defaultTheme: ThemeProps = {
   borderWidth,
 };
 
-export const getTheme = (mode: 'light' | 'dark') => {
+export const getTheme = (mode: "light" | "dark") => {
   if (mode === light) {
     return defaultTheme;
   }

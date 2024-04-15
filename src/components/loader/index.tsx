@@ -1,7 +1,7 @@
-import {useAppTheme} from '@app-hooks/use-app-theme';
-import React from 'react';
-import {ActivityIndicator, StyleProp, View, ViewStyle} from 'react-native';
-import {createStyleSheet} from './style';
+import { useAppTheme } from "@app-hooks/use-app-theme";
+import React from "react";
+import { ActivityIndicator, StyleProp, View, ViewStyle } from "react-native";
+import { createStyleSheet } from "./style";
 
 export interface LoaderProps {
   showOverlay?: boolean;
@@ -11,11 +11,11 @@ export interface LoaderProps {
   paginationLoaderStyle?: StyleProp<ViewStyle>;
   loaderStyle?: StyleProp<ViewStyle>;
   containerStyle?: StyleProp<ViewStyle>;
-  size?: number | 'small' | 'large';
+  size?: number | "small" | "large";
 }
 
 export const Loader = (props: LoaderProps) => {
-  const {theme} = useAppTheme();
+  const { theme } = useAppTheme();
   const styles = createStyleSheet(theme);
   const {
     showOverlay = false,
@@ -24,7 +24,7 @@ export const Loader = (props: LoaderProps) => {
     paginationLoader = false,
     paginationLoaderStyle,
     containerStyle,
-    size = 'large',
+    size = "large",
   } = props || {};
 
   if (!visible) {
@@ -45,7 +45,8 @@ export const Loader = (props: LoaderProps) => {
 
   return (
     <View
-      style={[styles.container, showOverlay && styles.overlay, containerStyle]}>
+      style={[styles.container, showOverlay && styles.overlay, containerStyle]}
+    >
       {renderLoader()}
     </View>
   );

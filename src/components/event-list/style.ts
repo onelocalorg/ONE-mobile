@@ -1,6 +1,6 @@
-import { normalScale, verticalScale } from '@theme/device/normalize';
-import { ThemeProps } from '@theme/theme';
-import { StyleSheet } from 'react-native';
+import { normalScale, verticalScale } from "@theme/device/normalize";
+import { ThemeProps } from "@theme/theme";
+import { StyleSheet } from "react-native";
 
 export const createStyleSheet = (theme: ThemeProps) => {
   return StyleSheet.create({
@@ -11,7 +11,7 @@ export const createStyleSheet = (theme: ThemeProps) => {
       paddingVertical: verticalScale(8),
       paddingHorizontal: normalScale(8),
       backgroundColor: theme.colors.white,
-      flexDirection: 'row',
+      flexDirection: "row",
       marginTop: verticalScale(13),
       shadowColor: theme.colors.darkGrey,
       shadowOffset: { width: 1, height: 2 },
@@ -26,7 +26,7 @@ export const createStyleSheet = (theme: ThemeProps) => {
     },
     flex: {
       flex: 1,
-      overflow:'hidden',
+      overflow: "hidden",
     },
     dateText: {
       fontFamily: theme.fontType.light,
@@ -40,7 +40,7 @@ export const createStyleSheet = (theme: ThemeProps) => {
       color: theme.colors.black,
       // marginBottom: verticalScale(7),
       maxWidth: normalScale(200),
-      flexShrink:1
+      flexShrink: 1,
     },
     event: {
       height: normalScale(32),
@@ -48,21 +48,21 @@ export const createStyleSheet = (theme: ThemeProps) => {
       marginLeft: normalScale(12),
     },
     row: {
-      flexDirection: 'row',
+      flexDirection: "row",
       flex: 1,
     },
     pin: {
       height: normalScale(14),
       width: normalScale(14),
       marginRight: normalScale(8),
-      marginTop: normalScale(6)
+      marginTop: normalScale(6),
     },
     location: {
       fontFamily: theme.fontType.light,
       fontSize: theme.fontSize.font12,
       color: theme.colors.black,
-      flexShrink:1,
-      marginTop: normalScale(6)
+      flexShrink: 1,
+      marginTop: normalScale(6),
     },
     fullAddress: {
       fontFamily: theme.fontType.light,
@@ -71,16 +71,17 @@ export const createStyleSheet = (theme: ThemeProps) => {
     },
     addressDot: {
       height: 6,
-      width: 6, marginVertical: 5,
-      marginHorizontal: 5
+      width: 6,
+      marginVertical: 5,
+      marginHorizontal: 5,
     },
-    cancleText:{
-      position:'absolute',
-      right:0,
-      top:35,
-      fontFamily:theme.fontType.medium,
-      fontSize:theme.fontSize.font14,
-      color:theme.colors.redTwo
-    }
+    cancleText: {
+      position: "absolute",
+      right: 0,
+      top: 35,
+      fontFamily: theme.fontType.medium,
+      fontSize: theme.fontSize.font14,
+      color: theme.colors.redTwo,
+    },
   });
 };

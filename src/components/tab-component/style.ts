@@ -1,6 +1,6 @@
-import {normalScale, verticalScale} from '@theme/device/normalize';
-import {ThemeProps} from '@theme/theme';
-import {StyleSheet} from 'react-native';
+import { normalScale, verticalScale } from "@theme/device/normalize";
+import { ThemeProps } from "@theme/theme";
+import { StyleSheet } from "react-native";
 
 export const createStyleSheet = (theme: ThemeProps) => {
   return StyleSheet.create({
@@ -28,8 +28,8 @@ export const createStyleSheet = (theme: ThemeProps) => {
       color: theme.colors.black,
     },
     tabContainer: {
-      flexDirection: 'row',
-      justifyContent: 'space-between',
+      flexDirection: "row",
+      justifyContent: "space-between",
       paddingHorizontal: normalScale(25),
     },
   });

@@ -37,19 +37,20 @@ export const MyEvents = (props: MyEventsProps) => {
 
   useFocusEffect(
     useCallback(() => {
-      console.log('--------------useFocusEffect getEventListAPI------------------');
+      console.log(
+        "--------------useFocusEffect getEventListAPI------------------"
+      );
       getEventListsAPI();
-    }, [page]),
+    }, [page])
   );
 
   useFocusEffect(
     useCallback(() => {
       onPageLoad(false);
-      setPage(1); 
+      setPage(1);
       setEvents([]);
-    }, []),
+    }, [])
   );
-
 
   const getEventListsAPI = async () => {
     const res = await mutateAsync({
@@ -57,19 +58,19 @@ export const MyEvents = (props: MyEventsProps) => {
       userId,
     });
 
-    var dataTemp = [...events, ...res?.data.results]; 
+    var dataTemp = [...events, ...res?.data.results];
     setEvents(dataTemp);
 
     setTotalPages(res?.data?.totalPages);
     setCurrentPage(res?.data?.page);
-    if(events.length !== 0){
+    if (events.length !== 0) {
       onPageLoad(true);
     }
   };
 
   const onLoadMoreData = () => {
     if (totalPages !== currentPages) {
-      setPage(page + 1); 
+      setPage(page + 1);
     }
   };
 
@@ -125,9 +126,11 @@ export const MyEvents = (props: MyEventsProps) => {
         }}
         onEndReachedThreshold={0.8}
       ></FlatList>
-      {events.length === 0 ?
-      <Text style={styles.noMoreTitle}>{strings.noEventsFound}</Text>:<></>}
-      
+      {events.length === 0 ? (
+        <Text style={styles.noMoreTitle}>{strings.noEventsFound}</Text>
+      ) : (
+        <></>
+      )}
     </View>
   );
 };

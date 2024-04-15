@@ -1,14 +1,14 @@
-import { width } from '@theme/device/device';
-import {normalScale, verticalScale} from '@theme/device/normalize';
-import {ThemeProps} from '@theme/theme';
-import {StyleSheet} from 'react-native';
+import { width } from "@theme/device/device";
+import { normalScale, verticalScale } from "@theme/device/normalize";
+import { ThemeProps } from "@theme/theme";
+import { StyleSheet } from "react-native";
 
 export const createStyleSheet = (theme: ThemeProps) => {
   return StyleSheet.create({
     pillContainer: {
-      alignSelf: 'center',
+      alignSelf: "center",
       marginTop: -verticalScale(15),
-      paddingBottom:15
+      paddingBottom: 15,
     },
     container: {
       paddingHorizontal: normalScale(20),
@@ -31,7 +31,7 @@ export const createStyleSheet = (theme: ThemeProps) => {
       marginBottom: verticalScale(10),
     },
     rowOnly: {
-      flexDirection: 'row',
+      flexDirection: "row",
     },
     imageView: {
       borderRadius: normalScale(60),
@@ -62,25 +62,25 @@ export const createStyleSheet = (theme: ThemeProps) => {
       color: theme.colors.black,
       marginBottom: verticalScale(2),
       marginTop: verticalScale(4),
-      flexShrink:1
+      flexShrink: 1,
     },
     pillStyle: {
-      justifyContent: 'center',
+      justifyContent: "center",
     },
     localText: {
-      textAlign: 'center',
+      textAlign: "center",
       fontSize: 14,
-      fontWeight: '400',
-      color: 'white',
-      position:'relative',
-      bottom:13
+      fontWeight: "400",
+      color: "white",
+      position: "relative",
+      bottom: 13,
     },
     profileView: {
       // marginTop: verticalScale(10),
-      alignSelf: 'flex-end',
-      position:'absolute',
-      right:5,
-      bottom:30
+      alignSelf: "flex-end",
+      position: "absolute",
+      right: 5,
+      bottom: 30,
     },
 
     HeaderContainerTwo: {
@@ -91,30 +91,30 @@ export const createStyleSheet = (theme: ThemeProps) => {
       // position: 'relative',
     },
     row2: {
-      position: 'absolute',
+      position: "absolute",
       top: 52,
       left: 10,
       height: normalScale(30),
       width: normalScale(30),
-      zIndex:11111222222,
-      paddingLeft:4,
-      paddingTop:4
+      zIndex: 11111222222,
+      paddingLeft: 4,
+      paddingTop: 4,
     },
     arrowLeft: {
       height: normalScale(22),
       width: normalScale(22),
     },
     searchContainer: {
-      backgroundColor: 'rgba(255, 255, 255, 0.1)',
+      backgroundColor: "rgba(255, 255, 255, 0.1)",
       height: 35,
       width: 100,
       borderRadius: 10,
-      flexDirection: 'row',
+      flexDirection: "row",
       marginLeft: 8,
-      position: 'absolute',
+      position: "absolute",
       bottom: 20,
       color: theme.colors.white,
-      zIndex:11111222
+      zIndex: 11111222,
     },
     searchInput: {
       flexShrink: 1,
@@ -122,46 +122,46 @@ export const createStyleSheet = (theme: ThemeProps) => {
       marginRight: 5,
       height: 35,
       width: 120,
-      color: theme.colors.white
+      color: theme.colors.white,
     },
     searchIcon: {
       height: 15,
       width: 15,
       marginTop: 10,
-      marginLeft: 5
+      marginLeft: 5,
     },
     oneContainer: {
-      flexDirection: 'row',
-      justifyContent: 'center',
-      position: 'relative',
+      flexDirection: "row",
+      justifyContent: "center",
+      position: "relative",
       top: 50,
     },
     oneContainerImage: {
       height: 60,
       width: 60,
       marginTop: 10,
-      marginLeft: 5
+      marginLeft: 5,
     },
     oneContainerText: {
-      textAlign: 'center',
+      textAlign: "center",
       fontSize: 60,
-      fontWeight: '400',
+      fontWeight: "400",
       color: theme.colors.white,
       marginLeft: 2,
     },
     profileContainer: {
-      position: 'absolute',
+      position: "absolute",
       right: 10,
-      bottom: 0
+      bottom: 0,
     },
     bellIcon: {
       height: 22,
       width: 22,
-      position: 'absolute',
+      position: "absolute",
       right: 0,
-      bottom:50,
+      bottom: 50,
       zIndex: 11111122,
-      borderRadius:100
+      borderRadius: 100,
     },
     profileImage: {
       height: normalScale(55),

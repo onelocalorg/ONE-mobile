@@ -1,5 +1,5 @@
-import {forwardRef, useImperativeHandle, useState} from 'react';
-import {Calendar, LocaleConfig} from 'react-native-calendars';
+import { forwardRef, useImperativeHandle, useState } from "react";
+import { Calendar, LocaleConfig } from "react-native-calendars";
 
 interface CalenderComponentProps {}
 
@@ -10,18 +10,18 @@ export type CalenderRefProps = {
 
 export const CalenderComponent = (
   props: CalenderComponentProps,
-  ref: React.Ref<unknown> | undefined,
+  ref: React.Ref<unknown> | undefined
 ) => {
   const {} = props || {};
-  const [selected, setSelected] = useState('');
+  const [selected, setSelected] = useState("");
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
   const [showPicker, setShowPicker] = useState(false);
-  const [pickerType, setPickerType] = useState('');
+  const [pickerType, setPickerType] = useState("");
 
   useImperativeHandle(ref, () => ({
-    onOpenModal(type: 'start' | 'end') {
-      if (type === 'start') {
+    onOpenModal(type: "start" | "end") {
+      if (type === "start") {
         showStartDatePicker();
         return;
       }
@@ -34,18 +34,18 @@ export const CalenderComponent = (
 
   const showStartDatePicker = () => {
     setShowPicker(true);
-    setPickerType('start');
+    setPickerType("start");
   };
 
   const showEndDatePicker = () => {
     setShowPicker(true);
-    setPickerType('end');
+    setPickerType("end");
   };
 
   return (
     <Calendar
       ref={ref}
-      onDayPress={day => {
+      onDayPress={(day) => {
         setSelected(day.dateString);
       }}
       markedDates={{

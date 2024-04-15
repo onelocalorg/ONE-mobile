@@ -149,10 +149,10 @@ export const About = (props: AboutDataProps) => {
   const onCheckReleaseHideShow = () => {
     if (Platform.OS === "ios") {
       const isShowPaymentCheck = getData("isShowPaymentFlow");
-      return isShowPaymentCheck
-    } else{
+      return isShowPaymentCheck;
+    } else {
       const isShowPaymentCheckAndroid = getData("isShowPaymentFlowAndroid");
-      return isShowPaymentCheckAndroid
+      return isShowPaymentCheckAndroid;
     }
   };
 
@@ -259,7 +259,6 @@ export const About = (props: AboutDataProps) => {
     }
   }
 
-
   // ================= Cancle Subscription API ====================
 
   async function cancleSubscriptionAPI() {
@@ -336,7 +335,7 @@ export const About = (props: AboutDataProps) => {
   };
 
   const memberShipClick = async (id: any) => {
-    console.log(id,'event detail');
+    console.log(id, "event detail");
     setTimeout(() => {
       setMemberModal(true);
     }, 1000);
@@ -352,7 +351,7 @@ export const About = (props: AboutDataProps) => {
     setModalVisible(false);
     packageListAPI();
     userProfileUpdate();
-  }
+  };
 
   const addCardModalHide = () => {
     addCardModal(false);
@@ -787,12 +786,12 @@ export const About = (props: AboutDataProps) => {
                   })} */}
                   </KeyboardAvoidingView>
 
-                <MembershipCheckoutModal
-                memberModal = {memberModal}
-                onCancel={memberShipHide}
-                dataId={postData.id}
-                successData={memberShipModalClose}
-                /> 
+                  <MembershipCheckoutModal
+                    memberModal={memberModal}
+                    onCancel={memberShipHide}
+                    dataId={postData.id}
+                    successData={memberShipModalClose}
+                  />
                 </Modal>
               </TouchableOpacity>
             </GestureRecognizer>
@@ -894,7 +893,13 @@ export const About = (props: AboutDataProps) => {
         <View>
           <Modal transparent={false} animationType="slide" visible={openQues}>
             <View>
-              <View style={Platform.OS === 'ios' ? styles.HeaderContainerIOS : styles.HeaderContainerAdroid}>
+              <View
+                style={
+                  Platform.OS === "ios"
+                    ? styles.HeaderContainerIOS
+                    : styles.HeaderContainerAdroid
+                }
+              >
                 <TouchableOpacity
                   onPress={() => {
                     updateAnsBack();

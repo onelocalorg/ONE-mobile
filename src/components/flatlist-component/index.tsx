@@ -1,7 +1,7 @@
-import {useAppTheme} from '@app-hooks/use-app-theme';
-import {useStringsAndLabels} from '@app-hooks/use-strings-and-labels';
-import {Loader} from '@components/loader';
-import React, {useState} from 'react';
+import { useAppTheme } from "@app-hooks/use-app-theme";
+import { useStringsAndLabels } from "@app-hooks/use-strings-and-labels";
+import { Loader } from "@components/loader";
+import React, { useState } from "react";
 import {
   FlatList,
   FlatListProps,
@@ -9,11 +9,11 @@ import {
   Text,
   View,
   ViewStyle,
-} from 'react-native';
+} from "react-native";
 
-import {createStyleSheet} from './style';
+import { createStyleSheet } from "./style";
 
-type ComponentType = 'flatList' | 'scrollView';
+type ComponentType = "flatList" | "scrollView";
 
 export interface EmptyComponentData {
   title?: string;
@@ -37,7 +37,7 @@ export interface ListProps<ItemT> extends FlatListProps<ItemT> {
 
 export function FlatListComponent<ItemT>(props: ListProps<ItemT>) {
   const {
-    componentType = 'flatList',
+    componentType = "flatList",
     keyExtractor = (item: ItemT, index: number) => index.toString(),
     dataLength = 10,
     onLoadMoreData,
@@ -48,11 +48,11 @@ export function FlatListComponent<ItemT>(props: ListProps<ItemT>) {
     currentPage = 1,
     ...remainingProps
   } = props;
-  const {theme} = useAppTheme();
+  const { theme } = useAppTheme();
   const styles = createStyleSheet(theme);
-  const {strings: stringsAndLabels} = useStringsAndLabels();
+  const { strings: stringsAndLabels } = useStringsAndLabels();
   const [paginationLoader, setPaginationLoader] = useState(false);
-  const {title} = emptyComponentData || {};
+  const { title } = emptyComponentData || {};
 
   const listFooterComponent = () => {
     const endReached = totalPages <= currentPage;
@@ -78,7 +78,7 @@ export function FlatListComponent<ItemT>(props: ListProps<ItemT>) {
     </View>
   );
 
-  if (componentType === 'flatList') {
+  if (componentType === "flatList") {
     return (
       <FlatList
         showsHorizontalScrollIndicator={false}

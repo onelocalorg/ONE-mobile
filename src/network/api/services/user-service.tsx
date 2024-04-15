@@ -1,6 +1,6 @@
-import { apiConstants } from '@network/constant';
-import { API } from '..';
-import { getApiResponse } from '@network/utils/get-api-response';
+import { apiConstants } from "@network/constant";
+import { API } from "..";
+import { getApiResponse } from "@network/utils/get-api-response";
 
 interface LoginProps {
   emailOrMobile: string;
@@ -51,50 +51,58 @@ interface EditProfileProps {
     coverImage?: string;
     first_name?: string;
     last_name?: string;
-    nick_name?:string;
+    nick_name?: string;
   };
   userId: string;
 }
 
 export const onEditUserProfile = async (props: EditProfileProps) => {
   const { bodyParams, userId } = props || {};
-  const { skills, about, bio, profile, coverImage,first_name,last_name,nick_name } = bodyParams || {};
+  const {
+    skills,
+    about,
+    bio,
+    profile,
+    coverImage,
+    first_name,
+    last_name,
+    nick_name,
+  } = bodyParams || {};
   let response;
   try {
-
-    const picData = { 
+    const picData = {
       uri: profile,
-      type: 'jpg',
-      name: 'profile.jpg',
-    }
+      type: "jpg",
+      name: "profile.jpg",
+    };
 
     const coverImgData = {
       uri: coverImage,
-      type: 'jpg',
-      name: 'coverImage.jpg',
-    }
+      type: "jpg",
+      name: "coverImage.jpg",
+    };
 
     const attachments = {
-      'pic': JSON.stringify(picData),
+      pic: JSON.stringify(picData),
       // 'cover_image' : JSON.stringify(coverImgData),
-      'about': about,
-      'skills': skills?.toString(),
-      'bio': bio,
-      'first_name':first_name,
-      'last_name':last_name,
-      'nick_name':nick_name
-    }
- 
+      about: about,
+      skills: skills?.toString(),
+      bio: bio,
+      first_name: first_name,
+      last_name: last_name,
+      nick_name: nick_name,
+    };
+
     const endPoint = `${apiConstants.editProfile}${userId}`;
     const data = await API.userService.patch(endPoint, attachments, {
       headers: {
-        'content-type': 'application/json; charset=UTF-8',
+        "content-type": "application/json; charset=UTF-8",
       },
     });
     response = getApiResponse(data);
   } catch (error: any) {
     response = getApiResponse(error);
-    console.log('response=== profile page', response, error);
+    console.log("response=== profile page", response, error);
   }
 
   return response;

@@ -1,6 +1,6 @@
-import {normalScale, verticalScale} from '@theme/device/normalize';
-import {ThemeProps} from '@theme/theme';
-import {StyleSheet} from 'react-native';
+import { normalScale, verticalScale } from "@theme/device/normalize";
+import { ThemeProps } from "@theme/theme";
+import { StyleSheet } from "react-native";
 
 export const createStyleSheet = (theme: ThemeProps) => {
   return StyleSheet.create({
@@ -13,7 +13,7 @@ export const createStyleSheet = (theme: ThemeProps) => {
       textColor: theme.colors.black,
     },
     card: {
-      width: '100%',
+      width: "100%",
       height: verticalScale(50),
       marginVertical: verticalScale(30),
     },

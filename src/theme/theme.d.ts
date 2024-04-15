@@ -29,7 +29,6 @@ export interface ThemeProps {
     font36: number;
     font40: number;
     font64: number;
-    
   };
   colors: {
     white: string;
@@ -52,22 +51,22 @@ export interface ThemeProps {
     lightRed: string;
     darkGreen: string;
     lightblue: string;
-    choco:string;
-    lightBlueTwo:string;
-    sky:string;
-    lightgrayTwo:string;
-    darkRed:string;
-    darkyellow:string;
-    greenBdr:string;
-    redTwo:string;
-    darkenBlack:string;
-    gray:string;
-    lightGray:string;
-    appColor:string;
-    headerColor:string;
-    footerColor:string;
-    splashColor:string;
-    purpleDark:string;
+    choco: string;
+    lightBlueTwo: string;
+    sky: string;
+    lightgrayTwo: string;
+    darkRed: string;
+    darkyellow: string;
+    greenBdr: string;
+    redTwo: string;
+    darkenBlack: string;
+    gray: string;
+    lightGray: string;
+    appColor: string;
+    headerColor: string;
+    footerColor: string;
+    splashColor: string;
+    purpleDark: string;
   };
   opacity: {
     opacity15: number;

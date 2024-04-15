@@ -1,9 +1,9 @@
 import {
   TickeHolderProps,
   onFetchTicketHolderList,
-} from '@network/api/services/home-service';
-import {apiKeys} from '@network/constant';
-import {useQuery} from '@tanstack/react-query';
+} from "@network/api/services/home-service";
+import { apiKeys } from "@network/constant";
+import { useQuery } from "@tanstack/react-query";
 
 export interface Root {
   results: Result[];
@@ -21,7 +21,7 @@ export interface Result {
   ticket_name: string;
   stripe_response: StripeResponse;
   ticket_price: string;
-  ticket_total_price:string;
+  ticket_total_price: string;
   _id: string;
   is_app_user: number;
 }
@@ -86,8 +86,8 @@ export const useTicketHolderCheckinsList = (props: TickeHolderProps) => {
   const query = useQuery(
     [apiKeys.ticketHolderCheckins],
     () => onFetchTicketHolderList(props),
-    {enabled: false, refetchOnWindowFocus: false, staleTime: 0},
+    { enabled: false, refetchOnWindowFocus: false, staleTime: 0 }
   );
 
-  return {...query, data: parsedCheckinsList(query?.data?.data)};
+  return { ...query, data: parsedCheckinsList(query?.data?.data) };
 };

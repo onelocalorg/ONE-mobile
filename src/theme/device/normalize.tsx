@@ -1,4 +1,4 @@
-import {BASE_DIMENSIONS, height, width} from './device';
+import { BASE_DIMENSIONS, height, width } from "./device";
 
 const scale = width / BASE_DIMENSIONS.width;
 
@@ -19,4 +19,10 @@ const moderateScale = (size: number, factor = 0.5) =>
 const lineHeightScale = (fontSize: number, factor = 1.2) =>
   Math.ceil(normalizedHeight(fontSize * factor));
 
-export {normalScale, verticalScale, moderateScale, lineHeightScale, normalize};
+export {
+  normalScale,
+  verticalScale,
+  moderateScale,
+  lineHeightScale,
+  normalize,
+};

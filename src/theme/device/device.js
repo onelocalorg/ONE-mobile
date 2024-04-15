@@ -1,6 +1,6 @@
-import {Dimensions, Platform} from 'react-native';
+import { Dimensions, Platform } from "react-native";
 
-const {width, height} = Dimensions.get('window');
+const { width, height } = Dimensions.get("window");
 
 export const BASE_DIMENSIONS = Platform?.isPad
   ? {
@@ -12,4 +12,4 @@ export const BASE_DIMENSIONS = Platform?.isPad
       height: 812,
     };
 
-export {width, height};
+export { width, height };

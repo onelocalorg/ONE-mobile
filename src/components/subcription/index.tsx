@@ -1,9 +1,9 @@
-import {useAppTheme} from '@app-hooks/use-app-theme';
-import React from 'react';
-import {createStyleSheet} from './style';
-import {StyleProp, Text,  TouchableOpacity, ViewStyle} from 'react-native';
-import {ImageComponent} from '@components/image-component';
-import {ImageStyle} from 'react-native-fast-image';
+import { useAppTheme } from "@app-hooks/use-app-theme";
+import React from "react";
+import { createStyleSheet } from "./style";
+import { StyleProp, Text, TouchableOpacity, ViewStyle } from "react-native";
+import { ImageComponent } from "@components/image-component";
+import { ImageStyle } from "react-native-fast-image";
 
 interface SubscriptionProps {
   label: string;
@@ -17,7 +17,7 @@ interface SubscriptionProps {
 }
 
 export const Subscription = (props: SubscriptionProps) => {
-  const {theme} = useAppTheme();
+  const { theme } = useAppTheme();
   const styles = createStyleSheet(theme);
   const {
     label,
@@ -35,11 +35,12 @@ export const Subscription = (props: SubscriptionProps) => {
       onPress={onPressPill}
       activeOpacity={0.8}
       disabled={disabled}
-      style={[styles.container, pillStyle, {backgroundColor}]}>
+      style={[styles.container, pillStyle, { backgroundColor }]}
+    >
       {!!icon && (
         <ImageComponent source={icon} style={[styles.icon, iconStyle]} />
       )}
-      <Text style={[styles.label, {color: foreGroundColor}]}>{label}</Text>
+      <Text style={[styles.label, { color: foreGroundColor }]}>{label}</Text>
     </TouchableOpacity>
   );
 };

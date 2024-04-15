@@ -187,10 +187,10 @@ export const ProfileScreen = (props: ProfileScreenProps) => {
   const onCheckReleaseHideShow = () => {
     if (Platform.OS === "ios") {
       const isShowPaymentCheck = getData("isShowPaymentFlow");
-      return isShowPaymentCheck
-    } else{
+      return isShowPaymentCheck;
+    } else {
       const isShowPaymentCheckAndroid = getData("isShowPaymentFlowAndroid");
-      return isShowPaymentCheckAndroid
+      return isShowPaymentCheckAndroid;
     }
   };
 
@@ -429,12 +429,12 @@ export const ProfileScreen = (props: ProfileScreenProps) => {
     LodingData(true);
     if (pic !== profileUri) {
       body.profile = profileUri;
-    } 
+    }
 
     const res = await mutateAsync({ bodyParams: body, userId: user?.id });
     if (res?.success) {
       navigation.goBack();
-    }else{
+    } else {
       Toast.show(res?.message, Toast.LONG, {
         backgroundColor: "black",
       });

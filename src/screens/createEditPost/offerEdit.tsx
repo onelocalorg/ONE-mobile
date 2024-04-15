@@ -143,7 +143,6 @@ export const EditPostOfferScreen = (props: EditPostOfferScreenProps) => {
     userId: user?.id,
   });
 
-
   const datePickerRef: React.Ref<DatePickerRefProps> = useRef(null);
 
   const keyboardDismiss = () => {
@@ -174,10 +173,10 @@ export const EditPostOfferScreen = (props: EditPostOfferScreenProps) => {
     } else {
       setToTitleData();
     }
-    console.log(type)
-    if(type === 'everyone'){
-      recentlyJoinUser([])
-      setuserListArray([])
+    console.log(type);
+    if (type === "everyone") {
+      recentlyJoinUser([]);
+      setuserListArray([]);
     }
     getToTypeValue(type);
     getTypeIconTo(icon);
@@ -187,7 +186,7 @@ export const EditPostOfferScreen = (props: EditPostOfferScreenProps) => {
   const selectForTypePost = (icon: any, type: any) => {
     getTypeIconFor(icon);
     getForTypeValue(type);
-   
+
     setForShowPopover(false);
   };
 
@@ -347,7 +346,7 @@ export const EditPostOfferScreen = (props: EditPostOfferScreenProps) => {
         recentlyJoinUser(dataItem?.data?.usersArray);
         setToTitleData();
         let modifiedArray = dataItem?.data?.usersArray.map((obj: any) => {
-          const { first_name, last_name, pic, id,point, ...rest } = obj;
+          const { first_name, last_name, pic, id, point, ...rest } = obj;
           setuserListArray([...userListArray, obj.id]);
         });
         console.log(modifiedArray, "getUserIdArray");
@@ -591,10 +590,10 @@ export const EditPostOfferScreen = (props: EditPostOfferScreenProps) => {
 
   const removeuserSelect = (userlist: any) => {
     const newPeople = userList.filter((person: any) => person !== userlist);
-    console.log('--------newPeople---------', newPeople);
+    console.log("--------newPeople---------", newPeople);
 
     recentlyJoinUser(newPeople);
-    const ids = newPeople.map((obj:any) => obj.id);
+    const ids = newPeople.map((obj: any) => obj.id);
     setuserListArray(ids);
   };
 

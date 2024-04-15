@@ -139,8 +139,14 @@ export const AdminToolsScreen = (props: AdminToolsScreenProps) => {
   const { mutateAsync: createEvent, isLoading: createEventLoading } =
     useCreateEvent();
 
-    console.log(start_date,'-----------------event detail start date------------------')
-    console.log(end_date,'-----------------event detail end date------------------')
+  console.log(
+    start_date,
+    "-----------------event detail start date------------------"
+  );
+  console.log(
+    end_date,
+    "-----------------event detail end date------------------"
+  );
   useEffect(() => {
     LogBox.ignoreAllLogs();
     // requestLocationPermission();
@@ -153,7 +159,7 @@ export const AdminToolsScreen = (props: AdminToolsScreenProps) => {
       if (eventData) {
         setEventDetails(eventData);
         setEventImageDisplay(eventData?.event_image);
-        setEventImage(eventData?.event_image_id)
+        setEventImage(eventData?.event_image_id);
       }
     } else {
       setEventDetails({
@@ -222,7 +228,6 @@ export const AdminToolsScreen = (props: AdminToolsScreenProps) => {
     }
   }
 
-
   const onBackPress = () => {
     navigation?.goBack();
   };
@@ -259,20 +264,19 @@ export const AdminToolsScreen = (props: AdminToolsScreenProps) => {
   };
 
   const onCreateEvent = async () => {
-    var getTicket:any = [];
-    if(tickets?.length){
-      console.log('is ticket',tickets?.length)
-       getTicket = tickets?.map((ele) => ele?.id ?? "");
-       var ticketArray = getTicket.join(",")
+    var getTicket: any = [];
+    if (tickets?.length) {
+      console.log("is ticket", tickets?.length);
+      getTicket = tickets?.map((ele) => ele?.id ?? "");
+      var ticketArray = getTicket.join(",");
     } else {
-      console.log('not is ticket')
-      var ticketArray:any = ''
+      console.log("not is ticket");
+      var ticketArray: any = "";
     }
 
     LodingData(true);
     Keyboard.dismiss();
-    const res = await createEvent(
-      {
+    const res = await createEvent({
       bodyParams: {
         ...eventDetails,
         tickets: ticketArray,
@@ -282,7 +286,7 @@ export const AdminToolsScreen = (props: AdminToolsScreenProps) => {
         type: setFilter,
       },
     });
-    console.log(res)
+    console.log(res);
     if (res?.success) {
       LodingData(false);
       navigation?.goBack();
@@ -292,30 +296,30 @@ export const AdminToolsScreen = (props: AdminToolsScreenProps) => {
   };
 
   const onUpdateEvent = async () => {
-    var getTicket:any = tickets?.map((ele) => ele?.id ?? "");
+    var getTicket: any = tickets?.map((ele) => ele?.id ?? "");
     LodingData(true);
     Keyboard.dismiss();
     let request = {};
     // if (name !== eventData?.name) {
-      request = { ...request, name };
+    request = { ...request, name };
     // }
     // if (address !== eventData?.address) {
-      request = { ...request, address };
+    request = { ...request, address };
     // }
     // if (full_address !== eventData?.full_address) {
-      request = { ...request, full_address };
+    request = { ...request, full_address };
     // }
     // if (start_date !== eventData?.start_date) {
-      request = { ...request, startDate: start_date.toString() };
+    request = { ...request, startDate: start_date.toString() };
     // }
     // if (end_date !== eventData?.end_date) {
-      request = { ...request, endDate: end_date.toString() };
+    request = { ...request, endDate: end_date.toString() };
     // }
     // if (email_confirmation_body !== eventData?.email_confirmation_body) {
-      request = { ...request, emailConfirmationBody: email_confirmation_body };
+    request = { ...request, emailConfirmationBody: email_confirmation_body };
     // }
     // if (about !== eventData?.about) {
-      request = { ...request, about: about };
+    request = { ...request, about: about };
     // }
     request = { ...request, latitude: lat?.toString() };
     request = { ...request, longitude: long?.toString() };
@@ -393,7 +397,7 @@ export const AdminToolsScreen = (props: AdminToolsScreenProps) => {
       maxHeight: 800,
     });
     if (assets) {
-      const img = assets?.[0]; 
+      const img = assets?.[0];
       var fileNameTwo = img?.fileName ?? "";
       LodingData(true);
       var output =
@@ -422,7 +426,7 @@ export const AdminToolsScreen = (props: AdminToolsScreenProps) => {
       const dataItem = await response.json();
       LodingData(false);
       setEventImage(dataItem?.data?.key);
-      setEventImageDisplay(dataItem?.data?.imageUrl)
+      setEventImageDisplay(dataItem?.data?.imageUrl);
       console.log(dataItem);
     } catch (error) {
       LodingData(false);

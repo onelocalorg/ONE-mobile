@@ -1,8 +1,8 @@
-import { colors } from '@theme/colors';
-import { normalScale, verticalScale } from '@theme/device/normalize';
-import { ThemeProps } from '@theme/theme';
-import { getTopPadding } from '@utils/platform-padding';
-import { StyleSheet } from 'react-native';
+import { colors } from "@theme/colors";
+import { normalScale, verticalScale } from "@theme/device/normalize";
+import { ThemeProps } from "@theme/theme";
+import { getTopPadding } from "@utils/platform-padding";
+import { StyleSheet } from "react-native";
 
 export const createStyleSheet = (theme: ThemeProps) =>
   StyleSheet.create({
@@ -18,53 +18,53 @@ export const createStyleSheet = (theme: ThemeProps) =>
     },
     imageContainer: {
       height: 120,
-      overflow: 'hidden',
+      overflow: "hidden",
       borderBottomLeftRadius: theme.borderRadius.radius10,
       borderBottomRightRadius: theme.borderRadius.radius10,
-      alignItems: 'center',
+      alignItems: "center",
       paddingHorizontal: normalScale(14),
-      backgroundColor: theme.colors.headerColor
+      backgroundColor: theme.colors.headerColor,
     },
     row: {
-      flexDirection: 'row',
+      flexDirection: "row",
       marginTop: verticalScale(getTopPadding(8)),
-      width: '100%',
-      justifyContent: 'space-between',
+      width: "100%",
+      justifyContent: "space-between",
     },
     image: {
       height: verticalScale(33),
       width: normalScale(242),
-      alignSelf: 'center',
+      alignSelf: "center",
     },
     cityClass: {
       // textAlign: 'center',
       paddingVertical: 22,
-      paddingHorizontal:198,
-      fontWeight:'400',
-      fontSize:16,
-      color: theme.colors.white
+      paddingHorizontal: 198,
+      fontWeight: "400",
+      fontSize: 16,
+      color: theme.colors.white,
     },
     searchContainer: {
-      backgroundColor: 'rgba(255, 255, 255, 0.1)',
+      backgroundColor: "rgba(255, 255, 255, 0.1)",
       height: 35,
       width: 100,
       borderRadius: 10,
-      flexDirection: 'row',
+      flexDirection: "row",
       marginLeft: 8,
-      position: 'absolute',
+      position: "absolute",
       bottom: 20,
-      color: theme.colors.white
+      color: theme.colors.white,
     },
     input: {
       flex: 1,
       height: 40,
-      justifyContent: "center"
+      justifyContent: "center",
     },
     searchIcon: {
       height: 15,
       width: 15,
       marginTop: 10,
-      marginLeft: 5
+      marginLeft: 5,
     },
     searchInput: {
       flexShrink: 1,
@@ -72,33 +72,32 @@ export const createStyleSheet = (theme: ThemeProps) =>
       marginRight: 5,
       height: 35,
       width: 120,
-      color: theme.colors.white
+      color: theme.colors.white,
     },
     oneContainer: {
-      flexDirection: 'row',
-      justifyContent: 'center',
-      position: 'relative',
+      flexDirection: "row",
+      justifyContent: "center",
+      position: "relative",
       top: 50,
       // left: 75,
-
     },
     oneContainerImage: {
       height: 60,
       width: 60,
       marginTop: 10,
-      marginLeft:5
+      marginLeft: 5,
     },
     oneContainerText: {
-      textAlign:'center',
+      textAlign: "center",
       fontSize: 50,
-      fontWeight: '400',
+      fontWeight: "400",
       color: theme.colors.white,
-      marginLeft:2
+      marginLeft: 2,
     },
     arrowClass: {
       height: 25,
       width: 25,
-      position: 'absolute',
+      position: "absolute",
       top: 35,
       left: 16,
     },
@@ -108,24 +107,16 @@ export const createStyleSheet = (theme: ThemeProps) =>
       // borderRadius: theme.borderRadius.radius35
     },
     profileContainer: {
-      position: 'absolute',
+      position: "absolute",
       right: 15,
-      bottom: 15
+      bottom: 15,
     },
     bellIcon: {
       height: 22,
       width: 22,
-      position: 'absolute',
+      position: "absolute",
       right: 0,
       zIndex: 11111122,
-      borderRadius:100
+      borderRadius: 100,
     },
   });
-
-
-
-
-
-
-
-

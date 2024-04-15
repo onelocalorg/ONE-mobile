@@ -1,11 +1,11 @@
-import {screenWidth} from '@assets/constants';
+import { screenWidth } from "@assets/constants";
 import {
   lineHeightScale,
   normalScale,
   verticalScale,
-} from '@theme/device/normalize';
-import {ThemeProps} from '@theme/theme';
-import {StyleSheet} from 'react-native';
+} from "@theme/device/normalize";
+import { ThemeProps } from "@theme/theme";
+import { StyleSheet } from "react-native";
 
 export const createStyleSheet = (theme: ThemeProps) =>
   StyleSheet.create({
@@ -26,14 +26,14 @@ export const createStyleSheet = (theme: ThemeProps) =>
     },
     webView: {
       flex: 1,
-      height: '100%',
-      width: '100%',
+      height: "100%",
+      width: "100%",
     },
     text: {
       // fontFamily: theme.fontType.albertSansSemiBold,
       fontSize: theme.fontSize.font20,
       lineHeight: lineHeightScale(20),
       // color: theme.colors.errorColor,
-      alignSelf: 'center',
+      alignSelf: "center",
     },
   });

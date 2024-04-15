@@ -1,14 +1,14 @@
-import {moderateScale, normalize, normalScale} from './device/normalize';
+import { moderateScale, normalize, normalScale } from "./device/normalize";
 
 const type = {
-  bold: 'NotoSerif-Bold',
-  light: 'NotoSerif-Light',
-  medium: 'NotoSerif-Medium',
-  regular: 'NotoSerif-Regular',
-  semiBold: 'NotoSerif-SemiBold',
-  thin: 'NotoSerif-Thin',
-  extraBold: 'NotoSerif-ExtraBold',
-  extraLight: 'NotoSerif-ExtraLight',
+  bold: "NotoSerif-Bold",
+  light: "NotoSerif-Light",
+  medium: "NotoSerif-Medium",
+  regular: "NotoSerif-Regular",
+  semiBold: "NotoSerif-SemiBold",
+  thin: "NotoSerif-Thin",
+  extraBold: "NotoSerif-ExtraBold",
+  extraLight: "NotoSerif-ExtraLight",
 };
 
 const size = {
@@ -72,4 +72,4 @@ const borderRadius = {
   radius64: moderateScale(64),
 };
 
-export {type, size, opacity, borderWidth, borderRadius};
+export { type, size, opacity, borderWidth, borderRadius };

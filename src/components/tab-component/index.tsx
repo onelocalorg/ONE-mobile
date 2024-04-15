@@ -1,7 +1,7 @@
-import {useAppTheme} from '@app-hooks/use-app-theme';
-import React, {useState} from 'react';
-import {createStyleSheet} from './style';
-import {FlatList, Text, TouchableOpacity, View} from 'react-native';
+import { useAppTheme } from "@app-hooks/use-app-theme";
+import React, { useState } from "react";
+import { createStyleSheet } from "./style";
+import { FlatList, Text, TouchableOpacity, View } from "react-native";
 
 interface TabComponentProps {
   tabs: string[];
@@ -14,9 +14,9 @@ interface ItemProps {
 }
 
 export const TabComponent = (props: TabComponentProps) => {
-  const {theme} = useAppTheme();
+  const { theme } = useAppTheme();
   const styles = createStyleSheet(theme);
-  const {tabs, onPressTab} = props || {};
+  const { tabs, onPressTab } = props || {};
   const [selctedIndex, setSelectedIndex] = useState(0);
 
   const onSelectTab = (index: number) => {
@@ -25,7 +25,7 @@ export const TabComponent = (props: TabComponentProps) => {
   };
 
   const renderItem = (data: ItemProps) => {
-    const {item, index} = data || {};
+    const { item, index } = data || {};
 
     return (
       <TouchableOpacity
@@ -34,7 +34,8 @@ export const TabComponent = (props: TabComponentProps) => {
           styles.container,
           selctedIndex === index && styles.selectedContainer,
         ]}
-        onPress={() => onSelectTab(index)}>
+        onPress={() => onSelectTab(index)}
+      >
         <Text style={styles.label}>{item}</Text>
       </TouchableOpacity>
     );
@@ -45,7 +46,7 @@ export const TabComponent = (props: TabComponentProps) => {
       <FlatList
         data={tabs}
         renderItem={renderItem}
-        keyExtractor={item => item.toString()}
+        keyExtractor={(item) => item.toString()}
         horizontal
         contentContainerStyle={styles.tabContainer}
         showsHorizontalScrollIndicator={false}

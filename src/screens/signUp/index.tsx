@@ -196,7 +196,6 @@ export const SignUp = (props: SignUpProps) => {
   }
 
   const onSignUp = () => {
-   
     if (user.firstName.length === 0) {
       Toast.show("Enter your First Name", Toast.LONG, {
         backgroundColor: "black",
@@ -223,7 +222,6 @@ export const SignUp = (props: SignUpProps) => {
       includeBase64: true,
       cropping: true,
     }).then((image) => {
-
       if (image) {
         var fileNameTwo = image?.filename ?? "";
         LodingData(true);

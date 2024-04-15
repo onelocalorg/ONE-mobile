@@ -1,6 +1,6 @@
-import {normalScale, verticalScale} from '@theme/device/normalize';
-import {ThemeProps} from '@theme/theme';
-import {StyleSheet} from 'react-native';
+import { normalScale, verticalScale } from "@theme/device/normalize";
+import { ThemeProps } from "@theme/theme";
+import { StyleSheet } from "react-native";
 
 export const createStyleSheet = (theme: ThemeProps) => {
   return StyleSheet.create({
@@ -14,7 +14,7 @@ export const createStyleSheet = (theme: ThemeProps) => {
     },
     profileView: {
       marginTop: verticalScale(10),
-      alignSelf: 'flex-end',
+      alignSelf: "flex-end",
     },
     profile: {
       height: normalScale(55),
@@ -22,9 +22,9 @@ export const createStyleSheet = (theme: ThemeProps) => {
       borderRadius: normalScale(50),
     },
     dateContainer: {
-      flexDirection: 'row',
-      justifyContent: 'center',
-      alignItems: 'center',
+      flexDirection: "row",
+      justifyContent: "center",
+      alignItems: "center",
       // marginTop: verticalScale(25),
     },
     calendar: {
@@ -54,8 +54,8 @@ export const createStyleSheet = (theme: ThemeProps) => {
       borderRadius: theme.borderRadius.radius16,
       width: normalScale(102),
       height: verticalScale(66),
-      alignItems: 'center',
-      justifyContent: 'center',
+      alignItems: "center",
+      justifyContent: "center",
     },
     icon: {
       height: normalScale(30),
@@ -72,11 +72,11 @@ export const createStyleSheet = (theme: ThemeProps) => {
       height: verticalScale(220),
     },
     optionsView: {
-      alignItems: 'center',
+      alignItems: "center",
     },
     row: {
-      flexDirection: 'row',
-      justifyContent: 'space-between',
+      flexDirection: "row",
+      justifyContent: "space-between",
       marginTop: verticalScale(12),
     },
     greenView: {
@@ -84,25 +84,25 @@ export const createStyleSheet = (theme: ThemeProps) => {
       marginHorizontal: normalScale(6),
     },
     localText: {
-      textAlign: 'center',
+      textAlign: "center",
       fontSize: 14,
-      fontWeight: '400',
-      color: 'white',
-      position:'relative',
-      bottom:13
+      fontWeight: "400",
+      color: "white",
+      position: "relative",
+      bottom: 13,
     },
 
-    dateDisplyContainer:{
-      backgroundColor:theme.colors.darkyellow,
-      marginVertical:5,
-      marginTop:13
+    dateDisplyContainer: {
+      backgroundColor: theme.colors.darkyellow,
+      marginVertical: 5,
+      marginTop: 13,
     },
-    displayDate:{
-      textAlign:'center',
-      paddingVertical:5,
-      fontSize:theme.fontSize.font18,
-      fontFamily:theme.fontType.bold,
-      color:theme.colors.white
+    displayDate: {
+      textAlign: "center",
+      paddingVertical: 5,
+      fontSize: theme.fontSize.font18,
+      fontFamily: theme.fontType.bold,
+      color: theme.colors.white,
     },
 
     listContainer: {
@@ -112,13 +112,13 @@ export const createStyleSheet = (theme: ThemeProps) => {
       paddingVertical: verticalScale(8),
       paddingHorizontal: normalScale(8),
       backgroundColor: theme.colors.white,
-      flexDirection: 'row',
+      flexDirection: "row",
       marginTop: verticalScale(13),
       shadowColor: theme.colors.darkGrey,
       shadowOffset: { width: 1, height: 2 },
       shadowOpacity: 0.9,
       shadowRadius: 4,
-      marginHorizontal:13
+      marginHorizontal: 13,
     },
     dummy: {
       width: normalScale(80),
@@ -140,7 +140,7 @@ export const createStyleSheet = (theme: ThemeProps) => {
       fontFamily: theme.fontType.medium,
       fontSize: theme.fontSize.font16,
       color: theme.colors.black,
-      fontWeight:'500'
+      fontWeight: "500",
       // marginBottom: verticalScale(17),
       // maxWidth: normalScale(200),
       // flexShrink:1
@@ -151,8 +151,8 @@ export const createStyleSheet = (theme: ThemeProps) => {
       marginLeft: normalScale(12),
     },
     rowClass: {
-      flexDirection: 'row',
-      paddingTop:5
+      flexDirection: "row",
+      paddingTop: 5,
     },
     pin: {
       height: normalScale(14),
@@ -163,7 +163,7 @@ export const createStyleSheet = (theme: ThemeProps) => {
       fontFamily: theme.fontType.light,
       fontSize: theme.fontSize.font12,
       color: theme.colors.black,
-      flexShrink:1
+      flexShrink: 1,
     },
     fullAddress: {
       fontFamily: theme.fontType.light,
@@ -172,16 +172,17 @@ export const createStyleSheet = (theme: ThemeProps) => {
     },
     addressDot: {
       height: 6,
-      width: 6, marginVertical: 5,
-      marginHorizontal: 5
+      width: 6,
+      marginVertical: 5,
+      marginHorizontal: 5,
     },
-    cancleText:{
-      position:'absolute',
-      right:0,
-      top:65,
-      fontFamily:theme.fontType.medium,
-      fontSize:theme.fontSize.font12,
-      color:theme.colors.redTwo
+    cancleText: {
+      position: "absolute",
+      right: 0,
+      top: 65,
+      fontFamily: theme.fontType.medium,
+      fontSize: theme.fontSize.font12,
+      color: theme.colors.redTwo,
     },
 
     HeaderContainerTwo: {
@@ -192,29 +193,28 @@ export const createStyleSheet = (theme: ThemeProps) => {
       // position: 'relative',
     },
     row2: {
-      position: 'absolute',
+      position: "absolute",
       top: 45,
       left: 10,
       height: normalScale(30),
       width: normalScale(30),
-      zIndex:11111222222
+      zIndex: 11111222222,
     },
     arrowLeft: {
       height: normalScale(22),
       width: normalScale(22),
     },
     searchContainer: {
-      backgroundColor: 'rgba(255, 255, 255, 0.1)',
+      backgroundColor: "rgba(255, 255, 255, 0.1)",
       height: 35,
       width: 100,
       borderRadius: 10,
-      flexDirection: 'row',
+      flexDirection: "row",
       marginLeft: 8,
-      position: 'absolute',
+      position: "absolute",
       bottom: 50,
       color: theme.colors.white,
-      zIndex:11111222
-
+      zIndex: 11111222,
     },
     searchInput: {
       flexShrink: 1,
@@ -228,65 +228,63 @@ export const createStyleSheet = (theme: ThemeProps) => {
       height: 15,
       width: 15,
       marginTop: 10,
-      marginLeft: 5
+      marginLeft: 5,
     },
     oneContainer: {
-      flexDirection: 'row',
-      justifyContent: 'center',
-      position: 'relative',
+      flexDirection: "row",
+      justifyContent: "center",
+      position: "relative",
       top: 50,
     },
     oneContainerImage: {
       height: 60,
       width: 60,
       marginTop: 10,
-      marginLeft: 5
+      marginLeft: 5,
     },
     oneContainerText: {
-      textAlign: 'center',
+      textAlign: "center",
       fontSize: 60,
-      fontWeight: '400',
+      fontWeight: "400",
       color: theme.colors.white,
       marginLeft: 2,
     },
     profileContainer: {
-      position: 'absolute',
+      position: "absolute",
       right: 15,
-      bottom: 30
+      bottom: 30,
     },
     bellIcon: {
       height: 22,
       width: 22,
-      position: 'absolute',
+      position: "absolute",
       right: 0,
       zIndex: 11111122,
-      borderRadius:100
+      borderRadius: 100,
     },
     toggleCont: {
-      flexDirection: 'row',
-      justifyContent: 'center',
-      alignItems: 'center',
+      flexDirection: "row",
+      justifyContent: "center",
+      alignItems: "center",
       // marginTop: verticalScale(25),
     },
     villageLbl: {
-      fontFamily:theme.fontType.medium,
-      color:theme.colors.black,
-      fontSize:theme.fontSize.font14
+      fontFamily: theme.fontType.medium,
+      color: theme.colors.black,
+      fontSize: theme.fontSize.font14,
     },
-    switchToggle: {
-        
+    switchToggle: {},
+    backgroundToggle: {
+      backgroundColor: theme.colors.white,
+      paddingVertical: 5,
     },
-    backgroundToggle:{
-      backgroundColor:theme.colors.white,
-      paddingVertical:5
+    noEventLbl: {
+      textAlign: "center",
+      color: theme.colors.black,
+      fontFamily: theme.fontType.semiBold,
+      fontSize: theme.fontSize.font16,
     },
-    noEventLbl:{
-      textAlign:'center',
-      color:theme.colors.black,
-      fontFamily:theme.fontType.semiBold,
-      fontSize:theme.fontSize.font16
-    },
-    titleContainer : {
+    titleContainer: {
       borderRadius: theme.borderRadius.radius20,
       paddingVertical: verticalScale(8),
       paddingHorizontal: normalScale(8),
@@ -321,18 +319,18 @@ export const createStyleSheet = (theme: ThemeProps) => {
       marginLeft: 10,
     },
     playerDescription: {
-      textAlign: 'center',
+      textAlign: "center",
       // alignSelf: 'center',
       margin: 20,
       fontSize: theme.fontSize.font14,
       fontFamily: theme.fontType.regular,
-      color: theme.colors.black
+      color: theme.colors.black,
     },
     signUpStyle: {
       marginLeft: 80,
       marginRight: 80,
       marginTop: 10,
-      justifyContent: 'center',
+      justifyContent: "center",
       borderRadius: theme.borderRadius.radius10,
       height: 50,
       fontSize: theme.fontSize.font24,
@@ -341,8 +339,8 @@ export const createStyleSheet = (theme: ThemeProps) => {
       borderColor: theme.colors.black,
     },
     playerText: {
-      textDecorationLine: 'underline',
-      textAlign: 'center',
+      textDecorationLine: "underline",
+      textAlign: "center",
       marginTop: 10,
       color: theme.colors.black,
       fontSize: theme.fontSize.font14,
@@ -351,24 +349,23 @@ export const createStyleSheet = (theme: ThemeProps) => {
     gesture: {
       flex: 1,
     },
-    containerGallery:{
-      position: 'absolute',
+    containerGallery: {
+      position: "absolute",
       top: 0,
       bottom: 0,
       left: 0,
       right: 0,
       backgroundColor: theme.colors.modalOverlay,
     },
-    modalMainContainer:{
-      position:'absolute',
-      bottom:300,
-      backgroundColor:theme.colors.white,
-      marginHorizontal:12,
-      padding:16,
-      borderColor:theme.colors.lightGreen,
-      borderWidth:4,
-      borderRadius:theme.borderRadius.radius16,
-  }
-
+    modalMainContainer: {
+      position: "absolute",
+      bottom: 300,
+      backgroundColor: theme.colors.white,
+      marginHorizontal: 12,
+      padding: 16,
+      borderColor: theme.colors.lightGreen,
+      borderWidth: 4,
+      borderRadius: theme.borderRadius.radius16,
+    },
   });
 };

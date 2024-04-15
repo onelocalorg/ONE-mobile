@@ -182,7 +182,10 @@ export const onUpdateEvent = async (props: UpdateEventProps) => {
     event_image: eventImage,
   };
 
-  console.log(attachments,'-------------------update event request--------------------');
+  console.log(
+    attachments,
+    "-------------------update event request--------------------"
+  );
   try {
     const endPoint = `${apiConstants.createEvent}/${eventId}`;
     const data = await API.homeService.patch(endPoint, attachments);
@@ -230,9 +233,9 @@ export const onCreateEvent = async (props: CreateEventProps) => {
   } = bodyParams || {};
   let response;
 
-  var attachments = {}
-  if(tickets?.length){
-     attachments = {
+  var attachments = {};
+  if (tickets?.length) {
+    attachments = {
       name: name,
       start_date: new Date(start_date).toISOString(),
       end_date: new Date(end_date).toISOString(),
@@ -246,8 +249,8 @@ export const onCreateEvent = async (props: CreateEventProps) => {
       event_type: type,
       event_image: eventImage,
     };
-  }else{
-     attachments = {
+  } else {
+    attachments = {
       name: name,
       start_date: new Date(start_date).toISOString(),
       end_date: new Date(end_date).toISOString(),
@@ -261,7 +264,10 @@ export const onCreateEvent = async (props: CreateEventProps) => {
       event_image: eventImage,
     };
   }
-  console.log(attachments,'-------------------create event request start date--------------------');
+  console.log(
+    attachments,
+    "-------------------create event request start date--------------------"
+  );
   try {
     console.log(attachments);
     const endPoint = `${apiConstants.createEvent}`;

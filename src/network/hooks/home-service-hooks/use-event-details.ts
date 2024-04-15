@@ -1,9 +1,9 @@
 import {
   EventDetailsProps,
   onFetchEventDetails,
-} from '@network/api/services/home-service';
-import { apiKeys } from '@network/constant';
-import { useQuery } from '@tanstack/react-query';
+} from "@network/api/services/home-service";
+import { apiKeys } from "@network/constant";
+import { useQuery } from "@tanstack/react-query";
 
 export interface EventDetails {
   name: string;
@@ -19,20 +19,20 @@ export interface EventDetails {
   tickets: Ticket[];
   id: string;
   is_event_owner: boolean;
-  quantity: string
-  max_quantity_to_show: string,
-  available_quantity: string,
-  cancelled:boolean,
-  date_title:string;
-  day_title:string;
+  quantity: string;
+  max_quantity_to_show: string;
+  available_quantity: string;
+  cancelled: boolean;
+  date_title: string;
+  day_title: string;
   isPayout: boolean;
-  viewCount:number;
-  start_date_label:string;
-  start_time_label:string;
-  events:[];
-  lat:number | undefined;
-  long:number | undefined;
-  event_image_id:string;
+  viewCount: number;
+  start_date_label: string;
+  start_time_label: string;
+  events: [];
+  lat: number | undefined;
+  long: number | undefined;
+  event_image_id: string;
 }
 
 interface EventProducer {
@@ -62,9 +62,9 @@ export interface Ticket {
   id: string;
   is_ticket_purchased?: string;
   ticket_purchase_link?: string;
-  quantity:string;
-  max_quantity_to_show:string
-  available_quantity:any
+  quantity: string;
+  max_quantity_to_show: string;
+  available_quantity: any;
 }
 
 const parsedEventDetails = (data: EventDetails) => {
@@ -79,7 +79,7 @@ export const useEventDetails = (props: EventDetailsProps) => {
       staleTime: 0,
       refetchOnWindowFocus: false,
       enabled: false,
-    },
+    }
   );
 
   return { ...query, data: parsedEventDetails(query?.data?.data) };

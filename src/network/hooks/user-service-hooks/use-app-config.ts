@@ -1,6 +1,6 @@
-import {onGetAppConfig} from '@network/api/services/user-service';
-import {apiKeys} from '@network/constant';
-import {useQuery} from '@tanstack/react-query';
+import { onGetAppConfig } from "@network/api/services/user-service";
+import { apiKeys } from "@network/constant";
+import { useQuery } from "@tanstack/react-query";
 
 export interface Root {
   ios: Ios;
@@ -29,5 +29,5 @@ export const useAppConfig = () => {
     refetchOnWindowFocus: false,
   });
 
-  return {...query, data: appConfigParsedData(query?.data?.data)};
+  return { ...query, data: appConfigParsedData(query?.data?.data) };
 };

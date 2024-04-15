@@ -1,6 +1,6 @@
-import React, {useEffect, useRef, useState} from 'react';
-import {createStyleSheet} from './style';
-import {useAppTheme} from '@app-hooks/use-app-theme';
+import React, { useEffect, useRef, useState } from "react";
+import { createStyleSheet } from "./style";
+import { useAppTheme } from "@app-hooks/use-app-theme";
 import {
   FlatList,
   Image,
@@ -12,9 +12,9 @@ import {
   TextInput,
   TouchableOpacity,
   View,
-} from 'react-native';
-import {useStringsAndLabels} from '@app-hooks/use-strings-and-labels';
-import {ImageComponent} from '@components/image-component';
+} from "react-native";
+import { useStringsAndLabels } from "@app-hooks/use-strings-and-labels";
+import { ImageComponent } from "@components/image-component";
 import {
   addGreen,
   arrowDown,
@@ -31,42 +31,45 @@ import {
   plus,
   postCalender,
   request,
-} from '@assets/images';
-import {NavigationContainerRef, ParamListBase} from '@react-navigation/native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import moment from 'moment';
-import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
-import GetLocation from 'react-native-get-location';
-import Popover, {PopoverPlacement, Rect} from 'react-native-popover-view';
-import {SizedBox} from '@components/sized-box';
-import {verticalScale} from '@theme/device/normalize';
+} from "@assets/images";
+import {
+  NavigationContainerRef,
+  ParamListBase,
+} from "@react-navigation/native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import moment from "moment";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import GetLocation from "react-native-get-location";
+import Popover, { PopoverPlacement, Rect } from "react-native-popover-view";
+import { SizedBox } from "@components/sized-box";
+import { verticalScale } from "@theme/device/normalize";
 import {
   DatePickerRefProps,
   DateRangePicker,
-} from '@components/date-range-picker';
-import {launchImageLibrary} from 'react-native-image-picker';
-import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete';
-import Toast from 'react-native-simple-toast';
-import {Loader} from '@components/loader';
-import {navigations} from '@config/app-navigation/constant';
-import {FlatListComponent} from '@components/flatlist-component';
-import {Pill} from '@components/pill';
-import {API_URL} from '@network/constant';
-import ActiveEnv from '@config/env/env.dev.json';
+} from "@components/date-range-picker";
+import { launchImageLibrary } from "react-native-image-picker";
+import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
+import Toast from "react-native-simple-toast";
+import { Loader } from "@components/loader";
+import { navigations } from "@config/app-navigation/constant";
+import { FlatListComponent } from "@components/flatlist-component";
+import { Pill } from "@components/pill";
+import { API_URL } from "@network/constant";
+import ActiveEnv from "@config/env/env.dev.json";
 
 interface CreatePostRequestScreenProps {
   navigation?: NavigationContainerRef<ParamListBase>;
 }
 
 export const CreatePostRequestScreen = (
-  props: CreatePostRequestScreenProps,
+  props: CreatePostRequestScreenProps
 ) => {
-  const {navigation} = props || {};
-  const {theme} = useAppTheme();
+  const { navigation } = props || {};
+  const { theme } = useAppTheme();
   const styles = createStyleSheet(theme);
-  const {strings} = useStringsAndLabels();
+  const { strings } = useStringsAndLabels();
   const [selecttype, createPostSelectType] = useState(1);
-  const [type, createPostType] = useState('offer');
+  const [type, createPostType] = useState("offer");
   const [typeIconWhat, getTypeIconWhat]: any = useState();
   const [showWhatPopover, setWhatShowPopover] = useState(false);
   const [getResourceList, getResourseData]: any = useState([]);
@@ -76,23 +79,23 @@ export const CreatePostRequestScreen = (
   const [getResourceToList, getResourseDataTo]: any = useState([]);
   const [getResourceForLis, getResourseDataFor]: any = useState([]);
   const [icontotype, getTypeIconTo]: any = useState();
-  const [valueTotype, getToTypeValue] = useState('');
+  const [valueTotype, getToTypeValue] = useState("");
   const [iconFrom, getTypeIconFrom]: any = useState();
   const [typrFrom, getFromTypeValue]: any = useState();
   const [imageArray, setImageArray]: any = useState([]);
-  const [imageArrayKey, setImageArrayKey]:any = useState([]);
-  const [forName, createPostforName] = useState('');
+  const [imageArrayKey, setImageArrayKey]: any = useState([]);
+  const [forName, createPostforName] = useState("");
   var [forQuantity, createPostforQuantity] = useState(1);
-  const [whereAddress, createPostwhereAddress] = useState('');
+  const [whereAddress, createPostwhereAddress] = useState("");
   const [imageKey, selectedImageKey] = useState();
   const [when, createPostwhen] = useState(new Date());
-  const [content, createPostcontent] = useState('');
-  const [tags, createPosttags]: any = useState('');
+  const [content, createPostcontent] = useState("");
+  const [tags, createPosttags]: any = useState("");
   const [tagArray, tagselectArray]: any = useState([]);
-  const [whatName, createPostwhatName] = useState('');
-  const [fromName, createPostFromName] = useState('');
-  const [addnewCmt, onAddComment] = useState('');
-  const [addnewCmtReply, onAddCommentReply] = useState('');
+  const [whatName, createPostwhatName] = useState("");
+  const [fromName, createPostFromName] = useState("");
+  const [addnewCmt, onAddComment] = useState("");
+  const [addnewCmtReply, onAddCommentReply] = useState("");
   var [whatQuantity, createPostwhatQuantity] = useState(1);
   const [typeIconFor, getTypeIconFor]: any = useState();
   const [whatForType, getForTypeValue]: any = useState();
@@ -104,8 +107,8 @@ export const CreatePostRequestScreen = (
   const [userList, recentlyJoinUser]: any = useState([]);
   const [userListArray, setuserListArray]: any = useState([]);
   const [usergratisList, userGratiesListData]: any = useState([]);
-  const [usertext, onUserSearch] = useState('');
-  const [settoTitle, setToTitleData]:any = useState();
+  const [usertext, onUserSearch] = useState("");
+  const [settoTitle, setToTitleData]: any = useState();
   const datePickerRef: React.Ref<DatePickerRefProps> = useRef(null);
 
   const keyboardDismiss = () => {
@@ -134,55 +137,55 @@ export const CreatePostRequestScreen = (
     setForShowPopover(false);
   };
 
-  const selectFromTypePost = (icon: any, type: any,title:any) => {
-    if (title === 'Everyone') {
+  const selectFromTypePost = (icon: any, type: any, title: any) => {
+    if (title === "Everyone") {
       setToTitleData(title);
     } else {
       setToTitleData();
     }
     getTypeIconTo(icon);
     getToTypeValue(type);
-    getFromTypeValue(type)
+    getFromTypeValue(type);
     setFronShowPopover(false);
   };
 
   const onConfirmStartDateTime = (startDate: Date) => {
     console.log(startDate);
     createPostwhen(startDate);
-    datePickerRef.current?.onOpenModal('end');
+    datePickerRef.current?.onOpenModal("end");
   };
 
   const getResourcesAPI = async () => {
-    const token = await AsyncStorage.getItem('token');
+    const token = await AsyncStorage.getItem("token");
     try {
-      const response = await fetch(API_URL + '/v1/posts/resources', {
-        method: 'get',
+      const response = await fetch(API_URL + "/v1/posts/resources", {
+        method: "get",
         headers: new Headers({
-          Authorization: 'Bearer ' + token,
-          'Content-Type': 'application/json',
+          Authorization: "Bearer " + token,
+          "Content-Type": "application/json",
         }),
       });
       const dataItem = await response.json();
       console.log(
-        '-------------------Get Resources API Response---------------------',
+        "-------------------Get Resources API Response---------------------"
       );
       console.log(dataItem);
       getResourseDatawhat(dataItem?.data?.what);
       getResourseDataTo(dataItem?.data?.to);
       getResourseDataFrom(dataItem?.data?.from);
       getResourseDataFor(dataItem?.data?.for);
-      getTypeIconWhat(dataItem?.data?.what[0]['icon']);
-      getTypeIconFor(dataItem?.data?.for[0]['icon']);
-      getForTypeValue(dataItem?.data?.for[0]['value']);
-      getTypeIconTo(dataItem?.data?.to[0]['icon']);
-      setToTitleData(dataItem?.data?.to[0]['title']);
-      getToTypeValue(dataItem?.data?.to[0]['value']);
-      getTypeIconFrom(dataItem?.data?.from[0]['icon']);
-      getFromTypeValue(dataItem?.data?.from[0]['value']);
-      getWhatTypeValue(dataItem?.data?.what[0]['value']);
+      getTypeIconWhat(dataItem?.data?.what[0]["icon"]);
+      getTypeIconFor(dataItem?.data?.for[0]["icon"]);
+      getForTypeValue(dataItem?.data?.for[0]["value"]);
+      getTypeIconTo(dataItem?.data?.to[0]["icon"]);
+      setToTitleData(dataItem?.data?.to[0]["title"]);
+      getToTypeValue(dataItem?.data?.to[0]["value"]);
+      getTypeIconFrom(dataItem?.data?.from[0]["icon"]);
+      getFromTypeValue(dataItem?.data?.from[0]["value"]);
+      getWhatTypeValue(dataItem?.data?.what[0]["value"]);
       console.log(
-        dataItem?.data[0]['icon'],
-        '------------icon image--------------',
+        dataItem?.data[0]["icon"],
+        "------------icon image--------------"
       );
     } catch (error) {
       console.error(error);
@@ -190,32 +193,32 @@ export const CreatePostRequestScreen = (
   };
 
   const postImageUploadAPI = async (fileItem: any, base64Item: any) => {
-    const token = await AsyncStorage.getItem('token');
+    const token = await AsyncStorage.getItem("token");
     var pic: any = {
-      uploadKey: 'createPostImg',
+      uploadKey: "createPostImg",
       imageName: fileItem,
-      base64String: 'data:image/jpeg;base64,' + base64Item,
+      base64String: "data:image/jpeg;base64," + base64Item,
     };
 
-    console.log('================ postImageUploadAPI Request=================');
+    console.log("================ postImageUploadAPI Request=================");
     console.log(pic);
     try {
-      const response = await fetch(API_URL + '/v1/users/upload/file', {
-        method: 'post',
+      const response = await fetch(API_URL + "/v1/users/upload/file", {
+        method: "post",
         headers: new Headers({
-          Authorization: 'Bearer ' + token,
-          'Content-Type': 'application/json',
+          Authorization: "Bearer " + token,
+          "Content-Type": "application/json",
         }),
         body: JSON.stringify(pic),
       });
       const dataItem = await response.json();
-      console.log('-----------------Response------------');
+      console.log("-----------------Response------------");
       var tempData = imageArray;
       tempData.push(dataItem?.data);
       setImageArray(tempData);
 
       var tempTwo = imageArrayKey;
-      tempTwo.push(dataItem?.data?.key)
+      tempTwo.push(dataItem?.data?.key);
       setImageArrayKey(tempTwo);
       selectedImageKey(dataItem?.data?.key);
       console.log(dataItem);
@@ -228,9 +231,9 @@ export const CreatePostRequestScreen = (
 
   async function createPostAPI() {
     LodingData(true);
-    const token = await AsyncStorage.getItem('token');
+    const token = await AsyncStorage.getItem("token");
     var data: any = {
-      type: 'request',
+      type: "request",
       what_type: whatSelectType,
       what_name: whatName,
       what_quantity: whatQuantity,
@@ -245,26 +248,26 @@ export const CreatePostRequestScreen = (
       tags: tagArray,
       post_image: imageArrayKey,
       from_type: typrFrom,
-      from_users:userListArray
+      from_users: userListArray,
     };
 
-    console.log('=========== Create Post API Request ==============');
+    console.log("=========== Create Post API Request ==============");
     console.log(data);
     try {
-      const response = await fetch(API_URL + '/v1/posts/create', {
-        method: 'post',
+      const response = await fetch(API_URL + "/v1/posts/create", {
+        method: "post",
         headers: new Headers({
-          Authorization: 'Bearer ' + token,
-          'Content-Type': 'application/json',
+          Authorization: "Bearer " + token,
+          "Content-Type": "application/json",
         }),
         body: JSON.stringify(data),
       });
       const dataItem = await response.json();
-      console.log('=========== Create Post API Response ==============');
+      console.log("=========== Create Post API Response ==============");
       console.log(dataItem);
       LodingData(false);
       Toast.show(dataItem?.message, Toast.LONG, {
-        backgroundColor: 'black',
+        backgroundColor: "black",
       });
       if (dataItem?.success === true) {
         navigation?.goBack();
@@ -282,8 +285,8 @@ export const CreatePostRequestScreen = (
   };
 
   const GallerySelect = async () => {
-    const {assets} = await launchImageLibrary({
-      mediaType: 'photo',
+    const { assets } = await launchImageLibrary({
+      mediaType: "photo",
       // selectionLimit: 2,
       includeBase64: true,
       maxWidth: 800,
@@ -292,41 +295,41 @@ export const CreatePostRequestScreen = (
     console.log(assets);
     if (assets) {
       const img = assets?.[0];
-      console.log('---------------assets Gallery 222---------------');
+      console.log("---------------assets Gallery 222---------------");
       console.log(assets);
-      var fileNameTwo = img?.fileName ?? '';
+      var fileNameTwo = img?.fileName ?? "";
       LodingData(true);
       var output =
-        fileNameTwo.substr(0, fileNameTwo.lastIndexOf('.')) || fileNameTwo;
-      var base64Two = img?.base64 ?? '';
+        fileNameTwo.substr(0, fileNameTwo.lastIndexOf(".")) || fileNameTwo;
+      var base64Two = img?.base64 ?? "";
       postImageUploadAPI(output, base64Two);
     }
   };
 
   const CreateNewPostModal = () => {
     if (whatName.length === 0) {
-      Toast.show('Enter About What', Toast.LONG, {
-        backgroundColor: 'black',
+      Toast.show("Enter About What", Toast.LONG, {
+        backgroundColor: "black",
       });
     } else if (forName.length === 0) {
-      Toast.show('Enter About For', Toast.LONG, {
-        backgroundColor: 'black',
+      Toast.show("Enter About For", Toast.LONG, {
+        backgroundColor: "black",
       });
     } else if (whereAddress.length === 0) {
-      Toast.show('Enter Address', Toast.LONG, {
-        backgroundColor: 'black',
+      Toast.show("Enter Address", Toast.LONG, {
+        backgroundColor: "black",
       });
     } else if (content.length === 0) {
-      Toast.show('Enter Post Content', Toast.LONG, {
-        backgroundColor: 'black',
+      Toast.show("Enter Post Content", Toast.LONG, {
+        backgroundColor: "black",
       });
     } else if (tagArray.length === 0) {
-      Toast.show('Enter Post Tag', Toast.LONG, {
-        backgroundColor: 'black',
+      Toast.show("Enter Post Tag", Toast.LONG, {
+        backgroundColor: "black",
       });
     } else if (imageArray.length === 0) {
-      Toast.show('Add Image to Post', Toast.LONG, {
-        backgroundColor: 'black',
+      Toast.show("Add Image to Post", Toast.LONG, {
+        backgroundColor: "black",
       });
     } else {
       createPostAPI();
@@ -335,47 +338,46 @@ export const CreatePostRequestScreen = (
     //   CreatePostModal(false);
   };
 
-
   const whatQtyMinus = () => {
-    if(whatQuantity > 1){
-      whatQuantity = whatQuantity - 1
-      createPostwhatQuantity(whatQuantity)
+    if (whatQuantity > 1) {
+      whatQuantity = whatQuantity - 1;
+      createPostwhatQuantity(whatQuantity);
     }
-  }
+  };
 
   const whatQtyPlus = () => {
-    whatQuantity = whatQuantity + 1
-    createPostwhatQuantity(whatQuantity)
-  }
+    whatQuantity = whatQuantity + 1;
+    createPostwhatQuantity(whatQuantity);
+  };
 
   const ForQtyMinus = () => {
-    if(forQuantity > 1){
-      forQuantity = forQuantity - 1
-      createPostforQuantity(forQuantity)
+    if (forQuantity > 1) {
+      forQuantity = forQuantity - 1;
+      createPostforQuantity(forQuantity);
     }
-  }
+  };
 
   const ForQtyPlus = () => {
-    forQuantity = forQuantity + 1
-    createPostforQuantity(forQuantity)
-  }
+    forQuantity = forQuantity + 1;
+    createPostforQuantity(forQuantity);
+  };
 
   const handleRemove = (id: any) => {
     const newPeople = tagArray.filter((person: any) => person !== id);
-    console.log('--------newPeople---------', newPeople);
+    console.log("--------newPeople---------", newPeople);
 
     tagselectArray(newPeople);
   };
 
   const onAddSkill = (text: any) => {
-    if (text !== '' && text !== undefined) {
+    if (text !== "" && text !== undefined) {
       tagselectArray([...tagArray, text]);
-      console.log('onSubmitEditing onSubmitEditing', tags, tagArray, text);
-      createPosttags('');
+      console.log("onSubmitEditing onSubmitEditing", tags, tagArray, text);
+      createPosttags("");
     }
   };
 
-  const renderItem: ListRenderItem<string> = ({item}) => (
+  const renderItem: ListRenderItem<string> = ({ item }) => (
     <Pill
       onPressPill={() => handleRemove(item)}
       pillStyle={styles.marginBottom}
@@ -386,7 +388,7 @@ export const CreatePostRequestScreen = (
 
   const removeuserSelect = (id: any) => {
     const newPeople = userList.filter((person: any) => person !== id);
-    console.log('--------newPeople---------', newPeople);
+    console.log("--------newPeople---------", newPeople);
 
     recentlyJoinUser(newPeople);
     setuserListArray(newPeople);
@@ -395,8 +397,8 @@ export const CreatePostRequestScreen = (
   // const AddUserList = (item: any) => {
   //   const found = userList.find((element:any) => element.id == item.id);
   //   if (!found) {
-  //     recentlyJoinUser([...userList, item]); 
-      
+  //     recentlyJoinUser([...userList, item]);
+
   //     const newItems = {...item};
   //     delete newItems.first_name;
   //     delete newItems.last_name;
@@ -406,71 +408,67 @@ export const CreatePostRequestScreen = (
   //     console.log(item.gratisNo);
   //     const newuserData = {...newItems, point: item.gratisNo, user_id: item.id};
   //     setuserListArray([...userListArray, newuserData]);
-      
+
   //     console.log(userListArray);
   //   }else{
-  //     Toast.show('Already Added', Toast.LONG, { 
+  //     Toast.show('Already Added', Toast.LONG, {
   //       backgroundColor: 'black',
   //     });
   //   }
   // };
 
   const AddUserList = (item: any) => {
-    const found = userList.find((element:any) => element.id == item.id);
+    const found = userList.find((element: any) => element.id == item.id);
     if (!found) {
-    recentlyJoinUser([...userList, item]);
-    const newItems = {...item};
-    delete newItems.first_name;
-    delete newItems.last_name;
-    delete newItems.pic;
-    delete newItems.id;
-    delete newItems.gratisNo;
-    console.log(item.gratisNo);
-    setuserListArray([...userListArray, item.id]);
-    console.log(userListArray);
-  } else{
-    Toast.show('Already Added', Toast.LONG, { 
-      backgroundColor: 'black',
-    });
-  }
-};
+      recentlyJoinUser([...userList, item]);
+      const newItems = { ...item };
+      delete newItems.first_name;
+      delete newItems.last_name;
+      delete newItems.pic;
+      delete newItems.id;
+      delete newItems.gratisNo;
+      console.log(item.gratisNo);
+      setuserListArray([...userListArray, item.id]);
+      console.log(userListArray);
+    } else {
+      Toast.show("Already Added", Toast.LONG, {
+        backgroundColor: "black",
+      });
+    }
+  };
 
   async function gratisUserList(textUser: any) {
-    const token = await AsyncStorage.getItem('token');
+    const token = await AsyncStorage.getItem("token");
     var datas: any = {
       searchtext: textUser,
     };
     onUserSearch(textUser);
-    LodingData(true)
-    console.log('=========== User List Gratis API Request ==============');
+    LodingData(true);
+    console.log("=========== User List Gratis API Request ==============");
     console.log(datas);
-    console.log(
-      API_URL + '/v1/users/search-user?searchtext=' +
-        textUser,
-    );
+    console.log(API_URL + "/v1/users/search-user?searchtext=" + textUser);
     try {
       const response = await fetch(
-        API_URL + '/v1/users/search-user?searchtext=' +
-        textUser,
+        API_URL + "/v1/users/search-user?searchtext=" + textUser,
         {
-          method: 'get',
+          method: "get",
           headers: new Headers({
-            Authorization: 'Bearer ' + token,
-            'Content-Type': 'application/x-www-form-urlencoded',
+            Authorization: "Bearer " + token,
+            "Content-Type": "application/x-www-form-urlencoded",
           }),
-        },
+        }
       );
       const dataItem = await response.json();
-      console.log('=========== User List Gratis API Response ==============');
+      console.log("=========== User List Gratis API Response ==============");
       const result = dataItem?.data?.map((item: any) => {
-        return {...item, gratisNo: 1};
+        return { ...item, gratisNo: 1 };
       });
       userGratiesListData(result);
       console.log(dataItem);
       Toast.show(dataItem?.message, Toast.LONG, {
-        backgroundColor: 'black',
+        backgroundColor: "black",
       });
-      LodingData(false)
+      LodingData(false);
     } catch (error) {
       LodingData(false);
       console.error(error);
@@ -478,18 +476,19 @@ export const CreatePostRequestScreen = (
   }
 
   const removeSelectImage = (imageItem: any) => {
-    console.log(imageItem, 'image url')
-    console.log(imageArrayKey)
+    console.log(imageItem, "image url");
+    console.log(imageArrayKey);
     const newImage = imageArray.filter(
-      (person: any) => person.imageUrl !== imageItem?.imageUrl && person.key !== imageItem.key
+      (person: any) =>
+        person.imageUrl !== imageItem?.imageUrl && person.key !== imageItem.key
     );
     setImageArray(newImage);
     const newImagekey = imageArrayKey.filter(
       (person: any) => person !== imageItem?.key
     );
-    setImageArrayKey(newImagekey)
-    console.log(imageArrayKey)
-    }
+    setImageArrayKey(newImagekey);
+    console.log(imageArrayKey);
+  };
 
   const gratisPlusClick = (item: any, index: any) => {
     // console.log(item)
@@ -531,11 +530,13 @@ export const CreatePostRequestScreen = (
 
       <ScrollView
         keyboardShouldPersistTaps="handled"
-        showsVerticalScrollIndicator={false}>
+        showsVerticalScrollIndicator={false}
+      >
         <TouchableOpacity
           onPress={keyboardDismiss}
           activeOpacity={1}
-          style={styles.createPostModal}>
+          style={styles.createPostModal}
+        >
           <View>
             <View style={styles.postClass}>
               <View style={styles.createPostCont}>
@@ -544,8 +545,9 @@ export const CreatePostRequestScreen = (
                   placeholder="What is your request?"
                   placeholderTextColor="darkgray"
                   value={whatName}
-                  onChangeText={text => createPostwhatName(text)}
-                  style={styles.postInputTwo}></TextInput>
+                  onChangeText={(text) => createPostwhatName(text)}
+                  style={styles.postInputTwo}
+                ></TextInput>
                 <View style={styles.QuantityContainer}>
                   <TouchableOpacity onPress={whatQtyMinus}>
                     <Text style={styles.QuantityMinus}>-</Text>
@@ -562,23 +564,26 @@ export const CreatePostRequestScreen = (
                   from={
                     <TouchableOpacity onPress={() => setWhatShowPopover(true)}>
                       <ImageComponent
-                        resizeMode='contain'
+                        resizeMode="contain"
                         source={arrowDown}
-                        style={styles.arrowDown}></ImageComponent>
+                        style={styles.arrowDown}
+                      ></ImageComponent>
                     </TouchableOpacity>
-                  }>
+                  }
+                >
                   <FlatList
                     data={getResourcewhatList}
-                    renderItem={({item}) => (
-                      <View style={{width: 120}}>
+                    renderItem={({ item }) => (
+                      <View style={{ width: 120 }}>
                         <TouchableOpacity
                           onPress={() =>
                             selectWhatTypePost(item?.icon, item?.value)
                           }
                           style={styles.container3}
-                          activeOpacity={0.8}>
+                          activeOpacity={0.8}
+                        >
                           <ImageComponent
-                            source={{uri: item?.icon}}
+                            source={{ uri: item?.icon }}
                             style={styles.icon1}
                           />
                           <Text style={styles.label2}>{item?.title}</Text>
@@ -586,55 +591,58 @@ export const CreatePostRequestScreen = (
                         <View
                           style={{
                             height: 2,
-                            backgroundColor: 'lightgray',
+                            backgroundColor: "lightgray",
                             marginHorizontal: 10,
-                          }}></View>
+                          }}
+                        ></View>
                       </View>
-                    )}></FlatList>
+                    )}
+                  ></FlatList>
                 </Popover>
                 <TouchableOpacity
                   activeOpacity={1}
-                  onPress={() => setWhatShowPopover(true)}>
+                  onPress={() => setWhatShowPopover(true)}
+                >
                   <ImageComponent
                     resizeMode="cover"
-                    source={{uri: typeIconWhat}}
-                    style={styles.createImgOne}></ImageComponent>
+                    source={{ uri: typeIconWhat }}
+                    style={styles.createImgOne}
+                  ></ImageComponent>
                 </TouchableOpacity>
               </View>
               <SizedBox height={10}></SizedBox>
               <View style={styles.createPostContTwo}>
                 <Text style={styles.textTwoWhere}>Where</Text>
-               
 
                 {/* <View style={styles.postInputTwo}> */}
                 <GooglePlacesAutocomplete
                   styles={{
                     textInput: {
-                      backgroundColor: '#E8E8E8',
+                      backgroundColor: "#E8E8E8",
                       height: 35,
                       borderRadius: 10,
-                      color: 'black',
+                      color: "black",
                       fontSize: 14,
                       borderColor: theme.colors.black,
                       borderWidth: theme.borderWidth.borderWidth1,
                     },
                     predefinedPlacesDescription: {
-                      color: 'black',
+                      color: "black",
                     },
-                    description:{
-                      color: 'black',
-                      fontSize:14,
+                    description: {
+                      color: "black",
+                      fontSize: 14,
                     },
                   }}
                   textInputProps={{
-                    placeholderTextColor: 'gray',
+                    placeholderTextColor: "gray",
                   }}
                   placeholder="where do you need this?"
                   GooglePlacesDetailsQuery={{ fields: "geometry" }}
-                      fetchDetails={true}
+                  fetchDetails={true}
                   onPress={(data: any, details = null) => {
                     createPostwhereAddress(data.description);
-                    setUserLocation(details?.geometry?.location)
+                    setUserLocation(details?.geometry?.location);
                     console.log(data);
                     console.log(details); // description
                   }}
@@ -645,10 +653,11 @@ export const CreatePostRequestScreen = (
                   // currentLocation={true}
                   currentLocationLabel="Current location"
                 />
-                 <ImageComponent
+                <ImageComponent
                   resizeMode="cover"
                   source={pin}
-                  style={styles.createImgTwo}></ImageComponent>
+                  style={styles.createImgTwo}
+                ></ImageComponent>
               </View>
               <View style={styles.postCont}>
                 <Text style={styles.textOne}>Post Body</Text>
@@ -656,10 +665,11 @@ export const CreatePostRequestScreen = (
                   multiline
                   // placeholder="What do you want to say?"
                   placeholderTextColor="darkgray"
-                  textAlignVertical={'top'}
+                  textAlignVertical={"top"}
                   value={content}
-                  onChangeText={text => createPostcontent(text)}
-                  style={styles.postinput}></TextInput>
+                  onChangeText={(text) => createPostcontent(text)}
+                  style={styles.postinput}
+                ></TextInput>
               </View>
               <SizedBox height={10}></SizedBox>
               {/* <View style={styles.quntitiyCont}>
@@ -678,10 +688,14 @@ export const CreatePostRequestScreen = (
                   // placeholder="who do you request this of?"
                   placeholderTextColor="darkgray"
                   value={settoTitle}
-                  editable={settoTitle == 'Everyone' ? false : true}
-                  onChangeText={text => {setToTitleData(text); gratisUserList(text)}}
-                  style={styles.postInputTwo}></TextInput>
-                  <SizedBox width={10}></SizedBox>
+                  editable={settoTitle == "Everyone" ? false : true}
+                  onChangeText={(text) => {
+                    setToTitleData(text);
+                    gratisUserList(text);
+                  }}
+                  style={styles.postInputTwo}
+                ></TextInput>
+                <SizedBox width={10}></SizedBox>
                 <Popover
                   isVisible={showFromPopover}
                   placement={PopoverPlacement.BOTTOM}
@@ -691,21 +705,28 @@ export const CreatePostRequestScreen = (
                       <ImageComponent
                         resizeMode="contain"
                         source={arrowDown}
-                        style={styles.arrowDown}></ImageComponent>
+                        style={styles.arrowDown}
+                      ></ImageComponent>
                     </TouchableOpacity>
-                  }>
+                  }
+                >
                   <FlatList
                     data={getResourceToList}
-                    renderItem={({item}) => (
-                      <View style={{width: 120}}>
+                    renderItem={({ item }) => (
+                      <View style={{ width: 120 }}>
                         <TouchableOpacity
                           onPress={() =>
-                            selectFromTypePost(item?.icon, item?.value,item?.title)
+                            selectFromTypePost(
+                              item?.icon,
+                              item?.value,
+                              item?.title
+                            )
                           }
                           style={styles.container3}
-                          activeOpacity={0.8}>
+                          activeOpacity={0.8}
+                        >
                           <ImageComponent
-                            source={{uri: item?.icon}}
+                            source={{ uri: item?.icon }}
                             style={styles.icon1}
                           />
                           <Text style={styles.label2}>{item?.title}</Text>
@@ -713,68 +734,78 @@ export const CreatePostRequestScreen = (
                         <View
                           style={{
                             height: 2,
-                            backgroundColor: 'lightgray',
+                            backgroundColor: "lightgray",
                             marginHorizontal: 10,
-                          }}></View>
+                          }}
+                        ></View>
                       </View>
-                    )}></FlatList>
+                    )}
+                  ></FlatList>
                 </Popover>
                 <SizedBox width={10}></SizedBox>
                 <TouchableOpacity
                   activeOpacity={1}
-                  onPress={() => setFronShowPopover(true)}>
+                  onPress={() => setFronShowPopover(true)}
+                >
                   <ImageComponent
-                    resizeMode='contain'
-                    source={{uri: icontotype}}
-                    style={styles.createImgOne}></ImageComponent>
+                    resizeMode="contain"
+                    source={{ uri: icontotype }}
+                    style={styles.createImgOne}
+                  ></ImageComponent>
                 </TouchableOpacity>
-                
               </View>
               <SizedBox height={10}></SizedBox>
               <View style={styles.avatarContainer}>
                 <ScrollView
                   horizontal={true}
-                  showsHorizontalScrollIndicator={false}>
+                  showsHorizontalScrollIndicator={false}
+                >
                   {userList.map((userList: any) => {
                     return (
                       <TouchableOpacity
-                        onPress={() => removeuserSelect(userList)}>
+                        onPress={() => removeuserSelect(userList)}
+                      >
                         <ImageComponent
                           style={styles.avatarImage}
                           isUrl={!!userList?.pic}
                           resizeMode="cover"
-                          uri={userList?.pic}></ImageComponent>
+                          uri={userList?.pic}
+                        ></ImageComponent>
                       </TouchableOpacity>
                     );
                   })}
                 </ScrollView>
               </View>
 
-              {settoTitle !== 'Everyone' ? (
+              {settoTitle !== "Everyone" ? (
                 <View
                   style={{
                     borderWidth: 1,
                     marginVertical: 10,
                     borderRadius: 10,
                     maxHeight: 275,
-                    overflow: 'hidden',
-                    height: 'auto',
-                  }}>
+                    overflow: "hidden",
+                    height: "auto",
+                  }}
+                >
                   <ScrollView showsVerticalScrollIndicator={false}>
                     <FlatList
                       data={usergratisList}
-                      renderItem={({item, index}) => (
+                      renderItem={({ item, index }) => (
                         <TouchableOpacity
                           activeOpacity={1}
                           style={{
-                            flexDirection: 'row',
-                            alignItems: 'center',
+                            flexDirection: "row",
+                            alignItems: "center",
                             marginVertical: 5,
                             borderBottomWidth: 1,
-                            borderColor: 'gray',
+                            borderColor: "gray",
                             paddingVertical: 8,
-                          }}>
-                          <View style={{flexDirection: 'row', marginRight: 50}}>
+                          }}
+                        >
+                          <View
+                            style={{ flexDirection: "row", marginRight: 50 }}
+                          >
                             <ImageComponent
                               style={{
                                 height: 30,
@@ -784,26 +815,35 @@ export const CreatePostRequestScreen = (
                                 borderRadius: 100,
                               }}
                               resizeMode="cover"
-                              source={{uri: item?.pic}}></ImageComponent>
-                            <Text  numberOfLines={1} style={{alignSelf: 'center',flexShrink: 1, width: 125, color: theme.colors.black}}>
+                              source={{ uri: item?.pic }}
+                            ></ImageComponent>
+                            <Text
+                              numberOfLines={1}
+                              style={{
+                                alignSelf: "center",
+                                flexShrink: 1,
+                                width: 125,
+                                color: theme.colors.black,
+                              }}
+                            >
                               {item?.first_name} {item?.last_name}
                             </Text>
                           </View>
 
                           <View style={styles.gratisCont}>
-                           
-                            <TouchableOpacity
-                              onPress={() => AddUserList(item)}>
+                            <TouchableOpacity onPress={() => AddUserList(item)}>
                               <ImageComponent
                                 style={{
                                   height: 20,
                                   width: 20,
                                 }}
-                                source={buttonArrowGreen}></ImageComponent>
+                                source={buttonArrowGreen}
+                              ></ImageComponent>
                             </TouchableOpacity>
                           </View>
                         </TouchableOpacity>
-                      )}></FlatList>
+                      )}
+                    ></FlatList>
 
                     {/* <View
                       style={{
@@ -897,14 +937,15 @@ export const CreatePostRequestScreen = (
               )}
               <View style={styles.createPostCont}>
                 <Text style={styles.textOne}>For</Text>
-                
+
                 <TextInput
                   value={forName}
                   placeholder="what reciprocity do you offer?"
                   placeholderTextColor="darkgray"
-                  onChangeText={text => createPostforName(text)}
-                  style={styles.postInputTwo}></TextInput>
-                  <View style={styles.QuantityContainer}>
+                  onChangeText={(text) => createPostforName(text)}
+                  style={styles.postInputTwo}
+                ></TextInput>
+                <View style={styles.QuantityContainer}>
                   <TouchableOpacity onPress={ForQtyMinus}>
                     <Text style={styles.QuantityMinus}>-</Text>
                   </TouchableOpacity>
@@ -920,23 +961,26 @@ export const CreatePostRequestScreen = (
                   from={
                     <TouchableOpacity onPress={() => setForShowPopover(true)}>
                       <ImageComponent
-                        resizeMode='contain'
+                        resizeMode="contain"
                         source={arrowDown}
-                        style={styles.arrowDown}></ImageComponent>
+                        style={styles.arrowDown}
+                      ></ImageComponent>
                     </TouchableOpacity>
-                  }>
+                  }
+                >
                   <FlatList
                     data={getResourcewhatList}
-                    renderItem={({item}) => (
-                      <View style={{width: 120}}>
+                    renderItem={({ item }) => (
+                      <View style={{ width: 120 }}>
                         <TouchableOpacity
                           onPress={() =>
                             selectForTypePost(item?.icon, item?.value)
                           }
                           style={styles.container3}
-                          activeOpacity={0.8}>
+                          activeOpacity={0.8}
+                        >
                           <ImageComponent
-                            source={{uri: item?.icon}}
+                            source={{ uri: item?.icon }}
                             style={styles.icon1}
                           />
                           <Text style={styles.label2}>{item?.title}</Text>
@@ -944,21 +988,24 @@ export const CreatePostRequestScreen = (
                         <View
                           style={{
                             height: 2,
-                            backgroundColor: 'lightgray',
+                            backgroundColor: "lightgray",
                             marginHorizontal: 10,
-                          }}></View>
+                          }}
+                        ></View>
                       </View>
-                    )}></FlatList>
+                    )}
+                  ></FlatList>
                 </Popover>
                 <TouchableOpacity
                   activeOpacity={1}
-                  onPress={() => setForShowPopover(true)}>
+                  onPress={() => setForShowPopover(true)}
+                >
                   <ImageComponent
                     resizeMode="cover"
-                    source={{uri: typeIconFor}}
-                    style={styles.createImgOne}></ImageComponent>
+                    source={{ uri: typeIconFor }}
+                    style={styles.createImgOne}
+                  ></ImageComponent>
                 </TouchableOpacity>
-                
               </View>
               {/* <View style={styles.quntitiyCont}>
                 <Text style={styles.textOne}>Quantity</Text>
@@ -973,44 +1020,49 @@ export const CreatePostRequestScreen = (
 
               <SizedBox height={verticalScale(10)}></SizedBox>
               <View style={styles.createPostCont}>
-                  <Text style={styles.textOne}>When</Text>
-                  
-                  <TouchableOpacity
-                    activeOpacity={0.8}
-                    onPress={() => datePickerRef.current?.onOpenModal('start')}
-                    style={styles.postInputTwo}>
-                    <Text style={styles.time}>
-                      {`${moment(when).format('DD MMM YYYY hh:mm A')}`}
-                    </Text>
+                <Text style={styles.textOne}>When</Text>
 
-                    <DateRangePicker
-                      selectStartDate={onConfirmStartDateTime}
-                      ref={datePickerRef}
-                    />
-                  </TouchableOpacity>
-                  <ImageComponent
-                    resizeMode="cover"
-                    source={postCalender}
-                    style={styles.calenderImage}></ImageComponent>
-                </View>
+                <TouchableOpacity
+                  activeOpacity={0.8}
+                  onPress={() => datePickerRef.current?.onOpenModal("start")}
+                  style={styles.postInputTwo}
+                >
+                  <Text style={styles.time}>
+                    {`${moment(when).format("DD MMM YYYY hh:mm A")}`}
+                  </Text>
+
+                  <DateRangePicker
+                    selectStartDate={onConfirmStartDateTime}
+                    ref={datePickerRef}
+                  />
+                </TouchableOpacity>
+                <ImageComponent
+                  resizeMode="cover"
+                  source={postCalender}
+                  style={styles.calenderImage}
+                ></ImageComponent>
+              </View>
               <View style={styles.tagCont}>
                 <Text style={styles.textOne}>Tags</Text>
                 <TextInput
                   placeholder="add tags or people"
                   placeholderTextColor="darkgray"
                   value={tags}
-                  onChangeText={text => createPosttags(text)}
-                  style={styles.tagInput}></TextInput>
+                  onChangeText={(text) => createPosttags(text)}
+                  style={styles.tagInput}
+                ></TextInput>
               </View>
-              {tags !== '' ? (
+              {tags !== "" ? (
                 <TouchableOpacity
-                  style={{zIndex: 1111111}}
+                  style={{ zIndex: 1111111 }}
                   onPress={() => {
                     onAddSkill(tags);
-                  }}>
+                  }}
+                >
                   <ImageComponent
                     style={styles.skillAddImage}
-                    source={addGreen}></ImageComponent>
+                    source={addGreen}
+                  ></ImageComponent>
                 </TouchableOpacity>
               ) : (
                 <View></View>
@@ -1019,7 +1071,7 @@ export const CreatePostRequestScreen = (
               <View style={styles.row}>
                 <FlatListComponent
                   data={tagArray}
-                  keyExtractor={item => item.toString()}
+                  keyExtractor={(item) => item.toString()}
                   renderItem={renderItem}
                   numColumns={100}
                   showsHorizontalScrollIndicator={false}
@@ -1028,7 +1080,8 @@ export const CreatePostRequestScreen = (
               </View>
               <TouchableOpacity
                 onPress={GallerySelect}
-                style={styles.imagesCont}>
+                style={styles.imagesCont}
+              >
                 <Text style={styles.textTwo}>Image</Text>
                 <Text style={styles.textTwo}>+</Text>
                 <Text style={styles.textThree}>add images</Text>
@@ -1037,20 +1090,22 @@ export const CreatePostRequestScreen = (
               <View style={styles.multipleImagecont}>
                 {imageArray.map((item: any) => {
                   return (
-                    <TouchableOpacity
-                    onPress={() => removeSelectImage(item)}
-                  >
-                      <ImageComponent source={{uri: item?.imageUrl}} style={styles.selectImage}></ImageComponent></TouchableOpacity>
+                    <TouchableOpacity onPress={() => removeSelectImage(item)}>
+                      <ImageComponent
+                        source={{ uri: item?.imageUrl }}
+                        style={styles.selectImage}
+                      ></ImageComponent>
+                    </TouchableOpacity>
                   );
                 })}
               </View>
-
             </View>
             <View>
               <TouchableOpacity
                 onPress={CreateNewPostModal}
                 activeOpacity={0.8}
-                style={styles.purchaseContainer}>
+                style={styles.purchaseContainer}
+              >
                 <View />
                 <Text style={styles.titleTwo}>{strings.postOffer}</Text>
                 <ImageComponent

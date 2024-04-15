@@ -1,6 +1,6 @@
-import {normalScale, verticalScale} from '@theme/device/normalize';
-import {ThemeProps} from '@theme/theme';
-import {StyleSheet} from 'react-native';
+import { normalScale, verticalScale } from "@theme/device/normalize";
+import { ThemeProps } from "@theme/theme";
+import { StyleSheet } from "react-native";
 
 export const createStyleSheet = (theme: ThemeProps) => {
   return StyleSheet.create({
@@ -16,9 +16,9 @@ export const createStyleSheet = (theme: ThemeProps) => {
         height: verticalScale(0),
       },
       elevation: 5,
-      justifyContent: 'space-between',
-      flexDirection: 'row',
-      alignItems: 'center',
+      justifyContent: "space-between",
+      flexDirection: "row",
+      alignItems: "center",
       paddingHorizontal: normalScale(16),
     },
     disabled: {

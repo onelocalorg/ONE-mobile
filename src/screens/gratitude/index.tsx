@@ -101,7 +101,7 @@ export const GratitudeScreen = (props: MapScreenProps) => {
   const [isLoading, LodingData] = useState(false);
   const { navigation } = props || {};
   const mileStoneSwiperRef: any = useRef(null);
-  var zoomLeveDefault = getData("mapCircleRadius")
+  var zoomLeveDefault = getData("mapCircleRadius");
   const [zoomLevel, setCameraZoomLevel] = useState(zoomLeveDefault);
   const [shape, setShapData]: any = useState();
   const { user } = useSelector<StoreType, UserProfileState>(
@@ -111,12 +111,12 @@ export const GratitudeScreen = (props: MapScreenProps) => {
     userId: user?.id,
   });
   var makeDate = new Date();
-  makeDate.setMonth(makeDate.getMonth() + 1); 
+  makeDate.setMonth(makeDate.getMonth() + 1);
   const [range, setRange] = useState<Range>({
     startDate: new Date(),
     endDate: makeDate,
   });
-  const mapRef =  useRef(null);
+  const mapRef = useRef(null);
   const [mapLoaded, setMapLoaded] = useState(false);
 
   // const mapRef = useRef(null);
@@ -178,7 +178,7 @@ export const GratitudeScreen = (props: MapScreenProps) => {
           var isLocationDefault = {
             latitude: location.latitude,
             longitude: location.longitude,
-            zoomLevel: getData('mapCircleRadius'),
+            zoomLevel: getData("mapCircleRadius"),
           };
           setData("defaultLocation", isLocationDefault);
           setLongitude(location?.longitude);
@@ -289,23 +289,22 @@ export const GratitudeScreen = (props: MapScreenProps) => {
   };
 
   const handleRegionChange = async (event: any) => {
-    if(mapLoaded){
+    if (mapLoaded) {
       const newZoomLevel = event.properties.zoomLevel;
-    if (newZoomLevel !== zoomLevel) {
-      LodingData(true);
-    }
-    console.log("handleRegionChange newZoomLevel", newZoomLevel);
-    setCameraZoomLevel(newZoomLevel);
-    var isMapLocation: any = {
-      latitude: latitude,
-      longitude: longitude,
-      zoomLevel: newZoomLevel,
-      device_type: Platform.OS,
-    };
+      if (newZoomLevel !== zoomLevel) {
+        LodingData(true);
+      }
+      console.log("handleRegionChange newZoomLevel", newZoomLevel);
+      setCameraZoomLevel(newZoomLevel);
+      var isMapLocation: any = {
+        latitude: latitude,
+        longitude: longitude,
+        zoomLevel: newZoomLevel,
+        device_type: Platform.OS,
+      };
 
-    setData("defaultLocation", isMapLocation);
+      setData("defaultLocation", isMapLocation);
     }
-    
   };
 
   const onMarkerClick = (mapEventData: any) => {
@@ -435,7 +434,7 @@ export const GratitudeScreen = (props: MapScreenProps) => {
         <MapboxGL.MapView
           style={styles.map}
           onRegionDidChange={handleRegionChange}
-          onDidFinishLoadingMap={()=> setMapLoaded(true)}
+          onDidFinishLoadingMap={() => setMapLoaded(true)}
           logoEnabled={false}
           scaleBarEnabled={true}
           ref={mapRef}

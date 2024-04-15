@@ -1,9 +1,9 @@
-import {useAppTheme} from '@app-hooks/use-app-theme';
-import {ImageComponent} from '@components/image-component';
-import React from 'react';
-import {StyleProp, View} from 'react-native';
-import {ImageStyle} from 'react-native-fast-image';
-import {createStyleSheet} from './style';
+import { useAppTheme } from "@app-hooks/use-app-theme";
+import { ImageComponent } from "@components/image-component";
+import React from "react";
+import { StyleProp, View } from "react-native";
+import { ImageStyle } from "react-native-fast-image";
+import { createStyleSheet } from "./style";
 
 export interface NavigatorOptionProps {
   focused: boolean;
@@ -13,7 +13,7 @@ export interface NavigatorOptionProps {
 }
 
 export const NavigatorOptionComponent = (props: NavigatorOptionProps) => {
-  const {theme} = useAppTheme();
+  const { theme } = useAppTheme();
   const styles = createStyleSheet(theme);
   const {
     focused = false,

@@ -1,10 +1,9 @@
-import axios, {AxiosInstance} from 'axios';
-import {Alert} from 'react-native';
-import {API_URL, STIPE_BASE_URL, apiConstants} from '@network/constant';
-import {store} from '@network/reducers/store';
-import {onSetToken} from '@app-hooks/use-token';
-import Toast from 'react-native-simple-toast';
-
+import axios, { AxiosInstance } from "axios";
+import { Alert } from "react-native";
+import { API_URL, STIPE_BASE_URL, apiConstants } from "@network/constant";
+import { store } from "@network/reducers/store";
+import { onSetToken } from "@app-hooks/use-token";
+import Toast from "react-native-simple-toast";
 
 export interface ErrorResponse {
   [key: string]: {
@@ -18,7 +17,7 @@ export interface ErrorResponse {
 }
 
 export const axiosRequestConfig = {
-  method: 'get', // default
+  method: "get", // default
   timeout: 1000 * 10, // default is `0` (no timeout)
 
   // `withCredentials` indicates whether or not cross-site Access-Control requests
@@ -40,18 +39,18 @@ export const axiosRequestConfig = {
 // Add a request interceptor
 axios.interceptors.request.use(
   // Do something before request is sent
-  config => config,
+  (config) => config,
   // Do something with request error
-  error => Promise.reject(error),
+  (error) => Promise.reject(error)
 );
 
 const interceptor = (ref: AxiosInstance) => {
   ref.interceptors.response.use(
     // Any status code that lie within the range of 2xx cause this function to trigger
     // Do something with response data
-    response => response,
+    (response) => response,
     async (error: ErrorResponse) => {
-      const {status} = error?.response || {};
+      const { status } = error?.response || {};
 
       // Any status codes that falls outside the range of 2xx cause this function to trigger
       // Do something with response error
@@ -71,7 +70,7 @@ const interceptor = (ref: AxiosInstance) => {
             headers: {
               Authorization: `Bearer ${user?.access_token}`,
             },
-          },
+          }
         );
         onSetToken(res?.data?.data?.access?.token);
         return;
@@ -79,12 +78,12 @@ const interceptor = (ref: AxiosInstance) => {
 
       if (status !== 200) {
         Toast.show(error?.response?.data?.message, Toast.LONG, {
-          backgroundColor: 'black',
+          backgroundColor: "black",
         });
       }
 
       return Promise.reject(error?.response);
-    },
+    }
   );
 };
 
@@ -120,7 +119,7 @@ class APIService {
       baseURL: paymentServiceUrl,
     });
     interceptor(this.paymentService);
-  } 
+  }
 }
 
 export const API = new APIService();

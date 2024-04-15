@@ -1,4 +1,4 @@
-import {createSlice} from '@reduxjs/toolkit';
+import { createSlice } from "@reduxjs/toolkit";
 
 export interface UserProfileState {
   user: object;
@@ -14,18 +14,17 @@ const initialState = {
 };
 
 const userProfileSlice = createSlice({
-  name: 'userProfile',
+  name: "userProfile",
   initialState,
   reducers: {
     onSetUser: (prevState: UserProfileState, action: Action) => {
-      const state = {...prevState};
+      const state = { ...prevState };
       state.user = action?.payload;
       return state;
     },
     onSetCoverImage: (prevState: UserProfileState, action: Action) => {
-
-      const state = {...prevState};
-      state.user = {...state.user, coverImage: action?.payload};
+      const state = { ...prevState };
+      state.user = { ...state.user, coverImage: action?.payload };
       return state;
     },
   },
@@ -33,6 +32,6 @@ const userProfileSlice = createSlice({
 
 const userProfileReducer = userProfileSlice.reducer;
 
-const {onSetUser, onSetCoverImage} = userProfileSlice.actions;
+const { onSetUser, onSetCoverImage } = userProfileSlice.actions;
 
-export {onSetUser, onSetCoverImage, userProfileReducer};
+export { onSetUser, onSetCoverImage, userProfileReducer };
