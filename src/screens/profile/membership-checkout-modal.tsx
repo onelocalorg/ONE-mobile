@@ -1,5 +1,5 @@
-import { useAppTheme } from "@app-hooks/use-app-theme";
-import { useStringsAndLabels } from "@app-hooks/use-strings-and-labels";
+import { useAppTheme } from "~/app-hooks/use-app-theme";
+import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
   Alert,
@@ -20,10 +20,10 @@ import {
 } from "react-native";
 import GestureRecognizer from "react-native-swipe-gestures";
 import { createStyleSheet } from "./style";
-import { Loader } from "@components/loader";
-import { ImageComponent } from "@components/image-component";
-import { API_URL, persistKeys } from "@network/constant";
-import { useToken } from "@app-hooks/use-token";
+import { Loader } from "~/components/loader";
+import { ImageComponent } from "~/components/image-component";
+import { API_URL, persistKeys } from "~/network/constant";
+import { useToken } from "~/app-hooks/use-token";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Toast from "react-native-simple-toast";
 import {
@@ -31,8 +31,8 @@ import {
   buttonArrow,
   buttonArrowBlue,
   closeCard,
-} from "@assets/images";
-import { ButtonComponent } from "@components/button-component";
+} from "~/assets/images";
+import { ButtonComponent } from "~/components/button-component";
 import { useFocusEffect } from "@react-navigation/native";
 
 interface membershipModalProps {

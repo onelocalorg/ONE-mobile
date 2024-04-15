@@ -1,4 +1,4 @@
-import { getTheme } from "@theme/index";
+import { getTheme } from "~/theme/index";
 
 type ThemeProps = "light" | "dark";
 

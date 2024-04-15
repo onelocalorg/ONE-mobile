@@ -1,9 +1,9 @@
 import React from "react";
-import { useAppTheme } from "@app-hooks/use-app-theme";
+import { useAppTheme } from "~/app-hooks/use-app-theme";
 import { Linking, Platform, Text, View } from "react-native";
 import { createStyleSheet } from "./style";
-import { useStringsAndLabels } from "@app-hooks/use-strings-and-labels";
-import { ButtonComponent } from "@components/button-component";
+import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
+import { ButtonComponent } from "~/components/button-component";
 
 export const AppUpdate = () => {
   const { theme } = useAppTheme();

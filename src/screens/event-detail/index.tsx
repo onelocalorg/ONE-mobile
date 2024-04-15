@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useAppTheme } from "@app-hooks/use-app-theme";
+import { useAppTheme } from "~/app-hooks/use-app-theme";
 import React, { useCallback, useRef, useState, useEffect } from "react";
 import { createStyleSheet } from "./style";
 import {
@@ -14,8 +14,8 @@ import {
   ActivityIndicator,
   Image,
 } from "react-native";
-import { Header } from "@components/header";
-import { ImageComponent } from "@components/image-component";
+import { Header } from "~/components/header";
+import { ImageComponent } from "~/components/image-component";
 import {
   Search,
   arrowLeft,
@@ -25,12 +25,12 @@ import {
   onelogo,
   pinWhite,
   startImg,
-} from "@assets/images";
-import { SizedBox } from "@components/sized-box";
-import { verticalScale } from "@theme/device/normalize";
-import { useStringsAndLabels } from "@app-hooks/use-strings-and-labels";
-import { ButtonComponent } from "@components/button-component";
-import { ModalRefProps } from "@components/modal-component";
+} from "~/assets/images";
+import { SizedBox } from "~/components/sized-box";
+import { verticalScale } from "~/theme/device/normalize";
+import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
+import { ButtonComponent } from "~/components/button-component";
+import { ModalRefProps } from "~/components/modal-component";
 import {
   NavigationContainerRef,
   ParamListBase,
@@ -41,23 +41,23 @@ import Going from "../../assets/images/going.png";
 import Cantgo from "../../assets/images/canntgo.png";
 import Maybe from "../../assets/images/maybe.png";
 import { TicketCheckoutModal } from "./ticket-checkout-modal";
-import { navigations } from "@config/app-navigation/constant";
-import { Result } from "@network/hooks/home-service-hooks/use-event-lists";
+import { navigations } from "~/config/app-navigation/constant";
+import { Result } from "~/network/hooks/home-service-hooks/use-event-lists";
 import moment from "moment";
-import { useEventDetails } from "@network/hooks/home-service-hooks/use-event-details";
-import { Loader } from "@components/loader";
-import { useCreatePayoutIntent } from "@network/hooks/payment-service-hooks/use-create-payout-intent";
+import { useEventDetails } from "~/network/hooks/home-service-hooks/use-event-details";
+import { Loader } from "~/components/loader";
+import { useCreatePayoutIntent } from "~/network/hooks/payment-service-hooks/use-create-payout-intent";
 import { useSelector } from "react-redux";
-import { StoreType } from "@network/reducers/store";
-import { UserProfileState } from "@network/reducers/user-profile-reducer";
-import { usePurchaseTicket } from "@network/hooks/home-service-hooks/use-purchase-ticket";
-import { PurchaseProps } from "@network/api/services/home-service";
-import { formatPrice } from "@utils/common";
+import { StoreType } from "~/network/reducers/store";
+import { UserProfileState } from "~/network/reducers/user-profile-reducer";
+import { usePurchaseTicket } from "~/network/hooks/home-service-hooks/use-purchase-ticket";
+import { PurchaseProps } from "~/network/api/services/home-service";
+import { formatPrice } from "~/utils/common";
 import Clipboard from "@react-native-clipboard/clipboard";
 import { TextInput } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Toast from "react-native-simple-toast";
-import { API_URL, getData } from "@network/constant";
+import { API_URL, getData } from "~/network/constant";
 
 interface EventDetailScreenProps {
   navigation?: NavigationContainerRef<ParamListBase>;

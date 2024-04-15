@@ -1,5 +1,5 @@
 import React from "react";
-import { useInternetConnectionHandle } from "@app-hooks/use-internet-connection-handle";
+import { useInternetConnectionHandle } from "~/app-hooks/use-internet-connection-handle";
 import NetInfo from "@react-native-community/netinfo";
 import { useEffect } from "react";
 

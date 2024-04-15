@@ -11,7 +11,7 @@ import {
   ViewStyle,
 } from "react-native";
 import { createStyleSheet } from "./style";
-import { useAppTheme } from "@app-hooks/use-app-theme";
+import { useAppTheme } from "~/app-hooks/use-app-theme";
 import GestureRecognizer from "react-native-swipe-gestures";
 
 export interface ModalProps {

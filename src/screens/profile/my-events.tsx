@@ -1,22 +1,22 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useAppTheme } from "@app-hooks/use-app-theme";
+import { useAppTheme } from "~/app-hooks/use-app-theme";
 import React, { useCallback, useEffect, useState } from "react";
 import { createStyleSheet } from "./style";
 import { FlatList, ListRenderItem, ScrollView, Text, View } from "react-native";
-import { EventList } from "@components/event-list";
+import { EventList } from "~/components/event-list";
 import {
   Result,
   useEventLists,
-} from "@network/hooks/home-service-hooks/use-event-lists";
-import { FlatListComponent } from "@components/flatlist-component";
-import { useStringsAndLabels } from "@app-hooks/use-strings-and-labels";
-import { Loader } from "@components/loader";
+} from "~/network/hooks/home-service-hooks/use-event-lists";
+import { FlatListComponent } from "~/components/flatlist-component";
+import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
+import { Loader } from "~/components/loader";
 import {
   NavigationContainerRef,
   ParamListBase,
   useFocusEffect,
 } from "@react-navigation/native";
-import { navigations } from "@config/app-navigation/constant";
+import { navigations } from "~/config/app-navigation/constant";
 
 interface MyEventsProps {
   userId: string;

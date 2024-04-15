@@ -1,12 +1,12 @@
-import { useAppTheme } from "@app-hooks/use-app-theme";
-import { useStringsAndLabels } from "@app-hooks/use-strings-and-labels";
+import { useAppTheme } from "~/app-hooks/use-app-theme";
+import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
 import React, { forwardRef, useCallback, useRef, useState } from "react";
 import { createStyleSheet } from "./style";
-import { ModalComponent } from "@components/modal-component";
+import { ModalComponent } from "~/components/modal-component";
 import { Keyboard, Text, TouchableOpacity, View } from "react-native";
-import { EventList } from "@components/event-list";
-import { Input } from "@components/input";
-import { ImageComponent } from "@components/image-component";
+import { EventList } from "~/components/event-list";
+import { Input } from "~/components/input";
+import { ImageComponent } from "~/components/image-component";
 import {
   activeRadio,
   arrowDown,
@@ -15,23 +15,23 @@ import {
   event,
   pin,
   save,
-} from "@assets/images";
+} from "~/assets/images";
 import {
   DatePickerRefProps,
   DateRangePicker,
-} from "@components/date-range-picker";
+} from "~/components/date-range-picker";
 import moment from "moment";
-import { SizedBox } from "@components/sized-box";
-import { normalScale, verticalScale } from "@theme/device/normalize";
-import { ButtonComponent } from "@components/button-component";
+import { SizedBox } from "~/components/sized-box";
+import { normalScale, verticalScale } from "~/theme/device/normalize";
+import { ButtonComponent } from "~/components/button-component";
 import {
   Result,
   Ticket,
-} from "@network/hooks/home-service-hooks/use-event-lists";
-import { useCreateTicket } from "@network/hooks/home-service-hooks/use-create-ticket";
-import { Loader } from "@components/loader";
-import { TicketBodyParamProps } from "@network/api/services/home-service";
-import { useEditTicket } from "@network/hooks/home-service-hooks/use-edit-ticket";
+} from "~/network/hooks/home-service-hooks/use-event-lists";
+import { useCreateTicket } from "~/network/hooks/home-service-hooks/use-create-ticket";
+import { Loader } from "~/components/loader";
+import { TicketBodyParamProps } from "~/network/api/services/home-service";
+import { useEditTicket } from "~/network/hooks/home-service-hooks/use-edit-ticket";
 import { useFocusEffect } from "@react-navigation/native";
 
 interface AddTicketModalCompProps {

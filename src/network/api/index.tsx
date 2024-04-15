@@ -1,8 +1,8 @@
 import axios, { AxiosInstance } from "axios";
 import { Alert } from "react-native";
-import { API_URL, STIPE_BASE_URL, apiConstants } from "@network/constant";
-import { store } from "@network/reducers/store";
-import { onSetToken } from "@app-hooks/use-token";
+import { API_URL, STIPE_BASE_URL, apiConstants } from "~/network/constant";
+import { store } from "~/network/reducers/store";
+import { onSetToken } from "~/app-hooks/use-token";
 import Toast from "react-native-simple-toast";
 
 export interface ErrorResponse {

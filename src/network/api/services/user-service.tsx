@@ -1,6 +1,6 @@
-import { apiConstants } from "@network/constant";
+import { apiConstants } from "~/network/constant";
 import { API } from "..";
-import { getApiResponse } from "@network/utils/get-api-response";
+import { getApiResponse } from "~/network/utils/get-api-response";
 
 interface LoginProps {
   emailOrMobile: string;

@@ -1,5 +1,5 @@
-import { API } from "@network/api";
-import { persistKeys } from "@network/constant";
+import { API } from "~/network/api";
+import { persistKeys } from "~/network/constant";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import { useEffect, useState } from "react";

@@ -1,4 +1,4 @@
-import { contain, cover, stretch } from "@assets/constants";
+import { contain, cover, stretch } from "~/assets/constants";
 import React, { FC } from "react";
 import { StyleProp } from "react-native";
 import FastImage, { FastImageProps, ImageStyle } from "react-native-fast-image";

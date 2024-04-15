@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useAppTheme } from "@app-hooks/use-app-theme";
+import { useAppTheme } from "~/app-hooks/use-app-theme";
 import {
   NavigationContainerRef,
   ParamListBase,
@@ -7,8 +7,8 @@ import {
 } from "@react-navigation/native";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { createStyleSheet } from "./style";
-import { useStringsAndLabels } from "@app-hooks/use-strings-and-labels";
-import { Header } from "@components/header";
+import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
+import { Header } from "~/components/header";
 import {
   AppState,
   ImageBackground,
@@ -24,21 +24,21 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { ImageComponent } from "@components/image-component";
-import { TabComponent } from "@components/tab-component";
+import { ImageComponent } from "~/components/image-component";
+import { TabComponent } from "~/components/tab-component";
 import { About } from "./about";
 import { MyEvents } from "./my-events";
 import { useDispatch, useSelector } from "react-redux";
 import {
   UserProfileState,
   onSetCoverImage,
-} from "@network/reducers/user-profile-reducer";
-import { StoreType } from "@network/reducers/store";
-import { useLogout } from "@app-hooks/use-logout";
-import { Loader } from "@components/loader";
+} from "~/network/reducers/user-profile-reducer";
+import { StoreType } from "~/network/reducers/store";
+import { useLogout } from "~/app-hooks/use-logout";
+import { Loader } from "~/components/loader";
 import { launchCamera, launchImageLibrary } from "react-native-image-picker";
-import { Input } from "@components/input";
-import { useEditProfile } from "@network/hooks/user-service-hooks/use-edit-profile";
+import { Input } from "~/components/input";
+import { useEditProfile } from "~/network/hooks/user-service-hooks/use-edit-profile";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import {
   Gratis,
@@ -48,22 +48,22 @@ import {
   dummy,
   onelogo,
   sendPayoutImg,
-} from "@assets/images";
+} from "~/assets/images";
 import { PERMISSIONS, request } from "react-native-permissions";
 import { Alert } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useToken } from "@app-hooks/use-token";
+import { useToken } from "~/app-hooks/use-token";
 import { TextInput } from "react-native-gesture-handler";
-import { verticalScale } from "@theme/device/normalize";
-import { getTopPadding } from "@utils/platform-padding";
+import { verticalScale } from "~/theme/device/normalize";
+import { getTopPadding } from "~/utils/platform-padding";
 import { Image } from "react-native";
-import { height } from "@theme/device/device";
+import { height } from "~/theme/device/device";
 import { BottomSheet } from "react-native-elements";
 import GestureRecognizer from "react-native-swipe-gestures";
 import ImagePicker from "react-native-image-crop-picker";
 import Toast from "react-native-simple-toast";
-import { navigations } from "@config/app-navigation/constant";
-import { API_URL, getData } from "@network/constant";
+import { navigations } from "~/config/app-navigation/constant";
+import { API_URL, getData } from "~/network/constant";
 
 interface UserData {
   id: string;

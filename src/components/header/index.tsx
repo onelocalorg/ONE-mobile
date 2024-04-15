@@ -10,7 +10,7 @@ import {
   onelogo,
   pin,
   postImage,
-} from "@assets/images";
+} from "~/assets/images";
 import React, { useState } from "react";
 import {
   ImageBackground,
@@ -20,18 +20,18 @@ import {
   View,
 } from "react-native";
 import { createStyleSheet } from "./style";
-import { useAppTheme } from "@app-hooks/use-app-theme";
-import { ImageComponent } from "@components/image-component";
+import { useAppTheme } from "~/app-hooks/use-app-theme";
+import { ImageComponent } from "~/components/image-component";
 import { launchCamera } from "react-native-image-picker";
 import {
   UserProfileState,
   onSetCoverImage,
-} from "@network/reducers/user-profile-reducer";
+} from "~/network/reducers/user-profile-reducer";
 import { useDispatch, useSelector } from "react-redux";
-import { StoreType } from "@network/reducers/store";
-import { useStringsAndLabels } from "@app-hooks/use-strings-and-labels";
+import { StoreType } from "~/network/reducers/store";
+import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
 import { Searchbar } from "react-native-paper";
-import { height } from "@theme/device/device";
+import { height } from "~/theme/device/device";
 
 interface HeaderProps {
   title?: string;

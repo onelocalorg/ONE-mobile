@@ -1,4 +1,4 @@
-import { useAppTheme } from "@app-hooks/use-app-theme";
+import { useAppTheme } from "~/app-hooks/use-app-theme";
 
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import {
@@ -13,7 +13,7 @@ import { bottomNavigationVisibleScreens, navigations } from "./constant";
 import { HomeRoute } from "./home-route";
 import { NavigatorOptionComponent } from "./navigator-option-component";
 import { createStyleSheet } from "./style";
-import { ChatScreen } from "@screens/chat";
+import { ChatScreen } from "~/screens/chat";
 import {
   addGreen,
   calendarTime,
@@ -22,14 +22,14 @@ import {
   gratitude,
   home,
   notificationTwo,
-} from "@assets/images";
-import { ImageComponent } from "@components/image-component";
-import { bottomTabs } from "@assets/constants";
+} from "~/assets/images";
+import { ImageComponent } from "~/components/image-component";
+import { bottomTabs } from "~/assets/constants";
 import { TouchableOpacity } from "react-native";
-import { ModalRefProps } from "@components/modal-component";
-import { AddComponentModal } from "@screens/event/add-component-modal";
+import { ModalRefProps } from "~/components/modal-component";
+import { AddComponentModal } from "~/screens/event/add-component-modal";
 import { EventRoute } from "./event-route";
-import { GratitudeScreen } from "@screens/gratitude";
+import { GratitudeScreen } from "~/screens/gratitude";
 import { MapRoute } from "./map-route";
 
 const Tab = createBottomTabNavigator();

@@ -1,4 +1,4 @@
-import { onUpdateEvent } from "@network/api/services/home-service";
+import { onUpdateEvent } from "~/network/api/services/home-service";
 import { useMutation } from "@tanstack/react-query";
 
 export const useUpdateEvent = () => {

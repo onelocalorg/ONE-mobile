@@ -1,8 +1,8 @@
-import { useAppTheme } from "@app-hooks/use-app-theme";
-import { useStringsAndLabels } from "@app-hooks/use-strings-and-labels";
+import { useAppTheme } from "~/app-hooks/use-app-theme";
+import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
 import React, { forwardRef, useEffect, useState } from "react";
 import { createStyleSheet } from "./style";
-import { ModalComponent } from "@components/modal-component";
+import { ModalComponent } from "~/components/modal-component";
 import {
   FlatList,
   Keyboard,
@@ -11,9 +11,9 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { EventList } from "@components/event-list";
-import { ImageComponent } from "@components/image-component";
-import { ButtonComponent } from "@components/button-component";
+import { EventList } from "~/components/event-list";
+import { ImageComponent } from "~/components/image-component";
+import { ButtonComponent } from "~/components/button-component";
 import {
   activeRadio,
   addCard,
@@ -23,12 +23,12 @@ import {
   inactiveRadio,
   minus,
   plus,
-} from "@assets/images";
-import { Result } from "@network/hooks/home-service-hooks/use-event-lists";
-import { formatPrice } from "@utils/common";
+} from "~/assets/images";
+import { Result } from "~/network/hooks/home-service-hooks/use-event-lists";
+import { formatPrice } from "~/utils/common";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { SizedBox } from "@components/sized-box";
-import { Loader } from "@components/loader";
+import { SizedBox } from "~/components/sized-box";
+import { Loader } from "~/components/loader";
 import { ScrollView } from "react-native-gesture-handler";
 import { Modal } from "react-native";
 import GestureRecognizer from "react-native-swipe-gestures";
@@ -36,7 +36,7 @@ import { TextInput } from "react-native";
 import { Platform } from "react-native";
 import Toast from "react-native-simple-toast";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
-import { API_URL } from "@network/constant";
+import { API_URL } from "~/network/constant";
 
 interface TicketCheckoutModalCompProps {
   onPurchase: (

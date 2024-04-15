@@ -1,7 +1,7 @@
-import { height, width } from "@theme/device/device";
-import { normalScale, verticalScale } from "@theme/device/normalize";
-import { borderRadius } from "@theme/fonts";
-import { ThemeProps } from "@theme/theme";
+import { height, width } from "~/theme/device/device";
+import { normalScale, verticalScale } from "~/theme/device/normalize";
+import { borderRadius } from "~/theme/fonts";
+import { ThemeProps } from "~/theme/theme";
 import { StyleSheet } from "react-native";
 
 export const createStyleSheet = (theme: ThemeProps) => {

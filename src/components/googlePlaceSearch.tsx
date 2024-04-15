@@ -1,6 +1,6 @@
 import React from "react";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
-import ActiveEnv from "@config/env/env.dev.json";
+import ActiveEnv from "~/config/env/env.dev.json";
 
 const GooglePlacesInput = () => {
   return (

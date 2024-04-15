@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { createStyleSheet } from "./style";
-import { useAppTheme } from "@app-hooks/use-app-theme";
+import { useAppTheme } from "~/app-hooks/use-app-theme";
 import {
   Alert,
   FlatList,
@@ -13,8 +13,8 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { useStringsAndLabels } from "@app-hooks/use-strings-and-labels";
-import { ImageComponent } from "@components/image-component";
+import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
+import { ImageComponent } from "~/components/image-component";
 import {
   Gratis,
   addGreen,
@@ -33,7 +33,7 @@ import {
   plus,
   postCalender,
   request,
-} from "@assets/images";
+} from "~/assets/images";
 import {
   NavigationContainerRef,
   ParamListBase,
@@ -43,22 +43,22 @@ import moment from "moment";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import GetLocation from "react-native-get-location";
 import Popover, { PopoverPlacement, Rect } from "react-native-popover-view";
-import { SizedBox } from "@components/sized-box";
-import { verticalScale } from "@theme/device/normalize";
+import { SizedBox } from "~/components/sized-box";
+import { verticalScale } from "~/theme/device/normalize";
 import {
   DatePickerRefProps,
   DateRangePicker,
-} from "@components/date-range-picker";
+} from "~/components/date-range-picker";
 import { launchImageLibrary } from "react-native-image-picker";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
 import Toast from "react-native-simple-toast";
-import { Loader } from "@components/loader";
-import { navigations } from "@config/app-navigation/constant";
+import { Loader } from "~/components/loader";
+import { navigations } from "~/config/app-navigation/constant";
 import { ScrollView } from "react-native";
-import { Pill } from "@components/pill";
-import { FlatListComponent } from "@components/flatlist-component";
-import { width } from "@theme/device/device";
-import { API_URL } from "@network/constant";
+import { Pill } from "~/components/pill";
+import { FlatListComponent } from "~/components/flatlist-component";
+import { width } from "~/theme/device/device";
+import { API_URL } from "~/network/constant";
 
 interface CreatePostGratisScreenProps {
   navigation?: NavigationContainerRef<ParamListBase>;

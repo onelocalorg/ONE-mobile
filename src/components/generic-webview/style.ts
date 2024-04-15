@@ -1,10 +1,10 @@
-import { screenWidth } from "@assets/constants";
+import { screenWidth } from "~/assets/constants";
 import {
   lineHeightScale,
   normalScale,
   verticalScale,
-} from "@theme/device/normalize";
-import { ThemeProps } from "@theme/theme";
+} from "~/theme/device/normalize";
+import { ThemeProps } from "~/theme/theme";
 import { StyleSheet } from "react-native";
 
 export const createStyleSheet = (theme: ThemeProps) =>

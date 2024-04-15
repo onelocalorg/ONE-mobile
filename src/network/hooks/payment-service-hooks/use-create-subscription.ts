@@ -1,4 +1,4 @@
-import { onCreateSubscription } from "@network/api/services/payment-service";
+import { onCreateSubscription } from "~/network/api/services/payment-service";
 import { useMutation } from "@tanstack/react-query";
 
 export const useCreateSubscription = () => {

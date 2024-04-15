@@ -1,6 +1,6 @@
-import { STRIPE_SECRET_KEY, apiConstants } from "@network/constant";
+import { STRIPE_SECRET_KEY, apiConstants } from "~/network/constant";
 import { API } from "..";
-import ActiveEnv from "@config/env/env.json";
+import ActiveEnv from "~/config/env/env.json";
 
 interface CreateStripeCustomerProps {
   bodyParams: {

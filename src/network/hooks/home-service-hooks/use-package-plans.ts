@@ -1,5 +1,5 @@
-import { onGetPackage } from "@network/api/services/home-service";
-import { apiConstants, apiKeys } from "@network/constant";
+import { onGetPackage } from "~/network/api/services/home-service";
+import { apiConstants, apiKeys } from "~/network/constant";
 import { useQuery } from "@tanstack/react-query";
 
 export type Root = PlanData[];

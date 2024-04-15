@@ -1,4 +1,4 @@
-import { methods } from "@network/constant";
+import { methods } from "~/network/constant";
 
 export const getMethod = (request: { method: string }) => {
   switch (request.method) {

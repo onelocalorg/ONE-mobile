@@ -1,5 +1,5 @@
-import { onGetAppConfig } from "@network/api/services/user-service";
-import { apiKeys } from "@network/constant";
+import { onGetAppConfig } from "~/network/api/services/user-service";
+import { apiKeys } from "~/network/constant";
 import { useQuery } from "@tanstack/react-query";
 
 export interface Root {

@@ -1,8 +1,8 @@
 import {
   checkConnectivity,
   InternetConnectionState,
-} from "@network/reducers/internet-connection-handle-reducer";
-import { StoreType } from "@network/reducers/store";
+} from "~/network/reducers/internet-connection-handle-reducer";
+import { StoreType } from "~/network/reducers/store";
 import { useDispatch, useSelector } from "react-redux";
 
 export const useInternetConnectionHandle = () => {

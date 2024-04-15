@@ -1,4 +1,4 @@
-import { STRIPE_PUBLIC_KEY } from "@network/constant";
+import { STRIPE_PUBLIC_KEY } from "~/network/constant";
 import { initStripe } from "@stripe/stripe-react-native";
 
 const stripeConfig = {

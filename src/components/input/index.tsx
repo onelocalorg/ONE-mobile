@@ -7,9 +7,9 @@ import {
   ViewStyle,
 } from "react-native";
 import { createStyleSheet } from "./style";
-import { useAppTheme } from "@app-hooks/use-app-theme";
-import { InputError } from "@components/input-error";
-import { verticalScale } from "@theme/device/normalize";
+import { useAppTheme } from "~/app-hooks/use-app-theme";
+import { InputError } from "~/components/input-error";
+import { verticalScale } from "~/theme/device/normalize";
 
 interface InputProps extends TextInputProps {
   inputStyle?: StyleProp<ViewStyle>;

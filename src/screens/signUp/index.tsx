@@ -13,9 +13,9 @@ import {
   Alert,
 } from "react-native";
 import React, { useCallback, useRef, useState } from "react";
-import { Header } from "@components/header";
-import { SizedBox } from "@components/sized-box";
-import { ImageComponent } from "@components/image-component";
+import { Header } from "~/components/header";
+import { SizedBox } from "~/components/sized-box";
+import { ImageComponent } from "~/components/image-component";
 import {
   Search,
   activeRadio,
@@ -27,27 +27,27 @@ import {
   loginLogo,
   onelogo,
   selectPic,
-} from "@assets/images";
-import { normalScale, verticalScale } from "@theme/device/normalize";
-import { Input } from "@components/input";
+} from "~/assets/images";
+import { normalScale, verticalScale } from "~/theme/device/normalize";
+import { Input } from "~/components/input";
 import { TouchableOpacity } from "react-native";
-import { ButtonComponent } from "@components/button-component";
-import { useStringsAndLabels } from "@app-hooks/use-strings-and-labels";
+import { ButtonComponent } from "~/components/button-component";
+import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
 import Toast from "react-native-simple-toast";
-import { emailRegexEx } from "@assets/constants";
-import { navigations } from "@config/app-navigation/constant";
+import { emailRegexEx } from "~/assets/constants";
+import { navigations } from "~/config/app-navigation/constant";
 import {
   NavigationContainerRef,
   ParamListBase,
 } from "@react-navigation/native";
-import { useToken } from "@app-hooks/use-token";
-import { useCreateStripeCustomer } from "@network/hooks/payment-service-hooks/use-create-stripe-customer";
-import { useSaveCustomerId } from "@network/hooks/user-service-hooks/use-save-customer-id";
+import { useToken } from "~/app-hooks/use-token";
+import { useCreateStripeCustomer } from "~/network/hooks/payment-service-hooks/use-create-stripe-customer";
+import { useSaveCustomerId } from "~/network/hooks/user-service-hooks/use-save-customer-id";
 import { useDispatch } from "react-redux";
-import { onSetUser } from "@network/reducers/user-profile-reducer";
+import { onSetUser } from "~/network/reducers/user-profile-reducer";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { Loader } from "@components/loader";
-import { useLogin } from "@network/hooks/user-service-hooks/use-login";
+import { Loader } from "~/components/loader";
+import { useLogin } from "~/network/hooks/user-service-hooks/use-login";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import ImagePicker from "react-native-image-crop-picker";
 import GestureRecognizer from "react-native-swipe-gestures";
@@ -56,16 +56,16 @@ import { Calendar, LocaleConfig } from "react-native-calendars";
 import {
   DatePickerRefProps,
   DateRangePicker,
-} from "@components/date-range-picker";
-import { width } from "@theme/device/device";
+} from "~/components/date-range-picker";
+import { width } from "~/theme/device/device";
 import moment from "moment";
 import { DatePickerModal } from "react-native-paper-dates";
-import { API_URL } from "@network/constant";
+import { API_URL } from "~/network/constant";
 import {
   CalenderComponent,
   CalenderComponentModal,
   CalenderRefProps,
-} from "@components/Calender/calenderComponent";
+} from "~/components/Calender/calenderComponent";
 
 interface SignUpProps {
   navigation?: NavigationContainerRef<ParamListBase>;

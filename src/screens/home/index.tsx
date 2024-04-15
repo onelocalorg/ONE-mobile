@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { createStyleSheet } from "./style";
-import { useAppTheme } from "@app-hooks/use-app-theme";
+import { useAppTheme } from "~/app-hooks/use-app-theme";
 import {
   ActivityIndicator,
   AppState,
@@ -18,8 +18,8 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { useStringsAndLabels } from "@app-hooks/use-strings-and-labels";
-import { ImageComponent } from "@components/image-component";
+import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
+import { ImageComponent } from "~/components/image-component";
 import {
   Gratis,
   Search,
@@ -33,31 +33,31 @@ import {
   pin,
   plus,
   postCalender,
-} from "@assets/images";
+} from "~/assets/images";
 import { useDispatch, useSelector } from "react-redux";
-import { StoreType } from "@network/reducers/store";
+import { StoreType } from "~/network/reducers/store";
 import {
   UserProfileState,
   onSetUser,
-} from "@network/reducers/user-profile-reducer";
+} from "~/network/reducers/user-profile-reducer";
 import {
   useUserProfile,
   userProfileParsedData,
-} from "@network/hooks/user-service-hooks/use-user-profile";
+} from "~/network/hooks/user-service-hooks/use-user-profile";
 import {
   NavigationContainerRef,
   ParamListBase,
   useFocusEffect,
 } from "@react-navigation/native";
-import { navigations } from "@config/app-navigation/constant";
+import { navigations } from "~/config/app-navigation/constant";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { ScrollView } from "react-native-gesture-handler";
 import GetLocation from "react-native-get-location";
-import { Loader } from "@components/loader";
+import { Loader } from "~/components/loader";
 import Toast from "react-native-simple-toast";
 import GestureRecognizer from "react-native-swipe-gestures";
 import { Alert } from "react-native";
-import { API_URL, getData, setData } from "@network/constant";
+import { API_URL, getData, setData } from "~/network/constant";
 import { CommentList } from "./commetList";
 import {
   isLocationEnabled,

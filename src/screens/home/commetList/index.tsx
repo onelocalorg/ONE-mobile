@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { useAppTheme } from "@app-hooks/use-app-theme";
+import { useAppTheme } from "~/app-hooks/use-app-theme";
 
 import {
   ActivityIndicator,
@@ -18,7 +18,7 @@ import {
   View,
 } from "react-native";
 import { createStyleSheet } from "../style";
-import { ImageComponent } from "@components/image-component";
+import { ImageComponent } from "~/components/image-component";
 import {
   Gratis,
   Vector,
@@ -37,21 +37,21 @@ import {
   plus,
   postCalender,
   send,
-} from "@assets/images";
+} from "~/assets/images";
 import GestureRecognizer from "react-native-swipe-gestures";
 import Toast from "react-native-simple-toast";
-import { API_URL } from "@network/constant";
+import { API_URL } from "~/network/constant";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { navigations } from "@config/app-navigation/constant";
+import { navigations } from "~/config/app-navigation/constant";
 import {
   NavigationContainerRef,
   ParamListBase,
   useFocusEffect,
 } from "@react-navigation/native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
-import { FlatListComponent } from "@components/flatlist-component";
-import { useStringsAndLabels } from "@app-hooks/use-strings-and-labels";
-import { Loader } from "@components/loader";
+import { FlatListComponent } from "~/components/flatlist-component";
+import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
+import { Loader } from "~/components/loader";
 
 interface commentListProps {
   navigation?: NavigationContainerRef<ParamListBase>;

@@ -1,4 +1,4 @@
-import { useAppTheme } from "@app-hooks/use-app-theme";
+import { useAppTheme } from "~/app-hooks/use-app-theme";
 import React, { useState } from "react";
 import { createStyleSheet } from "./style";
 import { FlatList, Text, TouchableOpacity, View } from "react-native";

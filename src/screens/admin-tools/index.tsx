@@ -1,8 +1,8 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useAppTheme } from "@app-hooks/use-app-theme";
+import { useAppTheme } from "~/app-hooks/use-app-theme";
 import React, { useEffect, useRef, useState } from "react";
 import { createStyleSheet } from "./style";
-import { useStringsAndLabels } from "@app-hooks/use-strings-and-labels";
+import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
 import {
   Alert,
   Keyboard,
@@ -11,12 +11,12 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { Header } from "@components/header";
+import { Header } from "~/components/header";
 import {
   NavigationContainerRef,
   ParamListBase,
 } from "@react-navigation/native";
-import { Pill } from "@components/pill";
+import { Pill } from "~/components/pill";
 import {
   Search,
   addGreen,
@@ -30,51 +30,51 @@ import {
   save,
   sendPayoutImg,
   ticket,
-} from "@assets/images";
-import { SizedBox } from "@components/sized-box";
-import { normalScale, verticalScale } from "@theme/device/normalize";
-import { Input } from "@components/input";
-import { ImageComponent } from "@components/image-component";
+} from "~/assets/images";
+import { SizedBox } from "~/components/sized-box";
+import { normalScale, verticalScale } from "~/theme/device/normalize";
+import { Input } from "~/components/input";
+import { ImageComponent } from "~/components/image-component";
 import { AddTicketModal } from "./add-ticket-modal";
-import { ModalRefProps } from "@components/modal-component";
-import { navigations } from "@config/app-navigation/constant";
+import { ModalRefProps } from "~/components/modal-component";
+import { navigations } from "~/config/app-navigation/constant";
 import {
   Result,
   Ticket,
-} from "@network/hooks/home-service-hooks/use-event-lists";
+} from "~/network/hooks/home-service-hooks/use-event-lists";
 import moment from "moment";
-import { formatPrice } from "@utils/common";
+import { formatPrice } from "~/utils/common";
 import {
   DatePickerRefProps,
   DateRangePicker,
-} from "@components/date-range-picker";
-import { useTicketHolderCheckinsList } from "@network/hooks/home-service-hooks/use-ticket-holder-checkin-list";
-import { useUpdateEvent } from "@network/hooks/home-service-hooks/use-update-event";
-import { Loader } from "@components/loader";
-import { ButtonComponent } from "@components/button-component";
-import { TicketBodyParamProps } from "@network/api/services/home-service";
-import { useCreateEvent } from "@network/hooks/home-service-hooks/use-create-event";
+} from "~/components/date-range-picker";
+import { useTicketHolderCheckinsList } from "~/network/hooks/home-service-hooks/use-ticket-holder-checkin-list";
+import { useUpdateEvent } from "~/network/hooks/home-service-hooks/use-update-event";
+import { Loader } from "~/components/loader";
+import { ButtonComponent } from "~/components/button-component";
+import { TicketBodyParamProps } from "~/network/api/services/home-service";
+import { useCreateEvent } from "~/network/hooks/home-service-hooks/use-create-event";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { launchCamera, launchImageLibrary } from "react-native-image-picker";
 import { useSelector } from "react-redux";
-import { StoreType } from "@network/reducers/store";
-import { UserProfileState } from "@network/reducers/user-profile-reducer";
-import { useUserProfile } from "@network/hooks/user-service-hooks/use-user-profile";
+import { StoreType } from "~/network/reducers/store";
+import { UserProfileState } from "~/network/reducers/user-profile-reducer";
+import { useUserProfile } from "~/network/hooks/user-service-hooks/use-user-profile";
 import { TextInput } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import GetLocation from "react-native-get-location";
 import { DatePickerModal } from "react-native-paper-dates";
 import Toast from "react-native-simple-toast";
-import { API_URL } from "@network/constant";
+import { API_URL } from "~/network/constant";
 import { Switch } from "react-native";
 import { AddPayoutExpenseModel } from "./addPayoutExpense-modal";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
 import { GetAdmintoolsDropDownScreen } from "./getAdmintoolsDropdown";
 import { ScrollView } from "react-native-gesture-handler";
-import { width } from "@theme/device/device";
+import { width } from "~/theme/device/device";
 import { Platform } from "react-native";
-import ActiveEnv from "@config/env/env.dev.json";
-import { emailRegexEx } from "@assets/constants";
+import ActiveEnv from "~/config/env/env.dev.json";
+import { emailRegexEx } from "~/assets/constants";
 
 interface AdminToolsScreenProps {
   navigation?: NavigationContainerRef<ParamListBase>;

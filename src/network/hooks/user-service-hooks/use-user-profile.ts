@@ -1,8 +1,8 @@
 import {
   UserProfileProps,
   onGetUserProfile,
-} from "@network/api/services/user-service";
-import { apiKeys } from "@network/constant";
+} from "~/network/api/services/user-service";
+import { apiKeys } from "~/network/constant";
 import { useQuery } from "@tanstack/react-query";
 
 interface Root {

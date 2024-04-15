@@ -1,4 +1,4 @@
-import { light } from "@assets/constants";
+import { light } from "~/assets/constants";
 import { colors } from "./colors";
 import { borderRadius, borderWidth, opacity, size, type } from "./fonts";
 import { ThemeProps } from "./theme";

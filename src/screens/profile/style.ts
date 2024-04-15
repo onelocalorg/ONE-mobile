@@ -1,7 +1,7 @@
-import { height, width } from "@theme/device/device";
-import { normalScale, verticalScale } from "@theme/device/normalize";
-import { ThemeProps } from "@theme/theme";
-import { getTopPadding } from "@utils/platform-padding";
+import { height, width } from "~/theme/device/device";
+import { normalScale, verticalScale } from "~/theme/device/normalize";
+import { ThemeProps } from "~/theme/theme";
+import { getTopPadding } from "~/utils/platform-padding";
 import { StyleSheet } from "react-native";
 
 export const createStyleSheet = (theme: ThemeProps) => {

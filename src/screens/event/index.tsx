@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useAppTheme } from "@app-hooks/use-app-theme";
+import { useAppTheme } from "~/app-hooks/use-app-theme";
 import React, { useState, useCallback, useEffect } from "react";
 import { createStyleSheet } from "./style";
 import {
@@ -11,8 +11,8 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { Header } from "@components/header";
-import { ImageComponent } from "@components/image-component";
+import { Header } from "~/components/header";
+import { ImageComponent } from "~/components/image-component";
 import {
   Search,
   arrowDown,
@@ -27,41 +27,41 @@ import {
   notification,
   onelogo,
   pin,
-} from "@assets/images";
+} from "~/assets/images";
 import { DatePickerModal } from "react-native-paper-dates";
 import moment from "moment";
-import { EventList } from "@components/event-list";
+import { EventList } from "~/components/event-list";
 import {
   NavigationContainerRef,
   ParamListBase,
   useFocusEffect,
   useRoute,
 } from "@react-navigation/native";
-import { navigations } from "@config/app-navigation/constant";
+import { navigations } from "~/config/app-navigation/constant";
 import {
   Result,
   useEventLists,
-} from "@network/hooks/home-service-hooks/use-event-lists";
-import { Loader } from "@components/loader";
-import { FlatListComponent } from "@components/flatlist-component";
-import { useStringsAndLabels } from "@app-hooks/use-strings-and-labels";
+} from "~/network/hooks/home-service-hooks/use-event-lists";
+import { Loader } from "~/components/loader";
+import { FlatListComponent } from "~/components/flatlist-component";
+import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
 import {
   useUserProfile,
   userProfileParsedData,
-} from "@network/hooks/user-service-hooks/use-user-profile";
+} from "~/network/hooks/user-service-hooks/use-user-profile";
 import { useDispatch, useSelector } from "react-redux";
-import { StoreType } from "@network/reducers/store";
+import { StoreType } from "~/network/reducers/store";
 import {
   UserProfileState,
   onSetUser,
-} from "@network/reducers/user-profile-reducer";
+} from "~/network/reducers/user-profile-reducer";
 import { Alert } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { TextInput } from "react-native";
 import GetLocation from "react-native-get-location";
 import { FlatList, ScrollView } from "react-native-gesture-handler";
 import { Switch } from "react-native";
-import { API_URL, getData } from "@network/constant";
+import { API_URL, getData } from "~/network/constant";
 
 interface Range {
   startDate: Date | undefined;

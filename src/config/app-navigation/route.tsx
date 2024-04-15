@@ -6,12 +6,12 @@ import { createStackNavigator } from "@react-navigation/stack";
 import React from "react";
 import { navigations } from "./constant";
 import { setNavigator } from "./root-navigation";
-import { LoginScreen } from "@screens/login";
+import { LoginScreen } from "~/screens/login";
 import { BottomNavigator } from "./bottom-navigator";
-import { useToken } from "@app-hooks/use-token";
-import { Loader } from "@components/loader";
-import { GenericWebView } from "@components/generic-webview";
-import { SignUp } from "@screens/signUp";
+import { useToken } from "~/app-hooks/use-token";
+import { Loader } from "~/components/loader";
+import { GenericWebView } from "~/components/generic-webview";
+import { SignUp } from "~/screens/signUp";
 
 export interface RefObj {
   onShowToast: (msg?: string, type?: "success" | "error" | "pending") => void;

@@ -2,21 +2,26 @@ import React, { forwardRef, useEffect, useRef, useState } from "react";
 import { createStyleSheet } from "./style";
 import { KeyboardAvoidingView, Platform, View } from "react-native";
 import { Text } from "react-native";
-import { useAppTheme } from "@app-hooks/use-app-theme";
-import { useStringsAndLabels } from "@app-hooks/use-strings-and-labels";
+import { useAppTheme } from "~/app-hooks/use-app-theme";
+import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
 import { TextInput } from "react-native-gesture-handler";
-import { ModalComponent, ModalRefProps } from "@components/modal-component";
+import { ModalComponent, ModalRefProps } from "~/components/modal-component";
 import { TouchableOpacity } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { API_URL } from "@network/constant";
+import { API_URL } from "~/network/constant";
 import { ScrollView } from "react-native";
 import { FlatList } from "react-native";
-import { ImageComponent } from "@components/image-component";
-import { arrowLeft, buttonArrowGreen, onelogo, saveIcon } from "@assets/images";
+import { ImageComponent } from "~/components/image-component";
+import {
+  arrowLeft,
+  buttonArrowGreen,
+  onelogo,
+  saveIcon,
+} from "~/assets/images";
 import Toast from "react-native-simple-toast";
-import { Loader } from "@components/loader";
+import { Loader } from "~/components/loader";
 import { launchImageLibrary } from "react-native-image-picker";
-import { ButtonComponent } from "@components/button-component";
+import { ButtonComponent } from "~/components/button-component";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { color } from "react-native-elements/dist/helpers";
 import {

@@ -1,8 +1,8 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useAppTheme } from "@app-hooks/use-app-theme";
+import { useAppTheme } from "~/app-hooks/use-app-theme";
 import React, { useCallback, useEffect, useState } from "react";
 import { createStyleSheet } from "./style";
-import { ModalComponent, ModalRefProps } from "@components/modal-component";
+import { ModalComponent, ModalRefProps } from "~/components/modal-component";
 import {
   Alert,
   Platform,
@@ -12,33 +12,33 @@ import {
   View,
   ViewStyle,
 } from "react-native";
-import { ImageComponent } from "@components/image-component";
+import { ImageComponent } from "~/components/image-component";
 import {
   eventBlack,
   eventWhite,
   gratitudeBlack,
   offer,
   request,
-} from "@assets/images";
-import { useStringsAndLabels } from "@app-hooks/use-strings-and-labels";
-import { navigations } from "@config/app-navigation/constant";
+} from "~/assets/images";
+import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
+import { navigations } from "~/config/app-navigation/constant";
 import {
   NavigationContainerRef,
   ParamListBase,
   useFocusEffect,
 } from "@react-navigation/native";
 import { useSelector } from "react-redux";
-import { StoreType } from "@network/reducers/store";
-import { UserProfileState } from "@network/reducers/user-profile-reducer";
-import { useUserProfile } from "@network/hooks/user-service-hooks/use-user-profile";
-import { API_URL, getData, setData } from "@network/constant";
+import { StoreType } from "~/network/reducers/store";
+import { UserProfileState } from "~/network/reducers/user-profile-reducer";
+import { useUserProfile } from "~/network/hooks/user-service-hooks/use-user-profile";
+import { API_URL, getData, setData } from "~/network/constant";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Modal } from "react-native";
 
 import GestureRecognizer from "react-native-swipe-gestures";
-import { Subscription } from "@components/subcription";
-import { MembershipCheckoutModal } from "@screens/profile/membership-checkout-modal";
-import { Loader } from "@components/loader";
+import { Subscription } from "~/components/subcription";
+import { MembershipCheckoutModal } from "~/screens/profile/membership-checkout-modal";
+import { Loader } from "~/components/loader";
 
 interface AddComponentModalProps {
   modalRef?: React.Ref<ModalRefProps>;

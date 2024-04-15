@@ -7,26 +7,27 @@
     "module": "esnext",
     "isolatedModules": true,
     "jsx": "react-native",
-    "lib": ["es2017"],
+    "lib": [
+      "es2017"
+    ],
     "strict": true,
-    "types": ["react-native", "jest"],
+    "types": [
+      "react-native",
+      "jest"
+    ],
     "moduleResolution": "node",
     "baseUrl": "./",
     "paths": {
-      "@assets/*": ["src/assets/*"],
-      "@theme/*": ["src/theme/*"],
-      "@constants/*": ["src/assets/constants/*"],
-      "@images/*": ["src/assets/images/*"],
-      "@components/*": ["src/components/*"],
-      "@config/*": ["src/config/*"],
-      "@utils/*": ["src/utils/*"],
-      "@screens/*": ["src/screens/*"],
-      "@network/*": ["src/network/*"],
-      "@app-hooks/*": ["src/app-hooks/*"],
-      "@store/*": ["src/store/*"]
+      "~/*": [
+        "src/*"
+      ],
     },
     "noEmit": true,
     "target": "esnext"
   },
-  "exclude": ["node_modules", "babel.config.js", "metro.config.js"]
+  "exclude": [
+    "node_modules",
+    "babel.config.js",
+    "metro.config.js"
+  ]
 }

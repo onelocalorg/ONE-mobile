@@ -1,4 +1,4 @@
-import { useAppTheme } from "@app-hooks/use-app-theme";
+import { useAppTheme } from "~/app-hooks/use-app-theme";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { View, Text } from "react-native";
 import { createStyleSheet } from "./style";
@@ -8,14 +8,14 @@ import {
   edit2,
   payoutClose,
   sendPayoutImg,
-} from "@assets/images";
-import { ImageComponent } from "@components/image-component";
-import { ModalRefProps } from "@components/modal-component";
+} from "~/assets/images";
+import { ImageComponent } from "~/components/image-component";
+import { ModalRefProps } from "~/components/modal-component";
 import { TouchableOpacity } from "react-native";
-import { API_URL, setData } from "@network/constant";
+import { API_URL, setData } from "~/network/constant";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { FlatList } from "react-native";
-import { Loader } from "@components/loader";
+import { Loader } from "~/components/loader";
 import {
   NavigationContainerRef,
   ParamListBase,
@@ -26,7 +26,7 @@ import Toast from "react-native-simple-toast";
 import { AddPayoutExpenseModel } from "./addPayoutExpense-modal";
 import { Modal } from "react-native";
 import GestureRecognizer from "react-native-swipe-gestures";
-import { navigations } from "@config/app-navigation/constant";
+import { navigations } from "~/config/app-navigation/constant";
 
 interface GetAdmintoolsDropDownScreenProps {
   navigation?: NavigationContainerRef<ParamListBase>;

@@ -9,11 +9,11 @@ import {
   loginLogo,
   onelogo,
   pin,
-} from "@assets/images";
-import { Header } from "@components/header";
-import { ImageComponent } from "@components/image-component";
-import { SizedBox } from "@components/sized-box";
-import { verticalScale } from "@theme/device/normalize";
+} from "~/assets/images";
+import { Header } from "~/components/header";
+import { ImageComponent } from "~/components/image-component";
+import { SizedBox } from "~/components/sized-box";
+import { verticalScale } from "~/theme/device/normalize";
 import React, { useCallback, useEffect, useState } from "react";
 import {
   Alert,
@@ -25,24 +25,24 @@ import {
   View,
 } from "react-native";
 import { createStyleSheet } from "./style";
-import { Input } from "@components/input";
-import { useStringsAndLabels } from "@app-hooks/use-strings-and-labels";
-import { useAppTheme } from "@app-hooks/use-app-theme";
-import { ButtonComponent } from "@components/button-component";
+import { Input } from "~/components/input";
+import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
+import { useAppTheme } from "~/app-hooks/use-app-theme";
+import { ButtonComponent } from "~/components/button-component";
 import {
   NavigationContainerRef,
   ParamListBase,
 } from "@react-navigation/native";
-import { navigations } from "@config/app-navigation/constant";
-import { useLogin } from "@network/hooks/user-service-hooks/use-login";
-import { Loader } from "@components/loader";
-import { emailRegexEx } from "@assets/constants";
+import { navigations } from "~/config/app-navigation/constant";
+import { useLogin } from "~/network/hooks/user-service-hooks/use-login";
+import { Loader } from "~/components/loader";
+import { emailRegexEx } from "~/assets/constants";
 import { getDeviceName, getUniqueId } from "react-native-device-info";
-import { useToken } from "@app-hooks/use-token";
+import { useToken } from "~/app-hooks/use-token";
 import { useDispatch } from "react-redux";
-import { onSetUser } from "@network/reducers/user-profile-reducer";
-import { useCreateStripeCustomer } from "@network/hooks/payment-service-hooks/use-create-stripe-customer";
-import { useSaveCustomerId } from "@network/hooks/user-service-hooks/use-save-customer-id";
+import { onSetUser } from "~/network/reducers/user-profile-reducer";
+import { useCreateStripeCustomer } from "~/network/hooks/payment-service-hooks/use-create-stripe-customer";
+import { useSaveCustomerId } from "~/network/hooks/user-service-hooks/use-save-customer-id";
 import { TextInput } from "react-native-gesture-handler";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Toast from "react-native-simple-toast";
@@ -57,7 +57,7 @@ import {
   statusCodes,
 } from "@react-native-google-signin/google-signin";
 import { Linking } from "react-native";
-import { API_URL, getData } from "@network/constant";
+import { API_URL, getData } from "~/network/constant";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
 GoogleSignin.configure({

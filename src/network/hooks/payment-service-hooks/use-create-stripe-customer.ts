@@ -1,4 +1,4 @@
-import { onCreateStripeCustomer } from "@network/api/services/payment-service";
+import { onCreateStripeCustomer } from "~/network/api/services/payment-service";
 import { useMutation } from "@tanstack/react-query";
 
 export const useCreateStripeCustomer = () => {

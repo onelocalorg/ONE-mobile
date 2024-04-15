@@ -1,16 +1,16 @@
-import { useStringsAndLabels } from "@app-hooks/use-strings-and-labels";
-import { animationDuration } from "@assets/constants";
-import { getNavigator } from "@config/app-navigation/root-navigation";
-import { API } from "@network/api";
-import { persistKeys } from "@network/constant";
-import { clearReducer } from "@network/reducers/logout-reducer";
-import { store } from "@network/reducers/store";
+import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
+import { animationDuration } from "~/assets/constants";
+import { getNavigator } from "~/config/app-navigation/root-navigation";
+import { API } from "~/network/api";
+import { persistKeys } from "~/network/constant";
+import { clearReducer } from "~/network/reducers/logout-reducer";
+import { store } from "~/network/reducers/store";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { NavigationContainerRef } from "@react-navigation/native";
 import axios from "axios";
 import { Alert } from "react-native";
 import { queryClient } from "../app";
-import { navigations } from "@config/app-navigation/constant";
+import { navigations } from "~/config/app-navigation/constant";
 import { GoogleSignin } from "@react-native-google-signin/google-signin";
 
 export const logoutUser = async (navigation: NavigationContainerRef<any>) => {

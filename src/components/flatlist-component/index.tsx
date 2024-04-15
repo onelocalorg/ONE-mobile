@@ -1,6 +1,6 @@
-import { useAppTheme } from "@app-hooks/use-app-theme";
-import { useStringsAndLabels } from "@app-hooks/use-strings-and-labels";
-import { Loader } from "@components/loader";
+import { useAppTheme } from "~/app-hooks/use-app-theme";
+import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
+import { Loader } from "~/components/loader";
 import React, { useState } from "react";
 import {
   FlatList,

@@ -1,4 +1,4 @@
-import { onFetchEvents } from "@network/api/services/home-service";
+import { onFetchEvents } from "~/network/api/services/home-service";
 import { useMutation } from "@tanstack/react-query";
 
 interface Root {
