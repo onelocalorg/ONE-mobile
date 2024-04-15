@@ -58,7 +58,6 @@ import { ScrollView } from "react-native";
 import { Pill } from "~/components/pill";
 import { FlatListComponent } from "~/components/flatlist-component";
 import { width } from "~/theme/device/device";
-import { API_URL } from "~/network/constant";
 
 interface CreatePostGratisScreenProps {
   navigation?: NavigationContainerRef<ParamListBase>;
@@ -140,13 +139,16 @@ export const CreatePostGratisScreen = (props: CreatePostGratisScreenProps) => {
   const getResourcesAPI = async () => {
     const token = await AsyncStorage.getItem("token");
     try {
-      const response = await fetch(API_URL + "/v1/posts/resources", {
-        method: "get",
-        headers: new Headers({
-          Authorization: "Bearer " + token,
-          "Content-Type": "application/json",
-        }),
-      });
+      const response = await fetch(
+        process.env.API_URL + "/v1/posts/resources",
+        {
+          method: "get",
+          headers: new Headers({
+            Authorization: "Bearer " + token,
+            "Content-Type": "application/json",
+          }),
+        }
+      );
       const dataItem = await response.json();
       console.log(
         "-------------------Get Resources API Response---------------------"
@@ -181,14 +183,17 @@ export const CreatePostGratisScreen = (props: CreatePostGratisScreenProps) => {
     console.log("================ postImageUploadAPI Request=================");
     console.log(pic);
     try {
-      const response = await fetch(API_URL + "/v1/users/upload/file", {
-        method: "post",
-        headers: new Headers({
-          Authorization: "Bearer " + token,
-          "Content-Type": "application/json",
-        }),
-        body: JSON.stringify(pic),
-      });
+      const response = await fetch(
+        process.env.API_URL + "/v1/users/upload/file",
+        {
+          method: "post",
+          headers: new Headers({
+            Authorization: "Bearer " + token,
+            "Content-Type": "application/json",
+          }),
+          body: JSON.stringify(pic),
+        }
+      );
       const dataItem = await response.json();
       console.log("-----------------Response------------");
 
@@ -228,7 +233,7 @@ export const CreatePostGratisScreen = (props: CreatePostGratisScreenProps) => {
 
     console.log(data);
     try {
-      const response = await fetch(API_URL + "/v1/posts/create", {
+      const response = await fetch(process.env.API_URL + "/v1/posts/create", {
         method: "post",
         headers: new Headers({
           Authorization: "Bearer " + token,
@@ -264,10 +269,12 @@ export const CreatePostGratisScreen = (props: CreatePostGratisScreenProps) => {
     LodingData(true);
     console.log("=========== User List Gratis API Request ==============");
     console.log(datas);
-    console.log(API_URL + "/v1/users/search-user?searchtext=" + textUser);
+    console.log(
+      process.env.API_URL + "/v1/users/search-user?searchtext=" + textUser
+    );
     try {
       const response = await fetch(
-        API_URL + "/v1/users/search-user?searchtext=" + textUser,
+        process.env.API_URL + "/v1/users/search-user?searchtext=" + textUser,
         {
           method: "get",
           headers: new Headers({

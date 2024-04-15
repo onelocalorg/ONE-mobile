@@ -16,6 +16,11 @@ Follow the instructions to configure React Native Mapbox as described at
 https://rnmapbox.github.io/docs/install, both for iOS and Android. You will
 need a secret access token that will go in your home directory.
 
+### Get .env file
+
+You will need a `.env` file which contains the keys defined in `.env.template.local`.
+This can be obtained by talking to one of the lead devs.
+
 ## Step 2: Start the Metro Server
 
 First, you will need to start **Metro**, the JavaScript _bundler_ that ships _with_ React Native.
@@ -30,16 +35,22 @@ npm start
 
 Let Metro Bundler run in its _own_ terminal. Open a _new_ terminal from the _root_ of your React Native project. Run the following command to start your _Android_ or _iOS_ app:
 
-### For Android
+### For Development
 
 ```bash
-npm run androidDev
+npm run start:development
 ```
 
-### For iOS
+### For Production
 
 ```bash
-npm run ios
+npm start
+```
+
+or
+
+```bash
+npm run start:production
 ```
 
 If everything is set up _correctly_, you should see your new app running in your _Android Emulator_ or _iOS Simulator_ shortly provided you have set up your emulator/simulator correctly.

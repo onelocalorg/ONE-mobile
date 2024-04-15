@@ -58,7 +58,7 @@ import { useSelector } from "react-redux";
 import { StoreType } from "~/network/reducers/store";
 import { UserProfileState } from "~/network/reducers/user-profile-reducer";
 import { useUserProfile } from "~/network/hooks/user-service-hooks/use-user-profile";
-import { API_URL, getData } from "~/network/constant";
+import { getData } from "~/network/constant";
 
 interface CreatePostScreenProps {
   navigation?: NavigationContainerRef<ParamListBase>;
@@ -137,13 +137,16 @@ export const CreatePostScreen = (props: CreatePostScreenProps) => {
   const getResourcesAPI = async () => {
     const token = await AsyncStorage.getItem("token");
     try {
-      const response = await fetch(API_URL + "/v1/posts/resources", {
-        method: "get",
-        headers: new Headers({
-          Authorization: "Bearer " + token,
-          "Content-Type": "application/x-www-form-urlencoded",
-        }),
-      });
+      const response = await fetch(
+        process.env.API_URL + "/v1/posts/resources",
+        {
+          method: "get",
+          headers: new Headers({
+            Authorization: "Bearer " + token,
+            "Content-Type": "application/x-www-form-urlencoded",
+          }),
+        }
+      );
       const dataItem = await response.json();
       console.log(
         "-------------------Get Resources API Response---------------------"
@@ -174,14 +177,17 @@ export const CreatePostScreen = (props: CreatePostScreenProps) => {
     console.log("================ postImageUploadAPI Request=================");
     console.log(pic);
     try {
-      const response = await fetch(API_URL + "/v1/users/upload/file", {
-        method: "post",
-        headers: new Headers({
-          Authorization: "Bearer " + token,
-          "Content-Type": "application/json",
-        }),
-        body: JSON.stringify(pic),
-      });
+      const response = await fetch(
+        process.env.API_URL + "/v1/users/upload/file",
+        {
+          method: "post",
+          headers: new Headers({
+            Authorization: "Bearer " + token,
+            "Content-Type": "application/json",
+          }),
+          body: JSON.stringify(pic),
+        }
+      );
       const dataItem = await response.json();
       console.log("-----------------Response------------");
       setCreatePostUri(dataItem?.data?.imageUrl);

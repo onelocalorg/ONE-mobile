@@ -63,7 +63,7 @@ import { Loader } from "~/components/loader";
 import { ButtonComponent } from "~/components/button-component";
 import Toast from "react-native-simple-toast";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { API_URL, getData, persistKeys } from "~/network/constant";
+import { getData, persistKeys } from "~/network/constant";
 import { height, width } from "~/theme/device/device";
 import { useEditProfile } from "~/network/hooks/user-service-hooks/use-edit-profile";
 import { ActivityIndicator } from "react-native";
@@ -167,16 +167,19 @@ export const About = (props: AboutDataProps) => {
     );
     console.log("============Request==============", queAns);
     try {
-      const response = await fetch(API_URL + "/v1/users/profile/que-answers", {
-        method: "PATCH",
-        headers: new Headers({
-          Authorization: "Bearer " + token,
-          "Content-Type": "application/json; charset=UTF-8",
-        }),
-        body: JSON.stringify({
-          profile_answers: ansQueData,
-        }),
-      });
+      const response = await fetch(
+        process.env.API_URL + "/v1/users/profile/que-answers",
+        {
+          method: "PATCH",
+          headers: new Headers({
+            Authorization: "Bearer " + token,
+            "Content-Type": "application/json; charset=UTF-8",
+          }),
+          body: JSON.stringify({
+            profile_answers: ansQueData,
+          }),
+        }
+      );
       const QuestioAnswer = await response.json();
 
       console.log("===========Response==============");
@@ -194,13 +197,16 @@ export const About = (props: AboutDataProps) => {
   async function packageListAPI() {
     const token = await AsyncStorage.getItem("token");
     try {
-      const response = await fetch(API_URL + "/v1/subscriptions/packages", {
-        method: "get",
-        headers: new Headers({
-          Authorization: "Bearer " + token,
-          "Content-Type": "application/x-www-form-urlencoded",
-        }),
-      });
+      const response = await fetch(
+        process.env.API_URL + "/v1/subscriptions/packages",
+        {
+          method: "get",
+          headers: new Headers({
+            Authorization: "Bearer " + token,
+            "Content-Type": "application/x-www-form-urlencoded",
+          }),
+        }
+      );
       const data = await response.json();
       PackageListData(data?.data);
     } catch (error) {
@@ -212,13 +218,16 @@ export const About = (props: AboutDataProps) => {
     console.log(token);
     console.log(idUser);
     try {
-      const response = await fetch(API_URL + "/v1/users/" + idUser, {
-        method: "get",
-        headers: new Headers({
-          Authorization: "Bearer " + token,
-          "Content-Type": "application/json",
-        }),
-      });
+      const response = await fetch(
+        process.env.API_URL + "/v1/users/" + idUser,
+        {
+          method: "get",
+          headers: new Headers({
+            Authorization: "Bearer " + token,
+            "Content-Type": "application/json",
+          }),
+        }
+      );
       const dataItem = await response.json();
       console.log("===========User Profile data Response==============");
       if (dataItem?.data?.isEventActiveSubscription === true) {
@@ -241,7 +250,7 @@ export const About = (props: AboutDataProps) => {
     console.log(dataId);
     try {
       const response = await fetch(
-        API_URL + "/v1/subscriptions/packages/" + dataId,
+        process.env.API_URL + "/v1/subscriptions/packages/" + dataId,
         {
           method: "get",
           headers: new Headers({
@@ -270,7 +279,7 @@ export const About = (props: AboutDataProps) => {
     console.log(idPackage);
     try {
       const response = await fetch(
-        API_URL + "/v1/subscriptions/" + idPackage + "/cancel",
+        process.env.API_URL + "/v1/subscriptions/" + idPackage + "/cancel",
         {
           method: "post",
           headers: new Headers({
@@ -494,7 +503,7 @@ export const About = (props: AboutDataProps) => {
   // ======================Config API=========================
   const ConfigListAPI = async () => {
     try {
-      const response = await fetch(API_URL + "/v1/config/list", {
+      const response = await fetch(process.env.API_URL + "/v1/config/list", {
         method: "get",
         headers: new Headers({
           Authorization: "Bearer " + tokens,
@@ -567,16 +576,19 @@ export const About = (props: AboutDataProps) => {
       token: cardId,
     };
     try {
-      const response = await fetch(API_URL + "/v1/subscriptions/cards/create", {
-        method: "post",
-        headers: new Headers({
-          Authorization: "Bearer " + tokens,
-          "Content-Type": "application/x-www-form-urlencoded",
-        }),
-        body: Object.keys(cardtokenData)
-          .map((key) => key + "=" + cardtokenData[key])
-          .join("&"),
-      });
+      const response = await fetch(
+        process.env.API_URL + "/v1/subscriptions/cards/create",
+        {
+          method: "post",
+          headers: new Headers({
+            Authorization: "Bearer " + tokens,
+            "Content-Type": "application/x-www-form-urlencoded",
+          }),
+          body: Object.keys(cardtokenData)
+            .map((key) => key + "=" + cardtokenData[key])
+            .join("&"),
+        }
+      );
       console.log(cardId);
       const dataItem = await response.json();
       console.log("-----------------create card------------");
@@ -649,16 +661,19 @@ export const About = (props: AboutDataProps) => {
     const token = await AsyncStorage.getItem("token");
     console.log(token);
     try {
-      const response = await fetch(API_URL + "/v1/users/delete/" + idUser, {
-        method: "post",
-        headers: new Headers({
-          Authorization: "Bearer " + token,
-          "Content-Type": "application/x-www-form-urlencoded",
-        }),
-      });
+      const response = await fetch(
+        process.env.API_URL + "/v1/users/delete/" + idUser,
+        {
+          method: "post",
+          headers: new Headers({
+            Authorization: "Bearer " + token,
+            "Content-Type": "application/x-www-form-urlencoded",
+          }),
+        }
+      );
       const dataItem = await response.json();
       console.log("===========Delete Account data Response==============");
-      console.log(API_URL + "/v1/users/delete/" + idUser);
+      console.log(process.env.API_URL + "/v1/users/delete/" + idUser);
       LodingData(false);
       console.log(dataItem);
       if (dataItem.success === true) {

@@ -57,7 +57,7 @@ import Clipboard from "@react-native-clipboard/clipboard";
 import { TextInput } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Toast from "react-native-simple-toast";
-import { API_URL, getData } from "~/network/constant";
+import { getData } from "~/network/constant";
 
 interface EventDetailScreenProps {
   navigation?: NavigationContainerRef<ParamListBase>;
@@ -149,13 +149,16 @@ export const EventDetailScreen = (props: EventDetailScreenProps) => {
     LodingData(true);
     const token = await AsyncStorage.getItem("token");
     try {
-      const response = await fetch(`${API_URL}/v1/events/rsvp/${id}`, {
-        headers: {
-          method: "get",
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-      });
+      const response = await fetch(
+        `${process.env.API_URL}/v1/events/rsvp/${id}`,
+        {
+          headers: {
+            method: "get",
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
       if (response.ok) {
         const data = await response.json();
         setRsvpData(data);
@@ -214,8 +217,8 @@ export const EventDetailScreen = (props: EventDetailScreenProps) => {
 
     try {
       const response = await fetch(
-        API_URL + "/v1/events/event-count/" + id,
-        // API_URL + '/v1/events/event-count/6565af618267f45414608d66',
+        process.env.API_URL + "/v1/events/event-count/" + id,
+        // process.env.API_URL + '/v1/events/event-count/6565af618267f45414608d66',
         {
           method: "post",
           headers: new Headers({
@@ -243,14 +246,17 @@ export const EventDetailScreen = (props: EventDetailScreenProps) => {
 
     console.log(type, "-----------type-----------");
     try {
-      const response = await fetch(`${API_URL}/v1/events/rsvp/${id}`, {
-        method: "post",
-        headers: new Headers({
-          Authorization: "Bearer " + token,
-          "Content-Type": "application/json",
-        }),
-        body: JSON.stringify({ type: type }),
-      });
+      const response = await fetch(
+        `${process.env.API_URL}/v1/events/rsvp/${id}`,
+        {
+          method: "post",
+          headers: new Headers({
+            Authorization: "Bearer " + token,
+            "Content-Type": "application/json",
+          }),
+          body: JSON.stringify({ type: type }),
+        }
+      );
       const isDataItem = await response.json();
       Toast.show(isDataItem?.message, Toast.LONG, {
         backgroundColor: "black",
@@ -285,13 +291,16 @@ export const EventDetailScreen = (props: EventDetailScreenProps) => {
     const token = await AsyncStorage.getItem("token");
     const userId = await AsyncStorage.getItem("userProfileId");
     try {
-      const response = await fetch(API_URL + "/v1/users/" + userId, {
-        method: "get",
-        headers: new Headers({
-          Authorization: "Bearer " + token,
-          "Content-Type": "application/json",
-        }),
-      });
+      const response = await fetch(
+        process.env.API_URL + "/v1/users/" + userId,
+        {
+          method: "get",
+          headers: new Headers({
+            Authorization: "Bearer " + token,
+            "Content-Type": "application/json",
+          }),
+        }
+      );
       const dataItem = await response.json();
       setUserProfile(dataItem.data);
       AsyncStorage.setItem("profile", dataItem.data.pic);

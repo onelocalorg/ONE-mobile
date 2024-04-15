@@ -1,12 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Route } from "./route";
 import { AppUpdate } from "~/components/app-update";
-import {
-  ANDROID_VERSION,
-  API_URL,
-  IOS_VERSION,
-  setData,
-} from "~/network/constant";
+import { ANDROID_VERSION, IS_VERSION, setData } from "~/network/constant";
 import { Platform } from "react-native";
 
 export const AppNavigation = () => {
@@ -21,7 +16,7 @@ export const AppNavigation = () => {
   }, []);
 
   const getAppVersion = async () => {
-    var eventList_url = API_URL + "/v1/config/verions";
+    var eventList_url = process.env.API_URL + "/v1/config/verions";
     try {
       const response = await fetch(eventList_url, { method: "get" });
       const dataItem = await response.json();

@@ -54,8 +54,6 @@ import { Loader } from "~/components/loader";
 import { navigations } from "~/config/app-navigation/constant";
 import { FlatListComponent } from "~/components/flatlist-component";
 import { Pill } from "~/components/pill";
-import { API_URL } from "~/network/constant";
-import ActiveEnv from "~/config/env/env.dev.json";
 
 interface CreatePostRequestScreenProps {
   navigation?: NavigationContainerRef<ParamListBase>;
@@ -158,13 +156,16 @@ export const CreatePostRequestScreen = (
   const getResourcesAPI = async () => {
     const token = await AsyncStorage.getItem("token");
     try {
-      const response = await fetch(API_URL + "/v1/posts/resources", {
-        method: "get",
-        headers: new Headers({
-          Authorization: "Bearer " + token,
-          "Content-Type": "application/json",
-        }),
-      });
+      const response = await fetch(
+        process.env.API_URL + "/v1/posts/resources",
+        {
+          method: "get",
+          headers: new Headers({
+            Authorization: "Bearer " + token,
+            "Content-Type": "application/json",
+          }),
+        }
+      );
       const dataItem = await response.json();
       console.log(
         "-------------------Get Resources API Response---------------------"
@@ -203,14 +204,17 @@ export const CreatePostRequestScreen = (
     console.log("================ postImageUploadAPI Request=================");
     console.log(pic);
     try {
-      const response = await fetch(API_URL + "/v1/users/upload/file", {
-        method: "post",
-        headers: new Headers({
-          Authorization: "Bearer " + token,
-          "Content-Type": "application/json",
-        }),
-        body: JSON.stringify(pic),
-      });
+      const response = await fetch(
+        process.env.API_URL + "/v1/users/upload/file",
+        {
+          method: "post",
+          headers: new Headers({
+            Authorization: "Bearer " + token,
+            "Content-Type": "application/json",
+          }),
+          body: JSON.stringify(pic),
+        }
+      );
       const dataItem = await response.json();
       console.log("-----------------Response------------");
       var tempData = imageArray;
@@ -254,7 +258,7 @@ export const CreatePostRequestScreen = (
     console.log("=========== Create Post API Request ==============");
     console.log(data);
     try {
-      const response = await fetch(API_URL + "/v1/posts/create", {
+      const response = await fetch(process.env.API_URL + "/v1/posts/create", {
         method: "post",
         headers: new Headers({
           Authorization: "Bearer " + token,
@@ -446,10 +450,12 @@ export const CreatePostRequestScreen = (
     LodingData(true);
     console.log("=========== User List Gratis API Request ==============");
     console.log(datas);
-    console.log(API_URL + "/v1/users/search-user?searchtext=" + textUser);
+    console.log(
+      process.env.API_URL + "/v1/users/search-user?searchtext=" + textUser
+    );
     try {
       const response = await fetch(
-        API_URL + "/v1/users/search-user?searchtext=" + textUser,
+        process.env.API_URL + "/v1/users/search-user?searchtext=" + textUser,
         {
           method: "get",
           headers: new Headers({
@@ -647,7 +653,7 @@ export const CreatePostRequestScreen = (
                     console.log(details); // description
                   }}
                   query={{
-                    key: ActiveEnv.GOOGLE_KEY, // client
+                    key: process.env.GOOGLE_KEY, // client
                   }}
                   // keepResultsAfterBlur={true}
                   // currentLocation={true}

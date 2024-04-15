@@ -260,5 +260,5 @@ xcuserdata/
 .mapbox
 android/app/src/main/res/values/developer-config.xml
 
-# Xcode 
+# XCode environment variable files
 .xcode.env.local

@@ -63,7 +63,7 @@ import GestureRecognizer from "react-native-swipe-gestures";
 import ImagePicker from "react-native-image-crop-picker";
 import Toast from "react-native-simple-toast";
 import { navigations } from "~/config/app-navigation/constant";
-import { API_URL, getData } from "~/network/constant";
+import { getData } from "~/network/constant";
 
 interface UserData {
   id: string;
@@ -329,13 +329,16 @@ export const ProfileScreen = (props: ProfileScreenProps) => {
 
     ImageOptionModal(false);
     try {
-      const response = await fetch(API_URL + "/v1/users/upload/file", {
-        method: "post",
-        headers: new Headers({
-          "Content-Type": "application/json",
-        }),
-        body: JSON.stringify(pic),
-      });
+      const response = await fetch(
+        process.env.API_URL + "/v1/users/upload/file",
+        {
+          method: "post",
+          headers: new Headers({
+            "Content-Type": "application/json",
+          }),
+          body: JSON.stringify(pic),
+        }
+      );
       const dataItem = await response.json();
       LodingData(false);
       setProfileUri(dataItem?.data?.imageUrl);
@@ -365,13 +368,16 @@ export const ProfileScreen = (props: ProfileScreenProps) => {
 
     ImageOptionModal(false);
     try {
-      const response = await fetch(API_URL + "/v1/users/upload/file", {
-        method: "post",
-        headers: new Headers({
-          "Content-Type": "application/json",
-        }),
-        body: JSON.stringify(pic),
-      });
+      const response = await fetch(
+        process.env.API_URL + "/v1/users/upload/file",
+        {
+          method: "post",
+          headers: new Headers({
+            "Content-Type": "application/json",
+          }),
+          body: JSON.stringify(pic),
+        }
+      );
       const dataItem = await response.json();
       LodingData(false);
       setbackgroundUri(dataItem?.data?.imageUrl);
@@ -385,16 +391,19 @@ export const ProfileScreen = (props: ProfileScreenProps) => {
     var pic: any = {};
 
     LodingData(true);
-    console.log(API_URL + "/v1/users/connect-link");
+    console.log(process.env.API_URL + "/v1/users/connect-link");
     try {
       const token = await AsyncStorage.getItem("token");
-      const response = await fetch(API_URL + "/v1/users/connect-link", {
-        method: "post",
-        headers: new Headers({
-          Authorization: "Bearer " + token,
-          "Content-Type": "application/json",
-        }),
-      });
+      const response = await fetch(
+        process.env.API_URL + "/v1/users/connect-link",
+        {
+          method: "post",
+          headers: new Headers({
+            Authorization: "Bearer " + token,
+            "Content-Type": "application/json",
+          }),
+        }
+      );
       const dataItem = await response.json();
       if (dataItem?.data) {
         Linking.openURL(dataItem?.data);

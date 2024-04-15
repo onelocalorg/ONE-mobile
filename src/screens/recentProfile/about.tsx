@@ -66,7 +66,7 @@ import { Loader } from "~/components/loader";
 import { ButtonComponent } from "~/components/button-component";
 import Toast from "react-native-simple-toast";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { API_URL, persistKeys } from "~/network/constant";
+import { persistKeys } from "~/network/constant";
 import { height, width } from "~/theme/device/device";
 import { useEditProfile } from "~/network/hooks/user-service-hooks/use-edit-profile";
 import { ActivityIndicator } from "react-native";
@@ -119,7 +119,7 @@ export const Recentabout = (props: RecentaboutDataProps) => {
     const userID = await AsyncStorage.getItem("recentUserId");
     try {
       const response = await fetch(
-        API_URL + "/v1/users/userprofile/" + userID,
+        process.env.API_URL + "/v1/users/userprofile/" + userID,
         {
           method: "get",
           headers: new Headers({

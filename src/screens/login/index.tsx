@@ -57,7 +57,7 @@ import {
   statusCodes,
 } from "@react-native-google-signin/google-signin";
 import { Linking } from "react-native";
-import { API_URL, getData } from "~/network/constant";
+import { getData } from "~/network/constant";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
 GoogleSignin.configure({
@@ -183,15 +183,18 @@ export const LoginScreen = (props: LoginScreenProps) => {
     console.log("==========on Google Sign Up API Request==============");
     console.log(userData);
     try {
-      const response = await fetch(API_URL + "/v1/auth/googleSignupLogin", {
-        method: "post",
-        headers: new Headers({
-          "Content-Type": "application/x-www-form-urlencoded",
-        }),
-        body: Object.keys(userData)
-          .map((key) => key + "=" + userData[key])
-          .join("&"),
-      });
+      const response = await fetch(
+        process.env.API_URL + "/v1/auth/googleSignupLogin",
+        {
+          method: "post",
+          headers: new Headers({
+            "Content-Type": "application/x-www-form-urlencoded",
+          }),
+          body: Object.keys(userData)
+            .map((key) => key + "=" + userData[key])
+            .join("&"),
+        }
+      );
       const signData = await response.json();
       console.log("==========on Google Sign Up API Response==============");
       console.log(signData);
@@ -264,15 +267,18 @@ export const LoginScreen = (props: LoginScreenProps) => {
     console.log("==========on Apple Sign Up API Request==============");
     console.log(userData);
     try {
-      const response = await fetch(API_URL + "/v1/auth/appleSignupLogin", {
-        method: "post",
-        headers: new Headers({
-          "Content-Type": "application/x-www-form-urlencoded",
-        }),
-        body: Object.keys(userData)
-          .map((key) => key + "=" + userData[key])
-          .join("&"),
-      });
+      const response = await fetch(
+        process.env.API_URL + "/v1/auth/appleSignupLogin",
+        {
+          method: "post",
+          headers: new Headers({
+            "Content-Type": "application/x-www-form-urlencoded",
+          }),
+          body: Object.keys(userData)
+            .map((key) => key + "=" + userData[key])
+            .join("&"),
+        }
+      );
       const signData = await response.json();
       console.log("==========on Apple Sign Up API Response==============");
       console.log(signData);
@@ -337,15 +343,18 @@ export const LoginScreen = (props: LoginScreenProps) => {
     console.log("==========get user Apple Cred two API Request==============");
     console.log(userData);
     try {
-      const response = await fetch(API_URL + "/v1/auth/appleSignupLogin", {
-        method: "post",
-        headers: new Headers({
-          "Content-Type": "application/x-www-form-urlencoded",
-        }),
-        body: Object.keys(userData)
-          .map((key) => key + "=" + userData[key])
-          .join("&"),
-      });
+      const response = await fetch(
+        process.env.API_URL + "/v1/auth/appleSignupLogin",
+        {
+          method: "post",
+          headers: new Headers({
+            "Content-Type": "application/x-www-form-urlencoded",
+          }),
+          body: Object.keys(userData)
+            .map((key) => key + "=" + userData[key])
+            .join("&"),
+        }
+      );
       const userinfo = await response.json();
       console.log(
         "==========get user Apple Cred two API Response=============="

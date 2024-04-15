@@ -56,8 +56,6 @@ import { navigations } from "~/config/app-navigation/constant";
 import { DatePickerModal } from "react-native-paper-dates";
 import { FlatListComponent } from "~/components/flatlist-component";
 import { Pill } from "~/components/pill";
-import { API_URL } from "~/network/constant";
-import ActiveEnv from "~/config/env/env.dev.json";
 
 interface CreatePostOfferScreenProps {
   navigation?: NavigationContainerRef<ParamListBase>;
@@ -167,15 +165,18 @@ export const CreatePostOfferScreen = (props: CreatePostOfferScreenProps) => {
   const getResourcesAPI = async () => {
     const token = await AsyncStorage.getItem("token");
     try {
-      const response = await fetch(API_URL + "/v1/posts/resources", {
-        method: "get",
-        headers: new Headers({
-          Authorization: "Bearer " + token,
-          "Content-Type": "application/json",
-        }),
-      });
+      const response = await fetch(
+        process.env.API_URL + "/v1/posts/resources",
+        {
+          method: "get",
+          headers: new Headers({
+            Authorization: "Bearer " + token,
+            "Content-Type": "application/json",
+          }),
+        }
+      );
       const dataItem = await response.json();
-      console.log(API_URL + "/v1/posts/resources");
+      console.log(process.env.API_URL + "/v1/posts/resources");
       console.log(
         "-------------------Get Resources API Response---------------------"
       );
@@ -219,14 +220,17 @@ export const CreatePostOfferScreen = (props: CreatePostOfferScreenProps) => {
     console.log("================ postImageUploadAPI Request=================");
     console.log(pic);
     try {
-      const response = await fetch(API_URL + "/v1/users/upload/file", {
-        method: "post",
-        headers: new Headers({
-          Authorization: "Bearer " + token,
-          "Content-Type": "application/json",
-        }),
-        body: JSON.stringify(pic),
-      });
+      const response = await fetch(
+        process.env.API_URL + "/v1/users/upload/file",
+        {
+          method: "post",
+          headers: new Headers({
+            Authorization: "Bearer " + token,
+            "Content-Type": "application/json",
+          }),
+          body: JSON.stringify(pic),
+        }
+      );
       const dataItem = await response.json();
       console.log("-----------------Response------------");
       var tempData = imageArray;
@@ -271,7 +275,7 @@ export const CreatePostOfferScreen = (props: CreatePostOfferScreenProps) => {
     try {
       console.log("222222");
 
-      const response = await fetch(API_URL + "/v1/posts/create", {
+      const response = await fetch(process.env.API_URL + "/v1/posts/create", {
         method: "post",
         headers: new Headers({
           Authorization: "Bearer " + token,
@@ -455,10 +459,12 @@ export const CreatePostOfferScreen = (props: CreatePostOfferScreenProps) => {
     LodingData(true);
     console.log("=========== User List Gratis API Request ==============");
     console.log(datas);
-    console.log(API_URL + "/v1/users/search-user?searchtext=" + textUser);
+    console.log(
+      process.env.API_URL + "/v1/users/search-user?searchtext=" + textUser
+    );
     try {
       const response = await fetch(
-        API_URL + "/v1/users/search-user?searchtext=" + textUser,
+        process.env.API_URL + "/v1/users/search-user?searchtext=" + textUser,
         {
           method: "get",
           headers: new Headers({
@@ -658,7 +664,7 @@ export const CreatePostOfferScreen = (props: CreatePostOfferScreenProps) => {
                     console.log(details); // description
                   }}
                   query={{
-                    key: ActiveEnv.GOOGLE_KEY, // client
+                    key: process.env.GOOGLE_KEY, // client
                   }}
                   // keepResultsAfterBlur={true}
                   // currentLocation={true}

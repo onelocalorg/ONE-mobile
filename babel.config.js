@@ -1,5 +1,5 @@
 module.exports = function (api) {
-  api.cache(true);
+  api.cache(false);
   return {
     presets: ["module:metro-react-native-babel-preset"],
     plugins: [
@@ -9,8 +9,10 @@ module.exports = function (api) {
         "babel-plugin-root-import",
         {
           rootPathPrefix: "~/",
+          rootPathSuffix: "src",
         },
       ],
+      ["module:react-native-dotenv"],
     ],
   };
 };
