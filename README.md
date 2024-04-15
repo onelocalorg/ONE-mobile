@@ -10,6 +10,12 @@ This is the React Native mobile app for the ONE local platform.
 npm install
 ```
 
+### Setup Mapbox
+
+Follow the instructions to configure React Native Mapbox as described at
+https://rnmapbox.github.io/docs/install, both for iOS and Android. You will
+need a secret access token that will go in your home directory.
+
 ## Step 2: Start the Metro Server
 
 First, you will need to start **Metro**, the JavaScript _bundler_ that ships _with_ React Native.
@@ -27,7 +33,7 @@ Let Metro Bundler run in its _own_ terminal. Open a _new_ terminal from the _roo
 ### For Android
 
 ```bash
-npm run android
+npm run androidDev
 ```
 
 ### For iOS
@@ -40,7 +46,9 @@ If everything is set up _correctly_, you should see your new app running in your
 
 This is one way to run your app — you can also run it directly from within Android Studio and Xcode respectively.
 
-# Debug Build
+# Android Debug Build
+
+_Unclear if these instructions are accurate_
 
 1.  react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/app/src/main/assets/index.android.bundle --assets-dest android/app/src/main/res
 
