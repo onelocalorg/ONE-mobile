@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "start": "npm run start:production",
+    "start": "npm run start:development",
     "start:development": "NODE_ENV=development react-native start",
     "start:production": "NODE_ENV=production react-native start",
     "ios": "react-native run-ios",
