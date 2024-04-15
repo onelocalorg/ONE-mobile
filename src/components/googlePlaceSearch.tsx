@@ -1,6 +1,5 @@
 import React from "react";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
-import ActiveEnv from "@config/env/env.dev.json";
 
 const GooglePlacesInput = () => {
   return (
@@ -11,7 +10,7 @@ const GooglePlacesInput = () => {
         console.log(data, details);
       }}
       query={{
-        key: ActiveEnv.GOOGLE_KEY,
+        key: process.env.GOOGLE_KEY,
         language: "en",
       }}
     />

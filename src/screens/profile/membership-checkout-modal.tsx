@@ -22,7 +22,7 @@ import GestureRecognizer from "react-native-swipe-gestures";
 import { createStyleSheet } from "./style";
 import { Loader } from "@components/loader";
 import { ImageComponent } from "@components/image-component";
-import { API_URL, persistKeys } from "@network/constant";
+import { persistKeys } from "@network/constant";
 import { useToken } from "@app-hooks/use-token";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Toast from "react-native-simple-toast";
@@ -92,8 +92,11 @@ export const MembershipCheckoutModal = (props: membershipModalProps) => {
         "---------------dataId dataId------------------------------------"
       );
       const response = await fetch(
-        API_URL + "/v1/subscriptions/packages/" + dataId + "/checkout",
-        // API_URL + "/v1/subscriptions/packages/" + '655f484562030949923d50c3' + "/checkout",
+        process.env.API_URL +
+          "/v1/subscriptions/packages/" +
+          dataId +
+          "/checkout",
+        // process.env.API_URL + "/v1/subscriptions/packages/" + '655f484562030949923d50c3' + "/checkout",
 
         {
           method: "get",
@@ -153,8 +156,8 @@ export const MembershipCheckoutModal = (props: membershipModalProps) => {
 
     try {
       const response = await fetch(
-        API_URL + "/v1/subscriptions/" + dataId + "/purchase",
-        // API_URL + "/v1/subscriptions/" + idPackage + "/purchase",
+        process.env.API_URL + "/v1/subscriptions/" + dataId + "/purchase",
+        // process.env.API_URL + "/v1/subscriptions/" + idPackage + "/purchase",
         {
           method: "post",
           headers: new Headers({
@@ -215,7 +218,7 @@ export const MembershipCheckoutModal = (props: membershipModalProps) => {
   const ConfigListAPI = async () => {
     const token = await AsyncStorage.getItem("token");
     try {
-      const response = await fetch(API_URL + "/v1/config/list", {
+      const response = await fetch(process.env.API_URL + "/v1/config/list", {
         method: "get",
         headers: new Headers({
           Authorization: "Bearer " + token,
@@ -289,16 +292,19 @@ export const MembershipCheckoutModal = (props: membershipModalProps) => {
       token: cardId,
     };
     try {
-      const response = await fetch(API_URL + "/v1/subscriptions/cards/create", {
-        method: "post",
-        headers: new Headers({
-          Authorization: "Bearer " + token,
-          "Content-Type": "application/x-www-form-urlencoded",
-        }),
-        body: Object.keys(cardtokenData)
-          .map((key) => key + "=" + cardtokenData[key])
-          .join("&"),
-      });
+      const response = await fetch(
+        process.env.API_URL + "/v1/subscriptions/cards/create",
+        {
+          method: "post",
+          headers: new Headers({
+            Authorization: "Bearer " + token,
+            "Content-Type": "application/x-www-form-urlencoded",
+          }),
+          body: Object.keys(cardtokenData)
+            .map((key) => key + "=" + cardtokenData[key])
+            .join("&"),
+        }
+      );
       console.log(cardId);
       const dataItem = await response.json();
       console.log("-----------------create card------------");

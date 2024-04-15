@@ -36,7 +36,6 @@ import { TextInput } from "react-native";
 import { Platform } from "react-native";
 import Toast from "react-native-simple-toast";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
-import { API_URL } from "@network/constant";
 
 interface TicketCheckoutModalCompProps {
   onPurchase: (
@@ -109,11 +108,15 @@ const TicketCheckoutModalComp = (
 
   async function totalPriceCalculation(ticketId: any, quantityticket: any) {
     const token = await AsyncStorage.getItem("token");
-    console.log(API_URL + "/v1/tickets/" + ticketId + "/" + quantityticket);
+    console.log(
+      process.env.API_URL + "/v1/tickets/" + ticketId + "/" + quantityticket
+    );
     try {
-      console.log(API_URL + "/v1/tickets/" + ticketId + "/" + quantityticket);
+      console.log(
+        process.env.API_URL + "/v1/tickets/" + ticketId + "/" + quantityticket
+      );
       const response = await fetch(
-        API_URL + "/v1/tickets/" + ticketId + "/" + quantityticket,
+        process.env.API_URL + "/v1/tickets/" + ticketId + "/" + quantityticket,
         {
           method: "get",
           headers: new Headers({
@@ -198,13 +201,16 @@ const TicketCheckoutModalComp = (
   const getCardDetailAPI = async () => {
     const token = await AsyncStorage.getItem("token");
     try {
-      const response = await fetch(API_URL + "/v1/subscriptions/cards", {
-        method: "get",
-        headers: new Headers({
-          Authorization: "Bearer " + token,
-          "Content-Type": "application/json",
-        }),
-      });
+      const response = await fetch(
+        process.env.API_URL + "/v1/subscriptions/cards",
+        {
+          method: "get",
+          headers: new Headers({
+            Authorization: "Bearer " + token,
+            "Content-Type": "application/json",
+          }),
+        }
+      );
       const dataItem = await response.json();
       isLoading(false);
 
@@ -219,7 +225,7 @@ const TicketCheckoutModalComp = (
   const ConfigListAPI = async () => {
     const token = await AsyncStorage.getItem("token");
     try {
-      const response = await fetch(API_URL + "/v1/config/list", {
+      const response = await fetch(process.env.API_URL + "/v1/config/list", {
         method: "get",
         headers: new Headers({
           Authorization: "Bearer " + token,
@@ -283,14 +289,17 @@ const TicketCheckoutModalComp = (
       token: cardId,
     };
     try {
-      const response = await fetch(API_URL + "/v1/subscriptions/cards/create", {
-        method: "post",
-        headers: new Headers({
-          Authorization: "Bearer " + token,
-          "Content-Type": "application/json",
-        }),
-        body: JSON.stringify(cardtokenData),
-      });
+      const response = await fetch(
+        process.env.API_URL + "/v1/subscriptions/cards/create",
+        {
+          method: "post",
+          headers: new Headers({
+            Authorization: "Bearer " + token,
+            "Content-Type": "application/json",
+          }),
+          body: JSON.stringify(cardtokenData),
+        }
+      );
       const dataItem = await response.json();
       isLoading(false);
       if (dataItem?.success === true) {

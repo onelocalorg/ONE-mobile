@@ -61,7 +61,7 @@ import { TextInput } from "react-native";
 import GetLocation from "react-native-get-location";
 import { FlatList, ScrollView } from "react-native-gesture-handler";
 import { Switch } from "react-native";
-import { API_URL, getData } from "@network/constant";
+import { getData } from "@network/constant";
 
 interface Range {
   startDate: Date | undefined;
@@ -143,7 +143,8 @@ export const EventListScreen = (props: EventListScreenProps) => {
       eventData,
       "--------------------event location request-----------------"
     );
-    var eventList_url = API_URL + "/v2/events/list?limit=10&page=" + page;
+    var eventList_url =
+      process.env.API_URL + "/v2/events/list?limit=10&page=" + page;
     try {
       const token = await AsyncStorage.getItem("token");
       const response = await fetch(eventList_url, {
@@ -177,13 +178,16 @@ export const EventListScreen = (props: EventListScreenProps) => {
     const token = await AsyncStorage.getItem("token");
     console.log("token", token);
     try {
-      const response = await fetch(API_URL + "/v1/users/" + user.id, {
-        method: "get",
-        headers: new Headers({
-          Authorization: "Bearer " + token,
-          "Content-Type": "application/json",
-        }),
-      });
+      const response = await fetch(
+        process.env.API_URL + "/v1/users/" + user.id,
+        {
+          method: "get",
+          headers: new Headers({
+            Authorization: "Bearer " + token,
+            "Content-Type": "application/json",
+          }),
+        }
+      );
       const dataItem = await response.json();
       setUserProfile(dataItem.data);
       if (dataItem?.data?.isEventActiveSubscription === true) {

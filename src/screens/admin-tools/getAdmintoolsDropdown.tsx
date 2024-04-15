@@ -12,7 +12,7 @@ import {
 import { ImageComponent } from "@components/image-component";
 import { ModalRefProps } from "@components/modal-component";
 import { TouchableOpacity } from "react-native";
-import { API_URL, setData } from "@network/constant";
+import { setData } from "@network/constant";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { FlatList } from "react-native";
 import { Loader } from "@components/loader";
@@ -76,7 +76,7 @@ export const GetAdmintoolsDropDownScreen = (
     console.log("=========== createPayoutAPI Request ==============");
     try {
       const response = await fetch(
-        API_URL + "/v1/events/event-financial/" + eventId,
+        process.env.API_URL + "/v1/events/event-financial/" + eventId,
         {
           method: "get",
           headers: new Headers({
@@ -85,7 +85,9 @@ export const GetAdmintoolsDropDownScreen = (
           }),
         }
       );
-      console.log(API_URL + "/v1/events/event-financial/" + eventId);
+      console.log(
+        process.env.API_URL + "/v1/events/event-financial/" + eventId
+      );
       const dataItem = await response.json();
       console.log(
         "=========== payout data from API==============",
@@ -118,7 +120,10 @@ export const GetAdmintoolsDropDownScreen = (
     console.log("-----------dataprint-------------", JSON.stringify(data));
     try {
       const response = await fetch(
-        API_URL + "/v1/events/event-financial/" + eventId + "/create",
+        process.env.API_URL +
+          "/v1/events/event-financial/" +
+          eventId +
+          "/create",
         {
           method: "post",
           headers: new Headers({

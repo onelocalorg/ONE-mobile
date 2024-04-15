@@ -14,7 +14,6 @@ import { useToken } from "@app-hooks/use-token";
 import axios from "axios";
 import { API } from "@network/api";
 import { StripeProvider } from "@stripe/stripe-react-native";
-import ActiveEnv from "@config/env/env.json";
 
 export const queryClient = new QueryClient(queryConfig);
 const theme = getTheme(light);
@@ -27,7 +26,9 @@ export const App = () => {
   }, []);
 
   useEffect(() => {
-    console.log("Hi");
+    console.log(
+      `Launching app with environment ${process.env.NODE_ENV} and API_URL ${process.env.API_URL}`
+    );
     if (token) {
       axios.defaults.headers.common.Authorization = `Bearer ${token}`;
       API.initService();
@@ -35,7 +36,7 @@ export const App = () => {
   }, [token]);
 
   return (
-    <StripeProvider publishableKey={ActiveEnv.STRIPE_PUBLISHABLE_KEY}>
+    <StripeProvider publishableKey={process.env.STRIPE_PUBLIC_KEY!}>
       <SafeAreaProvider>
         <QueryClientProvider client={queryClient}>
           <Provider store={store}>

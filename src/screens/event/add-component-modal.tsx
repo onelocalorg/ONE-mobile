@@ -31,7 +31,7 @@ import { useSelector } from "react-redux";
 import { StoreType } from "@network/reducers/store";
 import { UserProfileState } from "@network/reducers/user-profile-reducer";
 import { useUserProfile } from "@network/hooks/user-service-hooks/use-user-profile";
-import { API_URL, getData, setData } from "@network/constant";
+import { getData, setData } from "@network/constant";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Modal } from "react-native";
 
@@ -93,7 +93,7 @@ export const AddComponentModal = (props: AddComponentModalProps) => {
 
   //   const token = await AsyncStorage.getItem("token");
   //   try {
-  //     const response = await fetch(API_URL + "/v1/users/" + user.id, {
+  //     const response = await fetch(process.env.API_URL + "/v1/users/" + user.id, {
   //       method: "get",
   //       headers: new Headers({
   //         Authorization: "Bearer " + token,
@@ -168,10 +168,12 @@ export const AddComponentModal = (props: AddComponentModalProps) => {
   async function packageDetailAPI() {
     const token = await AsyncStorage.getItem("token");
     console.log(token);
-    console.log(API_URL + "/v1/subscriptions/packages/" + eventProducerID);
+    console.log(
+      process.env.API_URL + "/v1/subscriptions/packages/" + eventProducerID
+    );
     try {
       const response = await fetch(
-        API_URL + "/v1/subscriptions/packages/" + eventProducerID,
+        process.env.API_URL + "/v1/subscriptions/packages/" + eventProducerID,
         {
           method: "get",
           headers: new Headers({

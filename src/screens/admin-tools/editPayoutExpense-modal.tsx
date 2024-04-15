@@ -14,7 +14,7 @@ import { TextInput } from "react-native-gesture-handler";
 import { ModalComponent, ModalRefProps } from "@components/modal-component";
 import { TouchableOpacity } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { API_URL, getData } from "@network/constant";
+import { getData } from "@network/constant";
 import { ScrollView } from "react-native";
 import { FlatList } from "react-native";
 import { ImageComponent } from "@components/image-component";
@@ -152,10 +152,12 @@ export const EditPayoutModalScreen = (props: EditBreakDownModalProps) => {
     };
     onUserSearch(textUser);
     LodingData(true);
-    console.log(API_URL + "/v1/users/search-user?searchtext=" + textUser);
+    console.log(
+      process.env.API_URL + "/v1/users/search-user?searchtext=" + textUser
+    );
     try {
       const response = await fetch(
-        API_URL + "/v1/users/search-user?searchtext=" + textUser,
+        process.env.API_URL + "/v1/users/search-user?searchtext=" + textUser,
         {
           method: "get",
           headers: new Headers({
@@ -182,7 +184,11 @@ export const EditPayoutModalScreen = (props: EditBreakDownModalProps) => {
   async function editExpenseAPI() {
     LodingData(true);
     const token = await AsyncStorage.getItem("token");
-    var url = API_URL + "/v1/events/event-financial/" + id + "/edit/expense";
+    var url =
+      process.env.API_URL +
+      "/v1/events/event-financial/" +
+      id +
+      "/edit/expense";
     var item: any = {
       user_id: newUserId,
       amount: amount,
@@ -222,7 +228,8 @@ export const EditPayoutModalScreen = (props: EditBreakDownModalProps) => {
   async function editPayoutAPI() {
     LodingData(true);
     const token = await AsyncStorage.getItem("token");
-    var url = API_URL + "/v1/events/event-financial/" + id + "/edit/payout";
+    var url =
+      process.env.API_URL + "/v1/events/event-financial/" + id + "/edit/payout";
 
     var getAmount = (payoutExpenseObject?.profitAmt * amount) / 100;
     if (priceData === 1) {
@@ -308,7 +315,11 @@ export const EditPayoutModalScreen = (props: EditBreakDownModalProps) => {
   async function deleteExpenseAPI() {
     LodingData(true);
     const token = await AsyncStorage.getItem("token");
-    var url = API_URL + "/v1/events/event-financial/" + id + "/delete/expense";
+    var url =
+      process.env.API_URL +
+      "/v1/events/event-financial/" +
+      id +
+      "/delete/expense";
     var dataReq = {
       key: expensePayoutID,
     };
@@ -344,7 +355,11 @@ export const EditPayoutModalScreen = (props: EditBreakDownModalProps) => {
   async function deletePayoutAPI() {
     LodingData(true);
     const token = await AsyncStorage.getItem("token");
-    var url = API_URL + "/v1/events/event-financial/" + id + "/delete/payout";
+    var url =
+      process.env.API_URL +
+      "/v1/events/event-financial/" +
+      id +
+      "/delete/payout";
     var dataReq = {
       key: expensePayoutID,
     };
@@ -405,14 +420,17 @@ export const EditPayoutModalScreen = (props: EditBreakDownModalProps) => {
 
     console.log("================ postImageUploadAPI Request=================");
     try {
-      const response = await fetch(API_URL + "/v1/users/upload/file", {
-        method: "post",
-        headers: new Headers({
-          Authorization: "Bearer " + token,
-          "Content-Type": "application/json",
-        }),
-        body: JSON.stringify(pic),
-      });
+      const response = await fetch(
+        process.env.API_URL + "/v1/users/upload/file",
+        {
+          method: "post",
+          headers: new Headers({
+            Authorization: "Bearer " + token,
+            "Content-Type": "application/json",
+          }),
+          body: JSON.stringify(pic),
+        }
+      );
       const dataItem = await response.json();
       var tempData = imageSelectArray;
       tempData.push(dataItem?.data);

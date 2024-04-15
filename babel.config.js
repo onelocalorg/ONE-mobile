@@ -1,5 +1,5 @@
 module.exports = function (api) {
-  api.cache(true);
+  api.cache(false);
   return {
     presets: ["module:metro-react-native-babel-preset"],
     plugins: [
@@ -25,6 +25,7 @@ module.exports = function (api) {
       ],
       "jest-hoist",
       "react-native-reanimated/plugin",
+      ["module:react-native-dotenv"],
     ],
   };
 };

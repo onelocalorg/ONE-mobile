@@ -65,7 +65,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import GetLocation from "react-native-get-location";
 import { DatePickerModal } from "react-native-paper-dates";
 import Toast from "react-native-simple-toast";
-import { API_URL } from "@network/constant";
+
 import { Switch } from "react-native";
 import { AddPayoutExpenseModel } from "./addPayoutExpense-modal";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
@@ -73,7 +73,6 @@ import { GetAdmintoolsDropDownScreen } from "./getAdmintoolsDropdown";
 import { ScrollView } from "react-native-gesture-handler";
 import { width } from "@theme/device/device";
 import { Platform } from "react-native";
-import ActiveEnv from "@config/env/env.dev.json";
 import { emailRegexEx } from "@assets/constants";
 
 interface AdminToolsScreenProps {
@@ -194,10 +193,10 @@ export const AdminToolsScreen = (props: AdminToolsScreenProps) => {
     const token = await AsyncStorage.getItem("token");
 
     console.log("=========== Cancle Event API Request ==============");
-    console.log(API_URL + "/v1/events/cancel-event/" + eventID);
+    console.log(process.env.API_URL + "/v1/events/cancel-event/" + eventID);
     try {
       const response = await fetch(
-        API_URL + "/v1/events/cancel-event/" + eventID,
+        process.env.API_URL + "/v1/events/cancel-event/" + eventID,
         {
           method: "post",
           headers: new Headers({
@@ -414,15 +413,18 @@ export const AdminToolsScreen = (props: AdminToolsScreenProps) => {
       base64String: "data:image/jpeg;base64," + base64Item,
     };
 
-    console.log(API_URL + "/v1/users/upload/file");
+    console.log(process.env.API_URL + "/v1/users/upload/file");
     try {
-      const response = await fetch(API_URL + "/v1/users/upload/file", {
-        method: "post",
-        headers: new Headers({
-          "Content-Type": "application/json",
-        }),
-        body: JSON.stringify(pic),
-      });
+      const response = await fetch(
+        process.env.API_URL + "/v1/users/upload/file",
+        {
+          method: "post",
+          headers: new Headers({
+            "Content-Type": "application/json",
+          }),
+          body: JSON.stringify(pic),
+        }
+      );
       const dataItem = await response.json();
       LodingData(false);
       setEventImage(dataItem?.data?.key);
@@ -670,7 +672,7 @@ export const AdminToolsScreen = (props: AdminToolsScreenProps) => {
                         });
                       }}
                       query={{
-                        key: ActiveEnv.GOOGLE_KEY, // client
+                        key: process.env.GOOGLE_KEY, // client
                       }}
                       currentLocationLabel="Current location"
                     />

@@ -3,18 +3,16 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
+    "start": "npm run start:production",
+    "start:development": "NODE_ENV=development react-native start",
+    "start:production": "NODE_ENV=production react-native start",
     "ios": "react-native run-ios",
+    "android": "react-native run-android",
     "lint": "eslint .",
-    "start": "react-native start",
     "test": "jest",
     "pod": "cd ios && pod install && cd ..",
-    "androidDev": "npm run env:dev && react-native run-android",
-    "androidProd": "npm run env:prod && react-native run-android",
-    "buildDev": "npm run env:dev && cd android && ./gradlew app:assembleRelease && cd ..",
-    "buildProd": "npm run env:prod && cd android && ./gradlew app:assembleRelease && cd ..",
-    "env:prod": "cp src/config/env/env.prod.json src/config/env/env.json",
-    "env:dev": "cp src/config/env/env.dev.json src/config/env/env.json",
-    "build:ios": "react-native bundle --entry-file='index.js' --bundle-output='./ios/main.jsbundle' --dev=false --platform='iOS'"
+    "build:android": "cd android && ./gradlew app:assembleRelease && cd ..",
+    "build:ios": "react-native bundle --entry-file='index.js' --bundle-output='./ios/main.jsbundle' --dev=false --platform='ios'"
   },
   "dependencies": {
     "@invertase/react-native-apple-authentication": "^2.3.0",
@@ -89,10 +87,14 @@
     "jest": "^29.2.1",
     "metro-react-native-babel-preset": "0.76.5",
     "prettier": "^2.4.1",
+    "react-native-dotenv": "^3.4.11",
     "react-test-renderer": "18.2.0",
     "typescript": "4.8.4"
   },
   "engines": {
     "node": ">=16"
+  },
+  "overrides": {
+    "@babel/core": "^7.24.4"
   }
 }

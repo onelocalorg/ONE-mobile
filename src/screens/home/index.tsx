@@ -57,7 +57,7 @@ import { Loader } from "@components/loader";
 import Toast from "react-native-simple-toast";
 import GestureRecognizer from "react-native-swipe-gestures";
 import { Alert } from "react-native";
-import { API_URL, getData, setData } from "@network/constant";
+import { getData, setData } from "@network/constant";
 import { CommentList } from "./commetList";
 import {
   isLocationEnabled,
@@ -287,13 +287,16 @@ export const HomeScreen = (props: HomeScreenProps) => {
   const getUserProfileAPI = async () => {
     const token = await AsyncStorage.getItem("token");
     try {
-      const response = await fetch(API_URL + "/v1/users/" + user.id, {
-        method: "get",
-        headers: new Headers({
-          Authorization: "Bearer " + token,
-          "Content-Type": "application/json",
-        }),
-      });
+      const response = await fetch(
+        process.env.API_URL + "/v1/users/" + user.id,
+        {
+          method: "get",
+          headers: new Headers({
+            Authorization: "Bearer " + token,
+            "Content-Type": "application/json",
+          }),
+        }
+      );
       const dataItem = await response.json();
       setUserProfile(dataItem.data);
       if (dataItem?.data?.isEventActiveSubscription === true) {
@@ -322,7 +325,7 @@ export const HomeScreen = (props: HomeScreenProps) => {
     };
     console.log("----------------post Location----------------", data);
 
-    var URL = API_URL + "/v1/posts/list?limit=5&page=" + page;
+    var URL = process.env.API_URL + "/v1/posts/list?limit=5&page=" + page;
     console.log(URL);
     try {
       const response = await fetch(URL, {
@@ -359,16 +362,19 @@ export const HomeScreen = (props: HomeScreenProps) => {
       points: gratisNo,
     };
     try {
-      const response = await fetch(API_URL + "/v1/posts/gratis-sharing", {
-        method: "post",
-        headers: new Headers({
-          Authorization: "Bearer " + token,
-          "Content-Type": "application/x-www-form-urlencoded",
-        }),
-        body: Object.keys(data)
-          .map((key) => key + "=" + data[key])
-          .join("&"),
-      });
+      const response = await fetch(
+        process.env.API_URL + "/v1/posts/gratis-sharing",
+        {
+          method: "post",
+          headers: new Headers({
+            Authorization: "Bearer " + token,
+            "Content-Type": "application/x-www-form-urlencoded",
+          }),
+          body: Object.keys(data)
+            .map((key) => key + "=" + data[key])
+            .join("&"),
+        }
+      );
       const dataItem = await response.json();
       if (dataItem?.success === true) {
         let markers = [...postList];
@@ -407,16 +413,19 @@ export const HomeScreen = (props: HomeScreenProps) => {
     }
 
     try {
-      const response = await fetch(API_URL + "/v1/users/recently-joined", {
-        method: "post",
-        headers: new Headers({
-          Authorization: "Bearer " + token,
-          "Content-Type": "application/x-www-form-urlencoded",
-        }),
-        body: Object.keys(data)
-          .map((key) => key + "=" + data[key])
-          .join("&"),
-      });
+      const response = await fetch(
+        process.env.API_URL + "/v1/users/recently-joined",
+        {
+          method: "post",
+          headers: new Headers({
+            Authorization: "Bearer " + token,
+            "Content-Type": "application/x-www-form-urlencoded",
+          }),
+          body: Object.keys(data)
+            .map((key) => key + "=" + data[key])
+            .join("&"),
+        }
+      );
       const dataItem = await response.json();
       recentlyJoinUser(dataItem?.data);
     } catch (error) {
@@ -427,12 +436,12 @@ export const HomeScreen = (props: HomeScreenProps) => {
   async function deletePostAPI() {
     const token = await AsyncStorage.getItem("token");
     console.log(editPost?.id, "delete post id");
-    console.log(API_URL + "/v2/posts/delete/" + editPost?.id);
+    console.log(process.env.API_URL + "/v2/posts/delete/" + editPost?.id);
     try {
       console.log("222222");
 
       const response = await fetch(
-        API_URL + "/v2/posts/delete/" + editPost?.id,
+        process.env.API_URL + "/v2/posts/delete/" + editPost?.id,
         {
           method: "post",
           headers: new Headers({
@@ -466,13 +475,16 @@ export const HomeScreen = (props: HomeScreenProps) => {
   async function blockUserAPI(postID: any, selectOP: any) {
     const token = await AsyncStorage.getItem("token");
     try {
-      const response = await fetch(API_URL + "/v1/posts/block-user/" + postID, {
-        method: "post",
-        headers: new Headers({
-          Authorization: "Bearer " + token,
-          "Content-Type": "application/x-www-form-urlencoded",
-        }),
-      });
+      const response = await fetch(
+        process.env.API_URL + "/v1/posts/block-user/" + postID,
+        {
+          method: "post",
+          headers: new Headers({
+            Authorization: "Bearer " + token,
+            "Content-Type": "application/x-www-form-urlencoded",
+          }),
+        }
+      );
       const dataItem = await response.json();
       LodingData(false);
       if (dataItem.success === true) {

@@ -8,7 +8,6 @@ import { TextInput } from "react-native-gesture-handler";
 import { ModalComponent, ModalRefProps } from "@components/modal-component";
 import { TouchableOpacity } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { API_URL } from "@network/constant";
 import { ScrollView } from "react-native";
 import { FlatList } from "react-native";
 import { ImageComponent } from "@components/image-component";
@@ -143,8 +142,11 @@ export const AddPayoutExpenseScreen = (
 
     try {
       const response = await fetch(
-        API_URL + "/v1/events/event-financial/" + id + "/draft/payout",
-        // API_URL + '/v1/events/event-financial/65d4c08f947463a3a650e663/draft/payout',
+        process.env.API_URL +
+          "/v1/events/event-financial/" +
+          id +
+          "/draft/payout",
+        // process.env.API_URL + '/v1/events/event-financial/65d4c08f947463a3a650e663/draft/payout',
         {
           method: "post",
           headers: new Headers({
@@ -186,7 +188,7 @@ export const AddPayoutExpenseScreen = (
     LodingData(true);
     try {
       const response = await fetch(
-        API_URL + "/v1/users/search-user?searchtext=" + textUser,
+        process.env.API_URL + "/v1/users/search-user?searchtext=" + textUser,
         {
           method: "get",
           headers: new Headers({
@@ -219,7 +221,10 @@ export const AddPayoutExpenseScreen = (
     };
     try {
       const response = await fetch(
-        API_URL + "/v1/events/event-financial/" + id + "/draft/expense",
+        process.env.API_URL +
+          "/v1/events/event-financial/" +
+          id +
+          "/draft/expense",
         {
           method: "post",
           headers: new Headers({
@@ -302,14 +307,17 @@ export const AddPayoutExpenseScreen = (
     };
 
     try {
-      const response = await fetch(API_URL + "/v1/users/upload/file", {
-        method: "post",
-        headers: new Headers({
-          Authorization: "Bearer " + token,
-          "Content-Type": "application/json",
-        }),
-        body: JSON.stringify(pic),
-      });
+      const response = await fetch(
+        process.env.API_URL + "/v1/users/upload/file",
+        {
+          method: "post",
+          headers: new Headers({
+            Authorization: "Bearer " + token,
+            "Content-Type": "application/json",
+          }),
+          body: JSON.stringify(pic),
+        }
+      );
       const dataItem = await response.json();
       var tempData = imageSelectArray;
       tempData.push(dataItem?.data);

@@ -60,7 +60,7 @@ import {
 import { width } from "@theme/device/device";
 import moment from "moment";
 import { DatePickerModal } from "react-native-paper-dates";
-import { API_URL } from "@network/constant";
+
 import {
   CalenderComponent,
   CalenderComponentModal,
@@ -133,7 +133,7 @@ export const SignUp = (props: SignUpProps) => {
       // cover_image: backgroundImageUri?.key,
     };
     try {
-      const response = await fetch(API_URL + "/v1/auth/signup", {
+      const response = await fetch(process.env.API_URL + "/v1/auth/signup", {
         method: "post",
         headers: new Headers({
           "Content-Type": "application/json",
@@ -259,13 +259,16 @@ export const SignUp = (props: SignUpProps) => {
 
     ImageOptionModal(false);
     try {
-      const response = await fetch(API_URL + "/v1/users/upload/file", {
-        method: "post",
-        headers: new Headers({
-          "Content-Type": "application/json",
-        }),
-        body: JSON.stringify(pic),
-      });
+      const response = await fetch(
+        process.env.API_URL + "/v1/users/upload/file",
+        {
+          method: "post",
+          headers: new Headers({
+            "Content-Type": "application/json",
+          }),
+          body: JSON.stringify(pic),
+        }
+      );
       const dataItem = await response.json();
       LodingData(false);
       setProfileUri(dataItem?.data);
@@ -284,13 +287,16 @@ export const SignUp = (props: SignUpProps) => {
     };
     ImageOptionModal(false);
     try {
-      const response = await fetch(API_URL + "/v1/users/upload/file", {
-        method: "post",
-        headers: new Headers({
-          "Content-Type": "application/json",
-        }),
-        body: JSON.stringify(pic),
-      });
+      const response = await fetch(
+        process.env.API_URL + "/v1/users/upload/file",
+        {
+          method: "post",
+          headers: new Headers({
+            "Content-Type": "application/json",
+          }),
+          body: JSON.stringify(pic),
+        }
+      );
       const dataItem = await response.json();
       LodingData(false);
       setbackgroundUri(dataItem?.data);

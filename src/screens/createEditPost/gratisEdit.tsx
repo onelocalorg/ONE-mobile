@@ -59,7 +59,7 @@ import { ScrollView } from "react-native";
 import { Pill } from "@components/pill";
 import { FlatListComponent } from "@components/flatlist-component";
 import { width } from "@theme/device/device";
-import { API_URL } from "@network/constant";
+
 import { useSelector } from "react-redux";
 import { StoreType } from "@network/reducers/store";
 import { UserProfileState } from "@network/reducers/user-profile-reducer";
@@ -179,13 +179,16 @@ export const EditPostGratisScreen = (props: EditPostGratisScreenProps) => {
   const getResourcesAPI = async () => {
     const token = await AsyncStorage.getItem("token");
     try {
-      const response = await fetch(API_URL + "/v1/posts/resources", {
-        method: "get",
-        headers: new Headers({
-          Authorization: "Bearer " + token,
-          "Content-Type": "application/json",
-        }),
-      });
+      const response = await fetch(
+        process.env.API_URL + "/v1/posts/resources",
+        {
+          method: "get",
+          headers: new Headers({
+            Authorization: "Bearer " + token,
+            "Content-Type": "application/json",
+          }),
+        }
+      );
       const dataItem = await response.json();
       getResourseDatawhat(dataItem?.data?.what);
       getResourseDataTo(dataItem?.data?.to);
@@ -210,14 +213,17 @@ export const EditPostGratisScreen = (props: EditPostGratisScreenProps) => {
     };
 
     try {
-      const response = await fetch(API_URL + "/v1/users/upload/file", {
-        method: "post",
-        headers: new Headers({
-          Authorization: "Bearer " + token,
-          "Content-Type": "application/json",
-        }),
-        body: JSON.stringify(pic),
-      });
+      const response = await fetch(
+        process.env.API_URL + "/v1/users/upload/file",
+        {
+          method: "post",
+          headers: new Headers({
+            Authorization: "Bearer " + token,
+            "Content-Type": "application/json",
+          }),
+          body: JSON.stringify(pic),
+        }
+      );
       const dataItem = await response.json();
       console.log(dataItem?.data);
       var tempData = imageArray;
@@ -240,12 +246,12 @@ export const EditPostGratisScreen = (props: EditPostGratisScreenProps) => {
     LodingData(true);
     const token = await AsyncStorage.getItem("token");
 
-    console.log(API_URL + "/v2/posts/get/detail/" + postData?.id);
+    console.log(process.env.API_URL + "/v2/posts/get/detail/" + postData?.id);
     try {
       console.log("222222");
 
       const response = await fetch(
-        API_URL + "/v2/posts/get/detail/" + postData?.id,
+        process.env.API_URL + "/v2/posts/get/detail/" + postData?.id,
         {
           method: "get",
           headers: new Headers({
@@ -296,12 +302,12 @@ export const EditPostGratisScreen = (props: EditPostGratisScreenProps) => {
       post_image: imageArrayKey,
     };
 
-    console.log(API_URL + "/v2/posts/update/" + postData?.id);
+    console.log(process.env.API_URL + "/v2/posts/update/" + postData?.id);
 
     console.log(data);
     try {
       const response = await fetch(
-        API_URL + "/v2/posts/update/" + postData?.id,
+        process.env.API_URL + "/v2/posts/update/" + postData?.id,
         {
           method: "post",
           headers: new Headers({
@@ -337,10 +343,12 @@ export const EditPostGratisScreen = (props: EditPostGratisScreenProps) => {
     LodingData(true);
     console.log("=========== User List Gratis API Request ==============");
     console.log(datas);
-    console.log(API_URL + "/v1/users/search-user?searchtext=" + textUser);
+    console.log(
+      process.env.API_URL + "/v1/users/search-user?searchtext=" + textUser
+    );
     try {
       const response = await fetch(
-        API_URL + "/v1/users/search-user?searchtext=" + textUser,
+        process.env.API_URL + "/v1/users/search-user?searchtext=" + textUser,
         {
           method: "get",
           headers: new Headers({

@@ -40,7 +40,7 @@ import {
 } from "@assets/images";
 import GestureRecognizer from "react-native-swipe-gestures";
 import Toast from "react-native-simple-toast";
-import { API_URL } from "@network/constant";
+
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { navigations } from "@config/app-navigation/constant";
 import {
@@ -126,7 +126,7 @@ export const CommentList = (props: commentListProps) => {
     };
 
     var APIURL =
-      API_URL +
+      process.env.API_URL +
       "/v1/comments?limit=20&page=" +
       pageCount +
       "&post_id=" +
@@ -179,10 +179,15 @@ export const CommentList = (props: commentListProps) => {
     };
     console.log("===========Comment on Post API Request ==============");
     console.log(data);
-    console.log(API_URL + "/v1/posts/" + getPostData?.id + "/comments/create");
+    console.log(
+      process.env.API_URL + "/v1/posts/" + getPostData?.id + "/comments/create"
+    );
     try {
       const response = await fetch(
-        API_URL + "/v1/posts/" + getPostData?.id + "/comments/create",
+        process.env.API_URL +
+          "/v1/posts/" +
+          getPostData?.id +
+          "/comments/create",
         {
           method: "post",
           headers: new Headers({
@@ -226,19 +231,22 @@ export const CommentList = (props: commentListProps) => {
     };
     console.log(
       "=========== Gratis Reply Data API Reques" +
-        API_URL +
+        process.env.API_URL +
         "/v1/posts/gratis-sharing =============="
     );
     console.log(data);
     try {
-      const response = await fetch(API_URL + "/v1/posts/gratis-sharing", {
-        method: "post",
-        headers: new Headers({
-          Authorization: "Bearer " + token,
-          "Content-Type": "application/json",
-        }),
-        body: JSON.stringify(data),
-      });
+      const response = await fetch(
+        process.env.API_URL + "/v1/posts/gratis-sharing",
+        {
+          method: "post",
+          headers: new Headers({
+            Authorization: "Bearer " + token,
+            "Content-Type": "application/json",
+          }),
+          body: JSON.stringify(data),
+        }
+      );
       const dataItem = await response.json();
       console.log("=========== Gratis Data Reply API Response ==============");
       console.log(dataItem);
@@ -276,19 +284,22 @@ export const CommentList = (props: commentListProps) => {
     };
     console.log(
       "=========== Gratis Reply Data API Reques" +
-        API_URL +
+        process.env.API_URL +
         "/v1/posts/gratis-sharing =============="
     );
     console.log(data);
     try {
-      const response = await fetch(API_URL + "/v1/posts/gratis-sharing", {
-        method: "post",
-        headers: new Headers({
-          Authorization: "Bearer " + token,
-          "Content-Type": "application/json",
-        }),
-        body: JSON.stringify(data),
-      });
+      const response = await fetch(
+        process.env.API_URL + "/v1/posts/gratis-sharing",
+        {
+          method: "post",
+          headers: new Headers({
+            Authorization: "Bearer " + token,
+            "Content-Type": "application/json",
+          }),
+          body: JSON.stringify(data),
+        }
+      );
       const dataItem = await response.json();
       console.log("=========== Gratis Data Reply API Response ==============");
       console.log(dataItem);
@@ -328,10 +339,15 @@ export const CommentList = (props: commentListProps) => {
       comment_id: replyId,
     };
     console.log(data);
-    console.log(API_URL + "/v1/posts/" + getPostData?.id + "/comments/create");
+    console.log(
+      process.env.API_URL + "/v1/posts/" + getPostData?.id + "/comments/create"
+    );
     try {
       const response = await fetch(
-        API_URL + "/v1/posts/" + getPostData?.id + "/comments/create",
+        process.env.API_URL +
+          "/v1/posts/" +
+          getPostData?.id +
+          "/comments/create",
         {
           method: "post",
           headers: new Headers({
@@ -405,16 +421,19 @@ export const CommentList = (props: commentListProps) => {
       points: gratisNo,
     };
     try {
-      const response = await fetch(API_URL + "/v1/posts/gratis-sharing", {
-        method: "post",
-        headers: new Headers({
-          Authorization: "Bearer " + token,
-          "Content-Type": "application/x-www-form-urlencoded",
-        }),
-        body: Object.keys(data)
-          .map((key) => key + "=" + data[key])
-          .join("&"),
-      });
+      const response = await fetch(
+        process.env.API_URL + "/v1/posts/gratis-sharing",
+        {
+          method: "post",
+          headers: new Headers({
+            Authorization: "Bearer " + token,
+            "Content-Type": "application/x-www-form-urlencoded",
+          }),
+          body: Object.keys(data)
+            .map((key) => key + "=" + data[key])
+            .join("&"),
+        }
+      );
       const dataItem = await response.json();
       console.log(dataItem);
       if (dataItem?.success === true) {

@@ -67,13 +67,12 @@ import { DatePickerModal, TimePickerModal } from "react-native-paper-dates";
 import GetLocation from "react-native-get-location";
 import { Loader } from "@components/loader";
 import Swiper from "react-native-swiper";
-import ActiveEnv from "@config/env/env.dev.json";
 import MapboxGL, { Callout, CircleLayer, MarkerView } from "@rnmapbox/maps";
 import Toast from "react-native-simple-toast";
 
-MapboxGL.setAccessToken(ActiveEnv.MAP_ACCESS_TOKEN);
+MapboxGL.setAccessToken(process.env.MAP_ACCESS_TOKEN!);
 
-import { API_URL, getData, setData } from "@network/constant";
+import { getData, setData } from "@network/constant";
 import {
   isLocationEnabled,
   promptForEnableLocationIfNeeded,
@@ -218,13 +217,16 @@ export const GratitudeScreen = (props: MapScreenProps) => {
   const getUserProfileAPI = async () => {
     const token = await AsyncStorage.getItem("token");
     try {
-      const response = await fetch(API_URL + "/v1/users/" + user.id, {
-        method: "get",
-        headers: new Headers({
-          Authorization: "Bearer " + token,
-          "Content-Type": "application/json",
-        }),
-      });
+      const response = await fetch(
+        process.env.API_URL + "/v1/users/" + user.id,
+        {
+          method: "get",
+          headers: new Headers({
+            Authorization: "Bearer " + token,
+            "Content-Type": "application/json",
+          }),
+        }
+      );
       const dataItem = await response.json();
       setUserProfile(dataItem.data);
       AsyncStorage.setItem("profile", dataItem.data.pic);
@@ -253,14 +255,17 @@ export const GratitudeScreen = (props: MapScreenProps) => {
     );
     eventDataStore([]);
     try {
-      const response = await fetch(API_URL + "/v1/events/geotagging", {
-        method: "post",
-        headers: new Headers({
-          Authorization: "Bearer " + token,
-          "Content-Type": "application/json",
-        }),
-        body: JSON.stringify(data),
-      });
+      const response = await fetch(
+        process.env.API_URL + "/v1/events/geotagging",
+        {
+          method: "post",
+          headers: new Headers({
+            Authorization: "Bearer " + token,
+            "Content-Type": "application/json",
+          }),
+          body: JSON.stringify(data),
+        }
+      );
       const dataItem = await response.json();
       console.log(
         "=========== Geo Tagging API Response ==============",
