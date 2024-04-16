@@ -262,3 +262,5 @@ android/app/src/main/res/values/developer-config.xml
 
 # XCode environment variable files
 .xcode.env.local
+
+fastlane
