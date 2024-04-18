@@ -266,3 +266,4 @@ android/app/src/main/res/values/developer-config.xml
 fastlane
 
 ios/Pods
+ios/build/
