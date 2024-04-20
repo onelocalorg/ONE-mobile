@@ -50,6 +50,7 @@ yarn-error.log
 # https://docs.fastlane.tools/best-practices/source-control/
 
 **/fastlane/metadata
+**/fastlane/report.xml
 **/*.mobileprovision
 
 # Bundle artifact
