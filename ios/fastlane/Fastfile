@@ -1,0 +1,65 @@
+# This file contains the fastlane.tools configuration
+# You can find the documentation at https://docs.fastlane.tools
+#
+# For a list of all available actions, check out
+#
+#     https://docs.fastlane.tools/actions
+#
+# For a list of all available plugins, check out
+#
+#     https://docs.fastlane.tools/plugins/available-plugins
+#
+
+# Uncomment the line if you want fastlane to automatically update itself
+# update_fastlane
+
+fastlane_require "dotenv"
+Dotenv.load ".env.secret"
+
+default_platform(:ios)
+
+platform :ios do
+  desc "Sync certificates"
+  lane :sync_certificates do
+    #read-only disables match from overriding the existing certificates.
+    match({readonly: true})
+  end
+
+  desc "Connect to AppStore"
+  lane :connect_app_store do
+    api_key = app_store_connect_api_key(
+      is_key_content_base64: true,
+      in_house: false #boolean value if team is Enterprise or not
+    )
+  end
+
+  desc "Update XCode Code Signing"
+  lane :update_code_signing do
+    update_code_signing_settings(
+      use_automatic_signing: false,
+      sdk: "iphoneos*",
+    )
+  end
+  
+  desc "Create ipa"
+  lane :build do
+    # Increases the build number by 1
+    increment_build_number
+    # Creates a signed file
+    sigh
+    gym    
+    add_git_tag
+  end   
+
+  desc "Push a new beta build to TestFlight"
+  lane :beta do
+    setup_ci if ENV['CI']
+    #update profiles
+    sync_certificates
+    update_code_signing
+
+    build
+    connect_app_store
+    upload_to_testflight
+  end
+end

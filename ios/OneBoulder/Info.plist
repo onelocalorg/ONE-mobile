@@ -23,20 +23,22 @@
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>
-			<key>CFBundleTypeRole</key>
-			<string>Editor</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>com.googleusercontent.apps.758195278101-thjvb1oqt12d0j2imhql2lnnmthgopsp</string>
+				<string>com.googleusercontent.apps.736398426108-lkn7772ig4e71fg9td8149kra82la7q5</string>
 			</array>
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>$(CURRENT_PROJECT_VERSION)</string>
+	<string>232</string>
+	<key>GIDClientID</key>
+	<string>736398426108-lkn7772ig4e71fg9td8149kra82la7q5.apps.googleusercontent.com</string>
 	<key>INIntentsSupported</key>
 	<array>
 		<string>Intent</string>
 	</array>
+	<key>ITSAppUsesNonExemptEncryption</key>
+	<false/>
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
 		<string>itms-apps</string>

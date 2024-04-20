@@ -61,6 +61,7 @@ import { getData } from "~/network/constant";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
 GoogleSignin.configure({
+  iosClientId: process.env.GOOGLE_SIGNIN_CLIENT_ID,
   webClientId:
     "758195278101-qroulgfid8ufuiqlvcfhm5ndnno2jr90.apps.googleusercontent.com",
   offlineAccess: true,

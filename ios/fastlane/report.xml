@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+  <testsuite name="fastlane.lanes">
+    
+    
+    
+      
+      <testcase classname="fastlane.lanes" name="00: default_platform" time="0.000193">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="01: Switch to ios sync_certificates lane" time="7.9e-05">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="02: match" time="1.577939">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="03: Switch to ios update_code_signing lane" time="8.3e-05">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="04: update_code_signing_settings" time="0.046983">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="05: Switch to ios build lane" time="8.9e-05">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="06: increment_build_number" time="0.239852">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="07: sigh" time="4.491085">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="08: gym" time="226.328672">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="09: add_git_tag" time="0.01795">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="10: Switch to ios connect_app_store lane" time="0.000121">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="11: app_store_connect_api_key" time="0.002408">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="12: upload_to_testflight" time="309.224451">
+        
+      </testcase>
+    
+  </testsuite>
+</testsuites>
