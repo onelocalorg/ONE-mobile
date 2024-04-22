@@ -62,7 +62,7 @@ const interceptor = (ref: AxiosInstance) => {
             access_token: string;
           }) || {};
         const res = await axios.post(
-          `${process.env.API_URL}${apiConstants.refereshToken}`,
+          `${process.env.API_URL}${apiConstants.refreshTokens}`,
           {
             refreshToken: user?.refresh_token,
           },

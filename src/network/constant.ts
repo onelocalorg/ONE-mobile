@@ -18,7 +18,7 @@ export const apiConstants = {
   eventLists: "/v1/events/list",
   createTicket: "/v1/tickets",
   editProfile: "/v1/users/",
-  refereshToken: "/v1/auth/refresh-tokens",
+  refreshTokens: "/v1/auth/refresh-tokens",
   ticketHolderCheckins: "/v1/events/getTicketHolders",
   checkedInUser: "/v1/tickets/checkedInEvent",
   createEvent: "/v2/events",
