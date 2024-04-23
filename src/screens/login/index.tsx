@@ -566,6 +566,7 @@ export const LoginScreen = (props: LoginScreenProps) => {
         <TextInput
           placeholderTextColor="#8B8888"
           style={styles.textInput}
+          autoCapitalize="none"
           onChangeText={(text) => handleUserData(text, "emailOrMobile")}
         />
         <SizedBox height={verticalScale(10)} />
