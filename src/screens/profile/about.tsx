@@ -1,5 +1,6 @@
 import { useAppTheme } from "~/app-hooks/use-app-theme";
 import React, { useCallback, useEffect, useRef, useState } from "react";
+import { getBuildNumber } from "react-native-device-info";
 import {
   Alert,
   Dimensions,
@@ -1024,6 +1025,12 @@ export const About = (props: AboutDataProps) => {
         <TouchableOpacity onPress={deleteAccount}>
           <Text style={styles.deleteAccount}>{strings.deleteAccount}</Text>
         </TouchableOpacity>
+        <Text>
+          Build: {getBuildNumber()} -{" "}
+          {process.env.API_URL?.includes("app.onelocal.one")
+            ? "Production"
+            : "Test"}
+        </Text>
         <View style={{ height: 40 }}></View>
       </View>
     </>
