@@ -30,7 +30,7 @@ jobs:
         env:
           CERTIFICATE_BASE64: ${{ secrets.IOS_DIST_SIGNING_KEY }}
         run: |
-          echo $CERTIFICATE_BASE64 | base64 --decode > signing-cert.cer
+          echo $CERTIFICATE_BASE64 | base64 --decode > signing-cert.p12
 
       - name: Build & upload iOS binary
         working-directory: ios
@@ -40,7 +40,7 @@ jobs:
           ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
           ASC_KEY: ${{ secrets.ASC_PRIVATE_KEY }}
           SIGNING_KEY_PASSWORD: ${{ secrets.IOS_DIST_SIGNING_KEY_PASSWORD }}
-          SIGNING_KEY_FILE_PATH: signing-cert.cer
+          SIGNING_KEY_FILE_PATH: signing-cert.p12
 
       - name: Upload app-store ipa and dsyms to artifacts
         uses: actions/upload-artifact@v2
