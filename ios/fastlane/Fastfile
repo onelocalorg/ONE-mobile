@@ -83,7 +83,7 @@ platform :ios do
   lane :build_release do |options|
    app_identifier = CredentialsManager::AppfileConfig.try_fetch_value(:app_identifier)
   
-   profile_name = "App Provisioning Profile" # replace with the name of the profile to use for the build
+   profile_name = "match AppStore one.oneboulder.oneboulder" # replace with the name of the profile to use for the build
    output_name = "OneBoulder-iOS" # specify the name of the .ipa file to generate
    export_method = "app-store" # specify the export method
   
