@@ -22,6 +22,7 @@ DerivedData
 *.xcuserstate
 ios/.xcode.env.local
 ios/*.dSYM.zip
+*.p12
 
 # Android/IntelliJ
 #
