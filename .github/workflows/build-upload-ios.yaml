@@ -16,11 +16,11 @@ jobs:
     strategy:
       matrix:
         node-version: [18.x]
-        ruby-version: [3.2.1]
+        ruby-version: [3.3]
 
     steps:
       - uses: actions/checkout@v3
-      - uses: ruby/setup-ruby@v1.138.0
+      - uses: ruby/setup-ruby@v1
         with:
           ruby-version: ${{ matrix.ruby-version }}
           bundler-cache: true
