@@ -35,7 +35,7 @@ platform :ios do
    api_key = lane_context[SharedValues::APP_STORE_CONNECT_API_KEY]
   
    current_version = get_version_number(
-     target: "OneBoulder" # replace with your main target, required if you have more than one non-test target
+     target: "OneBoulder"
    )
    latest_build_number = latest_testflight_build_number(
      api_key: api_key,
@@ -87,7 +87,7 @@ platform :ios do
   lane :build_release do |options|
    app_identifier = CredentialsManager::AppfileConfig.try_fetch_value(:app_identifier)
   
-   profile_name = "one.oneboulder.oneboulder AppStore" # replace with the name of the profile to use for the build
+   profile_name = "one.oneboulder.oneboulder AppStore"
    output_name = "OneBoulder-iOS" # specify the name of the .ipa file to generate
    export_method = "app-store" # specify the export method
   
@@ -109,7 +109,7 @@ platform :ios do
      export_options: {
        method: export_method,
        provisioningProfiles: {
-         app_identifier => profile_name # here you can add any additional bundle identifiers and their associated provisioning profiles if you're also building an app extension or other bundle identifier
+         app_identifier => profile_name
        }
      }
    )
