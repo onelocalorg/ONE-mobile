@@ -32,6 +32,8 @@ jobs:
           username: mapbox
           password: ${{ secrets.MAPBOX_SDK_REGISTRY_TOKEN }}
       - run: npm ci
+      - name: Setup Cocoapods
+        uses: maxim-lobanov/setup-cocoapods@v1.4.0
       - uses: ruby/setup-ruby@v1
         with:
           ruby-version: ${{ matrix.ruby-version }}

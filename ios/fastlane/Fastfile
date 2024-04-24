@@ -104,9 +104,6 @@ platform :ios do
      build_configurations: ["Release"] # only toggle code signing settings for Release configurations
    )
 
-   # Install the Pods directory
-   cocoapods
-  
    # build the app
    gym(
      scheme: "OneBoulder", # replace with name of your project's scheme
