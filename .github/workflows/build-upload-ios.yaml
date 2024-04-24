@@ -68,5 +68,5 @@ jobs:
         with:
           name: app-store ipa & dsyms
           path: |
-            ${{ github.workspace }}/ios/example-iOS.ipa
+            ${{ github.workspace }}/ios/OneBoulder-iOS.ipa
             ${{ github.workspace }}/ios/*.app.dSYM.zip
