@@ -71,7 +71,8 @@ platform :ios do
        certificate_path: ENV["SIGNING_KEY_FILE_PATH"],
        certificate_password: ENV["SIGNING_KEY_PASSWORD"],
        keychain_name: keychain_name,
-       keychain_password: keychain_password
+       keychain_password: keychain_password,
+       log_output: true
      )
   
      # fetches and installs provisioning profiles from ASC
