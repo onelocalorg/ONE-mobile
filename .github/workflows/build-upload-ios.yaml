@@ -32,12 +32,14 @@ jobs:
           username: mapbox
           password: ${{ secrets.MAPBOX_SDK_REGISTRY_TOKEN }}
       - run: npm ci
-      - uses: ruby/setup-ruby@v1
+      - name: Install Ruby
+        uses: ruby/setup-ruby@v1
         with:
           ruby-version: ${{ matrix.ruby-version }}
           bundler-cache: true
           working-directory: ios
-      - uses: actions/cache@v2
+      - name: Look for cached Pods
+        uses: actions/cache@v2
         with:
           path: ios/Pods
           key: ${{ runner.os }}-pods-${{ hashFiles('**/Podfile.lock') }}
