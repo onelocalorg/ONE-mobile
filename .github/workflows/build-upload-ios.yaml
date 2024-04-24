@@ -32,15 +32,20 @@ jobs:
           username: mapbox
           password: ${{ secrets.MAPBOX_SDK_REGISTRY_TOKEN }}
       - run: npm ci
-      - name: Setup Cocoapods
-        uses: maxim-lobanov/setup-cocoapods@v1.4.0
-        with:
-          podfile-path: ios/Podfile.lock
       - uses: ruby/setup-ruby@v1
         with:
           ruby-version: ${{ matrix.ruby-version }}
           bundler-cache: true
           working-directory: ios
+      - uses: actions/cache@v2
+        with:
+          path: ios/Pods
+          key: ${{ runner.os }}-pods-${{ hashFiles('**/Podfile.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-pods-
+      - name: CocoaPod Install
+        working-directory: ios
+        run: pod install
       - name: Decode signing certificate into a file
         working-directory: ios
         env:
