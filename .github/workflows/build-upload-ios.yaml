@@ -25,15 +25,12 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
           cache: "npm"
-      - name: Set login password for downloading mapbox SDK˝
-        uses: DamianReeves/write-file-action@v1.3
+      - name: "Set login password for downloading mapbox SDK"
+        uses: extractions/netrc@v2
         with:
-          path: ${{ env.home }}/.netrc
-          contents: |
-            echo "machine api.mapbox.com
-            login mapbox
-            password ${MAPBOX_SDK_REGISTRY_TOKEN}"
-          write-mode: append
+          machine: machine api.mapbox.com
+          username: mapbox
+          password: ${{ secrets.MAPBOX_SDK_REGISTRY_TOKEN }}
       - run: npm ci
       - uses: ruby/setup-ruby@v1
         with:
