@@ -12,7 +12,8 @@
     "test": "jest",
     "pod": "cd ios && pod install && cd ..",
     "build:android": "cd android && ./gradlew app:assembleRelease && cd ..",
-    "build:ios": "react-native bundle --entry-file='index.js' --bundle-output='./ios/main.jsbundle' --dev=false --platform='ios'"
+    "build:ios": "react-native bundle --entry-file='index.js' --bundle-output='./ios/main.jsbundle' --dev=false --platform='ios'",
+    "testflight": "cd ios && NODE_ENV=development bundle exec fastlane beta --env development && cd .."
   },
   "dependencies": {
     "@invertase/react-native-apple-authentication": "^2.3.0",
