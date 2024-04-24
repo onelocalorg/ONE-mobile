@@ -11,12 +11,13 @@ on:
   # pull_request:
   #   branches: ["main", "dev"]
 
+defaults:
+  run:
+    working-directory: ios
+
 jobs:
   deploy:
     runs-on: macos-latest
-    defaults:
-      run:
-        working-directory: ios
 
     strategy:
       matrix:
