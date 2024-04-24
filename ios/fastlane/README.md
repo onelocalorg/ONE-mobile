@@ -15,45 +15,53 @@ For _fastlane_ installation instructions, see [Installing _fastlane_](https://do
 
 ## iOS
 
-### ios sync_certificates
+### ios load_asc_api_key
 
 ```sh
-[bundle exec] fastlane ios sync_certificates
+[bundle exec] fastlane ios load_asc_api_key
 ```
 
-Sync certificates
+Load ASC API Key information to use in subsequent lanes
 
-### ios connect_app_store
+### ios fetch_and_increment_build_number
 
 ```sh
-[bundle exec] fastlane ios connect_app_store
+[bundle exec] fastlane ios fetch_and_increment_build_number
 ```
 
-Connect to AppStore
+Bump build number based on most recent TestFlight build number
 
-### ios update_code_signing
+### ios prepare_signing
 
 ```sh
-[bundle exec] fastlane ios update_code_signing
+[bundle exec] fastlane ios prepare_signing
 ```
 
-Update XCode Code Signing
+Installs signing certificate in the keychain and downloads provisioning profiles from App Store Connect
 
-### ios build
+### ios build_release
 
 ```sh
-[bundle exec] fastlane ios build
+[bundle exec] fastlane ios build_release
 ```
 
-Create ipa
+Build the iOS app for release
 
-### ios beta
+### ios upload_release
 
 ```sh
-[bundle exec] fastlane ios beta
+[bundle exec] fastlane ios upload_release
 ```
 
-Push a new beta build to TestFlight
+Upload to TestFlight / ASC
+
+### ios build_upload_testflight
+
+```sh
+[bundle exec] fastlane ios build_upload_testflight
+```
+
+Build and upload to TestFlight
 
 ----
 
