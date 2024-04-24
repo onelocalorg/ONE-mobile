@@ -28,7 +28,7 @@ jobs:
       - name: "Set login password for downloading mapbox SDK"
         uses: extractions/netrc@v2
         with:
-          machine: machine api.mapbox.com
+          machine: api.mapbox.com
           username: mapbox
           password: ${{ secrets.MAPBOX_SDK_REGISTRY_TOKEN }}
       - run: npm ci
