@@ -4,12 +4,10 @@
 name: iOS binary build & upload
 
 on:
-  workflow_dispatch:
-
-  # push:
-  #   branches: ["main", "dev"]
-  # pull_request:
-  #   branches: ["main", "dev"]
+  push:
+    branches: ["main", "dev"]
+  pull_request:
+    branches: ["main", "dev"]
 
 defaults:
   run:
