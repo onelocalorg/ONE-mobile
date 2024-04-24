@@ -16,7 +16,6 @@ jobs:
     strategy:
       matrix:
         node-version: [18.x]
-        mongodb-version: [7.0.8]
         ruby-version: [3.0]
 
     steps:
@@ -31,7 +30,11 @@ jobs:
           ruby-version: ${{ matrix.ruby-version }}
           bundler-cache: true
           working-directory: "ios"
-      - uses: maierj/fastlane-action@v3.1.0
+      - name: Build iOS and deploy to TestFlight
+        env:
+          FASTLANE_PASSWORD: ${{secrets.FASTLANE_PASSWORD}}
+          APP_STORE_CONNECT_API_KEY_KEY: ${{ secrets.APP_STORE_CONNECT_API_KEY_KEY}}
+        uses: maierj/fastlane-action@v3.1.0
         with:
           lane: "beta"
           subdirectory: "ios"
