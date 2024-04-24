@@ -17,7 +17,8 @@ fastlane_require "dotenv"
 Dotenv.load ".env.secret"
 
 platform :ios do
-  xcodes(version: "15.3")
+  if is_ci
+    xcode_select("/Applications/Xcode_15.3.app")
 
   desc "Load ASC API Key information to use in subsequent lanes"
   lane :load_asc_api_key do
