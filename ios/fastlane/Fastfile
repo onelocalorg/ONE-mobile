@@ -89,6 +89,9 @@ platform :ios do
   
   desc "Build the iOS app for release"
   lane :build_release do |options|
+    ENV['ENVFILE'] = ".env.development"
+    ENV['API_URL'] = "https://dev.onelocal.one/api"
+
     app_identifier = CredentialsManager::AppfileConfig.try_fetch_value(:app_identifier)
   
     profile_name = "one.oneboulder.oneboulder AppStore"
@@ -135,7 +138,7 @@ platform :ios do
 
   desc "Build and upload to TestFlight"
   lane :build_upload_testflight do
-    ENV['ENVFILE'] = '.env.development'
+    ENV['ENVFILE'] = ".env.development"
 
     load_asc_api_key
     prepare_signing
