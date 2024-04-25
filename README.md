@@ -1,3 +1,5 @@
+[![Build iOS and upload to Testflight](https://github.com/onelocalorg/ONE-mobile/actions/workflows/dev-build-upload-ios.yaml/badge.svg?branch=dev)](https://github.com/onelocalorg/ONE-mobile/actions/workflows/dev-build-upload-ios.yaml)
+
 This is the React Native mobile app for the ONE local platform.
 
 # Getting Started
