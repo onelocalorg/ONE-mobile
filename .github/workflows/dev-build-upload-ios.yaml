@@ -1,11 +1,9 @@
 # See https://www.runway.team/blog/how-to-set-up-a-ci-cd-pipeline-for-your-ios-app-fastlane-github-actions
 
-name: iOS binary build & upload
+name: Build iOS and upload to Testflight
 
 on:
   push:
-    branches: ["dev"]
-  pull_request:
     branches: ["dev"]
 
 jobs:
