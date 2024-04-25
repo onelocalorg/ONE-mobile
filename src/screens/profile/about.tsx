@@ -1032,6 +1032,8 @@ export const About = (props: AboutDataProps) => {
           Build: {getBuildNumber()} -{" "}
           {process.env.API_URL?.includes("app.onelocal.one")
             ? "Production"
+            : process.env.API_URL?.includes("beta.onelocal.one")
+            ? "Beta"
             : "Test"}
         </Text>
         <View style={{ height: 40 }}></View>
