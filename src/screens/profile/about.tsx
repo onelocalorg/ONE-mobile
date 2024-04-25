@@ -1,3 +1,4 @@
+import { LOG } from "~/config";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { getBuildNumber } from "react-native-device-info";
@@ -196,22 +197,24 @@ export const About = (props: AboutDataProps) => {
   // =================Package List API====================
 
   async function packageListAPI() {
+    LOG.debug("> packageListAPI");
     const token = await AsyncStorage.getItem("token");
     try {
-      const response = await fetch(
-        process.env.API_URL + "/v1/subscriptions/packages",
-        {
-          method: "get",
-          headers: new Headers({
-            Authorization: "Bearer " + token,
-            "Content-Type": "application/x-www-form-urlencoded",
-          }),
-        }
-      );
+      const url = process.env.API_URL + "/v1/subscriptions/packages";
+      LOG.info(url);
+      const response = await fetch(url, {
+        method: "get",
+        headers: new Headers({
+          Authorization: "Bearer " + token,
+          "Content-Type": "application/x-www-form-urlencoded",
+        }),
+      });
       const data = await response.json();
+      LOG.info(data);
       PackageListData(data?.data);
+      LOG.debug("< packageListAPI");
     } catch (error) {
-      console.error(error);
+      LOG.error("packageListAPI", error);
     }
   }
 

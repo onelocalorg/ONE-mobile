@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Route } from "./route";
+import { LOG } from "~/config";
 import { AppUpdate } from "~/components/app-update";
 import { ANDROID_VERSION, IOS_VERSION, setData } from "~/network/constant";
 import { Platform } from "react-native";
@@ -16,6 +17,7 @@ export const AppNavigation = () => {
   }, []);
 
   const getAppVersion = async () => {
+    LOG.debug("> getAppVersion");
     var eventList_url = process.env.API_URL + "/v1/config/verions";
     try {
       const response = await fetch(eventList_url, { method: "get" });
@@ -32,6 +34,7 @@ export const AppNavigation = () => {
           setData("mapCircleRadius", dataItem.data.mapCircleRadius);
         }
       }
+      LOG.debug("< getAppVersion");
     } catch (error) {
       console.log(error);
     }

@@ -1,3 +1,4 @@
+import { LOG } from "~/config";
 import {
   UserProfileProps,
   onGetUserProfile,
@@ -34,7 +35,8 @@ interface ParsedData {
 }
 
 export const userProfileParsedData = (data: Root) => {
-  return {
+  // LOG.debug("> userProfileParsedData");
+  const val = {
     ...data,
     name: `${data?.first_name} ${data?.last_name}`,
     userType: data?.user_type,
@@ -42,6 +44,8 @@ export const userProfileParsedData = (data: Root) => {
     eventProducerID: data?.eventProducerPackageId,
     coverImage: data?.cover_image,
   } as ParsedData;
+  // LOG.debug("< userProfileParsedData", val);
+  return val;
 };
 
 export const useUserProfile = (props: UserProfileProps) => {

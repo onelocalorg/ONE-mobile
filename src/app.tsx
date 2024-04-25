@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { queryConfig } from "~/network/utils/query-config";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { getTheme } from "./theme";
+import { LOG } from "~/config";
 import { light } from "~/assets/constants";
 import { Provider } from "react-redux";
 import { StatusBar } from "react-native";
@@ -21,12 +22,12 @@ const theme = getTheme(light);
 export const App = () => {
   const { token } = useToken();
 
-  useEffect(() => {
-    initializeStripe();
-  }, []);
+  // useEffect(() => {
+  //   initializeStripe();
+  // }, []);
 
   useEffect(() => {
-    console.log(
+    LOG.debug(
       `Launching app with environment ${process.env.NODE_ENV} and API_URL ${process.env.API_URL}`
     );
     if (token) {
@@ -36,20 +37,20 @@ export const App = () => {
   }, [token]);
 
   return (
-    <StripeProvider publishableKey={process.env.STRIPE_PUBLIC_KEY!}>
-      <SafeAreaProvider>
-        <QueryClientProvider client={queryClient}>
-          <Provider store={store}>
-            <InternetConnectionHandle />
-            <StatusBar
-              backgroundColor={"#003333"}
-              barStyle={"light-content"}
-              translucent={true}
-            />
-            <AppNavigation />
-          </Provider>
-        </QueryClientProvider>
-      </SafeAreaProvider>
-    </StripeProvider>
+    // <StripeProvider publishableKey={process.env.STRIPE_PUBLIC_KEY!}>
+    <SafeAreaProvider>
+      <QueryClientProvider client={queryClient}>
+        <Provider store={store}>
+          <InternetConnectionHandle />
+          <StatusBar
+            backgroundColor={"#003333"}
+            barStyle={"light-content"}
+            translucent={true}
+          />
+          <AppNavigation />
+        </Provider>
+      </QueryClientProvider>
+    </SafeAreaProvider>
+    // </StripeProvider>
   );
 };
