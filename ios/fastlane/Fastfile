@@ -143,6 +143,6 @@ platform :ios do
     build_release
     upload_release
 
-    UI.message "Uploaded new build #{lane_context[SharedValues:BUILD_NUMBER]}"
+    UI.message "Uploaded new build #{lane_context[SharedValues::BUILD_NUMBER]}"
   end  
 end
