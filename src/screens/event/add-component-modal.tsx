@@ -181,7 +181,7 @@ export const AddComponentModal = (props: AddComponentModalProps) => {
         }),
       });
       const dataItem = await response.json();
-      LOG.info(dataItem);
+      LOG.debug("packageDetailAPI: ", dataItem?.data);
       setDataEntries(dataItem?.data);
       LOG.debug("< packageDetailAPI");
     } catch (error) {

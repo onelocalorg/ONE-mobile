@@ -1,3 +1,4 @@
+import { LOG } from "~/config";
 import { apiConstants } from "~/network/constant";
 import { API } from "..";
 import { getApiResponse } from "~/network/utils/get-api-response";
@@ -33,8 +34,11 @@ export const onGetUserProfile = async (props: UserProfileProps) => {
   let response;
   try {
     const endPoint = `${apiConstants.userProfile}/${props?.userId}`;
+    LOG.info(endPoint);
     const data = await API.userService.get(endPoint);
+    LOG.info(data.status);
     response = getApiResponse(data);
+    LOG.debug("onGetUserProfile: ", response?.data);
   } catch (error: any) {
     response = getApiResponse(error);
   }

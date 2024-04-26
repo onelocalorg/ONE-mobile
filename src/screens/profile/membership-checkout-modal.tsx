@@ -102,7 +102,7 @@ export const MembershipCheckoutModal = (props: membershipModalProps) => {
         }),
       });
       const dataItems = await response.json();
-      LOG.info(dataItems);
+      LOG.debug("memberShipCheckoutAPI: ", dataItems?.data);
       memberShipData(dataItems);
       LodingData(false);
       // setDatacheckout(dataItem);
@@ -164,7 +164,7 @@ export const MembershipCheckoutModal = (props: membershipModalProps) => {
           .join("&"),
       });
       const dataItem = await response.json();
-      LOG.info(dataItem);
+      LOG.debug("onPurchaseAPI: ", dataItem?.data);
       LodingData(false);
       if (dataItem.success == true) {
         // packageListAPI();

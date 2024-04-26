@@ -210,7 +210,7 @@ export const About = (props: AboutDataProps) => {
         }),
       });
       const data = await response.json();
-      LOG.debug("packageListAPI", data?.data);
+      LOG.debug("packageListAPI: ", data?.data);
       setPackageItem(data?.data);
       LOG.debug("< packageListAPI");
     } catch (error) {

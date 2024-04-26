@@ -9,6 +9,7 @@ const config = {
       error: "redBright",
     },
   },
+  stringifyFunc: (msg: any) => JSON.stringify(msg, null, "  "),
 };
 
 var LOG = logger.createLogger(config);
