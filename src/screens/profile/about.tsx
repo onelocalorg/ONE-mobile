@@ -105,7 +105,7 @@ export const About = (props: AboutDataProps) => {
   const [allSkills, setSkills] = useState(skills);
   const [skillValue, setSkillValue]: any = useState("");
   // var { data } = usePackagePlans();
-  const [packageItem, PackageListData]: any = useState();
+  const [packageItem, setPackageItem]: any = useState();
   const [modalVisible, setModalVisible] = useState(false);
   const [memberModal, setMemberModal] = useState(false);
   const [postData, setDataEntries]: any = useState({});
@@ -190,7 +190,7 @@ export const About = (props: AboutDataProps) => {
       userProfileUpdate();
     } catch (error) {
       LodingData(false);
-      console.error(error);
+      LOG.error(error);
     }
   }
 
@@ -201,7 +201,7 @@ export const About = (props: AboutDataProps) => {
     const token = await AsyncStorage.getItem("token");
     try {
       const url = process.env.API_URL + "/v1/subscriptions/packages";
-      LOG.info(url);
+      LOG.info("packageListAPI", url);
       const response = await fetch(url, {
         method: "get",
         headers: new Headers({
@@ -210,8 +210,8 @@ export const About = (props: AboutDataProps) => {
         }),
       });
       const data = await response.json();
-      LOG.info(data);
-      PackageListData(data?.data);
+      LOG.debug("packageListAPI", data?.data);
+      setPackageItem(data?.data);
       LOG.debug("< packageListAPI");
     } catch (error) {
       LOG.error("packageListAPI", error);
@@ -219,8 +219,6 @@ export const About = (props: AboutDataProps) => {
   }
 
   async function userProfileUpdate() {
-    console.log(token);
-    console.log(idUser);
     try {
       const response = await fetch(
         process.env.API_URL + "/v1/users/" + idUser,
@@ -243,15 +241,13 @@ export const About = (props: AboutDataProps) => {
 
       console.log(dataItem?.data?.profile_answers);
     } catch (error) {
-      console.error(error);
+      LOG.error(error);
     }
   }
 
   // =================Package Detail API====================
 
   async function packageDetailAPI(dataId: any) {
-    console.log(token);
-    console.log(dataId);
     try {
       const response = await fetch(
         process.env.API_URL + "/v1/subscriptions/packages/" + dataId,
@@ -268,7 +264,7 @@ export const About = (props: AboutDataProps) => {
       setDataEntries(dataItem?.data);
       cancleSubscription(dataItem?.data?.current_plan_id);
     } catch (error) {
-      console.error(error);
+      LOG.error("packageDetailAPI", error);
     }
   }
 
@@ -279,8 +275,6 @@ export const About = (props: AboutDataProps) => {
     var data: any = {
       plan_id: planId,
     };
-    console.log(data);
-    console.log(idPackage);
     try {
       const response = await fetch(
         process.env.API_URL + "/v1/subscriptions/" + idPackage + "/cancel",
@@ -315,7 +309,7 @@ export const About = (props: AboutDataProps) => {
     } catch (error) {
       LodingData(false);
 
-      console.error(error);
+      LOG.error("cancleSubscriptionAPI", error);
     }
   }
 
@@ -525,7 +519,7 @@ export const About = (props: AboutDataProps) => {
         LodingData(false);
       }, 7000);
     } catch (error) {
-      console.error(error);
+      LOG.error(error);
     }
   };
 
@@ -610,7 +604,7 @@ export const About = (props: AboutDataProps) => {
         backgroundColor: "black",
       });
     } catch (error) {
-      console.error(error);
+      LOG.error(error);
     }
   }
 
@@ -688,7 +682,7 @@ export const About = (props: AboutDataProps) => {
       });
     } catch (error) {
       LodingData(false);
-      console.error(error);
+      LOG.error(error);
     }
   }
 
@@ -824,7 +818,9 @@ export const About = (props: AboutDataProps) => {
                     alignSelf: "center",
                     alignItems: "center",
                   }}
-                  columnWrapperStyle={{ flexWrap: "wrap" }}
+                  columnWrapperStyle={
+                    packageItem.length > 1 ? { flexWrap: "wrap" } : undefined
+                  }
                   numColumns={packageItem.length}
                   key={packageItem.length}
                   renderItem={({ item, index }) => {
@@ -1034,7 +1030,9 @@ export const About = (props: AboutDataProps) => {
             ? "Production"
             : process.env.API_URL?.includes("beta.onelocal.one")
             ? "Beta"
-            : "Test"}
+            : process.env.API_URL?.includes("dev.onelocal.one")
+            ? "Dev"
+            : `??? ${process.env.API_URL}`}
         </Text>
         <View style={{ height: 40 }}></View>
       </View>
