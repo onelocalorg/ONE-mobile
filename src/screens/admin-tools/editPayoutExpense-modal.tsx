@@ -47,7 +47,10 @@ interface EditBreakDownModalProps {
   };
 }
 
-export const EditPayoutModalScreen = (props: EditBreakDownModalProps) => {
+export const EditPayoutModalScreen = (
+  props: EditBreakDownModalProps,
+  ref: React.Ref<unknown> | undefined
+) => {
   const { theme } = useAppTheme();
   const styles = createStyleSheet(theme);
   const { navigation, route } = props || {};

@@ -1,3 +1,4 @@
+import { LOG } from "~/config";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
 
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
@@ -167,6 +168,7 @@ export const BottomNavigator = () => {
               <>
                 <Tab.Screen
                   name={tab?.screenName}
+                  key={tab?.screenName}
                   component={tab?.component}
                   options={({ route }): any => ({
                     tabBarButton: renderAddButton,
@@ -181,6 +183,7 @@ export const BottomNavigator = () => {
             <>
               <Tab.Screen
                 name={tab?.screenName}
+                key={tab?.screenName}
                 component={tab?.component}
                 options={({ route }): any => ({
                   header,

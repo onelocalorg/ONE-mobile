@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { queryConfig } from "~/network/utils/query-config";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { getTheme } from "./theme";
+import { LOG } from "~/config";
 import { light } from "~/assets/constants";
 import { Provider } from "react-redux";
 import { StatusBar } from "react-native";
@@ -26,7 +27,7 @@ export const App = () => {
   }, []);
 
   useEffect(() => {
-    console.log(
+    LOG.debug(
       `Launching app with environment ${process.env.NODE_ENV} and API_URL ${process.env.API_URL}`
     );
     if (token) {

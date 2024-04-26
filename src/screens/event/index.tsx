@@ -176,7 +176,6 @@ export const EventListScreen = (props: EventListScreenProps) => {
 
   const getUserProfileAPI = async () => {
     const token = await AsyncStorage.getItem("token");
-    console.log("token", token);
     try {
       const response = await fetch(
         process.env.API_URL + "/v1/users/" + user.id,

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Route } from "./route";
+import { LOG } from "~/config";
 import { AppUpdate } from "~/components/app-update";
 import { ANDROID_VERSION, IOS_VERSION, setData } from "~/network/constant";
 import { Platform } from "react-native";
@@ -16,11 +17,14 @@ export const AppNavigation = () => {
   }, []);
 
   const getAppVersion = async () => {
+    LOG.debug("> getAppVersion");
     var eventList_url = process.env.API_URL + "/v1/config/verions";
+    LOG.info(eventList_url);
     try {
       const response = await fetch(eventList_url, { method: "get" });
       const dataItem = await response.json();
-      console.log("-----------App Version--------------", dataItem);
+      LOG.info(response.status);
+      LOG.debug("getAppVersion: ", dataItem?.data);
       if (dataItem.success) {
         if (Platform.OS === "ios") {
           isReleaseHideShow(dataItem.data);
@@ -32,6 +36,7 @@ export const AppNavigation = () => {
           setData("mapCircleRadius", dataItem.data.mapCircleRadius);
         }
       }
+      LOG.debug("< getAppVersion");
     } catch (error) {
       console.log(error);
     }

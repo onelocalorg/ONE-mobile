@@ -42,19 +42,47 @@ Let Metro Bundler run in its _own_ terminal. Open a _new_ terminal from the _roo
 npm run start:development
 ```
 
-### For Production
+or
 
 ```bash
-npm start
+npm run start
+```
+
+### For Staging
+
+```bash
+npm start:staging
+```
+
+_Note that you can't use this method (Metro) to launch a production build._
+
+If everything is set up _correctly_, you should see your new app running in your _Android Emulator_ or _iOS Simulator_ shortly provided you have set up your emulator/simulator correctly.
+
+## Step 4: Send build to TestFlight
+
+These commands run the entire iOS build and upload it to TestFlight. No other commands
+are needed in order to get a build to the testers.
+
+There are two test servers: dev.onelocal.one and beta.onelocal.one. You can choose which
+you want to connect to.
+
+#### For dev:
+
+```bash
+npm run testflight
 ```
 
 or
 
 ```bash
-npm run start:production
+npm run testflight:dev
 ```
 
-If everything is set up _correctly_, you should see your new app running in your _Android Emulator_ or _iOS Simulator_ shortly provided you have set up your emulator/simulator correctly.
+#### For beta:
+
+```bash
+npm run testflight:beta
+```
 
 This is one way to run your app — you can also run it directly from within Android Studio and Xcode respectively.
 

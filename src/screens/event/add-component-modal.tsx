@@ -1,5 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useAppTheme } from "~/app-hooks/use-app-theme";
+import { LOG } from "~/config";
 import React, { useCallback, useEffect, useState } from "react";
 import { createStyleSheet } from "./style";
 import { ModalComponent, ModalRefProps } from "~/components/modal-component";
@@ -65,7 +66,6 @@ export const AddComponentModal = (props: AddComponentModalProps) => {
     userId: user?.id,
   });
   const { isActiveSubscription, eventProducerID } = data || {};
-  console.log(data, "user data444");
 
   useFocusEffect(
     useCallback(() => {
@@ -81,13 +81,14 @@ export const AddComponentModal = (props: AddComponentModalProps) => {
   }, []);
   useFocusEffect(
     useCallback(() => {
-      console.log("isActiveSubscription isActiveSubscription");
+      LOG.debug("> isActiveSubscription");
       if (isActiveSubscription === true) {
         AsyncStorage.setItem("isEventActive", "true");
       } else {
         AsyncStorage.setItem("isEventActive", "false");
       }
       setIsActiveSubs(isActiveSubscription);
+      LOG.debug("< isActiveSubscription", isActiveSubscription);
     }, [isActiveSubscription])
   );
 
@@ -166,25 +167,23 @@ export const AddComponentModal = (props: AddComponentModalProps) => {
   };
 
   async function packageDetailAPI() {
+    LOG.debug("> packageDetailAPI");
     const token = await AsyncStorage.getItem("token");
-    console.log(token);
-    console.log(
-      process.env.API_URL + "/v1/subscriptions/packages/" + eventProducerID
-    );
     try {
-      const response = await fetch(
-        process.env.API_URL + "/v1/subscriptions/packages/" + eventProducerID,
-        {
-          method: "get",
-          headers: new Headers({
-            Authorization: "Bearer " + token,
-            "Content-Type": "application/json",
-          }),
-        }
-      );
+      const url =
+        process.env.API_URL + "/v1/subscriptions/packages/" + eventProducerID;
+      LOG.info(url);
+      const response = await fetch(url, {
+        method: "get",
+        headers: new Headers({
+          Authorization: "Bearer " + token,
+          "Content-Type": "application/json",
+        }),
+      });
       const dataItem = await response.json();
-      console.log(dataItem);
+      LOG.debug("packageDetailAPI: ", dataItem?.data);
       setDataEntries(dataItem?.data);
+      LOG.debug("< packageDetailAPI");
     } catch (error) {
       console.error(error);
     }

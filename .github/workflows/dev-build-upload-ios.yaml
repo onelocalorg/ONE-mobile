@@ -1,13 +1,10 @@
-# This workflow will do a clean installation of node dependencies, cache/restore them, build the source code and run tests across different versions of node
-# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-nodejs
+# See https://www.runway.team/blog/how-to-set-up-a-ci-cd-pipeline-for-your-ios-app-fastlane-github-actions
 
-name: iOS binary build & upload
+name: Build iOS and upload to Testflight
 
 on:
   push:
-    branches: ["main", "dev"]
-  pull_request:
-    branches: ["main", "dev"]
+    branches: ["dev"]
 
 jobs:
   deploy:
@@ -19,9 +16,9 @@ jobs:
         ruby-version: [3.3]
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
           cache: "npm"
@@ -32,12 +29,14 @@ jobs:
           username: mapbox
           password: ${{ secrets.MAPBOX_SDK_REGISTRY_TOKEN }}
       - run: npm ci
-      - uses: ruby/setup-ruby@v1
+      - name: Install Ruby
+        uses: ruby/setup-ruby@v1
         with:
           ruby-version: ${{ matrix.ruby-version }}
           bundler-cache: true
           working-directory: ios
-      - uses: actions/cache@v2
+      - name: Look for cached Pods
+        uses: actions/cache@v4
         with:
           path: ios/Pods
           key: ${{ runner.os }}-pods-${{ hashFiles('**/Podfile.lock') }}
@@ -55,7 +54,7 @@ jobs:
 
       - name: Build & upload iOS binary
         working-directory: ios
-        run: bundle exec fastlane ios build_upload_testflight
+        run: bundle exec fastlane ios build_beta_upload_testflight
         env:
           ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
           ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
@@ -64,7 +63,7 @@ jobs:
           SIGNING_KEY_FILE_PATH: signing-cert.p12
 
       - name: Upload app-store ipa and dsyms to artifacts
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: app-store ipa & dsyms
           path: |

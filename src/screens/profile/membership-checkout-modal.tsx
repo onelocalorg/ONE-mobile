@@ -1,3 +1,4 @@
+import { LOG } from "~/config";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
 import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
 import React, { useCallback, useEffect, useRef, useState } from "react";
@@ -84,33 +85,26 @@ export const MembershipCheckoutModal = (props: membershipModalProps) => {
   // =================MemberShip Checkout API====================
 
   async function memberShipCheckoutAPI() {
+    LOG.debug("> memberShipCheckoutAPI");
     const token = await AsyncStorage.getItem("token");
-    console.log(token, "--------------------------");
     try {
-      console.log(
-        dataId,
-        "---------------dataId dataId------------------------------------"
-      );
-      const response = await fetch(
+      const url =
         process.env.API_URL +
-          "/v1/subscriptions/packages/" +
-          dataId +
-          "/checkout",
-        // process.env.API_URL + "/v1/subscriptions/packages/" + '655f484562030949923d50c3' + "/checkout",
-
-        {
-          method: "get",
-          headers: new Headers({
-            Authorization: "Bearer " + token,
-            "Content-Type": "application/json",
-          }),
-        }
-      );
+        "/v1/subscriptions/packages/" +
+        dataId +
+        "/checkout";
+      LOG.info(url);
+      const response = await fetch(url, {
+        method: "get",
+        headers: new Headers({
+          Authorization: "Bearer " + token,
+          "Content-Type": "application/json",
+        }),
+      });
       const dataItems = await response.json();
+      LOG.debug("memberShipCheckoutAPI: ", dataItems?.data);
       memberShipData(dataItems);
       LodingData(false);
-      console.log("===========MemberShip checkout==============");
-      console.log(dataItems);
       // setDatacheckout(dataItem);
       setMemberShipTitle(dataItems?.data);
       monthlyPlanData(dataItems?.data?.plans[0]);
@@ -123,18 +117,19 @@ export const MembershipCheckoutModal = (props: membershipModalProps) => {
       );
       descriptionData(dataItems.data.description);
       addCardList(dataItems?.data?.card);
-      console.log("=======================dsd==ds=d==========");
       console.log(monthlyPlan, "-------------monthlyPlan-----------------");
       console.log(yearlyPlan, "-------------yearlyPlan-------------");
       console.log(description);
+      LOG.debug("< memberShipCheckoutAPI");
     } catch (error) {
-      console.error(error);
+      LOG.error("Error in MembershipCheckoutModal", error);
     }
   }
 
   // ================= Purchase API ====================
 
   async function onPurchaseAPI() {
+    LOG.debug("> onPurchaseAPI");
     LodingData(true);
     if (isBilledMonthly) {
       var purchesData: any = {
@@ -155,24 +150,22 @@ export const MembershipCheckoutModal = (props: membershipModalProps) => {
     console.log(idPackage);
 
     try {
-      const response = await fetch(
-        process.env.API_URL + "/v1/subscriptions/" + dataId + "/purchase",
-        // process.env.API_URL + "/v1/subscriptions/" + idPackage + "/purchase",
-        {
-          method: "post",
-          headers: new Headers({
-            Authorization: "Bearer " + token,
-            "Content-Type": "application/x-www-form-urlencoded",
-          }),
-          body: Object.keys(purchesData)
-            .map((key) => key + "=" + purchesData[key])
-            .join("&"),
-        }
-      );
+      const url =
+        process.env.API_URL + "/v1/subscriptions/" + dataId + "/purchase";
+      LOG.info(url);
+      const response = await fetch(url, {
+        method: "post",
+        headers: new Headers({
+          Authorization: "Bearer " + token,
+          "Content-Type": "application/x-www-form-urlencoded",
+        }),
+        body: Object.keys(purchesData)
+          .map((key) => key + "=" + purchesData[key])
+          .join("&"),
+      });
       const dataItem = await response.json();
+      LOG.debug("onPurchaseAPI: ", dataItem?.data);
       LodingData(false);
-      console.log("=========== Purchase API ==============");
-      console.log(dataItem);
       if (dataItem.success == true) {
         // packageListAPI();
         // userProfileUpdate();
@@ -186,9 +179,10 @@ export const MembershipCheckoutModal = (props: membershipModalProps) => {
           backgroundColor: "black",
         });
       }
+      LOG.debug("> onPurchaseAPI");
     } catch (error) {
       LodingData(false);
-      console.error(error);
+      LOG.error("onPurchaseAPI", error);
     }
   }
 

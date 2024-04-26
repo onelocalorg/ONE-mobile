@@ -1,3 +1,4 @@
+import { LOG } from "~/config";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { createStyleSheet } from "./style";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
@@ -326,7 +327,7 @@ export const HomeScreen = (props: HomeScreenProps) => {
     console.log("----------------post Location----------------", data);
 
     var URL = process.env.API_URL + "/v1/posts/list?limit=5&page=" + page;
-    console.log(URL);
+    LOG.info(URL);
     try {
       const response = await fetch(URL, {
         method: "post",
@@ -336,7 +337,9 @@ export const HomeScreen = (props: HomeScreenProps) => {
         }),
         body: JSON.stringify(data),
       });
+      LOG.info(response.status);
       const dataItem = await response.json();
+      LOG.debug("postListAPI: ", dataItem?.data);
       setRefresh(false);
       if (page == 1) {
         postListData(dataItem?.data?.results);
@@ -465,7 +468,6 @@ export const HomeScreen = (props: HomeScreenProps) => {
   }
 
   function postDataLoad() {
-    console.log("----------postDataLoad-----------");
     if (ismoreData && postList.length > 0) {
       onPageLoad(true);
       setPage(page + 1);
