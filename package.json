@@ -14,8 +14,8 @@
     "build:android": "cd android && ./gradlew app:assembleRelease && cd ..",
     "build:ios": "react-native bundle --entry-file='index.js' --bundle-output='./ios/main.jsbundle' --dev=false --platform='ios'",
     "testflight": "num run testflight:dev",
-    "testflight:dev": "cd ios && NODE_ENV=development bundle exec fastlane ios build_upload_testflight && cd ..",
-    "testflight:beta": "cd ios && NODE_ENV=staging bundle exec fastlane ios build_upload_testflight && cd .."
+    "testflight:dev": "cd ios && bundle exec fastlane ios build_dev_upload_testflight && cd ..",
+    "testflight:beta": "cd ios && bundle exec fastlane ios build_beta_upload_testflight && cd .."
   },
   "dependencies": {
     "@invertase/react-native-apple-authentication": "^2.3.0",
