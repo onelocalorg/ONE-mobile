@@ -845,7 +845,7 @@ export const About = (props: AboutDataProps) => {
                   }}
                 ></FlatList>
               ) : (
-                <View></View>
+                <View />
               )}
             </View>
           </>
@@ -939,51 +939,47 @@ export const About = (props: AboutDataProps) => {
                   <Text style={styles.saveContainer}>{strings.save}</Text>
                 </TouchableOpacity>
               </View>
-              <ScrollView automaticallyAdjustKeyboardInsets={true}>
-                <View style={styles.listContainer}>
-                  {ansQueDataTwo ? (
-                    <FlatList
-                      data={ansQueDataTwo}
-                      renderItem={({ item, index }) => (
-                        <View
-                          style={{
-                            borderBottomWidth: 1,
-                            marginBottom: 12,
-                            borderBottomColor: "gray",
-                          }}
-                        >
-                          <Text style={styles.questionsLbl}>
-                            {item.question}
-                          </Text>
-                          {/* {item.answer ?
+              <View style={styles.listContainer}>
+                {ansQueDataTwo ? (
+                  <FlatList
+                    data={ansQueDataTwo}
+                    renderItem={({ item, index }) => (
+                      <View
+                        style={{
+                          borderBottomWidth: 1,
+                          marginBottom: 12,
+                          borderBottomColor: "gray",
+                        }}
+                      >
+                        <Text style={styles.questionsLbl}>{item.question}</Text>
+                        {/* {item.answer ?
 
                           <Text style={styles.answerLbl}>{item.answer}</Text>
                           : */}
-                          <View style={{ height: 110 }}>
-                            <TextInput
-                              editable={true}
-                              value={item.answer}
-                              placeholder="Add your answer here..."
-                              placeholderTextColor="#8B8888"
-                              multiline={true}
-                              style={styles.inputCont}
-                              // onChangeText={value => { myFunction() }}
-                              onChangeText={(text) =>
-                                handleToggleYourList(text, index)
-                              }
-                            ></TextInput>
-                          </View>
-
-                          {/* } */}
+                        <View style={{ height: 110 }}>
+                          <TextInput
+                            editable={true}
+                            value={item.answer}
+                            placeholder="Add your answer here..."
+                            placeholderTextColor="#8B8888"
+                            multiline={true}
+                            style={styles.inputCont}
+                            // onChangeText={value => { myFunction() }}
+                            onChangeText={(text) =>
+                              handleToggleYourList(text, index)
+                            }
+                          ></TextInput>
                         </View>
-                      )}
-                    ></FlatList>
-                  ) : (
-                    <View></View>
-                  )}
-                  <View style={{ height: 50 }}></View>
-                </View>
-              </ScrollView>
+
+                        {/* } */}
+                      </View>
+                    )}
+                  ></FlatList>
+                ) : (
+                  <View></View>
+                )}
+                <View style={{ height: 50 }}></View>
+              </View>
             </View>
           </Modal>
 
