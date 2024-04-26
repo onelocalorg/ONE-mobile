@@ -22,9 +22,9 @@ const theme = getTheme(light);
 export const App = () => {
   const { token } = useToken();
 
-  // useEffect(() => {
-  //   initializeStripe();
-  // }, []);
+  useEffect(() => {
+    initializeStripe();
+  }, []);
 
   useEffect(() => {
     LOG.debug(
@@ -37,20 +37,20 @@ export const App = () => {
   }, [token]);
 
   return (
-    // <StripeProvider publishableKey={process.env.STRIPE_PUBLIC_KEY!}>
-    <SafeAreaProvider>
-      <QueryClientProvider client={queryClient}>
-        <Provider store={store}>
-          <InternetConnectionHandle />
-          <StatusBar
-            backgroundColor={"#003333"}
-            barStyle={"light-content"}
-            translucent={true}
-          />
-          <AppNavigation />
-        </Provider>
-      </QueryClientProvider>
-    </SafeAreaProvider>
-    // </StripeProvider>
+    <StripeProvider publishableKey={process.env.STRIPE_PUBLIC_KEY!}>
+      <SafeAreaProvider>
+        <QueryClientProvider client={queryClient}>
+          <Provider store={store}>
+            <InternetConnectionHandle />
+            <StatusBar
+              backgroundColor={"#003333"}
+              barStyle={"light-content"}
+              translucent={true}
+            />
+            <AppNavigation />
+          </Provider>
+        </QueryClientProvider>
+      </SafeAreaProvider>
+    </StripeProvider>
   );
 };
