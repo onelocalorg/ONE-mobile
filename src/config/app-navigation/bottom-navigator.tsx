@@ -168,7 +168,7 @@ export const BottomNavigator = () => {
               <>
                 <Tab.Screen
                   name={tab?.screenName}
-                  key="{tab?.screenName}"
+                  key={tab?.screenName}
                   component={tab?.component}
                   options={({ route }): any => ({
                     tabBarButton: renderAddButton,
@@ -183,7 +183,7 @@ export const BottomNavigator = () => {
             <>
               <Tab.Screen
                 name={tab?.screenName}
-                key="{tab?.screenName}"
+                key={tab?.screenName}
                 component={tab?.component}
                 options={({ route }): any => ({
                   header,
