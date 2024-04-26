@@ -6,7 +6,6 @@
     "start": "npm run start:development",
     "start:development": "NODE_ENV=development react-native start",
     "start:staging": "NODE_ENV=staging react-native start",
-    "start:production": "NODE_ENV=production react-native start",
     "ios": "react-native run-ios",
     "android": "react-native run-android",
     "lint": "eslint .",
@@ -14,7 +13,9 @@
     "pod": "cd ios && pod install && cd ..",
     "build:android": "cd android && ./gradlew app:assembleRelease && cd ..",
     "build:ios": "react-native bundle --entry-file='index.js' --bundle-output='./ios/main.jsbundle' --dev=false --platform='ios'",
-    "testflight": "cd ios && NODE_ENV=development bundle exec fastlane ios build_upload_testflight && cd .."
+    "testflight": "num run testflight:dev",
+    "testflight:dev": "cd ios && NODE_ENV=development bundle exec fastlane ios build_upload_testflight && cd ..",
+    "testflight:beta": "cd ios && NODE_ENV=staging bundle exec fastlane ios build_upload_testflight && cd .."
   },
   "dependencies": {
     "@invertase/react-native-apple-authentication": "^2.3.0",
