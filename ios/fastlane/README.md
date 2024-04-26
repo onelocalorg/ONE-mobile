@@ -55,14 +55,6 @@ Build the iOS app for release
 
 Upload to TestFlight / ASC
 
-### ios build_upload_testflight
-
-```sh
-[bundle exec] fastlane ios build_upload_testflight
-```
-
-Build and upload to TestFlight
-
 ### ios build_dev_upload_testflight
 
 ```sh
