@@ -35,7 +35,8 @@ local.properties
 .cxx/
 *.keystore
 !debug.keystore
-android/onelocal*.json
+android/app/oneboulder*.json
+*.jks
 
 # node.js
 #

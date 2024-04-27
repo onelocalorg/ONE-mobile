@@ -2,24 +2,51 @@
 
 default_platform(:android)
 
+fastlane_require "dotenv"
+Dotenv.load ".env.secret"
+
 platform :android do
+
+  # Patched this because of bug https://github.com/fastlane/fastlane/issues/21500
+  lane :patched_google_play_track_version_codes do |options|
+    track_version_codes = [7]
+    begin
+      track_version_codes = google_play_track_version_codes(
+        package_name: options[:package_name],
+        track: options[:track],
+        json_key: options[:json_key],
+      )
+      puts "Found version code #{track_version_codes}"
+    rescue StandardError => e
+      puts "Ignoring expected error: #{e.message} while fetching the latest internal build number"
+      puts "Returning default version codes #{track_version_codes}"
+    end
+    track_version_codes
+  end
 
   desc "Fetches the latest version code from the Play Console and increments it by 1"
   lane :fetch_and_increment_build_number do
     app_identifier = CredentialsManager::AppfileConfig.try_fetch_value(:app_identifier)
 
-    version_codes = google_play_track_version_codes(
+    # Call the patched version
+    version_codes = patched_google_play_track_version_codes(
       package_name: app_identifier,
       track: "internal",
       json_key: ENV["ANDROID_JSON_KEY_FILE"]
     )
+
+    # version_codes = google_play_track_version_codes(
+    #   package_name: app_identifier,
+    #   track: "internal",
+    #   json_key: ENV["ANDROID_JSON_KEY_FILE"]
+    # )
     
     updated_version_code = version_codes[0] + 1
     
     increment_version_code(
       version_code: updated_version_code
     )
-  end
+  end  
 
   desc "Build"
   lane :build do
@@ -59,6 +86,7 @@ platform :android do
   lane :upload_internal_track do
     upload_to_play_store(
       track: "internal",
+      skip_upload_apk: true,
       json_key: ENV["ANDROID_JSON_KEY_FILE"]
     )
   end
