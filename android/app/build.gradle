@@ -86,6 +86,7 @@ android {
         versionCode 7
         versionName "1.0.4"
         missingDimensionStrategy 'react-native-camera', 'general'
+        testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
     }
     signingConfigs {
         debug {
@@ -127,6 +128,15 @@ dependencies {
     } else {
         implementation jscFlavor
     }
+
+    testImplementation 'junit:junit:4.13.2'
+
+    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
+    androidTestImplementation 'androidx.test:rules:1.5.0'
+
+    androidTestImplementation 'tools.fastlane:screengrab:2.1.1'
+    androidTestImplementation 'com.jraska:falcon:2.2.0'
 }
 
 apply from: file("../../node_modules/@react-native-community/cli-platform-android/native_modules.gradle"); applyNativeModulesAppBuildGradle(project)
