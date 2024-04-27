@@ -1,0 +1,18 @@
+# Set the path to the Android SDK
+android_home('$PATH')
+
+# Start ADB in root mode, giving you elevated permissions to write to the device
+# use_adb_root(true)
+
+# Your project's package name
+app_package_name('one.oneboulder.one')
+
+# Paths for APK files, which you are creating via fastlane
+app_apk_path('app/build/outputs/apk/debug/app-debug.apk')
+tests_apk_path('app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk')
+
+# Locations where you want to create screenshots. Add locales as required.
+locales(['en-US'])
+
+# Clears all previously generated screenshots before creating new ones
+clear_previous_screenshots(true)
