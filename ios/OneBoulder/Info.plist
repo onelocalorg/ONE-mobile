@@ -25,14 +25,14 @@
 		<dict>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>com.googleusercontent.apps.736398426108-lkn7772ig4e71fg9td8149kra82la7q5</string>
+				<string>com.googleusercontent.apps.724751305903-pp1sekl71seh0dhmm0c5i5ekj06sjg45</string>
 			</array>
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
 	<string>240</string>
 	<key>GIDClientID</key>
-	<string>736398426108-lkn7772ig4e71fg9td8149kra82la7q5.apps.googleusercontent.com</string>
+	<string>724751305903-pp1sekl71seh0dhmm0c5i5ekj06sjg45.apps.googleusercontent.com</string>
 	<key>INIntentsSupported</key>
 	<array>
 		<string>Intent</string>

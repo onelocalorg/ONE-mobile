@@ -164,10 +164,6 @@ export const About = (props: AboutDataProps) => {
     var queAns: any = {
       profile_answers: ansQueData,
     };
-    console.log(
-      "============https://true-guinea-heartily.ngrok-free.app/v1/users/profile/que-answers=============="
-    );
-    console.log("============Request==============", queAns);
     try {
       const response = await fetch(
         process.env.API_URL + "/v1/users/profile/que-answers",
@@ -652,7 +648,6 @@ export const About = (props: AboutDataProps) => {
     });
     submitAnsState(newArr);
     submitAnsStateTwo(newArrs);
-    console.log("===========ansQueData 22==========", ansQueData);
   }
 
   async function deleteUserAccountAPI() {

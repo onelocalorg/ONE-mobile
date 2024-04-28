@@ -1,3 +1,4 @@
+import { LOG } from "~/config";
 import {
   Search,
   activeRadio,
@@ -61,9 +62,8 @@ import { getData } from "~/network/constant";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
 GoogleSignin.configure({
-  iosClientId: process.env.GOOGLE_SIGNIN_CLIENT_ID,
-  webClientId:
-    "758195278101-qroulgfid8ufuiqlvcfhm5ndnno2jr90.apps.googleusercontent.com",
+  iosClientId: process.env.GOOGLE_SIGNIN_IOS_CLIENT_ID,
+  webClientId: process.env.GOOGLE_SIGNIN_WEB_CLIENT_ID,
   offlineAccess: true,
 });
 
@@ -97,14 +97,14 @@ export const LoginScreen = (props: LoginScreenProps) => {
   // };
 
   const signInWithGoogle = async () => {
+    LOG.debug("> signInWithGoogle");
     await GoogleSignin.signOut();
     console.log("google signin clicked");
     try {
       await GoogleSignin.hasPlayServices();
       const userInfo = await GoogleSignin.signIn();
-      console.log(userInfo);
+      LOG.debug(userInfo);
       if (userInfo) {
-        LodingData(true);
         onGoogleSignUpAPI(
           userInfo?.user?.email,
           userInfo?.serverAuthCode,
@@ -114,22 +114,27 @@ export const LoginScreen = (props: LoginScreenProps) => {
         // setGoogleEmail(userInfo?.user?.email)
         // setGoogleAuth(userInfo?.serverAuthCode)
       }
+      LOG.debug("< signInWithGoogle");
     } catch (error: any) {
       if (error.code === statusCodes.SIGN_IN_CANCELLED) {
-        console.log(error.code);
         // user cancelled the login flow
+        // ignore
       } else if (error.code === statusCodes.IN_PROGRESS) {
-        console.log(error.code);
+        // operation (e.g. sign in) is in progress already
+        // ignore
       } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
-        console.log(error.code);
+        // play services not available or outdated
+        // TODO Display error
+        LOG.error("signInWithGoogle:", error);
       } else {
-        console.log("error.codddsdsde", error);
+        // some other error happened
+        LOG.error("signInWithGoogle:", error);
       }
     }
   };
 
   const signInWithApple = async () => {
-    console.log("111111111------33333");
+    LOG.debug("> signInWithApple");
 
     try {
       const appleAuthRequestResponse: any = await appleAuth.performRequest({
@@ -138,11 +143,8 @@ export const LoginScreen = (props: LoginScreenProps) => {
         requestedScopes: [appleAuth.Scope.FULL_NAME, appleAuth.Scope.EMAIL],
       });
 
+      LOG.debug("signInWithApple:", appleAuthRequestResponse);
       if (appleAuthRequestResponse?.email !== null) {
-        console.log(
-          "----------------Check if condition data not null------------------"
-        );
-        LodingData(true);
         await onAppleSignUpAPI(
           appleAuthRequestResponse?.email,
           appleAuthRequestResponse?.user,
@@ -150,18 +152,11 @@ export const LoginScreen = (props: LoginScreenProps) => {
           appleAuthRequestResponse?.fullName?.familyName
         );
       } else {
-        console.log(
-          "----------------Check else condition data coming null------------------"
-        );
-        LodingData(true);
         getAppleIdCredAPI(appleAuthRequestResponse);
       }
-      console.log(
-        "appleAuthRequestResponse==========>",
-        appleAuthRequestResponse
-      );
+      LOG.debug("< signInWithApple");
     } catch (error: any) {
-      console.log("Apple Auth Error ============>", error);
+      LOG.error("signInWithApple", error);
     }
   };
 
@@ -169,7 +164,7 @@ export const LoginScreen = (props: LoginScreenProps) => {
     googleUserGmail: any,
     googleAuth: any,
     firstName: any,
-    LastName: any
+    lastName: any
   ) {
     const userData: any = {
       // "email":"vipul.tuvoc@gmail.com",
@@ -179,10 +174,11 @@ export const LoginScreen = (props: LoginScreenProps) => {
       email: googleUserGmail,
       googleAuth: googleAuth,
       first_name: firstName,
-      last_name: LastName,
+      last_name: lastName,
     };
     console.log("==========on Google Sign Up API Request==============");
     console.log(userData);
+    LodingData(true);
     try {
       const response = await fetch(
         process.env.API_URL + "/v1/auth/googleSignupLogin",
@@ -257,17 +253,16 @@ export const LoginScreen = (props: LoginScreenProps) => {
     appleUsermail: any,
     appleAuth: any,
     firstName: any,
-    LastName: any
+    lastName: any
   ) {
     const userData: any = {
       email: appleUsermail,
       authorizationCode: appleAuth,
       givenName: firstName,
-      familyName: LastName,
+      familyName: lastName,
     };
-    console.log("==========on Apple Sign Up API Request==============");
-    console.log(userData);
     try {
+      LodingData(true);
       const response = await fetch(
         process.env.API_URL + "/v1/auth/appleSignupLogin",
         {
@@ -341,9 +336,8 @@ export const LoginScreen = (props: LoginScreenProps) => {
     const userData: any = {
       authorizationCode: userid.user,
     };
-    console.log("==========get user Apple Cred two API Request==============");
-    console.log(userData);
     try {
+      LodingData(true);
       const response = await fetch(
         process.env.API_URL + "/v1/auth/appleSignupLogin",
         {
