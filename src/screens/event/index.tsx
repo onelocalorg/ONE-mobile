@@ -1,4 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
+import { LOG } from "~/config";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
 import React, { useState, useCallback, useEffect } from "react";
 import { createStyleSheet } from "./style";
@@ -124,6 +125,7 @@ export const EventListScreen = (props: EventListScreenProps) => {
   );
 
   const getEventListAPI = async (getLatitude: any) => {
+    LOG.debug("> getEventListAPI");
     if (page === 1) {
       LoadingData(true);
     }
@@ -139,12 +141,10 @@ export const EventListScreen = (props: EventListScreenProps) => {
       zoom_level: getLatitude.zoomLevel,
       device_type: Platform.OS,
     };
-    console.log(
-      eventData,
-      "--------------------event location request-----------------"
-    );
     var eventList_url =
       process.env.API_URL + "/v2/events/list?limit=10&page=" + page;
+    LOG.debug(eventList_url);
+    LOG.debug(eventData);
     try {
       const token = await AsyncStorage.getItem("token");
       const response = await fetch(eventList_url, {
@@ -156,6 +156,7 @@ export const EventListScreen = (props: EventListScreenProps) => {
         body: JSON.stringify(eventData),
       });
       const dataItem = await response.json();
+      LOG.debug("getEventListAPI:", dataItem?.data);
 
       if (page == 1) {
         var dataTemp = [...eventsList, ...dataItem?.data.results];
@@ -168,9 +169,10 @@ export const EventListScreen = (props: EventListScreenProps) => {
       setCurrentPage(dataItem?.data?.page);
       LoadingData(false);
       onPageLoad(true);
+      LOG.debug("< getEventListAPI");
     } catch (error) {
+      LOG.error("getEventListAPI", error);
       LoadingData(false);
-      console.log(error);
     }
   };
 
