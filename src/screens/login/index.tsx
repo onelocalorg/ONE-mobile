@@ -98,8 +98,6 @@ export const LoginScreen = (props: LoginScreenProps) => {
 
   const signInWithGoogle = async () => {
     LOG.debug("> signInWithGoogle");
-    await GoogleSignin.signOut();
-    console.log("google signin clicked");
     try {
       await GoogleSignin.hasPlayServices();
       const userInfo = await GoogleSignin.signIn();
