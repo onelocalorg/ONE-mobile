@@ -1,65 +1,41 @@
-import { LOG } from "~/config";
-import React, {
-  LegacyRef,
-  ReactNode,
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
-import { createStyleSheet } from "./style";
-import { useAppTheme } from "~/app-hooks/use-app-theme";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useFocusEffect } from "@react-navigation/native";
+import MapboxGL from "@rnmapbox/maps";
+import moment from "moment";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
   Alert,
   Image,
   Linking,
-  LogBox,
   PermissionsAndroid,
   Platform,
   Text,
   TouchableOpacity,
   View,
 } from "react-native";
-import { ImageComponent } from "~/components/image-component";
-import {
-  activeRadio,
-  blackPin,
-  dummy,
-  event,
-  onelogo,
-  pin,
-  redPin,
-} from "~/assets/images";
-import { useSelector } from "react-redux";
-import { StoreType } from "~/network/reducers/store";
-import { UserProfileState } from "~/network/reducers/user-profile-reducer";
-import { useFocusEffect } from "@react-navigation/native";
-import { navigations } from "~/config/app-navigation/constant";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import moment from "moment";
-import { DatePickerModal, TimePickerModal } from "react-native-paper-dates";
-import GetLocation from "react-native-get-location";
-import { Loader } from "~/components/loader";
-import Swiper from "react-native-swiper";
-import MapboxGL, { Callout, CircleLayer, MarkerView } from "@rnmapbox/maps";
-import Toast from "react-native-simple-toast";
-
-MapboxGL.setAccessToken(process.env.MAP_ACCESS_TOKEN!);
-
-import { getData, setData } from "~/network/constant";
 import {
   isLocationEnabled,
   promptForEnableLocationIfNeeded,
 } from "react-native-android-location-enabler";
-
-interface MapProps {}
+import GetLocation from "react-native-get-location";
+import Swiper from "react-native-swiper";
+import { useSelector } from "react-redux";
+import { useAppTheme } from "~/app-hooks/use-app-theme";
+import { activeRadio, blackPin, event, pin, redPin } from "~/assets/images";
+import { ImageComponent } from "~/components/image-component";
+import { getData, setData } from "~/network/constant";
+import { StoreType } from "~/network/reducers/store";
+import { UserProfileState } from "~/network/reducers/user-profile-reducer";
+import { createStyleSheet } from "./style";
 
 interface Range {
   startDate: Date | undefined;
   endDate: Date | undefined;
 }
 
-export const Map = (props: MapProps) => {
+MapboxGL.setAccessToken(process.env.MAP_ACCESS_TOKEN!);
+
+export const Map = () => {
   const { theme } = useAppTheme();
   const styles = createStyleSheet(theme);
   var [eventData, eventDetail]: any = useState([]);
@@ -68,8 +44,7 @@ export const Map = (props: MapProps) => {
   var [longitude, setLongitude]: any = useState(tempdata?.longitude);
   const [eventList, eventDataStore] = useState([]);
   const [eventType, eventTypeData] = useState("event");
-  const [profileData, setUserProfile]: any = useState("");
-  const [isLoading, LodingData] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const mileStoneSwiperRef: any = useRef(null);
   var zoomLeveDefault = getData("mapCircleRadius");
   const [zoomLevel, setCameraZoomLevel] = useState(zoomLeveDefault);
@@ -88,18 +63,17 @@ export const Map = (props: MapProps) => {
 
   // const mapRef = useRef(null);
 
-  //   useFocusEffect(
-  //     useCallback(() => {
-  //       if (!latitude) {
-  //         requestLocationPermission();
-  //       }
-  //       getUserProfileAPI();
-  //     }, [])
-  //   );
+  useFocusEffect(
+    useCallback(() => {
+      if (!latitude) {
+        requestLocationPermission();
+      }
+    }, [])
+  );
 
-  //   useEffect(() => {
-  //     handleEnabledPressed();
-  //   }, []);
+  useEffect(() => {
+    handleEnabledPressed();
+  }, []);
 
   async function handleEnabledPressed() {
     if (Platform.OS === "android") {
@@ -163,30 +137,8 @@ export const Map = (props: MapProps) => {
       });
   };
 
-  const getUserProfileAPI = async () => {
-    const token = await AsyncStorage.getItem("token");
-    try {
-      const response = await fetch(
-        process.env.API_URL + "/v1/users/" + user.id,
-        {
-          method: "get",
-          headers: new Headers({
-            Authorization: "Bearer " + token,
-            "Content-Type": "application/json",
-          }),
-        }
-      );
-      const dataItem = await response.json();
-      setUserProfile(dataItem.data);
-      AsyncStorage.setItem("profile", dataItem.data.pic);
-      AsyncStorage.setItem("uniqueId", dataItem.data.user_unique_id);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
   async function geoTaggingAPITwo() {
-    LodingData(true);
+    setIsLoading(true);
     const token = await AsyncStorage.getItem("token");
     var data: any = {
       start_date: moment(range.startDate).format("YYYY-MM-DD"),
@@ -220,7 +172,7 @@ export const Map = (props: MapProps) => {
         "=========== Geo Tagging API Response ==============",
         dataItem?.data?.length
       );
-      LodingData(false);
+      setIsLoading(false);
       if (dataItem?.data) {
         eventDetail(dataItem?.data);
       }
@@ -233,7 +185,7 @@ export const Map = (props: MapProps) => {
         eventDataStore(resultTemp);
       }
     } catch (error) {
-      LodingData(false);
+      setIsLoading(false);
       console.error(error);
     }
   }
@@ -242,7 +194,7 @@ export const Map = (props: MapProps) => {
     if (mapLoaded) {
       const newZoomLevel = event.properties.zoomLevel;
       if (newZoomLevel !== zoomLevel) {
-        LodingData(true);
+        setIsLoading(true);
       }
       console.log("handleRegionChange newZoomLevel", newZoomLevel);
       setCameraZoomLevel(newZoomLevel);
@@ -350,37 +302,6 @@ export const Map = (props: MapProps) => {
 
   return (
     <View style={{ flex: 1 }}>
-      <Loader visible={isLoading} showOverlay />
-
-      <TouchableOpacity style={styles.HeaderContainerTwo} activeOpacity={1}>
-        <View style={styles.oneContainer}>
-          <ImageComponent
-            style={styles.oneContainerImage}
-            source={onelogo}
-          ></ImageComponent>
-          <View>
-            <Text style={styles.oneContainerText}>NE</Text>
-            <Text style={styles.localText}>L o c a l</Text>
-          </View>
-        </View>
-        <View style={styles.profileContainer}>
-          <TouchableOpacity
-            activeOpacity={0.8}
-            // FIXME
-            // onPress={onNavigateToProfile}
-            style={styles.profileView}
-          >
-            <ImageComponent
-              resizeMode="cover"
-              isUrl={!!user?.pic}
-              source={dummy}
-              uri={profileData?.pic}
-              style={styles.profile}
-            />
-          </TouchableOpacity>
-        </View>
-      </TouchableOpacity>
-
       {tempdata?.latitude && tempdata?.longitude ? (
         <MapboxGL.MapView
           style={styles.map}
@@ -406,7 +327,7 @@ export const Map = (props: MapProps) => {
             />
           </View>
 
-          <MapboxGL.PointAnnotation
+          {/* <MapboxGL.PointAnnotation
             style={{ flex: 1 }}
             key="pointAnnotation"
             id="pointAnnotation"
@@ -427,7 +348,7 @@ export const Map = (props: MapProps) => {
                 backgroundColor: "rgba(112, 68, 139, 0.7)",
               }}
             ></View>
-          </MapboxGL.PointAnnotation>
+          </MapboxGL.PointAnnotation> */}
 
           {eventList.map((event: any, jindex) => (
             <MapboxGL.MarkerView

@@ -42,12 +42,7 @@ export const BottomNavigator = () => {
   const modalRef: React.Ref<ModalRefProps> = useRef(null);
   const navigation = useNavigation();
 
-  const bottomNav = [
-    bottomTabs.home,
-    "event",
-    bottomTabs.gratitude,
-    bottomTabs.chat,
-  ];
+  const bottomNav = [bottomTabs.home, "event", bottomTabs.map, bottomTabs.chat];
 
   const getTabData = (name: string) => {
     switch (name) {
@@ -61,7 +56,7 @@ export const BottomNavigator = () => {
           screenName: navigations.EVENT_ROUTE,
           component: EventRoute,
         };
-      case bottomTabs.gratitude:
+      case bottomTabs.map:
         return {
           screenName: navigations.MAP_ROUTE,
           component: MapRoute,

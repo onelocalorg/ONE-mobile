@@ -35,6 +35,7 @@ import {
   plus,
   postCalender,
 } from "~/assets/images";
+import { Navbar } from "~/components/navbar/Navbar";
 import { useDispatch, useSelector } from "react-redux";
 import { StoreType } from "~/network/reducers/store";
 import {
@@ -142,7 +143,6 @@ export const HomeScreen = (props: HomeScreenProps) => {
           requestLocationPermission();
         }
       }
-      getUserProfileAPI();
       setPage(1);
       postListData([]);
       setSearchQuery("");
@@ -272,43 +272,6 @@ export const HomeScreen = (props: HomeScreenProps) => {
     if (gratisNo > 10) {
       gratisNo = gratisNo - 1;
       totalGratisData(gratisNo);
-    }
-  };
-
-  const onNavigateToProfile = () => {
-    if (user?.id) {
-      refetch().then((res) => {
-        const userData = userProfileParsedData(res?.data?.data);
-        dispatch(onSetUser(userData));
-      });
-    }
-    navigation.navigate("profileroute");
-  };
-
-  const getUserProfileAPI = async () => {
-    const token = await AsyncStorage.getItem("token");
-    try {
-      const response = await fetch(
-        process.env.API_URL + "/v1/users/" + user.id,
-        {
-          method: "get",
-          headers: new Headers({
-            Authorization: "Bearer " + token,
-            "Content-Type": "application/json",
-          }),
-        }
-      );
-      const dataItem = await response.json();
-      setUserProfile(dataItem.data);
-      if (dataItem?.data?.isEventActiveSubscription === true) {
-        AsyncStorage.setItem("isEventActive", "true");
-      } else {
-        AsyncStorage.setItem("isEventActive", "false");
-      }
-      AsyncStorage.setItem("profile", dataItem.data.pic);
-      AsyncStorage.setItem("uniqueId", dataItem.data.user_unique_id);
-    } catch (error) {
-      console.log(error);
     }
   };
 
@@ -843,49 +806,11 @@ export const HomeScreen = (props: HomeScreenProps) => {
             source={greenImage}
           ></ImageComponent>
         </TouchableOpacity> */}
-        {/* ------------------Header------------------- */}
-        <TouchableOpacity style={styles.HeaderContainerTwo} activeOpacity={1}>
-          <View style={styles.searchContainer}>
-            <ImageComponent
-              style={styles.searchIcon}
-              source={Search}
-            ></ImageComponent>
-            <TextInput
-              value={searchQuery}
-              placeholderTextColor="#FFFF"
-              placeholder="Search"
-              style={styles.searchInput}
-              onChangeText={(value) => {
-                setSerchValue(value);
-              }}
-            ></TextInput>
-          </View>
-          <View style={styles.oneContainer}>
-            <ImageComponent
-              style={styles.oneContainerImage}
-              source={onelogo}
-            ></ImageComponent>
-            <View>
-              <Text style={styles.oneContainerText}>NE</Text>
-              <Text style={styles.localText}>L o c a l</Text>
-            </View>
-          </View>
-          <View style={styles.profileContainer}>
-            <TouchableOpacity
-              activeOpacity={0.8}
-              onPress={onNavigateToProfile}
-              style={styles.profileView}
-            >
-              <ImageComponent
-                resizeMode="cover"
-                isUrl={!!user?.pic}
-                source={dummy}
-                uri={ProfileData?.pic}
-                style={styles.profile}
-              />
-            </TouchableOpacity>
-          </View>
-        </TouchableOpacity>
+        <Navbar
+          navigation={
+            navigation as unknown as NavigationContainerRef<ParamListBase>
+          }
+        />
         {/* ------------------Header Tab------------------- */}
 
         <FlatList

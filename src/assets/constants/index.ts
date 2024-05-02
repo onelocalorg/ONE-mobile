@@ -16,7 +16,7 @@ export const bottomTabs = {
   home: "home",
   calendar: "calendar",
   chat: "chat",
-  gratitude: "gratitude",
+  map: "map",
   addButton: "addButton",
 };
 export const animationDuration = {

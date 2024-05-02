@@ -14,6 +14,7 @@ import {
 } from "react-native";
 import { Header } from "~/components/header";
 import { ImageComponent } from "~/components/image-component";
+import { Navbar } from "~/components/navbar/Navbar";
 import {
   Search,
   arrowDown,
@@ -109,7 +110,6 @@ export const EventListScreen = (props: EventListScreenProps) => {
 
   useFocusEffect(
     useCallback(() => {
-      getUserProfileAPI();
       onPageLoad(false);
       setPage(1);
       setSearchQuery("");
@@ -176,33 +176,6 @@ export const EventListScreen = (props: EventListScreenProps) => {
     }
   };
 
-  const getUserProfileAPI = async () => {
-    const token = await AsyncStorage.getItem("token");
-    try {
-      const response = await fetch(
-        process.env.API_URL + "/v1/users/" + user.id,
-        {
-          method: "get",
-          headers: new Headers({
-            Authorization: "Bearer " + token,
-            "Content-Type": "application/json",
-          }),
-        }
-      );
-      const dataItem = await response.json();
-      setUserProfile(dataItem.data);
-      if (dataItem?.data?.isEventActiveSubscription === true) {
-        AsyncStorage.setItem("isEventActive", "true");
-      } else {
-        AsyncStorage.setItem("isEventActive", "false");
-      }
-      AsyncStorage.setItem("profile", dataItem.data.pic);
-      AsyncStorage.setItem("uniqueId", dataItem.data.user_unique_id);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
   function manageSameHeader(newEventArray: any) {
     var oldEventLastIndex = eventsList.length - 1;
     if (
@@ -223,15 +196,6 @@ export const EventListScreen = (props: EventListScreenProps) => {
     }
   }
 
-  const setSerchValue = useCallback(
-    (searchData: any) => {
-      setSearchQuery(searchData);
-      setPage(1);
-      setEventsList([]);
-    },
-    [searchQuery]
-  );
-
   const onDismiss = useCallback(() => {
     setOpen(false);
   }, [setOpen]);
@@ -248,17 +212,6 @@ export const EventListScreen = (props: EventListScreenProps) => {
     },
     [setOpen, setRange, range?.startDate, range?.endDate]
   );
-
-  const onNavigateToProfile = () => {
-    if (user?.id) {
-      refetch().then((res) => {
-        const userData = userProfileParsedData(res?.data?.data);
-        console.log("check1===", userData);
-        dispatch(onSetUser(userData));
-      });
-    }
-    navigation.navigate(navigations.PROFILE);
-  };
 
   const onNavigate = (item: Result) => {
     console.log(route.name);
@@ -349,52 +302,11 @@ export const EventListScreen = (props: EventListScreenProps) => {
   return (
     <View>
       <Loader visible={page === 1 && isLoading} showOverlay />
-      <TouchableOpacity style={styles.HeaderContainerTwo} activeOpacity={1}>
-        <View style={styles.searchContainer}>
-          <ImageComponent
-            style={styles.searchIcon}
-            source={Search}
-          ></ImageComponent>
-          <TextInput
-            value={searchQuery}
-            placeholderTextColor="#FFFF"
-            placeholder="Search"
-            style={styles.searchInput}
-            onChangeText={(value) => {
-              console.log(value);
-              setSerchValue(value);
-            }}
-          ></TextInput>
-        </View>
-        <View style={styles.oneContainer}>
-          <ImageComponent
-            style={styles.oneContainerImage}
-            source={onelogo}
-          ></ImageComponent>
-          <View>
-            <Text style={styles.oneContainerText}>NE</Text>
-            <Text style={styles.localText}>L o c a l</Text>
-          </View>
-        </View>
-        <View style={styles.profileContainer}>
-          {/* <ImageComponent
-            style={styles.bellIcon}
-            source={bell}></ImageComponent> */}
-          <TouchableOpacity
-            activeOpacity={0.8}
-            onPress={onNavigateToProfile}
-            style={styles.profileView}
-          >
-            <ImageComponent
-              resizeMode="cover"
-              isUrl={!!profileData?.pic}
-              source={dummy}
-              uri={profileData?.pic}
-              style={styles.profile}
-            />
-          </TouchableOpacity>
-        </View>
-      </TouchableOpacity>
+      <Navbar
+        navigation={
+          navigation as unknown as NavigationContainerRef<ParamListBase>
+        }
+      />
       <View style={styles.backgroundToggle}>
         <View style={styles.toggleCont}>
           <Text style={styles.villageLbl}>Village Friendly </Text>
