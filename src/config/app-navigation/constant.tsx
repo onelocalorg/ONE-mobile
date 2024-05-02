@@ -8,7 +8,7 @@ export const navigations = {
   EVENTSCREEN: "event",
   CALENDAR: "calendar",
   CHAT: "chat",
-  GRATITUDE: "gratitude",
+  MAP: "map",
   EVENT_DETAIL: "eventDetail",
   PROFILE: "profile",
   ADMIN_TOOLS: "adminTools",
@@ -33,6 +33,6 @@ export const bottomNavigationVisibleScreens = [
   navigations.HOMESCREEN,
   navigations.EVENTSCREEN,
   navigations.CHAT,
-  navigations.GRATITUDE,
+  navigations.MAP,
   navigations.CALENDAR,
 ];

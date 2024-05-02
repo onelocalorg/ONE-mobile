@@ -30,7 +30,6 @@ import { TouchableOpacity } from "react-native";
 import { ModalRefProps } from "~/components/modal-component";
 import { AddComponentModal } from "~/screens/event/add-component-modal";
 import { EventRoute } from "./event-route";
-import { GratitudeScreen } from "~/screens/gratitude";
 import { MapRoute } from "./map-route";
 
 const Tab = createBottomTabNavigator();

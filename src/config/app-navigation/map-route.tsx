@@ -14,7 +14,7 @@ import { CreatePostRequestScreen } from "~/screens/createPost/request";
 import { CreatePostOfferScreen } from "~/screens/createPost/offer";
 import { EventList } from "~/components/event-list";
 import { EventListScreen } from "~/screens/event";
-import { GratitudeScreen } from "~/screens/gratitude";
+import { MapScreen } from "~/screens/map/MapScreen";
 
 const MapStack = createStackNavigator();
 
@@ -24,8 +24,8 @@ export const MapRoute = () => {
   return (
     <MapStack.Navigator>
       <MapStack.Screen
-        name={navigations.GRATITUDE}
-        component={GratitudeScreen}
+        name={navigations.MAP}
+        component={MapScreen}
         options={{ header }}
       />
       <MapStack.Screen

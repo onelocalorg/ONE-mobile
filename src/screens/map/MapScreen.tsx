@@ -87,7 +87,7 @@ interface Range {
   endDate: Date | undefined;
 }
 
-export const GratitudeScreen = (props: MapScreenProps) => {
+export const MapScreen = (props: MapScreenProps) => {
   const { theme } = useAppTheme();
   const styles = createStyleSheet(theme);
   var [eventData, eventDetail]: any = useState([]);
