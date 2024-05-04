@@ -1,9 +1,9 @@
 PODS:
-  - AppAuth (1.7.4):
-    - AppAuth/Core (= 1.7.4)
-    - AppAuth/ExternalUserAgent (= 1.7.4)
-  - AppAuth/Core (1.7.4)
-  - AppAuth/ExternalUserAgent (1.7.4):
+  - AppAuth (1.7.5):
+    - AppAuth/Core (= 1.7.5)
+    - AppAuth/ExternalUserAgent (= 1.7.5)
+  - AppAuth/Core (1.7.5)
+  - AppAuth/ExternalUserAgent (1.7.5):
     - AppAuth/Core
   - boost (1.83.0)
   - CocoaAsyncSocket (7.6.5)
@@ -1272,42 +1272,42 @@ PODS:
     - libwebp (~> 1.0)
     - SDWebImage/Core (~> 5.10)
   - SocketRocket (0.6.1)
-  - Stripe (23.22.1):
-    - StripeApplePay (= 23.22.1)
-    - StripeCore (= 23.22.1)
-    - StripePayments (= 23.22.1)
-    - StripePaymentsUI (= 23.22.1)
-    - StripeUICore (= 23.22.1)
-  - stripe-react-native (0.37.0):
+  - Stripe (23.27.1):
+    - StripeApplePay (= 23.27.1)
+    - StripeCore (= 23.27.1)
+    - StripePayments (= 23.27.1)
+    - StripePaymentsUI (= 23.27.1)
+    - StripeUICore (= 23.27.1)
+  - stripe-react-native (0.37.3):
     - React-Core
-    - Stripe (~> 23.22.0)
-    - StripeApplePay (~> 23.22.0)
-    - StripeFinancialConnections (~> 23.22.0)
-    - StripePayments (~> 23.22.0)
-    - StripePaymentSheet (~> 23.22.0)
-    - StripePaymentsUI (~> 23.22.0)
-  - StripeApplePay (23.22.1):
-    - StripeCore (= 23.22.1)
-  - StripeCore (23.22.1)
-  - StripeFinancialConnections (23.22.1):
-    - StripeCore (= 23.22.1)
-    - StripeUICore (= 23.22.1)
-  - StripePayments (23.22.1):
-    - StripeCore (= 23.22.1)
-    - StripePayments/Stripe3DS2 (= 23.22.1)
-  - StripePayments/Stripe3DS2 (23.22.1):
-    - StripeCore (= 23.22.1)
-  - StripePaymentSheet (23.22.1):
-    - StripeApplePay (= 23.22.1)
-    - StripeCore (= 23.22.1)
-    - StripePayments (= 23.22.1)
-    - StripePaymentsUI (= 23.22.1)
-  - StripePaymentsUI (23.22.1):
-    - StripeCore (= 23.22.1)
-    - StripePayments (= 23.22.1)
-    - StripeUICore (= 23.22.1)
-  - StripeUICore (23.22.1):
-    - StripeCore (= 23.22.1)
+    - Stripe (~> 23.27.0)
+    - StripeApplePay (~> 23.27.0)
+    - StripeFinancialConnections (~> 23.27.0)
+    - StripePayments (~> 23.27.0)
+    - StripePaymentSheet (~> 23.27.0)
+    - StripePaymentsUI (~> 23.27.0)
+  - StripeApplePay (23.27.1):
+    - StripeCore (= 23.27.1)
+  - StripeCore (23.27.1)
+  - StripeFinancialConnections (23.27.1):
+    - StripeCore (= 23.27.1)
+    - StripeUICore (= 23.27.1)
+  - StripePayments (23.27.1):
+    - StripeCore (= 23.27.1)
+    - StripePayments/Stripe3DS2 (= 23.27.1)
+  - StripePayments/Stripe3DS2 (23.27.1):
+    - StripeCore (= 23.27.1)
+  - StripePaymentSheet (23.27.1):
+    - StripeApplePay (= 23.27.1)
+    - StripeCore (= 23.27.1)
+    - StripePayments (= 23.27.1)
+    - StripePaymentsUI (= 23.27.1)
+  - StripePaymentsUI (23.27.1):
+    - StripeCore (= 23.27.1)
+    - StripePayments (= 23.27.1)
+    - StripeUICore (= 23.27.1)
+  - StripeUICore (23.27.1):
+    - StripeCore (= 23.27.1)
   - Toast (4.1.1)
   - TOCropViewController (2.7.3)
   - Turf (2.7.0)
@@ -1612,7 +1612,7 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/yoga"
 
 SPEC CHECKSUMS:
-  AppAuth: 182c5b88630569df5acb672720534756c29b3358
+  AppAuth: 501c04eda8a8d11f179dbe8637b7a91bb7e5d2fa
   boost: d3f49c53809116a5d38da093a8aa78bf551aed09
   CocoaAsyncSocket: 065fd1e645c7abab64f7a6a2007a48038fdc6a99
   DoubleConversion: fea03f2699887d960129cc54bba7e52542b6f953
@@ -1712,15 +1712,15 @@ SPEC CHECKSUMS:
   SDWebImage: a7f831e1a65eb5e285e3fb046a23fcfbf08e696d
   SDWebImageWebPCoder: 908b83b6adda48effe7667cd2b7f78c897e5111d
   SocketRocket: f32cd54efbe0f095c4d7594881e52619cfe80b17
-  Stripe: b65e9f748f8f51b51e015b0d72f5474dc0708788
-  stripe-react-native: 3988dbb404888f4224bdb9dd27ddfdaac6d309a8
-  StripeApplePay: 4a2fef6cd4e1e9b2c0849919fc7b3a9c5c3684b1
-  StripeCore: e1f6cd91d1487c0f6b5db81b42aec860420f75c9
-  StripeFinancialConnections: d223a44613e6982cedd552c5950edc9b4901c90a
-  StripePayments: 76144e9e6b5fee859954238a175f859043562659
-  StripePaymentSheet: a25d920bb3bb5e2580696476482dc7df9cb5e4e2
-  StripePaymentsUI: 66088abec88754bbdd522ef227dfdbb2265a653e
-  StripeUICore: b193c7d35e9cd1b04bc9ed4a6fb8c548fcee83fa
+  Stripe: f2bde666c4d38f32237145fd1f703ceec0a75c15
+  stripe-react-native: 184a46a36ed449ff9f0ac5938ce65b20fc7bf0a2
+  StripeApplePay: 89943feba80f78c84b3a2741913fc19f8cb534cd
+  StripeCore: acb607d9f1bab7b8b57dd271f37353aae9e5e803
+  StripeFinancialConnections: 225c96e226cc4797f31112304dc4e3eba99921ab
+  StripePayments: 6516caea144600b2dbcb953b53b5a534e080340c
+  StripePaymentSheet: dd98d76f204c55aee31c0b8fc8d8917cdf762e0e
+  StripePaymentsUI: 15645d3ab6f140efda33b69d94607e8a813f8951
+  StripeUICore: c60c85edb5e87ffc0cab05f4c808ca370dfde31c
   Toast: 1f5ea13423a1e6674c4abdac5be53587ae481c4e
   TOCropViewController: b9b2905938c0424f289ea2d9964993044913fac6
   Turf: 13d1a92d969ca0311bbc26e8356cca178ce95da2
