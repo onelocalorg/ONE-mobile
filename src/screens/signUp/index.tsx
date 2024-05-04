@@ -203,10 +203,10 @@ export const SignUp = (props: SignUpProps) => {
       Toast.show("Enter your Last Name", Toast.LONG, {
         backgroundColor: "black",
       });
-    } else if (profileUri === "") {
-      Toast.show("Enter your profile image", Toast.LONG, {
-        backgroundColor: "black",
-      });
+      // } else if (profileUri === "") {
+      //   Toast.show("Enter your profile image", Toast.LONG, {
+      //     backgroundColor: "black",
+      //   });
     } else {
       onSignUpAPI();
     }
