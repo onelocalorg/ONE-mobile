@@ -83,7 +83,7 @@ import { launchImageLibrary } from "react-native-image-picker";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
 import Toast from "react-native-simple-toast";
 import GestureRecognizer from "react-native-swipe-gestures";
-import { Result } from "~/network/hooks/home-service-hooks/use-event-lists";
+import { EventData } from "~/network/hooks/home-service-hooks/use-event-lists";
 
 interface ChatScreenProps {
   navigation: NavigationContainerRef<ParamListBase>;

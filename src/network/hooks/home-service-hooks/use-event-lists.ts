@@ -1,24 +1,25 @@
 import { onFetchEvents } from "~/network/api/services/home-service";
 import { useMutation } from "@tanstack/react-query";
+import { DateTime } from "luxon";
 
 interface Root {
-  results: Result[];
+  results: EventData[];
   page: number;
   limit: number;
   totalPages: number;
   totalResults: number;
 }
 
-export interface Result {
+export interface EventData {
   name: string;
-  start_date: string;
-  end_date: string;
-  about: string;
-  address: string;
-  full_address: string;
+  start_date: DateTime;
+  end_date?: DateTime;
+  about?: string;
+  address?: string;
+  full_address?: string;
   location: string[];
-  email_confirmation_body: string;
-  event_image: string;
+  email_confirmation_body?: string;
+  event_image?: string;
   eventProducer: EventProducer;
   tickets: Ticket[];
   id: string;
@@ -34,9 +35,9 @@ export interface Result {
   start_time_label: string;
   start_date_label: string;
   events: [];
-  lat: number | undefined;
-  long: number | undefined;
-  event_image_id: string;
+  lat: number;
+  long: number;
+  event_image_id?: string;
 }
 
 interface EventProducer {

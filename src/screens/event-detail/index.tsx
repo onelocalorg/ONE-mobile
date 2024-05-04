@@ -42,7 +42,7 @@ import Cantgo from "../../assets/images/canntgo.png";
 import Maybe from "../../assets/images/maybe.png";
 import { TicketCheckoutModal } from "./ticket-checkout-modal";
 import { navigations } from "~/config/app-navigation/constant";
-import { Result } from "~/network/hooks/home-service-hooks/use-event-lists";
+import { EventData } from "~/network/hooks/home-service-hooks/use-event-lists";
 import moment from "moment";
 import { useEventDetails } from "~/network/hooks/home-service-hooks/use-event-details";
 import { Loader } from "~/components/loader";
@@ -119,6 +119,7 @@ export const EventDetailScreen = (props: EventDetailScreenProps) => {
     about,
     address,
     start_date,
+    end_date,
     is_event_owner,
     full_address,
     name,
@@ -770,7 +771,7 @@ export const EventDetailScreen = (props: EventDetailScreenProps) => {
         </View>
       </ScrollView>
       <TicketCheckoutModal
-        eventData={data as Result}
+        eventData={data as EventData}
         onPurchase={onPurchaseTicketThroughCard}
         ref={modalRef}
         loader={showLoader}

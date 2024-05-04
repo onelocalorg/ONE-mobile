@@ -4,11 +4,11 @@ import { createStyleSheet } from "./style";
 import { Text, TouchableOpacity, View } from "react-native";
 import { ImageComponent } from "~/components/image-component";
 import { activeRadio, dummy, event, pin } from "~/assets/images";
-import { Result } from "~/network/hooks/home-service-hooks/use-event-lists";
+import { EventData } from "~/network/hooks/home-service-hooks/use-event-lists";
 import moment from "moment";
 
 interface EventListProps {
-  data: Result;
+  data: EventData;
   onPress?: () => void;
   disabled?: boolean;
 }

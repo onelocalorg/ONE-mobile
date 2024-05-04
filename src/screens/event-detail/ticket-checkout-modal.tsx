@@ -24,7 +24,7 @@ import {
   minus,
   plus,
 } from "~/assets/images";
-import { Result } from "~/network/hooks/home-service-hooks/use-event-lists";
+import { EventData } from "~/network/hooks/home-service-hooks/use-event-lists";
 import { formatPrice } from "~/utils/common";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { SizedBox } from "~/components/sized-box";
@@ -45,7 +45,7 @@ interface TicketCheckoutModalCompProps {
     cardData: string,
     quantityticket: number
   ) => void;
-  eventData: Result;
+  eventData: EventData;
   loader: boolean;
 }
 

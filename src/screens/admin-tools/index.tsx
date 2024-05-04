@@ -1,4 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
+import { LOG } from "~/config";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
 import React, { useEffect, useRef, useState } from "react";
 import { createStyleSheet } from "./style";
@@ -39,15 +40,16 @@ import { AddTicketModal } from "./add-ticket-modal";
 import { ModalRefProps } from "~/components/modal-component";
 import { navigations } from "~/config/app-navigation/constant";
 import {
-  Result,
+  EventData,
   Ticket,
 } from "~/network/hooks/home-service-hooks/use-event-lists";
-import moment from "moment";
 import { formatPrice } from "~/utils/common";
 import {
   DatePickerRefProps,
   DateRangePicker,
 } from "~/components/date-range-picker";
+import DateTimePickerModal from "react-native-modal-datetime-picker";
+
 import { useTicketHolderCheckinsList } from "~/network/hooks/home-service-hooks/use-ticket-holder-checkin-list";
 import { useUpdateEvent } from "~/network/hooks/home-service-hooks/use-update-event";
 import { Loader } from "~/components/loader";
@@ -73,12 +75,13 @@ import { ScrollView } from "react-native-gesture-handler";
 import { width } from "~/theme/device/device";
 import { Platform } from "react-native";
 import { emailRegexEx } from "~/assets/constants";
+import { DateTime } from "luxon";
 
 interface AdminToolsScreenProps {
   navigation?: NavigationContainerRef<ParamListBase>;
   route?: {
     params: {
-      eventData: Result;
+      eventData: EventData;
       isCreateEvent: boolean;
     };
   };
@@ -94,15 +97,22 @@ export const AdminToolsScreen = (props: AdminToolsScreenProps) => {
   const addItemRef: React.Ref<ModalRefProps> = useRef(null);
   const [selectedTicketIndex, setSelectedTicketIndex] = useState(0);
   const [isEdit, setIsEdit] = useState(false);
-  const [startDateValue, setStartDateValue] = useState(new Date());
-  const [endDateValue, setEndDateValue] = useState(new Date());
+
+  const [isStartDatePickerVisible, setStartDatePickerVisible] = useState(false);
+  const [startDate, setStartDate] = useState<DateTime>(
+    DateTime.now().startOf("hour").plus({ hour: 1 })
+  );
+  const [endDate, setEndDate] = useState<DateTime | undefined>();
+  const [isEndDateVisible, setEndDateVisible] = useState(!!endDate);
+  const [isEndDatePickerVisible, setEndDatePickerVisible] = useState(false);
+
   const [searchQuery, setSearchQuery] = useState("");
   var [location, setUserLocation]: any = useState();
   const [isEnabled, setIsEnabled] = useState(false);
   const [isBreakDown, setIsBreakDown] = useState(false);
   const [setFilter, SetToggleFilter] = useState("VF");
-  const [eventDetails, setEventDetails] = useState<Result>(
-    (eventData as Result) || {}
+  const [eventDetails, setEventDetails] = useState<EventData>(
+    (eventData as EventData) || {}
   );
   const {
     name,
@@ -137,36 +147,32 @@ export const AdminToolsScreen = (props: AdminToolsScreenProps) => {
   const { mutateAsync: createEvent, isLoading: createEventLoading } =
     useCreateEvent();
 
-  console.log(
-    start_date,
-    "-----------------event detail start date------------------"
-  );
-  console.log(
-    end_date,
-    "-----------------event detail end date------------------"
-  );
-  useEffect(() => {
-    LogBox.ignoreAllLogs();
-    // requestLocationPermission();
-    setEventDetails({ ...eventDetails, start_date: startDateValue.toString() });
-  }, [startDateValue, endDateValue]);
+  // useEffect(() => {
+  //   LogBox.ignoreAllLogs();
+  //   // requestLocationPermission();
+  //   setEventDetails({ ...eventDetails, start_date: startDateValue.toString() });
+  // }, [startDateValue, endDateValue]);
 
-  useEffect(() => {
-    if (!isCreateEvent) {
-      refetch();
-      if (eventData) {
-        setEventDetails(eventData);
-        setEventImageDisplay(eventData?.event_image);
-        setEventImage(eventData?.event_image_id);
-      }
-    } else {
-      setEventDetails({
-        ...eventDetails,
-        start_date: new Date().toString(),
-        end_date: new Date().toString(),
-      });
-    }
-  }, [eventData]);
+  // useEffect(() => {
+  //   if (!isCreateEvent) {
+  //     refetch();
+  //     if (eventData) {
+  //       setEventDetails(eventData);
+  //       if (eventData.event_image) {
+  //         setEventImageDisplay(eventData.event_image);
+  //       }
+  //       if (eventData.event_image_id) {
+  //         setEventImage(eventData.event_image_id);
+  //       }
+  //     }
+  //   } else {
+  //     setEventDetails({
+  //       ...eventDetails,
+  //       start_date: startDate,
+  //       end_date: isEndDateVisible ? endDate : undefined,
+  //     });
+  //   }
+  // }, [eventData]);
 
   const requestLocationPermission = async () => {
     GetLocation.getCurrentPosition({
@@ -235,29 +241,29 @@ export const AdminToolsScreen = (props: AdminToolsScreenProps) => {
   };
 
   const onConfirmStartDateTime = (startDate: Date) => {
-    setEventDetails({ ...eventDetails, start_date: startDate.toString() });
-    setStartDateValue(startDate);
+    // setEventDetails({ ...eventDetails, start_date: startDate.toString() });
+    setStartDate(DateTime.fromJSDate(startDate));
     datePickerRefStart.current?.onOpenModal("start");
   };
 
   const onConfirmEndDateTime = (endDate: Date) => {
-    setEventDetails({ ...eventDetails, end_date: endDate.toString() });
-    setEndDateValue(endDate);
+    // setEventDetails({ ...eventDetails, end_date: endDate.toString() });
+    setEndDate(DateTime.fromJSDate(endDate));
     datePickerRefend.current?.onOpenModal("end");
   };
 
-  const getDate = (date = new Date().toString()) => {
-    return `${moment(date).format("ddd, MMM DD • hh:mm A")}`;
-  };
+  // const getDate = (date: Date) => {
+  //   return DateTime.fromJSDate(date).format("ddd, MMM DD • hh:mm A");
+  // };
 
   const checkValidation = () => {
     return !(
-      name &&
+      (name && startDate && lat && long)
       // tickets?.length &&
-      address &&
-      full_address &&
-      about &&
-      !!eventImageDisplay
+      // address &&
+      // full_address &&
+      // about &&
+      // !!eventImageDisplay
     );
   };
 
@@ -277,10 +283,12 @@ export const AdminToolsScreen = (props: AdminToolsScreenProps) => {
     const res = await createEvent({
       bodyParams: {
         ...eventDetails,
+        start_date: startDate,
+        end_date: endDate,
         tickets: ticketArray,
-        eventImage,
-        latitude: lat?.toString(),
-        longitude: long?.toString(),
+        eventImage: eventImage ? eventImage : undefined,
+        latitude: lat,
+        longitude: long,
         type: setFilter,
       },
     });
@@ -311,7 +319,7 @@ export const AdminToolsScreen = (props: AdminToolsScreenProps) => {
     request = { ...request, startDate: start_date.toString() };
     // }
     // if (end_date !== eventData?.end_date) {
-    request = { ...request, endDate: end_date.toString() };
+    request = { ...request, endDate: end_date?.toString() };
     // }
     // if (email_confirmation_body !== eventData?.email_confirmation_body) {
     request = { ...request, emailConfirmationBody: email_confirmation_body };
@@ -578,18 +586,27 @@ export const AdminToolsScreen = (props: AdminToolsScreenProps) => {
                 </View>
                 <TouchableOpacity
                   activeOpacity={0.8}
-                  onPress={() =>
-                    datePickerRefStart.current?.onOpenModal("start")
-                  }
+                  onPress={() => setStartDatePickerVisible(true)}
                   style={styles.margin}
                 >
                   <Text style={styles.time}>Start Date</Text>
-                  <Text style={styles.time}>{`- ${moment(start_date).format(
-                    "MMM DD YYYY (hh:mm A)"
-                  )}`}</Text>
+                  <Text style={styles.time}>
+                    {startDate.toLocaleString(DateTime.DATETIME_MED)}
+                  </Text>
                 </TouchableOpacity>
+                <DateTimePickerModal
+                  isVisible={isStartDatePickerVisible}
+                  date={startDate.toJSDate()}
+                  mode="datetime"
+                  onConfirm={(date) => {
+                    setStartDate(DateTime.fromJSDate(date));
+                    setStartDatePickerVisible(false);
+                  }}
+                  onCancel={() => setStartDatePickerVisible(false)}
+                />
               </View>
-              <View style={styles.row}>
+              {/* <Text>Add end date and time</Text> */}
+              {/* <View style={styles.row}>
                 <View style={styles.circularView}>
                   <ImageComponent
                     source={calendarTime}
@@ -602,17 +619,16 @@ export const AdminToolsScreen = (props: AdminToolsScreenProps) => {
                   style={styles.margin}
                 >
                   <Text style={styles.time}>End Date</Text>
-                  <Text style={styles.time}>{`- ${moment(end_date).format(
-                    "MMM DD YYYY (hh:mm A)"
-                  )}`}</Text>
+                  <Text style={styles.time}>{endDate.toLocaleString(DateTime.DATETIME_MED)}</Text>
                 </TouchableOpacity>
-              </View>
+              </View> */}
               <View style={[styles.row, styles.center]}>
                 <View style={[styles.circularView, styles.yellow]}>
                   <ImageComponent source={pinWhite} style={styles.pinWhite} />
                 </View>
                 <SizedBox width={normalScale(8)} />
-                <View>
+
+                {/*<View>
                   <Input
                     placeholder={strings.enterVenue}
                     inputStyle={styles.textStyle}
@@ -620,62 +636,68 @@ export const AdminToolsScreen = (props: AdminToolsScreenProps) => {
                     onChangeText={(text) => handleText(text, "address")}
                     height={verticalScale(40)}
                   />
-                  <SizedBox height={verticalScale(8)} />
-                  {/* <Input
+                  <SizedBox height={verticalScale(8)} /> */}
+                {/* <Input
                 placeholder={strings.enterAddress}
                 inputStyle={styles.textStyle}
                 value={full_address}
                 onChangeText={text => handleText(text, 'full_address')}
                 height={verticalScale(40)}
               /> */}
-                  <View style={{ width: width - 100 }}>
-                    <GooglePlacesAutocomplete
-                      styles={{
-                        textInput: {
-                          backgroundColor: "#E8E8E8",
-                          height: 35,
-                          borderRadius: 10,
-                          color: "black",
-                          fontSize: 14,
-                          borderColor: theme.colors.black,
-                          borderWidth: theme.borderWidth.borderWidth1,
-                          placeholderTextColor: theme.colors.black,
-                        },
-                        listView: {
-                          color: "black", //To see where exactly the list is
-                          zIndex: 10000000, //To popover the component outwards
-                          // position: 'absolute',
-                          // top: 45
-                        },
-                        predefinedPlacesDescription: {
-                          color: "black",
-                        },
-                        description: {
-                          color: "black",
-                          fontSize: 14,
-                        },
-                      }}
-                      listViewDisplayed={false}
-                      textInputProps={{
-                        placeholderTextColor: "gray",
-                      }}
-                      placeholder="where is this offer located?"
-                      GooglePlacesDetailsQuery={{ fields: "geometry" }}
-                      fetchDetails={true}
-                      onPress={(data: any, details = null) => {
-                        setEventDetails({
-                          ...eventDetails,
-                          full_address: data.description,
-                          lat: details?.geometry?.location.lat,
-                          long: details?.geometry?.location.lng,
-                        });
-                      }}
-                      query={{
-                        key: process.env.GOOGLE_KEY, // client
-                      }}
-                      currentLocationLabel="Current location"
-                    />
-                  </View>
+                <View style={{ width: width - 100 }}>
+                  <GooglePlacesAutocomplete
+                    styles={{
+                      textInput: {
+                        backgroundColor: "#E8E8E8",
+                        height: 35,
+                        borderRadius: 10,
+                        color: "black",
+                        fontSize: 14,
+                        borderColor: theme.colors.black,
+                        borderWidth: theme.borderWidth.borderWidth1,
+                        placeholderTextColor: theme.colors.black,
+                      },
+                      listView: {
+                        color: "black", //To see where exactly the list is
+                        zIndex: 10000000, //To popover the component outwards
+                        // position: 'absolute',
+                        // top: 45
+                      },
+                      predefinedPlacesDescription: {
+                        color: "black",
+                      },
+                      description: {
+                        color: "black",
+                        fontSize: 14,
+                      },
+                    }}
+                    listViewDisplayed={false}
+                    textInputProps={{
+                      placeholderTextColor: "gray",
+                    }}
+                    placeholder="where is this offer located?"
+                    GooglePlacesDetailsQuery={{ fields: "geometry" }}
+                    fetchDetails={true}
+                    onPress={(data: any, details) => {
+                      LOG.debug(
+                        "GooglePlacesAutocomplete",
+                        details?.geometry.location
+                      );
+                      // TODO Handle details is null or doesn't have geometry set
+                      setEventDetails({
+                        ...eventDetails,
+                        full_address: data.description,
+                        lat: details!.geometry.location.lat,
+                        long: details!.geometry.location.lng,
+                      });
+                    }}
+                    query={{
+                      key: process.env.GOOGLE_API_KEY, // client
+                      language: "en",
+                    }}
+                    currentLocationLabel="Current location"
+                  />
+                  {/* </View> */}
                 </View>
               </View>
 
@@ -700,9 +722,9 @@ export const AdminToolsScreen = (props: AdminToolsScreenProps) => {
               <View>
                 {tickets?.map((ele, index) => (
                   <View key={ele?.price.toString()} style={styles.rowOnly}>
-                    <Text style={styles.ticket}>{`${ele?.name} - ${
+                    {/* <Text style={styles.ticket}>{`${ele?.name} - ${
                       ele?.price
-                    } - (ends ${getDate(ele?.end_date)})`}</Text>
+                    } - (ends ${getDate(ele?.end_date)})`}</Text> */}
                     <TouchableOpacity
                       onPress={() => openEditTicketModal(index)}
                       activeOpacity={0.8}

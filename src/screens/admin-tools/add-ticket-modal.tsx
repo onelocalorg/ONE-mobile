@@ -26,7 +26,7 @@ import { normalScale, verticalScale } from "~/theme/device/normalize";
 import { ButtonComponent } from "~/components/button-component";
 import {
   Result,
-  Ticket,
+  EventData,
 } from "~/network/hooks/home-service-hooks/use-event-lists";
 import { useCreateTicket } from "~/network/hooks/home-service-hooks/use-create-ticket";
 import { Loader } from "~/components/loader";
@@ -36,7 +36,7 @@ import { useFocusEffect } from "@react-navigation/native";
 
 interface AddTicketModalCompProps {
   eventDetails: Result;
-  eventId: string;
+  eventId: strinEventData;
   ticketData: Ticket;
   isEdit: boolean;
   onSuccessfulTicketCreation?: (ticketDetails: TicketBodyParamProps) => void;

@@ -2,6 +2,7 @@ import { apiConstants } from "~/network/constant";
 import { API } from "..";
 import { getApiResponse } from "~/network/utils/get-api-response";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { DateTime } from "luxon";
 
 interface EventProps {
   queryParams: {
@@ -200,17 +201,17 @@ export const onUpdateEvent = async (props: UpdateEventProps) => {
 interface CreateEventProps {
   bodyParams: {
     name: string;
-    start_date: string;
-    end_date: string;
-    address: string;
-    email_confirmation_body: string;
+    start_date: DateTime;
+    end_date?: DateTime;
+    address?: string;
+    email_confirmation_body?: string;
     tickets: string[];
-    full_address: string;
-    eventImage: string;
+    full_address?: string;
+    eventImage?: string;
     about?: string;
-    latitude?: string;
-    longitude?: string;
-    type: string;
+    latitude: number;
+    longitude: number;
+    type?: string;
   };
 }
 
@@ -237,29 +238,29 @@ export const onCreateEvent = async (props: CreateEventProps) => {
   if (tickets?.length) {
     attachments = {
       name: name,
-      start_date: new Date(start_date).toISOString(),
-      end_date: new Date(end_date).toISOString(),
+      start_date: start_date.toISO(),
+      end_date: end_date?.toISO(),
       about: about,
       address: address,
       full_address: full_address,
       email_confirmation_body: email_confirmation_body,
       tickets: tickets,
-      event_lat: latitude,
-      event_lng: longitude,
+      event_lat: latitude.toString(),
+      event_lng: longitude.toString(),
       event_type: type,
       event_image: eventImage,
     };
   } else {
     attachments = {
       name: name,
-      start_date: new Date(start_date).toISOString(),
-      end_date: new Date(end_date).toISOString(),
+      start_date: start_date.toISO(),
+      end_date: end_date?.toISO(),
       about: about,
       address: address,
       full_address: full_address,
       email_confirmation_body: email_confirmation_body,
-      event_lat: latitude,
-      event_lng: longitude,
+      event_lat: latitude.toString(),
+      event_lng: longitude.toString(),
       event_type: type,
       event_image: eventImage,
     };

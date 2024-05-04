@@ -41,7 +41,7 @@ import {
 } from "@react-navigation/native";
 import { navigations } from "~/config/app-navigation/constant";
 import {
-  Result,
+  EventData,
   useEventLists,
 } from "~/network/hooks/home-service-hooks/use-event-lists";
 import { Loader } from "~/components/loader";
@@ -213,7 +213,7 @@ export const EventListScreen = (props: EventListScreenProps) => {
     [setOpen, setRange, range?.startDate, range?.endDate]
   );
 
-  const onNavigate = (item: Result) => {
+  const onNavigate = (item: EventData) => {
     console.log(route.name);
     navigation?.navigate(navigations.EVENT_DETAIL, { id: item?.id });
   };
@@ -239,7 +239,7 @@ export const EventListScreen = (props: EventListScreenProps) => {
     }
   };
 
-  const renderItem: ListRenderItem<Result> = ({ item }) => {
+  const renderItem: ListRenderItem<EventData> = ({ item }) => {
     return (
       <View>
         {/* Header */}

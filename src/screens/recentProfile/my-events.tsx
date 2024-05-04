@@ -5,7 +5,7 @@ import { createStyleSheet } from "./style";
 import { ListRenderItem, ScrollView, View } from "react-native";
 import { EventList } from "~/components/event-list";
 import {
-  Result,
+  EventData,
   useEventLists,
 } from "~/network/hooks/home-service-hooks/use-event-lists";
 import { FlatListComponent } from "~/components/flatlist-component";
@@ -27,7 +27,7 @@ export const RecentMyEvents = (props: RecentMyEventsProps) => {
   const styles = createStyleSheet(theme);
   const { strings } = useStringsAndLabels();
   const { userId, navigation } = props || {};
-  const [events, setEvents] = useState<Result[]>([]);
+  const [events, setEvents] = useState<EventData[]>([]);
   const [totalPages, setTotalPages] = useState(0);
   const { mutateAsync, isLoading } = useEventLists();
   const [page, setPage] = useState(1);
@@ -50,7 +50,7 @@ export const RecentMyEvents = (props: RecentMyEventsProps) => {
     setPage(page + 1);
   };
 
-  const renderItem: ListRenderItem<Result> = ({ item }) => {
+  const renderItem: ListRenderItem<EventData> = ({ item }) => {
     const { name } = item || {};
 
     return (
@@ -58,7 +58,7 @@ export const RecentMyEvents = (props: RecentMyEventsProps) => {
     );
   };
 
-  const onNavigate = (item: Result) => {
+  const onNavigate = (item: EventData) => {
     navigation.navigate(navigations.EVENT_DETAIL, { id: item?.id });
   };
 
