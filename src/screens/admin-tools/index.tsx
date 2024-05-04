@@ -539,7 +539,7 @@ export const AdminToolsScreen = (props: AdminToolsScreenProps) => {
                 onPressPill={onNavigate}
               />
             )}
-            <View style={styles.toggleContainer}>
+            {/* <View style={styles.toggleContainer}>
               <Text style={styles.villageLblTwo}>Village Friendly </Text>
               <View style={styles.switchToggle}>
                 {Platform.OS === "ios" ? (
@@ -562,7 +562,7 @@ export const AdminToolsScreen = (props: AdminToolsScreenProps) => {
                 )}
               </View>
               <Text style={styles.villageLblTwo}> Adult Oriented</Text>
-            </View>
+            </View> */}
             <View style={styles.innerContainer}>
               <Input
                 onChangeText={(text) => handleText(text, "name")}
