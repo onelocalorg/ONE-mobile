@@ -48,12 +48,12 @@ import {
   DateRangePicker,
 } from "~/components/date-range-picker";
 import { launchImageLibrary } from "react-native-image-picker";
-import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
 import Toast from "react-native-simple-toast";
 import { Loader } from "~/components/loader";
 import { navigations } from "~/config/app-navigation/constant";
 import { FlatListComponent } from "~/components/flatlist-component";
 import { Pill } from "~/components/pill";
+import { LocationAutocomplete } from "~/components/location-autocomplete/LocationAutocomplete";
 
 interface CreatePostRequestScreenProps {
   navigation?: NavigationContainerRef<ParamListBase>;
@@ -620,51 +620,16 @@ export const CreatePostRequestScreen = (
               <View style={styles.createPostContTwo}>
                 <Text style={styles.textTwoWhere}>Where</Text>
 
-                {/* <View style={styles.postInputTwo}> */}
-                <GooglePlacesAutocomplete
-                  styles={{
-                    textInput: {
-                      backgroundColor: "#E8E8E8",
-                      height: 35,
-                      borderRadius: 10,
-                      color: "black",
-                      fontSize: 14,
-                      borderColor: theme.colors.black,
-                      borderWidth: theme.borderWidth.borderWidth1,
-                    },
-                    predefinedPlacesDescription: {
-                      color: "black",
-                    },
-                    description: {
-                      color: "black",
-                      fontSize: 14,
-                    },
-                  }}
-                  textInputProps={{
-                    placeholderTextColor: "gray",
-                  }}
-                  placeholder="where do you need this?"
-                  GooglePlacesDetailsQuery={{ fields: "geometry" }}
-                  fetchDetails={true}
-                  onPress={(data: any, details = null) => {
+                <LocationAutocomplete
+                  onPress={(data: any, details: any) => {
                     createPostwhereAddress(data.description);
                     setUserLocation(details?.geometry?.location);
-                    console.log(data);
-                    console.log(details); // description
                   }}
-                  query={{
-                    key: process.env.GOOGLE_KEY, // client
-                  }}
-                  // keepResultsAfterBlur={true}
-                  // currentLocation={true}
-                  currentLocationLabel="Current location"
-                />
-                <ImageComponent
-                  resizeMode="cover"
-                  source={pin}
-                  style={styles.createImgTwo}
-                ></ImageComponent>
+                >
+                  Where is this offer located?
+                </LocationAutocomplete>
               </View>
+
               <View style={styles.postCont}>
                 <Text style={styles.textOne}>Post Body</Text>
                 <TextInput

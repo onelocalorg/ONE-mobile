@@ -83,8 +83,8 @@ export const HomeScreen = (props: HomeScreenProps) => {
   const { navigation } = props || {};
   const [searchQuery, setSearchQuery] = useState("");
   const [ProfileData, setUserProfile]: any = useState("");
-  const [userList, recentlyJoinUser] = useState([]);
-  var [postList, postListData]: any = useState([]);
+  const [userList, setUserList] = useState([]);
+  var [postList, setPostList]: any = useState([]);
   const [offerModal, CreateOfferModal] = useState(false);
   var [location, setUserLocation]: any = useState();
   const [isLoading, LodingData] = useState(false);
@@ -144,7 +144,7 @@ export const HomeScreen = (props: HomeScreenProps) => {
         }
       }
       setPage(1);
-      postListData([]);
+      setPostList([]);
       setSearchQuery("");
     }, [range?.startDate, range?.endDate])
   );
@@ -276,21 +276,26 @@ export const HomeScreen = (props: HomeScreenProps) => {
   };
 
   async function postListAPI(location: any) {
+    const BOULDER_LON = -105.2705;
+    const BOULDER_LAT = 40.015;
+    const DEFAULT_ZOOM = 12;
     if (page === 1) {
       LodingData(true);
     }
     const token = await AsyncStorage.getItem("token");
     var data: any = {
-      latitude: location.latitude,
-      longitude: location.longitude,
-      zoom_level: location.zoomLevel,
+      latitude: BOULDER_LAT,
+      longitude: BOULDER_LON,
+      zoom_level: DEFAULT_ZOOM,
       device_type: Platform.OS,
       searchtext: searchQuery,
     };
+
     console.log("----------------post Location----------------", data);
 
     var URL = process.env.API_URL + "/v1/posts/list?limit=5&page=" + page;
     LOG.info(URL);
+    LOG.info(data);
     try {
       const response = await fetch(URL, {
         method: "post",
@@ -305,9 +310,9 @@ export const HomeScreen = (props: HomeScreenProps) => {
       LOG.debug("postListAPI: ", dataItem?.data);
       setRefresh(false);
       if (page == 1) {
-        postListData(dataItem?.data?.results);
+        setPostList(dataItem?.data?.results);
       } else {
-        postListData([...postList, ...dataItem?.data?.results]);
+        setPostList([...postList, ...dataItem?.data?.results]);
       }
       onPageLoad(false);
       isMoreDataLoad(true);
@@ -348,7 +353,7 @@ export const HomeScreen = (props: HomeScreenProps) => {
           ...markers[gratisIndex],
           gratis: dataItem?.data?.data?.postGratis,
         };
-        postListData(markers);
+        setPostList(markers);
       }
       if (dataItem?.success === false) {
         Toast.show(dataItem?.message, Toast.LONG, {
@@ -393,7 +398,7 @@ export const HomeScreen = (props: HomeScreenProps) => {
         }
       );
       const dataItem = await response.json();
-      recentlyJoinUser(dataItem?.data);
+      setUserList(dataItem?.data);
     } catch (error) {
       console.error(error);
     }
@@ -728,7 +733,7 @@ export const HomeScreen = (props: HomeScreenProps) => {
     markers[post_index]["gratis"] = setGraisTwo;
     markers[post_index]["comment"] = commentTwo;
 
-    postListData(markers);
+    setPostList(markers);
   };
 
   const onCommentListModal = (item: any, post_index: any) => {

@@ -45,7 +45,6 @@ import {
   DateRangePicker,
 } from "~/components/date-range-picker";
 import { launchImageLibrary } from "react-native-image-picker";
-import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
 import Toast from "react-native-simple-toast";
 import { Loader } from "~/components/loader";
 import { navigations } from "~/config/app-navigation/constant";

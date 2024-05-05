@@ -4,6 +4,7 @@ import { useAppTheme } from "~/app-hooks/use-app-theme";
 import React, { useEffect, useRef, useState } from "react";
 import { createStyleSheet } from "./style";
 import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
+import { LocationAutocomplete } from "~/components/location-autocomplete/LocationAutocomplete";
 import {
   Alert,
   Keyboard,
@@ -69,7 +70,6 @@ import { DatePickerModal } from "react-native-paper-dates";
 import Toast from "react-native-simple-toast";
 import { Switch } from "react-native";
 import { AddPayoutExpenseModel } from "./addPayoutExpense-modal";
-import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
 import { GetAdmintoolsDropDownScreen } from "./getAdmintoolsDropdown";
 import { ScrollView } from "react-native-gesture-handler";
 import { width } from "~/theme/device/device";
@@ -642,58 +642,19 @@ export const AdminToolsScreen = (props: AdminToolsScreenProps) => {
                 height={verticalScale(40)}
               /> */}
                 <View style={{ width: width - 100 }}>
-                  <GooglePlacesAutocomplete
-                    styles={{
-                      textInput: {
-                        backgroundColor: "#E8E8E8",
-                        height: 35,
-                        borderRadius: 10,
-                        color: "black",
-                        fontSize: 14,
-                        borderColor: theme.colors.black,
-                        borderWidth: theme.borderWidth.borderWidth1,
-                        placeholderTextColor: theme.colors.black,
-                      },
-                      listView: {
-                        color: "black", //To see where exactly the list is
-                        zIndex: 10000000, //To popover the component outwards
-                        // position: 'absolute',
-                        // top: 45
-                      },
-                      predefinedPlacesDescription: {
-                        color: "black",
-                      },
-                      description: {
-                        color: "black",
-                        fontSize: 14,
-                      },
-                    }}
-                    listViewDisplayed={false}
-                    textInputProps={{
-                      placeholderTextColor: "gray",
-                    }}
-                    placeholder="where is this offer located?"
-                    GooglePlacesDetailsQuery={{ fields: "geometry" }}
-                    fetchDetails={true}
-                    onPress={(data: any, details) => {
-                      LOG.debug(
-                        "GooglePlacesAutocomplete",
-                        details?.geometry.location
-                      );
-                      // TODO Handle details is null or doesn't have geometry set
+                  <LocationAutocomplete
+                    onPress={(data: any, details: any) =>
                       setEventDetails({
                         ...eventDetails,
                         full_address: data.description,
                         lat: details!.geometry.location.lat,
                         long: details!.geometry.location.lng,
-                      });
-                    }}
-                    query={{
-                      key: process.env.GOOGLE_API_KEY, // client
-                      language: "en",
-                    }}
-                    currentLocationLabel="Current location"
-                  />
+                      })
+                    }
+                  >
+                    Where will the event be held?
+                  </LocationAutocomplete>
+
                   {/* </View> */}
                 </View>
               </View>

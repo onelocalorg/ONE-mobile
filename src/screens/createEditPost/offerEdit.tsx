@@ -49,7 +49,6 @@ import {
   DateRangePicker,
 } from "~/components/date-range-picker";
 import { launchImageLibrary } from "react-native-image-picker";
-import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
 import Toast from "react-native-simple-toast";
 import { Loader } from "~/components/loader";
 import { navigations } from "~/config/app-navigation/constant";
@@ -66,6 +65,7 @@ import {
   useUserProfile,
   userProfileParsedData,
 } from "~/network/hooks/user-service-hooks/use-user-profile";
+import { LocationAutocomplete } from "~/components/location-autocomplete/LocationAutocomplete";
 
 interface EditPostOfferScreenProps {
   navigation?: NavigationContainerRef<ParamListBase>;
@@ -783,52 +783,18 @@ export const EditPostOfferScreen = (props: EditPostOfferScreenProps) => {
 
                 {/* <View style={styles.postInputTwo}> */}
 
-                <GooglePlacesAutocomplete
-                  styles={{
-                    textInput: {
-                      backgroundColor: "#E8E8E8",
-                      height: 35,
-                      borderRadius: 10,
-                      color: "black",
-                      fontSize: 14,
-                      borderColor: theme.colors.black,
-                      borderWidth: theme.borderWidth.borderWidth1,
-                    },
-                    listView: {
-                      color: "black", //To see where exactly the list is
-                      zIndex: 10000000, //To popover the component outwards
-                      // position: 'absolute',
-                      // top: 45
-                    },
-                    predefinedPlacesDescription: {
-                      color: "black",
-                    },
-                    description: {
-                      color: "black",
-                      fontSize: 14,
-                    },
-                  }}
-                  listViewDisplayed={false}
-                  textInputProps={{
-                    placeholderTextColor: "gray",
-                  }}
-                  GooglePlacesDetailsQuery={{ fields: "geometry" }}
-                  fetchDetails={true}
-                  placeholder="where is this offer located?"
-                  onPress={(data: any, details = null) => {
+                <LocationAutocomplete
+                  onPress={(data: any, details: any) => {
                     createPostwhereAddress(data.description);
                     setLatitude(details?.geometry?.location?.lat);
                     setLongitude(details?.geometry?.location?.lng);
                     console.log(data);
                     console.log(details); // description
                   }}
-                  query={{
-                    key: process.env.GOOGLE_KEY, // client
-                  }}
-                  // keepResultsAfterBlur={true}
-                  // currentLocation={true}
-                  currentLocationLabel="Current location"
-                />
+                >
+                  Where is this offer located?
+                </LocationAutocomplete>
+
                 <ImageComponent
                   resizeMode="cover"
                   source={pin}
