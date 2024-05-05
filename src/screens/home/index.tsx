@@ -1,10 +1,13 @@
-import { LOG } from "~/config";
-import React, { useCallback, useEffect, useRef, useState } from "react";
-import { createStyleSheet } from "./style";
-import { useAppTheme } from "~/app-hooks/use-app-theme";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import {
+  NavigationContainerRef,
+  ParamListBase,
+  useFocusEffect,
+} from "@react-navigation/native";
+import React, { useCallback, useEffect, useState } from "react";
 import {
   ActivityIndicator,
-  AppState,
+  Alert,
   FlatList,
   Image,
   Keyboard,
@@ -12,59 +15,45 @@ import {
   ListRenderItem,
   LogBox,
   Modal,
-  PermissionsAndroid,
   Platform,
   Text,
   TextInput,
   TouchableOpacity,
   View,
 } from "react-native";
+import {
+  isLocationEnabled,
+  promptForEnableLocationIfNeeded,
+} from "react-native-android-location-enabler";
+import { ScrollView } from "react-native-gesture-handler";
+import GetLocation from "react-native-get-location";
+import Toast from "react-native-simple-toast";
+import GestureRecognizer from "react-native-swipe-gestures";
+import { useDispatch, useSelector } from "react-redux";
+import { useAppTheme } from "~/app-hooks/use-app-theme";
 import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
-import { ImageComponent } from "~/components/image-component";
 import {
   Gratis,
-  Search,
   buttonArrowGreen,
   comment,
   dummy,
   gratitudeBlack,
   greenImage,
   minus,
-  onelogo,
   pin,
   plus,
   postCalender,
 } from "~/assets/images";
-import { Navbar } from "~/components/navbar/Navbar";
-import { useDispatch, useSelector } from "react-redux";
-import { StoreType } from "~/network/reducers/store";
-import {
-  UserProfileState,
-  onSetUser,
-} from "~/network/reducers/user-profile-reducer";
-import {
-  useUserProfile,
-  userProfileParsedData,
-} from "~/network/hooks/user-service-hooks/use-user-profile";
-import {
-  NavigationContainerRef,
-  ParamListBase,
-  useFocusEffect,
-} from "@react-navigation/native";
-import { navigations } from "~/config/app-navigation/constant";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { ScrollView } from "react-native-gesture-handler";
-import GetLocation from "react-native-get-location";
+import { ImageComponent } from "~/components/image-component";
 import { Loader } from "~/components/loader";
-import Toast from "react-native-simple-toast";
-import GestureRecognizer from "react-native-swipe-gestures";
-import { Alert } from "react-native";
+import { Navbar } from "~/components/navbar/Navbar";
+import { LOG } from "~/config";
+import { navigations } from "~/config/app-navigation/constant";
 import { getData, setData } from "~/network/constant";
-import { CommentList } from "./commetList";
-import {
-  isLocationEnabled,
-  promptForEnableLocationIfNeeded,
-} from "react-native-android-location-enabler";
+import { useUserProfile } from "~/network/hooks/user-service-hooks/use-user-profile";
+import { StoreType } from "~/network/reducers/store";
+import { UserProfileState } from "~/network/reducers/user-profile-reducer";
+import { createStyleSheet } from "./style";
 // import Geolocation from "@react-native-community/geolocation";
 
 interface Range {
@@ -653,11 +642,13 @@ export const HomeScreen = (props: HomeScreenProps) => {
             </TouchableOpacity>
           </View>
           <Text style={styles.postDes}>{item?.content}</Text>
-          <ImageComponent
-            resizeMode="cover"
-            source={{ uri: item.image[0] }}
-            style={styles.userPost}
-          ></ImageComponent>
+          {item.image?.length > 0 ? (
+            <ImageComponent
+              resizeMode="cover"
+              source={{ uri: item.image[0] }}
+              style={styles.userPost}
+            ></ImageComponent>
+          ) : null}
           <View style={styles.postDetailCont}>
             <Text style={styles.postDetailTitle}>What:</Text>
             <ImageComponent
