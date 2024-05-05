@@ -38,18 +38,25 @@ target 'OneBoulder' do
     # An absolute path to your application root.
     :app_path => "#{Pod::Config.instance.installation_root}/.."
   )
+ # React Native Maps dependencies
 
-  # React Native Maps dependencies
-
-  rn_maps_path = '../node_modules/react-native-maps'
-  pod 'react-native-google-maps', :path => rn_maps_path
+ rn_maps_path = '../node_modules/react-native-maps'
+ pod 'react-native-google-maps', :path => rn_maps_path
 
   target 'OneBoulderTests' do
     inherit! :complete
     # Pods for testing
   end
 
+  $RNMapboxMapsVersion = '= 11.0.0'
+
+  pre_install do |installer|
+    $RNMapboxMaps.pre_install(installer)
+  end
+  
   post_install do |installer|
+    $RNMapboxMaps.post_install(installer)
+
     # https://github.com/facebook/react-native/blob/main/packages/react-native/scripts/react_native_pods.rb#L197-L202
     react_native_post_install(
       installer,
