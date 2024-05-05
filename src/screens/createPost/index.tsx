@@ -1,63 +1,45 @@
-import React, { useEffect, useRef, useState } from "react";
-import { createStyleSheet } from "./style";
-import { useAppTheme } from "~/app-hooks/use-app-theme";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
-  FlatList,
-  Image,
+  NavigationContainerRef,
+  ParamListBase,
+} from "@react-navigation/native";
+import React, { useEffect, useRef, useState } from "react";
+import {
   Keyboard,
   LogBox,
+  ScrollView,
   Text,
-  TextInput,
   TouchableOpacity,
   View,
 } from "react-native";
+import { launchImageLibrary } from "react-native-image-picker";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import { useSelector } from "react-redux";
+import { useAppTheme } from "~/app-hooks/use-app-theme";
 import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
-import { ImageComponent } from "~/components/image-component";
 import {
-  arrowDown,
   arrowLeft,
-  bell,
   blackOffer,
-  buttonArrowGreen,
   dummy,
   gratisGreen,
   gratitudeBlack,
   greenOffer,
   onelogo,
-  pin,
-  postCalender,
   request,
   requestGreen,
 } from "~/assets/images";
-import {
-  NavigationContainerRef,
-  ParamListBase,
-} from "@react-navigation/native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import moment from "moment";
-import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
-import GetLocation from "react-native-get-location";
-import Popover, { PopoverPlacement, Rect } from "react-native-popover-view";
-import { SizedBox } from "~/components/sized-box";
-import { verticalScale } from "~/theme/device/normalize";
-import {
-  DatePickerRefProps,
-  DateRangePicker,
-} from "~/components/date-range-picker";
-import { launchImageLibrary } from "react-native-image-picker";
-import Toast from "react-native-simple-toast";
+import { DatePickerRefProps } from "~/components/date-range-picker";
+import { ImageComponent } from "~/components/image-component";
 import { Loader } from "~/components/loader";
 import { navigations } from "~/config/app-navigation/constant";
-import { TabComponent } from "~/components/tab-component";
-import { ScrollView } from "react-native";
-import { CreatePostRequestScreen } from "./request";
-import { CreatePostGratisScreen } from "./gratis";
-import { CreatePostOfferScreen } from "./offer";
-import { useSelector } from "react-redux";
+import { getData } from "~/network/constant";
+import { useUserProfile } from "~/network/hooks/user-service-hooks/use-user-profile";
 import { StoreType } from "~/network/reducers/store";
 import { UserProfileState } from "~/network/reducers/user-profile-reducer";
-import { useUserProfile } from "~/network/hooks/user-service-hooks/use-user-profile";
-import { getData } from "~/network/constant";
+import { CreatePostGratisScreen } from "./gratis";
+import { CreatePostOfferScreen } from "./offer";
+import { CreatePostRequestScreen } from "./request";
+import { createStyleSheet } from "./style";
 
 interface CreatePostScreenProps {
   navigation?: NavigationContainerRef<ParamListBase>;

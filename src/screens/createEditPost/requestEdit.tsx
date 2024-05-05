@@ -1,9 +1,12 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import {
+  NavigationContainerRef,
+  ParamListBase,
+} from "@react-navigation/native";
+import moment from "moment";
 import React, { useEffect, useRef, useState } from "react";
-import { createStyleSheet } from "./style";
-import { useAppTheme } from "~/app-hooks/use-app-theme";
 import {
   FlatList,
-  Image,
   Keyboard,
   ListRenderItem,
   LogBox,
@@ -13,52 +16,39 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import GetLocation from "react-native-get-location";
+import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
+import { launchImageLibrary } from "react-native-image-picker";
+import Popover, { PopoverPlacement } from "react-native-popover-view";
+import Toast from "react-native-simple-toast";
+import { useSelector } from "react-redux";
+import { useAppTheme } from "~/app-hooks/use-app-theme";
 import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
-import { ImageComponent } from "~/components/image-component";
 import {
   addGreen,
   arrowDown,
   arrowLeft,
-  bell,
-  blackOffer,
   buttonArrowGreen,
   dummy,
-  gratitudeBlack,
-  greenOffer,
-  minus,
   onelogo,
   pin,
-  plus,
   postCalender,
-  request,
   requestGreen,
 } from "~/assets/images";
-import {
-  NavigationContainerRef,
-  ParamListBase,
-} from "@react-navigation/native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import moment from "moment";
-import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
-import GetLocation from "react-native-get-location";
-import Popover, { PopoverPlacement, Rect } from "react-native-popover-view";
-import { SizedBox } from "~/components/sized-box";
-import { verticalScale } from "~/theme/device/normalize";
 import {
   DatePickerRefProps,
   DateRangePicker,
 } from "~/components/date-range-picker";
-import { launchImageLibrary } from "react-native-image-picker";
-import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
-import Toast from "react-native-simple-toast";
-import { Loader } from "~/components/loader";
-import { navigations } from "~/config/app-navigation/constant";
 import { FlatListComponent } from "~/components/flatlist-component";
+import { ImageComponent } from "~/components/image-component";
+import { Loader } from "~/components/loader";
 import { Pill } from "~/components/pill";
-import { useSelector } from "react-redux";
+import { SizedBox } from "~/components/sized-box";
+import { useUserProfile } from "~/network/hooks/user-service-hooks/use-user-profile";
 import { StoreType } from "~/network/reducers/store";
 import { UserProfileState } from "~/network/reducers/user-profile-reducer";
-import { useUserProfile } from "~/network/hooks/user-service-hooks/use-user-profile";
+import { verticalScale } from "~/theme/device/normalize";
+import { createStyleSheet } from "./style";
 
 interface EditPostRequestScreenProps {
   navigation?: NavigationContainerRef<ParamListBase>;
