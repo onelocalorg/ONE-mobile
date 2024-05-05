@@ -459,12 +459,12 @@ export const Map = () => {
     <View style={{ flex: 1 }}>
       <MapView
         style={styles.map}
+        zoomEnabled={true}
+        compassEnabled={true}
         // onRegionDidChange={handleRegionChange}
         // onDidFinishLoadingMap={() => setMapLoaded(true)}
-        logoEnabled={false}
-        scaleBarEnabled={true}
         // ref={mapRef}
-        attributionEnabled={false}
+        // attributionEnabled={false}
         // onCameraChanged={handleCameraChanged}
       >
         <UserLocation />
@@ -473,6 +473,7 @@ export const Map = () => {
           ref={camera}
           centerCoordinate={centerCoordinate}
           zoomLevel={zoomLevel}
+          animationDuration={20}
           // zoomLevel={zoomLevel}
           // maxZoomLevel={14}
           // minZoomLevel={5}
