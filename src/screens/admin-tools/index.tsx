@@ -98,13 +98,11 @@ export const AdminToolsScreen = (props: AdminToolsScreenProps) => {
   const [selectedTicketIndex, setSelectedTicketIndex] = useState(0);
   const [isEdit, setIsEdit] = useState(false);
 
-  const [isStartDatePickerVisible, setStartDatePickerVisible] = useState(false);
   const [startDate, setStartDate] = useState<DateTime>(
     DateTime.now().startOf("hour").plus({ hour: 1 })
   );
-  const [endDate, setEndDate] = useState<DateTime | undefined>();
-  const [isEndDateVisible, setEndDateVisible] = useState(!!endDate);
-  const [isEndDatePickerVisible, setEndDatePickerVisible] = useState(false);
+  const [endDate, setEndDate] = useState(startDate.plus({ hour: 1 }));
+  const [isEndDateActive, setEndDateActive] = useState(false);
 
   const [searchQuery, setSearchQuery] = useState("");
   var [location, setUserLocation]: any = useState();
@@ -130,8 +128,6 @@ export const AdminToolsScreen = (props: AdminToolsScreenProps) => {
     about,
     is_event_owner,
   } = eventDetails || {};
-  const datePickerRefStart: React.Ref<DatePickerRefProps> = useRef(null);
-  const datePickerRefend: React.Ref<DatePickerRefProps> = useRef(null);
   const { user } = useSelector<StoreType, UserProfileState>(
     (state) => state.userProfileReducer
   ) as { user: { id: string; pic: string; city: string } };
@@ -240,22 +236,6 @@ export const AdminToolsScreen = (props: AdminToolsScreenProps) => {
     navigation?.navigate(navigations.CHECK_IN, { eventId: id });
   };
 
-  const onConfirmStartDateTime = (startDate: Date) => {
-    // setEventDetails({ ...eventDetails, start_date: startDate.toString() });
-    setStartDate(DateTime.fromJSDate(startDate));
-    datePickerRefStart.current?.onOpenModal("start");
-  };
-
-  const onConfirmEndDateTime = (endDate: Date) => {
-    // setEventDetails({ ...eventDetails, end_date: endDate.toString() });
-    setEndDate(DateTime.fromJSDate(endDate));
-    datePickerRefend.current?.onOpenModal("end");
-  };
-
-  // const getDate = (date: Date) => {
-  //   return DateTime.fromJSDate(date).format("ddd, MMM DD • hh:mm A");
-  // };
-
   const checkValidation = () => {
     return !(
       (name && startDate && lat && long)
@@ -284,12 +264,12 @@ export const AdminToolsScreen = (props: AdminToolsScreenProps) => {
       bodyParams: {
         ...eventDetails,
         start_date: startDate,
-        end_date: endDate,
+        end_date: isEndDateActive ? endDate : undefined,
         tickets: ticketArray,
         eventImage: eventImage ? eventImage : undefined,
         latitude: lat,
         longitude: long,
-        type: setFilter,
+        // type: setFilter,
       },
     });
     console.log(res);
@@ -461,6 +441,67 @@ export const AdminToolsScreen = (props: AdminToolsScreenProps) => {
     Keyboard.dismiss();
   };
 
+  interface ChooseDateProps {
+    children: string;
+    date: DateTime;
+    setDate: (date: DateTime) => void;
+  }
+  const ChooseDate = ({ children, date, setDate }: ChooseDateProps) => {
+    const [isPickerVisible, setPickerVisible] = useState(false);
+    return (
+      <View style={styles.row}>
+        <View style={styles.circularView}>
+          <ImageComponent source={calendarTime} style={styles.calendarTime} />
+        </View>
+        <TouchableOpacity
+          activeOpacity={0.8}
+          onPress={() => setPickerVisible(true)}
+          style={styles.margin}
+        >
+          <Text style={styles.time}>{children}</Text>
+          <Text style={styles.time}>
+            {date.toLocaleString(DateTime.DATETIME_MED)}
+          </Text>
+        </TouchableOpacity>
+        <DateTimePickerModal
+          isVisible={isPickerVisible}
+          date={date.toJSDate()}
+          mode="datetime"
+          onConfirm={(date) => {
+            setDate(DateTime.fromJSDate(date));
+            setPickerVisible(false);
+          }}
+          onCancel={() => setPickerVisible(false)}
+        />
+      </View>
+    );
+  };
+
+  const ChooseStartAndEndDates = () => (
+    <View>
+      <ChooseDate date={startDate} setDate={setStartDate}>
+        Start date
+      </ChooseDate>
+
+      {isEndDateActive ? (
+        <ChooseDate date={endDate} setDate={setEndDate}>
+          End date
+        </ChooseDate>
+      ) : (
+        <TouchableOpacity
+          activeOpacity={0.3}
+          onPress={() => setEndDateActive(true)}
+          style={{
+            paddingHorizontal: normalScale(4),
+            paddingVertical: verticalScale(4),
+          }}
+        >
+          <Text>+ Add end date and time</Text>
+        </TouchableOpacity>
+      )}
+    </View>
+  );
+
   return (
     <TouchableOpacity
       style={styles.container}
@@ -577,51 +618,7 @@ export const AdminToolsScreen = (props: AdminToolsScreenProps) => {
                 placeholder={strings.enterTitle}
                 value={name}
               />
-              <View style={styles.row}>
-                <View style={styles.circularView}>
-                  <ImageComponent
-                    source={calendarTime}
-                    style={styles.calendarTime}
-                  />
-                </View>
-                <TouchableOpacity
-                  activeOpacity={0.8}
-                  onPress={() => setStartDatePickerVisible(true)}
-                  style={styles.margin}
-                >
-                  <Text style={styles.time}>Start Date</Text>
-                  <Text style={styles.time}>
-                    {startDate.toLocaleString(DateTime.DATETIME_MED)}
-                  </Text>
-                </TouchableOpacity>
-                <DateTimePickerModal
-                  isVisible={isStartDatePickerVisible}
-                  date={startDate.toJSDate()}
-                  mode="datetime"
-                  onConfirm={(date) => {
-                    setStartDate(DateTime.fromJSDate(date));
-                    setStartDatePickerVisible(false);
-                  }}
-                  onCancel={() => setStartDatePickerVisible(false)}
-                />
-              </View>
-              {/* <Text>Add end date and time</Text> */}
-              {/* <View style={styles.row}>
-                <View style={styles.circularView}>
-                  <ImageComponent
-                    source={calendarTime}
-                    style={styles.calendarTime}
-                  />
-                </View>
-                <TouchableOpacity
-                  activeOpacity={0.8}
-                  onPress={() => datePickerRefend.current?.onOpenModal("end")}
-                  style={styles.margin}
-                >
-                  <Text style={styles.time}>End Date</Text>
-                  <Text style={styles.time}>{endDate.toLocaleString(DateTime.DATETIME_MED)}</Text>
-                </TouchableOpacity>
-              </View> */}
+              <ChooseStartAndEndDates />
               <View style={[styles.row, styles.center]}>
                 <View style={[styles.circularView, styles.yellow]}>
                   <ImageComponent source={pinWhite} style={styles.pinWhite} />
@@ -822,16 +819,6 @@ export const AdminToolsScreen = (props: AdminToolsScreenProps) => {
       />
 
       {/* <BreakDownModal ref={addItemRef} id={''} revenue={0} expense={0} profilt={0} payout={0} remainingAmt={0} userId={''}></BreakDownModal> */}
-
-      <DateRangePicker
-        selectStartDate={onConfirmStartDateTime}
-        ref={datePickerRefStart}
-      />
-
-      <DateRangePicker
-        selectEndDate={onConfirmEndDateTime}
-        ref={datePickerRefend}
-      />
 
       {/* <DatePickerModal
           locale="en"
