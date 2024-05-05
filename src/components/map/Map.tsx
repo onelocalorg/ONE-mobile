@@ -462,11 +462,9 @@ export const Map = () => {
         zoomEnabled={true}
         compassEnabled={true}
         pitchEnabled={false}
-        rotateEnabled={false}
         gestureSettings={{
           pinchPanEnabled: false,
           pitchEnabled: false,
-          rotateEnabled: false,
         }}
         // onRegionDidChange={handleRegionChange}
         // onDidFinishLoadingMap={() => setMapLoaded(true)}
