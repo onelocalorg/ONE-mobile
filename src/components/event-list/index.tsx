@@ -60,7 +60,7 @@ export const EventList = (props: EventListProps) => {
         <View style={styles.row}>
           <ImageComponent source={pin} style={styles.pin} />
           <Text numberOfLines={3} style={styles.location}>
-            {address}
+            {address || full_address?.split(",")[0]}
           </Text>
           {/* <ImageComponent style={styles.addressDot} source={activeRadio}></ImageComponent> */}
           {/* <Text style={styles.fullAddress}>{full_address}</Text> */}
