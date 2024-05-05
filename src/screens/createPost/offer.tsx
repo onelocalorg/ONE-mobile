@@ -243,15 +243,15 @@ export const CreatePostOfferScreen = (props: CreatePostOfferScreenProps) => {
       what_name: whatName,
       what_quantity: whatQuantity,
       for_type: whatForType,
-      for_name: forName,
-      for_quantity: forQuantity,
+      for_name: forName ? forName : undefined,
+      for_quantity: forQuantity ? forQuantity : undefined,
       where_address: whereAddress,
       where_lat: location?.lat?.toString(),
       where_lng: location?.lng?.toString(),
       when: whenDate.toISOString(),
-      content: content,
-      tags: tagArray,
-      post_image: imageArrayKey,
+      content: content ? content : undefined,
+      tags: tagArray ? tagArray : undefined,
+      post_image: imageArrayKey ? imageArrayKey : undefined,
       to_type: valueTotype,
       to_offer_users: userListArray,
     };
@@ -341,14 +341,14 @@ export const CreatePostOfferScreen = (props: CreatePostOfferScreenProps) => {
       //   Toast.show('Enter What Quantity', Toast.LONG, {
       //     backgroundColor: 'black',
       //   });
-    } else if (forName.length === 0) {
-      Toast.show("Enter About For", Toast.LONG, {
-        backgroundColor: "black",
-      });
-    } else if (valueTotype.length === 0) {
-      Toast.show("Enter About To", Toast.LONG, {
-        backgroundColor: "black",
-      });
+      // } else if (forName.length === 0) {
+      //   Toast.show("Enter About For", Toast.LONG, {
+      //     backgroundColor: "black",
+      //   });
+      // } else if (valueTotype.length === 0) {
+      //   Toast.show("Enter About To", Toast.LONG, {
+      //     backgroundColor: "black",
+      //   });
       // } else if (forQuantity.length === 0) {
       //   Toast.show('Enter For Quantity', Toast.LONG, {
       //     backgroundColor: 'black',
@@ -357,18 +357,18 @@ export const CreatePostOfferScreen = (props: CreatePostOfferScreenProps) => {
       Toast.show("Enter Address", Toast.LONG, {
         backgroundColor: "black",
       });
-    } else if (content.length === 0) {
-      Toast.show("Enter Post Content", Toast.LONG, {
-        backgroundColor: "black",
-      });
-    } else if (tagArray.length === 0) {
-      Toast.show("Enter Post Tag", Toast.LONG, {
-        backgroundColor: "black",
-      });
-    } else if (imageArray.length === 0) {
-      Toast.show("Add Image to Post", Toast.LONG, {
-        backgroundColor: "black",
-      });
+      // } else if (content.length === 0) {
+      //   Toast.show("Enter Post Content", Toast.LONG, {
+      //     backgroundColor: "black",
+      //   });
+      // } else if (tagArray.length === 0) {
+      //   Toast.show("Enter Post Tag", Toast.LONG, {
+      //     backgroundColor: "black",
+      //   });
+      // } else if (imageArray.length === 0) {
+      //   Toast.show("Add Image to Post", Toast.LONG, {
+      //     backgroundColor: "black",
+      //   });
     } else {
       console.log("create post api call");
       createPostAPI();

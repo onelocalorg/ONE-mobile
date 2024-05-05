@@ -234,8 +234,8 @@ export const CreatePostRequestScreen = (
       where_lng: location?.lng?.toString(),
       when: when?.toString(),
       content: content,
-      tags: tagArray,
-      post_image: imageArrayKey,
+      tags: tagArray ? tagArray : undefined,
+      post_image: imageArrayKey ? imageArrayKey : undefined,
       from_type: typrFrom,
       from_users: userListArray,
     };
@@ -312,14 +312,14 @@ export const CreatePostRequestScreen = (
       Toast.show("Enter Post Content", Toast.LONG, {
         backgroundColor: "black",
       });
-    } else if (tagArray.length === 0) {
-      Toast.show("Enter Post Tag", Toast.LONG, {
-        backgroundColor: "black",
-      });
-    } else if (imageArray.length === 0) {
-      Toast.show("Add Image to Post", Toast.LONG, {
-        backgroundColor: "black",
-      });
+      // } else if (tagArray.length === 0) {
+      //   Toast.show("Enter Post Tag", Toast.LONG, {
+      //     backgroundColor: "black",
+      //   });
+      // } else if (imageArray.length === 0) {
+      //   Toast.show("Add Image to Post", Toast.LONG, {
+      //     backgroundColor: "black",
+      //   });
     } else {
       createPostAPI();
     }

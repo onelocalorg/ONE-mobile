@@ -194,10 +194,10 @@ export const CreatePostGratisScreen = (props: CreatePostGratisScreenProps) => {
       what_name: whatName,
       what_quantity: whatQuantity,
       to_type: typrTovalue,
-      to_users: userListArray,
+      to_users: userListArray ? userListArray : undefined,
       content: content,
-      tags: tagArray,
-      post_image: imageArrayKey,
+      tags: tagArray ? tagArray : undefined,
+      post_image: imageArrayKey ? imageArrayKey : undefined,
     };
 
     console.log("=========== Create Post API Request ==============");
@@ -315,14 +315,14 @@ export const CreatePostGratisScreen = (props: CreatePostGratisScreenProps) => {
       Toast.show("Enter Post Content", Toast.LONG, {
         backgroundColor: "black",
       });
-    } else if (tagArray?.length === 0) {
-      Toast.show("Enter Post Tag", Toast.LONG, {
-        backgroundColor: "black",
-      });
-    } else if (imageArray?.length === 0) {
-      Toast.show("Add Image to Post", Toast.LONG, {
-        backgroundColor: "black",
-      });
+      // } else if (tagArray?.length === 0) {
+      //   Toast.show("Enter Post Tag", Toast.LONG, {
+      //     backgroundColor: "black",
+      //   });
+      // } else if (imageArray?.length === 0) {
+      //   Toast.show("Add Image to Post", Toast.LONG, {
+      //     backgroundColor: "black",
+      //   });
     } else {
       createPostAPI();
     }
