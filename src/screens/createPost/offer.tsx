@@ -3,6 +3,7 @@ import {
   NavigationContainerRef,
   ParamListBase,
 } from "@react-navigation/native";
+import _ from "lodash";
 import moment from "moment";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
@@ -40,6 +41,7 @@ import { LocationAutocomplete } from "~/components/location-autocomplete/Locatio
 import { Pill } from "~/components/pill";
 import { SizedBox } from "~/components/sized-box";
 import { verticalScale } from "~/theme/device/normalize";
+import { ResourceDefinition } from "./resource-definition";
 import { createStyleSheet } from "./style";
 
 interface CreatePostOfferScreenProps {
@@ -178,9 +180,14 @@ export const CreatePostOfferScreen = (props: CreatePostOfferScreenProps) => {
       getTypeIconFor(dataItem?.data?.for[0]["icon"]);
       getForTypeValue(dataItem?.data?.for[0]["value"]);
 
-      getTypeIconTo(dataItem?.data?.to[0]["icon"]);
-      setToTitleData(dataItem?.data?.to[0]["title"]);
-      getToTypeValue(dataItem?.data?.to[0]["value"]);
+      const everyoneDefinition = _.find(
+        dataItem.data.to,
+        (r: ResourceDefinition) => r.value === "everyone"
+      );
+
+      getTypeIconTo(everyoneDefinition.icon);
+      setToTitleData(everyoneDefinition.title);
+      getToTypeValue(everyoneDefinition.value);
 
       getTypeIconFrom(dataItem?.data?.from[0]["icon"]);
       getFromTypeValue(dataItem?.data?.from[0]["value"]);

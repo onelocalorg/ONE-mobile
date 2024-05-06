@@ -29,6 +29,7 @@ import { Pill } from "~/components/pill";
 import { SizedBox } from "~/components/sized-box";
 import { LOG } from "~/config";
 import { verticalScale } from "~/theme/device/normalize";
+import { ResourceDefinition } from "./resource-definition";
 import { createStyleSheet } from "./style";
 
 interface CreatePostGratisScreenProps {
@@ -125,14 +126,6 @@ export const CreatePostGratisScreen = (props: CreatePostGratisScreenProps) => {
       LOG.debug(response.status);
       const dataItem = await response.json();
       LOG.debug("data", dataItem?.data);
-
-      type ResourceDefinition = {
-        _id: string;
-        type: string;
-        title: string;
-        value: string;
-        icon: string;
-      };
 
       if (dataItem.data) {
         getResourseDatawhat(dataItem.data?.what);
