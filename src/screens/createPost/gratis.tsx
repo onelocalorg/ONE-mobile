@@ -3,6 +3,7 @@ import {
   NavigationContainerRef,
   ParamListBase,
 } from "@react-navigation/native";
+import _ from "lodash";
 import React, { useEffect, useRef, useState } from "react";
 import {
   FlatList,
@@ -26,6 +27,7 @@ import { FlatListComponent } from "~/components/flatlist-component";
 import { ImageComponent } from "~/components/image-component";
 import { Pill } from "~/components/pill";
 import { SizedBox } from "~/components/sized-box";
+import { LOG } from "~/config";
 import { verticalScale } from "~/theme/device/normalize";
 import { createStyleSheet } from "./style";
 
@@ -56,7 +58,7 @@ export const CreatePostGratisScreen = (props: CreatePostGratisScreenProps) => {
   const [content, createPostcontent] = useState("");
   const [tags, createPosttags]: any = useState("");
   const [tagArray, tagselectArray]: any = useState([]);
-  const [whatName, createPostwhatName] = useState("");
+  const [whatName, setWhatName] = useState("");
   const [addnewCmt, onAddComment] = useState("");
   const [addnewCmtReply, onAddCommentReply] = useState("");
   var [whatQuantity, createPostwhatQuantity] = useState(1);
@@ -107,6 +109,7 @@ export const CreatePostGratisScreen = (props: CreatePostGratisScreenProps) => {
   };
 
   const getResourcesAPI = async () => {
+    LOG.debug("> getResourcesAPI");
     const token = await AsyncStorage.getItem("token");
     try {
       const response = await fetch(
@@ -119,26 +122,38 @@ export const CreatePostGratisScreen = (props: CreatePostGratisScreenProps) => {
           }),
         }
       );
+      LOG.debug(response.status);
       const dataItem = await response.json();
-      console.log(
-        "-------------------Get Resources API Response---------------------"
-      );
-      console.log(dataItem);
-      getResourseDatawhat(dataItem?.data?.what);
-      getResourseDataTo(dataItem?.data?.to);
-      getResourseDataFrom(dataItem?.data?.from);
-      getResourseDataFor(dataItem?.data?.For);
-      getTypeIconWhat(dataItem?.data?.what[0]["icon"]);
-      createPostwhatName(dataItem?.data?.what[0]["title"]);
-      getTypeIconTo(dataItem?.data?.to[0]["icon"]);
-      getToTypeValue(dataItem?.data?.to[0]["value"]);
-      getWhatTypeValue(dataItem?.data?.what[0]["value"]);
-      console.log(
-        dataItem?.data[0]["icon"],
-        "------------icon image--------------"
-      );
+      LOG.debug("data", dataItem?.data);
+
+      type ResourceDefinition = {
+        _id: string;
+        type: string;
+        title: string;
+        value: string;
+        icon: string;
+      };
+
+      if (dataItem.data) {
+        getResourseDatawhat(dataItem.data?.what);
+        getResourseDataTo(dataItem.data?.to);
+        getResourseDataFrom(dataItem.data?.from);
+        getResourseDataFor(dataItem.data?.For);
+
+        const gratisDefinition = _.find(
+          dataItem.data.what,
+          (r: ResourceDefinition) => r.value === "gratis"
+        );
+
+        getTypeIconWhat(gratisDefinition.icon);
+        setWhatName(gratisDefinition.title);
+        getTypeIconTo(gratisDefinition.icon);
+        getToTypeValue(gratisDefinition.value);
+        getWhatTypeValue(gratisDefinition.value);
+      }
+      LOG.debug("< getResourcesAPI");
     } catch (error) {
-      console.error(error);
+      LOG.error("getResourcesAPI", error);
     }
   };
 
@@ -467,7 +482,7 @@ export const CreatePostGratisScreen = (props: CreatePostGratisScreenProps) => {
                   placeholderTextColor="darkgray"
                   value={whatName}
                   editable={false}
-                  onChangeText={(text) => createPostwhatName(text)}
+                  onChangeText={(text) => setWhatName(text)}
                   style={styles.postInputTwo}
                 ></TextInput>
                 {/* <SizedBox width={10}></SizedBox> */}
