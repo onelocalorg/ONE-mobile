@@ -1,4 +1,3 @@
-import { LOG } from "~/config";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
 
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
@@ -10,27 +9,25 @@ import {
   useNavigation,
 } from "@react-navigation/native";
 import React, { useRef } from "react";
-import { bottomNavigationVisibleScreens, navigations } from "./constant";
-import { HomeRoute } from "./home-route";
-import { NavigatorOptionComponent } from "./navigator-option-component";
-import { createStyleSheet } from "./style";
-import { ChatScreen } from "~/screens/chat";
+import { TouchableOpacity } from "react-native";
+import { bottomTabs } from "~/assets/constants";
 import {
   addGreen,
   calendarTime,
-  chat,
   eventTwo,
-  gratitude,
   home,
   notificationTwo,
 } from "~/assets/images";
 import { ImageComponent } from "~/components/image-component";
-import { bottomTabs } from "~/assets/constants";
-import { TouchableOpacity } from "react-native";
 import { ModalRefProps } from "~/components/modal-component";
+import { ChatScreen } from "~/screens/chat";
 import { AddComponentModal } from "~/screens/event/add-component-modal";
+import { bottomNavigationVisibleScreens, navigations } from "./constant";
 import { EventRoute } from "./event-route";
+import { HomeRoute } from "./home-route";
 import { MapRoute } from "./map-route";
+import { NavigatorOptionComponent } from "./navigator-option-component";
+import { createStyleSheet } from "./style";
 
 const Tab = createBottomTabNavigator();
 const header = () => null;

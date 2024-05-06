@@ -1,6 +1,6 @@
+import { useQuery } from "@tanstack/react-query";
 import { onGetSubscriptionPlans } from "~/network/api/services/home-service";
 import { apiKeys } from "~/network/constant";
-import { useQuery } from "@tanstack/react-query";
 
 export type Root = PlanData[];
 

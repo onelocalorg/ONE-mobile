@@ -1,11 +1,10 @@
-import { useAppTheme } from "~/app-hooks/use-app-theme";
 import React from "react";
-import { createStyleSheet } from "./style";
 import { Text, TouchableOpacity, View } from "react-native";
+import { useAppTheme } from "~/app-hooks/use-app-theme";
+import { dummy, event, pin } from "~/assets/images";
 import { ImageComponent } from "~/components/image-component";
-import { activeRadio, dummy, event, pin } from "~/assets/images";
 import { EventData } from "~/network/hooks/home-service-hooks/use-event-lists";
-import moment from "moment";
+import { createStyleSheet } from "./style";
 
 interface EventListProps {
   data: EventData;

@@ -1,14 +1,14 @@
-import { useAppTheme } from "~/app-hooks/use-app-theme";
 import React from "react";
-import { createStyleSheet } from "./style";
 import { Text, View } from "react-native";
+import { useAppTheme } from "~/app-hooks/use-app-theme";
+import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
+import { dummy } from "~/assets/images";
 import { ImageComponent } from "~/components/image-component";
 import { Pill } from "~/components/pill";
 import { SizedBox } from "~/components/sized-box";
-import { verticalScale } from "~/theme/device/normalize";
 import { Result } from "~/network/hooks/home-service-hooks/use-ticket-holder-checkin-list";
-import { dummy } from "~/assets/images";
-import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
+import { verticalScale } from "~/theme/device/normalize";
+import { createStyleSheet } from "./style";
 
 interface CheckInListProps {
   data: Result;

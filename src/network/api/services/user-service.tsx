@@ -1,7 +1,7 @@
 import { LOG } from "~/config";
 import { apiConstants } from "~/network/constant";
-import { API } from "..";
 import { getApiResponse } from "~/network/utils/get-api-response";
+import { API } from "..";
 
 interface LoginProps {
   emailOrMobile: string;

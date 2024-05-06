@@ -1,6 +1,6 @@
 import React from "react";
-import { useAppTheme } from "~/app-hooks/use-app-theme";
 import { SafeAreaView } from "react-native";
+import { useAppTheme } from "~/app-hooks/use-app-theme";
 import { createStyleSheet } from "./style";
 
 interface SafeAreaComponentProps {

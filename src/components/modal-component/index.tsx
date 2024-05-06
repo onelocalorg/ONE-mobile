@@ -10,9 +10,9 @@ import {
   View,
   ViewStyle,
 } from "react-native";
-import { createStyleSheet } from "./style";
-import { useAppTheme } from "~/app-hooks/use-app-theme";
 import GestureRecognizer from "react-native-swipe-gestures";
+import { useAppTheme } from "~/app-hooks/use-app-theme";
+import { createStyleSheet } from "./style";
 
 export interface ModalProps {
   children?: JSX.Element | JSX.Element[];

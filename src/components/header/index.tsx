@@ -1,16 +1,3 @@
-import {
-  Search,
-  activeRadio,
-  arrowLeft,
-  bell,
-  hamburger,
-  headerBg,
-  headerTitle,
-  loginLogo,
-  onelogo,
-  pin,
-  postImage,
-} from "~/assets/images";
 import React, { useState } from "react";
 import {
   ImageBackground,
@@ -19,19 +6,20 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { createStyleSheet } from "./style";
-import { useAppTheme } from "~/app-hooks/use-app-theme";
-import { ImageComponent } from "~/components/image-component";
-import { launchCamera } from "react-native-image-picker";
-import {
-  UserProfileState,
-  onSetCoverImage,
-} from "~/network/reducers/user-profile-reducer";
 import { useDispatch, useSelector } from "react-redux";
-import { StoreType } from "~/network/reducers/store";
+import { useAppTheme } from "~/app-hooks/use-app-theme";
 import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
-import { Searchbar } from "react-native-paper";
-import { height } from "~/theme/device/device";
+import {
+  Search,
+  arrowLeft,
+  headerBg,
+  headerTitle,
+  onelogo,
+} from "~/assets/images";
+import { ImageComponent } from "~/components/image-component";
+import { StoreType } from "~/network/reducers/store";
+import { UserProfileState } from "~/network/reducers/user-profile-reducer";
+import { createStyleSheet } from "./style";
 
 interface HeaderProps {
   title?: string;

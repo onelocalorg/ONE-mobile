@@ -12,4 +12,4 @@ export const BASE_DIMENSIONS = Platform?.isPad
       height: 812,
     };
 
-export { width, height };
+export { height, width };

@@ -1,21 +1,19 @@
-import React from "react";
 import { createStackNavigator } from "@react-navigation/stack";
-import { HomeScreen } from "~/screens/home";
-import { navigations } from "./constant";
-import { EventDetailScreen } from "~/screens/event-detail";
-import { ProfileScreen } from "~/screens/profile";
+import React from "react";
 import { AdminToolsScreen } from "~/screens/admin-tools";
-import { CheckInScreen } from "~/screens/check-in";
-import { PaymentScreen } from "~/screens/payment-screen";
-import { CreatePostScreen } from "~/screens/createPost";
-import { RecentProfileScreen } from "~/screens/recentProfile";
-import { CreatePostGratisScreen } from "~/screens/createPost/gratis";
-import { CreatePostRequestScreen } from "~/screens/createPost/request";
-import { CreatePostOfferScreen } from "~/screens/createPost/offer";
-import { EventList } from "~/components/event-list";
-import { EventListScreen } from "~/screens/event";
 import { AddPayoutExpenseScreen } from "~/screens/admin-tools/addPayoutExpense-modal";
 import { EditPayoutModalScreen } from "~/screens/admin-tools/editPayoutExpense-modal";
+import { CheckInScreen } from "~/screens/check-in";
+import { CreatePostScreen } from "~/screens/createPost";
+import { CreatePostGratisScreen } from "~/screens/createPost/gratis";
+import { CreatePostOfferScreen } from "~/screens/createPost/offer";
+import { CreatePostRequestScreen } from "~/screens/createPost/request";
+import { EventListScreen } from "~/screens/event";
+import { EventDetailScreen } from "~/screens/event-detail";
+import { PaymentScreen } from "~/screens/payment-screen";
+import { ProfileScreen } from "~/screens/profile";
+import { RecentProfileScreen } from "~/screens/recentProfile";
+import { navigations } from "./constant";
 
 const EventStack = createStackNavigator();
 

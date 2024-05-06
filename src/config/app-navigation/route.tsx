@@ -4,14 +4,14 @@ import {
 } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import React from "react";
+import { useToken } from "~/app-hooks/use-token";
+import { GenericWebView } from "~/components/generic-webview";
+import { Loader } from "~/components/loader";
+import { LoginScreen } from "~/screens/login";
+import { SignUp } from "~/screens/signUp";
+import { BottomNavigator } from "./bottom-navigator";
 import { navigations } from "./constant";
 import { setNavigator } from "./root-navigation";
-import { LoginScreen } from "~/screens/login";
-import { BottomNavigator } from "./bottom-navigator";
-import { useToken } from "~/app-hooks/use-token";
-import { Loader } from "~/components/loader";
-import { GenericWebView } from "~/components/generic-webview";
-import { SignUp } from "~/screens/signUp";
 
 export interface RefObj {
   onShowToast: (msg?: string, type?: "success" | "error" | "pending") => void;

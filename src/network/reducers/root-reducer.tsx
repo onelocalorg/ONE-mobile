@@ -2,8 +2,8 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { AnyAction, combineReducers } from "redux";
 import { persistReducer } from "redux-persist";
 import { internetConnectionHandleReducer } from "./internet-connection-handle-reducer";
-import { userProfileReducer } from "./user-profile-reducer";
 import { logoutReducer } from "./logout-reducer";
+import { userProfileReducer } from "./user-profile-reducer";
 
 const combinedReducer = combineReducers({
   internetConnectionHandleReducer,

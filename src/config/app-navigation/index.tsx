@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { Route } from "./route";
-import { LOG } from "~/config";
-import { AppUpdate } from "~/components/app-update";
-import { ANDROID_VERSION, IOS_VERSION, setData } from "~/network/constant";
 import { Platform } from "react-native";
+import { AppUpdate } from "~/components/app-update";
+import { LOG } from "~/config";
+import { ANDROID_VERSION, IOS_VERSION, setData } from "~/network/constant";
+import { Route } from "./route";
 
 export const AppNavigation = () => {
   const [showUpdateIOS, setShowUpdateIOS] = useState(false);

@@ -1,11 +1,11 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useCallback } from "react";
-import { PaymentSheet, useStripe } from "@stripe/stripe-react-native";
 import {
   NavigationContainerRef,
   ParamListBase,
   useFocusEffect,
 } from "@react-navigation/native";
+import { PaymentSheet, useStripe } from "@stripe/stripe-react-native";
+import React, { useCallback } from "react";
 
 interface PaymentScreenProps {
   navigation?: NavigationContainerRef<ParamListBase>;

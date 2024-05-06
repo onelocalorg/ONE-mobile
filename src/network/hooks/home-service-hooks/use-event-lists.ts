@@ -1,6 +1,6 @@
-import { onFetchEvents } from "~/network/api/services/home-service";
 import { useMutation } from "@tanstack/react-query";
 import { DateTime } from "luxon";
+import { onFetchEvents } from "~/network/api/services/home-service";
 
 interface Root {
   results: EventData[];

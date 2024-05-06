@@ -1,9 +1,9 @@
+import { useQuery } from "@tanstack/react-query";
 import {
   TickeHolderProps,
   onFetchTicketHolderList,
 } from "~/network/api/services/home-service";
 import { apiKeys } from "~/network/constant";
-import { useQuery } from "@tanstack/react-query";
 
 export interface Root {
   results: Result[];

@@ -1,41 +1,38 @@
-import { useAppTheme } from "~/app-hooks/use-app-theme";
-import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import React, { forwardRef, useEffect, useState } from "react";
-import { createStyleSheet } from "./style";
-import { ModalComponent } from "~/components/modal-component";
 import {
   FlatList,
   Keyboard,
   KeyboardAvoidingView,
+  Modal,
+  Platform,
   Text,
+  TextInput,
   TouchableOpacity,
   View,
 } from "react-native";
-import { EventList } from "~/components/event-list";
-import { ImageComponent } from "~/components/image-component";
-import { ButtonComponent } from "~/components/button-component";
+import { ScrollView } from "react-native-gesture-handler";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import Toast from "react-native-simple-toast";
+import GestureRecognizer from "react-native-swipe-gestures";
+import { useAppTheme } from "~/app-hooks/use-app-theme";
+import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
 import {
   activeRadio,
   addCard,
   addGreen,
   buttonArrowBlue,
-  closeCard,
   inactiveRadio,
   minus,
   plus,
 } from "~/assets/images";
-import { EventData } from "~/network/hooks/home-service-hooks/use-event-lists";
-import { formatPrice } from "~/utils/common";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { SizedBox } from "~/components/sized-box";
+import { ButtonComponent } from "~/components/button-component";
+import { EventList } from "~/components/event-list";
+import { ImageComponent } from "~/components/image-component";
 import { Loader } from "~/components/loader";
-import { ScrollView } from "react-native-gesture-handler";
-import { Modal } from "react-native";
-import GestureRecognizer from "react-native-swipe-gestures";
-import { TextInput } from "react-native";
-import { Platform } from "react-native";
-import Toast from "react-native-simple-toast";
-import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import { ModalComponent } from "~/components/modal-component";
+import { EventData } from "~/network/hooks/home-service-hooks/use-event-lists";
+import { createStyleSheet } from "./style";
 
 interface TicketCheckoutModalCompProps {
   onPurchase: (

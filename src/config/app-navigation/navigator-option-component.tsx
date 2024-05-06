@@ -1,8 +1,8 @@
-import { useAppTheme } from "~/app-hooks/use-app-theme";
-import { ImageComponent } from "~/components/image-component";
 import React from "react";
 import { StyleProp, View } from "react-native";
 import { ImageStyle } from "react-native-fast-image";
+import { useAppTheme } from "~/app-hooks/use-app-theme";
+import { ImageComponent } from "~/components/image-component";
 import { createStyleSheet } from "./style";
 
 export interface NavigatorOptionProps {

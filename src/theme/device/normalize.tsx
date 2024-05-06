@@ -20,9 +20,9 @@ const lineHeightScale = (fontSize: number, factor = 1.2) =>
   Math.ceil(normalizedHeight(fontSize * factor));
 
 export {
-  normalScale,
-  verticalScale,
-  moderateScale,
   lineHeightScale,
+  moderateScale,
+  normalScale,
   normalize,
+  verticalScale,
 };

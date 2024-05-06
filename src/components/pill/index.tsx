@@ -1,9 +1,9 @@
-import { useAppTheme } from "~/app-hooks/use-app-theme";
 import React from "react";
-import { createStyleSheet } from "./style";
 import { StyleProp, Text, TouchableOpacity, ViewStyle } from "react-native";
-import { ImageComponent } from "~/components/image-component";
 import { ImageStyle } from "react-native-fast-image";
+import { useAppTheme } from "~/app-hooks/use-app-theme";
+import { ImageComponent } from "~/components/image-component";
+import { createStyleSheet } from "./style";
 
 interface PillProps {
   label: string;

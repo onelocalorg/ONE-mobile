@@ -1,31 +1,28 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useEffect, useState } from "react";
-import { useAppTheme } from "~/app-hooks/use-app-theme";
-import { createStyleSheet } from "./style";
-import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
-import { ListRenderItem, Text, View } from "react-native";
-import { Header } from "~/components/header";
 import {
   NavigationContainerRef,
   ParamListBase,
 } from "@react-navigation/native";
+import React, { useEffect, useState } from "react";
+import { ListRenderItem, Text, TouchableOpacity, View } from "react-native";
+import { useSelector } from "react-redux";
+import { useAppTheme } from "~/app-hooks/use-app-theme";
+import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
+import { arrowLeft, dummy, onelogo } from "~/assets/images";
+import { FlatListComponent } from "~/components/flatlist-component";
+import { ImageComponent } from "~/components/image-component";
+import { Loader } from "~/components/loader";
 import { Pill } from "~/components/pill";
-import { CheckInList } from "./check-in-list";
+import { navigations } from "~/config/app-navigation/constant";
+import { useCheckedInUser } from "~/network/hooks/home-service-hooks/use-checked-in-user";
 import {
   Result,
   useTicketHolderCheckinsList,
 } from "~/network/hooks/home-service-hooks/use-ticket-holder-checkin-list";
-import { Loader } from "~/components/loader";
-import { FlatListComponent } from "~/components/flatlist-component";
-import { useCheckedInUser } from "~/network/hooks/home-service-hooks/use-checked-in-user";
-import { TouchableOpacity } from "react-native";
-import { ImageComponent } from "~/components/image-component";
-import { TextInput } from "react-native";
-import { Search, arrowLeft, dummy, onelogo } from "~/assets/images";
-import { navigations } from "~/config/app-navigation/constant";
-import { useSelector } from "react-redux";
 import { StoreType } from "~/network/reducers/store";
 import { UserProfileState } from "~/network/reducers/user-profile-reducer";
+import { CheckInList } from "./check-in-list";
+import { createStyleSheet } from "./style";
 
 interface CheckInScreenProps {
   navigation?: NavigationContainerRef<ParamListBase>;

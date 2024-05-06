@@ -72,4 +72,4 @@ const borderRadius = {
   radius64: moderateScale(64),
 };
 
-export { type, size, opacity, borderWidth, borderRadius };
+export { borderRadius, borderWidth, opacity, size, type };
