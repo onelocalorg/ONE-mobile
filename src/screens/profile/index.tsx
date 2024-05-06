@@ -1,69 +1,52 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useAppTheme } from "~/app-hooks/use-app-theme";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   NavigationContainerRef,
   ParamListBase,
   useFocusEffect,
 } from "@react-navigation/native";
-import React, { useCallback, useEffect, useRef, useState } from "react";
-import { createStyleSheet } from "./style";
-import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
-import { Header } from "~/components/header";
+import React, { useEffect, useRef, useState } from "react";
 import {
+  Alert,
   AppState,
-  ImageBackground,
+  Image,
   Keyboard,
   KeyboardAvoidingView,
   Linking,
   Modal,
   PermissionsAndroid,
   Platform,
-  Pressable,
-  ScrollView,
   Text,
   TouchableOpacity,
   View,
 } from "react-native";
-import { ImageComponent } from "~/components/image-component";
-import { TabComponent } from "~/components/tab-component";
-import { About } from "./about";
-import { MyEvents } from "./my-events";
-import { useDispatch, useSelector } from "react-redux";
-import {
-  UserProfileState,
-  onSetCoverImage,
-} from "~/network/reducers/user-profile-reducer";
-import { StoreType } from "~/network/reducers/store";
-import { useLogout } from "~/app-hooks/use-logout";
-import { Loader } from "~/components/loader";
-import { launchCamera, launchImageLibrary } from "react-native-image-picker";
-import { Input } from "~/components/input";
-import { useEditProfile } from "~/network/hooks/user-service-hooks/use-edit-profile";
+import { TextInput } from "react-native-gesture-handler";
+import ImagePicker from "react-native-image-crop-picker";
+import { launchCamera } from "react-native-image-picker";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import Toast from "react-native-simple-toast";
+import GestureRecognizer from "react-native-swipe-gestures";
+import { useDispatch, useSelector } from "react-redux";
+import { useAppTheme } from "~/app-hooks/use-app-theme";
+import { useLogout } from "~/app-hooks/use-logout";
+import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
 import {
   Gratis,
-  Search,
   arrowLeft,
-  bell,
   dummy,
   onelogo,
   sendPayoutImg,
 } from "~/assets/images";
-import { PERMISSIONS, request } from "react-native-permissions";
-import { Alert } from "react-native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useToken } from "~/app-hooks/use-token";
-import { TextInput } from "react-native-gesture-handler";
-import { verticalScale } from "~/theme/device/normalize";
-import { getTopPadding } from "~/utils/platform-padding";
-import { Image } from "react-native";
-import { height } from "~/theme/device/device";
-import { BottomSheet } from "react-native-elements";
-import GestureRecognizer from "react-native-swipe-gestures";
-import ImagePicker from "react-native-image-crop-picker";
-import Toast from "react-native-simple-toast";
-import { navigations } from "~/config/app-navigation/constant";
+import { ImageComponent } from "~/components/image-component";
+import { Input } from "~/components/input";
+import { TabComponent } from "~/components/tab-component";
 import { getData } from "~/network/constant";
+import { useEditProfile } from "~/network/hooks/user-service-hooks/use-edit-profile";
+import { StoreType } from "~/network/reducers/store";
+import { UserProfileState } from "~/network/reducers/user-profile-reducer";
+import { About } from "./about";
+import { MyEvents } from "./my-events";
+import { createStyleSheet } from "./style";
 
 interface UserData {
   id: string;
@@ -465,8 +448,6 @@ export const ProfileScreen = (props: ProfileScreenProps) => {
         activeOpacity={1}
         onPress={keyboardDismiss}
       >
-        <Loader visible={isLoading} showOverlay />
-
         <TouchableOpacity style={styles.HeaderContainerTwo} activeOpacity={1}>
           <TouchableOpacity activeOpacity={1} onPress={() => imageSelection(2)}>
             <ImageComponent

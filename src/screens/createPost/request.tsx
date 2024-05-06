@@ -33,7 +33,6 @@ import {
 } from "~/components/date-range-picker";
 import { FlatListComponent } from "~/components/flatlist-component";
 import { ImageComponent } from "~/components/image-component";
-import { Loader } from "~/components/loader";
 import { LocationAutocomplete } from "~/components/location-autocomplete/LocationAutocomplete";
 import { Pill } from "~/components/pill";
 import { SizedBox } from "~/components/sized-box";
@@ -517,8 +516,6 @@ export const CreatePostRequestScreen = (
   // };
   return (
     <>
-      <Loader visible={isLoading} showOverlay />
-
       <ScrollView
         keyboardShouldPersistTaps="handled"
         showsVerticalScrollIndicator={false}

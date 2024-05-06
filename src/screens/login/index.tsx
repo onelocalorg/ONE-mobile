@@ -1,65 +1,38 @@
-import { LOG } from "~/config";
-import {
-  Search,
-  activeRadio,
-  apple,
-  arrowLeft,
-  buttonArrow,
-  google,
-  inactiveRadio,
-  loginLogo,
-  onelogo,
-  pin,
-} from "~/assets/images";
-import { Header } from "~/components/header";
-import { ImageComponent } from "~/components/image-component";
-import { SizedBox } from "~/components/sized-box";
-import { verticalScale } from "~/theme/device/normalize";
-import React, { useCallback, useEffect, useState } from "react";
-import {
-  Alert,
-  Button,
-  Keyboard,
-  Platform,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
-import { createStyleSheet } from "./style";
-import { Input } from "~/components/input";
-import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
-import { useAppTheme } from "~/app-hooks/use-app-theme";
-import { ButtonComponent } from "~/components/button-component";
+import { appleAuth } from "@invertase/react-native-apple-authentication";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   NavigationContainerRef,
   ParamListBase,
 } from "@react-navigation/native";
-import { navigations } from "~/config/app-navigation/constant";
-import { useLogin } from "~/network/hooks/user-service-hooks/use-login";
-import { Loader } from "~/components/loader";
-import { emailRegexEx } from "~/assets/constants";
+import React, { useEffect, useState } from "react";
+import { Keyboard, Platform, Text, TouchableOpacity, View } from "react-native";
 import { getDeviceName, getUniqueId } from "react-native-device-info";
-import { useToken } from "~/app-hooks/use-token";
-import { useDispatch } from "react-redux";
-import { onSetUser } from "~/network/reducers/user-profile-reducer";
-import { useCreateStripeCustomer } from "~/network/hooks/payment-service-hooks/use-create-stripe-customer";
-import { useSaveCustomerId } from "~/network/hooks/user-service-hooks/use-save-customer-id";
 import { TextInput } from "react-native-gesture-handler";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import Toast from "react-native-simple-toast";
-import {
-  AppleButton,
-  appleAuth,
-} from "@invertase/react-native-apple-authentication";
-import { jwtDecode } from "jwt-decode";
+import { useDispatch } from "react-redux";
+import { useAppTheme } from "~/app-hooks/use-app-theme";
+import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
+import { useToken } from "~/app-hooks/use-token";
+import { emailRegexEx } from "~/assets/constants";
+import { apple, google, onelogo } from "~/assets/images";
+import { ImageComponent } from "~/components/image-component";
+import { SizedBox } from "~/components/sized-box";
+import { LOG } from "~/config";
+import { navigations } from "~/config/app-navigation/constant";
+import { useCreateStripeCustomer } from "~/network/hooks/payment-service-hooks/use-create-stripe-customer";
+import { useLogin } from "~/network/hooks/user-service-hooks/use-login";
+import { useSaveCustomerId } from "~/network/hooks/user-service-hooks/use-save-customer-id";
+import { onSetUser } from "~/network/reducers/user-profile-reducer";
+import { verticalScale } from "~/theme/device/normalize";
+import { createStyleSheet } from "./style";
 
 import {
   GoogleSignin,
   statusCodes,
 } from "@react-native-google-signin/google-signin";
 import { Linking } from "react-native";
-import { getData } from "~/network/constant";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import { getData } from "~/network/constant";
 
 GoogleSignin.configure({
   iosClientId: process.env.GOOGLE_SIGNIN_IOS_CLIENT_ID,
@@ -532,8 +505,6 @@ export const LoginScreen = (props: LoginScreenProps) => {
       onPress={keyboardDismiss}
       style={styles.container}
     >
-      <Loader visible={isLoading} showOverlay />
-
       <KeyboardAwareScrollView showsVerticalScrollIndicator={false}>
         <TouchableOpacity
           style={{ marginTop: 100, marginBottom: 40 }}

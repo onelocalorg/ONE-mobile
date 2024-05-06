@@ -1,36 +1,36 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
 
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
-  ActivityIndicator,
+  NavigationContainerRef,
+  ParamListBase,
+  useFocusEffect,
+} from "@react-navigation/native";
+import {
   FlatList,
   Image,
   Keyboard,
   KeyboardAvoidingView,
   ListRenderItem,
-  LogBox,
   Modal,
   Platform,
-  SafeAreaView,
   Text,
   TextInput,
   TouchableOpacity,
   View,
 } from "react-native";
-import { createStyleSheet } from "../style";
-import { ImageComponent } from "~/components/image-component";
+import Toast from "react-native-simple-toast";
+import GestureRecognizer from "react-native-swipe-gestures";
+import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
 import {
   Gratis,
   Vector,
   arrowLeft,
   buttonArrowGreen,
-  close,
   closeCard,
-  comment,
-  event,
   gratisGreen,
   gratitudeBlack,
-  greenImage,
   minus,
   onelogo,
   pin,
@@ -38,19 +38,9 @@ import {
   postCalender,
   send,
 } from "~/assets/images";
-import GestureRecognizer from "react-native-swipe-gestures";
-import Toast from "react-native-simple-toast";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { ImageComponent } from "~/components/image-component";
 import { navigations } from "~/config/app-navigation/constant";
-import {
-  NavigationContainerRef,
-  ParamListBase,
-  useFocusEffect,
-} from "@react-navigation/native";
-import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
-import { FlatListComponent } from "~/components/flatlist-component";
-import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
-import { Loader } from "~/components/loader";
+import { createStyleSheet } from "../style";
 
 interface commentListProps {
   navigation?: NavigationContainerRef<ParamListBase>;
@@ -675,7 +665,6 @@ export const CommentList = (props: commentListProps) => {
     // <SafeAreaView>
 
     <View style={{ paddingBottom: 300 }}>
-      <Loader visible={isLoading} showOverlay />
       <TouchableOpacity style={styles.HeaderContainerTwo} activeOpacity={1}>
         <TouchableOpacity style={styles.row2} onPress={onBackPress}>
           <View>

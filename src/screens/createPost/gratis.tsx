@@ -24,7 +24,6 @@ import { addGreen, buttonArrowGreen, minus, plus } from "~/assets/images";
 import { DatePickerRefProps } from "~/components/date-range-picker";
 import { FlatListComponent } from "~/components/flatlist-component";
 import { ImageComponent } from "~/components/image-component";
-import { Loader } from "~/components/loader";
 import { Pill } from "~/components/pill";
 import { SizedBox } from "~/components/sized-box";
 import { verticalScale } from "~/theme/device/normalize";
@@ -450,8 +449,6 @@ export const CreatePostGratisScreen = (props: CreatePostGratisScreenProps) => {
 
   return (
     <>
-      <Loader visible={isLoading} showOverlay />
-
       <KeyboardAwareScrollView
         keyboardShouldPersistTaps="always"
         showsVerticalScrollIndicator={false}

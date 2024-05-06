@@ -41,7 +41,6 @@ import {
 } from "~/components/date-range-picker";
 import { FlatListComponent } from "~/components/flatlist-component";
 import { ImageComponent } from "~/components/image-component";
-import { Loader } from "~/components/loader";
 import { Pill } from "~/components/pill";
 import { SizedBox } from "~/components/sized-box";
 import { useUserProfile } from "~/network/hooks/user-service-hooks/use-user-profile";
@@ -598,7 +597,6 @@ export const EditPostRequestScreen = (props: EditPostRequestScreenProps) => {
   };
   return (
     <>
-      <Loader visible={isLoading} showOverlay />
       <TouchableOpacity style={styles.HeaderContainerTwo} activeOpacity={1}>
         <TouchableOpacity onPress={onBackPress} style={{ zIndex: 11111222222 }}>
           <View style={styles.row2}>

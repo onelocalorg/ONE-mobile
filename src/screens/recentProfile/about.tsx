@@ -1,75 +1,26 @@
-import { useAppTheme } from "~/app-hooks/use-app-theme";
-import React, { useCallback, useEffect, useRef, useState } from "react";
-import {
-  Alert,
-  Button,
-  Dimensions,
-  Image,
-  ListRenderItem,
-  Modal,
-  Text,
-  TextInput,
-  TouchableHighlight,
-  TouchableOpacity,
-  View,
-  useWindowDimensions,
-  ScrollView,
-  LogBox,
-  KeyboardAvoidingView,
-  Platform,
-} from "react-native";
-import { createStyleSheet } from "./style";
-import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
-import { Pill } from "~/components/pill";
-import {
-  eventWhite,
-  gratitude,
-  save,
-  explorer,
-  operator,
-  serviceProvider,
-  postImage,
-  bucket,
-  loginLogo,
-  arrowLeft,
-  pin,
-  arrowDown,
-  buttonArrow,
-  addCard,
-  buttonArrowBlue,
-  downImg,
-  closeCard,
-  addGreen,
-  onelogo,
-  dummy,
-} from "~/assets/images";
-import { ModalRefProps } from "~/components/modal-component";
-import { ImageComponent } from "~/components/image-component";
-import { Input } from "~/components/input";
-import { FlatListComponent } from "~/components/flatlist-component";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   NavigationContainerRef,
   ParamListBase,
-  useFocusEffect,
 } from "@react-navigation/native";
+import React, { useEffect, useState } from "react";
+import {
+  ListRenderItem,
+  LogBox,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { FlatList } from "react-native-gesture-handler";
-import { usePackagePlans } from "~/network/hooks/home-service-hooks/use-package-plans";
-import { Subscription } from "~/components/subcription";
-import GestureRecognizer from "react-native-swipe-gestures";
+import { useAppTheme } from "~/app-hooks/use-app-theme";
+import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
 import { useToken } from "~/app-hooks/use-token";
-import { normalScale, verticalScale } from "~/theme/device/normalize";
-import { useSelector } from "react-redux";
-import { StoreType } from "~/network/reducers/store";
-import { UserProfileState } from "~/network/reducers/user-profile-reducer";
-import { navigations } from "~/config/app-navigation/constant";
+import { arrowLeft, onelogo } from "~/assets/images";
+import { FlatListComponent } from "~/components/flatlist-component";
+import { ImageComponent } from "~/components/image-component";
 import { Loader } from "~/components/loader";
-import { ButtonComponent } from "~/components/button-component";
-import Toast from "react-native-simple-toast";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { persistKeys } from "~/network/constant";
-import { height, width } from "~/theme/device/device";
-import { useEditProfile } from "~/network/hooks/user-service-hooks/use-edit-profile";
-import { ActivityIndicator } from "react-native";
+import { Pill } from "~/components/pill";
+import { createStyleSheet } from "./style";
 
 interface RecentaboutDataProps {
   ref: React.Ref<unknown> | undefined;
@@ -196,8 +147,6 @@ export const Recentabout = (props: RecentaboutDataProps) => {
   return (
     <>
       <View style={styles.container}>
-        <Loader visible={isLoading} showOverlay />
-
         <TouchableOpacity style={styles.HeaderContainerTwo} activeOpacity={1}>
           <TouchableOpacity style={styles.row2} onPress={onBackPress}>
             <View>

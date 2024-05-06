@@ -45,7 +45,6 @@ import {
   postCalender,
 } from "~/assets/images";
 import { ImageComponent } from "~/components/image-component";
-import { Loader } from "~/components/loader";
 import { Navbar } from "~/components/navbar/Navbar";
 import { LOG } from "~/config";
 import { navigations } from "~/config/app-navigation/constant";
@@ -794,7 +793,6 @@ export const HomeScreen = (props: HomeScreenProps) => {
   return (
     <>
       <View style={styles.MainPostContainer}>
-        <Loader visible={isLoading} showOverlay />
         {/* <TouchableOpacity onPress={() => openPostModal("item.id")}>
           <ImageComponent
             resizeMode="cover"

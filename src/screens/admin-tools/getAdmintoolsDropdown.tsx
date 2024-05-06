@@ -1,32 +1,23 @@
-import { useAppTheme } from "~/app-hooks/use-app-theme";
-import React, { useCallback, useEffect, useRef, useState } from "react";
-import { View, Text } from "react-native";
-import { createStyleSheet } from "./style";
-import {
-  buttonArrowGreen,
-  dummy,
-  edit2,
-  payoutClose,
-  sendPayoutImg,
-} from "~/assets/images";
-import { ImageComponent } from "~/components/image-component";
-import { ModalRefProps } from "~/components/modal-component";
-import { TouchableOpacity } from "react-native";
-import { setData } from "~/network/constant";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { FlatList } from "react-native";
-import { Loader } from "~/components/loader";
 import {
   NavigationContainerRef,
   ParamListBase,
   useFocusEffect,
 } from "@react-navigation/native";
-import { EditPayoutModal } from "./editPayoutExpense-modal";
+import React, { useCallback, useState } from "react";
+import { FlatList, Modal, Text, TouchableOpacity, View } from "react-native";
 import Toast from "react-native-simple-toast";
-import { AddPayoutExpenseModel } from "./addPayoutExpense-modal";
-import { Modal } from "react-native";
 import GestureRecognizer from "react-native-swipe-gestures";
+import { useAppTheme } from "~/app-hooks/use-app-theme";
+import {
+  buttonArrowGreen,
+  edit2,
+  payoutClose,
+  sendPayoutImg,
+} from "~/assets/images";
+import { ImageComponent } from "~/components/image-component";
 import { navigations } from "~/config/app-navigation/constant";
+import { createStyleSheet } from "./style";
 
 interface GetAdmintoolsDropDownScreenProps {
   navigation?: NavigationContainerRef<ParamListBase>;
@@ -181,7 +172,6 @@ export const GetAdmintoolsDropDownScreen = (
 
   return (
     <>
-      <Loader visible={isLoading} showOverlay />
       <View style={styles.eventContainerTwo}>
         {revenueAmt > 0 ? (
           <View style={styles.eventListCont}>

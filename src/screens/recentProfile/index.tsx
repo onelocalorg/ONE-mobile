@@ -1,55 +1,22 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useAppTheme } from "~/app-hooks/use-app-theme";
 import {
   NavigationContainerRef,
   ParamListBase,
 } from "@react-navigation/native";
 import React, { useEffect, useState } from "react";
-import { createStyleSheet } from "./style";
-import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
-import { Header } from "~/components/header";
-import {
-  ImageBackground,
-  Keyboard,
-  KeyboardAvoidingView,
-  Modal,
-  PermissionsAndroid,
-  Platform,
-  Pressable,
-  ScrollView,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
-import { ImageComponent } from "~/components/image-component";
-import { TabComponent } from "~/components/tab-component";
-import { Recentabout } from "./about";
-import { RecentMyEvents } from "./my-events";
+import { ScrollView, View } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
+import { useAppTheme } from "~/app-hooks/use-app-theme";
+import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
+import { useToken } from "~/app-hooks/use-token";
+import { StoreType } from "~/network/reducers/store";
 import {
   UserProfileState,
   onSetCoverImage,
 } from "~/network/reducers/user-profile-reducer";
-import { StoreType } from "~/network/reducers/store";
-import { useLogout } from "~/app-hooks/use-logout";
-import { Loader } from "~/components/loader";
-import { launchCamera, launchImageLibrary } from "react-native-image-picker";
-import { Input } from "~/components/input";
-import { useEditProfile } from "~/network/hooks/user-service-hooks/use-edit-profile";
-import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
-import { Search, arrowLeft, bell, dummy, onelogo } from "~/assets/images";
-import { PERMISSIONS, request } from "react-native-permissions";
-import { Alert } from "react-native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useToken } from "~/app-hooks/use-token";
-import { TextInput } from "react-native-gesture-handler";
-import { verticalScale } from "~/theme/device/normalize";
-import { getTopPadding } from "~/utils/platform-padding";
-import { Image } from "react-native";
-import { height } from "~/theme/device/device";
-import { BottomSheet } from "react-native-elements";
-import GestureRecognizer from "react-native-swipe-gestures";
-import ImagePicker from "react-native-image-crop-picker";
+import { Recentabout } from "./about";
+import { RecentMyEvents } from "./my-events";
+import { createStyleSheet } from "./style";
 
 interface UserData {
   id: string;
@@ -130,7 +97,6 @@ export const RecentProfileScreen = (props: RecentProfileScreenProps) => {
 
   return (
     <View style={styles.container}>
-      <Loader visible={isLoading} showOverlay />
       <ScrollView showsVerticalScrollIndicator={false}>
         {selectedTab === 0 && (
           <Recentabout

@@ -1,70 +1,41 @@
 import {
-  View,
-  Text,
-  StyleSheet,
-  TextInput,
-  Keyboard,
-  Linking,
-  ScrollView,
-  Modal,
-  KeyboardAvoidingView,
-  Platform,
-  PermissionsAndroid,
-  Alert,
-} from "react-native";
-import React, { useCallback, useRef, useState } from "react";
-import { Header } from "~/components/header";
-import { SizedBox } from "~/components/sized-box";
-import { ImageComponent } from "~/components/image-component";
-import {
-  Search,
-  activeRadio,
-  arrowLeft,
-  calendarWhite,
-  close,
-  edit,
-  inactiveRadio,
-  loginLogo,
-  onelogo,
-  selectPic,
-} from "~/assets/images";
-import { normalScale, verticalScale } from "~/theme/device/normalize";
-import { Input } from "~/components/input";
-import { TouchableOpacity } from "react-native";
-import { ButtonComponent } from "~/components/button-component";
-import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
-import Toast from "react-native-simple-toast";
-import { emailRegexEx } from "~/assets/constants";
-import { navigations } from "~/config/app-navigation/constant";
-import {
   NavigationContainerRef,
   ParamListBase,
 } from "@react-navigation/native";
+import React, { useRef, useState } from "react";
+import {
+  Alert,
+  Keyboard,
+  KeyboardAvoidingView,
+  Linking,
+  Modal,
+  PermissionsAndroid,
+  Platform,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import ImagePicker from "react-native-image-crop-picker";
+import { launchCamera } from "react-native-image-picker";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import Toast from "react-native-simple-toast";
+import GestureRecognizer from "react-native-swipe-gestures";
+import { useDispatch } from "react-redux";
+import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
 import { useToken } from "~/app-hooks/use-token";
+import { arrowLeft, onelogo, selectPic } from "~/assets/images";
+import { CalenderRefProps } from "~/components/Calender/calenderComponent";
+import { ButtonComponent } from "~/components/button-component";
+import { DatePickerRefProps } from "~/components/date-range-picker";
+import { ImageComponent } from "~/components/image-component";
+import { SizedBox } from "~/components/sized-box";
+import { navigations } from "~/config/app-navigation/constant";
 import { useCreateStripeCustomer } from "~/network/hooks/payment-service-hooks/use-create-stripe-customer";
 import { useSaveCustomerId } from "~/network/hooks/user-service-hooks/use-save-customer-id";
-import { useDispatch } from "react-redux";
 import { onSetUser } from "~/network/reducers/user-profile-reducer";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { Loader } from "~/components/loader";
-import { useLogin } from "~/network/hooks/user-service-hooks/use-login";
-import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
-import ImagePicker from "react-native-image-crop-picker";
-import GestureRecognizer from "react-native-swipe-gestures";
-import { launchCamera } from "react-native-image-picker";
-import { Calendar, LocaleConfig } from "react-native-calendars";
-import {
-  DatePickerRefProps,
-  DateRangePicker,
-} from "~/components/date-range-picker";
-import { width } from "~/theme/device/device";
-import moment from "moment";
-import { DatePickerModal } from "react-native-paper-dates";
-import {
-  CalenderComponent,
-  CalenderComponentModal,
-  CalenderRefProps,
-} from "~/components/Calender/calenderComponent";
+import { normalScale, verticalScale } from "~/theme/device/normalize";
 
 interface SignUpProps {
   navigation?: NavigationContainerRef<ParamListBase>;
@@ -415,8 +386,6 @@ export const SignUp = (props: SignUpProps) => {
 
   return (
     <TouchableOpacity activeOpacity={1} onPress={keyboardDismiss}>
-      <Loader visible={isLoading} showOverlay />
-
       <TouchableOpacity style={styles.HeaderContainerTwo} activeOpacity={1}>
         <TouchableOpacity onPress={onBackPress} style={{ zIndex: 11111222222 }}>
           <View style={styles.row2}>

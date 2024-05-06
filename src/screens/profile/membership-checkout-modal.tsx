@@ -1,32 +1,21 @@
-import { LOG } from "~/config";
-import { useAppTheme } from "~/app-hooks/use-app-theme";
-import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import React, { useEffect, useState } from "react";
 import {
-  Alert,
-  Dimensions,
-  Image,
-  ListRenderItem,
+  KeyboardAvoidingView,
+  LogBox,
   Modal,
+  Platform,
+  ScrollView,
   Text,
   TextInput,
-  TouchableHighlight,
   TouchableOpacity,
   View,
-  useWindowDimensions,
-  ScrollView,
-  LogBox,
-  KeyboardAvoidingView,
-  Platform,
 } from "react-native";
-import GestureRecognizer from "react-native-swipe-gestures";
-import { createStyleSheet } from "./style";
-import { Loader } from "~/components/loader";
-import { ImageComponent } from "~/components/image-component";
-import { persistKeys } from "~/network/constant";
-import { useToken } from "~/app-hooks/use-token";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import Toast from "react-native-simple-toast";
+import GestureRecognizer from "react-native-swipe-gestures";
+import { useAppTheme } from "~/app-hooks/use-app-theme";
+import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
+import { useToken } from "~/app-hooks/use-token";
 import {
   addCard,
   buttonArrow,
@@ -34,7 +23,9 @@ import {
   closeCard,
 } from "~/assets/images";
 import { ButtonComponent } from "~/components/button-component";
-import { useFocusEffect } from "@react-navigation/native";
+import { ImageComponent } from "~/components/image-component";
+import { LOG } from "~/config";
+import { createStyleSheet } from "./style";
 
 interface membershipModalProps {
   memberModal: boolean;
@@ -348,7 +339,6 @@ export const MembershipCheckoutModal = (props: membershipModalProps) => {
           onPress={memberShipHide}
         />
       </GestureRecognizer>
-      <Loader visible={isLoading} showOverlay />
 
       {Platform.OS === "android" ? (
         <View>
@@ -488,7 +478,7 @@ export const MembershipCheckoutModal = (props: membershipModalProps) => {
                 onPress={addCardModalHide}
               />
             </GestureRecognizer>
-            <Loader visible={isLoading} showOverlay />
+
             <KeyboardAvoidingView style={styles.keyboardViewTwo}>
               <View style={styles.addCardBorderContainer}>
                 <View>
@@ -721,7 +711,7 @@ export const MembershipCheckoutModal = (props: membershipModalProps) => {
                   onPress={addCardModalHide}
                 />
               </GestureRecognizer>
-              <Loader visible={isLoading} showOverlay />
+
               <KeyboardAvoidingView
                 behavior={Platform.OS === "ios" ? "position" : "height"}
                 style={styles.keyboardViewTwo}

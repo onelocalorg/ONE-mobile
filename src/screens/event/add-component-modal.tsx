@@ -1,11 +1,13 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useAppTheme } from "~/app-hooks/use-app-theme";
-import { LOG } from "~/config";
-import React, { useCallback, useEffect, useState } from "react";
-import { createStyleSheet } from "./style";
-import { ModalComponent, ModalRefProps } from "~/components/modal-component";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
-  Alert,
+  NavigationContainerRef,
+  ParamListBase,
+  useFocusEffect,
+} from "@react-navigation/native";
+import React, { useCallback, useEffect, useState } from "react";
+import {
+  Modal,
   Platform,
   StyleProp,
   Text,
@@ -13,33 +15,23 @@ import {
   View,
   ViewStyle,
 } from "react-native";
-import { ImageComponent } from "~/components/image-component";
-import {
-  eventBlack,
-  eventWhite,
-  gratitudeBlack,
-  offer,
-  request,
-} from "~/assets/images";
-import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
-import { navigations } from "~/config/app-navigation/constant";
-import {
-  NavigationContainerRef,
-  ParamListBase,
-  useFocusEffect,
-} from "@react-navigation/native";
 import { useSelector } from "react-redux";
+import { useAppTheme } from "~/app-hooks/use-app-theme";
+import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
+import { eventBlack, gratitudeBlack, offer, request } from "~/assets/images";
+import { ImageComponent } from "~/components/image-component";
+import { ModalComponent, ModalRefProps } from "~/components/modal-component";
+import { LOG } from "~/config";
+import { navigations } from "~/config/app-navigation/constant";
+import { getData, setData } from "~/network/constant";
+import { useUserProfile } from "~/network/hooks/user-service-hooks/use-user-profile";
 import { StoreType } from "~/network/reducers/store";
 import { UserProfileState } from "~/network/reducers/user-profile-reducer";
-import { useUserProfile } from "~/network/hooks/user-service-hooks/use-user-profile";
-import { getData, setData } from "~/network/constant";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { Modal } from "react-native";
+import { createStyleSheet } from "./style";
 
 import GestureRecognizer from "react-native-swipe-gestures";
 import { Subscription } from "~/components/subcription";
 import { MembershipCheckoutModal } from "~/screens/profile/membership-checkout-modal";
-import { Loader } from "~/components/loader";
 
 interface AddComponentModalProps {
   modalRef?: React.Ref<ModalRefProps>;
@@ -311,7 +303,6 @@ export const AddComponentModal = (props: AddComponentModalProps) => {
           visible={iseventProducerModal}
           onDismiss={onEventDismiss}
         >
-          <Loader visible={isLoading} showOverlay />
           <GestureRecognizer
             onSwipeDown={onEventDismiss}
             style={styles.gesture}
