@@ -3,6 +3,7 @@ import {
   NavigationContainerRef,
   ParamListBase,
 } from "@react-navigation/native";
+import _ from "lodash";
 import moment from "moment";
 import React, { useEffect, useRef, useState } from "react";
 import {
@@ -36,7 +37,9 @@ import { ImageComponent } from "~/components/image-component";
 import { LocationAutocomplete } from "~/components/location-autocomplete/LocationAutocomplete";
 import { Pill } from "~/components/pill";
 import { SizedBox } from "~/components/sized-box";
+import { LOG } from "~/config";
 import { verticalScale } from "~/theme/device/normalize";
+import { ResourceDefinition } from "./resource-definition";
 import { createStyleSheet } from "./style";
 
 interface CreatePostRequestScreenProps {
@@ -62,8 +65,9 @@ export const CreatePostRequestScreen = (
   const [getResourceForLis, getResourseDataFor]: any = useState([]);
   const [icontotype, getTypeIconTo]: any = useState();
   const [valueTotype, getToTypeValue] = useState("");
-  const [iconFrom, getTypeIconFrom]: any = useState();
-  const [typrFrom, getFromTypeValue]: any = useState();
+  const [iconFrom, setIconFrom]: any = useState();
+  const [typeFrom, setTypeFrom]: any = useState();
+  const [titleFrom, setTitleFrom]: any = useState();
   const [imageArray, setImageArray]: any = useState([]);
   const [imageArrayKey, setImageArrayKey]: any = useState([]);
   const [forName, createPostforName] = useState("");
@@ -75,7 +79,7 @@ export const CreatePostRequestScreen = (
   const [tags, createPosttags]: any = useState("");
   const [tagArray, tagselectArray]: any = useState([]);
   const [whatName, createPostwhatName] = useState("");
-  const [fromName, createPostFromName] = useState("");
+  const [fromName, setFromName] = useState("");
   const [addnewCmt, onAddComment] = useState("");
   const [addnewCmtReply, onAddCommentReply] = useState("");
   var [whatQuantity, createPostwhatQuantity] = useState(1);
@@ -127,7 +131,7 @@ export const CreatePostRequestScreen = (
     }
     getTypeIconTo(icon);
     getToTypeValue(type);
-    getFromTypeValue(type);
+    setTypeFrom(type);
     setFronShowPopover(false);
   };
 
@@ -138,42 +142,47 @@ export const CreatePostRequestScreen = (
   };
 
   const getResourcesAPI = async () => {
+    LOG.debug("> request.getResourcesAPI");
     const token = await AsyncStorage.getItem("token");
     try {
-      const response = await fetch(
-        process.env.API_URL + "/v1/posts/resources",
-        {
-          method: "get",
-          headers: new Headers({
-            Authorization: "Bearer " + token,
-            "Content-Type": "application/json",
-          }),
-        }
-      );
+      const url = process.env.API_URL + "/v1/posts/resources";
+      LOG.info(url);
+      const response = await fetch(url, {
+        method: "get",
+        headers: new Headers({
+          Authorization: "Bearer " + token,
+          "Content-Type": "application/json",
+        }),
+      });
+      LOG.info(response.status);
       const dataItem = await response.json();
-      console.log(
-        "-------------------Get Resources API Response---------------------"
+      const data = dataItem?.data;
+      LOG.debug("data", data);
+
+      const everyoneDefinition = _.find(
+        data.from,
+        (r: ResourceDefinition) => r.value === "everyone"
       );
-      console.log(dataItem);
-      getResourseDatawhat(dataItem?.data?.what);
-      getResourseDataTo(dataItem?.data?.to);
-      getResourseDataFrom(dataItem?.data?.from);
-      getResourseDataFor(dataItem?.data?.for);
-      getTypeIconWhat(dataItem?.data?.what[0]["icon"]);
-      getTypeIconFor(dataItem?.data?.for[0]["icon"]);
-      getForTypeValue(dataItem?.data?.for[0]["value"]);
-      getTypeIconTo(dataItem?.data?.to[0]["icon"]);
-      setToTitleData(dataItem?.data?.to[0]["title"]);
-      getToTypeValue(dataItem?.data?.to[0]["value"]);
-      getTypeIconFrom(dataItem?.data?.from[0]["icon"]);
-      getFromTypeValue(dataItem?.data?.from[0]["value"]);
-      getWhatTypeValue(dataItem?.data?.what[0]["value"]);
-      console.log(
-        dataItem?.data[0]["icon"],
-        "------------icon image--------------"
-      );
+      LOG.debug("everyoneDefinition", everyoneDefinition);
+
+      getResourseDatawhat(data?.what);
+      getResourseDataTo(data?.to);
+      getResourseDataFrom(everyoneDefinition);
+      getResourseDataFor(data?.for);
+      getTypeIconWhat(data?.what[0]["icon"]);
+      getTypeIconFor(data?.for[0]["icon"]);
+      getForTypeValue(data?.for[0]["value"]);
+
+      getTypeIconTo(data?.to[0]["icon"]);
+      setToTitleData(data?.to[0]["title"]);
+      getToTypeValue(data?.to[0]["value"]);
+
+      setIconFrom(everyoneDefinition.icon);
+      setTypeFrom(everyoneDefinition.value);
+      setTitleFrom(everyoneDefinition.title);
+      getWhatTypeValue(data?.what[0]["value"]);
     } catch (error) {
-      console.error(error);
+      LOG.error("request.getResourcesAPI", error);
     }
   };
 
@@ -235,7 +244,7 @@ export const CreatePostRequestScreen = (
       content: content,
       tags: tagArray ? tagArray : undefined,
       post_image: imageArrayKey ? imageArrayKey : undefined,
-      from_type: typrFrom,
+      from_type: typeFrom,
       from_users: userListArray,
     };
 
@@ -640,8 +649,8 @@ export const CreatePostRequestScreen = (
                 <TextInput
                   // placeholder="who do you request this of?"
                   placeholderTextColor="darkgray"
-                  value={settoTitle}
-                  editable={settoTitle == "Everyone" ? false : true}
+                  value={titleFrom}
+                  editable={titleFrom == "Everyone" ? false : true}
                   onChangeText={(text) => {
                     setToTitleData(text);
                     gratisUserList(text);
