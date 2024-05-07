@@ -4,7 +4,7 @@ import { CheckInScreen } from "~/screens/check-in";
 import { CreateEventScreen } from "~/screens/createEvent/CreateEventScreen";
 import { AddPayoutExpenseScreen } from "~/screens/createEvent/addPayoutExpense-modal";
 import { EditPayoutModalScreen } from "~/screens/createEvent/editPayoutExpense-modal";
-import { EventDetailScreen } from "~/screens/event-detail";
+import { EventDetailScreen } from "~/screens/event-detail/EventDetailScreen";
 import { PaymentScreen } from "~/screens/payment-screen";
 import { ProfileScreen } from "~/screens/profile";
 import { navigations } from "./constant";

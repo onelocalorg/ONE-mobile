@@ -35,6 +35,10 @@ import { UserProfileState } from "~/network/reducers/user-profile-reducer";
 import { EventData } from "~/types/event-data";
 import { createStyleSheet } from "./style";
 
+const BOULDER_LON = -105.2705;
+const BOULDER_LAT = 40.015;
+const DEFAULT_ZOOM = 12;
+
 interface Range {
   startDate: Date | undefined;
   endDate: Date | undefined;
@@ -106,9 +110,9 @@ export const EventListScreen = (props: EventListScreenProps) => {
       event_type: setFilter,
       only_upcoming: 0,
       searchtext: searchQuery,
-      latitude: getLatitude.latitude,
-      longitude: getLatitude.longitude,
-      zoom_level: getLatitude.zoomLevel,
+      latitude: BOULDER_LAT,
+      longitude: BOULDER_LON,
+      zoom_level: DEFAULT_ZOOM,
       device_type: Platform.OS,
     };
     var eventList_url =

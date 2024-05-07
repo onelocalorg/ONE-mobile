@@ -31,7 +31,7 @@ import { EventList } from "~/components/event-list";
 import { ImageComponent } from "~/components/image-component";
 import { Loader } from "~/components/loader";
 import { ModalComponent } from "~/components/modal-component";
-import { EventData } from "~/network/hooks/home-service-hooks/use-event-lists";
+import { EventData } from "~/types/event-data";
 import { createStyleSheet } from "./style";
 
 interface TicketCheckoutModalCompProps {

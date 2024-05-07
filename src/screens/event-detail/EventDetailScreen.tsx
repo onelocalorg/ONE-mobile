@@ -42,12 +42,12 @@ import { navigations } from "~/config/app-navigation/constant";
 import { PurchaseProps } from "~/network/api/services/home-service";
 import { getData } from "~/network/constant";
 import { useEventDetails } from "~/network/hooks/home-service-hooks/use-event-details";
-import { EventData } from "~/network/hooks/home-service-hooks/use-event-lists";
 import { usePurchaseTicket } from "~/network/hooks/home-service-hooks/use-purchase-ticket";
 import { useCreatePayoutIntent } from "~/network/hooks/payment-service-hooks/use-create-payout-intent";
 import { StoreType } from "~/network/reducers/store";
 import { UserProfileState } from "~/network/reducers/user-profile-reducer";
 import { verticalScale } from "~/theme/device/normalize";
+import { EventData } from "~/types/event-data";
 import Going from "../../assets/images/going.png";
 import { createStyleSheet } from "./style";
 import { TicketCheckoutModal } from "./ticket-checkout-modal";
@@ -680,7 +680,7 @@ export const EventDetailScreen = (props: EventDetailScreenProps) => {
             }}
           >
             <Text style={{ fontSize: 20, color: "black", fontWeight: "600" }}>
-              RSVPS
+              RSVPs
             </Text>
 
             <View style={{ flexDirection: "row", columnGap: 20 }}>

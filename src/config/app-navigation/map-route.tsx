@@ -5,7 +5,7 @@ import { CreatePostScreen } from "~/screens/createPost";
 import { CreatePostGratisScreen } from "~/screens/createPost/gratis";
 import { CreatePostOfferScreen } from "~/screens/createPost/offer";
 import { CreatePostRequestScreen } from "~/screens/createPost/request";
-import { EventDetailScreen } from "~/screens/event-detail";
+import { EventDetailScreen } from "~/screens/event-detail/EventDetailScreen";
 import { MapScreen } from "~/screens/map/MapScreen";
 import { ProfileScreen } from "~/screens/profile";
 import { navigations } from "./constant";
