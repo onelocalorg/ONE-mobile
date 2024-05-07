@@ -11,7 +11,6 @@ import React, { useCallback, useState } from "react";
 import {
   ListRenderItem,
   Platform,
-  Switch,
   Text,
   TouchableOpacity,
   View,
@@ -107,7 +106,7 @@ export const EventListScreen = (props: EventListScreenProps) => {
     var eventData = {
       start_date: moment(range.startDate).format("YYYY-MM-DD"),
       end_date: moment(range.endDate).format("YYYY-MM-DD"),
-      event_type: setFilter,
+      // event_type: setFilter,
       only_upcoming: 0,
       searchtext: searchQuery,
       latitude: BOULDER_LAT,
@@ -282,7 +281,7 @@ export const EventListScreen = (props: EventListScreenProps) => {
         }
       />
       <View style={styles.backgroundToggle}>
-        <View style={styles.toggleCont}>
+        {/* <View style={styles.toggleCont}>
           <Text style={styles.villageLbl}>Village Friendly </Text>
           <View style={styles.switchToggle}>
             {Platform.OS === "ios" ? (
@@ -305,7 +304,7 @@ export const EventListScreen = (props: EventListScreenProps) => {
             )}
           </View>
           <Text style={styles.villageLbl}> Adult Oriented</Text>
-        </View>
+        </View> */}
         <TouchableOpacity activeOpacity={0.8} style={styles.dateContainer}>
           <ImageComponent source={calendar} style={styles.calendar} />
           <TouchableOpacity activeOpacity={0.8} onPress={() => setOpen(true)}>
