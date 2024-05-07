@@ -256,7 +256,7 @@ export const EventListScreen = (props: EventListScreenProps) => {
                 <View style={styles.rowClass}>
                   <ImageComponent source={pin} style={styles.pin} />
                   <Text numberOfLines={1} style={styles.location}>
-                    {subitem.address}
+                    {subitem.address || subitem.full_address?.split(",")[0]}
                   </Text>
                 </View>
                 {subitem.cancelled ? (
