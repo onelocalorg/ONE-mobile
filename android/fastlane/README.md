@@ -63,18 +63,18 @@ Build debug, test APK for screenshots and grab screenshots
 
 
 
-### android build_dev_upload_play_store
+### android build_dev_upload_playstore
 
 ```sh
-[bundle exec] fastlane android build_dev_upload_play_store
+[bundle exec] fastlane android build_dev_upload_playstore
 ```
 
 Connect to DEV server, build and upload to Play Store
 
-### android build_beta_upload_play_store
+### android build_beta_upload_playstore
 
 ```sh
-[bundle exec] fastlane android build_beta_upload_play_store
+[bundle exec] fastlane android build_beta_upload_playstore
 ```
 
 Connect to BETA server, Build and upload to Play Store

@@ -18,6 +18,8 @@ interface InputProps extends TextInputProps {
   errorMsg?: string;
   children?: React.ReactNode;
   height?: number;
+  placeholder?: string;
+  onFocus?: (e: any) => void;
 }
 
 export const Input = (props: InputProps) => {

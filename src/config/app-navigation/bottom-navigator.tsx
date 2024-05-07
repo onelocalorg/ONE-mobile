@@ -21,7 +21,7 @@ import {
 import { ImageComponent } from "~/components/image-component";
 import { ModalRefProps } from "~/components/modal-component";
 import { ChatScreen } from "~/screens/chat";
-import { AddComponentModal } from "~/screens/event/add-component-modal";
+import { CreatePostModal } from "~/screens/createPost/create-post-modal";
 import { bottomNavigationVisibleScreens, navigations } from "./constant";
 import { EventRoute } from "./event-route";
 import { HomeRoute } from "./home-route";
@@ -185,7 +185,7 @@ export const BottomNavigator = () => {
           );
         })}
       </Tab.Navigator>
-      <AddComponentModal
+      <CreatePostModal
         navigation={
           navigation as unknown as NavigationContainerRef<ParamListBase>
         }

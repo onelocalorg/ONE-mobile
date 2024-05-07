@@ -1,6 +1,6 @@
 import { createStackNavigator } from "@react-navigation/stack";
 import React from "react";
-import { AdminToolsScreen } from "~/screens/admin-tools";
+import { CreateEventScreen } from "~/screens/createEvent/CreateEventScreen";
 import { CreatePostScreen } from "~/screens/createPost";
 import { CreatePostGratisScreen } from "~/screens/createPost/gratis";
 import { CreatePostOfferScreen } from "~/screens/createPost/offer";
@@ -34,7 +34,7 @@ export const MapRoute = () => {
       />
       <MapStack.Screen
         name={navigations.ADMIN_TOOLS}
-        component={AdminToolsScreen}
+        component={CreateEventScreen}
         options={{ header }}
       />
       <MapStack.Screen

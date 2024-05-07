@@ -28,13 +28,11 @@ import { Navbar } from "~/components/navbar/Navbar";
 import { LOG } from "~/config";
 import { navigations } from "~/config/app-navigation/constant";
 import { getData } from "~/network/constant";
-import {
-  EventData,
-  useEventLists,
-} from "~/network/hooks/home-service-hooks/use-event-lists";
+import { useEventLists } from "~/network/hooks/home-service-hooks/use-event-lists";
 import { useUserProfile } from "~/network/hooks/user-service-hooks/use-user-profile";
 import { StoreType } from "~/network/reducers/store";
 import { UserProfileState } from "~/network/reducers/user-profile-reducer";
+import { EventData } from "~/types/event-data";
 import { createStyleSheet } from "./style";
 
 interface Range {

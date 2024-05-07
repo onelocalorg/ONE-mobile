@@ -1,9 +1,9 @@
 import { createStackNavigator } from "@react-navigation/stack";
 import React from "react";
-import { AdminToolsScreen } from "~/screens/admin-tools";
-import { AddPayoutExpenseScreen } from "~/screens/admin-tools/addPayoutExpense-modal";
-import { EditPayoutModalScreen } from "~/screens/admin-tools/editPayoutExpense-modal";
 import { CheckInScreen } from "~/screens/check-in";
+import { CreateEventScreen } from "~/screens/createEvent/CreateEventScreen";
+import { AddPayoutExpenseScreen } from "~/screens/createEvent/addPayoutExpense-modal";
+import { EditPayoutModalScreen } from "~/screens/createEvent/editPayoutExpense-modal";
 import { CreatePostScreen } from "~/screens/createPost";
 import { CreatePostGratisScreen } from "~/screens/createPost/gratis";
 import { CreatePostOfferScreen } from "~/screens/createPost/offer";
@@ -39,7 +39,7 @@ export const EventRoute = () => {
       />
       <EventStack.Screen
         name={navigations.ADMIN_TOOLS}
-        component={AdminToolsScreen}
+        component={CreateEventScreen}
         options={{ header }}
       />
       <EventStack.Screen

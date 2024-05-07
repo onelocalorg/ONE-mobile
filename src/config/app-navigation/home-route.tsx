@@ -1,9 +1,9 @@
 import { createStackNavigator } from "@react-navigation/stack";
 import React from "react";
-import { AdminToolsScreen } from "~/screens/admin-tools";
 import { EditPostGratisScreen } from "~/screens/createEditPost/gratisEdit";
 import { EditPostOfferScreen } from "~/screens/createEditPost/offerEdit";
 import { EditPostRequestScreen } from "~/screens/createEditPost/requestEdit";
+import { CreateEventScreen } from "~/screens/createEvent/CreateEventScreen";
 import { CreatePostScreen } from "~/screens/createPost";
 import { CreatePostGratisScreen } from "~/screens/createPost/gratis";
 import { CreatePostOfferScreen } from "~/screens/createPost/offer";
@@ -68,7 +68,7 @@ export const HomeRoute = () => {
       />
       <HomeStack.Screen
         name={navigations.ADMIN_TOOLS}
-        component={AdminToolsScreen}
+        component={CreateEventScreen}
         options={{ header }}
       />
       <HomeStack.Screen

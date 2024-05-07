@@ -1,83 +1,62 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { LOG } from "~/config";
-import { useAppTheme } from "~/app-hooks/use-app-theme";
-import React, { useEffect, useRef, useState } from "react";
-import { createStyleSheet } from "./style";
-import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
-import { LocationAutocomplete } from "~/components/location-autocomplete/LocationAutocomplete";
-import {
-  Alert,
-  Keyboard,
-  LogBox,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
-import { Header } from "~/components/header";
 import {
   NavigationContainerRef,
   ParamListBase,
 } from "@react-navigation/native";
-import { Pill } from "~/components/pill";
+import React, { useRef, useState } from "react";
 import {
-  Search,
+  Alert,
+  Keyboard,
+  Pressable,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import { useAppTheme } from "~/app-hooks/use-app-theme";
+import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
+import {
   addGreen,
   arrowLeft,
-  bell,
-  calendarTime,
   dummy,
   edit,
   onelogo,
   pinWhite,
   save,
-  sendPayoutImg,
   ticket,
 } from "~/assets/images";
-import { SizedBox } from "~/components/sized-box";
-import { normalScale, verticalScale } from "~/theme/device/normalize";
-import { Input } from "~/components/input";
-import { ImageComponent } from "~/components/image-component";
-import { AddTicketModal } from "./add-ticket-modal";
-import { ModalRefProps } from "~/components/modal-component";
-import { navigations } from "~/config/app-navigation/constant";
-import {
-  EventData,
-  Ticket,
-} from "~/network/hooks/home-service-hooks/use-event-lists";
-import { formatPrice } from "~/utils/common";
-import {
-  DatePickerRefProps,
-  DateRangePicker,
-} from "~/components/date-range-picker";
-import DateTimePickerModal from "react-native-modal-datetime-picker";
 
+import { ImageComponent } from "~/components/image-component";
+import { Input } from "~/components/input";
+import { LocationAutocomplete } from "~/components/location-autocomplete/LocationAutocomplete";
+import { ModalRefProps } from "~/components/modal-component";
+import { Pill } from "~/components/pill";
+import { SizedBox } from "~/components/sized-box";
+import { navigations } from "~/config/app-navigation/constant";
+import { normalScale, verticalScale } from "~/theme/device/normalize";
+import { AddTicketModal } from "./AddTicketModal";
+import { createStyleSheet } from "./style";
+
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { DateTime } from "luxon";
+import { launchImageLibrary } from "react-native-image-picker";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import Toast from "react-native-simple-toast";
+import { useSelector } from "react-redux";
+import { ButtonComponent } from "~/components/button-component";
+import { ChooseDate } from "~/components/choose-date/ChooseDate";
+import { Loader } from "~/components/loader";
+import { LOG } from "~/config";
+import { useCreateEvent } from "~/network/hooks/home-service-hooks/use-create-event";
 import { useTicketHolderCheckinsList } from "~/network/hooks/home-service-hooks/use-ticket-holder-checkin-list";
 import { useUpdateEvent } from "~/network/hooks/home-service-hooks/use-update-event";
-import { Loader } from "~/components/loader";
-import { ButtonComponent } from "~/components/button-component";
-import { TicketBodyParamProps } from "~/network/api/services/home-service";
-import { useCreateEvent } from "~/network/hooks/home-service-hooks/use-create-event";
-import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
-import { launchCamera, launchImageLibrary } from "react-native-image-picker";
-import { useSelector } from "react-redux";
 import { StoreType } from "~/network/reducers/store";
 import { UserProfileState } from "~/network/reducers/user-profile-reducer";
-import { useUserProfile } from "~/network/hooks/user-service-hooks/use-user-profile";
-import { TextInput } from "react-native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import GetLocation from "react-native-get-location";
-import { DatePickerModal } from "react-native-paper-dates";
-import Toast from "react-native-simple-toast";
-import { Switch } from "react-native";
-import { AddPayoutExpenseModel } from "./addPayoutExpense-modal";
-import { GetAdmintoolsDropDownScreen } from "./getAdmintoolsDropdown";
-import { ScrollView } from "react-native-gesture-handler";
 import { width } from "~/theme/device/device";
-import { Platform } from "react-native";
-import { emailRegexEx } from "~/assets/constants";
-import { DateTime } from "luxon";
+import { EventData } from "~/types/event-data";
+import { TicketType } from "~/types/ticket-type";
+import { GetAdmintoolsDropDownScreen } from "./getAdmintoolsDropdown";
 
-interface AdminToolsScreenProps {
+interface CreateEventScreenProps {
   navigation?: NavigationContainerRef<ParamListBase>;
   route?: {
     params: {
@@ -87,15 +66,14 @@ interface AdminToolsScreenProps {
   };
 }
 
-export const AdminToolsScreen = (props: AdminToolsScreenProps) => {
+export const CreateEventScreen = (props: CreateEventScreenProps) => {
   const { theme } = useAppTheme();
   const { strings } = useStringsAndLabels();
   const { navigation, route } = props || {};
   const { eventData, isCreateEvent } = route?.params ?? {};
   const styles = createStyleSheet(theme);
-  const modalRef: React.Ref<ModalRefProps> = useRef(null);
+  // const modalRef: React.Ref<ModalRefProps> = useRef(null);
   const addItemRef: React.Ref<ModalRefProps> = useRef(null);
-  const [selectedTicketIndex, setSelectedTicketIndex] = useState(0);
   const [isEdit, setIsEdit] = useState(false);
 
   const [startDate, setStartDate] = useState<DateTime>(
@@ -104,14 +82,11 @@ export const AdminToolsScreen = (props: AdminToolsScreenProps) => {
   const [endDate, setEndDate] = useState(startDate.plus({ hour: 1 }));
   const [isEndDateActive, setEndDateActive] = useState(false);
 
-  const [searchQuery, setSearchQuery] = useState("");
-  var [location, setUserLocation]: any = useState();
-  const [isEnabled, setIsEnabled] = useState(false);
-  const [isBreakDown, setIsBreakDown] = useState(false);
   const [setFilter, SetToggleFilter] = useState("VF");
   const [eventDetails, setEventDetails] = useState<EventData>(
     (eventData as EventData) || {}
   );
+  const [tickets, setTickets] = useState<TicketType[]>([]);
   const {
     name,
     address,
@@ -119,7 +94,6 @@ export const AdminToolsScreen = (props: AdminToolsScreenProps) => {
     long,
     start_date,
     end_date,
-    tickets,
     email_confirmation_body,
     id,
     full_address,
@@ -139,9 +113,9 @@ export const AdminToolsScreen = (props: AdminToolsScreenProps) => {
   });
   const { mutateAsync } = useUpdateEvent();
   const [isLoading, LodingData] = useState(false);
-  const [setLocation, setAddressLocation]: any = useState();
   const { mutateAsync: createEvent, isLoading: createEventLoading } =
     useCreateEvent();
+  const [curTicket, setCurTicket] = useState<number | undefined>();
 
   // useEffect(() => {
   //   LogBox.ignoreAllLogs();
@@ -170,24 +144,24 @@ export const AdminToolsScreen = (props: AdminToolsScreenProps) => {
   //   }
   // }, [eventData]);
 
-  const requestLocationPermission = async () => {
-    GetLocation.getCurrentPosition({
-      enableHighAccuracy: false,
-      timeout: 6000,
-    })
-      .then((location) => {
-        setUserLocation(location);
-        console.log(
-          "---------------------location---------------------",
-          location
-        );
-      })
-      .catch((error) => {
-        console.log("---------------------error---------------------", error);
-        const { code, message } = error;
-        console.log(code, message);
-      });
-  };
+  // const requestLocationPermission = async () => {
+  //   GetLocation.getCurrentPosition({
+  //     enableHighAccuracy: false,
+  //     timeout: 6000,
+  //   })
+  //     .then((location) => {
+  //       setUserLocation(location);
+  //       console.log(
+  //         "---------------------location---------------------",
+  //         location
+  //       );
+  //     })
+  //     .catch((error) => {
+  //       console.log("---------------------error---------------------", error);
+  //       const { code, message } = error;
+  //       console.log(code, message);
+  //     });
+  // };
 
   async function onCancleEvent(eventID: any) {
     LodingData(true);
@@ -248,16 +222,6 @@ export const AdminToolsScreen = (props: AdminToolsScreenProps) => {
   };
 
   const onCreateEvent = async () => {
-    var getTicket: any = [];
-    if (tickets?.length) {
-      console.log("is ticket", tickets?.length);
-      getTicket = tickets?.map((ele) => ele?.id ?? "");
-      var ticketArray = getTicket.join(",");
-    } else {
-      console.log("not is ticket");
-      var ticketArray: any = "";
-    }
-
     LodingData(true);
     Keyboard.dismiss();
     const res = await createEvent({
@@ -265,7 +229,7 @@ export const AdminToolsScreen = (props: AdminToolsScreenProps) => {
         ...eventDetails,
         start_date: startDate,
         end_date: isEndDateActive ? endDate : undefined,
-        tickets: ticketArray,
+        tickets,
         eventImage: eventImage ? eventImage : undefined,
         latitude: lat,
         longitude: long,
@@ -336,44 +300,54 @@ export const AdminToolsScreen = (props: AdminToolsScreenProps) => {
     setEventDetails({ ...eventDetails, [key]: text });
   };
 
-  const onSuccessfulTicketCreation = (ticketDetails: TicketBodyParamProps) => {
-    setIsEdit(false);
-    modalRef.current?.onCloseModal();
-    const eventDetailsCopy = { ...eventDetails };
-    if (isEdit) {
-      const allTickets = [...(eventDetailsCopy?.tickets || [])];
-      const index = allTickets.findIndex(
-        (ele) => ele?.id === ticketDetails?.id
-      );
-      allTickets.splice(index, 1, ticketDetails);
-      eventDetailsCopy.tickets = allTickets;
+  const onTicketAdded = (ticket: TicketType) => {
+    LOG.debug("> onTicketAdded", ticket);
+    // setIsEdit(false);
+    // modalRef.current?.onCloseModal();
+    if (tickets) {
+      setTickets([...tickets, ticket]);
     } else {
-      const allTickets = [...(eventDetailsCopy?.tickets || [])];
-      allTickets.push(ticketDetails);
-      eventDetailsCopy.tickets = allTickets;
+      setTickets([ticket]);
     }
-    setEventDetails(eventDetailsCopy);
+    setCurTicket(undefined);
+
+    LOG.debug("tickets.length", tickets.length);
+
+    // const eventDetailsCopy = { ...eventDetails };
+    // if (isEdit) {
+    //   const allTickets = [...(eventDetailsCopy?.tickets || [])];
+    //   const index = allTickets.findIndex(
+    //     (ele) => ele?.id === ticket?.id
+    //   );
+    //   allTickets.splice(index, 1, ticket);
+    //   eventDetailsCopy.tickets = allTickets;
+    // } else {
+    //   const allTickets = [...(eventDetailsCopy?.tickets || [])];
+    //   allTickets.push(ticket);
+    //   eventDetailsCopy.tickets = allTickets;
+    // }
+    // setEventDetails(eventDetailsCopy);
   };
 
-  const onCancel = () => {
-    setIsEdit(false);
-  };
+  // const onCancel = () => {
+  //   setIsEdit(false);
+  // };
 
-  const openCreateTicketModal = () => {
-    setIsEdit(false);
-    modalRef.current?.onOpenModal();
-  };
+  // const openCreateTicketModal = () => {
+  //   // setIsEdit(false);
+  //   modalRef.current?.onOpenModal();
+  // };
 
-  const openAddBreakDownModal = () => {
-    setIsEdit(false);
-    addItemRef.current?.onOpenModal();
-  };
+  // // const openAddBreakDownModal = () => {
+  // //   setIsEdit(false);
+  // //   addItemRef.current?.onOpenModal();
+  // // };
 
-  const openEditTicketModal = (index: number) => {
-    setSelectedTicketIndex(index);
-    setIsEdit(true);
-    modalRef.current?.onOpenModal();
-  };
+  // const openEditTicketModal = (index: number) => {
+  //   setSelectedTicketIndex(index);
+  //   setIsEdit(true);
+  //   modalRef.current?.onOpenModal();
+  // };
 
   const onUploadImage = async () => {
     const { assets } = await launchImageLibrary({
@@ -427,54 +401,18 @@ export const AdminToolsScreen = (props: AdminToolsScreenProps) => {
     navigation?.navigate(navigations.PROFILE);
   };
 
-  const toggleSwitch = (value: any) => {
-    if (isEnabled === false) {
-      setIsEnabled(true);
-      SetToggleFilter("AO");
-    } else {
-      setIsEnabled(false);
-      SetToggleFilter("VF");
-    }
-  };
+  // const toggleSwitch = (value: any) => {
+  //   if (isEnabled === false) {
+  //     setIsEnabled(true);
+  //     SetToggleFilter("AO");
+  //   } else {
+  //     setIsEnabled(false);
+  //     SetToggleFilter("VF");
+  //   }
+  // };
 
   const keyboardDismiss = () => {
     Keyboard.dismiss();
-  };
-
-  interface ChooseDateProps {
-    children: string;
-    date: DateTime;
-    setDate: (date: DateTime) => void;
-  }
-  const ChooseDate = ({ children, date, setDate }: ChooseDateProps) => {
-    const [isPickerVisible, setPickerVisible] = useState(false);
-    return (
-      <View style={styles.row}>
-        <View style={styles.circularView}>
-          <ImageComponent source={calendarTime} style={styles.calendarTime} />
-        </View>
-        <TouchableOpacity
-          activeOpacity={0.8}
-          onPress={() => setPickerVisible(true)}
-          style={styles.margin}
-        >
-          <Text style={styles.time}>{children}</Text>
-          <Text style={styles.time}>
-            {date.toLocaleString(DateTime.DATETIME_MED)}
-          </Text>
-        </TouchableOpacity>
-        <DateTimePickerModal
-          isVisible={isPickerVisible}
-          date={date.toJSDate()}
-          mode="datetime"
-          onConfirm={(date) => {
-            setDate(DateTime.fromJSDate(date));
-            setPickerVisible(false);
-          }}
-          onCancel={() => setPickerVisible(false)}
-        />
-      </View>
-    );
   };
 
   const ChooseStartAndEndDates = () => (
@@ -503,11 +441,7 @@ export const AdminToolsScreen = (props: AdminToolsScreenProps) => {
   );
 
   return (
-    <TouchableOpacity
-      style={styles.container}
-      activeOpacity={1}
-      onPress={keyboardDismiss}
-    >
+    <Pressable style={styles.container} onPress={keyboardDismiss}>
       <Loader visible={isLoading || createEventLoading} showOverlay />
       <TouchableOpacity style={styles.HeaderContainerTwo} activeOpacity={1}>
         <TouchableOpacity onPress={onBackPress} style={{ zIndex: 11111222222 }}>
@@ -551,7 +485,12 @@ export const AdminToolsScreen = (props: AdminToolsScreenProps) => {
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.scrollView}
       >
-        <TouchableOpacity activeOpacity={1} onPress={keyboardDismiss}>
+        <TouchableOpacity
+          activeOpacity={1}
+          onPress={() => {
+            keyboardDismiss();
+          }}
+        >
           <View>
             <TouchableOpacity activeOpacity={0.8} onPress={onUploadImage}>
               <ImageComponent
@@ -670,27 +609,46 @@ export const AdminToolsScreen = (props: AdminToolsScreenProps) => {
               />
               <View style={[styles.row, styles.marginTop]}>
                 <Text style={styles.tickets}>{strings.tickets}:</Text>
-                <TouchableOpacity
-                  activeOpacity={0.8}
-                  onPress={openCreateTicketModal}
-                >
+                <Pressable onPress={() => setCurTicket(tickets.length)}>
                   <ImageComponent source={addGreen} style={styles.addGreen} />
-                </TouchableOpacity>
+                </Pressable>
               </View>
+              <AddTicketModal
+                isVisible={curTicket !== undefined}
+                onSuccess={onTicketAdded}
+                onDismiss={() => setCurTicket(undefined)}
+                value={curTicket === undefined ? undefined : tickets[curTicket]}
+                // eventId={id}
+                // eventDetails={eventDetails}
+                // value={eventDetails.tickets?.[selectedTicketIndex]}
+                // ref={modalRef}
+                // isEdit={isEdit}
+                // onCancel={onCancel}
+              />
               <View>
-                {tickets?.map((ele, index) => (
-                  <View key={ele?.price.toString()} style={styles.rowOnly}>
-                    {/* <Text style={styles.ticket}>{`${ele?.name} - ${
-                      ele?.price
-                    } - (ends ${getDate(ele?.end_date)})`}</Text> */}
-                    <TouchableOpacity
-                      onPress={() => openEditTicketModal(index)}
-                      activeOpacity={0.8}
-                    >
-                      <ImageComponent source={edit} style={styles.edit} />
-                    </TouchableOpacity>
-                  </View>
-                ))}
+                {tickets?.map((t, index) => {
+                  return (
+                    <View key={t.id || index} style={styles.rowOnly}>
+                      <Text style={styles.ticket}>{`${t?.name} - ${
+                        t.quantity ? t.quantity : "Unlimited"
+                      } ${
+                        t.price.gt(0) ? "@ $" + t.price.toFixed(2) : "Free"
+                      }`}</Text>
+                      <View style={styles.rowOnly}>
+                        <Pressable onPress={() => setCurTicket(index)}>
+                          <ImageComponent source={edit} style={styles.edit} />
+                        </Pressable>
+                        <Pressable
+                          onPress={() =>
+                            setTickets(tickets.filter((_, i) => i !== index))
+                          }
+                        >
+                          <Text style={styles.delete}>X</Text>
+                        </Pressable>
+                      </View>
+                    </View>
+                  );
+                })}
               </View>
               <Text style={styles.tickets}>{strings.confirmationEmail}:</Text>
               <SizedBox height={verticalScale(4)} />
@@ -769,16 +727,6 @@ export const AdminToolsScreen = (props: AdminToolsScreenProps) => {
         />
       </View>
 
-      <AddTicketModal
-        onSuccessfulTicketCreation={onSuccessfulTicketCreation}
-        eventId={id}
-        eventDetails={eventDetails}
-        ticketData={eventDetails?.tickets?.[selectedTicketIndex]}
-        ref={modalRef}
-        isEdit={isEdit}
-        onCancel={onCancel}
-      />
-
       {/* <BreakDownModal ref={addItemRef} id={''} revenue={0} expense={0} profilt={0} payout={0} remainingAmt={0} userId={''}></BreakDownModal> */}
 
       {/* <DatePickerModal
@@ -793,6 +741,6 @@ export const AdminToolsScreen = (props: AdminToolsScreenProps) => {
           editIcon="none"
           // closeIcon='none'
         /> */}
-    </TouchableOpacity>
+    </Pressable>
   );
 };

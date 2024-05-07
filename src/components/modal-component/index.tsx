@@ -20,6 +20,7 @@ export interface ModalProps {
   viewStyle?: StyleProp<ViewStyle>;
   titleStyle?: StyleProp<TextStyle>;
   callBack?: () => void;
+  isVisible?: boolean;
 }
 
 export type ModalRefProps = {
@@ -27,11 +28,20 @@ export type ModalRefProps = {
   onCloseModal: () => void;
 };
 
-const ModalView = (props: ModalProps, ref: React.Ref<unknown> | undefined) => {
+const ModalView = (
+  {
+    children,
+    title,
+    viewStyle,
+    titleStyle,
+    callBack,
+    isVisible = false,
+  }: ModalProps,
+  ref: React.Ref<unknown> | undefined
+) => {
   const { theme } = useAppTheme();
   const styles = createStyleSheet(theme);
-  const { children, title, viewStyle, titleStyle, callBack } = props;
-  const [isVisible, setVisibility] = useState(false);
+  const [visibility, setVisibility] = useState(isVisible);
 
   const closeModal = () => {
     setVisibility(false);
@@ -50,7 +60,7 @@ const ModalView = (props: ModalProps, ref: React.Ref<unknown> | undefined) => {
   }));
 
   return (
-    <Modal transparent onDismiss={closeModal} visible={isVisible}>
+    <Modal transparent onDismiss={closeModal} visible={visibility}>
       <GestureRecognizer onSwipeDown={closeModal} style={styles.gesture}>
         <TouchableOpacity
           style={styles.container}

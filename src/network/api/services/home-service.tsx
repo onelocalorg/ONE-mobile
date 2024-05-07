@@ -2,6 +2,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { DateTime } from "luxon";
 import { apiConstants } from "~/network/constant";
 import { getApiResponse } from "~/network/utils/get-api-response";
+import { TicketType } from "~/types/ticket-type";
 import { API } from "..";
 
 interface EventProps {
@@ -140,7 +141,7 @@ interface UpdateEventProps {
     address?: string;
     full_address?: string;
     emailConfirmationBody?: string;
-    tickets?: string[];
+    tickets?: TicketType[];
     eventImage?: string;
     about?: string;
     latitude?: string;
@@ -176,7 +177,7 @@ export const onUpdateEvent = async (props: UpdateEventProps) => {
     address: address,
     full_address: full_address,
     email_confirmation_body: emailConfirmationBody,
-    tickets: tickets,
+    ticketTypes: tickets,
     event_lat: latitude,
     event_lng: longitude,
     event_type: type,
@@ -205,7 +206,7 @@ interface CreateEventProps {
     end_date?: DateTime;
     address?: string;
     email_confirmation_body?: string;
-    tickets: string[];
+    tickets?: TicketType[];
     full_address?: string;
     eventImage?: string;
     about?: string;
@@ -235,36 +236,20 @@ export const onCreateEvent = async (props: CreateEventProps) => {
   let response;
 
   var attachments = {};
-  if (tickets?.length) {
-    attachments = {
-      name: name,
-      start_date: start_date.toISO(),
-      end_date: end_date?.toISO(),
-      about: about,
-      address: address,
-      full_address: full_address,
-      email_confirmation_body: email_confirmation_body,
-      tickets: tickets,
-      event_lat: latitude.toString(),
-      event_lng: longitude.toString(),
-      event_type: type,
-      event_image: eventImage,
-    };
-  } else {
-    attachments = {
-      name: name,
-      start_date: start_date.toISO(),
-      end_date: end_date?.toISO(),
-      about: about,
-      address: address,
-      full_address: full_address,
-      email_confirmation_body: email_confirmation_body,
-      event_lat: latitude.toString(),
-      event_lng: longitude.toString(),
-      event_type: type,
-      event_image: eventImage,
-    };
-  }
+  attachments = {
+    name: name,
+    start_date: start_date.toISO(),
+    end_date: end_date?.toISO(),
+    about: about,
+    address: address,
+    full_address: full_address,
+    ticketTypes: tickets,
+    email_confirmation_body: email_confirmation_body,
+    event_lat: latitude.toString(),
+    event_lng: longitude.toString(),
+    event_type: type,
+    event_image: eventImage,
+  };
   console.log(
     attachments,
     "-------------------create event request start date--------------------"

@@ -27,18 +27,18 @@ import { getData, setData } from "~/network/constant";
 import { useUserProfile } from "~/network/hooks/user-service-hooks/use-user-profile";
 import { StoreType } from "~/network/reducers/store";
 import { UserProfileState } from "~/network/reducers/user-profile-reducer";
-import { createStyleSheet } from "./style";
+import { createStyleSheet } from "../event/style";
 
 import GestureRecognizer from "react-native-swipe-gestures";
 import { Subscription } from "~/components/subcription";
 import { MembershipCheckoutModal } from "~/screens/profile/membership-checkout-modal";
 
-interface AddComponentModalProps {
+interface CreatePostModalProps {
   modalRef?: React.Ref<ModalRefProps>;
   navigation: NavigationContainerRef<ParamListBase>;
 }
 
-export const AddComponentModal = (props: AddComponentModalProps) => {
+export const CreatePostModal = (props: CreatePostModalProps) => {
   const { theme } = useAppTheme();
   const styles = createStyleSheet(theme);
   const { strings } = useStringsAndLabels();

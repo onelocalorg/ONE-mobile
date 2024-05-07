@@ -72,9 +72,10 @@ export const LoginScreen = (props: LoginScreenProps) => {
   const signInWithGoogle = async () => {
     LOG.debug("> signInWithGoogle");
     try {
-      await GoogleSignin.hasPlayServices();
+      const hasPlayServices = await GoogleSignin.hasPlayServices();
+      LOG.debug("hasPlayServices", hasPlayServices);
       const userInfo = await GoogleSignin.signIn();
-      LOG.debug(userInfo);
+      LOG.debug("GoogleSignIn user info", userInfo);
       if (userInfo) {
         onGoogleSignUpAPI(
           userInfo?.user?.email,
