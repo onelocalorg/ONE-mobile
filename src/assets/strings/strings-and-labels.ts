@@ -133,7 +133,7 @@ export const stringsAndLabels = {
   city: "City",
   profilepic: "Profile Picture",
   bgImage: "Background Picture",
-  cancleEvent: "Cancle Event",
+  cancleEvent: "Cancel Event",
   subTotal: "Subtotal",
   serviceFee: "Service Fee",
   salesTax: "Sales Tax",

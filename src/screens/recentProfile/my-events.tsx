@@ -7,7 +7,7 @@ import React, { useEffect, useState } from "react";
 import { ListRenderItem, View } from "react-native";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
 import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
-import { EventList } from "~/components/event-list";
+import { EventList } from "~/components/events/EventList";
 import { FlatListComponent } from "~/components/flatlist-component";
 import { Loader } from "~/components/loader";
 import { navigations } from "~/config/app-navigation/constant";

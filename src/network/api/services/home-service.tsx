@@ -1,21 +1,27 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { DateTime } from "luxon";
+import { LOG } from "~/config";
 import { apiConstants } from "~/network/constant";
 import { getApiResponse } from "~/network/utils/get-api-response";
+import { LocalEventData } from "~/types/local-event-data";
 import { TicketType } from "~/types/ticket-type";
 import { API } from "..";
 
 interface EventProps {
-  queryParams: {
+  queryParams?: {
     limit: number;
     page: number;
   };
   bodyParams?: {
-    start_date: string;
-    end_date: string;
-    event_type: string;
-    only_upcoming: number;
-    searchtext: string;
+    start_date: DateTime;
+    end_date?: DateTime;
+    event_type?: string;
+    only_upcoming?: number;
+    searchtext?: string;
+    latitude?: number;
+    longitude?: number;
+    zoom_level?: number;
+    device_type?: string;
   };
   userId?: string;
 }
@@ -26,13 +32,15 @@ export const getData = async () => {
   } catch (error) {}
 };
 
-export const onFetchEvents = async (props: EventProps) => {
+export const onFetchEvents = async ({
+  queryParams,
+  bodyParams,
+  userId,
+}: EventProps) => {
+  LOG.debug("> onFetchEvents", bodyParams);
   let response;
   try {
-    const { bodyParams, queryParams } = props || {};
-    const endPoint = `${apiConstants.eventLists}${
-      props?.userId ? `/${props?.userId}` : ""
-    }`;
+    const endPoint = `/v1/events/list${userId ? `/${userId}` : ""}`;
     const data = await API.homeService.post(endPoint, bodyParams, {
       params: queryParams,
     });
@@ -41,7 +49,35 @@ export const onFetchEvents = async (props: EventProps) => {
     response = getApiResponse(error);
   }
 
+  LOG.debug("< onFetchEvents", response);
   return response;
+};
+
+interface FetchEventsForMapProps {
+  startDate: DateTime;
+  endDate?: DateTime;
+}
+export const fetchEventsForMap = async ({
+  startDate,
+  endDate,
+}: FetchEventsForMapProps) => {
+  const url =
+    process.env.API_URL +
+    `/v2/events?start_date=${startDate.toISO()}&end_date=${
+      endDate ? endDate.toISO() : ""
+    }`;
+  LOG.info("fetchEventsForMap", url);
+  const token = await AsyncStorage.getItem("token");
+  const response = await fetch(url, {
+    headers: new Headers({
+      Authorization: "Bearer " + token,
+      "Content-Type": "application/json",
+    }),
+  });
+  LOG.info(response.status);
+  const dataItem = await response.json();
+  LOG.debug(dataItem?.data);
+  return dataItem?.data as GeoJSON.FeatureCollection;
 };
 
 export interface TicketBodyParamProps {
@@ -199,40 +235,21 @@ export const onUpdateEvent = async (props: UpdateEventProps) => {
   return response;
 };
 
-interface CreateEventProps {
-  bodyParams: {
-    name: string;
-    start_date: DateTime;
-    end_date?: DateTime;
-    address?: string;
-    email_confirmation_body?: string;
-    tickets?: TicketType[];
-    full_address?: string;
-    eventImage?: string;
-    about?: string;
-    latitude: number;
-    longitude: number;
-    type?: string;
-  };
-}
-
-export const onCreateEvent = async (props: CreateEventProps) => {
+export const onCreateEvent = async ({
+  address,
+  email_confirmation_body,
+  start_date,
+  name,
+  end_date,
+  ticketTypes,
+  full_address,
+  event_image,
+  about,
+  latitude,
+  longitude,
+  type,
+}: LocalEventData) => {
   console.log("2");
-  const { bodyParams } = props || {};
-  const {
-    address,
-    email_confirmation_body,
-    start_date,
-    name,
-    end_date,
-    tickets,
-    full_address,
-    eventImage,
-    about,
-    latitude,
-    longitude,
-    type,
-  } = bodyParams || {};
   let response;
 
   var attachments = {};
@@ -243,12 +260,12 @@ export const onCreateEvent = async (props: CreateEventProps) => {
     about: about,
     address: address,
     full_address: full_address,
-    ticketTypes: tickets,
+    ticketTypes: ticketTypes,
     email_confirmation_body: email_confirmation_body,
     event_lat: latitude.toString(),
     event_lng: longitude.toString(),
     event_type: type,
-    event_image: eventImage,
+    event_image: event_image,
   };
   console.log(
     attachments,

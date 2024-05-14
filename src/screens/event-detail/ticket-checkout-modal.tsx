@@ -27,11 +27,11 @@ import {
   plus,
 } from "~/assets/images";
 import { ButtonComponent } from "~/components/button-component";
-import { EventList } from "~/components/event-list";
+import { EventList } from "~/components/events/EventList";
 import { ImageComponent } from "~/components/image-component";
 import { Loader } from "~/components/loader";
 import { ModalComponent } from "~/components/modal-component";
-import { EventData } from "~/types/event-data";
+import { LocalEventData } from "~/types/local-event-data";
 import { createStyleSheet } from "./style";
 
 interface TicketCheckoutModalCompProps {
@@ -42,7 +42,7 @@ interface TicketCheckoutModalCompProps {
     cardData: string,
     quantityticket: number
   ) => void;
-  eventData: EventData;
+  eventData: LocalEventData;
   loader: boolean;
 }
 

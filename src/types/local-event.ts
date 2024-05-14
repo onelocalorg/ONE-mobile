@@ -2,14 +2,15 @@ import { DateTime } from "luxon";
 import { EventProducer } from "./event-producer";
 import { TicketType } from "./ticket-type";
 
-export interface EventData {
+export interface LocalEvent {
   name: string;
   start_date: DateTime;
   end_date?: DateTime;
   about?: string;
   address?: string;
   full_address?: string;
-  location: string[];
+  latitude: number;
+  longitude: number;
   email_confirmation_body?: string;
   event_image?: string;
   eventProducer: EventProducer;

@@ -52,7 +52,7 @@ import { useUpdateEvent } from "~/network/hooks/home-service-hooks/use-update-ev
 import { StoreType } from "~/network/reducers/store";
 import { UserProfileState } from "~/network/reducers/user-profile-reducer";
 import { width } from "~/theme/device/device";
-import { EventData } from "~/types/event-data";
+import { LocalEventData } from "~/types/local-event-data";
 import { TicketType } from "~/types/ticket-type";
 import { GetAdmintoolsDropDownScreen } from "./getAdmintoolsDropdown";
 
@@ -60,7 +60,7 @@ interface CreateEventScreenProps {
   navigation?: NavigationContainerRef<ParamListBase>;
   route?: {
     params: {
-      eventData: EventData;
+      eventData?: LocalEventData;
       isCreateEvent: boolean;
     };
   };
@@ -82,24 +82,25 @@ export const CreateEventScreen = (props: CreateEventScreenProps) => {
   const [endDate, setEndDate] = useState(startDate.plus({ hour: 1 }));
   const [isEndDateActive, setEndDateActive] = useState(false);
 
+  const [name, setName] = useState(route?.params.eventData?.name);
+  const [about, setAbout] = useState(route?.params.eventData?.about);
   const [setFilter, SetToggleFilter] = useState("VF");
-  const [eventDetails, setEventDetails] = useState<EventData>(
-    (eventData as EventData) || {}
+  const [eventDetails, setEventDetails] = useState(route?.params.eventData);
+  const [ticketTypes, setTicketTypes] = useState<TicketType[]>([]);
+  const [fullAddress, setFullAddress] = useState(
+    route?.params.eventData?.full_address
   );
-  const [tickets, setTickets] = useState<TicketType[]>([]);
+  const [latitude, setLatitude] = useState(route?.params.eventData?.latitude);
+  const [longitude, setLongitude] = useState(
+    route?.params.eventData?.longitude
+  );
   const {
-    name,
     address,
-    lat,
-    long,
     start_date,
     end_date,
     email_confirmation_body,
     id,
-    full_address,
-    isPayout,
     viewCount,
-    about,
     is_event_owner,
   } = eventDetails || {};
   const { user } = useSelector<StoreType, UserProfileState>(
@@ -111,7 +112,7 @@ export const CreateEventScreen = (props: CreateEventScreenProps) => {
     eventId: id,
     queryParams: { pagination: false },
   });
-  const { mutateAsync } = useUpdateEvent();
+  const { mutateAsync: updateEvent } = useUpdateEvent();
   const [isLoading, LodingData] = useState(false);
   const { mutateAsync: createEvent, isLoading: createEventLoading } =
     useCreateEvent();
@@ -212,7 +213,7 @@ export const CreateEventScreen = (props: CreateEventScreenProps) => {
 
   const checkValidation = () => {
     return !(
-      (name && startDate && lat && long)
+      (name && startDate && latitude && longitude)
       // tickets?.length &&
       // address &&
       // full_address &&
@@ -225,16 +226,17 @@ export const CreateEventScreen = (props: CreateEventScreenProps) => {
     LodingData(true);
     Keyboard.dismiss();
     const res = await createEvent({
-      bodyParams: {
-        ...eventDetails,
-        start_date: startDate,
-        end_date: isEndDateActive ? endDate : undefined,
-        tickets,
-        eventImage: eventImage ? eventImage : undefined,
-        latitude: lat,
-        longitude: long,
-        // type: setFilter,
-      },
+      ...eventDetails,
+      name: name!,
+      about,
+      start_date: startDate,
+      end_date: isEndDateActive ? endDate : undefined,
+      ticketTypes,
+      event_image: eventImage ? eventImage : undefined,
+      full_address: fullAddress!,
+      latitude: latitude!,
+      longitude: longitude!,
+      // type: setFilter,
     });
     console.log(res);
     if (res?.success) {
@@ -246,7 +248,7 @@ export const CreateEventScreen = (props: CreateEventScreenProps) => {
   };
 
   const onUpdateEvent = async () => {
-    var getTicket: any = tickets?.map((ele) => ele?.id ?? "");
+    var getTicket: any = ticketTypes?.map((ele) => ele?.id ?? "");
     LodingData(true);
     Keyboard.dismiss();
     let request = {};
@@ -257,10 +259,10 @@ export const CreateEventScreen = (props: CreateEventScreenProps) => {
     request = { ...request, address };
     // }
     // if (full_address !== eventData?.full_address) {
-    request = { ...request, full_address };
+    request = { ...request, fullAddress };
     // }
     // if (start_date !== eventData?.start_date) {
-    request = { ...request, startDate: start_date.toString() };
+    request = { ...request, startDate: start_date?.toString() };
     // }
     // if (end_date !== eventData?.end_date) {
     request = { ...request, endDate: end_date?.toString() };
@@ -271,8 +273,8 @@ export const CreateEventScreen = (props: CreateEventScreenProps) => {
     // if (about !== eventData?.about) {
     request = { ...request, about: about };
     // }
-    request = { ...request, latitude: lat?.toString() };
-    request = { ...request, longitude: long?.toString() };
+    request = { ...request, latitude: latitude?.toString() };
+    request = { ...request, longitude: longitude?.toString() };
 
     request = { ...request, type: setFilter };
     // }
@@ -287,7 +289,7 @@ export const CreateEventScreen = (props: CreateEventScreenProps) => {
       return;
     }
 
-    const res = await mutateAsync({ bodyParams: request, eventId: id });
+    const res = await updateEvent({ bodyParams: request, eventId: id });
     if (res?.success) {
       LodingData(false);
       navigation?.goBack();
@@ -296,22 +298,22 @@ export const CreateEventScreen = (props: CreateEventScreenProps) => {
     }
   };
 
-  const handleText = (text: string, key: string) => {
-    setEventDetails({ ...eventDetails, [key]: text });
-  };
+  // const handleText = (text: string, key: string) => {
+  //   setEventDetails({ ...eventDetails, [key]: text });
+  // };
 
   const onTicketAdded = (ticket: TicketType) => {
     LOG.debug("> onTicketAdded", ticket);
     // setIsEdit(false);
     // modalRef.current?.onCloseModal();
-    if (tickets) {
-      setTickets([...tickets, ticket]);
+    if (ticketTypes) {
+      setTicketTypes([...ticketTypes, ticket]);
     } else {
-      setTickets([ticket]);
+      setTicketTypes([ticket]);
     }
     setCurTicket(undefined);
 
-    LOG.debug("tickets.length", tickets.length);
+    LOG.debug("tickets.length", ticketTypes.length);
 
     // const eventDetailsCopy = { ...eventDetails };
     // if (isEdit) {
@@ -553,7 +555,7 @@ export const CreateEventScreen = (props: CreateEventScreenProps) => {
             </View> */}
             <View style={styles.innerContainer}>
               <Input
-                onChangeText={(text) => handleText(text, "name")}
+                onChangeText={(text) => setName(text)}
                 placeholder={strings.enterTitle}
                 value={name}
               />
@@ -582,14 +584,11 @@ export const CreateEventScreen = (props: CreateEventScreenProps) => {
               /> */}
                 <View style={{ width: width - 100 }}>
                   <LocationAutocomplete
-                    onPress={(data: any, details: any) =>
-                      setEventDetails({
-                        ...eventDetails,
-                        full_address: data.description,
-                        lat: details!.geometry.location.lat,
-                        long: details!.geometry.location.lng,
-                      })
-                    }
+                    onPress={(data: any, details: any) => {
+                      setFullAddress(data.description);
+                      setLatitude(details!.geometry.location.lat);
+                      setLongitude(details!.geometry.location.lng);
+                    }}
                   >
                     Where will the event be held?
                   </LocationAutocomplete>
@@ -605,11 +604,11 @@ export const CreateEventScreen = (props: CreateEventScreenProps) => {
                 height={verticalScale(60)}
                 multiline
                 value={about}
-                onChangeText={(text) => handleText(text, "about")}
+                onChangeText={(text) => setAbout(text)}
               />
               <View style={[styles.row, styles.marginTop]}>
                 <Text style={styles.tickets}>{strings.tickets}:</Text>
-                <Pressable onPress={() => setCurTicket(tickets.length)}>
+                <Pressable onPress={() => setCurTicket(ticketTypes.length)}>
                   <ImageComponent source={addGreen} style={styles.addGreen} />
                 </Pressable>
               </View>
@@ -617,7 +616,9 @@ export const CreateEventScreen = (props: CreateEventScreenProps) => {
                 isVisible={curTicket !== undefined}
                 onSuccess={onTicketAdded}
                 onDismiss={() => setCurTicket(undefined)}
-                value={curTicket === undefined ? undefined : tickets[curTicket]}
+                value={
+                  curTicket === undefined ? undefined : ticketTypes[curTicket]
+                }
                 // eventId={id}
                 // eventDetails={eventDetails}
                 // value={eventDetails.tickets?.[selectedTicketIndex]}
@@ -626,7 +627,7 @@ export const CreateEventScreen = (props: CreateEventScreenProps) => {
                 // onCancel={onCancel}
               />
               <View>
-                {tickets?.map((t, index) => {
+                {ticketTypes?.map((t, index) => {
                   return (
                     <View key={t.id || index} style={styles.rowOnly}>
                       <Text style={styles.ticket}>{`${t?.name} - ${
@@ -640,7 +641,9 @@ export const CreateEventScreen = (props: CreateEventScreenProps) => {
                         </Pressable>
                         <Pressable
                           onPress={() =>
-                            setTickets(tickets.filter((_, i) => i !== index))
+                            setTicketTypes(
+                              ticketTypes.filter((_, i) => i !== index)
+                            )
                           }
                         >
                           <Text style={styles.delete}>X</Text>
@@ -650,17 +653,19 @@ export const CreateEventScreen = (props: CreateEventScreenProps) => {
                   );
                 })}
               </View>
-              <Text style={styles.tickets}>{strings.confirmationEmail}:</Text>
+              {/* <Text style={styles.tickets}>{strings.confirmationEmail}:</Text>
               <SizedBox height={verticalScale(4)} />
-              <Input
-                placeholder={strings.enterEmail}
-                height={verticalScale(60)}
-                multiline
-                value={email_confirmation_body}
-                onChangeText={(text) =>
-                  handleText(text, "email_confirmation_body")
-                }
-              />
+              {email_confirmation_body ? (
+                <Input
+                  placeholder={strings.enterEmail}
+                  height={verticalScale(60)}
+                  multiline
+                  value={email_confirmation_body!}
+                  onChangeText={(text) =>
+                    handleText(text, "email_confirmation_body")
+                  }
+                />
+              ) : null} */}
               <SizedBox height={verticalScale(8)} />
               {!isCreateEvent && (
                 <>
@@ -700,20 +705,23 @@ export const CreateEventScreen = (props: CreateEventScreenProps) => {
               <></>
             )}
 
-            <GetAdmintoolsDropDownScreen eventId={id} navigation={navigation} />
-            {is_event_owner ? (
-              <TouchableOpacity
-                activeOpacity={0.8}
-                onPress={() => onCancleEvent(id)}
-                style={styles.cancleEventBtn}
-              >
-                <Text style={styles.cancleEventText}>
-                  {strings.cancleEvent}
-                </Text>
-              </TouchableOpacity>
-            ) : (
-              <></>
-            )}
+            {id && is_event_owner ? (
+              <View>
+                <GetAdmintoolsDropDownScreen
+                  eventId={id}
+                  navigation={navigation}
+                />
+                <TouchableOpacity
+                  activeOpacity={0.8}
+                  onPress={() => onCancleEvent(id)}
+                  style={styles.cancleEventBtn}
+                >
+                  <Text style={styles.cancleEventText}>
+                    {strings.cancleEvent}
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            ) : null}
           </View>
         </TouchableOpacity>
       </KeyboardAwareScrollView>

@@ -16,11 +16,10 @@ import {
   View,
 } from "react-native";
 import { FlatList } from "react-native-gesture-handler";
-import { DatePickerModal } from "react-native-paper-dates";
 import { useDispatch, useSelector } from "react-redux";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
 import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
-import { arrowDown, calendar, close, dummy, event, pin } from "~/assets/images";
+import { dummy, event, pin } from "~/assets/images";
 import { ImageComponent } from "~/components/image-component";
 import { Loader } from "~/components/loader";
 import { Navbar } from "~/components/navbar/Navbar";
@@ -31,7 +30,7 @@ import { useEventLists } from "~/network/hooks/home-service-hooks/use-event-list
 import { useUserProfile } from "~/network/hooks/user-service-hooks/use-user-profile";
 import { StoreType } from "~/network/reducers/store";
 import { UserProfileState } from "~/network/reducers/user-profile-reducer";
-import { EventData } from "~/types/event-data";
+import { LocalEventData } from "~/types/local-event-data";
 import { createStyleSheet } from "./style";
 
 const BOULDER_LON = -105.2705;
@@ -186,7 +185,7 @@ export const EventListScreen = (props: EventListScreenProps) => {
     [setOpen, setRange, range?.startDate, range?.endDate]
   );
 
-  const onNavigate = (item: EventData) => {
+  const onNavigate = (item: LocalEventData) => {
     console.log(route.name);
     navigation?.navigate(navigations.EVENT_DETAIL, { id: item?.id });
   };
@@ -212,7 +211,7 @@ export const EventListScreen = (props: EventListScreenProps) => {
     }
   };
 
-  const renderItem: ListRenderItem<EventData> = ({ item }) => {
+  const renderItem: ListRenderItem<any> = ({ item }) => {
     return (
       <View>
         {/* Header */}
@@ -305,7 +304,7 @@ export const EventListScreen = (props: EventListScreenProps) => {
           </View>
           <Text style={styles.villageLbl}> Adult Oriented</Text>
         </View> */}
-        <TouchableOpacity activeOpacity={0.8} style={styles.dateContainer}>
+        {/* <TouchableOpacity activeOpacity={0.8} style={styles.dateContainer}>
           <ImageComponent source={calendar} style={styles.calendar} />
           <TouchableOpacity activeOpacity={0.8} onPress={() => setOpen(true)}>
             <Text style={styles.date}>{`${moment(range?.startDate).format(
@@ -328,7 +327,7 @@ export const EventListScreen = (props: EventListScreenProps) => {
           />
 
           <ImageComponent source={arrowDown} style={styles.arrowDown} />
-        </TouchableOpacity>
+        </TouchableOpacity> */}
       </View>
 
       <FlatList

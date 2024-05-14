@@ -83,5 +83,9 @@ export const createStyleSheet = (theme: ThemeProps) => {
       fontSize: theme.fontSize.font14,
       color: theme.colors.redTwo,
     },
+    rowClass: {
+      flexDirection: "row",
+      paddingTop: 5,
+    },
   });
 };

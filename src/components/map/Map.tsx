@@ -1,23 +1,27 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import MapboxGL, {
   Camera,
-  CircleLayer,
-  HeatmapLayer,
+  Images,
   MapView,
   ShapeSource,
+  SymbolLayer,
   UserLocation,
 } from "@rnmapbox/maps";
 import { FeatureCollection } from "geojson";
-import moment from "moment";
-import React, { useEffect, useRef, useState } from "react";
-import { Text, TouchableOpacity, View } from "react-native";
-import Swiper from "react-native-swiper";
+import React, { useCallback, useEffect, useRef, useState } from "react";
+import { View } from "react-native";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
-import { activeRadio, event, pin } from "~/assets/images";
-import { ImageComponent } from "~/components/image-component";
-import { LOG } from "~/config";
 import { createStyleSheet } from "./style";
 // import { getData, setData } from "~/network/constant";
+
+import { useFocusEffect } from "@react-navigation/native";
+import { OnPressEvent } from "@rnmapbox/maps/lib/typescript/src/types/OnPressEvent";
+import { DateTime } from "luxon";
+import eventIcon from "~/assets/map/event.png";
+import giftIcon from "~/assets/map/gift.png";
+import { fetchEventsForMap } from "~/network/api/services/home-service";
+import { EventProperties } from "~/types/event-properties";
+import { LocalEventData } from "~/types/local-event-data";
+import { EventItem } from "../events/EventItem";
 
 interface Range {
   startDate: Date | undefined;
@@ -30,7 +34,10 @@ const BOULDER_LON = -105.2705;
 const BOULDER_LAT = 40.015;
 const DEFAULT_ZOOM = 12;
 
-export const Map = () => {
+interface MapProps {
+  onClicked?: (event: LocalEventData) => void;
+}
+export const Map = ({ onClicked }: MapProps) => {
   const { theme } = useAppTheme();
   const styles = createStyleSheet(theme);
   var [eventData, eventDetail]: any = useState([]);
@@ -45,6 +52,7 @@ export const Map = () => {
   const [eventType, eventTypeData] = useState("event");
   const [isLoading, setIsLoading] = useState(false);
   const [events, setEvents] = useState<FeatureCollection>();
+  const [selectedEvent, setSelectedEvent] = useState<LocalEventData>();
   // const mileStoneSwiperRef: any = useRef(null);
   // var zoomLeveDefault = getData("mapCircleRadius");
   const [zoomLevel, setCameraZoomLevel] = useState(DEFAULT_ZOOM);
@@ -58,6 +66,11 @@ export const Map = () => {
     startDate: new Date(),
     endDate: makeDate,
   });
+
+  const imageMarkers = {
+    event: eventIcon,
+    gift: giftIcon,
+  };
   // const mapRef = useRef(null);
   // const [mapLoaded, setMapLoaded] = useState(false);
 
@@ -83,25 +96,35 @@ export const Map = () => {
   });
 
   useEffect(() => {
-    async function fetchEvents() {
-      const url = process.env.API_URL + "/v2/events";
-      LOG.info(url);
-      const token = await AsyncStorage.getItem("token");
-      const response = await fetch(url, {
-        headers: new Headers({
-          Authorization: "Bearer " + token,
-          "Content-Type": "application/json",
-        }),
-      });
-      LOG.info(response.status);
-      const dataItem = await response.json();
+    fetchEventsForMap({
+      startDate: DateTime.now(),
+      // endDate: DateTime.now().plus({ months: 3 }),
+    }).then(setEvents);
+    // async function fetchEvents() {
+    //   const url = process.env.API_URL + "/v2/events";
+    //   LOG.info(url);
+    //   const token = await AsyncStorage.getItem("token");
+    //   const response = await fetch(url, {
+    //     headers: new Headers({
+    //       Authorization: "Bearer " + token,
+    //       "Content-Type": "application/json",
+    //     }),
+    //   });
+    //   LOG.info(response.status);
+    //   const dataItem = await response.json();
 
-      LOG.debug(dataItem?.data);
-      setEvents(dataItem?.data);
-    }
+    //   LOG.debug(dataItem?.data);
+    //   setEvents(dataItem?.data);
+    // }
 
-    fetchEvents();
+    // fetchEvents();
   }, []);
+
+  useFocusEffect(
+    useCallback(() => {
+      setSelectedEvent(undefined);
+    }, [])
+  );
 
   // async function checkLocation() {
   //   if (Platform.OS === "android") {
@@ -243,18 +266,6 @@ export const Map = () => {
   //   eventDataStore(resultTemp);
   // };
 
-  const changeMarkerColor = (indexMarker: any) => {
-    const resultTemp: any = [...eventList];
-    for (let index = 0; index < resultTemp.length; index++) {
-      resultTemp[index].isActive = false;
-    }
-    if (resultTemp.length > indexMarker) {
-      resultTemp[indexMarker].isActive = true;
-    }
-
-    eventDataStore(resultTemp);
-  };
-
   // const onCircleDrag = (event: any) => {
   //   console.log("event circle drag latitude", event.geometry.coordinates[1]);
   //   console.log("event circle drag longitude", event.geometry.coordinates[0]);
@@ -324,67 +335,6 @@ export const Map = () => {
   //   }
   // }
 
-  const EventList = () => (
-    // {eventData != undefined && eventData.length > 0 ? (
-    <View style={styles.avatarContainer}>
-      <Swiper
-        onIndexChanged={(value) => {
-          changeMarkerColor(value);
-          // onswipeSetEventIndex(value);
-        }}
-        // ref={mileStoneSwiperRef}
-        loop={false}
-        // centeredSlides={false}
-        showsPagination={false}
-        bounces={true}
-        removeClippedSubviews={false}
-      >
-        {eventData.map((eventData: any) => {
-          return (
-            <TouchableOpacity
-              key={Math.random()}
-              activeOpacity={1}
-              style={styles.listContainer}
-              // FIXME
-              //   onPress={() => onNavigateEventDetail(eventData)}
-            >
-              <ImageComponent
-                resizeMode="stretch"
-                source={{ uri: eventData?.event_image }}
-                style={styles.dummy}
-              />
-              <View style={styles.flex}>
-                <View style={styles.row}>
-                  <View style={styles.flex}>
-                    <Text style={styles.dateText}>{`${moment(
-                      eventData?.start_date
-                    ).format("ddd, MMM DD")} • ${moment(
-                      eventData?.start_date
-                    ).format("hh:mm A")}`}</Text>
-                    <Text numberOfLines={2} style={styles.title}>
-                      {eventData?.name}
-                    </Text>
-                  </View>
-                  <ImageComponent source={event} style={styles.event} />
-                </View>
-                <View style={styles.row}>
-                  <ImageComponent source={pin} style={styles.pin} />
-                  <Text style={styles.location}>{eventData?.address}</Text>
-                  <ImageComponent
-                    style={styles.addressDot}
-                    source={activeRadio}
-                  ></ImageComponent>
-                  <Text numberOfLines={1} style={styles.fullAddress}>
-                    {eventData?.full_address}
-                  </Text>
-                </View>
-              </View>
-            </TouchableOpacity>
-          );
-        })}
-      </Swiper>
-    </View>
-  );
   // ) : (
   //   <>
   //     {!tempdata?.longitude && !tempdata?.longitude ? (
@@ -461,6 +411,7 @@ export const Map = () => {
         style={styles.map}
         zoomEnabled={true}
         compassEnabled={true}
+        onPress={() => setSelectedEvent(undefined)}
         gestureSettings={{
           pinchPanEnabled: false,
         }}
@@ -471,7 +422,6 @@ export const Map = () => {
         // onCameraChanged={handleCameraChanged}
       >
         <UserLocation />
-
         <Camera
           ref={camera}
           centerCoordinate={centerCoordinate}
@@ -486,26 +436,42 @@ export const Map = () => {
           //   parseFloat(tempdata?.latitude),
           // ]}
         />
-
-        <ShapeSource id="events" shape={events as GeoJSON.FeatureCollection}>
-          <CircleLayer
-            id={"circle-layer"}
-            minZoomLevel={11}
-            style={{
-              circleRadiusTransition: { duration: 5000, delay: 0 },
-              circleColor: "#003333",
-            }}
-            slot={"bottom"}
-          />
-          {/* <SymbolLayer
+        <Images
+          images={imageMarkers}
+          onImageMissing={(imageKey: string) =>
+            console.log("=> on image missing", imageKey)
+          }
+        />
+        <ShapeSource
+          id="events"
+          shape={events}
+          onPress={(event: OnPressEvent) => {
+            const properties = event.features[0].properties as EventProperties;
+            console.log(properties);
+            if (properties) {
+              const event = Object.assign({}, properties, {
+                start_date: DateTime.fromISO(properties.start_date),
+                end_date: properties.end_date
+                  ? DateTime.fromISO(properties.end_date)
+                  : undefined,
+                latitude: properties.location.coordinates[1],
+                longitude: properties.location.coordinates[0],
+                ticketTypes: [],
+              }) as LocalEventData;
+              console.log("event", event);
+              setSelectedEvent(event);
+            }
+          }}
+        >
+          <SymbolLayer
             id="eventSymbol"
-            minZoomLevel={12}
+            minZoomLevel={5}
             style={{
-              iconImage: ["get", "icon"],
+              iconImage: "event",
             }}
             slot={"middle"}
-          /> */}
-          <HeatmapLayer
+          />
+          {/* <HeatmapLayer
             id="heatmap"
             maxZoomLevel={11}
             style={{
@@ -527,9 +493,14 @@ export const Map = () => {
                 "rgb(178,24,43)",
               ],
             }}
-          />
+          /> */}
         </ShapeSource>
-
+        {selectedEvent ? (
+          <EventItem
+            event={selectedEvent!}
+            onPressed={() => onClicked?.(selectedEvent)}
+          />
+        ) : null}
         {/* <MapboxGL.PointAnnotation
             style={{ flex: 1 }}
             key="pointAnnotation"

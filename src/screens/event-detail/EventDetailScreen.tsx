@@ -47,7 +47,7 @@ import { useCreatePayoutIntent } from "~/network/hooks/payment-service-hooks/use
 import { StoreType } from "~/network/reducers/store";
 import { UserProfileState } from "~/network/reducers/user-profile-reducer";
 import { verticalScale } from "~/theme/device/normalize";
-import { EventData } from "~/types/event-data";
+import { LocalEventData } from "~/types/local-event-data";
 import Going from "../../assets/images/going.png";
 import { createStyleSheet } from "./style";
 import { TicketCheckoutModal } from "./ticket-checkout-modal";
@@ -515,10 +515,13 @@ export const EventDetailScreen = (props: EventDetailScreenProps) => {
           <Text style={styles.title}>{name}</Text>
           <SizedBox height={verticalScale(16)} />
           <View style={{ position: "relative" }}>
-            <ImageComponent
+            <Image
               resizeMode="cover"
-              uri={event_image}
-              isUrl
+              source={
+                event_image
+                  ? { uri: event_image }
+                  : require("~/assets/images/defaultEvent.png")
+              }
               style={styles.eventImage}
             />
 
@@ -764,7 +767,7 @@ export const EventDetailScreen = (props: EventDetailScreenProps) => {
         </View>
       </ScrollView>
       <TicketCheckoutModal
-        eventData={data as EventData}
+        eventData={data as LocalEventData}
         onPurchase={onPurchaseTicketThroughCard}
         ref={modalRef}
         loader={showLoader}
