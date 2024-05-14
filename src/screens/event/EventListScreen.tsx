@@ -345,7 +345,7 @@ export const EventListScreen = (props: EventListScreenProps) => {
         }}
         onEndReachedThreshold={0.1}
       ></FlatList>
-      {eventsList.length === 0 ? (
+      {!isLoading && eventsList.length === 0 ? (
         <View style={{ justifyContent: "center", alignItems: "center" }}>
           <Text style={styles.noEventLbl}>{strings.noEventsFound}</Text>
         </View>
