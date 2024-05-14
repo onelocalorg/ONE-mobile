@@ -32,7 +32,7 @@ MapboxGL.setAccessToken(process.env.MAP_ACCESS_TOKEN!);
 
 const BOULDER_LON = -105.2705;
 const BOULDER_LAT = 40.015;
-const DEFAULT_ZOOM = 12;
+const DEFAULT_ZOOM = 11.5;
 
 interface MapProps {
   onClicked?: (event: LocalEventData) => void;
@@ -55,7 +55,6 @@ export const Map = ({ onClicked }: MapProps) => {
   const [selectedEvent, setSelectedEvent] = useState<LocalEventData>();
   // const mileStoneSwiperRef: any = useRef(null);
   // var zoomLeveDefault = getData("mapCircleRadius");
-  const [zoomLevel, setCameraZoomLevel] = useState(DEFAULT_ZOOM);
   // const [shape, setShapData]: any = useState();
   // const { user } = useSelector<StoreType, UserProfileState>(
   //   (state) => state.userProfileReducer
@@ -85,15 +84,6 @@ export const Map = ({ onClicked }: MapProps) => {
   // );
 
   const camera = useRef<MapboxGL.Camera>(null);
-
-  useEffect(() => {
-    // checkLocation();
-    // Center the map in the default location
-    camera.current?.setCamera({
-      centerCoordinate,
-      zoomLevel,
-    });
-  });
 
   useEffect(() => {
     fetchEventsForMap({
@@ -423,9 +413,9 @@ export const Map = ({ onClicked }: MapProps) => {
       >
         <UserLocation />
         <Camera
-          ref={camera}
+          // ref={camera}
           centerCoordinate={centerCoordinate}
-          zoomLevel={zoomLevel}
+          zoomLevel={DEFAULT_ZOOM}
           animationDuration={20}
           // zoomLevel={zoomLevel}
           // maxZoomLevel={14}
