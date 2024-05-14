@@ -1,6 +1,6 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import React, { useCallback, useState } from "react";
-import { Text, TextInput, TouchableOpacity, View } from "react-native";
+import { Text, TouchableOpacity, View } from "react-native";
 import { StoreType } from "~/network/reducers/store";
 
 import {
@@ -10,7 +10,7 @@ import {
 } from "@react-navigation/native";
 import { useDispatch, useSelector } from "react-redux";
 
-import { Search, dummy, onelogo } from "~/assets/images";
+import { arrowLeft, dummy, onelogo } from "~/assets/images";
 import { ImageComponent } from "~/components/image-component";
 import { navigations } from "~/config/app-navigation/constant";
 import {
@@ -27,7 +27,7 @@ import { createStyleSheet } from "./style";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
 
 interface NavbarProps {
-  navigation: NavigationContainerRef<ParamListBase>;
+  navigation?: NavigationContainerRef<ParamListBase>;
 }
 
 export const Navbar = (props: NavbarProps) => {
@@ -95,19 +95,32 @@ export const Navbar = (props: NavbarProps) => {
   };
 
   const onNavigateToProfile = () => {
-    if (user?.id) {
-      refetch().then((res) => {
-        const userData = userProfileParsedData(res?.data?.data);
-        console.log("check1===", userData);
-        dispatch(onSetUser(userData));
-      });
+    if (navigation) {
+      if (user?.id) {
+        refetch().then((res) => {
+          const userData = userProfileParsedData(res?.data?.data);
+          console.log("check1===", userData);
+          dispatch(onSetUser(userData));
+        });
+      }
+      navigation.navigate(navigations.PROFILE);
     }
-    navigation.navigate(navigations.PROFILE);
+  };
+
+  const onBackPress = () => {
+    navigation?.goBack();
   };
 
   return (
     <TouchableOpacity style={styles.HeaderContainerTwo} activeOpacity={1}>
-      <View style={styles.searchContainer}>
+      {navigation?.canGoBack() ? (
+        <TouchableOpacity onPress={onBackPress} style={{ zIndex: 11111222222 }}>
+          <View style={styles.row2}>
+            <ImageComponent source={arrowLeft} style={styles.arrowLeft} />
+          </View>
+        </TouchableOpacity>
+      ) : null}
+      {/* <View style={styles.searchContainer}>
         <ImageComponent
           style={styles.searchIcon}
           source={Search}
@@ -122,7 +135,7 @@ export const Navbar = (props: NavbarProps) => {
             setSerchValue(value);
           }}
         ></TextInput>
-      </View>
+      </View> */}
       <View style={styles.oneContainer}>
         <ImageComponent
           style={styles.oneContainerImage}
