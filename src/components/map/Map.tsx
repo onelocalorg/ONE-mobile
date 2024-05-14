@@ -114,6 +114,10 @@ export const Map = ({ onClicked }: MapProps) => {
   useFocusEffect(
     useCallback(() => {
       setSelectedEvent(undefined);
+      fetchEventsForMap({
+        startDate: DateTime.now(),
+        // endDate: DateTime.now().plus({ months: 3 }),
+      }).then(setEvents);
     }, [])
   );
 

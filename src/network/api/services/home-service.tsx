@@ -55,16 +55,15 @@ export const onFetchEvents = async ({
 
 interface FetchEventsForMapProps {
   startDate: DateTime;
-  endDate?: DateTime;
+  // endDate?: DateTime;
 }
 export const fetchEventsForMap = async ({
   startDate,
-  endDate,
-}: FetchEventsForMapProps) => {
+}: // endDate,
+FetchEventsForMapProps) => {
   const url =
     process.env.API_URL +
-    `/v2/events?start_date=${startDate.toISO()}&end_date=${
-      endDate ? endDate.toISO() : ""
+    `/v2/events?start_date=${startDate.toISO()}
     }`;
   LOG.info("fetchEventsForMap", url);
   const token = await AsyncStorage.getItem("token");

@@ -272,11 +272,11 @@ export const HomeScreen = (props: HomeScreenProps) => {
     }
     const token = await AsyncStorage.getItem("token");
     var data: any = {
-      latitude: BOULDER_LAT,
-      longitude: BOULDER_LON,
-      zoom_level: DEFAULT_ZOOM,
+      // latitude: BOULDER_LAT,
+      // longitude: BOULDER_LON,
+      // zoom_level: DEFAULT_ZOOM,
       device_type: Platform.OS,
-      searchtext: searchQuery,
+      // searchtext: searchQuery,
     };
 
     console.log("----------------post Location----------------", data);

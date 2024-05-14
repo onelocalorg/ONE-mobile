@@ -107,10 +107,10 @@ export const EventListScreen = (props: EventListScreenProps) => {
       end_date: moment(range.endDate).format("YYYY-MM-DD"),
       // event_type: setFilter,
       only_upcoming: 0,
-      searchtext: searchQuery,
-      latitude: BOULDER_LAT,
-      longitude: BOULDER_LON,
-      zoom_level: DEFAULT_ZOOM,
+      // searchtext: searchQuery,
+      // latitude: BOULDER_LAT,
+      // longitude: BOULDER_LON,
+      // zoom_level: 10,
       device_type: Platform.OS,
     };
     var eventList_url =
