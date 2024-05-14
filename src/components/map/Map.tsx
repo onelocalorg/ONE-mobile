@@ -18,6 +18,7 @@ import { OnPressEvent } from "@rnmapbox/maps/lib/typescript/src/types/OnPressEve
 import { DateTime } from "luxon";
 import eventIcon from "~/assets/map/event.png";
 import giftIcon from "~/assets/map/gift.png";
+import { LOG } from "~/config";
 import { fetchEventsForMap } from "~/network/api/services/home-service";
 import { EventProperties } from "~/types/event-properties";
 import { LocalEventData } from "~/types/local-event-data";
@@ -395,6 +396,25 @@ export const Map = ({ onClicked }: MapProps) => {
   //   }
   // };
 
+  const handleMapPress = (event: OnPressEvent) => {
+    const properties = event.features[0].properties as EventProperties;
+    LOG.debug("mapPress", properties);
+    if (properties) {
+      const event = Object.assign({}, properties, {
+        start_date: DateTime.fromISO(properties.start_date),
+        end_date: properties.end_date
+          ? DateTime.fromISO(properties.end_date)
+          : undefined,
+        latitude: properties.location.coordinates[1],
+        longitude: properties.location.coordinates[0],
+        ticketTypes: [],
+      }) as LocalEventData;
+      console.log("event", event);
+
+      setSelectedEvent(selectedEvent?.id === event.id ? undefined : event);
+    }
+  };
+
   return (
     <View style={{ flex: 1 }}>
       <MapView
@@ -432,27 +452,7 @@ export const Map = ({ onClicked }: MapProps) => {
             console.log("=> on image missing", imageKey)
           }
         />
-        <ShapeSource
-          id="events"
-          shape={events}
-          onPress={(event: OnPressEvent) => {
-            const properties = event.features[0].properties as EventProperties;
-            console.log(properties);
-            if (properties) {
-              const event = Object.assign({}, properties, {
-                start_date: DateTime.fromISO(properties.start_date),
-                end_date: properties.end_date
-                  ? DateTime.fromISO(properties.end_date)
-                  : undefined,
-                latitude: properties.location.coordinates[1],
-                longitude: properties.location.coordinates[0],
-                ticketTypes: [],
-              }) as LocalEventData;
-              console.log("event", event);
-              setSelectedEvent(event);
-            }
-          }}
-        >
+        <ShapeSource id="events" shape={events} onPress={handleMapPress}>
           <SymbolLayer
             id="eventSymbol"
             minZoomLevel={5}
