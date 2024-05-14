@@ -7,7 +7,6 @@ import {
   useFocusEffect,
   useRoute,
 } from "@react-navigation/native";
-import moment from "moment";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
   Alert,
@@ -261,13 +260,15 @@ export const EventDetailScreen = (props: EventDetailScreenProps) => {
   }
 
   const onBuyTicket = () => {
-    if (is_event_owner) {
-      navigation?.navigate(navigations.ADMIN_TOOLS, { eventData: data });
-    } else if (isTicketAvailable) {
+    if (isTicketAvailable) {
       modalRef.current?.onOpenModal();
     } else {
       Alert.alert("", strings.noTicketsAvailable);
     }
+  };
+
+  const handleEditEvent = () => {
+    navigation?.navigate(navigations.ADMIN_TOOLS, { eventData: data });
   };
 
   const getUserProfileAPI = async () => {
@@ -393,10 +394,6 @@ export const EventDetailScreen = (props: EventDetailScreenProps) => {
     });
   };
 
-  const getDate = (date = new Date().toString()) => {
-    return `${moment(date).format("ddd, MMM DD • hh:mm A")}`;
-  };
-
   const copyPaymentLink = (link: string) => {
     Clipboard.setString(link);
     Alert.alert("Message", strings.linkCopied);
@@ -409,10 +406,6 @@ export const EventDetailScreen = (props: EventDetailScreenProps) => {
       AsyncStorage.setItem("recentUserId", eventProducer?.id);
       navigation?.navigate(navigations.RECENTUSERPROFILE);
     }
-  };
-
-  const onNavigateToProfile = () => {
-    navigation?.navigate(navigations.PROFILE);
   };
 
   // Check if the logged-in user's ID is available in RSVP data
@@ -707,7 +700,10 @@ export const EventDetailScreen = (props: EventDetailScreenProps) => {
           <Text style={styles.desc}>{about}</Text>
 
           {is_event_owner ? (
-            <ButtonComponent title={strings.adminTools} onPress={onBuyTicket} />
+            <ButtonComponent
+              title={strings.adminTools}
+              onPress={handleEditEvent}
+            />
           ) : (
             <></>
           )}

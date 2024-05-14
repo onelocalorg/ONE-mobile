@@ -1,20 +1,35 @@
-import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
+import { useEffect, useRef } from "react";
+import {
+  GooglePlacesAutocomplete,
+  GooglePlacesAutocompleteRef,
+} from "react-native-google-places-autocomplete";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
 import { LOG } from "~/config";
 
 interface LocationAutocompleteProps {
   children: string;
+  address?: string;
   onPress: (data: any, details: any) => void;
 }
 
 export const LocationAutocomplete = ({
+  address,
   children,
   onPress,
 }: LocationAutocompleteProps) => {
   const { theme } = useAppTheme();
 
+  const ref = useRef<GooglePlacesAutocompleteRef>(null);
+
+  if (address) {
+    useEffect(() => {
+      ref.current?.setAddressText(address);
+    }, []);
+  }
+
   return (
     <GooglePlacesAutocomplete
+      ref={ref}
       styles={{
         textInput: {
           backgroundColor: "#E8E8E8",

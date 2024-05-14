@@ -290,7 +290,7 @@ export const onFetchEventDetails = async (props: EventDetailsProps) => {
   let response;
 
   try {
-    const endPoint = `${apiConstants.createEventDetail}/${props?.eventId}`;
+    const endPoint = `/v1/events/${props?.eventId}`;
     const data = await API.homeService.get(endPoint);
     response = getApiResponse(data);
   } catch (error: any) {

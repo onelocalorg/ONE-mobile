@@ -28,7 +28,5 @@ export interface LocalEvent {
   start_time_label: string;
   start_date_label: string;
   events: [];
-  lat: number;
-  long: number;
   event_image_id?: string;
 }

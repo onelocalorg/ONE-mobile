@@ -77,9 +77,12 @@ export const CreateEventScreen = (props: CreateEventScreenProps) => {
   const [isEdit, setIsEdit] = useState(false);
 
   const [startDate, setStartDate] = useState<DateTime>(
-    DateTime.now().startOf("hour").plus({ hour: 1 })
+    route?.params.eventData?.start_date ??
+      DateTime.now().startOf("hour").plus({ hour: 1 })
   );
-  const [endDate, setEndDate] = useState(startDate.plus({ hour: 1 }));
+  const [endDate, setEndDate] = useState(
+    route?.params.eventData?.end_date ?? startDate.plus({ hour: 1 })
+  );
   const [isEndDateActive, setEndDateActive] = useState(false);
 
   const [name, setName] = useState(route?.params.eventData?.name);
@@ -584,6 +587,7 @@ export const CreateEventScreen = (props: CreateEventScreenProps) => {
               /> */}
                 <View style={{ width: width - 100 }}>
                   <LocationAutocomplete
+                    address={fullAddress}
                     onPress={(data: any, details: any) => {
                       setFullAddress(data.description);
                       setLatitude(details!.geometry.location.lat);

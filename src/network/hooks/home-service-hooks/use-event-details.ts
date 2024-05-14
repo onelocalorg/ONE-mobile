@@ -1,9 +1,12 @@
 import { useQuery } from "@tanstack/react-query";
+import _ from "lodash/fp";
+import { DateTime } from "luxon";
 import {
   EventDetailsProps,
   onFetchEventDetails,
 } from "~/network/api/services/home-service";
 import { apiKeys } from "~/network/constant";
+import { LocalEvent } from "~/types/local-event";
 import { TicketType } from "~/types/ticket-type";
 
 export interface EventDetails {
@@ -54,7 +57,13 @@ interface EventProducer {
 }
 
 const parsedEventDetails = (data: EventDetails) => {
-  return data;
+  return {
+    ..._.omit(["lat", "long"], data),
+    start_date: DateTime.fromISO(data.start_date),
+    end_date: DateTime.fromISO(data.end_date),
+    latitude: data.lat,
+    longitude: data.long,
+  } as LocalEvent;
 };
 
 export const useEventDetails = (props: EventDetailsProps) => {
