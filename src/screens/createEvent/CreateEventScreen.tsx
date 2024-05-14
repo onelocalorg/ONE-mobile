@@ -74,7 +74,6 @@ export const CreateEventScreen = (props: CreateEventScreenProps) => {
   const styles = createStyleSheet(theme);
   // const modalRef: React.Ref<ModalRefProps> = useRef(null);
   const addItemRef: React.Ref<ModalRefProps> = useRef(null);
-  const [isEdit, setIsEdit] = useState(false);
 
   const [startDate, setStartDate] = useState<DateTime>(
     route?.params.eventData?.start_date ??
@@ -251,41 +250,50 @@ export const CreateEventScreen = (props: CreateEventScreenProps) => {
   };
 
   const onUpdateEvent = async () => {
-    var getTicket: any = ticketTypes?.map((ele) => ele?.id ?? "");
+    // var getTicket: any = ticketTypes?.map((ele) => ele?.id ?? "");
     LodingData(true);
     Keyboard.dismiss();
     let request = {};
-    // if (name !== eventData?.name) {
-    request = { ...request, name };
-    // }
-    // if (address !== eventData?.address) {
-    request = { ...request, address };
-    // }
-    // if (full_address !== eventData?.full_address) {
-    request = { ...request, fullAddress };
-    // }
-    // if (start_date !== eventData?.start_date) {
-    request = { ...request, startDate: start_date?.toString() };
-    // }
-    // if (end_date !== eventData?.end_date) {
-    request = { ...request, endDate: end_date?.toString() };
-    // }
-    // if (email_confirmation_body !== eventData?.email_confirmation_body) {
-    request = { ...request, emailConfirmationBody: email_confirmation_body };
-    // }
-    // if (about !== eventData?.about) {
-    request = { ...request, about: about };
-    // }
-    request = { ...request, latitude: latitude?.toString() };
-    request = { ...request, longitude: longitude?.toString() };
+    if (name !== props.route?.params.eventData?.name) {
+      request = { ...request, name };
+    }
+    if (address !== props.route?.params.eventData?.address) {
+      request = { ...request, address };
+    }
+    if (fullAddress !== props.route?.params.eventData?.full_address) {
+      request = { ...request, fullAddress };
+    }
+    if (startDate !== props.route?.params.eventData?.start_date) {
+      request = { ...request, startDate: startDate.toISO() };
+    }
+    if (endDate !== props.route?.params.eventData?.end_date) {
+      request = { ...request, endDate: endDate.toISO() };
+    }
+    if (
+      email_confirmation_body !==
+      props.route?.params.eventData?.email_confirmation_body
+    ) {
+      request = { ...request, emailConfirmationBody: email_confirmation_body };
+    }
+    if (about !== props.route?.params.eventData?.about) {
+      request = { ...request, about: about };
+    }
+    if (
+      latitude !== props.route?.params.eventData?.latitude ||
+      longitude !== props.route?.params.eventData?.longitude
+    ) {
+      request = { ...request, latitude: latitude?.toString() };
+      request = { ...request, longitude: longitude?.toString() };
+    }
 
     request = { ...request, type: setFilter };
     // }
-    request = {
-      ...request,
-      tickets: getTicket.join(","),
-      eventImage,
-    };
+
+    // request = {
+    //   ...request,
+    //   tickets: getTicket.join(","),
+    //   eventImage,
+    // };
 
     if (Object.keys(request).length === 0) {
       Alert.alert("", strings.pleaseEdit);

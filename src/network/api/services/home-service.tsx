@@ -224,7 +224,7 @@ export const onUpdateEvent = async (props: UpdateEventProps) => {
     "-------------------update event request--------------------"
   );
   try {
-    const endPoint = `${apiConstants.createEvent}/${eventId}`;
+    const endPoint = `/v2/events/${eventId}`;
     const data = await API.homeService.patch(endPoint, attachments);
     response = getApiResponse(data);
   } catch (error: any) {
