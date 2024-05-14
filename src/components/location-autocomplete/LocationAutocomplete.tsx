@@ -21,11 +21,9 @@ export const LocationAutocomplete = ({
 
   const ref = useRef<GooglePlacesAutocompleteRef>(null);
 
-  if (address) {
-    useEffect(() => {
-      ref.current?.setAddressText(address);
-    }, []);
-  }
+  useEffect(() => {
+    ref.current?.setAddressText(address ?? "");
+  }, []);
 
   return (
     <GooglePlacesAutocomplete
