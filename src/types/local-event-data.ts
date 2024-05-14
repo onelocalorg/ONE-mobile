@@ -13,10 +13,8 @@ export interface LocalEventData {
   latitude: number;
   longitude: number;
   event_image?: string;
-  email_confirmation_body?: boolean;
+  email_confirmation_body?: string;
   ticketTypes: TicketType[];
-  viewCount?: number;
-  is_event_owner?: boolean;
-  isCancelled?: boolean;
+  isCanceled?: boolean;
   // eventProducer: EventProducer;
 }

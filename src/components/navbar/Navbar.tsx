@@ -143,7 +143,7 @@ export const Navbar = (props: NavbarProps) => {
         ></ImageComponent>
         <View>
           <Text style={styles.oneContainerText}>NE</Text>
-          <Text style={styles.localText}>L o c a l</Text>
+          <Text style={styles.localText}>B o u l d e r</Text>
         </View>
       </View>
       <View style={styles.profileContainer}>

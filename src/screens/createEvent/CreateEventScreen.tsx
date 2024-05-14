@@ -99,15 +99,8 @@ export const CreateEventScreen = (props: CreateEventScreenProps) => {
   const [longitude, setLongitude] = useState(
     route?.params.eventData?.longitude
   );
-  const {
-    address,
-    start_date,
-    end_date,
-    email_confirmation_body,
-    id,
-    viewCount,
-    is_event_owner,
-  } = eventDetails || {};
+  const { address, start_date, end_date, email_confirmation_body, id } =
+    eventDetails || {};
   const { user } = useSelector<StoreType, UserProfileState>(
     (state) => state.userProfileReducer
   ) as { user: { id: string; pic: string; city: string } };
@@ -710,30 +703,30 @@ export const CreateEventScreen = (props: CreateEventScreenProps) => {
               )}
             </View>
 
-            {is_event_owner ? (
-              <View style={styles.uniqueViewCont}>
-                <Text style={styles.uniqueViewLbl}>Unique Views</Text>
-                <Text style={styles.uniqueCount}>{viewCount}</Text>
-              </View>
-            ) : (
-              <></>
-            )}
-
-            {id && is_event_owner ? (
+            {id ? (
               <View>
-                <GetAdmintoolsDropDownScreen
-                  eventId={id}
-                  navigation={navigation}
-                />
-                <TouchableOpacity
-                  activeOpacity={0.8}
-                  onPress={() => onCancleEvent(id)}
-                  style={styles.cancleEventBtn}
-                >
-                  <Text style={styles.cancleEventText}>
-                    {strings.cancleEvent}
-                  </Text>
-                </TouchableOpacity>
+                is_event_owner ? (
+                <View style={styles.uniqueViewCont}>
+                  <Text style={styles.uniqueViewLbl}>Unique Views</Text>
+                  <Text style={styles.uniqueCount}>{viewCount}</Text>
+                </View>
+                ) : null is_event_owner ? (
+                <View>
+                  <GetAdmintoolsDropDownScreen
+                    eventId={id}
+                    navigation={navigation}
+                  />
+                  <TouchableOpacity
+                    activeOpacity={0.8}
+                    onPress={() => onCancleEvent(id)}
+                    style={styles.cancleEventBtn}
+                  >
+                    <Text style={styles.cancleEventText}>
+                      {strings.cancleEvent}
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+                ) : null
               </View>
             ) : null}
           </View>

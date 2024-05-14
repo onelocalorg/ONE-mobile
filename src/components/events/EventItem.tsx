@@ -2,20 +2,24 @@ import { DateTime } from "luxon";
 import { Image, Pressable, Text, View } from "react-native";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
 import { pin } from "~/assets/images";
+import { LOG } from "~/config";
 import { LocalEventData } from "~/types/local-event-data";
 import { createStyleSheet } from "./style";
 
 interface EventItemProps {
   event: LocalEventData;
-  onPressed?: () => void;
+  onPress?: () => void;
+  style?: any;
 }
 
-export const EventItem = ({ event, onPressed }: EventItemProps) => {
+export const EventItem = ({ event, onPress, style }: EventItemProps) => {
   const { theme } = useAppTheme();
   const styles = createStyleSheet(theme);
 
+  LOG.debug(": EventItem:", event);
+
   return (
-    <Pressable style={styles.listContainer} onPress={onPressed}>
+    <Pressable style={style} onPress={onPress}>
       <Image
         resizeMode="stretch"
         source={
@@ -29,8 +33,8 @@ export const EventItem = ({ event, onPressed }: EventItemProps) => {
         <View style={styles.rowClass}>
           <View style={styles.flex}>
             <Text style={styles.dateText}>
-              {event?.start_date.toLocaleString(DateTime.DATE_MED_WITH_WEEKDAY)}{" "}
-              • {event?.start_date.toLocaleString(DateTime.TIME_SIMPLE)}
+              {event.start_date.toLocaleString(DateTime.DATE_MED_WITH_WEEKDAY)}{" "}
+              • {event.start_date.toLocaleString(DateTime.TIME_SIMPLE)}
             </Text>
             <Text numberOfLines={2} style={styles.title}>
               {event.name}
@@ -45,7 +49,7 @@ export const EventItem = ({ event, onPressed }: EventItemProps) => {
             {event.address || event.full_address?.split(",")[0]}
           </Text>
         </View>
-        {event.isCancelled ? (
+        {event.isCanceled ? (
           <Text style={styles.cancleText}>CANCELED</Text>
         ) : (
           <View></View>

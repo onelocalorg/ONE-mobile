@@ -1,35 +1,29 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   NavigationContainerRef,
   ParamListBase,
-  useFocusEffect,
   useRoute,
 } from "@react-navigation/native";
-import moment from "moment";
-import React, { useCallback, useState } from "react";
-import {
-  ListRenderItem,
-  Platform,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { DateTime } from "luxon";
+import React, { useEffect, useState } from "react";
+import { ListRenderItem, Text, View } from "react-native";
 import { FlatList } from "react-native-gesture-handler";
 import { useDispatch, useSelector } from "react-redux";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
 import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
-import { dummy, event, pin } from "~/assets/images";
-import { ImageComponent } from "~/components/image-component";
+import { EventItem } from "~/components/events/EventItem";
 import { Loader } from "~/components/loader";
 import { Navbar } from "~/components/navbar/Navbar";
-import { LOG } from "~/config";
 import { navigations } from "~/config/app-navigation/constant";
-import { getData } from "~/network/constant";
+import {
+  featureCollectionToLocalEvents,
+  fetchEvents,
+} from "~/network/api/services/home-service";
 import { useEventLists } from "~/network/hooks/home-service-hooks/use-event-lists";
 import { useUserProfile } from "~/network/hooks/user-service-hooks/use-user-profile";
 import { StoreType } from "~/network/reducers/store";
 import { UserProfileState } from "~/network/reducers/user-profile-reducer";
+import { LocalEvent } from "~/types/local-event";
 import { LocalEventData } from "~/types/local-event-data";
 import { createStyleSheet } from "./style";
 
@@ -58,8 +52,8 @@ export const EventListScreen = (props: EventListScreenProps) => {
     endDate: makeDate,
   });
   const [open, setOpen] = useState(false);
-  const [profileData, setUserProfile]: any = useState();
-  const [eventsList, setEventsList]: any = useState([]);
+  const [profileData, setUserProfile] = useState();
+  const [eventsList, setEventsList] = useState<LocalEvent[]>([]);
   const [totalPages, setTotalPages] = useState(0);
   const [currentPages, setCurrentPage] = useState(0);
   const { mutateAsync } = useEventLists();
@@ -80,193 +74,189 @@ export const EventListScreen = (props: EventListScreenProps) => {
 
   const dispatch = useDispatch();
 
-  useFocusEffect(
-    useCallback(() => {
-      onPageLoad(false);
-      setPage(1);
-      setSearchQuery("");
-      setEventsList([]);
-    }, [])
-  );
+  useEffect(() => {
+    fetchEvents({ startDate: DateTime.now() })
+      .then(featureCollectionToLocalEvents)
+      .then(setEventsList);
+  }, []);
 
-  useFocusEffect(
-    useCallback(() => {
-      var tempdataTwo = getData("defaultLocation");
-      getEventListAPI(tempdataTwo);
-    }, [setFilter, page, range, searchQuery])
-  );
+  // useFocusEffect(
+  //   useCallback(() => {
+  //     getEventListAPI();
+  //     // onPageLoad(false);
+  //     // setPage(1);
+  //     // setSearchQuery("");
+  //     // setEventsList([]);
+  //   }, [])
+  // );
 
-  const getEventListAPI = async (getLatitude: any) => {
-    LOG.debug("> getEventListAPI");
-    if (page === 1) {
-      LoadingData(true);
-    }
+  // useFocusEffect(
+  //   useCallback(() => {
+  //     var tempdataTwo = getData("defaultLocation");
+  //     getEventListAPI();
+  //   }, [setFilter, page, range, searchQuery])
+  // );
 
-    var eventData = {
-      start_date: moment(range.startDate).format("YYYY-MM-DD"),
-      end_date: moment(range.endDate).format("YYYY-MM-DD"),
-      // event_type: setFilter,
-      only_upcoming: 0,
-      // searchtext: searchQuery,
-      // latitude: BOULDER_LAT,
-      // longitude: BOULDER_LON,
-      // zoom_level: 10,
-      device_type: Platform.OS,
-    };
-    var eventList_url =
-      process.env.API_URL + "/v2/events/list?limit=10&page=" + page;
-    LOG.debug(eventList_url);
-    LOG.debug(eventData);
-    try {
-      const token = await AsyncStorage.getItem("token");
-      const response = await fetch(eventList_url, {
-        method: "post",
-        headers: new Headers({
-          Authorization: "Bearer " + token,
-          "Content-Type": "application/json",
-        }),
-        body: JSON.stringify(eventData),
-      });
-      const dataItem = await response.json();
-      LOG.debug("getEventListAPI:", dataItem?.data);
+  // const getEventListAPI = async () => {
+  //   LOG.debug("> getEventListAPI");
+  //   if (page === 1) {
+  //     LoadingData(true);
+  //   }
 
-      if (page == 1) {
-        var dataTemp = [...eventsList, ...dataItem?.data.results];
-        setEventsList(dataTemp);
-      } else {
-        manageSameHeader(dataItem?.data.results);
-      }
+  //   var eventList_url = `${
+  //     process.env.API_URL
+  //   }/v2/events/list?start_date=${DateTime.now().toISO()}`;
+  //   LOG.debug(eventList_url);
+  //   try {
+  //     const token = await AsyncStorage.getItem("token");
+  //     const response = await fetch(eventList_url, {
+  //       headers: new Headers({
+  //         Authorization: "Bearer " + token,
+  //         "Content-Type": "application/json",
+  //       }),
+  //     });
+  //     const dataItem = await response.json();
+  //     LOG.debug("events:", dataItem?.data);
 
-      setTotalPages(dataItem?.data?.totalPages);
-      setCurrentPage(dataItem?.data?.page);
-      LoadingData(false);
-      onPageLoad(true);
-      LOG.debug("< getEventListAPI");
-    } catch (error) {
-      LOG.error("getEventListAPI", error);
-      LoadingData(false);
-    }
-  };
+  //     setEventsList(dataItem?.data.events);
 
-  function manageSameHeader(newEventArray: any) {
-    var oldEventLastIndex = eventsList.length - 1;
-    if (
-      newEventArray[0]["date_title"] ==
-      eventsList[oldEventLastIndex]["date_title"]
-    ) {
-      var oldEventTempOne = [...eventsList];
-      oldEventTempOne[oldEventLastIndex]["events"] = [
-        ...eventsList[oldEventLastIndex]["events"],
-        ...newEventArray[0]["events"],
-      ];
-      newEventArray.splice(0, 1);
-      setEventsList([...oldEventTempOne, ...newEventArray]);
-    } else {
-      var dataTempTwo = [...eventsList, ...newEventArray];
-      setEventsList(dataTempTwo);
-      console.log("not same date display");
-    }
-  }
+  //     // if (page == 1) {
+  //     //   var dataTemp = [...eventsList, ...dataItem?.data.results];
+  //     //   setEventsList(dataTemp);
+  //     // } else {
+  //     //   manageSameHeader(dataItem?.data.results);
+  //     // }
 
-  const onDismiss = useCallback(() => {
-    setOpen(false);
-  }, [setOpen]);
+  //     setTotalPages(dataItem?.data?.totalPages);
+  //     setCurrentPage(dataItem?.data?.page);
+  //     LoadingData(false);
+  //     onPageLoad(true);
+  //     LOG.debug("< getEventListAPI");
+  //   } catch (error) {
+  //     LOG.error("getEventListAPI", error);
+  //     LoadingData(false);
+  //   }
+  // };
 
-  const onConfirm = useCallback(
-    (res: Range) => {
-      const startDate = res?.startDate;
-      const endDate = res?.endDate;
-      setOpen(false);
-      setRange({ startDate, endDate });
-      setTotalPages(0);
-      setPage(1);
-      setEventsList([]);
-    },
-    [setOpen, setRange, range?.startDate, range?.endDate]
-  );
+  // function manageSameHeader(newEventArray: any) {
+  //   var oldEventLastIndex = eventsList.length - 1;
+  //   if (
+  //     newEventArray[0]["date_title"] ==
+  //     eventsList[oldEventLastIndex]["date_title"]
+  //   ) {
+  //     var oldEventTempOne = [...eventsList];
+  //     oldEventTempOne[oldEventLastIndex]["events"] = [
+  //       ...eventsList[oldEventLastIndex]["events"],
+  //       ...newEventArray[0]["events"],
+  //     ];
+  //     newEventArray.splice(0, 1);
+  //     setEventsList([...oldEventTempOne, ...newEventArray]);
+  //   } else {
+  //     var dataTempTwo = [...eventsList, ...newEventArray];
+  //     setEventsList(dataTempTwo);
+  //     console.log("not same date display");
+  //   }
+  // }
+
+  // const onDismiss = useCallback(() => {
+  //   setOpen(false);
+  // }, [setOpen]);
+
+  // const onConfirm = useCallback(
+  //   (res: Range) => {
+  //     const startDate = res?.startDate;
+  //     const endDate = res?.endDate;
+  //     setOpen(false);
+  //     setRange({ startDate, endDate });
+  //     setTotalPages(0);
+  //     setPage(1);
+  //     setEventsList([]);
+  //   },
+  //   [setOpen, setRange, range?.startDate, range?.endDate]
+  // );
 
   const onNavigate = (item: LocalEventData) => {
     console.log(route.name);
     navigation?.navigate(navigations.EVENT_DETAIL, { id: item?.id });
   };
 
-  const postDataLoad = () => {
-    if (totalPages !== currentPages) {
-      setPage(page + 1);
-    }
-  };
+  // const postDataLoad = () => {
+  //   if (totalPages !== currentPages) {
+  //     setPage(page + 1);
+  //   }
+  // };
 
-  const toggleSwitch = (value: any) => {
-    onPageLoad(false);
-    if (isEnabled === false) {
-      setEventsList([]);
-      setPage(1);
-      setIsEnabled(true);
-      SetToggleFilter("AO");
-    } else {
-      setEventsList([]);
-      setPage(1);
-      setIsEnabled(false);
-      SetToggleFilter("VF");
-    }
-  };
+  // const toggleSwitch = (value: any) => {
+  //   onPageLoad(false);
+  //   if (isEnabled === false) {
+  //     setEventsList([]);
+  //     setPage(1);
+  //     setIsEnabled(true);
+  //     SetToggleFilter("AO");
+  //   } else {
+  //     setEventsList([]);
+  //     setPage(1);
+  //     setIsEnabled(false);
+  //     SetToggleFilter("VF");
+  //   }
+  // };
 
-  const renderItem: ListRenderItem<any> = ({ item }) => {
+  const renderLocalEvent: ListRenderItem<LocalEvent> = ({ item }) => {
     return (
       <View>
         {/* Header */}
-        <View style={styles.dateDisplyContainer}>
+        {/* <View style={styles.dateDisplyContainer}>
           <Text style={styles.displayDate}>
             {item?.date_title} {item.day_title}
           </Text>
-        </View>
-
-        {item.events.map((subitem: any) => {
-          return (
-            <TouchableOpacity
-              style={styles.listContainer}
-              onPress={() => onNavigate(subitem)}
-              activeOpacity={0.8}
-              key={Math.random()}
-              // disabled={disabled}
-            >
-              <ImageComponent
-                resizeMode="stretch"
-                uri={subitem.event_image}
-                source={dummy}
-                isUrl={!!subitem.event_image}
-                style={styles.dummy}
-              />
+        </View> */}
+        <EventItem
+          style={styles.listContainer}
+          event={item}
+          onPress={() => onNavigate(item)}
+        />
+        {/* <TouchableOpacity
+          style={styles.listContainer}
+          onPress={() => onNavigate(item)}
+          activeOpacity={0.8}
+          key={Math.random()}
+          // disabled={disabled}
+        >
+          <ImageComponent
+            resizeMode="stretch"
+            uri={item.event_image}
+            source={dummy}
+            isUrl={!!item.event_image}
+            style={styles.dummy}
+          />
+          <View style={styles.flex}>
+            <View style={styles.rowClass}>
               <View style={styles.flex}>
-                <View style={styles.rowClass}>
-                  <View style={styles.flex}>
-                    <Text style={styles.dateText}>
-                      {subitem.start_date_label}
-                      {" • "}
-                      {subitem.start_time_label}
-                    </Text>
-                    <Text numberOfLines={2} style={styles.title}>
-                      {subitem.name}
-                    </Text>
-                  </View>
-                  <ImageComponent source={event} style={styles.event} />
-                </View>
-
-                <View style={styles.rowClass}>
-                  <ImageComponent source={pin} style={styles.pin} />
-                  <Text numberOfLines={1} style={styles.location}>
-                    {subitem.address || subitem.full_address?.split(",")[0]}
-                  </Text>
-                </View>
-                {subitem.cancelled ? (
-                  <Text style={styles.cancleText}>CANCELED</Text>
-                ) : (
-                  <View></View>
-                )}
+                <Text style={styles.dateText}>
+                  {item.start_date_label}
+                  {" • "}
+                  {item.start_time_label}
+                </Text>
+                <Text numberOfLines={2} style={styles.title}>
+                  {item.name}
+                </Text>
               </View>
-            </TouchableOpacity>
-          );
-        })}
+              <ImageComponent source={event} style={styles.event} />
+            </View>
+
+            <View style={styles.rowClass}>
+              <ImageComponent source={pin} style={styles.pin} />
+              <Text numberOfLines={1} style={styles.location}>
+                {item.address || item.full_address?.split(",")[0]}
+              </Text>
+            </View>
+            {item.cancelled ? (
+              <Text style={styles.cancleText}>CANCELED</Text>
+            ) : (
+              <View></View>
+            )}
+          </View>
+        </TouchableOpacity> */}
       </View>
     );
   };
@@ -274,11 +264,7 @@ export const EventListScreen = (props: EventListScreenProps) => {
   return (
     <View>
       <Loader visible={page === 1 && isLoading} showOverlay />
-      <Navbar
-        navigation={
-          navigation as unknown as NavigationContainerRef<ParamListBase>
-        }
-      />
+      <Navbar navigation={navigation} />
       <View style={styles.backgroundToggle}>
         {/* <View style={styles.toggleCont}>
           <Text style={styles.villageLbl}>Village Friendly </Text>
@@ -331,27 +317,25 @@ export const EventListScreen = (props: EventListScreenProps) => {
       </View>
 
       <FlatList
-        renderItem={renderItem}
-        keyExtractor={(item, index) => index.toString()}
+        renderItem={renderLocalEvent}
+        keyExtractor={(item) => item.id}
         contentContainerStyle={styles.scrollView}
         data={eventsList}
-        initialNumToRender={10}
-        onEndReached={() => {
-          console.log("-------------onEndReached---------------");
-          if (loading) {
-            onPageLoad(false);
-            postDataLoad();
-          }
-        }}
-        onEndReachedThreshold={0.1}
+        // initialNumToRender={10}
+        // onEndReached={() => {
+        //   console.log("-------------onEndReached---------------");
+        //   if (loading) {
+        //     onPageLoad(false);
+        //     postDataLoad();
+        //   }
+        // }}
+        // onEndReachedThreshold={0.1}
       ></FlatList>
-      {!isLoading && eventsList.length === 0 ? (
+      {eventsList?.length === 0 ? (
         <View style={{ justifyContent: "center", alignItems: "center" }}>
           <Text style={styles.noEventLbl}>{strings.noEventsFound}</Text>
         </View>
-      ) : (
-        <></>
-      )}
+      ) : null}
     </View>
   );
 };

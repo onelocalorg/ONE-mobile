@@ -87,7 +87,7 @@ const TicketCheckoutModalComp = (
 
   useEffect(() => {
     getCardDetailAPI();
-    const index = eventData?.tickets.findIndex(
+    const index = eventData?.ticket.findIndex(
       (ele) => !ele.is_ticket_purchased
     );
     setSelectedRadioIndex(index);

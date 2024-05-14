@@ -19,7 +19,7 @@ import { DateTime } from "luxon";
 import eventIcon from "~/assets/map/event.png";
 import giftIcon from "~/assets/map/gift.png";
 import { LOG } from "~/config";
-import { fetchEventsForMap } from "~/network/api/services/home-service";
+import { fetchEvents } from "~/network/api/services/home-service";
 import { EventProperties } from "~/types/event-properties";
 import { LocalEventData } from "~/types/local-event-data";
 import { EventItem } from "../events/EventItem";
@@ -87,8 +87,9 @@ export const Map = ({ onClicked }: MapProps) => {
   const camera = useRef<MapboxGL.Camera>(null);
 
   useEffect(() => {
-    fetchEventsForMap({
+    fetchEvents({
       startDate: DateTime.now(),
+      isCanceled: false,
       // endDate: DateTime.now().plus({ months: 3 }),
     }).then(setEvents);
     // async function fetchEvents() {
@@ -114,7 +115,7 @@ export const Map = ({ onClicked }: MapProps) => {
   useFocusEffect(
     useCallback(() => {
       setSelectedEvent(undefined);
-      fetchEventsForMap({
+      fetchEvents({
         startDate: DateTime.now(),
         // endDate: DateTime.now().plus({ months: 3 }),
       }).then(setEvents);
@@ -492,7 +493,7 @@ export const Map = ({ onClicked }: MapProps) => {
         {selectedEvent ? (
           <EventItem
             event={selectedEvent!}
-            onPressed={() => onClicked?.(selectedEvent)}
+            onPress={() => onClicked?.(selectedEvent)}
           />
         ) : null}
         {/* <MapboxGL.PointAnnotation

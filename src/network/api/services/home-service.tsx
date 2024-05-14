@@ -1,8 +1,10 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import _ from "lodash/fp";
 import { DateTime } from "luxon";
 import { LOG } from "~/config";
 import { apiConstants } from "~/network/constant";
 import { getApiResponse } from "~/network/utils/get-api-response";
+import { LocalEvent } from "~/types/local-event";
 import { LocalEventData } from "~/types/local-event-data";
 import { TicketType } from "~/types/ticket-type";
 import { API } from "..";
@@ -53,19 +55,22 @@ export const onFetchEvents = async ({
   return response;
 };
 
-interface FetchEventsForMapProps {
+interface FetchEventsProps {
   startDate: DateTime;
+  isCanceled?: boolean;
   // endDate?: DateTime;
 }
-export const fetchEventsForMap = async ({
+export const fetchEvents = async ({
   startDate,
+  isCanceled,
 }: // endDate,
-FetchEventsForMapProps) => {
-  const url =
-    process.env.API_URL +
-    `/v2/events?start_date=${startDate.toISO()}
-    }`;
-  LOG.info("fetchEventsForMap", url);
+FetchEventsProps) => {
+  const url = `${
+    process.env.API_URL
+  }/v2/events?start_date=${startDate.toISO()}&${
+    isCanceled ? "isCanceled=" + isCanceled : ""
+  }`;
+  LOG.info("fetchEvents", url);
   const token = await AsyncStorage.getItem("token");
   const response = await fetch(url, {
     headers: new Headers({
@@ -78,6 +83,49 @@ FetchEventsForMapProps) => {
   LOG.debug(dataItem?.data);
   return dataItem?.data as GeoJSON.FeatureCollection;
 };
+
+export const featureCollectionToLocalEvents = (
+  collection: GeoJSON.FeatureCollection
+) => _.sortBy(["start_date"], collection.features.map(featureToLocalEvent));
+
+const featureToLocalEvent = (feature: GeoJSON.Feature) =>
+  ({
+    ..._.omit(["location"], feature.properties),
+    start_date: DateTime.fromISO(feature.properties?.["start_date"]),
+    end_date: DateTime.fromISO(feature.properties?.["end_date"]),
+    latitude: (feature.geometry as GeoJSON.Point).coordinates[1],
+    longitude: (feature.geometry as GeoJSON.Point).coordinates[0],
+  } as LocalEvent);
+
+interface FetchEventsProps {
+  startDate: DateTime;
+  isCanceled?: boolean;
+  // endDate?: DateTime;
+}
+export const fetchEvent = async (eventId: string) => {
+  const url = `${process.env.API_URL}/v1/events/${eventId}`;
+  LOG.info("fetchEvent", url);
+  const token = await AsyncStorage.getItem("token");
+  const response = await fetch(url, {
+    headers: new Headers({
+      Authorization: "Bearer " + token,
+      "Content-Type": "application/json",
+    }),
+  });
+  LOG.info(response.status);
+  const dataItem = await response.json();
+  LOG.debug(dataItem?.data);
+  return dataItem?.data as GeoJSON.FeatureCollection;
+};
+
+export const eventResponseToLocalEvent = (data: any) =>
+  ({
+    ...data,
+    start_date: DateTime.fromISO(data.start_date),
+    end_date: DateTime.fromISO(data.end_date),
+    latitude: data.lat,
+    longitude: data.long,
+  } as LocalEvent);
 
 export interface TicketBodyParamProps {
   name: string;
@@ -286,11 +334,11 @@ export interface EventDetailsProps {
   eventId: string;
 }
 
-export const onFetchEventDetails = async (props: EventDetailsProps) => {
+export const onFetchEventDetails = async (eventId: string) => {
   let response;
 
   try {
-    const endPoint = `/v1/events/${props?.eventId}`;
+    const endPoint = `/v1/events/${eventId}`;
     const data = await API.homeService.get(endPoint);
     response = getApiResponse(data);
   } catch (error: any) {
