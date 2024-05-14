@@ -479,7 +479,7 @@ export const LoginScreen = (props: LoginScreenProps) => {
   };
 
   const loadInBrowser = () => {
-    const url = "https://onelocal.one/privacy_policy.html";
+    const url = "https://onelocal.one/privacypolicy";
     if (url) {
       console.log("11111111111");
       Linking.openURL(url);

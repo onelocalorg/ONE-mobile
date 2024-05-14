@@ -288,7 +288,7 @@ export const SignUp = (props: SignUpProps) => {
     Keyboard.dismiss();
   };
   const loadInBrowser = () => {
-    const url = "https://onelocal.one/privacy_policy.html";
+    const url = "https://onelocal.one/privacypolicy";
     if (url) {
       Linking.openURL(url);
     }
