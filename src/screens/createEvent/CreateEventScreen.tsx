@@ -88,7 +88,10 @@ export const CreateEventScreen = (props: CreateEventScreenProps) => {
   const [about, setAbout] = useState(route?.params.eventData?.about);
   const [setFilter, SetToggleFilter] = useState("VF");
   const [eventDetails, setEventDetails] = useState(route?.params.eventData);
-  const [ticketTypes, setTicketTypes] = useState<TicketType[]>([]);
+  const [ticketTypes, setTicketTypes] = useState(
+    route?.params.eventData?.ticketTypes || []
+  );
+  const [isTicketTypesDirty, setTicketTypesDirty] = useState(false);
   const [fullAddress, setFullAddress] = useState(
     route?.params.eventData?.full_address
   );
@@ -240,7 +243,7 @@ export const CreateEventScreen = (props: CreateEventScreenProps) => {
       longitude: longitude!,
       // type: setFilter,
     });
-    console.log(res);
+    LOG.debug("onCreateEvent", res);
     if (res?.success) {
       LodingData(false);
       navigation?.goBack();
@@ -276,7 +279,7 @@ export const CreateEventScreen = (props: CreateEventScreenProps) => {
       request = { ...request, emailConfirmationBody: email_confirmation_body };
     }
     if (about !== props.route?.params.eventData?.about) {
-      request = { ...request, about: about };
+      request = { ...request, about };
     }
     if (
       latitude !== props.route?.params.eventData?.latitude ||
@@ -285,8 +288,11 @@ export const CreateEventScreen = (props: CreateEventScreenProps) => {
       request = { ...request, latitude: latitude?.toString() };
       request = { ...request, longitude: longitude?.toString() };
     }
+    if (isTicketTypesDirty) {
+      request = { ...request, ticketTypes };
+    }
 
-    request = { ...request, type: setFilter };
+    // request = { ...request, type: setFilter };
     // }
 
     // request = {
@@ -299,6 +305,8 @@ export const CreateEventScreen = (props: CreateEventScreenProps) => {
       Alert.alert("", strings.pleaseEdit);
       return;
     }
+
+    LOG.debug("> onUpdateEvent", request);
 
     const res = await updateEvent({ bodyParams: request, eventId: id });
     if (res?.success) {
@@ -317,14 +325,9 @@ export const CreateEventScreen = (props: CreateEventScreenProps) => {
     LOG.debug("> onTicketAdded", ticket);
     // setIsEdit(false);
     // modalRef.current?.onCloseModal();
-    if (ticketTypes) {
-      setTicketTypes([...ticketTypes, ticket]);
-    } else {
-      setTicketTypes([ticket]);
-    }
+    setTicketTypes([...ticketTypes, ticket]);
+    setTicketTypesDirty(true);
     setCurTicket(undefined);
-
-    LOG.debug("tickets.length", ticketTypes.length);
 
     // const eventDetailsCopy = { ...eventDetails };
     // if (isEdit) {
@@ -340,6 +343,11 @@ export const CreateEventScreen = (props: CreateEventScreenProps) => {
     //   eventDetailsCopy.tickets = allTickets;
     // }
     // setEventDetails(eventDetailsCopy);
+  };
+
+  const handleTicketRemoved = (index: number) => {
+    setTicketTypes(ticketTypes.filter((_, i) => i !== index));
+    setTicketTypesDirty(true);
   };
 
   // const onCancel = () => {
@@ -651,13 +659,7 @@ export const CreateEventScreen = (props: CreateEventScreenProps) => {
                         <Pressable onPress={() => setCurTicket(index)}>
                           <ImageComponent source={edit} style={styles.edit} />
                         </Pressable>
-                        <Pressable
-                          onPress={() =>
-                            setTicketTypes(
-                              ticketTypes.filter((_, i) => i !== index)
-                            )
-                          }
-                        >
+                        <Pressable onPress={() => handleTicketRemoved(index)}>
                           <Text style={styles.delete}>X</Text>
                         </Pressable>
                       </View>
