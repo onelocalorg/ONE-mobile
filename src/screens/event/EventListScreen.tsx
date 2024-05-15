@@ -263,8 +263,8 @@ export const EventListScreen = (props: EventListScreenProps) => {
 
   return (
     <View>
-      <Loader visible={page === 1 && isLoading} showOverlay />
       <Navbar navigation={navigation} />
+      <Loader visible={page === 1 && isLoading} showOverlay />
       <View style={styles.backgroundToggle}>
         {/* <View style={styles.toggleCont}>
           <Text style={styles.villageLbl}>Village Friendly </Text>
@@ -331,7 +331,7 @@ export const EventListScreen = (props: EventListScreenProps) => {
         // }}
         // onEndReachedThreshold={0.1}
       ></FlatList>
-      {eventsList?.length === 0 ? (
+      {!isLoading && eventsList?.length === 0 ? (
         <View style={{ justifyContent: "center", alignItems: "center" }}>
           <Text style={styles.noEventLbl}>{strings.noEventsFound}</Text>
         </View>
