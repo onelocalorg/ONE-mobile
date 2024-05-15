@@ -105,7 +105,6 @@ export const EventDetailScreen = (props: EventDetailScreenProps) => {
   const isShowPaymentCheck = getData("isShowPaymentFlow");
   const [issLoading, setLoading] = useState(true);
 
-  //fetching rsvps
   useEffect(() => {
     fetchRsvpDataAPI();
 
@@ -179,33 +178,33 @@ export const EventDetailScreen = (props: EventDetailScreenProps) => {
     }
   };
 
-  async function eventViewAPI() {
-    // LodingData(true);
-    const token = await AsyncStorage.getItem("token");
+  // async function eventViewAPI() {
+  //   // LodingData(true);
+  //   const token = await AsyncStorage.getItem("token");
 
-    try {
-      const response = await fetch(
-        process.env.API_URL + "/v1/events/event-count/" + eventId,
-        // process.env.API_URL + '/v1/events/event-count/6565af618267f45414608d66',
-        {
-          method: "post",
-          headers: new Headers({
-            Authorization: "Bearer " + token,
-            "Content-Type": "application/json",
-          }),
-        }
-      );
+  //   try {
+  //     const response = await fetch(
+  //       process.env.API_URL + "/v1/events/event-count/" + eventId,
+  //       // process.env.API_URL + '/v1/events/event-count/6565af618267f45414608d66',
+  //       {
+  //         method: "post",
+  //         headers: new Headers({
+  //           Authorization: "Bearer " + token,
+  //           "Content-Type": "application/json",
+  //         }),
+  //       }
+  //     );
 
-      const dataItem = await response.json();
-      // LodingData(false);
-      console.log("=========== eventViewAPI response==============");
-      console.log("eventId....................", response);
-      console.log(dataItem);
-    } catch (error) {
-      console.error(error);
-      // LodingData(false);
-    }
-  }
+  //     const dataItem = await response.json();
+  //     // LodingData(false);
+  //     console.log("=========== eventViewAPI response==============");
+  //     console.log("eventId....................", response);
+  //     console.log(dataItem);
+  //   } catch (error) {
+  //     console.error(error);
+  //     // LodingData(false);
+  //   }
+  // }
 
   //----------------rsvpFilterAPI--------------------
   async function rsvpFilterAPI(type: any) {
@@ -284,73 +283,73 @@ export const EventDetailScreen = (props: EventDetailScreenProps) => {
     }
   };
 
-  const onPurchaseTicketThroughCard = async (
-    cardData: any,
-    ticketId: string,
-    ticketName: string,
-    price: any,
-    quantityticket: number
-  ) => {
-    if (price === 0) {
-      onPaymentSuccess(
-        cardData,
-        ticketId,
-        ticketName,
-        price.toString(),
-        quantityticket
-      );
-    } else {
-      onPaymentSuccess(
-        cardData,
-        ticketId,
-        ticketName,
-        `${parseFloat(price?.replace("USD", ""))}`,
-        quantityticket
-      );
-    }
-  };
+  // const onPurchaseTicketThroughCard = async (
+  //   cardData: any,
+  //   ticketId: string,
+  //   ticketName: string,
+  //   price: any,
+  //   quantityticket: number
+  // ) => {
+  //   if (price === 0) {
+  //     onPaymentSuccess(
+  //       cardData,
+  //       ticketId,
+  //       ticketName,
+  //       price.toString(),
+  //       quantityticket
+  //     );
+  //   } else {
+  //     onPaymentSuccess(
+  //       cardData,
+  //       ticketId,
+  //       ticketName,
+  //       `${parseFloat(price?.replace("USD", ""))}`,
+  //       quantityticket
+  //     );
+  //   }
+  // };
 
-  const onPurchaseTicket = async (
-    price: any,
-    ticketId: string,
-    ticketName: string,
-    quantityticket: number
-  ) => {
-    const unique_Id = await AsyncStorage.getItem("uniqueId");
-    var Payment: any = {
-      ticketId: ticketId,
-      purchase_user_unique_id: unique_Id,
-      purchased_ticket_qunatity: quantityticket,
-    };
-    const request = {
-      amount: price * 100,
-      currency: "usd",
-      "automatic_payment_methods[enabled]": true,
-      customer: user?.stripeCustomerId,
-      description: "Payment-Mobile",
-      metadata: Payment,
-    };
-    console.log("------------onPurchaseTicket-----------------");
-    let clientSecret = "";
-    const res = await createPayoutIntent({ bodyParams: request });
-    if (res?.statusCode === 200) {
-      clientSecret = res?.data?.client_secret;
-    }
-    console.log("-------------------clientSecret---------------", res);
-    modalRef.current?.onCloseModal();
-    navigation?.navigate(navigations.PAYMENT, {
-      clientSecret,
-      paymentData: res?.data,
-      onSuccess: () =>
-        onPaymentSuccess(
-          res?.data,
-          ticketId,
-          ticketName,
-          `${parseFloat(price?.replace("USD", ""))}`,
-          quantityticket
-        ),
-    });
-  };
+  // const onPurchaseTicket = async (
+  //   price: any,
+  //   ticketId: string,
+  //   ticketName: string,
+  //   quantityticket: number
+  // ) => {
+  //   const unique_Id = await AsyncStorage.getItem("uniqueId");
+  //   var Payment: any = {
+  //     ticketId: ticketId,
+  //     purchase_user_unique_id: unique_Id,
+  //     purchased_ticket_qunatity: quantityticket,
+  //   };
+  //   const request = {
+  //     amount: price * 100,
+  //     currency: "usd",
+  //     "automatic_payment_methods[enabled]": true,
+  //     customer: user?.stripeCustomerId,
+  //     description: "Payment-Mobile",
+  //     metadata: Payment,
+  //   };
+  //   console.log("------------onPurchaseTicket-----------------");
+  //   let clientSecret = "";
+  //   const res = await createPayoutIntent({ bodyParams: request });
+  //   if (res?.statusCode === 200) {
+  //     clientSecret = res?.data?.client_secret;
+  //   }
+  //   console.log("-------------------clientSecret---------------", res);
+  //   modalRef.current?.onCloseModal();
+  //   navigation?.navigate(navigations.PAYMENT, {
+  //     clientSecret,
+  //     paymentData: res?.data,
+  //     onSuccess: () =>
+  //       onPaymentSuccess(
+  //         res?.data,
+  //         ticketId,
+  //         ticketName,
+  //         `${parseFloat(price?.replace("USD", ""))}`,
+  //         quantityticket
+  //       ),
+  //   });
+  // };
 
   const copyPaymentLink = (link: string) => {
     Clipboard.setString(link);
@@ -358,12 +357,12 @@ export const EventDetailScreen = (props: EventDetailScreenProps) => {
   };
 
   const onNavigateToProducerProfile = () => {
-    if (event?.is_event_owner) {
-      navigation?.navigate(navigations.PROFILE);
-      // } else {
-      //   AsyncStorage.setItem("recentUserId", event?.eventProducer?.id);
-      //   navigation?.navigate(navigations.RECENTUSERPROFILE);
-    }
+    // if (event?.is_event_owner) {
+    navigation?.navigate(navigations.PROFILE);
+    // } else {
+    //   AsyncStorage.setItem("recentUserId", event?.eventProducer?.id);
+    //   navigation?.navigate(navigations.RECENTUSERPROFILE);
+    // }
   };
 
   // Check if the logged-in user's ID is available in RSVP data
@@ -403,8 +402,8 @@ export const EventDetailScreen = (props: EventDetailScreenProps) => {
 
   return (
     <View>
-      <Loader visible={!event} showOverlay />
       <Navbar navigation={props.navigation} />
+      <Loader visible={!event} showOverlay />
       {event ? (
         <ScrollView contentContainerStyle={styles.scrollView}>
           <View style={styles.container}>

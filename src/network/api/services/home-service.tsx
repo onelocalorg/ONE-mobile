@@ -5,6 +5,7 @@ import { DateTime } from "luxon";
 import { LOG } from "~/config";
 import { apiConstants } from "~/network/constant";
 import { getApiResponse } from "~/network/utils/get-api-response";
+import { EventResponse } from "~/types/event-response";
 import { GeoJSONEventProperties } from "~/types/geojson-event-properties";
 import { LocalEvent } from "~/types/local-event";
 import { LocalEventData } from "~/types/local-event-data";
@@ -121,21 +122,21 @@ export const fetchEvent = async (eventId: string) => {
   LOG.info(response.status);
   const dataItem = await response.json();
   LOG.debug(dataItem?.data);
-  return dataItem?.data as GeoJSON.FeatureCollection;
+  return dataItem?.data as EventResponse;
 };
 
-export const eventResponseToLocalEvent = (data: any) =>
+export const eventResponseToLocalEvent = (data: EventResponse) =>
   ({
     ...data,
     start_date: DateTime.fromISO(data.start_date),
-    end_date: DateTime.fromISO(data.end_date),
+    end_date: data.end_date ? DateTime.fromISO(data.end_date) : undefined,
     latitude: data.lat,
     longitude: data.long,
     event_image: data.event_image_id,
-    ticketTypes: data.ticketTypes.map({
-      ...data.ticketTypes,
-      price: Big(data.ticketTypes.price),
-    }),
+    ticketTypes: data.ticketTypes.map((tt) => ({
+      ...tt,
+      price: Big(tt.price),
+    })),
   } as LocalEvent);
 
 export interface TicketBodyParamProps {

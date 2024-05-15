@@ -6,10 +6,10 @@ export interface LocalEvent extends LocalEventData {
   event_image?: string;
   eventProducer: EventProducer;
   is_event_owner: boolean;
-  quantity: string;
-  max_quantity_to_show: string;
-  available_quantity: string;
-  cancelled: any;
+  // quantity: string;
+  // max_quantity_to_show: string;
+  // available_quantity: string;
+  // cancelled: any;
   isCanceled: boolean;
   isPayout: boolean;
   viewCount: number;

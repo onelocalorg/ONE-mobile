@@ -16,5 +16,4 @@ export interface LocalEventData {
   email_confirmation_body?: string;
   ticketTypes: TicketType[];
   isCanceled?: boolean;
-  // eventProducer: EventProducer;
 }
