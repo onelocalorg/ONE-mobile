@@ -17,7 +17,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { getBuildNumber } from "react-native-device-info";
+import { getReadableVersion } from "react-native-device-info";
 import { FlatList } from "react-native-gesture-handler";
 import Toast from "react-native-simple-toast";
 import GestureRecognizer from "react-native-swipe-gestures";
@@ -981,7 +981,7 @@ export const About = (props: AboutDataProps) => {
           <Text style={styles.deleteAccount}>{strings.deleteAccount}</Text>
         </TouchableOpacity>
         <Text>
-          Build: {getBuildNumber()} -{" "}
+          Build: {getReadableVersion()} -{" "}
           {process.env.API_URL?.includes("app.onelocal.one")
             ? "Production"
             : process.env.API_URL?.includes("beta.onelocal.one")
