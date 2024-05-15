@@ -13,5 +13,4 @@ export interface LocalEvent extends LocalEventData {
   isCanceled: boolean;
   isPayout: boolean;
   viewCount: number;
-  event_image_id?: string;
 }

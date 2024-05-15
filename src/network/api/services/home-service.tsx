@@ -4,6 +4,7 @@ import { DateTime } from "luxon";
 import { LOG } from "~/config";
 import { apiConstants } from "~/network/constant";
 import { getApiResponse } from "~/network/utils/get-api-response";
+import { GeoJSONEventProperties } from "~/types/geojson-event-properties";
 import { LocalEvent } from "~/types/local-event";
 import { LocalEventData } from "~/types/local-event-data";
 import { TicketType } from "~/types/ticket-type";
@@ -68,7 +69,7 @@ FetchEventsProps) => {
   const url = `${
     process.env.API_URL
   }/v2/events?start_date=${startDate.toISO()}&${
-    isCanceled ? "isCanceled=" + isCanceled : ""
+    !_.isUndefined(isCanceled) ? "isCanceled=" + isCanceled : ""
   }`;
   LOG.info("fetchEvents", url);
   const token = await AsyncStorage.getItem("token");
@@ -88,14 +89,18 @@ export const featureCollectionToLocalEvents = (
   collection: GeoJSON.FeatureCollection
 ) => _.sortBy(["start_date"], collection.features.map(featureToLocalEvent));
 
-const featureToLocalEvent = (feature: GeoJSON.Feature) =>
-  ({
-    ..._.omit(["location"], feature.properties),
-    start_date: DateTime.fromISO(feature.properties?.["start_date"]),
-    end_date: DateTime.fromISO(feature.properties?.["end_date"]),
+export const featureToLocalEvent = (feature: GeoJSON.Feature) => {
+  const properties = feature.properties as GeoJSONEventProperties;
+  return {
+    ..._.omit(["location"], properties),
+    start_date: DateTime.fromISO(properties.start_date),
+    end_date: properties.end_date
+      ? DateTime.fromISO(properties.end_date)
+      : undefined,
     latitude: (feature.geometry as GeoJSON.Point).coordinates[1],
     longitude: (feature.geometry as GeoJSON.Point).coordinates[0],
-  } as LocalEvent);
+  } as LocalEvent;
+};
 
 interface FetchEventsProps {
   startDate: DateTime;
@@ -125,6 +130,7 @@ export const eventResponseToLocalEvent = (data: any) =>
     end_date: DateTime.fromISO(data.end_date),
     latitude: data.lat,
     longitude: data.long,
+    event_image: data.event_image_id,
   } as LocalEvent);
 
 export interface TicketBodyParamProps {

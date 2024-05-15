@@ -19,8 +19,10 @@ import { DateTime } from "luxon";
 import eventIcon from "~/assets/map/event.png";
 import giftIcon from "~/assets/map/gift.png";
 import { LOG } from "~/config";
-import { fetchEvents } from "~/network/api/services/home-service";
-import { EventProperties } from "~/types/event-properties";
+import {
+  featureToLocalEvent,
+  fetchEvents,
+} from "~/network/api/services/home-service";
 import { LocalEventData } from "~/types/local-event-data";
 import { EventItem } from "../events/EventItem";
 
@@ -117,6 +119,7 @@ export const Map = ({ onClicked }: MapProps) => {
       setSelectedEvent(undefined);
       fetchEvents({
         startDate: DateTime.now(),
+        isCanceled: true,
         // endDate: DateTime.now().plus({ months: 3 }),
       }).then(setEvents);
     }, [])
@@ -402,22 +405,11 @@ export const Map = ({ onClicked }: MapProps) => {
   // };
 
   const handleMapPress = (event: OnPressEvent) => {
-    const properties = event.features[0].properties as EventProperties;
-    LOG.debug("mapPress", properties);
-    if (properties) {
-      const event = Object.assign({}, properties, {
-        start_date: DateTime.fromISO(properties.start_date),
-        end_date: properties.end_date
-          ? DateTime.fromISO(properties.end_date)
-          : undefined,
-        latitude: properties.location.coordinates[1],
-        longitude: properties.location.coordinates[0],
-        ticketTypes: [],
-      }) as LocalEventData;
-      console.log("event", event);
-
-      setSelectedEvent(selectedEvent?.id === event.id ? undefined : event);
-    }
+    const localEvent = featureToLocalEvent(event.features[0]);
+    LOG.debug("pressed", localEvent);
+    setSelectedEvent(
+      selectedEvent?.id === localEvent.id ? undefined : localEvent
+    );
   };
 
   return (
@@ -544,18 +536,4 @@ export const Map = ({ onClicked }: MapProps) => {
       {/* <EventList /> */}
     </View>
   );
-};
-
-const geojson = {
-  type: "FeatureCollection",
-  features: [
-    {
-      type: "Feature",
-      properties: {},
-      geometry: {
-        type: "Point",
-        coordinates: [-105.31, 40.06829, 0],
-      },
-    },
-  ],
 };

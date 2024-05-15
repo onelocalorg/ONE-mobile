@@ -19,7 +19,7 @@ export const EventItem = ({ event, onPress, style }: EventItemProps) => {
   LOG.debug(": EventItem:", event);
 
   return (
-    <Pressable style={style} onPress={onPress}>
+    <Pressable style={style ?? styles.listContainer} onPress={onPress}>
       <Image
         resizeMode="stretch"
         source={

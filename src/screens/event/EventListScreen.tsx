@@ -75,7 +75,7 @@ export const EventListScreen = (props: EventListScreenProps) => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    fetchEvents({ startDate: DateTime.now() })
+    fetchEvents({ isCanceled: false, startDate: DateTime.now() })
       .then(featureCollectionToLocalEvents)
       .then(setEventsList);
   }, []);

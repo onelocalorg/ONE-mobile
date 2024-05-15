@@ -1,9 +1,9 @@
-export interface EventProperties {
+export interface GeoJSONEventProperties {
   id: string;
   name: string;
   about: string;
   full_address: string;
-  location: GeoJSON.Point;
   start_date: string;
   end_date?: string;
+  event_image?: string;
 }
