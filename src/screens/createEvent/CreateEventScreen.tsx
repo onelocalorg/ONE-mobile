@@ -67,6 +67,9 @@ export const CreateEventScreen = (props: CreateEventScreenProps) => {
   const viewCount = isLocalEvent(route?.params.eventData)
     ? route?.params.eventData.viewCount
     : undefined;
+  const isEventOwner = isLocalEvent(route?.params.eventData)
+    ? route?.params.eventData.is_event_owner
+    : undefined;
   const styles = createStyleSheet(theme);
   // const modalRef: React.Ref<ModalRefProps> = useRef(null);
   const addItemRef: React.Ref<ModalRefProps> = useRef(null);
@@ -407,10 +410,6 @@ export const CreateEventScreen = (props: CreateEventScreenProps) => {
     }
   };
 
-  const onNavigateToProfile = () => {
-    navigation?.navigate(navigations.PROFILE);
-  };
-
   // const toggleSwitch = (value: any) => {
   //   if (isEnabled === false) {
   //     setIsEnabled(true);
@@ -557,14 +556,13 @@ export const CreateEventScreen = (props: CreateEventScreenProps) => {
                 <View style={{ width: width - 100 }}>
                   <LocationAutocomplete
                     address={fullAddress}
+                    placeholder="Where will the event be held?"
                     onPress={(data: any, details: any) => {
                       setFullAddress(data.description);
                       setLatitude(details!.geometry.location.lat);
                       setLongitude(details!.geometry.location.lng);
                     }}
-                  >
-                    Where will the event be held?
-                  </LocationAutocomplete>
+                  ></LocationAutocomplete>
 
                   {/* </View> */}
                 </View>
@@ -665,28 +663,29 @@ export const CreateEventScreen = (props: CreateEventScreenProps) => {
 
             {!isCreateEvent ? (
               <View>
-                is_event_owner ? (
-                <View style={styles.uniqueViewCont}>
-                  <Text style={styles.uniqueViewLbl}>Unique Views</Text>
-                  <Text style={styles.uniqueCount}>{viewCount}</Text>
-                </View>
-                ) : null is_event_owner ? (
-                <View>
-                  <GetAdmintoolsDropDownScreen
-                    eventId={id!}
-                    navigation={navigation}
-                  />
-                  <TouchableOpacity
-                    activeOpacity={0.8}
-                    onPress={() => onCancleEvent(id)}
-                    style={styles.cancleEventBtn}
-                  >
-                    <Text style={styles.cancleEventText}>
-                      {strings.cancleEvent}
-                    </Text>
-                  </TouchableOpacity>
-                </View>
-                ) : null
+                {isEventOwner ? (
+                  <View>
+                    <View style={styles.uniqueViewCont}>
+                      <Text style={styles.uniqueViewLbl}>Unique Views</Text>
+                      <Text style={styles.uniqueCount}>{viewCount}</Text>
+                    </View>
+                    <View>
+                      <GetAdmintoolsDropDownScreen
+                        eventId={id!}
+                        navigation={navigation}
+                      />
+                      <TouchableOpacity
+                        activeOpacity={0.8}
+                        onPress={() => onCancleEvent(id)}
+                        style={styles.cancleEventBtn}
+                      >
+                        <Text style={styles.cancleEventText}>
+                          {strings.cancleEvent}
+                        </Text>
+                      </TouchableOpacity>
+                    </View>
+                  </View>
+                ) : null}
               </View>
             ) : null}
           </View>

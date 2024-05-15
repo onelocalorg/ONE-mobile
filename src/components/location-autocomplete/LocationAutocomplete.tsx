@@ -7,14 +7,13 @@ import { useAppTheme } from "~/app-hooks/use-app-theme";
 import { LOG } from "~/config";
 
 interface LocationAutocompleteProps {
-  children: string;
+  placeholder: string;
   address?: string;
   onPress: (data: any, details: any) => void;
 }
-
 export const LocationAutocomplete = ({
   address,
-  children,
+  placeholder,
   onPress,
 }: LocationAutocompleteProps) => {
   const { theme } = useAppTheme();
@@ -57,7 +56,7 @@ export const LocationAutocomplete = ({
       textInputProps={{
         placeholderTextColor: "gray",
       }}
-      placeholder={children}
+      placeholder={placeholder}
       GooglePlacesDetailsQuery={{ fields: "geometry" }}
       fetchDetails={true}
       onPress={(data: any, details) => {
