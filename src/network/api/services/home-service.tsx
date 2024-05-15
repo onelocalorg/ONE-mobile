@@ -1,4 +1,5 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import Big from "big.js";
 import _ from "lodash/fp";
 import { DateTime } from "luxon";
 import { LOG } from "~/config";
@@ -131,6 +132,10 @@ export const eventResponseToLocalEvent = (data: any) =>
     latitude: data.lat,
     longitude: data.long,
     event_image: data.event_image_id,
+    ticketTypes: data.ticketTypes.map({
+      ...data.ticketTypes,
+      price: Big(data.ticketTypes.price),
+    }),
   } as LocalEvent);
 
 export interface TicketBodyParamProps {
