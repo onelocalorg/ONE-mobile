@@ -119,7 +119,7 @@ export const Map = ({ onClicked }: MapProps) => {
       setSelectedEvent(undefined);
       fetchEvents({
         startDate: DateTime.now(),
-        isCanceled: true,
+        isCanceled: false,
         // endDate: DateTime.now().plus({ months: 3 }),
       }).then(setEvents);
     }, [])
