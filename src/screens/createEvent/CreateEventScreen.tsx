@@ -14,16 +14,7 @@ import {
 } from "react-native";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
 import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
-import {
-  addGreen,
-  arrowLeft,
-  dummy,
-  edit,
-  onelogo,
-  pinWhite,
-  save,
-  ticket,
-} from "~/assets/images";
+import { addGreen, dummy, edit, pinWhite, save, ticket } from "~/assets/images";
 
 import { ImageComponent } from "~/components/image-component";
 import { Input } from "~/components/input";
@@ -45,6 +36,7 @@ import { useSelector } from "react-redux";
 import { ButtonComponent } from "~/components/button-component";
 import { ChooseDate } from "~/components/choose-date/ChooseDate";
 import { Loader } from "~/components/loader";
+import { Navbar } from "~/components/navbar/Navbar";
 import { LOG } from "~/config";
 import { useCreateEvent } from "~/network/hooks/home-service-hooks/use-create-event";
 import { useTicketHolderCheckinsList } from "~/network/hooks/home-service-hooks/use-ticket-holder-checkin-list";
@@ -52,7 +44,7 @@ import { useUpdateEvent } from "~/network/hooks/home-service-hooks/use-update-ev
 import { StoreType } from "~/network/reducers/store";
 import { UserProfileState } from "~/network/reducers/user-profile-reducer";
 import { width } from "~/theme/device/device";
-import { LocalEvent } from "~/types/local-event";
+import { LocalEvent, isLocalEvent } from "~/types/local-event";
 import { LocalEventData } from "~/types/local-event-data";
 import { TicketType } from "~/types/ticket-type";
 import { GetAdmintoolsDropDownScreen } from "./getAdmintoolsDropdown";
@@ -72,9 +64,9 @@ export const CreateEventScreen = (props: CreateEventScreenProps) => {
   const { strings } = useStringsAndLabels();
   const { navigation, route } = props || {};
   const isCreateEvent = route?.params.isCreateEvent ?? false;
-  const viewCount = (route?.params.eventData as LocalEvent).viewCount as
-    | number
-    | undefined;
+  const viewCount = isLocalEvent(route?.params.eventData)
+    ? route?.params.eventData.viewCount
+    : undefined;
   const styles = createStyleSheet(theme);
   // const modalRef: React.Ref<ModalRefProps> = useRef(null);
   const addItemRef: React.Ref<ModalRefProps> = useRef(null);
@@ -460,44 +452,8 @@ export const CreateEventScreen = (props: CreateEventScreenProps) => {
 
   return (
     <Pressable style={styles.container} onPress={keyboardDismiss}>
+      <Navbar navigation={navigation} />
       <Loader visible={isLoading || createEventLoading} showOverlay />
-      <TouchableOpacity style={styles.HeaderContainerTwo} activeOpacity={1}>
-        <TouchableOpacity onPress={onBackPress} style={{ zIndex: 11111222222 }}>
-          <View style={styles.row2}>
-            <ImageComponent source={arrowLeft} style={styles.arrowLeft} />
-          </View>
-        </TouchableOpacity>
-        <View style={styles.oneContainer}>
-          <ImageComponent
-            style={styles.oneContainerImage}
-            source={onelogo}
-          ></ImageComponent>
-          <View>
-            <Text style={styles.oneContainerText}>NE</Text>
-            <Text style={styles.localText}>L o c a l</Text>
-            {/* <Text style={styles.localText}>[Local]</Text> */}
-          </View>
-        </View>
-        <View style={styles.profileContainer}>
-          {/* <ImageComponent
-              style={styles.bellIcon}
-              source={bell}></ImageComponent> */}
-          <TouchableOpacity
-            activeOpacity={0.8}
-            onPress={onNavigateToProfile}
-            style={styles.profileView}
-          >
-            <ImageComponent
-              resizeMode="cover"
-              isUrl={!!user?.pic}
-              source={dummy}
-              uri={user?.pic}
-              style={styles.profileImage}
-            />
-          </TouchableOpacity>
-        </View>
-      </TouchableOpacity>
-
       <KeyboardAwareScrollView
         keyboardShouldPersistTaps="always"
         showsVerticalScrollIndicator={false}

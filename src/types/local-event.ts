@@ -14,3 +14,7 @@ export interface LocalEvent extends LocalEventData {
   isPayout: boolean;
   viewCount: number;
 }
+
+export function isLocalEvent(object?: any): object is LocalEvent {
+  return !!object && "viewCount" in object;
+}
