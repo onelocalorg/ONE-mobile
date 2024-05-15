@@ -52,6 +52,7 @@ import { useUpdateEvent } from "~/network/hooks/home-service-hooks/use-update-ev
 import { StoreType } from "~/network/reducers/store";
 import { UserProfileState } from "~/network/reducers/user-profile-reducer";
 import { width } from "~/theme/device/device";
+import { LocalEvent } from "~/types/local-event";
 import { LocalEventData } from "~/types/local-event-data";
 import { TicketType } from "~/types/ticket-type";
 import { GetAdmintoolsDropDownScreen } from "./getAdmintoolsDropdown";
@@ -60,7 +61,7 @@ interface CreateEventScreenProps {
   navigation?: NavigationContainerRef<ParamListBase>;
   route?: {
     params: {
-      eventData?: LocalEventData;
+      eventData?: LocalEventData | LocalEvent;
       isCreateEvent: boolean;
     };
   };
@@ -70,7 +71,10 @@ export const CreateEventScreen = (props: CreateEventScreenProps) => {
   const { theme } = useAppTheme();
   const { strings } = useStringsAndLabels();
   const { navigation, route } = props || {};
-  const { eventData, isCreateEvent } = route?.params ?? {};
+  const isCreateEvent = route?.params.isCreateEvent ?? false;
+  const viewCount = (route?.params.eventData as LocalEvent).viewCount as
+    | number
+    | undefined;
   const styles = createStyleSheet(theme);
   // const modalRef: React.Ref<ModalRefProps> = useRef(null);
   const addItemRef: React.Ref<ModalRefProps> = useRef(null);
@@ -703,7 +707,7 @@ export const CreateEventScreen = (props: CreateEventScreenProps) => {
               )}
             </View>
 
-            {id ? (
+            {!isCreateEvent ? (
               <View>
                 is_event_owner ? (
                 <View style={styles.uniqueViewCont}>
@@ -713,7 +717,7 @@ export const CreateEventScreen = (props: CreateEventScreenProps) => {
                 ) : null is_event_owner ? (
                 <View>
                   <GetAdmintoolsDropDownScreen
-                    eventId={id}
+                    eventId={id!}
                     navigation={navigation}
                   />
                   <TouchableOpacity
