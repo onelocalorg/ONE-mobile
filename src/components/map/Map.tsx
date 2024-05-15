@@ -7,7 +7,7 @@ import MapboxGL, {
   UserLocation,
 } from "@rnmapbox/maps";
 import { FeatureCollection } from "geojson";
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useRef, useState } from "react";
 import { View } from "react-native";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
 import { createStyleSheet } from "./style";
@@ -88,31 +88,32 @@ export const Map = ({ onClicked }: MapProps) => {
 
   const camera = useRef<MapboxGL.Camera>(null);
 
-  useEffect(() => {
-    fetchEvents({
-      startDate: DateTime.now(),
-      isCanceled: false,
-      // endDate: DateTime.now().plus({ months: 3 }),
-    }).then(setEvents);
-    // async function fetchEvents() {
-    //   const url = process.env.API_URL + "/v2/events";
-    //   LOG.info(url);
-    //   const token = await AsyncStorage.getItem("token");
-    //   const response = await fetch(url, {
-    //     headers: new Headers({
-    //       Authorization: "Bearer " + token,
-    //       "Content-Type": "application/json",
-    //     }),
-    //   });
-    //   LOG.info(response.status);
-    //   const dataItem = await response.json();
+  // useEffect(() => {
+  //   fetchEvents({
+  //     startDate: DateTime.now(),
+  //     isCanceled: false,
+  //     // endDate: DateTime.now().plus({ months: 3 }),
+  //   }).then(setEvents);
 
-    //   LOG.debug(dataItem?.data);
-    //   setEvents(dataItem?.data);
-    // }
+  // async function fetchEvents() {
+  //   const url = process.env.API_URL + "/v2/events";
+  //   LOG.info(url);
+  //   const token = await AsyncStorage.getItem("token");
+  //   const response = await fetch(url, {
+  //     headers: new Headers({
+  //       Authorization: "Bearer " + token,
+  //       "Content-Type": "application/json",
+  //     }),
+  //   });
+  //   LOG.info(response.status);
+  //   const dataItem = await response.json();
 
-    // fetchEvents();
-  }, []);
+  //   LOG.debug(dataItem?.data);
+  //   setEvents(dataItem?.data);
+  // }
+
+  // fetchEvents();
+  // }, []);
 
   useFocusEffect(
     useCallback(() => {

@@ -2,10 +2,11 @@
 import {
   NavigationContainerRef,
   ParamListBase,
+  useFocusEffect,
   useRoute,
 } from "@react-navigation/native";
 import { DateTime } from "luxon";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useState } from "react";
 import { ListRenderItem, Text, View } from "react-native";
 import { FlatList } from "react-native-gesture-handler";
 import { useDispatch, useSelector } from "react-redux";
@@ -74,21 +75,19 @@ export const EventListScreen = (props: EventListScreenProps) => {
 
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    fetchEvents({ startDate: DateTime.now() })
-      .then(featureCollectionToLocalEvents)
-      .then(setEventsList);
-  }, []);
+  // useEffect(() => {
+  //   fetchEvents({ startDate: DateTime.now() })
+  //     .then(featureCollectionToLocalEvents)
+  //     .then(setEventsList);
+  // }, []);
 
-  // useFocusEffect(
-  //   useCallback(() => {
-  //     getEventListAPI();
-  //     // onPageLoad(false);
-  //     // setPage(1);
-  //     // setSearchQuery("");
-  //     // setEventsList([]);
-  //   }, [])
-  // );
+  useFocusEffect(
+    useCallback(() => {
+      fetchEvents({ startDate: DateTime.now() })
+        .then(featureCollectionToLocalEvents)
+        .then(setEventsList);
+    }, [])
+  );
 
   // useFocusEffect(
   //   useCallback(() => {
