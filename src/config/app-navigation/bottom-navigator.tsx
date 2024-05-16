@@ -152,6 +152,7 @@ export const BottomNavigator = () => {
           tabBarShowLabel: false,
         })}
         initialRouteName={navigations.HOME_ROUTE}
+        backBehavior="none"
       >
         {tabs.map((tab) => {
           if (tab?.screenName === bottomTabs.addButton) {

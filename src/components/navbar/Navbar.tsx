@@ -18,6 +18,7 @@ import { UserProfileState } from "~/network/reducers/user-profile-reducer";
 import { createStyleSheet } from "./style";
 
 import { useAppTheme } from "~/app-hooks/use-app-theme";
+import { LOG } from "~/config";
 
 interface NavbarProps {
   navigation?: NavigationContainerRef<ParamListBase>;
@@ -38,7 +39,7 @@ export const Navbar = ({
 
   useEffect(() => {
     getUserProfileAPI();
-  });
+  }, []);
 
   // const setSerchValue = useCallback(
   //   (searchData: any) => {
@@ -82,7 +83,7 @@ export const Navbar = ({
       AsyncStorage.setItem("profile", dataItem.data.pic);
       AsyncStorage.setItem("uniqueId", dataItem.data.user_unique_id);
     } catch (error) {
-      console.log(error);
+      LOG.error("gertUserProfileAPI", error);
     }
   };
 
