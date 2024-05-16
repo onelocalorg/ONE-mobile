@@ -10,6 +10,7 @@ import { CreatePostOfferScreen } from "~/screens/createPost/offer";
 import { CreatePostRequestScreen } from "~/screens/createPost/request";
 import { HomeScreen } from "~/screens/home";
 import { CommentList } from "~/screens/home/commetList";
+import { ProfileScreen } from "~/screens/profile";
 import { RecentProfileScreen } from "~/screens/recentProfile";
 import { navigations } from "./constant";
 import { ProfileRoute } from "./profile-route";
@@ -26,11 +27,11 @@ export const HomeRoute = () => {
         component={HomeScreen}
         options={{ header }}
       />
-      {/* <HomeStack.Screen
+      <HomeStack.Screen
         name={navigations.PROFILE}
         component={ProfileScreen}
-        options={{header}}
-      /> */}
+        options={{ header }}
+      />
       <HomeStack.Screen
         name={"profileroute"}
         component={ProfileRoute}
