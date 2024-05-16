@@ -29,7 +29,7 @@ import { ScrollView } from "react-native-gesture-handler";
 import GetLocation from "react-native-get-location";
 import Toast from "react-native-simple-toast";
 import GestureRecognizer from "react-native-swipe-gestures";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
 import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
 import {
@@ -49,7 +49,6 @@ import { Navbar } from "~/components/navbar/Navbar";
 import { LOG } from "~/config";
 import { navigations } from "~/config/app-navigation/constant";
 import { getData, setData } from "~/network/constant";
-import { useUserProfile } from "~/network/hooks/user-service-hooks/use-user-profile";
 import { StoreType } from "~/network/reducers/store";
 import { UserProfileState } from "~/network/reducers/user-profile-reducer";
 import { createStyleSheet } from "./style";
@@ -98,18 +97,12 @@ export const HomeScreen = (props: HomeScreenProps) => {
   const { user } = useSelector<StoreType, UserProfileState>(
     (state) => state.userProfileReducer
   ) as { user: { id: string; pic: string; city: string; state: string } };
-  const { refetch } = useUserProfile({
-    userId: user?.id,
-  });
   var makeDate = new Date();
   makeDate.setMonth(makeDate.getMonth() - 1);
   const [range, setRange] = useState<Range>({
     startDate: makeDate,
     endDate: new Date(),
   });
-
-  console.log(user.id, "-----------userId----------");
-  const dispatch = useDispatch();
 
   useFocusEffect(
     useCallback(() => {
