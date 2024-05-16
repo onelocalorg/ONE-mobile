@@ -1,26 +1,19 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import React, { useCallback, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
 import { StoreType } from "~/network/reducers/store";
 
 import {
   NavigationContainerRef,
   ParamListBase,
-  useFocusEffect,
 } from "@react-navigation/native";
 import { useDispatch, useSelector } from "react-redux";
 
 import { arrowLeft, dummy, onelogo } from "~/assets/images";
 import { ImageComponent } from "~/components/image-component";
 import { navigations } from "~/config/app-navigation/constant";
-import {
-  useUserProfile,
-  userProfileParsedData,
-} from "~/network/hooks/user-service-hooks/use-user-profile";
-import {
-  UserProfileState,
-  onSetUser,
-} from "~/network/reducers/user-profile-reducer";
+import { useUserProfile } from "~/network/hooks/user-service-hooks/use-user-profile";
+import { UserProfileState } from "~/network/reducers/user-profile-reducer";
 
 import { createStyleSheet } from "./style";
 
@@ -28,11 +21,14 @@ import { useAppTheme } from "~/app-hooks/use-app-theme";
 
 interface NavbarProps {
   navigation?: NavigationContainerRef<ParamListBase>;
+  isLoggedIn?: boolean;
+  isAvatarVisible?: boolean;
 }
-
-export const Navbar = (props: NavbarProps) => {
-  const { navigation } = props || {};
-
+export const Navbar = ({
+  navigation,
+  isLoggedIn = true,
+  isAvatarVisible = true,
+}: NavbarProps) => {
   const { theme } = useAppTheme();
   const styles = createStyleSheet(theme);
 
@@ -40,23 +36,19 @@ export const Navbar = (props: NavbarProps) => {
   const [page, setPage] = useState(1);
   const [profileData, setUserProfile]: any = useState();
 
-  useFocusEffect(
-    useCallback(() => {
-      getUserProfileAPI();
-      setPage(1);
-      setSearchQuery("");
-    }, [])
-  );
+  useEffect(() => {
+    getUserProfileAPI();
+  });
 
-  const setSerchValue = useCallback(
-    (searchData: any) => {
-      setSearchQuery(searchData);
-      setPage(1);
-      // FIXME
-      //   setEventsList([]);
-    },
-    [searchQuery]
-  );
+  // const setSerchValue = useCallback(
+  //   (searchData: any) => {
+  //     setSearchQuery(searchData);
+  //     setPage(1);
+  //     // FIXME
+  //     //   setEventsList([]);
+  //   },
+  //   [searchQuery]
+  // );
 
   const { user } = useSelector<StoreType, UserProfileState>(
     (state) => state.userProfileReducer
@@ -96,13 +88,13 @@ export const Navbar = (props: NavbarProps) => {
 
   const onNavigateToProfile = () => {
     if (navigation) {
-      if (user?.id) {
-        refetch().then((res) => {
-          const userData = userProfileParsedData(res?.data?.data);
-          console.log("check1===", userData);
-          dispatch(onSetUser(userData));
-        });
-      }
+      // if (user?.id) {
+      //   refetch().then((res) => {
+      //     const userData = userProfileParsedData(res?.data?.data);
+      //     console.log("check1===", userData);
+      //     dispatch(onSetUser(userData));
+      //   });
+      // }
       navigation.navigate(navigations.PROFILE);
     }
   };
@@ -143,27 +135,33 @@ export const Navbar = (props: NavbarProps) => {
         ></ImageComponent>
         <View>
           <Text style={styles.oneContainerText}>NE</Text>
-          <Text style={styles.localText}>B o u l d e r</Text>
+          {isLoggedIn ? (
+            <Text style={styles.localText}>B o u l d e r</Text>
+          ) : (
+            <Text style={styles.localText}>L o c a l</Text>
+          )}
         </View>
       </View>
-      <View style={styles.profileContainer}>
-        {/* <ImageComponent
+      {isLoggedIn && isAvatarVisible ? (
+        <View style={styles.profileContainer}>
+          {/* <ImageComponent
         style={styles.bellIcon}
         source={bell}></ImageComponent> */}
-        <TouchableOpacity
-          activeOpacity={0.8}
-          onPress={onNavigateToProfile}
-          style={styles.profileView}
-        >
-          <ImageComponent
-            resizeMode="cover"
-            isUrl={!!profileData?.pic}
-            source={dummy}
-            uri={profileData?.pic}
-            style={styles.profile}
-          />
-        </TouchableOpacity>
-      </View>
+          <TouchableOpacity
+            activeOpacity={0.8}
+            onPress={onNavigateToProfile}
+            style={styles.profileView}
+          >
+            <ImageComponent
+              resizeMode="cover"
+              isUrl={!!profileData?.pic}
+              source={dummy}
+              uri={profileData?.pic}
+              style={styles.profile}
+            />
+          </TouchableOpacity>
+        </View>
+      ) : null}
     </TouchableOpacity>
   );
 };

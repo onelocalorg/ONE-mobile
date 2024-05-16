@@ -26,19 +26,18 @@ import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
 import {
   Gratis,
   Vector,
-  arrowLeft,
   buttonArrowGreen,
   closeCard,
   gratisGreen,
   gratitudeBlack,
   minus,
-  onelogo,
   pin,
   plus,
   postCalender,
   send,
 } from "~/assets/images";
 import { ImageComponent } from "~/components/image-component";
+import { Navbar } from "~/components/navbar/Navbar";
 import { navigations } from "~/config/app-navigation/constant";
 import { createStyleSheet } from "../style";
 
@@ -665,23 +664,7 @@ export const CommentList = (props: commentListProps) => {
     // <SafeAreaView>
 
     <View style={{ paddingBottom: 300 }}>
-      <TouchableOpacity style={styles.HeaderContainerTwo} activeOpacity={1}>
-        <TouchableOpacity style={styles.row2} onPress={onBackPress}>
-          <View>
-            <ImageComponent source={arrowLeft} style={styles.arrowLeft} />
-          </View>
-        </TouchableOpacity>
-        <View style={styles.oneContainer}>
-          <ImageComponent
-            style={styles.oneContainerImage}
-            source={onelogo}
-          ></ImageComponent>
-          <View>
-            <Text style={styles.oneContainerText}>NE</Text>
-            <Text style={styles.localText}>L o c a l</Text>
-          </View>
-        </View>
-      </TouchableOpacity>
+      <Navbar navigation={navigation} />
       <KeyboardAvoidingView
         behavior="padding"
         contentContainerStyle={{ flex: 1 }}

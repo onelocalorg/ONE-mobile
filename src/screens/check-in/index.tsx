@@ -4,14 +4,13 @@ import {
   ParamListBase,
 } from "@react-navigation/native";
 import React, { useEffect, useState } from "react";
-import { ListRenderItem, Text, TouchableOpacity, View } from "react-native";
+import { ListRenderItem, Text, View } from "react-native";
 import { useSelector } from "react-redux";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
 import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
-import { arrowLeft, dummy, onelogo } from "~/assets/images";
 import { FlatListComponent } from "~/components/flatlist-component";
-import { ImageComponent } from "~/components/image-component";
 import { Loader } from "~/components/loader";
+import { Navbar } from "~/components/navbar/Navbar";
 import { Pill } from "~/components/pill";
 import { navigations } from "~/config/app-navigation/constant";
 import { useCheckedInUser } from "~/network/hooks/home-service-hooks/use-checked-in-user";
@@ -106,6 +105,7 @@ export const CheckInScreen = (props: CheckInScreenProps) => {
 
   return (
     <View>
+      <Navbar navigation={navigation} />
       <Loader
         visible={
           (page === 1 && (isLoading || isRefetching)) || checkedInLoading
@@ -113,42 +113,6 @@ export const CheckInScreen = (props: CheckInScreenProps) => {
         showOverlay={true}
       />
 
-      <TouchableOpacity style={styles.HeaderContainerTwo} activeOpacity={1}>
-        <TouchableOpacity onPress={onBackPress} style={{ zIndex: 11111222222 }}>
-          <View style={styles.row2}>
-            <ImageComponent source={arrowLeft} style={styles.arrowLeft} />
-          </View>
-        </TouchableOpacity>
-        <View style={styles.oneContainer}>
-          <ImageComponent
-            style={styles.oneContainerImage}
-            source={onelogo}
-          ></ImageComponent>
-          <View>
-            <Text style={styles.oneContainerText}>NE</Text>
-            <Text style={styles.localText}>L o c a l</Text>
-            {/* <Text style={styles.localText}>[Local]</Text> */}
-          </View>
-        </View>
-        <View style={styles.profileContainer}>
-          {/* <ImageComponent
-              style={styles.bellIcon}
-              source={bell}></ImageComponent> */}
-          <TouchableOpacity
-            activeOpacity={0.8}
-            onPress={onNavigateToProfile}
-            style={styles.profileView}
-          >
-            <ImageComponent
-              resizeMode="cover"
-              isUrl={!!user?.pic}
-              source={dummy}
-              uri={user?.pic}
-              style={styles.profileImage}
-            />
-          </TouchableOpacity>
-        </View>
-      </TouchableOpacity>
       <View style={styles.pillContainer}>
         <Pill
           label={strings.ticketholderCheckin}

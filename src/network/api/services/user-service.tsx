@@ -18,8 +18,10 @@ export const onLogin = async (props: LoginProps) => {
   try {
     const endPoint = apiConstants.login;
     const data = await API.userService.post(endPoint, props);
+    LOG.debug("data", data);
     response = getApiResponse(data);
   } catch (error: any) {
+    LOG.error("onLogin", error);
     response = getApiResponse(error);
   }
 

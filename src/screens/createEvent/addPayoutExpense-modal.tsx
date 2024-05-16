@@ -17,14 +17,10 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view
 import Toast from "react-native-simple-toast";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
 import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
-import {
-  arrowLeft,
-  buttonArrowGreen,
-  onelogo,
-  saveIcon,
-} from "~/assets/images";
+import { buttonArrowGreen, saveIcon } from "~/assets/images";
 import { ImageComponent } from "~/components/image-component";
 import { ModalRefProps } from "~/components/modal-component";
+import { Navbar } from "~/components/navbar/Navbar";
 import { createStyleSheet } from "./style";
 
 interface AddPayoutExpenseScreenProps {
@@ -343,27 +339,8 @@ export const AddPayoutExpenseScreen = (
 
   return (
     <>
+      <Navbar navigation={navigation} />
       <View style={{ flex: 1 }}>
-        <TouchableOpacity style={styles.HeaderContainerTwo} activeOpacity={1}>
-          <TouchableOpacity
-            onPress={onBackPress}
-            style={{ zIndex: 11111222222 }}
-          >
-            <View style={styles.row2}>
-              <ImageComponent source={arrowLeft} style={styles.arrowLeft} />
-            </View>
-          </TouchableOpacity>
-          <View style={styles.oneContainer}>
-            <ImageComponent
-              style={styles.oneContainerImage}
-              source={onelogo}
-            ></ImageComponent>
-            <View>
-              <Text style={styles.oneContainerText}>NE</Text>
-              <Text style={styles.localText}>L o c a l</Text>
-            </View>
-          </View>
-        </TouchableOpacity>
         <View style={styles.subBreakdowncont}>
           <KeyboardAwareScrollView
             showsVerticalScrollIndicator={false}

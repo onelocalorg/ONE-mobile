@@ -15,10 +15,9 @@ import { FlatList } from "react-native-gesture-handler";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
 import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
 import { useToken } from "~/app-hooks/use-token";
-import { arrowLeft, onelogo } from "~/assets/images";
 import { FlatListComponent } from "~/components/flatlist-component";
-import { ImageComponent } from "~/components/image-component";
 import { Loader } from "~/components/loader";
+import { Navbar } from "~/components/navbar/Navbar";
 import { Pill } from "~/components/pill";
 import { createStyleSheet } from "./style";
 
@@ -146,36 +145,8 @@ export const Recentabout = (props: RecentaboutDataProps) => {
 
   return (
     <>
+      <Navbar navigation={navigation} />
       <View style={styles.container}>
-        <TouchableOpacity style={styles.HeaderContainerTwo} activeOpacity={1}>
-          <TouchableOpacity style={styles.row2} onPress={onBackPress}>
-            <View>
-              <ImageComponent source={arrowLeft} style={styles.arrowLeft} />
-            </View>
-          </TouchableOpacity>
-          <View style={styles.oneContainer}>
-            <ImageComponent
-              style={styles.oneContainerImage}
-              source={onelogo}
-            ></ImageComponent>
-            <View>
-              <Text style={styles.oneContainerText}>NE</Text>
-              <Text style={styles.localText}>L o c a l</Text>
-            </View>
-          </View>
-        </TouchableOpacity>
-
-        <View style={styles.profileContainer}>
-          <TouchableOpacity activeOpacity={1}>
-            <ImageComponent
-              isUrl={!!recentUser?.pic}
-              resizeMode="cover"
-              uri={recentUser?.pic}
-              // source={dummy}
-              style={styles.profile}
-            />
-          </TouchableOpacity>
-        </View>
         <View style={styles.center}>
           <Text style={styles.name}>
             {recentUser?.first_name} {recentUser?.last_name}

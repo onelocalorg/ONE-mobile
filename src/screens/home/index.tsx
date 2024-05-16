@@ -800,11 +800,7 @@ export const HomeScreen = (props: HomeScreenProps) => {
             source={greenImage}
           ></ImageComponent>
         </TouchableOpacity> */}
-        <Navbar
-          navigation={
-            navigation as unknown as NavigationContainerRef<ParamListBase>
-          }
-        />
+        <Navbar navigation={navigation} />
         {/* ------------------Header Tab------------------- */}
 
         <FlatList

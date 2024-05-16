@@ -27,10 +27,7 @@ import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
 import {
   addGreen,
   arrowDown,
-  arrowLeft,
   buttonArrowGreen,
-  dummy,
-  onelogo,
   pin,
   postCalender,
   requestGreen,
@@ -41,6 +38,7 @@ import {
 } from "~/components/date-range-picker";
 import { FlatListComponent } from "~/components/flatlist-component";
 import { ImageComponent } from "~/components/image-component";
+import { Navbar } from "~/components/navbar/Navbar";
 import { Pill } from "~/components/pill";
 import { SizedBox } from "~/components/sized-box";
 import { useUserProfile } from "~/network/hooks/user-service-hooks/use-user-profile";
@@ -597,49 +595,7 @@ export const EditPostRequestScreen = (props: EditPostRequestScreenProps) => {
   };
   return (
     <>
-      <TouchableOpacity style={styles.HeaderContainerTwo} activeOpacity={1}>
-        <TouchableOpacity onPress={onBackPress} style={{ zIndex: 11111222222 }}>
-          <View style={styles.row2}>
-            <ImageComponent source={arrowLeft} style={styles.arrowLeft} />
-          </View>
-        </TouchableOpacity>
-        {/* <View style={styles.searchContainer}>
-          <ImageComponent style={styles.searchIcon} source={Search}></ImageComponent>
-          <TextInput value={searchQuery} placeholderTextColor="#FFFF" placeholder='Search' style={styles.searchInput} onChangeText={value => {
-            console.log(value)
-            setSearchQuery(value)
-          }}></TextInput>
-        </View> */}
-
-        <View style={styles.oneContainer}>
-          <ImageComponent
-            style={styles.oneContainerImage}
-            source={onelogo}
-          ></ImageComponent>
-          <View>
-            <Text style={styles.oneContainerText}>NE</Text>
-            <Text style={styles.localText}>L o c a l</Text>
-          </View>
-        </View>
-        <View style={styles.profileContainer}>
-          {/* <ImageComponent
-            style={styles.bellIcon}
-            source={bell}></ImageComponent> */}
-          <TouchableOpacity
-            activeOpacity={0.8}
-            onPress={onNavigateToProfile}
-            style={styles.profileView}
-          >
-            <ImageComponent
-              resizeMode="cover"
-              isUrl={!!user?.pic}
-              source={dummy}
-              uri={user?.pic}
-              style={styles.profile}
-            />
-          </TouchableOpacity>
-        </View>
-      </TouchableOpacity>
+      <Navbar navigation={navigation} />
       <ScrollView
         keyboardShouldPersistTaps="handled"
         showsVerticalScrollIndicator={false}

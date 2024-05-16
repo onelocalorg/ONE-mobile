@@ -25,11 +25,12 @@ import GestureRecognizer from "react-native-swipe-gestures";
 import { useDispatch } from "react-redux";
 import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
 import { useToken } from "~/app-hooks/use-token";
-import { arrowLeft, onelogo, selectPic } from "~/assets/images";
+import { selectPic } from "~/assets/images";
 import { CalenderRefProps } from "~/components/Calender/calenderComponent";
 import { ButtonComponent } from "~/components/button-component";
 import { DatePickerRefProps } from "~/components/date-range-picker";
 import { ImageComponent } from "~/components/image-component";
+import { Navbar } from "~/components/navbar/Navbar";
 import { SizedBox } from "~/components/sized-box";
 import { navigations } from "~/config/app-navigation/constant";
 import { useCreateStripeCustomer } from "~/network/hooks/payment-service-hooks/use-create-stripe-customer";
@@ -386,24 +387,7 @@ export const SignUp = (props: SignUpProps) => {
 
   return (
     <TouchableOpacity activeOpacity={1} onPress={keyboardDismiss}>
-      <TouchableOpacity style={styles.HeaderContainerTwo} activeOpacity={1}>
-        <TouchableOpacity onPress={onBackPress} style={{ zIndex: 11111222222 }}>
-          <View style={styles.row2}>
-            <ImageComponent source={arrowLeft} style={styles.arrowLeft} />
-          </View>
-        </TouchableOpacity>
-        <View style={styles.oneContainer}>
-          <ImageComponent
-            style={styles.oneContainerImage}
-            source={onelogo}
-          ></ImageComponent>
-          <View>
-            <Text style={styles.oneContainerText}>NE</Text>
-            <Text style={styles.localText}>L o c a l</Text>
-          </View>
-        </View>
-      </TouchableOpacity>
-
+      <Navbar navigation={navigation} isLoggedIn={false} />
       <SizedBox height={verticalScale(22)} />
       <KeyboardAwareScrollView
         showsVerticalScrollIndicator={false}

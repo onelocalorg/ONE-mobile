@@ -1,38 +1,44 @@
 import { appleAuth } from "@invertase/react-native-apple-authentication";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
+  GoogleSignin,
+  statusCodes,
+} from "@react-native-google-signin/google-signin";
+import {
   NavigationContainerRef,
   ParamListBase,
 } from "@react-navigation/native";
+import _ from "lodash/fp";
 import React, { useEffect, useState } from "react";
-import { Keyboard, Platform, Text, TouchableOpacity, View } from "react-native";
+import {
+  Keyboard,
+  Linking,
+  Platform,
+  Text,
+  TouchableOpacity,
+} from "react-native";
 import { getDeviceName, getUniqueId } from "react-native-device-info";
 import { TextInput } from "react-native-gesture-handler";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import Toast from "react-native-simple-toast";
 import { useDispatch } from "react-redux";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
 import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
 import { useToken } from "~/app-hooks/use-token";
 import { emailRegexEx } from "~/assets/constants";
-import { apple, google, onelogo } from "~/assets/images";
+import { apple, google } from "~/assets/images";
 import { ImageComponent } from "~/components/image-component";
+import { Navbar } from "~/components/navbar/Navbar";
 import { SizedBox } from "~/components/sized-box";
 import { LOG } from "~/config";
 import { navigations } from "~/config/app-navigation/constant";
+import { getData } from "~/network/constant";
 import { useCreateStripeCustomer } from "~/network/hooks/payment-service-hooks/use-create-stripe-customer";
 import { useLogin } from "~/network/hooks/user-service-hooks/use-login";
 import { useSaveCustomerId } from "~/network/hooks/user-service-hooks/use-save-customer-id";
 import { onSetUser } from "~/network/reducers/user-profile-reducer";
 import { verticalScale } from "~/theme/device/normalize";
 import { createStyleSheet } from "./style";
-
-import {
-  GoogleSignin,
-  statusCodes,
-} from "@react-native-google-signin/google-signin";
-import { Linking } from "react-native";
-import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
-import { getData } from "~/network/constant";
 
 GoogleSignin.configure({
   iosClientId: process.env.GOOGLE_SIGNIN_IOS_CLIENT_ID,
@@ -51,7 +57,7 @@ export const LoginScreen = (props: LoginScreenProps) => {
   const { navigation } = props || {};
   const [isChecked, setIsChecked] = useState(false);
   const [isLoading, LodingData] = useState(false);
-  const { mutateAsync } = useLogin();
+  const { mutateAsync: doLogin } = useLogin();
   const { onSetToken } = useToken();
   const dispatch = useDispatch();
   const [user, setUser] = useState({ emailOrMobile: "", password: "" });
@@ -383,7 +389,6 @@ export const LoginScreen = (props: LoginScreenProps) => {
 
   const onSubmit = async () => {
     LodingData(true);
-    console.log("1111111");
     const deviceToken = await getUniqueId();
     const deviceInfo = `${Platform.OS === "ios"} ${await getDeviceName()}`;
     const body = {
@@ -395,8 +400,9 @@ export const LoginScreen = (props: LoginScreenProps) => {
       deviceInfo,
       googleToken: "fasdfasdfdsasdfad",
     };
-    console.log(body);
-    const res = await mutateAsync(body);
+    LOG.debug("login", _.omit(["password"], body));
+    const res = await doLogin(body);
+    LOG.debug("result:", res);
     const { success, data } = res || {};
     if (!success) {
       Toast.show(res?.message, Toast.LONG, {
@@ -405,6 +411,7 @@ export const LoginScreen = (props: LoginScreenProps) => {
       LodingData(false);
     }
     if (success) {
+      LOG.debug("logged in", data);
       const {
         first_name,
         last_name,
@@ -506,23 +513,8 @@ export const LoginScreen = (props: LoginScreenProps) => {
       onPress={keyboardDismiss}
       style={styles.container}
     >
+      <Navbar navigation={navigation} isLoggedIn={false} />
       <KeyboardAwareScrollView showsVerticalScrollIndicator={false}>
-        <TouchableOpacity
-          style={{ marginTop: 100, marginBottom: 40 }}
-          activeOpacity={1}
-        >
-          <View style={styles.oneContainer}>
-            <ImageComponent
-              style={styles.oneContainerImage}
-              source={onelogo}
-            ></ImageComponent>
-            <View>
-              <Text style={styles.oneContainerText}>NE</Text>
-              <Text style={styles.localText}>L o c a l</Text>
-            </View>
-          </View>
-        </TouchableOpacity>
-
         <Text style={styles.texClass}>{strings.email}</Text>
         {/* <TextInput
       // placeholder={strings.mobileOrEmail}

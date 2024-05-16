@@ -30,15 +30,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
 import { useLogout } from "~/app-hooks/use-logout";
 import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
-import {
-  Gratis,
-  arrowLeft,
-  dummy,
-  onelogo,
-  sendPayoutImg,
-} from "~/assets/images";
+import { Gratis, dummy, sendPayoutImg } from "~/assets/images";
 import { ImageComponent } from "~/components/image-component";
 import { Input } from "~/components/input";
+import { Navbar } from "~/components/navbar/Navbar";
 import { TabComponent } from "~/components/tab-component";
 import { getData } from "~/network/constant";
 import { useEditProfile } from "~/network/hooks/user-service-hooks/use-edit-profile";
@@ -443,97 +438,58 @@ export const ProfileScreen = (props: ProfileScreenProps) => {
 
   return (
     <KeyboardAwareScrollView showsVerticalScrollIndicator={false}>
+      <Navbar navigation={navigation} isAvatarVisible={false} />
+      <ImageComponent
+        isUrl={!!profileUri}
+        resizeMode="cover"
+        uri={profileUri}
+        source={dummy}
+        style={styles.profile}
+      />
+      <TouchableOpacity
+        activeOpacity={0.8}
+        style={{ position: "absolute", right: 10, top: 60 }}
+        onPress={onLogout}
+      >
+        <Text
+          style={{
+            fontSize: 16,
+            color: theme.colors.white,
+            fontWeight: "500",
+            fontFamily: theme.fontType.medium,
+          }}
+        >
+          {strings.logout}
+        </Text>
+      </TouchableOpacity>
+
       <TouchableOpacity
         style={styles.container}
         activeOpacity={1}
         onPress={keyboardDismiss}
       >
-        <TouchableOpacity style={styles.HeaderContainerTwo} activeOpacity={1}>
-          <TouchableOpacity activeOpacity={1} onPress={() => imageSelection(2)}>
-            <ImageComponent
-              isUrl={!!backgroundImageUri}
-              resizeMode="cover"
-              uri={backgroundImageUri}
-              source={dummy}
-              // source={
-              //   backgroundImageUri != '' ? {uri: backgroundImageUri} : dummy}
-              style={styles.HeaderContainerTwoBg}
+        <Modal transparent onDismiss={closeModal} visible={imageOption}>
+          <GestureRecognizer onSwipeDown={closeModal} style={styles.gesture}>
+            <TouchableOpacity
+              style={styles.containerGallery}
+              activeOpacity={1}
+              onPress={closeModal}
             />
-            <View style={styles.oneContainer}>
-              <ImageComponent
-                style={styles.oneContainerImage}
-                source={onelogo}
-              ></ImageComponent>
-              <View>
-                <Text style={styles.oneContainerText}>NE</Text>
-                <Text style={styles.localText}>L o c a l</Text>
-              </View>
-            </View>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.row2} onPress={onBackPress}>
-            <View>
-              <ImageComponent source={arrowLeft} style={styles.arrowLeft} />
-            </View>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            activeOpacity={0.8}
-            style={{ position: "absolute", right: 10, top: 60 }}
-            onPress={onLogout}
+          </GestureRecognizer>
+          <KeyboardAvoidingView
+            behavior={Platform.OS === "ios" ? "padding" : "height"}
+            style={styles.keyboardViewTwo}
           >
-            <Text
-              style={{
-                fontSize: 16,
-                color: theme.colors.white,
-                fontWeight: "500",
-                fontFamily: theme.fontType.medium,
-              }}
-            >
-              {strings.logout}
-            </Text>
-          </TouchableOpacity>
-        </TouchableOpacity>
-
-        <View style={styles.profileContainer}>
-          <TouchableOpacity
-            activeOpacity={0.8}
-            onPress={() => imageSelection(1)}
-          >
-            <ImageComponent
-              isUrl={!!profileUri}
-              resizeMode="cover"
-              uri={profileUri}
-              source={dummy}
-              style={styles.profile}
-            />
-
-            <Modal transparent onDismiss={closeModal} visible={imageOption}>
-              <GestureRecognizer
-                onSwipeDown={closeModal}
-                style={styles.gesture}
-              >
-                <TouchableOpacity
-                  style={styles.containerGallery}
-                  activeOpacity={1}
-                  onPress={closeModal}
-                />
-              </GestureRecognizer>
-              <KeyboardAvoidingView
-                behavior={Platform.OS === "ios" ? "padding" : "height"}
-                style={styles.keyboardViewTwo}
-              >
-                <View style={styles.imageActionSheet}>
-                  <TouchableOpacity onPress={() => imageOptionSelect(1)}>
-                    <Text style={styles.galleryText}>Gallery</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity onPress={() => imageOptionSelect(2)}>
-                    <Text style={styles.cameraText}>Camera</Text>
-                  </TouchableOpacity>
-                </View>
-              </KeyboardAvoidingView>
-            </Modal>
-          </TouchableOpacity>
-        </View>
+            <View style={styles.imageActionSheet}>
+              <TouchableOpacity onPress={() => imageOptionSelect(1)}>
+                <Text style={styles.galleryText}>Gallery</Text>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => imageOptionSelect(2)}>
+                <Text style={styles.cameraText}>Camera</Text>
+              </TouchableOpacity>
+            </View>
+          </KeyboardAvoidingView>
+        </Modal>
         <View style={styles.center}>
           <View style={styles.userNameClass}>
             <TextInput

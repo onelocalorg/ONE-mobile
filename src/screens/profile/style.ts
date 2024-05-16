@@ -25,6 +25,9 @@ export const createStyleSheet = (theme: ThemeProps) => {
       height: normalScale(112),
       width: normalScale(112),
       borderRadius: normalScale(112),
+      marginLeft: normalScale(7),
+      marginTop: normalScale(96),
+      position: "absolute",
     },
     center: {
       alignSelf: "center",

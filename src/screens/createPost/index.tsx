@@ -18,18 +18,16 @@ import { useSelector } from "react-redux";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
 import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
 import {
-  arrowLeft,
   blackOffer,
-  dummy,
   gratisGreen,
   gratitudeBlack,
   greenOffer,
-  onelogo,
   request,
   requestGreen,
 } from "~/assets/images";
 import { DatePickerRefProps } from "~/components/date-range-picker";
 import { ImageComponent } from "~/components/image-component";
+import { Navbar } from "~/components/navbar/Navbar";
 import { navigations } from "~/config/app-navigation/constant";
 import { getData } from "~/network/constant";
 import { useUserProfile } from "~/network/hooks/user-service-hooks/use-user-profile";
@@ -222,50 +220,7 @@ export const CreatePostScreen = (props: CreatePostScreenProps) => {
   // };
   return (
     <>
-      <TouchableOpacity style={styles.HeaderContainerTwo} activeOpacity={1}>
-        <TouchableOpacity onPress={onBackPress} style={{ zIndex: 11111222222 }}>
-          <View style={styles.row2}>
-            <ImageComponent source={arrowLeft} style={styles.arrowLeft} />
-          </View>
-        </TouchableOpacity>
-        {/* <View style={styles.searchContainer}>
-          <ImageComponent style={styles.searchIcon} source={Search}></ImageComponent>
-          <TextInput value={searchQuery} placeholderTextColor="#FFFF" placeholder='Search' style={styles.searchInput} onChangeText={value => {
-            console.log(value)
-            setSearchQuery(value)
-          }}></TextInput>
-        </View> */}
-
-        <View style={styles.oneContainer}>
-          <ImageComponent
-            style={styles.oneContainerImage}
-            source={onelogo}
-          ></ImageComponent>
-          <View>
-            <Text style={styles.oneContainerText}>NE</Text>
-            <Text style={styles.localText}>L o c a l</Text>
-          </View>
-        </View>
-        <View style={styles.profileContainer}>
-          {/* <ImageComponent
-            style={styles.bellIcon}
-            source={bell}></ImageComponent> */}
-          <TouchableOpacity
-            activeOpacity={0.8}
-            onPress={onNavigateToProfile}
-            style={styles.profileView}
-          >
-            <ImageComponent
-              resizeMode="cover"
-              isUrl={!!user?.pic}
-              source={dummy}
-              uri={user?.pic}
-              style={styles.profile}
-            />
-          </TouchableOpacity>
-        </View>
-      </TouchableOpacity>
-
+      <Navbar navigation={navigation} />
       <KeyboardAwareScrollView
         keyboardShouldPersistTaps="always"
         showsVerticalScrollIndicator={false}
