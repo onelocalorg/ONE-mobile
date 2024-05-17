@@ -511,7 +511,7 @@ export const CreatePostGratisScreen = (props: CreatePostGratisScreenProps) => {
                   textAlignVertical={"top"}
                   value={content}
                   onChangeText={(text) => createPostcontent(text)}
-                  style={styles.postinput}
+                  style={styles.postInput}
                 ></TextInput>
               </View>
               <SizedBox height={10}></SizedBox>

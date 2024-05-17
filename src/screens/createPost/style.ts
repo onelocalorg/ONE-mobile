@@ -199,15 +199,6 @@ export const createStyleSheet = (theme: ThemeProps) => {
     flexWrap: {
       flexWrap: "wrap",
     },
-    postInput: {
-      backgroundColor: "lightgray",
-      borderRadius: 22,
-      width: width - 90,
-      marginLeft: 10,
-      paddingHorizontal: 10,
-      justifyContent: "center",
-      fontFamily: theme.fontType.regular,
-    },
     postContainer: {
       marginVertical: 10,
       flexDirection: "row",
@@ -284,7 +275,7 @@ export const createStyleSheet = (theme: ThemeProps) => {
       marginBottom: verticalScale(4),
     },
     title: {
-      fontFamily: theme.fontType.medium,
+      fontFamily: theme.fontType.bold,
       fontSize: theme.fontSize.font16,
       color: theme.colors.black,
       marginBottom: verticalScale(7),
@@ -575,10 +566,35 @@ export const createStyleSheet = (theme: ThemeProps) => {
       flexDirection: "row",
       alignItems: "center",
     },
+    postInput: {
+      height: 160,
+      marginTop: 5,
+      textAlign: "left",
+      verticalAlign: "top",
+      borderRadius: 10,
+      paddingHorizontal: 10,
+      borderColor: theme.colors.black,
+      borderWidth: theme.borderWidth.borderWidth1,
+      backgroundColor: theme.colors.lightgrayTwo,
+      color: theme.colors.black,
+    },
     postInputTwo: {
       borderRadius: 10,
-      width: width - 215,
+      width: width - 70,
       marginLeft: 3,
+      paddingHorizontal: 10,
+      height: 35,
+      justifyContent: "center",
+      borderColor: theme.colors.black,
+      borderWidth: theme.borderWidth.borderWidth1,
+      backgroundColor: theme.colors.lightgrayTwo,
+      color: theme.colors.black,
+    },
+    postInputIconRight: {
+      borderRadius: 10,
+      width: width - 95,
+      marginLeft: 1,
+      // marginRight: 50,
       paddingHorizontal: 10,
       height: 35,
       justifyContent: "center",
@@ -669,18 +685,6 @@ export const createStyleSheet = (theme: ThemeProps) => {
     postCont: {
       // marginTop:10
     },
-    postinput: {
-      height: 160,
-      marginTop: 5,
-      textAlign: "left",
-      verticalAlign: "top",
-      borderRadius: 12,
-      paddingHorizontal: 5,
-      borderColor: theme.colors.black,
-      borderWidth: theme.borderWidth.borderWidth1,
-      backgroundColor: theme.colors.lightgrayTwo,
-      color: theme.colors.black,
-    },
     tagCont: {
       marginTop: 10,
       flexDirection: "row",
@@ -754,6 +758,24 @@ export const createStyleSheet = (theme: ThemeProps) => {
       alignItems: "center",
       paddingHorizontal: normalScale(16),
       marginHorizontal: 45,
+    },
+    postButton: {
+      marginTop: verticalScale(16),
+      backgroundColor: "#007112",
+      borderRadius: theme.borderRadius.radius14,
+      paddingVertical: verticalScale(14),
+      shadowColor: theme.colors.black,
+      shadowOpacity: theme.opacity.opacity15,
+      shadowRadius: theme.borderRadius.radius8,
+      // shadowOffset: {
+      //   width: 0,
+      //   height: verticalScale(0),
+      // },
+      // elevation: 5,
+      // justifyContent: "space-between",
+      flexDirection: "row",
+      alignItems: "center",
+      paddingHorizontal: normalScale(16),
     },
     titleTwo: {
       fontFamily: theme.fontType.medium,
@@ -854,6 +876,11 @@ export const createStyleSheet = (theme: ThemeProps) => {
     },
     gesture: {
       flex: 1,
+    },
+    bottomButton: {
+      paddingHorizontal: normalScale(16),
+      paddingBottom: verticalScale(20),
+      paddingTop: verticalScale(5),
     },
   });
 };

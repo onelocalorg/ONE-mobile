@@ -649,7 +649,7 @@ export const HomeScreen = (props: HomeScreenProps) => {
             ></ImageComponent>
             <Text style={styles.postDetail}>{item?.what?.name}</Text>
           </View>
-          {item?.type !== "Gratis" ? (
+          {item?.type !== "Gratis" && item?.for?.name ? (
             <View style={styles.postDetailCont}>
               <Text style={styles.postDetailTitle}>For:</Text>
               <Image
@@ -661,7 +661,7 @@ export const HomeScreen = (props: HomeScreenProps) => {
           ) : (
             <></>
           )}
-          {item?.type !== "Gratis" ? (
+          {item?.type !== "Gratis" && item?.where?.address ? (
             <View style={styles.postDetailCont}>
               <Text style={styles.postDetailTitle}>Where:</Text>
               <Image source={pin} style={styles.detailImage}></Image>
@@ -671,11 +671,13 @@ export const HomeScreen = (props: HomeScreenProps) => {
             <></>
           )}
 
-          <View style={styles.postDetailCont}>
-            <Text style={styles.postDetailTitle}>When:</Text>
-            <Image source={postCalender} style={styles.detailImage}></Image>
-            <Text style={styles.postDetail}>{item?.when}</Text>
-          </View>
+          {item?.when ? (
+            <View style={styles.postDetailCont}>
+              <Text style={styles.postDetailTitle}>When:</Text>
+              <Image source={postCalender} style={styles.detailImage}></Image>
+              <Text style={styles.postDetail}>{item?.when}</Text>
+            </View>
+          ) : null}
 
           <View style={styles.gratisAndCommentContainer}>
             <TouchableOpacity

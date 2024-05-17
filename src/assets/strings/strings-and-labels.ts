@@ -116,6 +116,8 @@ export const stringsAndLabels = {
   pricetax: "Price and Taxes",
   totalAmount: "Total Amount to Pay    ",
   postOffer: "Post Offer",
+  postRequest: "Post Request",
+  postGratis: "Post Grat",
   deleteAccount: "Delete Account",
   areYouDeleteAccount: "Are you sure you want to Delete Account?",
   blockUser: "Block User",

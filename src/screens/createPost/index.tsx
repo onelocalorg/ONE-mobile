@@ -12,23 +12,14 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { launchImageLibrary } from "react-native-image-picker";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { useSelector } from "react-redux";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
 import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
-import {
-  blackOffer,
-  gratisGreen,
-  gratitudeBlack,
-  greenOffer,
-  request,
-  requestGreen,
-} from "~/assets/images";
+import { blackOffer, greenOffer, request, requestGreen } from "~/assets/images";
 import { DatePickerRefProps } from "~/components/date-range-picker";
 import { ImageComponent } from "~/components/image-component";
 import { Navbar } from "~/components/navbar/Navbar";
-import { navigations } from "~/config/app-navigation/constant";
 import { getData } from "~/network/constant";
 import { useUserProfile } from "~/network/hooks/user-service-hooks/use-user-profile";
 import { StoreType } from "~/network/reducers/store";
@@ -100,18 +91,6 @@ export const CreatePostScreen = (props: CreatePostScreenProps) => {
     setWhatShowPopover(false);
   };
 
-  const selectForTypePost = (icon: any, type: any) => {
-    getTypeIconFor(icon);
-    getForTypeValue(type);
-    setForShowPopover(false);
-  };
-
-  const onConfirmStartDateTime = (startDate: Date) => {
-    console.log(startDate);
-    createPostwhen(startDate);
-    datePickerRef.current?.onOpenModal("end");
-  };
-
   const getResourcesAPI = async () => {
     const token = await AsyncStorage.getItem("token");
     try {
@@ -178,46 +157,6 @@ export const CreatePostScreen = (props: CreatePostScreenProps) => {
     }
   };
 
-  const onBackPress = () => {
-    navigation?.goBack();
-  };
-
-  const GallerySelect = async () => {
-    const { assets } = await launchImageLibrary({
-      mediaType: "photo",
-      // selectionLimit: 2,
-      includeBase64: true,
-      maxWidth: 800,
-      maxHeight: 800,
-    });
-    console.log(assets);
-    if (assets) {
-      const img = assets?.[0];
-      console.log("---------------assets Gallery 222---------------");
-      console.log(assets);
-      var fileNameTwo = img?.fileName ?? "";
-      LodingData(true);
-      var output =
-        fileNameTwo.substr(0, fileNameTwo.lastIndexOf(".")) || fileNameTwo;
-      var base64Two = img?.base64 ?? "";
-      postImageUploadAPI(output, base64Two);
-    }
-  };
-
-  const onNavigateToProfile = () => {
-    navigation?.navigate(navigations.PROFILE);
-  };
-
-  // const onNavigateToProfile = () => {
-  //   if (user?.id) {
-  //     refetch().then(res => {
-  //       const userData = userProfileParsedData(res?.data?.data);
-  //       console.log('check1===', userData);
-  //       dispatch(onSetUser(userData));
-  //     });
-  //   }
-  //   navigation?.navigate(navigations.PROFILE);
-  // };
   return (
     <>
       <Navbar navigation={navigation} />
@@ -256,7 +195,7 @@ export const CreatePostScreen = (props: CreatePostScreenProps) => {
                 Request
               </Text>
             </TouchableOpacity>
-            <TouchableOpacity
+            {/* <TouchableOpacity
               style={styles.container3}
               activeOpacity={0.8}
               onPress={() => createPostSetType(3, "gratis")}
@@ -269,7 +208,7 @@ export const CreatePostScreen = (props: CreatePostScreenProps) => {
               <Text style={[selecttype == 3 ? styles.label3 : styles.label4]}>
                 Gratis
               </Text>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
           </View>
           {selecttype === 1 && (
             <CreatePostOfferScreen

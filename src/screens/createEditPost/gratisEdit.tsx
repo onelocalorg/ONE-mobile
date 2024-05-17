@@ -803,7 +803,7 @@ export const EditPostGratisScreen = (props: EditPostGratisScreenProps) => {
                 style={styles.purchaseContainer}
               >
                 <View />
-                <Text style={styles.titleTwo}>{strings.postOffer}</Text>
+                <Text style={styles.titleTwo}>{strings.postGratis}</Text>
                 <ImageComponent
                   source={buttonArrowGreen}
                   style={styles.buttonArrow}

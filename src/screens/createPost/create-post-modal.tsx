@@ -18,7 +18,7 @@ import {
 import { useSelector } from "react-redux";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
 import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
-import { eventBlack, gratitudeBlack, offer, request } from "~/assets/images";
+import { eventBlack, offer, request } from "~/assets/images";
 import { ImageComponent } from "~/components/image-component";
 import { ModalComponent, ModalRefProps } from "~/components/modal-component";
 import { LOG } from "~/config";
@@ -290,12 +290,12 @@ export const CreatePostModal = (props: CreatePostModalProps) => {
               true,
               styles.greenView
             )}
-            {renderViewGratitude(
+            {/* {renderViewGratitude(
               strings.gratitude,
               gratitudeBlack,
               true,
               styles.greenView
-            )}
+            )} */}
           </View>
         </View>
         <Modal
