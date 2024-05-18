@@ -136,11 +136,7 @@ export const HomeScreen = (props: HomeScreenProps) => {
 
   useFocusEffect(
     useCallback(() => {
-      var tempdataTwo = getData("defaultLocation");
-      if (tempdataTwo?.latitude) {
-        console.log("postListAPI 1");
-        postListAPI(tempdataTwo);
-      }
+      postListAPI();
     }, [page, searchQuery, refresh])
   );
 
@@ -162,13 +158,8 @@ export const HomeScreen = (props: HomeScreenProps) => {
           "-------------isLocationDefault-------------"
         );
         setData("defaultLocation", isLocationDefault);
-        if (location.latitude && location.longitude) {
-          getRecentlyJoinUserAPI(location);
-          console.log("postListAPI 2");
-          postListAPI(isLocationDefault);
-        } else {
-          getRecentlyJoinUserAPI("");
-        }
+        getRecentlyJoinUserAPI(location);
+        postListAPI();
       })
       .catch((error) => {
         getRecentlyJoinUserAPI("");
@@ -256,7 +247,7 @@ export const HomeScreen = (props: HomeScreenProps) => {
     }
   };
 
-  async function postListAPI(location: any) {
+  async function postListAPI() {
     const BOULDER_LON = -105.2705;
     const BOULDER_LAT = 40.015;
     const DEFAULT_ZOOM = 12;
@@ -352,7 +343,7 @@ export const HomeScreen = (props: HomeScreenProps) => {
   async function getRecentlyJoinUserAPI(getLocation: any) {
     const token = await AsyncStorage.getItem("token");
 
-    if (getLocation != "") {
+    if (getLocation) {
       var data: any = {
         radius: 25,
         user_lat: getLocation?.latitude,
