@@ -209,9 +209,11 @@ export const LoginScreen = (props: LoginScreenProps) => {
           }
           dispatch(onSetUser({ ...data, stripeCustomerId }));
 
-          await saveCustomerId({
-            bodyParams: { userId: id, customerId: stripeCustomerId },
-          });
+          if (stripeCustomerId) {
+            await saveCustomerId({
+              bodyParams: { userId: id, customerId: stripeCustomerId },
+            });
+          }
         } else {
           dispatch(onSetUser({ ...data, stripeCustomerId: customer_id }));
         }
