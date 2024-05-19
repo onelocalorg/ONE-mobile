@@ -3,8 +3,7 @@ import React, { useRef, useState } from "react";
 import { TextInput, TouchableOpacity, View } from "react-native";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
 import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
-import { buttonArrowGreen, pin, postCalender } from "~/assets/images";
-import { ButtonComponent } from "~/components/button-component";
+import { pin, postCalender } from "~/assets/images";
 import {
   DatePickerRefProps,
   DateRangePicker,
@@ -19,8 +18,7 @@ import { createStyleSheet } from "./style";
 
 interface PostViewProps {
   type: string;
-  validator?: (data: PostData) => boolean;
-  onSubmit: (data: PostData) => void;
+  onFieldsChanged: (data: PostData) => void;
   onLoading?: (isLoading: boolean) => void;
 }
 interface Range {
@@ -31,8 +29,7 @@ interface Range {
 export const PostView = ({
   type,
   onLoading,
-  validator,
-  onSubmit,
+  onFieldsChanged,
 }: PostViewProps) => {
   const { theme } = useAppTheme();
   const styles = createStyleSheet(theme);
@@ -42,7 +39,7 @@ export const PostView = ({
   const [body, setBody] = useState<string>();
   const [date, setDate] = useState<DateTime>();
   const [address, setAddress] = useState<string>();
-  const [location, setLocation] = useState();
+  const [location, setLocation] = useState<string>();
   const [imageKeys, setImageKeys] = useState<string[]>([]);
 
   const datePickerRef: React.Ref<DatePickerRefProps> = useRef(null);
@@ -67,6 +64,10 @@ export const PostView = ({
       // to_offer_users: userListArray,
     } as PostData);
 
+  const notifyFieldsChanged = () => {
+    onFieldsChanged(postData());
+  };
+
   return (
     <>
       <View>
@@ -75,7 +76,10 @@ export const PostView = ({
             placeholder="Title"
             placeholderTextColor="#8B8888"
             value={name}
-            onChangeText={setName}
+            onChangeText={(text) => {
+              setName(text);
+              notifyFieldsChanged();
+            }}
             style={styles.postInputTwo}
           ></TextInput>
           {/* <View style={styles.QuantityContainer}>
@@ -153,7 +157,10 @@ export const PostView = ({
             placeholderTextColor="darkgray"
             textAlignVertical={"top"}
             value={body}
-            onChangeText={setBody}
+            onChangeText={(text) => {
+              setBody(text);
+              notifyFieldsChanged();
+            }}
             style={styles.postInput}
           ></TextInput>
         </View>
@@ -409,7 +416,10 @@ export const PostView = ({
           ></TextInput>
 
           <DateRangePicker
-            selectStartDate={(d) => setDate(DateTime.fromJSDate(d))}
+            selectStartDate={(d) => {
+              setDate(DateTime.fromJSDate(d));
+              notifyFieldsChanged();
+            }}
             ref={datePickerRef}
           />
           <ImageComponent
@@ -422,16 +432,14 @@ export const PostView = ({
         <SizedBox height={verticalScale(8)}></SizedBox>
         <View style={styles.createPostContTwo}>
           {/* <Text style={styles.textTwoWhere}>Where</Text> */}
-
           {/* <View style={styles.postInputTwo}> */}
 
           <LocationAutocomplete
             placeholder="Location"
-            onPress={(data: any, details: any) => {
+            onPress={(data, details) => {
               setAddress(data.description);
               setLocation(details?.geometry?.location);
-              console.log(data);
-              console.log(details); // description
+              notifyFieldsChanged();
             }}
           />
 
@@ -480,7 +488,13 @@ export const PostView = ({
                 />
               </View> */}
 
-        <ImageUploader onLoading={onLoading} onChangeImages={setImageKeys} />
+        <ImageUploader
+          onLoading={onLoading}
+          onChangeImages={(images) => {
+            setImageKeys(images);
+            notifyFieldsChanged();
+          }}
+        />
       </View>
       <View>
         {/* <View style={styles.quntitiyCont}>
@@ -562,15 +576,7 @@ export const PostView = ({
                 activeOpacity={0.8}
                 style={styles.purchaseContainer}
               > */}
-        <View style={styles.bottomButton}>
-          <ButtonComponent
-            onPress={() => onSubmit(postData())}
-            icon={buttonArrowGreen}
-            title={strings.postOffer}
-            style={styles.postButton}
-            // disabled={() => validator?.(postData()) ?? false}
-          />
-        </View>
+
         {/* </TouchableOpacity> */}
       </View>
     </>

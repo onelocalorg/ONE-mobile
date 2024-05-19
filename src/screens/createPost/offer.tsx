@@ -12,6 +12,9 @@ import {
 } from "react-native";
 import Toast from "react-native-simple-toast";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
+import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
+import { buttonArrowGreen } from "~/assets/images";
+import { ButtonComponent } from "~/components/button-component";
 import { createPost } from "~/network/api/services/post-service";
 import { PostData } from "~/types/post-data";
 import { PostView } from "./PostView";
@@ -24,24 +27,26 @@ export const CreatePostOfferScreen = (props: CreatePostOfferScreenProps) => {
   const { navigation } = props || {};
   const { theme } = useAppTheme();
   const styles = createStyleSheet(theme);
+  const { strings } = useStringsAndLabels();
   const [isLoading, setLoading] = useState(false);
+  const [postData, setPostData] = useState<PostData>();
 
   const keyboardDismiss = () => {
     Keyboard.dismiss();
   };
 
-  const CreateNewPostModal = async (data: PostData) => {
-    if (!data.what_name) {
+  const CreateNewPostModal = async () => {
+    if (!postData?.what_name) {
       Toast.show("Title is required", Toast.LONG, {
         backgroundColor: "black",
       });
-    } else if (!data.content) {
+    } else if (!postData.content) {
       Toast.show("Body is required", Toast.LONG, {
         backgroundColor: "black",
       });
     } else {
       setLoading(true);
-      const dataItem = await createPost(data);
+      const dataItem = await createPost(postData);
       Toast.show(dataItem?.message, Toast.LONG, {
         backgroundColor: "black",
       });
@@ -70,8 +75,17 @@ export const CreatePostOfferScreen = (props: CreatePostOfferScreenProps) => {
               <PostView
                 type="offer"
                 onLoading={setLoading}
-                onSubmit={CreateNewPostModal}
+                onFieldsChanged={setPostData}
               />
+              <View style={styles.bottomButton}>
+                <ButtonComponent
+                  onPress={() => CreateNewPostModal()}
+                  icon={buttonArrowGreen}
+                  title={strings.postOffer}
+                  style={styles.postButton}
+                  disabled={!postData}
+                />
+              </View>
             </View>
           </View>
         </TouchableOpacity>
