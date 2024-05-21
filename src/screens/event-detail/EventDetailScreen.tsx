@@ -21,7 +21,7 @@ import Toast from "react-native-simple-toast";
 import { useSelector } from "react-redux";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
 import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
-import { calendarTime, copy, pinWhite, startImg } from "~/assets/images";
+import { calendarTime, pinWhite, startImg } from "~/assets/images";
 import { ButtonComponent } from "~/components/button-component";
 import { ImageComponent } from "~/components/image-component";
 import { Loader } from "~/components/loader";
@@ -30,7 +30,6 @@ import { Navbar } from "~/components/navbar/Navbar";
 import { SizedBox } from "~/components/sized-box";
 import { navigations } from "~/config/app-navigation/constant";
 import {
-  PurchaseProps,
   eventResponseToLocalEvent,
   fetchEvent,
 } from "~/network/api/services/home-service";
@@ -46,7 +45,7 @@ import { createStyleSheet } from "./style";
 
 interface EventDetailScreenProps {
   navigation?: NavigationContainerRef<ParamListBase>;
-  route: {
+  route?: {
     params: {
       id: string;
     };
@@ -81,7 +80,7 @@ interface User {
 }
 
 export const EventDetailScreen = (props: EventDetailScreenProps) => {
-  const eventId = props.route.params.id;
+  const eventId = props.route?.params.id;
   const { theme } = useAppTheme();
   const { strings } = useStringsAndLabels();
   const { navigation, route } = props || {};
@@ -108,7 +107,9 @@ export const EventDetailScreen = (props: EventDetailScreenProps) => {
   useEffect(() => {
     fetchRsvpDataAPI();
 
-    fetchEvent(eventId).then(eventResponseToLocalEvent).then(setEvent);
+    if (eventId) {
+      fetchEvent(eventId).then(eventResponseToLocalEvent).then(setEvent);
+    }
   }, [eventId]);
 
   const fetchRsvpDataAPI = async () => {
@@ -252,36 +253,36 @@ export const EventDetailScreen = (props: EventDetailScreenProps) => {
     navigation?.navigate(navigations.ADMIN_TOOLS, { eventData: event });
   };
 
-  const onPaymentSuccess = async (
-    paymentData: PurchaseProps,
-    ticketId: string,
-    ticketName: string,
-    ticketPrice: string,
-    quantityticket: number
-  ) => {
-    const request = {
-      bodyParams: {
-        stripeResponse: paymentData,
-        eventId,
-        ticketId: ticketId,
-        ticketName: ticketName,
-        ticketPrice: ticketPrice,
-        ticket_quantity: quantityticket,
-      },
-    };
-    LoadingData(true);
-    const res = await purchaseTicket(request);
-    if (res?.success === true) {
-      Toast.show(res.message, Toast.LONG, {
-        backgroundColor: "black",
-      });
+  // const onPaymentSuccess = async (
+  //   paymentData: PurchaseProps,
+  //   ticketId: string,
+  //   ticketName: string,
+  //   ticketPrice: string,
+  //   quantityticket: number
+  // ) => {
+  //   const request = {
+  //     bodyParams: {
+  //       stripeResponse: paymentData,
+  //       eventId,
+  //       ticketId: ticketId,
+  //       ticketName: ticketName,
+  //       ticketPrice: ticketPrice,
+  //       ticket_quantity: quantityticket,
+  //     },
+  //   };
+  //   LoadingData(true);
+  //   const res = await purchaseTicket(request);
+  //   if (res?.success === true) {
+  //     Toast.show(res.message, Toast.LONG, {
+  //       backgroundColor: "black",
+  //     });
 
-      LoadingData(false);
-      navigation?.goBack();
-    } else {
-      LoadingData(false);
-    }
-  };
+  //     LoadingData(false);
+  //     navigation?.goBack();
+  //   } else {
+  //     LoadingData(false);
+  //   }
+  // };
 
   // const onPurchaseTicketThroughCard = async (
   //   cardData: any,
@@ -483,7 +484,7 @@ export const EventDetailScreen = (props: EventDetailScreenProps) => {
             ) : (
               <></>
             )}
-            <View>
+            {/* <View>
               {event.ticketTypes?.map((ele) => (
                 <View key={ele?.price.toString()} style={styles.rowOnly}>
                   <Text
@@ -499,7 +500,7 @@ export const EventDetailScreen = (props: EventDetailScreenProps) => {
                   </TouchableOpacity>
                 </View>
               ))}
-            </View>
+            </View> */}
 
             {onCheckReleaseHideShow() ? (
               <>
