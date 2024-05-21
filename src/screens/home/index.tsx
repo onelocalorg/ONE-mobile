@@ -4,6 +4,7 @@ import {
   ParamListBase,
   useFocusEffect,
 } from "@react-navigation/native";
+import { DateTime } from "luxon";
 import React, { useCallback, useEffect, useState } from "react";
 import {
   ActivityIndicator,
@@ -662,11 +663,13 @@ export const HomeScreen = (props: HomeScreenProps) => {
             <></>
           )}
 
-          {item?.when ? (
+          {item?.dateTime ? (
             <View style={styles.postDetailCont}>
               <Text style={styles.postDetailTitle}>When:</Text>
               <Image source={postCalender} style={styles.detailImage}></Image>
-              <Text style={styles.postDetail}>{item?.when}</Text>
+              <Text style={styles.postDetail}>
+                {DateTime.fromISO(item?.dateTime as string).toLocaleString()}
+              </Text>
             </View>
           ) : null}
 
