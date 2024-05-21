@@ -1,6 +1,6 @@
 import { createStackNavigator } from "@react-navigation/stack";
 import React from "react";
-import { CreateEventScreen } from "~/screens/createEditEvent/CreateEditEventScreen";
+import { CreateEditEventScreen } from "~/screens/createEditEvent/CreateEditEventScreen";
 import { CreatePostScreen } from "~/screens/createEditPost/CreatePostScreen";
 import { CreateEditPostGratisScreen } from "~/screens/createEditPost/gratis";
 import { CreateEditPostOfferScreen } from "~/screens/createEditPost/offer";
@@ -34,21 +34,21 @@ export const MapRoute = () => {
       />
       <MapStack.Screen
         name={navigations.ADMIN_TOOLS}
-        component={CreateEventScreen}
+        component={CreateEditEventScreen}
         options={{ header }}
       />
       <MapStack.Screen
-        name={navigations.CREATE_EDIT_POST}
+        name={navigations.EDIT_POST}
         component={CreatePostScreen}
         options={{ header }}
       />
       <MapStack.Screen
-        name={navigations.CREATE_EDIT_POST_OFFER}
+        name={navigations.EDIT_POST}
         component={CreateEditPostOfferScreen}
         options={{ header }}
       />
       <MapStack.Screen
-        name={navigations.CREATE_EDIT_POST_REQUEST}
+        name={navigations.EDIT_POST}
         component={CreateEditPostRequestScreen}
         options={{ header }}
       />

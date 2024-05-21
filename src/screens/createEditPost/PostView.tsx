@@ -1,13 +1,10 @@
 import { DateTime } from "luxon";
-import React, { useRef, useState } from "react";
-import { TextInput, TouchableOpacity, View } from "react-native";
+import React, { useEffect, useRef, useState } from "react";
+import { Text, TextInput, TouchableOpacity, View } from "react-native";
+import DateTimePicker from "react-native-modal-datetime-picker";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
-import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
 import { pin, postCalender } from "~/assets/images";
-import {
-  DatePickerRefProps,
-  DateRangePicker,
-} from "~/components/date-range-picker";
+import { DatePickerRefProps } from "~/components/date-range-picker";
 import { ImageComponent } from "~/components/image-component";
 import { LocationAutocomplete } from "~/components/location-autocomplete/LocationAutocomplete";
 import { SizedBox } from "~/components/sized-box";
@@ -18,55 +15,51 @@ import { createStyleSheet } from "./style";
 
 interface PostViewProps {
   type: string;
+  post?: PostData;
   onFieldsChanged: (data: PostData) => void;
   onLoading?: (isLoading: boolean) => void;
-}
-interface Range {
-  startDate: Date | undefined;
-  endDate: Date | undefined;
 }
 
 export const PostView = ({
   type,
+  post,
   onLoading,
   onFieldsChanged,
 }: PostViewProps) => {
   const { theme } = useAppTheme();
   const styles = createStyleSheet(theme);
-  const { strings } = useStringsAndLabels();
 
-  const [name, setName] = useState<string>();
-  const [body, setBody] = useState<string>();
-  const [date, setDate] = useState<DateTime>();
-  const [address, setAddress] = useState<string>();
-  const [location, setLocation] = useState<string>();
-  const [imageKeys, setImageKeys] = useState<string[]>([]);
+  const [name, setName] = useState(post?.name);
+  const [details, setDetails] = useState(post?.details);
+  const [startDate, setStartDate] = useState(post?.startDate);
+  const [address, setAddress] = useState(post?.address);
+  const [latitude, setLatitude] = useState(post?.latitude);
+  const [longitude, setLongitude] = useState(post?.longitude);
+  const [imageUrls, setImageUrls] = useState(post?.imageUrls);
+  const [isDirty, setDirty] = useState(false);
+  const [isDatePickerVisible, setDatePickerVisible] = useState(false);
 
   const datePickerRef: React.Ref<DatePickerRefProps> = useRef(null);
 
-  const postData = () =>
+  const buildPostData = () =>
     ({
       type,
-      // what_type: whatSelectType,
-      what_name: name,
-      // what_quantity: whatQuantity,
-      // for_type: whatForType,
-      // for_name: forName ? forName : undefined,
-      // for_quantity: forQuantity ? forQuantity : undefined,
-      where_address: address,
-      where_lat: undefined,
-      where_lng: undefined,
-      when: date?.toISO(),
-      content: body,
-      // tags: tagArray ? tagArray : undefined,
-      post_image: imageKeys,
-      // to_type: valueTotype,
-      // to_offer_users: userListArray,
+      name,
+      details,
+      startDate,
+      address,
+      latitude,
+      longitude,
+      imageUrls,
     } as PostData);
 
-  const notifyFieldsChanged = () => {
-    onFieldsChanged(postData());
-  };
+  // Call after render
+  useEffect(() => {
+    if (isDirty) {
+      onFieldsChanged(buildPostData());
+    }
+    setDirty(false);
+  });
 
   return (
     <>
@@ -78,7 +71,7 @@ export const PostView = ({
             value={name}
             onChangeText={(text) => {
               setName(text);
-              notifyFieldsChanged();
+              setDirty(true);
             }}
             style={styles.postInputTwo}
           ></TextInput>
@@ -156,10 +149,10 @@ export const PostView = ({
             placeholder="Body"
             placeholderTextColor="darkgray"
             textAlignVertical={"top"}
-            value={body}
+            value={details}
             onChangeText={(text) => {
-              setBody(text);
-              notifyFieldsChanged();
+              setDetails(text);
+              setDirty(true);
             }}
             style={styles.postInput}
           ></TextInput>
@@ -404,24 +397,26 @@ export const PostView = ({
 
         <TouchableOpacity
           activeOpacity={0.8}
-          onPress={() => datePickerRef.current?.onOpenModal("start")}
+          onPress={() => setDatePickerVisible(true)}
           style={styles.postContainer}
         >
-          <TextInput
-            style={styles.postInputIconRight}
-            placeholder="Date"
-            editable={false}
-            value={date?.toLocaleString(DateTime.DATETIME_MED)}
-            dataDetectorTypes="calendarEvent"
-          ></TextInput>
+          <Text style={styles.postInputIconRight}>
+            {startDate?.toLocaleString(DateTime.DATE_MED)}
+          </Text>
 
-          <DateRangePicker
-            selectStartDate={(d) => {
-              setDate(DateTime.fromJSDate(d));
-              notifyFieldsChanged();
+          <DateTimePicker
+            isVisible={isDatePickerVisible}
+            date={startDate?.toJSDate()}
+            mode="date"
+            minimumDate={new Date()}
+            onConfirm={(d) => {
+              setStartDate(DateTime.fromJSDate(d));
+              setDirty(true);
+              setDatePickerVisible(false);
             }}
-            ref={datePickerRef}
+            onCancel={() => setDatePickerVisible(false)}
           />
+
           <ImageComponent
             resizeMode="cover"
             source={postCalender}
@@ -438,8 +433,9 @@ export const PostView = ({
             placeholder="Location"
             onPress={(data, details) => {
               setAddress(data.description);
-              setLocation(details?.geometry?.location);
-              notifyFieldsChanged();
+              setLatitude(details!.geometry.location.lat);
+              setLongitude(details!.geometry.location.lng);
+              setDirty(true);
             }}
           />
 
@@ -491,8 +487,8 @@ export const PostView = ({
         <ImageUploader
           onLoading={onLoading}
           onChangeImages={(images) => {
-            setImageKeys(images);
-            notifyFieldsChanged();
+            setImageUrls(images);
+            setDirty(true);
           }}
         />
       </View>

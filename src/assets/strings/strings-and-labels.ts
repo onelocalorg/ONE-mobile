@@ -118,6 +118,8 @@ export const stringsAndLabels = {
   postOffer: "Post Offer",
   postRequest: "Post Request",
   postGratis: "Post Grat",
+  editOffer: "Update Offer",
+  editRequest: "Update Request",
   deleteAccount: "Delete Account",
   areYouDeleteAccount: "Are you sure you want to Delete Account?",
   blockUser: "Block User",

@@ -4,7 +4,6 @@ import {
   ParamListBase,
   useFocusEffect,
 } from "@react-navigation/native";
-import { DateTime } from "luxon";
 import React, { useCallback, useEffect, useState } from "react";
 import {
   ActivityIndicator,
@@ -47,11 +46,12 @@ import {
 } from "~/assets/images";
 import { ImageComponent } from "~/components/image-component";
 import { Navbar } from "~/components/navbar/Navbar";
-import { LOG } from "~/config";
 import { navigations } from "~/config/app-navigation/constant";
+import { deletePost, listPosts } from "~/network/api/services/post-service";
 import { getData, setData } from "~/network/constant";
 import { StoreType } from "~/network/reducers/store";
 import { UserProfileState } from "~/network/reducers/user-profile-reducer";
+import { Post } from "~/types/post";
 import { createStyleSheet } from "./style";
 // import Geolocation from "@react-native-community/geolocation";
 
@@ -72,7 +72,7 @@ export const HomeScreen = (props: HomeScreenProps) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [ProfileData, setUserProfile]: any = useState("");
   const [userList, setUserList] = useState([]);
-  var [postList, setPostList]: any = useState([]);
+  var [postList, setPostList] = useState<Post[]>([]);
   const [offerModal, CreateOfferModal] = useState(false);
   var [location, setUserLocation]: any = useState();
   const [isLoading, LodingData] = useState(false);
@@ -84,13 +84,13 @@ export const HomeScreen = (props: HomeScreenProps) => {
   var [page, setPage] = useState(1);
   const [postContent, postContentModal] = useState(false);
   const [reoportModal, reportModalShowHide] = useState(false);
-  const [postHideId, hidePostContentIDData] = useState();
+  const [postHideId, hidePostContentIDData] = useState<String>();
   const [reportPost, addReportReason] = useState("");
   const [setGratis, setPostGratisData] = useState();
   const [setComment, setPostCommentData] = useState();
   const [postData, setPostDataForComment] = useState();
   const [post_index, setPostCommentIndexTwo]: any = useState();
-  const [editPost, setEditPost]: any = useState();
+  const [editPost, setEditPost] = useState<Post>();
   const [showCommentListModal, setShowCommentListData] = useState(false);
   const [refresh, setRefresh] = useState(false);
   const [Post_Id, setPostDataId] = useState("");
@@ -218,7 +218,7 @@ export const HomeScreen = (props: HomeScreenProps) => {
   }
   const onNavigateToCreatePost = () => {
     setData("POST_TAB_OPEN_INDEX", 1);
-    navigation?.navigate(navigations?.CREATE_EDIT_POST);
+    navigation?.navigate(navigations?.EDIT_POST);
   };
 
   const OfferModalShow = (postIds: any, index: any) => {
@@ -266,31 +266,18 @@ export const HomeScreen = (props: HomeScreenProps) => {
 
     console.log("----------------post Location----------------", data);
 
-    var URL = process.env.API_URL + "/v1/posts/list?limit=5&page=" + page;
-    LOG.info(URL);
-    LOG.info(data);
     try {
-      const response = await fetch(URL, {
-        method: "post",
-        headers: new Headers({
-          Authorization: "Bearer " + token,
-          "Content-Type": "application/json",
-        }),
-        body: JSON.stringify(data),
-      });
-      LOG.info(response.status);
-      const dataItem = await response.json();
-      LOG.debug("postListAPI: ", dataItem?.data);
+      const postResponse = await listPosts();
       setRefresh(false);
       if (page == 1) {
-        setPostList(dataItem?.data?.results);
+        setPostList(postResponse.posts);
       } else {
-        setPostList([...postList, ...dataItem?.data?.results]);
+        setPostList([...postList, ...postResponse.posts]);
       }
       onPageLoad(false);
       isMoreDataLoad(true);
       LodingData(false);
-      if (dataItem?.data?.page === dataItem?.data?.totalPages) {
+      if (postResponse.pageInfo.page === postResponse.pageInfo.totalPages) {
         isMoreDataLoad(false);
       }
     } catch (error) {
@@ -320,14 +307,14 @@ export const HomeScreen = (props: HomeScreenProps) => {
         }
       );
       const dataItem = await response.json();
-      if (dataItem?.success === true) {
-        let markers = [...postList];
-        markers[gratisIndex] = {
-          ...markers[gratisIndex],
-          gratis: dataItem?.data?.data?.postGratis,
-        };
-        setPostList(markers);
-      }
+      // if (dataItem?.success === true) {
+      //   let markers = [...postList];
+      //   markers[gratisIndex] = {
+      //     ...markers[gratisIndex],
+      //     gratis: dataItem?.data?.data?.postGratis,
+      //   };
+      //   setPostList(markers);
+      // }
       if (dataItem?.success === false) {
         Toast.show(dataItem?.message, Toast.LONG, {
           backgroundColor: "black",
@@ -378,23 +365,9 @@ export const HomeScreen = (props: HomeScreenProps) => {
   }
 
   async function deletePostAPI() {
-    const token = await AsyncStorage.getItem("token");
-    console.log(editPost?.id, "delete post id");
-    console.log(process.env.API_URL + "/v2/posts/delete/" + editPost?.id);
     try {
-      console.log("222222");
-
-      const response = await fetch(
-        process.env.API_URL + "/v2/posts/delete/" + editPost?.id,
-        {
-          method: "post",
-          headers: new Headers({
-            Authorization: "Bearer " + token,
-            "Content-Type": "application/json",
-          }),
-        }
-      );
-      const dataItem = await response.json();
+      const response = await deletePost(editPost!.id);
+      const dataItem = await response.data;
       console.log("=========== Delete Post API Response ==============");
       console.log(dataItem);
       Toast.show(dataItem?.message, Toast.LONG, {
@@ -516,7 +489,7 @@ export const HomeScreen = (props: HomeScreenProps) => {
     postContentModal(false);
   };
 
-  const openPostModal = (postID: any, postData: any) => {
+  const openPostModal = (postID: string, postData: Post) => {
     hidePostContentIDData(postID);
     setEditPost(postData);
     postContentModal(true);
@@ -532,7 +505,7 @@ export const HomeScreen = (props: HomeScreenProps) => {
     }
   };
 
-  const renderItem: ListRenderItem<any> = ({ item, index }) => {
+  const renderItem: ListRenderItem<Post> = ({ item, index }) => {
     return (
       <TouchableOpacity activeOpacity={1} onPress={keyboardDismiss} key={index}>
         <View style={styles.feedContainer}>
@@ -555,12 +528,12 @@ export const HomeScreen = (props: HomeScreenProps) => {
           </TouchableOpacity>
           <View style={styles.userDetailcont}>
             <TouchableOpacity
-              onPress={() => recentUserProfilePress(item?.user_id.id)}
+              onPress={() => recentUserProfilePress(item.from.id)}
             >
               <ImageComponent
                 resizeMode="cover"
                 style={styles.postProfile}
-                source={{ uri: item?.user_id?.pic }}
+                source={{ uri: item.from.pic }}
               ></ImageComponent>
             </TouchableOpacity>
             <View>
@@ -568,9 +541,9 @@ export const HomeScreen = (props: HomeScreenProps) => {
                 {item?.type === "Gratis" ? (
                   <View>
                     <Text numberOfLines={1} style={styles.userName}>
-                      {item?.user_id?.first_name} {item?.user_id?.last_name}{" "}
+                      {item.from.first_name} {item.from.last_name}{" "}
                     </Text>
-                    {item?.to?.users.length !== 0 ? (
+                    {/* {item?.to?.users.length !== 0 ? (
                       <Text numberOfLines={1} style={styles.sentPointClass}>
                         sent {item?.to?.users[0]?.point} gratis to{" "}
                         <Text style={styles.userName}>
@@ -582,14 +555,18 @@ export const HomeScreen = (props: HomeScreenProps) => {
                       </Text>
                     ) : (
                       <></>
-                    )}
+                    )} */}
                   </View>
                 ) : (
                   <Text numberOfLines={1} style={styles.userName}>
-                    {item?.user_id?.first_name} {item?.user_id?.last_name}
+                    {item.from.first_name} {item.from.last_name}
                   </Text>
                 )}
-                <Text style={styles.postTime}>{item?.date}</Text>
+                {item.startDate ? (
+                  <Text style={styles.postTime}>
+                    {item.startDate.toLocaleString()}
+                  </Text>
+                ) : null}
               </View>
             </View>
           </View>
@@ -600,7 +577,7 @@ export const HomeScreen = (props: HomeScreenProps) => {
                 : styles.userListDisplayContTwo
             }
           >
-            <TouchableOpacity
+            {/* <TouchableOpacity
               onPress={() =>
                 recentUserProfilePress(item?.to?.users[0]?.user_id["id"])
               }
@@ -612,8 +589,8 @@ export const HomeScreen = (props: HomeScreenProps) => {
                   uri: item?.to?.users[0]?.user_id["pic"],
                 }}
               ></ImageComponent>
-            </TouchableOpacity>
-            <TouchableOpacity
+            </TouchableOpacity> */}
+            {/* <TouchableOpacity
               onPress={() =>
                 recentUserProfilePress(item?.to?.users[1]?.user_id["id"])
               }
@@ -623,25 +600,25 @@ export const HomeScreen = (props: HomeScreenProps) => {
                 style={styles.userListDisplay}
                 source={{ uri: item?.to?.users[1]?.user_id["pic"] }}
               ></ImageComponent>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
           </View>
-          <Text style={styles.postDes}>{item?.content}</Text>
-          {item.image?.length > 0 ? (
+          <Text style={styles.postDes}>{item.details}</Text>
+          {item.imageUrls?.length > 0 ? (
             <ImageComponent
               resizeMode="cover"
-              source={{ uri: item.image[0] }}
+              source={{ uri: item.imageUrls[0] }}
               style={styles.userPost}
             ></ImageComponent>
           ) : null}
           <View style={styles.postDetailCont}>
             <Text style={styles.postDetailTitle}>What:</Text>
-            <ImageComponent
+            {/* <ImageComponent
               source={{ uri: item?.what?.icon }}
               style={styles.detailImage}
-            ></ImageComponent>
-            <Text style={styles.postDetail}>{item?.what?.name}</Text>
+            ></ImageComponent> */}
+            <Text style={styles.postDetail}>{item.name}</Text>
           </View>
-          {item?.type !== "Gratis" && item?.for?.name ? (
+          {/* {item?.type !== "Gratis" && item?.for?.name ? (
             <View style={styles.postDetailCont}>
               <Text style={styles.postDetailTitle}>For:</Text>
               <Image
@@ -652,23 +629,23 @@ export const HomeScreen = (props: HomeScreenProps) => {
             </View>
           ) : (
             <></>
-          )}
-          {item?.type !== "Gratis" && item?.where?.address ? (
+          )} */}
+          {item?.type !== "Gratis" && item.address ? (
             <View style={styles.postDetailCont}>
               <Text style={styles.postDetailTitle}>Where:</Text>
               <Image source={pin} style={styles.detailImage}></Image>
-              <Text style={styles.postDetail}>{item?.where?.address}</Text>
+              <Text style={styles.postDetail}>{item.address}</Text>
             </View>
           ) : (
             <></>
           )}
 
-          {item?.dateTime ? (
+          {item?.startDate ? (
             <View style={styles.postDetailCont}>
               <Text style={styles.postDetailTitle}>When:</Text>
               <Image source={postCalender} style={styles.detailImage}></Image>
               <Text style={styles.postDetail}>
-                {DateTime.fromISO(item?.dateTime as string).toLocaleString()}
+                {item.startDate.toLocaleString()}
               </Text>
             </View>
           ) : null}
@@ -679,7 +656,7 @@ export const HomeScreen = (props: HomeScreenProps) => {
               style={styles.gratisContainer}
               onPress={() => OfferModalShow(item.id, index)}
             >
-              <Text style={styles.gratisClass}>+{item?.gratis}</Text>
+              <Text style={styles.gratisClass}>+{item.numGrats}</Text>
               <ImageComponent
                 source={gratitudeBlack}
                 style={styles.commentImgTwo}
@@ -690,7 +667,7 @@ export const HomeScreen = (props: HomeScreenProps) => {
               onPress={() => onCommentOpen(item, index)}
               style={styles.commentsContainer}
             >
-              <Text style={styles.commentClass}>{item?.comment}</Text>
+              <Text style={styles.commentClass}>{item.numComments}</Text>
               <ImageComponent
                 source={comment}
                 style={styles.commentImageThree}
@@ -709,8 +686,8 @@ export const HomeScreen = (props: HomeScreenProps) => {
     setShowCommentListData(false);
     let markers = [...postList];
 
-    markers[post_index]["gratis"] = setGraisTwo;
-    markers[post_index]["comment"] = commentTwo;
+    // markers[post_index]["gratis"] = setGraisTwo;
+    // markers[post_index]["comment"] = commentTwo;
 
     setPostList(markers);
   };
@@ -752,11 +729,17 @@ export const HomeScreen = (props: HomeScreenProps) => {
 
   const onEditPost = () => {
     if (editPost?.type === "Offer") {
-      navigation.navigate(navigations.EDITPOSTOFFER, { postData: editPost });
+      navigation.navigate(navigations.EDIT_POST, {
+        postData: editPost,
+      });
     } else if (editPost?.type === "Request") {
-      navigation.navigate(navigations.EDITPOSTREQUEST, { postData: editPost });
+      navigation.navigate(navigations.EDIT_POST, {
+        postData: editPost,
+      });
     } else if (editPost?.type === "Gratis") {
-      navigation.navigate(navigations.EDITPOSTGRATIS, { postData: editPost });
+      navigation.navigate(navigations.CREATE_EDIT_POST_GRATIS, {
+        postData: editPost,
+      });
     }
     postContentModal(false);
   };
@@ -794,7 +777,7 @@ export const HomeScreen = (props: HomeScreenProps) => {
 
         <FlatList
           data={postList}
-          keyExtractor={(item, index) => item.key}
+          keyExtractor={(item) => item.id}
           onEndReached={postDataLoad}
           renderItem={renderItem}
           contentContainerStyle={styles.scrollView}
@@ -935,7 +918,7 @@ export const HomeScreen = (props: HomeScreenProps) => {
           style={styles.keyboardViewTwo}
         >
           <View style={styles.postActionSheet}>
-            {editPost?.user_id?.id === user?.id ? (
+            {editPost?.from.id === user?.id ? (
               <>
                 <TouchableOpacity onPress={() => onEditPost()}>
                   <Text style={[styles.postText, { color: "white" }]}>

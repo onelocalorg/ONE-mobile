@@ -1,13 +1,12 @@
 import { createStackNavigator } from "@react-navigation/stack";
 import React from "react";
 import { CheckInScreen } from "~/screens/check-in";
-import { CreateEventScreen } from "~/screens/createEditEvent/CreateEditEventScreen";
+import { CreateEditEventScreen } from "~/screens/createEditEvent/CreateEditEventScreen";
 import { AddPayoutExpenseScreen } from "~/screens/createEditEvent/addPayoutExpense-modal";
 import { EditPayoutModalScreen } from "~/screens/createEditEvent/editPayoutExpense-modal";
 import { CreatePostScreen } from "~/screens/createEditPost/CreatePostScreen";
+import { EditPostScreen } from "~/screens/createEditPost/EditPostScreen";
 import { CreateEditPostGratisScreen } from "~/screens/createEditPost/gratis";
-import { CreateEditPostOfferScreen } from "~/screens/createEditPost/offer";
-import { CreateEditPostRequestScreen } from "~/screens/createEditPost/request";
 import { EventDetailScreen } from "~/screens/event-detail/EventDetailScreen";
 import { EventListScreen } from "~/screens/event/EventListScreen";
 import { PaymentScreen } from "~/screens/payment-screen";
@@ -39,7 +38,7 @@ export const EventRoute = () => {
       />
       <EventStack.Screen
         name={navigations.ADMIN_TOOLS}
-        component={CreateEventScreen}
+        component={CreateEditEventScreen}
         options={{ header }}
       />
       <EventStack.Screen
@@ -68,18 +67,13 @@ export const EventRoute = () => {
         options={{ header }}
       />
       <EventStack.Screen
-        name={navigations.CREATE_EDIT_POST}
+        name={navigations.EDIT_POST}
         component={CreatePostScreen}
         options={{ header }}
       />
       <EventStack.Screen
-        name={navigations.CREATE_EDIT_POST_OFFER}
-        component={CreateEditPostOfferScreen}
-        options={{ header }}
-      />
-      <EventStack.Screen
-        name={navigations.CREATE_EDIT_POST_REQUEST}
-        component={CreateEditPostRequestScreen}
+        name={navigations.EDIT_POST}
+        component={EditPostScreen}
         options={{ header }}
       />
       <EventStack.Screen

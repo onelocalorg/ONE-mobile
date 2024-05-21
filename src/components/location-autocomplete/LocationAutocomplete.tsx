@@ -36,7 +36,6 @@ export const LocationAutocomplete = ({
           fontSize: 14,
           borderColor: theme.colors.black,
           borderWidth: theme.borderWidth.borderWidth1,
-          placeholderTextColor: theme.colors.black,
         },
         listView: {
           color: "black", //To see where exactly the list is

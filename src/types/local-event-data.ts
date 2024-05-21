@@ -1,6 +1,7 @@
 import { DateTime } from "luxon";
 import { TicketType } from "./ticket-type";
 
+// The data for creating an event.
 export interface LocalEventData {
   id?: string;
   name: string;

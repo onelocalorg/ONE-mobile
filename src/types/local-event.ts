@@ -1,6 +1,7 @@
 import { EventProducer } from "./event-producer";
 import { LocalEventData } from "./local-event-data";
 
+// The data returned from the server for an event
 export interface LocalEvent extends LocalEventData {
   id: string;
   event_image?: string;

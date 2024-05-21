@@ -2,9 +2,8 @@ import { createStackNavigator } from "@react-navigation/stack";
 import React from "react";
 import { CreateEditEventScreen } from "~/screens/createEditEvent/CreateEditEventScreen";
 import { CreatePostScreen } from "~/screens/createEditPost/CreatePostScreen";
+import { EditPostScreen } from "~/screens/createEditPost/EditPostScreen";
 import { CreateEditPostGratisScreen } from "~/screens/createEditPost/gratis";
-import { CreateEditPostOfferScreen } from "~/screens/createEditPost/offer";
-import { CreateEditPostRequestScreen } from "~/screens/createEditPost/request";
 import { HomeScreen } from "~/screens/home";
 import { CommentList } from "~/screens/home/commetList";
 import { ProfileScreen } from "~/screens/profile";
@@ -35,18 +34,13 @@ export const HomeRoute = () => {
         options={{ header }}
       />
       <HomeStack.Screen
-        name={navigations.CREATE_EDIT_POST}
+        name={navigations.CREATE_POST}
         component={CreatePostScreen}
         options={{ header }}
       />
       <HomeStack.Screen
-        name={navigations.CREATE_EDIT_POST_OFFER}
-        component={CreateEditPostOfferScreen}
-        options={{ header }}
-      />
-      <HomeStack.Screen
-        name={navigations.CREATE_EDIT_POST_REQUEST}
-        component={CreateEditPostRequestScreen}
+        name={navigations.EDIT_POST}
+        component={EditPostScreen}
         options={{ header }}
       />
       <HomeStack.Screen

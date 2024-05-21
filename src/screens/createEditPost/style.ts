@@ -591,6 +591,8 @@ export const createStyleSheet = (theme: ThemeProps) => {
       color: theme.colors.black,
     },
     postInputIconRight: {
+      paddingTop: 0,
+      paddingBottom: 0,
       borderRadius: 10,
       width: width - 95,
       marginLeft: 1,

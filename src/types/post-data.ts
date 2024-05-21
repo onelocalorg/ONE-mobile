@@ -1,18 +1,21 @@
+import { DateTime } from "luxon";
+
+// The data for creating a post
 export interface PostData {
-  type: "offer";
-  // what_type: whatSelectType,
-  what_name: string;
+  type: string;
+  name: string;
   // what_quantity: whatQuantity,
   // for_type: whatForType,
   // for_name: forName ? forName : undefined,
   // for_quantity: forQuantity ? forQuantity : undefined,
-  where_address?: string;
-  where_lat?: string;
-  where_lng?: string;
-  when?: string;
-  content?: string;
+  address?: string;
+  latitude?: number;
+  longitude?: number;
+  startDate?: DateTime;
+  hasTime?: boolean;
+  details?: string;
   // tags: tagArray ? tagArray : undefined,
-  post_image?: string[];
+  imageUrls?: string[];
   // to_type: valueTotype,
   // to_offer_users: userListArray,
 }
