@@ -67,7 +67,7 @@ export const EventRoute = () => {
         options={{ header }}
       />
       <EventStack.Screen
-        name={navigations.EDIT_POST}
+        name={navigations.CREATE_POST}
         component={CreatePostScreen}
         options={{ header }}
       />

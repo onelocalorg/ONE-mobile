@@ -6,14 +6,11 @@ import { PostData } from "~/types/post-data";
 import { User } from "~/types/user";
 
 export async function createPost(data: PostData) {
-  return doPost("/v1/posts/create", JSON.stringify(postToApi(data)));
+  return doPost("/v1/posts/create", postToApi(data));
 }
 
 export async function updatePost(id: string, data: PostData) {
-  LOG.debug("updatePost", id, data);
-  const body = postToApi(data);
-  LOG.debug("body", body);
-  return doPost(`/v2/posts/update/${id}`, JSON.stringify(body));
+  return doPost(`/v2/posts/update/${id}`, postToApi(data));
 }
 
 class ApiError extends Error {
@@ -29,8 +26,9 @@ interface ApiResponse {
   data: any;
 }
 
-async function callServer(method: string, url: string, body?: string) {
-  LOG.info("callServer", method, url);
+async function callApi(method: string, url: string, body?: object) {
+  LOG.info("callApi", method, url);
+  LOG.debug("=>", body);
   const token = await AsyncStorage.getItem("token");
   const response = await fetch(process.env.API_URL + url, {
     method,
@@ -39,7 +37,7 @@ async function callServer(method: string, url: string, body?: string) {
       "Content-Type": "application/json",
       Accept: "application/json",
     }),
-    body,
+    body: JSON.stringify(body),
   });
   LOG.info(response.status);
   const data = (await response.json()) as ApiResponse;
@@ -52,12 +50,12 @@ async function callServer(method: string, url: string, body?: string) {
   }
 }
 
-async function doPost(url: string, body?: string) {
-  return callServer("POST", url, body);
+async function doPost(url: string, body?: object) {
+  return callApi("POST", url, body);
 }
 
 async function doDelete(url: string) {
-  return callServer("DELETE", url);
+  return callApi("DELETE", url);
 }
 
 export async function deletePost(id: string) {
@@ -89,7 +87,7 @@ interface PageData {
 const apiToPost = (data: GetPostApiBody) =>
   ({
     id: data.id!,
-    type: data.type,
+    type: data.type.toLowerCase(),
     name: data.what.name,
     address: data.where?.address,
     latitude: data.where?.location.coordinates[1],
@@ -146,7 +144,7 @@ interface GetPostApiBody {
 
 const postToApi = (data: PostData) =>
   ({
-    type: data.type,
+    type: data.type.toLowerCase(),
     what_name: data.name,
     where_address: data.address,
     where_lat: data.latitude?.toString(),

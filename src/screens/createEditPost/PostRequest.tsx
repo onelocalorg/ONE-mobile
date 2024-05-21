@@ -22,15 +22,13 @@ import { PostData } from "~/types/post-data";
 import { PostView } from "./PostView";
 import { createStyleSheet } from "./style";
 
-interface CreateEditPostOfferScreenProps {
+interface PostRequestProps {
   navigation?: NavigationContainerRef<ParamListBase>;
   post?: Post;
 }
-export const CreateEditPostOfferScreen = ({
-  navigation,
-  post,
-}: CreateEditPostOfferScreenProps) => {
-  LOG.debug("CreateEditPostOfferScreen", post);
+
+export const PostRequest = ({ navigation, post }: PostRequestProps) => {
+  LOG.debug("CreateEditPostRequestScreen", post);
   const { theme } = useAppTheme();
   const styles = createStyleSheet(theme);
   const { strings } = useStringsAndLabels();
@@ -41,19 +39,23 @@ export const CreateEditPostOfferScreen = ({
     Keyboard.dismiss();
   };
 
+  // useEffect(() => {
+  //   LogBox.ignoreAllLogs();
+  //   getResourcesAPI();
+  // }, []);
+
   const CreateNewPostModal = async () => {
     if (!postData?.name) {
-      Toast.show("Title is required", Toast.LONG, {
+      Toast.show("Enter Title", Toast.LONG, {
         backgroundColor: "black",
       });
     } else if (!postData.details) {
-      Toast.show("Body is required", Toast.LONG, {
+      Toast.show("Enter Body", Toast.LONG, {
         backgroundColor: "black",
       });
     } else {
       setLoading(true);
       let dataItem;
-      LOG.debug("saving ...");
       if (post) {
         dataItem = await updatePost(post.id, postData);
       } else {
@@ -83,10 +85,10 @@ export const CreateEditPostOfferScreen = ({
         >
           <View>
             <View style={styles.postClass}>
-              <Text style={styles.title}>My Abundance</Text>
+              <Text style={styles.title}>Your Abundance</Text>
               <PostView
-                type="offer"
-                post={post}
+                type="request"
+                post={postData}
                 onLoading={setLoading}
                 onFieldsChanged={setPostData}
               />

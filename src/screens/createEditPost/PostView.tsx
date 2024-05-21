@@ -1,13 +1,13 @@
 import { DateTime } from "luxon";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Text, TextInput, TouchableOpacity, View } from "react-native";
 import DateTimePicker from "react-native-modal-datetime-picker";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
 import { pin, postCalender } from "~/assets/images";
-import { DatePickerRefProps } from "~/components/date-range-picker";
 import { ImageComponent } from "~/components/image-component";
 import { LocationAutocomplete } from "~/components/location-autocomplete/LocationAutocomplete";
 import { SizedBox } from "~/components/sized-box";
+import { LOG } from "~/config";
 import { verticalScale } from "~/theme/device/normalize";
 import { PostData } from "~/types/post-data";
 import { ImageUploader } from "./ImageUploader";
@@ -39,14 +39,13 @@ export const PostView = ({
   const [isDirty, setDirty] = useState(false);
   const [isDatePickerVisible, setDatePickerVisible] = useState(false);
 
-  const datePickerRef: React.Ref<DatePickerRefProps> = useRef(null);
-
   const buildPostData = () =>
     ({
       type,
       name,
       details,
       startDate,
+      hasTime: false,
       address,
       latitude,
       longitude,
@@ -56,7 +55,9 @@ export const PostView = ({
   // Call after render
   useEffect(() => {
     if (isDirty) {
-      onFieldsChanged(buildPostData());
+      const data = buildPostData();
+      LOG.debug("postdata", data);
+      onFieldsChanged(data);
     }
     setDirty(false);
   });
@@ -431,7 +432,10 @@ export const PostView = ({
 
           <LocationAutocomplete
             placeholder="Location"
+            address={address}
             onPress={(data, details) => {
+              LOG.debug("data", data);
+              LOG.debug("details", details);
               setAddress(data.description);
               setLatitude(details!.geometry.location.lat);
               setLongitude(details!.geometry.location.lng);

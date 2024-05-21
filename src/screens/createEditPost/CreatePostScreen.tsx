@@ -10,9 +10,9 @@ import { blackOffer, greenOffer, request, requestGreen } from "~/assets/images";
 import { ImageComponent } from "~/components/image-component";
 import { Navbar } from "~/components/navbar/Navbar";
 import { getData } from "~/network/constant";
+import { PostOffer } from "./PostOffer";
+import { PostRequest } from "./PostRequest";
 import { CreateEditPostGratisScreen } from "./gratis";
-import { CreateEditPostOfferScreen } from "./offer";
-import { CreateEditPostRequestScreen } from "./request";
 import { createStyleSheet } from "./style";
 
 interface CreatePostScreenProps {
@@ -136,7 +136,7 @@ export const CreatePostScreen = (props: CreatePostScreenProps) => {
             </TouchableOpacity> */}
           </View>
           {selecttype === 1 && (
-            <CreateEditPostOfferScreen
+            <PostOffer
               // about={about}
               // idUser={user?.id}
               // skills={skills}
@@ -146,9 +146,7 @@ export const CreatePostScreen = (props: CreatePostScreenProps) => {
               // ref={undefined}
             />
           )}
-          {selecttype === 2 && (
-            <CreateEditPostRequestScreen navigation={navigation} />
-          )}
+          {selecttype === 2 && <PostRequest navigation={navigation} />}
           {selecttype === 3 && (
             <CreateEditPostGratisScreen navigation={navigation} />
           )}

@@ -8,9 +8,9 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view
 import { Navbar } from "~/components/navbar/Navbar";
 import { LOG } from "~/config";
 import { Post } from "~/types/post";
+import { PostOffer } from "./PostOffer";
+import { PostRequest } from "./PostRequest";
 import { CreateEditPostGratisScreen } from "./gratis";
-import { CreateEditPostOfferScreen } from "./offer";
-import { CreateEditPostRequestScreen } from "./request";
 
 interface EditPostScreenProps {
   navigation?: NavigationContainerRef<ParamListBase>;
@@ -37,9 +37,9 @@ export const EditPostScreen = ({ navigation, route }: EditPostScreenProps) => {
           keyboardShouldPersistTaps="always"
         >
           {post?.type === "Offer" ? (
-            <CreateEditPostOfferScreen navigation={navigation} post={post} />
+            <PostOffer navigation={navigation} post={post} />
           ) : post?.type === "Request" ? (
-            <CreateEditPostRequestScreen navigation={navigation} post={post} />
+            <PostRequest navigation={navigation} post={post} />
           ) : post?.type === "Gratis" ? (
             <CreateEditPostGratisScreen navigation={navigation} />
           ) : null}
