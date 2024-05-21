@@ -1,27 +1,17 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   NavigationContainerRef,
   ParamListBase,
 } from "@react-navigation/native";
-import React, { useEffect, useRef, useState } from "react";
-import {
-  Keyboard,
-  LogBox,
-  ScrollView,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import React, { useRef, useState } from "react";
+import { ScrollView, Text, TouchableOpacity, View } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { useSelector } from "react-redux";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
-import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
 import { blackOffer, greenOffer, request, requestGreen } from "~/assets/images";
 import { DatePickerRefProps } from "~/components/date-range-picker";
 import { ImageComponent } from "~/components/image-component";
 import { Navbar } from "~/components/navbar/Navbar";
 import { getData } from "~/network/constant";
-import { useUserProfile } from "~/network/hooks/user-service-hooks/use-user-profile";
 import { StoreType } from "~/network/reducers/store";
 import { UserProfileState } from "~/network/reducers/user-profile-reducer";
 import { CreatePostGratisScreen } from "./gratis";
@@ -37,125 +27,73 @@ export const CreatePostScreen = (props: CreatePostScreenProps) => {
   const { navigation } = props || {};
   const { theme } = useAppTheme();
   const styles = createStyleSheet(theme);
-  const { strings } = useStringsAndLabels();
   const [selecttype, createPostSelectType] = useState(
     getData("POST_TAB_OPEN_INDEX")
   );
   console.log("selectType", selecttype);
-  const [type, createPostType] = useState("offer");
-  const [typeIconWhat, getTypeIconWhat]: any = useState();
-  const [showWhatPopover, setWhatShowPopover] = useState(false);
-  const [getResourceList, getResourseData]: any = useState([]);
-  const [whatSelectType, getWhatTypeValue]: any = useState();
+  const [type, setType] = useState("offer");
+  const [typeIconWhat, setTypeIconWhat]: any = useState();
+  const [showWhatPopover, setShowWhatPopover] = useState(false);
+  const [resourceList, setResourceList]: any = useState([]);
+  const [whatSelectType, setWhatSelectType]: any = useState();
   const [postImage, setCreatePostUri]: any = useState([]);
-  const [forName, createPostforName] = useState("");
-  const [forQuantity, createPostforQuantity] = useState("");
-  const [whereAddress, createPostwhereAddress] = useState("");
-  const [imageKey, selectedImageKey] = useState();
-  const [when, createPostwhen] = useState(new Date());
-  const [content, createPostcontent] = useState("");
-  const [tags, createPosttags] = useState("");
-  const [whatName, createPostwhatName] = useState("");
-  const [addnewCmt, onAddComment] = useState("");
-  const [typeIconFor, getTypeIconFor]: any = useState();
-  const [whatForType, getForTypeValue]: any = useState();
-  const [showForPopover, setForShowPopover] = useState(false);
+  const [imageKey, setImageKey] = useState();
+  const [typeIconFor, setTypeIconFor]: any = useState();
+  const [whatForType, setWhatForType]: any = useState();
   const [isLoading, LodingData] = useState(false);
-  var [location, setUserLocation]: any = useState();
   const datePickerRef: React.Ref<DatePickerRefProps> = useRef(null);
   const { user } = useSelector<StoreType, UserProfileState>(
     (state) => state.userProfileReducer
   ) as { user: { id: string; pic: string; city: string; state: string } };
-  const { refetch } = useUserProfile({
-    userId: user?.id,
-  });
 
-  const keyboardDismiss = () => {
-    Keyboard.dismiss();
-  };
-
-  useEffect(() => {
-    LogBox.ignoreAllLogs();
-    getResourcesAPI();
-    // getUserProfileAPI();
-  }, []);
+  // useEffect(() => {
+  //   LogBox.ignoreAllLogs();
+  //   getResourcesAPI();
+  //   // getUserProfileAPI();
+  // }, []);
 
   const createPostSetType = (text: any, type: any) => {
     createPostSelectType(text);
-    createPostType(type);
+    setType(type);
   };
 
   const selectWhatTypePost = (icon: any, type: any) => {
-    getTypeIconWhat(icon);
-    getWhatTypeValue(type);
-    setWhatShowPopover(false);
+    setTypeIconWhat(icon);
+    setWhatSelectType(type);
+    setShowWhatPopover(false);
   };
 
-  const getResourcesAPI = async () => {
-    const token = await AsyncStorage.getItem("token");
-    try {
-      const response = await fetch(
-        process.env.API_URL + "/v1/posts/resources",
-        {
-          method: "get",
-          headers: new Headers({
-            Authorization: "Bearer " + token,
-            "Content-Type": "application/x-www-form-urlencoded",
-          }),
-        }
-      );
-      const dataItem = await response.json();
-      console.log(
-        "-------------------Get Resources API Response---------------------"
-      );
-      console.log(dataItem);
-      getResourseData(dataItem?.data);
-      getTypeIconWhat(dataItem?.data[0]["icon"]);
-      getTypeIconFor(dataItem?.data[0]["icon"]);
-      getForTypeValue(dataItem?.data[0]["value"]);
-      getWhatTypeValue(dataItem?.data[0]["value"]);
-      console.log(
-        dataItem?.data[0]["icon"],
-        "------------icon image--------------"
-      );
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  const postImageUploadAPI = async (fileItem: any, base64Item: any) => {
-    const token = await AsyncStorage.getItem("token");
-    var pic: any = {
-      uploadKey: "createPostImg",
-      imageName: fileItem,
-      base64String: "data:image/jpeg;base64," + base64Item,
-    };
-
-    console.log("================ postImageUploadAPI Request=================");
-    console.log(pic);
-    try {
-      const response = await fetch(
-        process.env.API_URL + "/v1/users/upload/file",
-        {
-          method: "post",
-          headers: new Headers({
-            Authorization: "Bearer " + token,
-            "Content-Type": "application/json",
-          }),
-          body: JSON.stringify(pic),
-        }
-      );
-      const dataItem = await response.json();
-      console.log("-----------------Response------------");
-      setCreatePostUri(dataItem?.data?.imageUrl);
-      selectedImageKey(dataItem?.data?.key);
-      console.log(dataItem);
-      LodingData(false);
-    } catch (error) {
-      console.log(error);
-      LodingData(false);
-    }
-  };
+  // const getResourcesAPI = async () => {
+  //   const token = await AsyncStorage.getItem("token");
+  //   try {
+  //     const response = await fetch(
+  //       process.env.API_URL + "/v1/posts/resources",
+  //       {
+  //         method: "get",
+  //         headers: new Headers({
+  //           Authorization: "Bearer " + token,
+  //           "Content-Type": "application/x-www-form-urlencoded",
+  //         }),
+  //       }
+  //     );
+  //     const dataItem = await response.json();
+  //     console.log(
+  //       "-------------------Get Resources API Response---------------------"
+  //     );
+  //     console.log(dataItem);
+  //     setResourceList(dataItem?.data);
+  //     setTypeIconWhat(dataItem?.data[0]["icon"]);
+  //     setTypeIconFor(dataItem?.data[0]["icon"]);
+  //     setWhatForType(dataItem?.data[0]["value"]);
+  //     setWhatSelectType(dataItem?.data[0]["value"]);
+  //     console.log(
+  //       dataItem?.data[0]["icon"],
+  //       "------------icon image--------------"
+  //     );
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
+  // };
 
   return (
     <>
