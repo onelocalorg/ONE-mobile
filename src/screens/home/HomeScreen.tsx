@@ -4,6 +4,7 @@ import {
   ParamListBase,
   useFocusEffect,
 } from "@react-navigation/native";
+import _ from "lodash/fp";
 import React, { useCallback, useEffect, useState } from "react";
 import {
   ActivityIndicator,
@@ -509,7 +510,7 @@ export const HomeScreen = (props: HomeScreenProps) => {
     return (
       <TouchableOpacity activeOpacity={1} onPress={keyboardDismiss} key={index}>
         <View style={styles.feedContainer}>
-          <Text style={styles.posttitle}>{item?.type}</Text>
+          <Text style={styles.posttitle}>{_.capitalize(item?.type)}</Text>
           <TouchableOpacity
             style={{
               position: "absolute",
