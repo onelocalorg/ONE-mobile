@@ -729,15 +729,15 @@ export const HomeScreen = (props: HomeScreenProps) => {
   };
 
   const onEditPost = () => {
-    if (editPost?.type === "Offer") {
+    if (editPost?.type === "offer") {
       navigation.navigate(navigations.EDIT_POST, {
         postData: editPost,
       });
-    } else if (editPost?.type === "Request") {
+    } else if (editPost?.type === "request") {
       navigation.navigate(navigations.EDIT_POST, {
         postData: editPost,
       });
-    } else if (editPost?.type === "Gratis") {
+    } else if (editPost?.type === "gratis") {
       navigation.navigate(navigations.CREATE_EDIT_POST_GRATIS, {
         postData: editPost,
       });

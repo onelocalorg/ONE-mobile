@@ -36,11 +36,11 @@ export const EditPostScreen = ({ navigation, route }: EditPostScreenProps) => {
           showsVerticalScrollIndicator={false}
           keyboardShouldPersistTaps="always"
         >
-          {post?.type === "Offer" ? (
+          {post?.type === "offer" ? (
             <PostOffer navigation={navigation} post={post} />
-          ) : post?.type === "Request" ? (
+          ) : post?.type === "request" ? (
             <PostRequest navigation={navigation} post={post} />
-          ) : post?.type === "Gratis" ? (
+          ) : post?.type === "gratis" ? (
             <CreateEditPostGratisScreen navigation={navigation} />
           ) : null}
         </ScrollView>
