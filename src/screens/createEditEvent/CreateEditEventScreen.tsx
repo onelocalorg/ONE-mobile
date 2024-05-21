@@ -49,7 +49,7 @@ import { LocalEventData } from "~/types/local-event-data";
 import { TicketType } from "~/types/ticket-type";
 import { GetAdmintoolsDropDownScreen } from "./getAdmintoolsDropdown";
 
-interface CreateEventScreenProps {
+interface CreateEditEventScreenProps {
   navigation?: NavigationContainerRef<ParamListBase>;
   route?: {
     params: {
@@ -59,7 +59,7 @@ interface CreateEventScreenProps {
   };
 }
 
-export const CreateEventScreen = (props: CreateEventScreenProps) => {
+export const CreateEditEventScreen = (props: CreateEditEventScreenProps) => {
   const { theme } = useAppTheme();
   const { strings } = useStringsAndLabels();
   const { navigation, route } = props || {};

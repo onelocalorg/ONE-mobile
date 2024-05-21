@@ -139,21 +139,21 @@ export const CreatePostModal = (props: CreatePostModalProps) => {
 
   const onNavigateOfferPost = () => {
     setData("POST_TAB_OPEN_INDEX", 1);
-    navigation?.navigate(navigations.CREATEPOST, { selecttypes: 1 });
+    navigation?.navigate(navigations.CREATE_EDIT_POST, { selecttypes: 1 });
     const ref = modalRef as { current: { onCloseModal: () => void } };
     ref?.current?.onCloseModal();
   };
 
   const onNavigateRequestPost = () => {
     setData("POST_TAB_OPEN_INDEX", 2);
-    navigation?.navigate(navigations.CREATEPOST, { selecttypes: 2 });
+    navigation?.navigate(navigations.CREATE_EDIT_POST, { selecttypes: 2 });
     const ref = modalRef as { current: { onCloseModal: () => void } };
     ref?.current?.onCloseModal();
   };
 
   const onNavigateGratitude = () => {
     setData("POST_TAB_OPEN_INDEX", 3);
-    navigation?.navigate(navigations.CREATEPOST, { selecttypes: 3 });
+    navigation?.navigate(navigations.CREATE_EDIT_POST, { selecttypes: 3 });
     const ref = modalRef as { current: { onCloseModal: () => void } };
     ref?.current?.onCloseModal();
   };

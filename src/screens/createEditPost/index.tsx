@@ -14,9 +14,9 @@ import { Navbar } from "~/components/navbar/Navbar";
 import { getData } from "~/network/constant";
 import { StoreType } from "~/network/reducers/store";
 import { UserProfileState } from "~/network/reducers/user-profile-reducer";
-import { CreatePostGratisScreen } from "./gratis";
-import { CreatePostOfferScreen } from "./offer";
-import { CreatePostRequestScreen } from "./request";
+import { CreateEditPostGratisScreen } from "./gratis";
+import { CreateEditPostOfferScreen } from "./offer";
+import { CreateEditPostRequestScreen } from "./request";
 import { createStyleSheet } from "./style";
 
 interface CreatePostScreenProps {
@@ -149,7 +149,7 @@ export const CreatePostScreen = (props: CreatePostScreenProps) => {
             </TouchableOpacity> */}
           </View>
           {selecttype === 1 && (
-            <CreatePostOfferScreen
+            <CreateEditPostOfferScreen
               // about={about}
               // idUser={user?.id}
               // skills={skills}
@@ -160,10 +160,10 @@ export const CreatePostScreen = (props: CreatePostScreenProps) => {
             />
           )}
           {selecttype === 2 && (
-            <CreatePostRequestScreen navigation={navigation} />
+            <CreateEditPostRequestScreen navigation={navigation} />
           )}
           {selecttype === 3 && (
-            <CreatePostGratisScreen navigation={navigation} />
+            <CreateEditPostGratisScreen navigation={navigation} />
           )}
         </ScrollView>
       </KeyboardAwareScrollView>

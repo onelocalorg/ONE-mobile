@@ -218,7 +218,7 @@ export const HomeScreen = (props: HomeScreenProps) => {
   }
   const onNavigateToCreatePost = () => {
     setData("POST_TAB_OPEN_INDEX", 1);
-    navigation?.navigate(navigations?.CREATEPOST);
+    navigation?.navigate(navigations?.CREATE_EDIT_POST);
   };
 
   const OfferModalShow = (postIds: any, index: any) => {

@@ -1,7 +1,7 @@
 import { createStackNavigator } from "@react-navigation/stack";
 import React from "react";
 import { CheckInScreen } from "~/screens/check-in";
-import { CreateEventScreen } from "~/screens/createEditEvent/CreateEventScreen";
+import { CreateEventScreen } from "~/screens/createEditEvent/CreateEditEventScreen";
 import { AddPayoutExpenseScreen } from "~/screens/createEditEvent/addPayoutExpense-modal";
 import { EditPayoutModalScreen } from "~/screens/createEditEvent/editPayoutExpense-modal";
 import { EventDetailScreen } from "~/screens/event-detail/EventDetailScreen";

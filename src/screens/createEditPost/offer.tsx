@@ -20,12 +20,11 @@ import { PostData } from "~/types/post-data";
 import { PostView } from "./PostView";
 import { createStyleSheet } from "./style";
 
-interface CreatePostRequestScreenProps {
+interface CreateEditPostOfferScreenProps {
   navigation?: NavigationContainerRef<ParamListBase>;
 }
-
-export const CreatePostRequestScreen = (
-  props: CreatePostRequestScreenProps
+export const CreateEditPostOfferScreen = (
+  props: CreateEditPostOfferScreenProps
 ) => {
   const { navigation } = props || {};
   const { theme } = useAppTheme();
@@ -38,18 +37,13 @@ export const CreatePostRequestScreen = (
     Keyboard.dismiss();
   };
 
-  // useEffect(() => {
-  //   LogBox.ignoreAllLogs();
-  //   getResourcesAPI();
-  // }, []);
-
   const CreateNewPostModal = async () => {
     if (!postData?.what_name) {
-      Toast.show("Enter Title", Toast.LONG, {
+      Toast.show("Title is required", Toast.LONG, {
         backgroundColor: "black",
       });
     } else if (!postData.content) {
-      Toast.show("Enter Body", Toast.LONG, {
+      Toast.show("Body is required", Toast.LONG, {
         backgroundColor: "black",
       });
     } else {
@@ -79,9 +73,9 @@ export const CreatePostRequestScreen = (
         >
           <View>
             <View style={styles.postClass}>
-              <Text style={styles.title}>Your Abundance</Text>
+              <Text style={styles.title}>My Abundance</Text>
               <PostView
-                type="request"
+                type="offer"
                 onLoading={setLoading}
                 onFieldsChanged={setPostData}
               />
@@ -89,7 +83,7 @@ export const CreatePostRequestScreen = (
                 <ButtonComponent
                   onPress={() => CreateNewPostModal()}
                   icon={buttonArrowGreen}
-                  title={strings.postRequest}
+                  title={strings.postOffer}
                   style={styles.postButton}
                   disabled={!postData}
                 />

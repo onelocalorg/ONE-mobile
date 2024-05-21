@@ -21,7 +21,7 @@ import {
 import { ImageComponent } from "~/components/image-component";
 import { ModalRefProps } from "~/components/modal-component";
 import { ChatScreen } from "~/screens/chat";
-import { CreatePostModal } from "~/screens/createPost/create-post-modal";
+import { CreatePostModal } from "~/screens/createEditPost/create-post-modal";
 import { bottomNavigationVisibleScreens, navigations } from "./constant";
 import { EventRoute } from "./event-route";
 import { HomeRoute } from "./home-route";

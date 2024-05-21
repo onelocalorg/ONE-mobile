@@ -32,11 +32,13 @@ import { verticalScale } from "~/theme/device/normalize";
 import { ResourceDefinition } from "./resource-definition";
 import { createStyleSheet } from "./style";
 
-interface CreatePostGratisScreenProps {
+interface CreateEditPostGratisScreenProps {
   navigation?: NavigationContainerRef<ParamListBase>;
 }
 
-export const CreatePostGratisScreen = (props: CreatePostGratisScreenProps) => {
+export const CreateEditPostGratisScreen = (
+  props: CreateEditPostGratisScreenProps
+) => {
   const { navigation } = props || {};
   const { theme } = useAppTheme();
   const styles = createStyleSheet(theme);

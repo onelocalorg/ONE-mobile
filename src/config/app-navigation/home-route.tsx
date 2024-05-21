@@ -1,13 +1,10 @@
 import { createStackNavigator } from "@react-navigation/stack";
 import React from "react";
-import { CreateEventScreen } from "~/screens/createEditEvent/CreateEventScreen";
-import { CreatePostScreen } from "~/screens/createPost";
-import { CreatePostGratisScreen } from "~/screens/createPost/gratis";
-import { CreatePostOfferScreen } from "~/screens/createPost/offer";
-import { CreatePostRequestScreen } from "~/screens/createPost/request";
-import { EditPostGratisScreen } from "~/screens/editPost/gratisEdit";
-import { EditPostOfferScreen } from "~/screens/editPost/offerEdit";
-import { EditPostRequestScreen } from "~/screens/editPost/requestEdit";
+import { CreateEditEventScreen } from "~/screens/createEditEvent/CreateEditEventScreen";
+import { CreatePostScreen } from "~/screens/createEditPost";
+import { CreateEditPostGratisScreen } from "~/screens/createEditPost/gratis";
+import { CreateEditPostOfferScreen } from "~/screens/createEditPost/offer";
+import { CreateEditPostRequestScreen } from "~/screens/createEditPost/request";
 import { HomeScreen } from "~/screens/home";
 import { CommentList } from "~/screens/home/commetList";
 import { ProfileScreen } from "~/screens/profile";
@@ -38,23 +35,23 @@ export const HomeRoute = () => {
         options={{ header }}
       />
       <HomeStack.Screen
-        name={navigations.CREATEPOST}
+        name={navigations.CREATE_EDIT_POST}
         component={CreatePostScreen}
         options={{ header }}
       />
       <HomeStack.Screen
-        name={navigations.CREATEPOSTOFFER}
-        component={CreatePostOfferScreen}
+        name={navigations.CREATE_EDIT_POST_OFFER}
+        component={CreateEditPostOfferScreen}
         options={{ header }}
       />
       <HomeStack.Screen
-        name={navigations.CREATEPOSTREQUEST}
-        component={CreatePostRequestScreen}
+        name={navigations.CREATE_EDIT_POST_REQUEST}
+        component={CreateEditPostRequestScreen}
         options={{ header }}
       />
       <HomeStack.Screen
-        name={navigations.CREATEPOSTGRATIS}
-        component={CreatePostGratisScreen}
+        name={navigations.CREATE_EDIT_POST_GRATIS}
+        component={CreateEditPostGratisScreen}
         options={{ header }}
       />
       <HomeStack.Screen
@@ -69,22 +66,7 @@ export const HomeRoute = () => {
       />
       <HomeStack.Screen
         name={navigations.ADMIN_TOOLS}
-        component={CreateEventScreen}
-        options={{ header }}
-      />
-      <HomeStack.Screen
-        name={navigations.EDITPOSTOFFER}
-        component={EditPostOfferScreen}
-        options={{ header }}
-      />
-      <HomeStack.Screen
-        name={navigations.EDITPOSTREQUEST}
-        component={EditPostRequestScreen}
-        options={{ header }}
-      />
-      <HomeStack.Screen
-        name={navigations.EDITPOSTGRATIS}
-        component={EditPostGratisScreen}
+        component={CreateEditEventScreen}
         options={{ header }}
       />
     </HomeStack.Navigator>
