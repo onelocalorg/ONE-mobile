@@ -1,6 +1,6 @@
 import { createStackNavigator } from "@react-navigation/stack";
 import React from "react";
-import { CreateEventScreen } from "~/screens/createEvent/CreateEventScreen";
+import { CreateEventScreen } from "~/screens/createEditEvent/CreateEventScreen";
 import { CreatePostScreen } from "~/screens/createPost";
 import { CreatePostGratisScreen } from "~/screens/createPost/gratis";
 import { CreatePostOfferScreen } from "~/screens/createPost/offer";

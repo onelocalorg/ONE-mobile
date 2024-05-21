@@ -1,13 +1,13 @@
 import { createStackNavigator } from "@react-navigation/stack";
 import React from "react";
-import { EditPostGratisScreen } from "~/screens/createEditPost/gratisEdit";
-import { EditPostOfferScreen } from "~/screens/createEditPost/offerEdit";
-import { EditPostRequestScreen } from "~/screens/createEditPost/requestEdit";
-import { CreateEventScreen } from "~/screens/createEvent/CreateEventScreen";
+import { CreateEventScreen } from "~/screens/createEditEvent/CreateEventScreen";
 import { CreatePostScreen } from "~/screens/createPost";
 import { CreatePostGratisScreen } from "~/screens/createPost/gratis";
 import { CreatePostOfferScreen } from "~/screens/createPost/offer";
 import { CreatePostRequestScreen } from "~/screens/createPost/request";
+import { EditPostGratisScreen } from "~/screens/editPost/gratisEdit";
+import { EditPostOfferScreen } from "~/screens/editPost/offerEdit";
+import { EditPostRequestScreen } from "~/screens/editPost/requestEdit";
 import { HomeScreen } from "~/screens/home";
 import { CommentList } from "~/screens/home/commetList";
 import { ProfileScreen } from "~/screens/profile";

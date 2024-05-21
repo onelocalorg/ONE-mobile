@@ -1082,7 +1082,7 @@ export const EditPostRequestScreen = (props: EditPostRequestScreenProps) => {
                 style={styles.purchaseContainer}
               >
                 <View />
-                <Text style={styles.titleTwo}>{strings.postOffer}</Text>
+                <Text style={styles.titleTwo}>{strings.postRequest}</Text>
                 <ImageComponent
                   source={buttonArrowGreen}
                   style={styles.buttonArrow}
