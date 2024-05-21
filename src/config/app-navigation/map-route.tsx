@@ -1,7 +1,7 @@
 import { createStackNavigator } from "@react-navigation/stack";
 import React from "react";
 import { CreateEventScreen } from "~/screens/createEditEvent/CreateEditEventScreen";
-import { CreatePostScreen } from "~/screens/createEditPost";
+import { CreatePostScreen } from "~/screens/createEditPost/CreatePostScreen";
 import { CreateEditPostGratisScreen } from "~/screens/createEditPost/gratis";
 import { CreateEditPostOfferScreen } from "~/screens/createEditPost/offer";
 import { CreateEditPostRequestScreen } from "~/screens/createEditPost/request";

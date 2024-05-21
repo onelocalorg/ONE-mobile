@@ -4,7 +4,7 @@ import { CheckInScreen } from "~/screens/check-in";
 import { CreateEventScreen } from "~/screens/createEditEvent/CreateEditEventScreen";
 import { AddPayoutExpenseScreen } from "~/screens/createEditEvent/addPayoutExpense-modal";
 import { EditPayoutModalScreen } from "~/screens/createEditEvent/editPayoutExpense-modal";
-import { CreatePostScreen } from "~/screens/createEditPost";
+import { CreatePostScreen } from "~/screens/createEditPost/CreatePostScreen";
 import { CreateEditPostGratisScreen } from "~/screens/createEditPost/gratis";
 import { CreateEditPostOfferScreen } from "~/screens/createEditPost/offer";
 import { CreateEditPostRequestScreen } from "~/screens/createEditPost/request";

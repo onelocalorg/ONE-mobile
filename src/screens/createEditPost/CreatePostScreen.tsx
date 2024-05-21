@@ -2,18 +2,14 @@ import {
   NavigationContainerRef,
   ParamListBase,
 } from "@react-navigation/native";
-import React, { useRef, useState } from "react";
+import React, { useState } from "react";
 import { ScrollView, Text, TouchableOpacity, View } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
-import { useSelector } from "react-redux";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
 import { blackOffer, greenOffer, request, requestGreen } from "~/assets/images";
-import { DatePickerRefProps } from "~/components/date-range-picker";
 import { ImageComponent } from "~/components/image-component";
 import { Navbar } from "~/components/navbar/Navbar";
 import { getData } from "~/network/constant";
-import { StoreType } from "~/network/reducers/store";
-import { UserProfileState } from "~/network/reducers/user-profile-reducer";
 import { CreateEditPostGratisScreen } from "./gratis";
 import { CreateEditPostOfferScreen } from "./offer";
 import { CreateEditPostRequestScreen } from "./request";
@@ -34,17 +30,8 @@ export const CreatePostScreen = (props: CreatePostScreenProps) => {
   const [type, setType] = useState("offer");
   const [typeIconWhat, setTypeIconWhat]: any = useState();
   const [showWhatPopover, setShowWhatPopover] = useState(false);
-  const [resourceList, setResourceList]: any = useState([]);
   const [whatSelectType, setWhatSelectType]: any = useState();
-  const [postImage, setCreatePostUri]: any = useState([]);
   const [imageKey, setImageKey] = useState();
-  const [typeIconFor, setTypeIconFor]: any = useState();
-  const [whatForType, setWhatForType]: any = useState();
-  const [isLoading, LodingData] = useState(false);
-  const datePickerRef: React.Ref<DatePickerRefProps> = useRef(null);
-  const { user } = useSelector<StoreType, UserProfileState>(
-    (state) => state.userProfileReducer
-  ) as { user: { id: string; pic: string; city: string; state: string } };
 
   // useEffect(() => {
   //   LogBox.ignoreAllLogs();
