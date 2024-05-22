@@ -23,9 +23,9 @@ export const navigations = {
   COMMENTLIST: "commentList",
   ADDPAYOUTEXPENSE: "addPayoutExpense",
   EDITPAYOUTEXPENSE: "editPayoutExpense",
-  EDITPOSTOFFER: "createEditPostOffer",
+  EDIT_OFFER: "editPostOffer",
+  EDIT_REQUEST: "editPostRequest",
   EDITPOSTGRATIS: "createEditPostGratis",
-  EDITPOSTREQUEST: "createEditPostRequest",
 };
 
 export const bottomNavigationVisibleScreens = [

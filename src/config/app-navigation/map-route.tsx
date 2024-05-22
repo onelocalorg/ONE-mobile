@@ -2,8 +2,7 @@ import { createStackNavigator } from "@react-navigation/stack";
 import React from "react";
 import { CreateEditEventScreen } from "~/screens/createEditEvent/CreateEditEventScreen";
 import { CreatePostScreen } from "~/screens/createEditPost/CreatePostScreen";
-import { PostOffer } from "~/screens/createEditPost/PostOffer";
-import { PostRequest } from "~/screens/createEditPost/PostRequest";
+import { EditPostScreen } from "~/screens/createEditPost/EditPostScreen";
 import { CreateEditPostGratisScreen } from "~/screens/createEditPost/gratis";
 import { EventDetailScreen } from "~/screens/event-detail/EventDetailScreen";
 import { MapScreen } from "~/screens/map/MapScreen";
@@ -38,18 +37,13 @@ export const MapRoute = () => {
         options={{ header }}
       />
       <MapStack.Screen
-        name={navigations.EDIT_POST}
+        name={navigations.CREATE_POST}
         component={CreatePostScreen}
         options={{ header }}
       />
       <MapStack.Screen
         name={navigations.EDIT_POST}
-        component={PostOffer}
-        options={{ header }}
-      />
-      <MapStack.Screen
-        name={navigations.EDIT_POST}
-        component={PostRequest}
+        component={EditPostScreen}
         options={{ header }}
       />
       <MapStack.Screen
