@@ -21,7 +21,7 @@ import Toast from "react-native-simple-toast";
 import { useSelector } from "react-redux";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
 import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
-import { calendarTime, pinWhite, startImg } from "~/assets/images";
+import { calendarTime, copy, pinWhite, startImg } from "~/assets/images";
 import { ButtonComponent } from "~/components/button-component";
 import { ImageComponent } from "~/components/image-component";
 import { Loader } from "~/components/loader";
@@ -484,7 +484,7 @@ export const EventDetailScreen = (props: EventDetailScreenProps) => {
             ) : (
               <></>
             )}
-            {/* <View>
+            <View>
               {event.ticketTypes?.map((ele) => (
                 <View key={ele?.price.toString()} style={styles.rowOnly}>
                   <Text
@@ -500,7 +500,7 @@ export const EventDetailScreen = (props: EventDetailScreenProps) => {
                   </TouchableOpacity>
                 </View>
               ))}
-            </View> */}
+            </View>
 
             {onCheckReleaseHideShow() ? (
               <>
