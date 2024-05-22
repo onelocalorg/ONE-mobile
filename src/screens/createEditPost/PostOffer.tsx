@@ -27,7 +27,7 @@ interface PostOfferProps {
   post?: Post;
 }
 export const PostOffer = ({ navigation, post }: PostOfferProps) => {
-  LOG.debug("CreateEditPostOfferScreen", post);
+  LOG.debug("PostOffer", post);
   const { theme } = useAppTheme();
   const styles = createStyleSheet(theme);
   const { strings } = useStringsAndLabels();
@@ -38,7 +38,7 @@ export const PostOffer = ({ navigation, post }: PostOfferProps) => {
     Keyboard.dismiss();
   };
 
-  const CreateNewPostModal = async () => {
+  const createOrUpdateOffer = async () => {
     if (!postData?.name) {
       Toast.show("Title is required", Toast.LONG, {
         backgroundColor: "black",
@@ -50,7 +50,6 @@ export const PostOffer = ({ navigation, post }: PostOfferProps) => {
     } else {
       setLoading(true);
       let dataItem;
-      LOG.debug("saving ...");
       if (post) {
         dataItem = await updatePost(post.id, postData);
       } else {
@@ -89,7 +88,7 @@ export const PostOffer = ({ navigation, post }: PostOfferProps) => {
               />
               <View style={styles.bottomButton}>
                 <ButtonComponent
-                  onPress={() => CreateNewPostModal()}
+                  onPress={() => createOrUpdateOffer()}
                   icon={buttonArrowGreen}
                   title={post ? strings.editOffer : strings.postOffer}
                   style={styles.postButton}

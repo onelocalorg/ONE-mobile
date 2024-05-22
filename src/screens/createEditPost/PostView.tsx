@@ -58,8 +58,8 @@ export const PostView = ({
       const data = buildPostData();
       LOG.debug("postdata", data);
       onFieldsChanged(data);
+      setDirty(false);
     }
-    setDirty(false);
   });
 
   return (

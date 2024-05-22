@@ -28,12 +28,14 @@ interface PostRequestProps {
 }
 
 export const PostRequest = ({ navigation, post }: PostRequestProps) => {
-  LOG.debug("CreateEditPostRequestScreen", post);
+  LOG.debug("PostRequest", post);
   const { theme } = useAppTheme();
   const styles = createStyleSheet(theme);
   const { strings } = useStringsAndLabels();
   const [isLoading, setLoading] = useState(false);
   const [postData, setPostData] = useState<PostData | undefined>(post);
+
+  LOG.debug("postData", postData);
 
   const keyboardDismiss = () => {
     Keyboard.dismiss();
@@ -44,7 +46,7 @@ export const PostRequest = ({ navigation, post }: PostRequestProps) => {
   //   getResourcesAPI();
   // }, []);
 
-  const CreateNewPostModal = async () => {
+  const createOrUpdateRequest = async () => {
     if (!postData?.name) {
       Toast.show("Enter Title", Toast.LONG, {
         backgroundColor: "black",
@@ -57,6 +59,7 @@ export const PostRequest = ({ navigation, post }: PostRequestProps) => {
       setLoading(true);
       let dataItem;
       if (post) {
+        LOG.debug("updating", postData);
         dataItem = await updatePost(post.id, postData);
       } else {
         dataItem = await createPost(postData);
@@ -94,7 +97,7 @@ export const PostRequest = ({ navigation, post }: PostRequestProps) => {
               />
               <View style={styles.bottomButton}>
                 <ButtonComponent
-                  onPress={() => CreateNewPostModal()}
+                  onPress={() => createOrUpdateRequest()}
                   icon={buttonArrowGreen}
                   title={post ? strings.editOffer : strings.postOffer}
                   style={styles.postButton}
