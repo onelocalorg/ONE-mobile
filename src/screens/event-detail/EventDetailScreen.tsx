@@ -32,7 +32,7 @@ import { navigations } from "~/config/app-navigation/constant";
 import {
   eventResponseToLocalEvent,
   fetchEvent,
-} from "~/network/api/services/home-service";
+} from "~/network/api/services/event-service";
 import { getData } from "~/network/constant";
 import { usePurchaseTicket } from "~/network/hooks/home-service-hooks/use-purchase-ticket";
 import { useCreatePayoutIntent } from "~/network/hooks/payment-service-hooks/use-create-payout-intent";

@@ -1,5 +1,5 @@
 import { useMutation } from "@tanstack/react-query";
-import { onGetPackageDetail } from "~/network/api/services/home-service";
+import { onGetPackageDetail } from "~/network/api/services/event-service";
 
 export type Root = PlanData[];
 

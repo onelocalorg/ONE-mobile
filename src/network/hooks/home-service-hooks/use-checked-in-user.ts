@@ -1,5 +1,5 @@
 import { useMutation } from "@tanstack/react-query";
-import { onCheckedInUser } from "~/network/api/services/home-service";
+import { onCheckedInUser } from "~/network/api/services/event-service";
 
 export const useCheckedInUser = () => {
   const mutate = useMutation(onCheckedInUser);

@@ -1,5 +1,5 @@
 import { useMutation } from "@tanstack/react-query";
-import { onFetchEvents } from "~/network/api/services/home-service";
+import { onFetchEvents } from "~/network/api/services/event-service";
 import { LocalEventData } from "~/types/local-event-data";
 
 interface Root {

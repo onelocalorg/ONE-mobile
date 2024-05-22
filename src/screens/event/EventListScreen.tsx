@@ -19,7 +19,7 @@ import { navigations } from "~/config/app-navigation/constant";
 import {
   featureCollectionToLocalEvents,
   fetchEvents,
-} from "~/network/api/services/home-service";
+} from "~/network/api/services/event-service";
 import { useEventLists } from "~/network/hooks/home-service-hooks/use-event-lists";
 import { useUserProfile } from "~/network/hooks/user-service-hooks/use-user-profile";
 import { StoreType } from "~/network/reducers/store";

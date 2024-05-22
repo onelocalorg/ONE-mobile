@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import {
   TickeHolderProps,
   onFetchTicketHolderList,
-} from "~/network/api/services/home-service";
+} from "~/network/api/services/event-service";
 import { apiKeys } from "~/network/constant";
 
 export interface Root {

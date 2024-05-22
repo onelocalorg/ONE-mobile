@@ -22,7 +22,7 @@ import { LOG } from "~/config";
 import {
   featureToLocalEvent,
   fetchEvents,
-} from "~/network/api/services/home-service";
+} from "~/network/api/services/event-service";
 import { LocalEventData } from "~/types/local-event-data";
 import { EventItem } from "../events/EventItem";
 
