@@ -99,7 +99,7 @@ export const PostRequest = ({ navigation, post }: PostRequestProps) => {
                 <ButtonComponent
                   onPress={() => createOrUpdateRequest()}
                   icon={buttonArrowGreen}
-                  title={post ? strings.editOffer : strings.postOffer}
+                  title={post ? strings.editRequest : strings.postRequest}
                   style={styles.postButton}
                   disabled={!postData}
                 />
