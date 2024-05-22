@@ -112,7 +112,7 @@ const postToApi = (data: PostData) =>
     where_lat: data.latitude?.toString(),
     where_lng: data.longitude?.toString(),
     startDate: data.startDate?.toISO(),
-    hasStartTime: data.hasStartTime,
+    hasStartTime: data.hasStartTime ?? false,
     content: data.details,
     post_image: data.imageUrls,
   } as CreatePostApiResource);
