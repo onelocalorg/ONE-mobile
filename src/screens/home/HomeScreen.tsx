@@ -272,6 +272,8 @@ export const HomeScreen = (props: HomeScreenProps) => {
       setRefresh(false);
       if (page == 1) {
         setPostList(postResponse.posts);
+        {
+        }
       } else {
         setPostList([...postList, ...postResponse.posts]);
       }
@@ -368,10 +370,7 @@ export const HomeScreen = (props: HomeScreenProps) => {
   async function deletePostAPI() {
     try {
       const response = await deletePost(editPost!.id);
-      const dataItem = await response.data;
-      console.log("=========== Delete Post API Response ==============");
-      console.log(dataItem);
-      Toast.show(dataItem?.message, Toast.LONG, {
+      Toast.show(response.message, Toast.LONG, {
         backgroundColor: "black",
       });
       setRefresh(true);

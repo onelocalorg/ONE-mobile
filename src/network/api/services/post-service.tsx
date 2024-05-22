@@ -1,109 +1,45 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { DateTime } from "luxon";
 import { LOG } from "~/config";
 import { Post } from "~/types/post";
 import { PostData } from "~/types/post-data";
 import { User } from "~/types/user";
+import { doPost, doPostPaginated } from "./api-service";
 
 export async function createPost(data: PostData) {
-  return doPost("/v1/posts/create", postToApi(data));
+  const resp = await doPost<CreatePostApiResource, PostWrappedInUselessPost>(
+    "/v1/posts/create",
+    postToApi(data)
+  );
+  return { ...resp, data: apiToPost(resp.data.post) };
 }
 
 export async function updatePost(id: string, data: PostData) {
-  return doPost(`/v2/posts/update/${id}`, postToApi(data));
-}
-
-class ApiError extends Error {
-  constructor(data: ApiResponse) {
-    super(`${data.code}: ${data.message}`);
+  try {
+    const resp = await doPost<CreatePostApiResource, PostWrappedInUselessPost>(
+      `/v2/posts/update/${id}`,
+      postToApi(data)
+    );
+    return { ...resp, data: apiToPost(resp.data.post) };
+  } catch (e) {
+    console.log(e);
+    LOG.error(e);
+    throw e;
   }
-}
-
-interface ApiResponse {
-  success: boolean;
-  code: number;
-  message: string;
-  data: any;
-}
-
-async function callApi(method: string, url: string, body?: object) {
-  LOG.info("callApi", method, url);
-  LOG.debug("=>", body);
-  const token = await AsyncStorage.getItem("token");
-  const response = await fetch(process.env.API_URL + url, {
-    method,
-    headers: new Headers({
-      Authorization: "Bearer " + token,
-      "Content-Type": "application/json",
-      Accept: "application/json",
-    }),
-    body: JSON.stringify(body),
-  });
-  LOG.info(response.status);
-  const data = (await response.json()) as ApiResponse;
-  if (response.ok) {
-    LOG.debug("=> ", data);
-    return data;
-  } else {
-    LOG.error("=>", data);
-    throw new ApiError(data);
-  }
-}
-
-async function doPost(url: string, body?: object) {
-  return callApi("POST", url, body);
-}
-
-async function doDelete(url: string) {
-  return callApi("DELETE", url);
 }
 
 export async function deletePost(id: string) {
-  return doPost(`/v2/posts/delete/${id}`);
+  return doPost<never, never>(`/v2/posts/delete/${id}`);
 }
 
 export async function listPosts() {
-  const json = await doPost("/v1/posts/list?limit=10");
-  const posts = json.data.results.map(apiToPost) as Post[];
-  const { page, limit, totalPages, totalResults } = json.data;
-  return {
-    pageInfo: { page, limit, totalPages, totalResults },
-    posts,
-  } as PostResponse;
+  const resp = await doPostPaginated<never, GetPostApiResource>(
+    "/v1/posts/list?limit=10"
+  );
+  return { pageInfo: resp.pageInfo, posts: resp.results.map(apiToPost) };
 }
-
-interface PostResponse {
-  pageInfo: PageData;
-  posts: Post[];
-}
-
-interface PageData {
-  page: number;
-  limit: number;
-  totalPages: number;
-  totalResults: number;
-}
-
-const apiToPost = (data: GetPostApiBody) =>
-  ({
-    id: data.id!,
-    type: data.type.toLowerCase(),
-    name: data.what.name,
-    address: data.where?.address,
-    latitude: data.where?.location.coordinates[1],
-    longitude: data.where?.location.coordinates[0],
-    startDate: data.startDate ? DateTime.fromISO(data.startDate) : undefined,
-    hasStartTime: data.hasStartTime,
-    postDate: data.postDate ? DateTime.fromISO(data.postDate) : undefined,
-    details: data.content,
-    imageUrls: data.post_image ?? [],
-    numComments: data.comment,
-    numGrats: data.gratis,
-    author: data.user_id,
-  } as Post);
 
 // The JSON sent for an API call
-interface CreatePostApiBody {
+interface CreatePostApiResource {
   type: string;
   what_name: string;
   where_address?: string;
@@ -115,8 +51,12 @@ interface CreatePostApiBody {
   post_image?: string[];
 }
 
+interface PostWrappedInUselessPost {
+  post: GetPostApiResource;
+}
+
 // The JSON returned from the API call
-interface GetPostApiBody {
+interface GetPostApiResource {
   id: string;
   type: string;
   what: {
@@ -146,6 +86,24 @@ interface GetPostApiBody {
   comments: string[];
 }
 
+const apiToPost = (data: GetPostApiResource) =>
+  ({
+    id: data.id!,
+    type: data.type.toLowerCase(),
+    name: data.what.name,
+    address: data.where?.address,
+    latitude: data.where?.location.coordinates[1],
+    longitude: data.where?.location.coordinates[0],
+    startDate: data.startDate ? DateTime.fromISO(data.startDate) : undefined,
+    hasStartTime: data.hasStartTime,
+    postDate: data.postDate ? DateTime.fromISO(data.postDate) : undefined,
+    details: data.content,
+    imageUrls: data.post_image ?? [],
+    numComments: data.comment,
+    numGrats: data.gratis,
+    author: data.user_id,
+  } as Post);
+
 const postToApi = (data: PostData) =>
   ({
     type: data.type.toLowerCase(),
@@ -157,4 +115,4 @@ const postToApi = (data: PostData) =>
     hasStartTime: data.hasStartTime,
     content: data.details,
     post_image: data.imageUrls,
-  } as CreatePostApiBody);
+  } as CreatePostApiResource);

@@ -59,15 +59,14 @@ export const PostRequest = ({ navigation, post }: PostRequestProps) => {
       setLoading(true);
       let dataItem;
       if (post) {
-        LOG.debug("updating", postData);
         dataItem = await updatePost(post.id, postData);
       } else {
         dataItem = await createPost(postData);
       }
-      Toast.show(dataItem?.message, Toast.LONG, {
+      Toast.show(dataItem.message, Toast.LONG, {
         backgroundColor: "black",
       });
-      if (dataItem?.success === true) {
+      if (dataItem.success) {
         navigation?.goBack();
       }
 

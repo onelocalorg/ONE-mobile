@@ -55,10 +55,10 @@ export const PostOffer = ({ navigation, post }: PostOfferProps) => {
       } else {
         dataItem = await createPost(postData);
       }
-      Toast.show(dataItem?.message, Toast.LONG, {
+      Toast.show(dataItem.message, Toast.LONG, {
         backgroundColor: "black",
       });
-      if (dataItem?.success === true) {
+      if (dataItem.success) {
         navigation?.goBack();
       }
 
