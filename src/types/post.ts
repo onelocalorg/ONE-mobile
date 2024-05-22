@@ -1,3 +1,4 @@
+import { DateTime } from "luxon";
 import { PostData } from "./post-data";
 import { User } from "./user";
 
@@ -7,5 +8,6 @@ export interface Post extends PostData {
   imageUrls: string[];
   numComments: number;
   numGrats: number;
-  from: User;
+  author: User;
+  postDate: DateTime;
 }

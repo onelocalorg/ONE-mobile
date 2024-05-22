@@ -529,12 +529,12 @@ export const HomeScreen = (props: HomeScreenProps) => {
           </TouchableOpacity>
           <View style={styles.userDetailcont}>
             <TouchableOpacity
-              onPress={() => recentUserProfilePress(item.from.id)}
+              onPress={() => recentUserProfilePress(item.author.id)}
             >
               <ImageComponent
                 resizeMode="cover"
                 style={styles.postProfile}
-                source={{ uri: item.from.pic }}
+                source={{ uri: item.author.pic }}
               ></ImageComponent>
             </TouchableOpacity>
             <View>
@@ -542,7 +542,7 @@ export const HomeScreen = (props: HomeScreenProps) => {
                 {item?.type === "Gratis" ? (
                   <View>
                     <Text numberOfLines={1} style={styles.userName}>
-                      {item.from.first_name} {item.from.last_name}{" "}
+                      {item.author.first_name} {item.author.last_name}{" "}
                     </Text>
                     {/* {item?.to?.users.length !== 0 ? (
                       <Text numberOfLines={1} style={styles.sentPointClass}>
@@ -560,7 +560,7 @@ export const HomeScreen = (props: HomeScreenProps) => {
                   </View>
                 ) : (
                   <Text numberOfLines={1} style={styles.userName}>
-                    {item.from.first_name} {item.from.last_name}
+                    {item.author.first_name} {item.author.last_name}
                   </Text>
                 )}
                 {item.startDate ? (
@@ -919,7 +919,7 @@ export const HomeScreen = (props: HomeScreenProps) => {
           style={styles.keyboardViewTwo}
         >
           <View style={styles.postActionSheet}>
-            {editPost?.from.id === user?.id ? (
+            {editPost?.author.id === user?.id ? (
               <>
                 <TouchableOpacity onPress={() => onEditPost()}>
                   <Text style={[styles.postText, { color: "white" }]}>

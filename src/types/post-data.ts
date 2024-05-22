@@ -12,7 +12,7 @@ export interface PostData {
   latitude?: number;
   longitude?: number;
   startDate?: DateTime;
-  hasTime?: boolean;
+  hasStartTime?: boolean;
   details?: string;
   // tags: tagArray ? tagArray : undefined,
   imageUrls?: string[];

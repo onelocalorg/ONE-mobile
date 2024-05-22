@@ -45,7 +45,7 @@ export const PostView = ({
       name,
       details,
       startDate,
-      hasTime: false,
+      hasStartTime: false,
       address,
       latitude,
       longitude,

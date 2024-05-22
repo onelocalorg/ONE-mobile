@@ -93,14 +93,16 @@ const apiToPost = (data: GetPostApiBody) =>
     latitude: data.where?.location.coordinates[1],
     longitude: data.where?.location.coordinates[0],
     startDate: data.startDate ? DateTime.fromISO(data.startDate) : undefined,
-    hasTime: data.hasTime,
+    hasStartTime: data.hasStartTime,
+    postDate: data.postDate ? DateTime.fromISO(data.postDate) : undefined,
     details: data.content,
     imageUrls: data.post_image ?? [],
     numComments: data.comment,
     numGrats: data.gratis,
-    from: data.user_id,
+    author: data.user_id,
   } as Post);
 
+// The JSON sent for an API call
 interface CreatePostApiBody {
   type: string;
   what_name: string;
@@ -108,11 +110,12 @@ interface CreatePostApiBody {
   where_lat?: string;
   where_lng?: string;
   startDate?: string;
-  hasTime?: boolean;
+  hasStartTime?: boolean;
   content?: string;
   post_image?: string[];
 }
 
+// The JSON returned from the API call
 interface GetPostApiBody {
   id: string;
   type: string;
@@ -135,7 +138,8 @@ interface GetPostApiBody {
   user_id: User;
   gratis: number;
   startDate?: string;
-  hasTime?: boolean;
+  postDate?: string;
+  hasStartTime?: boolean;
   content?: string;
   post_image?: string[];
   comment: number;
@@ -150,7 +154,7 @@ const postToApi = (data: PostData) =>
     where_lat: data.latitude?.toString(),
     where_lng: data.longitude?.toString(),
     startDate: data.startDate?.toISO(),
-    hasTime: data.hasTime,
+    hasStartTime: data.hasStartTime,
     content: data.details,
     post_image: data.imageUrls,
   } as CreatePostApiBody);

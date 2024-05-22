@@ -5,7 +5,7 @@ import { CreatePostScreen } from "~/screens/createEditPost/CreatePostScreen";
 import { EditPostScreen } from "~/screens/createEditPost/EditPostScreen";
 import { CreateEditPostGratisScreen } from "~/screens/createEditPost/gratis";
 import { HomeScreen } from "~/screens/home/HomeScreen";
-import { CommentList } from "~/screens/home/commetList";
+import { CommentList } from "~/screens/home/commentList";
 import { ProfileScreen } from "~/screens/profile";
 import { RecentProfileScreen } from "~/screens/recentProfile";
 import { navigations } from "./constant";

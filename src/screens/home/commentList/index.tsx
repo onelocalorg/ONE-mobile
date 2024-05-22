@@ -7,6 +7,7 @@ import {
   ParamListBase,
   useFocusEffect,
 } from "@react-navigation/native";
+import _ from "lodash/fp";
 import {
   FlatList,
   Image,
@@ -38,26 +39,28 @@ import {
 } from "~/assets/images";
 import { ImageComponent } from "~/components/image-component";
 import { Navbar } from "~/components/navbar/Navbar";
+import { LOG } from "~/config";
 import { navigations } from "~/config/app-navigation/constant";
+import { Post } from "~/types/post";
+import { formatTimeFromNow } from "~/utils/common";
 import { createStyleSheet } from "../style";
 
 interface commentListProps {
   navigation?: NavigationContainerRef<ParamListBase>;
   route?: {
     params: {
-      postData: any;
-      postIndex: any;
+      postData: Post;
+      postIndex: number;
     };
   };
 }
 
-export const CommentList = (props: commentListProps) => {
+export const CommentList = ({ navigation, route }: commentListProps) => {
+  LOG.debug("CommentList", route?.params.postData);
   // console.log(props, "props");
   const { theme } = useAppTheme();
   const styles = createStyleSheet(theme);
   const { strings } = useStringsAndLabels();
-  const { navigation, route } = props || {};
-  const { postData, postIndex } = route?.params ?? {};
   const [offerModal, CreateOfferModal] = useState(false);
   const [replyofferModal, openReplyOfferModal] = useState(false);
   var [gratisNo, totalGratisData]: any = useState(10);
@@ -80,26 +83,30 @@ export const CommentList = (props: commentListProps) => {
   const [childjIndex, setChildIndexForGratis]: any = useState();
   const [replyId, commentReplyPostId] = useState("");
   const [replyIndex, setReplayIndex] = useState("");
-  const [setGrais, setGratisData] = useState(postData?.gratis);
-  const [setComment, setCommentData] = useState(postData.comment);
+  const [gratisData, setGratisData] = useState(
+    route?.params.postData?.numGrats
+  );
+  const [commentData, setCommentData] = useState(
+    route?.params.postData.numComments
+  );
   const [postCommentIndexTwo, setPostCommentIndexTwo]: any = useState();
-  const [getPostData, setPostDataNew]: any = useState(postData);
+  const [postData, setPostData] = useState(route?.params.postData);
   const [commentListScrollEnable, setCommentListScrollEnable] = useState(true);
   const flatListRef: any = React.useRef();
 
   useEffect(() => {
-    setGratisData(getPostData?.gratis);
-    setCommentData(getPostData.comment);
-  }, [props]);
+    setGratisData(postData?.numGrats);
+    setCommentData(postData?.numComments);
+  }, [route?.params.postData]);
 
   useFocusEffect(
     useCallback(() => {
-      if (getPostData?.id) {
+      if (postData?.id) {
         setCommentListData([]);
         setCmtPage(1);
         getCommentListAPI(1);
       }
-    }, [getPostData?.id])
+    }, [postData?.id])
   );
 
   const recentUserProfilePress = (id: any) => {
@@ -110,7 +117,7 @@ export const CommentList = (props: commentListProps) => {
   async function getCommentListAPI(pageCount: any) {
     const token = await AsyncStorage.getItem("token");
     var data: any = {
-      post_id: getPostData?.id,
+      post_id: postData?.id,
     };
 
     var APIURL =
@@ -118,7 +125,7 @@ export const CommentList = (props: commentListProps) => {
       "/v1/comments?limit=20&page=" +
       pageCount +
       "&post_id=" +
-      getPostData?.id;
+      postData?.id;
     console.log(
       "===========Get Comment List API Request ==============",
       APIURL
@@ -168,14 +175,11 @@ export const CommentList = (props: commentListProps) => {
     console.log("===========Comment on Post API Request ==============");
     console.log(data);
     console.log(
-      process.env.API_URL + "/v1/posts/" + getPostData?.id + "/comments/create"
+      process.env.API_URL + "/v1/posts/" + postData?.id + "/comments/create"
     );
     try {
       const response = await fetch(
-        process.env.API_URL +
-          "/v1/posts/" +
-          getPostData?.id +
-          "/comments/create",
+        process.env.API_URL + "/v1/posts/" + postData?.id + "/comments/create",
         {
           method: "post",
           headers: new Headers({
@@ -241,12 +245,13 @@ export const CommentList = (props: commentListProps) => {
       if (dataItem?.success === true) {
         let markers = [...commentList];
 
-        markers[commentIndex]["gratis"] = dataItem?.data?.data?.commentsGratis;
+        markers[commentIndex]["gratis"] =
+          dataItem?.data?.data?.numCommentssGratis;
 
         setGratisData(dataItem?.data?.data?.postGratis);
-        let markersTwo = { ...getPostData };
+        let markersTwo = { ...postData };
         markersTwo["gratis"] = dataItem?.data?.data?.postGratis;
-        setPostDataNew(markersTwo);
+        setPostData(markersTwo);
       }
 
       if (dataItem?.success === false) {
@@ -298,9 +303,9 @@ export const CommentList = (props: commentListProps) => {
           dataItem?.data?.data?.replayGratis;
 
         setGratisData(dataItem?.data?.data?.postGratis);
-        let markersTwo = { ...getPostData };
+        let markersTwo = { ...postData };
         markersTwo["gratis"] = dataItem?.data?.data?.postGratis;
-        setPostDataNew(markersTwo);
+        setPostData(markersTwo);
         console.log(
           "commentListData 222",
           markers[gratisIndex]["commentListData"]
@@ -328,14 +333,11 @@ export const CommentList = (props: commentListProps) => {
     };
     console.log(data);
     console.log(
-      process.env.API_URL + "/v1/posts/" + getPostData?.id + "/comments/create"
+      process.env.API_URL + "/v1/posts/" + postData?.id + "/comments/create"
     );
     try {
       const response = await fetch(
-        process.env.API_URL +
-          "/v1/posts/" +
-          getPostData?.id +
-          "/comments/create",
+        process.env.API_URL + "/v1/posts/" + postData?.id + "/comments/create",
         {
           method: "post",
           headers: new Headers({
@@ -425,9 +427,9 @@ export const CommentList = (props: commentListProps) => {
       const dataItem = await response.json();
       console.log(dataItem);
       if (dataItem?.success === true) {
-        let markers = { ...getPostData };
+        let markers = { ...postData };
         markers["gratis"] = dataItem?.data?.data?.postGratis;
-        setPostDataNew(markers);
+        setPostData(markers);
         setGratisData(dataItem?.data?.data?.postGratis);
       }
       if (dataItem?.success === false) {
@@ -512,24 +514,25 @@ export const CommentList = (props: commentListProps) => {
   };
 
   const renderItem: ListRenderItem<any> = ({ item, index }) => {
+    LOG.debug("renderItem", item);
     return (
       <View>
         <View style={styles.commentImgProfile}>
           <TouchableOpacity
             activeOpacity={0.8}
-            onPress={() => recentUserProfilePress(item?.commenter?.id)}
+            onPress={() => recentUserProfilePress(item?.commentser?.id)}
           >
             <ImageComponent
               resizeMode="cover"
               style={styles.postProfile}
               source={{
-                uri: item?.commenter?.pic,
+                uri: item?.commentser?.pic,
               }}
             ></ImageComponent>
           </TouchableOpacity>
           <View style={styles.commentDisplayCont}>
             <Text style={{ fontSize: 12, color: "#110101" }}>
-              {item?.commenter?.first_name} {item?.commenter?.last_name}
+              {item?.commentser?.first_name} {item?.commentser?.last_name}
             </Text>
             <Text style={styles.replyMsgCont}>{item?.content}</Text>
           </View>
@@ -545,7 +548,7 @@ export const CommentList = (props: commentListProps) => {
           </TouchableOpacity>
 
           <Text style={styles.minuteCont}>{item.date}</Text>
-          <Text style={styles.minuteCont}>{item.gratis}</Text>
+          <Text style={styles.minuteCont}>{item.numGrats}</Text>
           <TouchableOpacity
             onPress={() =>
               openReplyGratis(
@@ -569,7 +572,7 @@ export const CommentList = (props: commentListProps) => {
 
         {/* {commentList?.reply?.content ? ( */}
 
-        {item.reply.map((subItem: any, jindex: any) => {
+        {item.reply.map((subItem, jindex) => {
           return (
             <>
               <View>
@@ -577,14 +580,14 @@ export const CommentList = (props: commentListProps) => {
                   <TouchableOpacity
                     activeOpacity={0.8}
                     onPress={() =>
-                      recentUserProfilePress(subItem?.commenter?.id)
+                      recentUserProfilePress(subItem?.commentser?.id)
                     }
                   >
                     <ImageComponent
                       resizeMode="cover"
                       style={styles.postProfile}
                       source={{
-                        uri: subItem?.commenter?.pic,
+                        uri: subItem?.commentser?.pic,
                       }}
                     ></ImageComponent>
                   </TouchableOpacity>
@@ -595,8 +598,8 @@ export const CommentList = (props: commentListProps) => {
                         color: "#110101",
                       }}
                     >
-                      {subItem.commenter?.first_name}{" "}
-                      {subItem.commenter?.last_name}
+                      {subItem.commentser?.first_name}{" "}
+                      {subItem.commentser?.last_name}
                     </Text>
                     <Text style={styles.replyMsgCont}>{subItem.content}</Text>
                   </View>
@@ -614,7 +617,7 @@ export const CommentList = (props: commentListProps) => {
                   </TouchableOpacity>
 
                   <Text style={styles.minuteCont}>{subItem.date}</Text>
-                  <Text style={styles.minuteCont}>{subItem.gratis}</Text>
+                  <Text style={styles.minuteCont}>{subItem.numGrats}</Text>
                   <TouchableOpacity
                     onPress={() =>
                       openReplyGratis(
@@ -660,7 +663,7 @@ export const CommentList = (props: commentListProps) => {
     navigation?.goBack();
   };
 
-  return (
+  return postData ? (
     // <SafeAreaView>
 
     <View style={{ paddingBottom: 300 }}>
@@ -680,7 +683,7 @@ export const CommentList = (props: commentListProps) => {
                 renderItem={renderItem}
                 ListHeaderComponent={
                   <View style={styles.feedPostContainer}>
-                    <Text style={styles.posttitle}>{getPostData?.type}</Text>
+                    <Text style={styles.posttitle}>{postData.type}</Text>
                     <TouchableOpacity
                       style={{
                         position: "absolute",
@@ -692,48 +695,47 @@ export const CommentList = (props: commentListProps) => {
                     <View style={styles.userDetailcont}>
                       <TouchableOpacity
                         onPress={() =>
-                          recentUserProfilePress(getPostData?.user_id.id)
+                          recentUserProfilePress(postData.author.id)
                         }
                       >
                         <ImageComponent
                           resizeMode="cover"
                           style={styles.postProfile}
-                          source={{ uri: getPostData?.user_id?.pic }}
+                          source={{ uri: postData.author.pic }}
                         ></ImageComponent>
                       </TouchableOpacity>
                       <View>
                         <View>
-                          {getPostData?.type === "Gratis" ? (
+                          {postData?.type === "Gratis" ? (
                             <View>
                               <Text numberOfLines={1} style={styles.userName}>
-                                {getPostData?.user_id?.first_name}{" "}
-                                {getPostData?.user_id?.last_name}{" "}
+                                {postData.author.first_name}{" "}
+                                {postData.author.last_name}{" "}
                               </Text>
-                              {getPostData?.to?.users.length !== 0 ? (
+                              {/* {postData?.to?.users.length !== 0 ? (
                                 <Text
                                   numberOfLines={1}
                                   style={styles.sentPointClass}
                                 >
-                                  sent {getPostData?.to?.users[0]?.point} gratis
-                                  to{" "}
+                                  sent {postData?.to?.users[0]?.point} gratis to{" "}
                                   <Text style={styles.userName}>
                                     {
-                                      getPostData?.to?.users[0]?.user_id[
+                                      postData?.to?.users[0]?.user_id[
                                         "first_name"
                                       ]
                                     }{" "}
                                     {
-                                      getPostData?.to?.users[0]?.user_id[
+                                      postData?.to?.users[0]?.user_id[
                                         "last_name"
                                       ]
                                     }{" "}
                                     {
-                                      getPostData?.to?.users[1]?.user_id[
+                                      postData?.to?.users[1]?.user_id[
                                         "first_name"
                                       ]
                                     }{" "}
                                     {
-                                      getPostData?.to?.users[1]?.user_id[
+                                      postData?.to?.users[1]?.user_id[
                                         "last_name"
                                       ]
                                     }
@@ -741,17 +743,19 @@ export const CommentList = (props: commentListProps) => {
                                 </Text>
                               ) : (
                                 <></>
-                              )}
+                              )} */}
                             </View>
                           ) : (
                             <Text numberOfLines={1} style={styles.userName}>
-                              {getPostData?.user_id?.first_name}{" "}
-                              {getPostData?.user_id?.last_name}
+                              {postData.author.first_name}{" "}
+                              {postData.author.last_name}
                             </Text>
                           )}
-                          <Text style={styles.postTime}>
-                            {getPostData?.date}
-                          </Text>
+                          {postData.postDate ? (
+                            <Text style={styles.postTime}>
+                              {formatTimeFromNow(postData.postDate)}
+                            </Text>
+                          ) : null}
                         </View>
                       </View>
                     </View>
@@ -762,10 +766,10 @@ export const CommentList = (props: commentListProps) => {
                           : styles.userListDisplayContTwo
                       }
                     >
-                      <TouchableOpacity
+                      {/* <TouchableOpacity
                         onPress={() =>
                           recentUserProfilePress(
-                            getPostData?.to?.users[0]?.user_id["id"]
+                            postData?.to?.users[0]?.user_id["id"]
                           )
                         }
                       >
@@ -773,14 +777,14 @@ export const CommentList = (props: commentListProps) => {
                           resizeMode="cover"
                           style={styles.userListDisplay}
                           source={{
-                            uri: getPostData?.to?.users[0]?.user_id["pic"],
+                            uri: postData?.to?.users[0]?.user_id["pic"],
                           }}
                         ></ImageComponent>
-                      </TouchableOpacity>
-                      <TouchableOpacity
+                      </TouchableOpacity> */}
+                      {/* <TouchableOpacity
                         onPress={() =>
                           recentUserProfilePress(
-                            getPostData?.to?.users[1]?.user_id["id"]
+                            postData?.to?.users[1]?.user_id["id"]
                           )
                         }
                       >
@@ -788,48 +792,48 @@ export const CommentList = (props: commentListProps) => {
                           resizeMode="cover"
                           style={styles.userListDisplay}
                           source={{
-                            uri: getPostData?.to?.users[1]?.user_id["pic"],
+                            uri: postData?.to?.users[1]?.user_id["pic"],
                           }}
                         ></ImageComponent>
-                      </TouchableOpacity>
+                      </TouchableOpacity> */}
                     </View>
-                    <Text style={styles.postDes}>{getPostData?.content}</Text>
-                    <ImageComponent
-                      resizeMode="cover"
-                      source={{ uri: getPostData.image[0] }}
-                      style={styles.userPost}
-                    ></ImageComponent>
+                    <Text style={styles.postDes}>{postData?.details}</Text>
+                    {!_.isEmpty(postData?.imageUrls) ? (
+                      <ImageComponent
+                        resizeMode="cover"
+                        source={{ uri: postData?.imageUrls[0] }}
+                        style={styles.userPost}
+                      ></ImageComponent>
+                    ) : null}
                     <View style={styles.postDetailCont}>
                       <Text style={styles.postDetailTitle}>What:</Text>
-                      <ImageComponent
-                        source={{ uri: getPostData?.what?.icon }}
+                      {/* <ImageComponent
+                        source={{ uri: postData?.what?.icon }}
                         style={styles.detailImage}
-                      ></ImageComponent>
-                      <Text style={styles.postDetail}>
-                        {getPostData?.what?.name}
-                      </Text>
+                      ></ImageComponent> */}
+                      <Text style={styles.postDetail}>{postData.name}</Text>
                     </View>
-                    {getPostData?.type !== "Gratis" ? (
+                    {/* {postData?.type !== "Gratis" ? (
                       <View style={styles.postDetailCont}>
                         <Text style={styles.postDetailTitle}>For:</Text>
                         <Image
-                          source={{ uri: getPostData?.for?.icon }}
+                          source={{ uri: postData?.for?.icon }}
                           style={styles.detailImage}
                         ></Image>
                         <Text style={styles.postDetail}>
-                          {getPostData?.for?.name}
+                          {postData?.for?.name}
                         </Text>
                       </View>
                     ) : (
                       <></>
-                    )}
+                    )} */}
 
-                    {getPostData?.type !== "Gratis" ? (
+                    {postData?.type !== "Gratis" ? (
                       <View style={styles.postDetailCont}>
                         <Text style={styles.postDetailTitle}>Where:</Text>
                         <Image source={pin} style={styles.detailImage}></Image>
                         <Text style={styles.postDetail}>
-                          {getPostData?.where?.address}
+                          {postData.address}
                         </Text>
                       </View>
                     ) : (
@@ -842,15 +846,19 @@ export const CommentList = (props: commentListProps) => {
                         source={postCalender}
                         style={styles.detailImage}
                       ></Image>
-                      <Text style={styles.postDetail}>{getPostData?.when}</Text>
+                      <Text style={styles.postDetail}>
+                        {postData.startDate?.toLocaleString()}
+                      </Text>
                     </View>
                     <TouchableOpacity
                       activeOpacity={0.8}
                       style={styles.gratisContainer}
-                      onPress={() => OfferModalShow(getPostData.id, postIndex)}
+                      onPress={() =>
+                        OfferModalShow(postData.id, route?.params.postIndex)
+                      }
                     >
                       <Text style={styles.gratisClass}>
-                        +{getPostData?.gratis}
+                        +{postData?.numGrats}
                       </Text>
                       <ImageComponent
                         source={gratitudeBlack}
@@ -1136,6 +1144,6 @@ export const CommentList = (props: commentListProps) => {
         </View>
       </KeyboardAvoidingView>
     </View>
-    // </SafeAreaView>
-  );
+  ) : // </SafeAreaView>
+  null;
 };
