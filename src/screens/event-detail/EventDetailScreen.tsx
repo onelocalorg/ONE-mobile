@@ -21,7 +21,7 @@ import Toast from "react-native-simple-toast";
 import { useSelector } from "react-redux";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
 import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
-import { calendarTime, copy, pinWhite, startImg } from "~/assets/images";
+import { calendarTime, pinWhite, startImg } from "~/assets/images";
 import { ButtonComponent } from "~/components/button-component";
 import { ImageComponent } from "~/components/image-component";
 import { Loader } from "~/components/loader";
@@ -495,9 +495,7 @@ export const EventDetailScreen = (props: EventDetailScreenProps) => {
                       copyPaymentLink(ele?.ticket_purchase_link ?? "  ")
                     }
                     activeOpacity={0.8}
-                  >
-                    <ImageComponent source={copy} style={styles.copy} />
-                  </TouchableOpacity>
+                  ></TouchableOpacity>
                 </View>
               ))}
             </View>
