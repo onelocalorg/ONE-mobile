@@ -2,7 +2,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { LOG } from "~/config";
 
 export async function doGet<Resource>(url: string) {
-  return callApi<never, Resource>("POST", url);
+  return callApi<never, Resource>("GET", url);
 }
 
 export async function doPost<Body, Resource>(url: string, body?: Body) {

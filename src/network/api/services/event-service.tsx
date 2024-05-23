@@ -9,8 +9,49 @@ import { EventResponse } from "~/types/event-response";
 import { GeoJSONEventProperties } from "~/types/geojson-event-properties";
 import { LocalEvent } from "~/types/local-event";
 import { LocalEventData } from "~/types/local-event-data";
+import { RsvpList, RsvpType } from "~/types/rsvp";
 import { TicketType } from "~/types/ticket-type";
+import { User } from "~/types/user";
 import { API } from "..";
+import { doGet, doPost } from "./api-service";
+
+export async function listRsvps(eventId: string) {
+  const resp = await doGet<RsvpListResource>(`/v1/events/rsvp/${eventId}`);
+  return { ...resp, data: apiToRsvps(resp.data) };
+}
+
+export async function updateRsvp(eventId: string, rsvp: RsvpType) {
+  return await doPost<UpdateRsvpBody, any>(`/v1/events/rsvp/${eventId}`, {
+    type: rsvp,
+  });
+}
+
+interface UpdateRsvpBody {
+  type: string;
+}
+
+const apiToRsvps = (data: RsvpListResource) =>
+  ({
+    ...data,
+    rsvps: data.rsvps.map((r) => ({
+      id: r.id,
+      rsvp: r.rsvp as keyof typeof RsvpType,
+      guest: r.user_id,
+    })),
+  } as RsvpList);
+
+interface RsvpListResource {
+  rsvps: RsvpResource[];
+  going: number;
+  interested: number;
+  cantgo: number;
+}
+
+interface RsvpResource {
+  id: string;
+  rsvp: string;
+  user_id: User;
+}
 
 interface EventProps {
   queryParams?: {

@@ -1,27 +1,16 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import Clipboard from "@react-native-clipboard/clipboard";
 import {
   NavigationContainerRef,
   ParamListBase,
+  useFocusEffect,
 } from "@react-navigation/native";
 import { DateTime } from "luxon";
-import React, { useEffect, useRef, useState } from "react";
-import {
-  Alert,
-  Image,
-  Platform,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
-import Toast from "react-native-simple-toast";
+import React, { useCallback, useEffect, useRef, useState } from "react";
+import { Image, ScrollView, Text, TouchableOpacity, View } from "react-native";
 import { useSelector } from "react-redux";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
 import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
-import { calendarTime, pinWhite, startImg } from "~/assets/images";
+import { calendarTime, pinWhite } from "~/assets/images";
 import { ButtonComponent } from "~/components/button-component";
 import { ImageComponent } from "~/components/image-component";
 import { Loader } from "~/components/loader";
@@ -40,7 +29,7 @@ import { StoreType } from "~/network/reducers/store";
 import { UserProfileState } from "~/network/reducers/user-profile-reducer";
 import { verticalScale } from "~/theme/device/normalize";
 import { LocalEvent } from "~/types/local-event";
-import Going from "../../assets/images/going.png";
+import { Rsvp } from "./Rsvp";
 import { createStyleSheet } from "./style";
 
 interface EventDetailScreenProps {
@@ -105,61 +94,23 @@ export const EventDetailScreen = (props: EventDetailScreenProps) => {
   const [issLoading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetchRsvpDataAPI();
-
     if (eventId) {
       fetchEvent(eventId).then(eventResponseToLocalEvent).then(setEvent);
     }
   }, [eventId]);
 
-  const fetchRsvpDataAPI = async () => {
-    LodingData(true);
-    const token = await AsyncStorage.getItem("token");
-    try {
-      const response = await fetch(
-        `${process.env.API_URL}/v1/events/rsvp/${eventId}`,
-        {
-          headers: {
-            method: "get",
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      if (response.ok) {
-        const data = await response.json();
-        setRsvpData(data);
-        findItemById(data);
-        LodingData(false);
-        console.log(
-          JSON.stringify(data),
-          "--------------fetchRsvpData---------------"
-        );
+  useFocusEffect(
+    useCallback(() => {
+      // const ticketLength = event?.ticketTypes.filter(
+      //   (ele) => !ele?.is_ticket_purchased
+      // )?.length;
+      if (event && event.ticketTypes.length > 0) {
+        setIsTicketAvailable(true);
       } else {
-        console.error("Failed to fetch RSVP data");
+        setIsTicketAvailable(false);
       }
-    } catch (error) {
-      console.error("Error fetching RSVP data:", error);
-    }
-  };
-
-  // FIXME Enable tickets
-  // useFocusEffect(
-  //   useCallback(() => {
-  //     console.log("user........................", user);
-
-  //     const ticketLength = ticketTypes?.filter(
-  //       (ele) => !ele?.is_ticket_purchased
-  //     )?.length;
-  //     console.log("isticket..............", ticketLength);
-  //     LogBox.ignoreAllLogs();
-  //     if (ticketLength > 0) {
-  //       setIsTicketAvailable(true);
-  //     } else {
-  //       setIsTicketAvailable(false);
-  //     }
-  //   }, [data])
-  // );
+    }, [event])
+  );
 
   // useFocusEffect(
   //   useCallback(() => {
@@ -168,16 +119,6 @@ export const EventDetailScreen = (props: EventDetailScreenProps) => {
   //     refetch();
   //   }, [])
   // );
-
-  const onCheckReleaseHideShow = () => {
-    if (Platform.OS === "ios") {
-      const isShowPaymentCheck = getData("isShowPaymentFlow");
-      return isShowPaymentCheck;
-    } else {
-      const isShowPaymentCheckAndroid = getData("isShowPaymentFlowAndroid");
-      return isShowPaymentCheckAndroid;
-    }
-  };
 
   // async function eventViewAPI() {
   //   // LodingData(true);
@@ -207,156 +148,6 @@ export const EventDetailScreen = (props: EventDetailScreenProps) => {
   //   }
   // }
 
-  //----------------rsvpFilterAPI--------------------
-  async function rsvpFilterAPI(type: any) {
-    LodingData(true);
-    const token = await AsyncStorage.getItem("token");
-
-    console.log(type, "-----------type-----------");
-    try {
-      const response = await fetch(
-        `${process.env.API_URL}/v1/events/rsvp/${eventId}`,
-        {
-          method: "post",
-          headers: new Headers({
-            Authorization: "Bearer " + token,
-            "Content-Type": "application/json",
-          }),
-          body: JSON.stringify({ type: type }),
-        }
-      );
-      const isDataItem = await response.json();
-      Toast.show(isDataItem?.message, Toast.LONG, {
-        backgroundColor: "black",
-      });
-      if (response.ok) {
-        fetchRsvpDataAPI();
-        console.log("rsvp................", type);
-        LodingData(false);
-      } else {
-        console.error("Error fetching RSVP data:");
-      }
-    } catch (error) {
-      console.error("Error while making RSVP:", error);
-    }
-  }
-
-  const onBuyTicket = () => {
-    if (isTicketAvailable) {
-      modalRef.current?.onOpenModal();
-    } else {
-      Alert.alert("", strings.noTicketsAvailable);
-    }
-  };
-
-  const handleEditEvent = () => {
-    navigation?.navigate(navigations.ADMIN_TOOLS, { eventData: event });
-  };
-
-  // const onPaymentSuccess = async (
-  //   paymentData: PurchaseProps,
-  //   ticketId: string,
-  //   ticketName: string,
-  //   ticketPrice: string,
-  //   quantityticket: number
-  // ) => {
-  //   const request = {
-  //     bodyParams: {
-  //       stripeResponse: paymentData,
-  //       eventId,
-  //       ticketId: ticketId,
-  //       ticketName: ticketName,
-  //       ticketPrice: ticketPrice,
-  //       ticket_quantity: quantityticket,
-  //     },
-  //   };
-  //   LoadingData(true);
-  //   const res = await purchaseTicket(request);
-  //   if (res?.success === true) {
-  //     Toast.show(res.message, Toast.LONG, {
-  //       backgroundColor: "black",
-  //     });
-
-  //     LoadingData(false);
-  //     navigation?.goBack();
-  //   } else {
-  //     LoadingData(false);
-  //   }
-  // };
-
-  // const onPurchaseTicketThroughCard = async (
-  //   cardData: any,
-  //   ticketId: string,
-  //   ticketName: string,
-  //   price: any,
-  //   quantityticket: number
-  // ) => {
-  //   if (price === 0) {
-  //     onPaymentSuccess(
-  //       cardData,
-  //       ticketId,
-  //       ticketName,
-  //       price.toString(),
-  //       quantityticket
-  //     );
-  //   } else {
-  //     onPaymentSuccess(
-  //       cardData,
-  //       ticketId,
-  //       ticketName,
-  //       `${parseFloat(price?.replace("USD", ""))}`,
-  //       quantityticket
-  //     );
-  //   }
-  // };
-
-  // const onPurchaseTicket = async (
-  //   price: any,
-  //   ticketId: string,
-  //   ticketName: string,
-  //   quantityticket: number
-  // ) => {
-  //   const unique_Id = await AsyncStorage.getItem("uniqueId");
-  //   var Payment: any = {
-  //     ticketId: ticketId,
-  //     purchase_user_unique_id: unique_Id,
-  //     purchased_ticket_qunatity: quantityticket,
-  //   };
-  //   const request = {
-  //     amount: price * 100,
-  //     currency: "usd",
-  //     "automatic_payment_methods[enabled]": true,
-  //     customer: user?.stripeCustomerId,
-  //     description: "Payment-Mobile",
-  //     metadata: Payment,
-  //   };
-  //   console.log("------------onPurchaseTicket-----------------");
-  //   let clientSecret = "";
-  //   const res = await createPayoutIntent({ bodyParams: request });
-  //   if (res?.statusCode === 200) {
-  //     clientSecret = res?.data?.client_secret;
-  //   }
-  //   console.log("-------------------clientSecret---------------", res);
-  //   modalRef.current?.onCloseModal();
-  //   navigation?.navigate(navigations.PAYMENT, {
-  //     clientSecret,
-  //     paymentData: res?.data,
-  //     onSuccess: () =>
-  //       onPaymentSuccess(
-  //         res?.data,
-  //         ticketId,
-  //         ticketName,
-  //         `${parseFloat(price?.replace("USD", ""))}`,
-  //         quantityticket
-  //       ),
-  //   });
-  // };
-
-  const copyPaymentLink = (link: string) => {
-    Clipboard.setString(link);
-    Alert.alert("Message", strings.linkCopied);
-  };
-
   const onNavigateToProducerProfile = () => {
     // if (event?.is_event_owner) {
     navigation?.navigate(navigations.PROFILE);
@@ -366,39 +157,8 @@ export const EventDetailScreen = (props: EventDetailScreenProps) => {
     // }
   };
 
-  // Check if the logged-in user's ID is available in RSVP data
-  const isCurrentUserRSVP = (type: string) => {
-    if (rsvpData && rsvpData.data && rsvpData.data.rsvps) {
-      const currentUserRSVP = rsvpData.data.rsvps.find(
-        (rsvp) => rsvp.user_id.id === user?.id
-      );
-      return currentUserRSVP && currentUserRSVP.rsvp === type;
-    }
-    return false;
-  };
-
-  const rsvpsFilter = (type: any) => {
-    if (type == selectedButton) {
-      setSelectedButton(null);
-    } else {
-      setSelectedButton(type);
-    }
-    if (type == "interested" || type == "going") {
-      console.log("---------type-------------------");
-      rsvpFilterAPI(type);
-    }
-  };
-
-  const findItemById = (rsvpDatas: any) => {
-    const foundItem: any = rsvpDatas?.data?.rsvps.find(
-      (item: any) => item?.user_id?.id === user?.id
-    );
-    console.log(foundItem, "-------------user list-------------");
-    if (foundItem) {
-      setSelectedButton(foundItem?.rsvp);
-    } else {
-      setSelectedButton(null);
-    }
+  const handleEditEvent = () => {
+    navigation?.navigate(navigations.ADMIN_TOOLS, { eventData: event });
   };
 
   return (
@@ -475,197 +235,25 @@ export const EventDetailScreen = (props: EventDetailScreenProps) => {
                 </Text>
               </View>
             </View>
-          </View>
-
-          <SizedBox height={verticalScale(16)} />
-          <View style={styles.container}>
-            {event.ticketTypes?.length ? (
-              <Text style={styles.event}>{strings.tickets}</Text>
-            ) : (
-              <></>
-            )}
-            <View>
-              {event.ticketTypes?.map((ele) => (
-                <View key={ele?.price.toString()} style={styles.rowOnly}>
-                  <Text
-                    style={styles.ticket}
-                  >{`$${ele?.price} - ${ele?.name}`}</Text>
-                  <TouchableOpacity
-                    onPress={() =>
-                      copyPaymentLink(ele?.ticket_purchase_link ?? "  ")
-                    }
-                    activeOpacity={0.8}
-                  ></TouchableOpacity>
-                </View>
-              ))}
-            </View>
-
-            {onCheckReleaseHideShow() ? (
-              <>
-                {!event.is_event_owner && event.ticketTypes?.length ? (
-                  <ButtonComponent
-                    disabled={event.isCanceled}
-                    title={strings.buyTicket}
-                    onPress={onBuyTicket}
-                  />
-                ) : (
-                  <></>
-                )}
-              </>
-            ) : (
-              <></>
-            )}
-
-            <View style={styles1.container2}>
-              <TouchableOpacity
-                style={[
-                  styles1.button,
-                  selectedButton === "going" && styles1.selectedButton,
-                  isCurrentUserRSVP("going") && { backgroundColor: "#E9B9B4" },
-                ]}
-                onPress={() => rsvpsFilter("going")}
-              >
-                <View
-                  style={{
-                    flexDirection: "row",
-                    alignItems: "center",
-                    gap: 10,
-                  }}
-                >
-                  <Text style={styles1.buttonText}>Going</Text>
-                </View>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={[
-                  styles1.button,
-                  selectedButton === "interested" && styles1.selectedButton,
-                  isCurrentUserRSVP("interested") && {
-                    backgroundColor: "#E9B9B4",
-                  },
-                ]}
-                onPress={() => rsvpsFilter("interested")}
-              >
-                <View
-                  style={{
-                    flexDirection: "row",
-                    alignItems: "center",
-                    gap: 10,
-                  }}
-                >
-                  <Text style={styles1.buttonText}>Maybe</Text>
-                </View>
-              </TouchableOpacity>
-              <TouchableOpacity
-                activeOpacity={1}
-                style={[styles1.button, { backgroundColor: "#E9B9B4" }]}
-              >
-                <View
-                  style={{
-                    flexDirection: "row",
-                    alignItems: "center",
-                    gap: 10,
-                  }}
-                >
-                  <Text style={styles1.buttonText}>Invite</Text>
-                </View>
-              </TouchableOpacity>
-            </View>
-
-            <View
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-                marginTop: "5%",
-                justifyContent: "space-between",
-                gap: 100,
-              }}
-            >
-              <Text style={{ fontSize: 20, color: "black", fontWeight: "600" }}>
-                RSVPs
-              </Text>
-
-              <View style={{ flexDirection: "row", columnGap: 20 }}>
-                <View style={{ flexDirection: "column", alignItems: "center" }}>
-                  <Text
-                    style={{ fontSize: 16, color: "black", fontWeight: "600" }}
-                  >
-                    {rsvpData?.data?.going}
-                  </Text>
-                  <Text
-                    style={{ fontSize: 16, color: "black", fontWeight: "600" }}
-                  >
-                    Going
-                  </Text>
-                </View>
-                <View style={{ flexDirection: "column", alignItems: "center" }}>
-                  <Text
-                    style={{ fontSize: 16, color: "black", fontWeight: "600" }}
-                  >
-                    {rsvpData?.data?.interested}
-                  </Text>
-                  <Text
-                    style={{ fontSize: 16, color: "black", fontWeight: "600" }}
-                  >
-                    Maybe
-                  </Text>
-                </View>
-              </View>
-            </View>
-            <View
-              style={{
-                flex: 1,
-                alignItems: "flex-start",
-                marginTop: "8%",
-                width: "100%",
-              }}
-            >
-              {rsvpData && rsvpData.data && rsvpData.data.rsvps ? (
-                <View
-                  style={{
-                    flexDirection: "row",
-                    flexWrap: "wrap",
-                    justifyContent: "flex-start",
-                    gap: 5,
-                    width: "100%",
-                  }}
-                >
-                  {rsvpData.data.rsvps.map((rsvp, index) => (
-                    <View key={index} style={styles1.rsvpContainer}>
-                      <View style={styles1.profilePicContainer}>
-                        <Image
-                          source={{ uri: rsvp.user_id.pic }}
-                          style={styles1.profilePic}
-                        />
-                      </View>
-                      <View style={styles1.rsvpImageContainer}>
-                        {rsvp.rsvp === "going" && (
-                          <Image source={Going} style={styles1.rsvpImage} />
-                        )}
-                        {rsvp.rsvp === "interested" && (
-                          <Image source={startImg} style={styles1.rsvpImage} />
-                        )}
-                      </View>
-                    </View>
-                  ))}
-                </View>
-              ) : (
-                <Text>No RSVP data available</Text>
-              )}
-            </View>
-
             <SizedBox height={verticalScale(30)} />
             <Text style={styles.event}>{strings.aboutEvent}</Text>
             <Text style={styles.desc}>{event.about}</Text>
-
-            {event.is_event_owner ? (
-              <ButtonComponent
-                title={strings.adminTools}
-                onPress={handleEditEvent}
-              />
-            ) : (
-              <></>
-            )}
           </View>
+
+          {eventId ? (
+            <>
+              {/* <Tickets event={event} /> */}
+              <Rsvp eventId={eventId} />
+            </>
+          ) : null}
+          {event.is_event_owner ? (
+            <ButtonComponent
+              title={strings.adminTools}
+              onPress={handleEditEvent}
+            />
+          ) : (
+            <></>
+          )}
         </ScrollView>
       ) : null}
       {/* {event ? (
@@ -679,60 +267,3 @@ export const EventDetailScreen = (props: EventDetailScreenProps) => {
     </View>
   );
 };
-const styles1 = StyleSheet.create({
-  container2: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    flexDirection: "row",
-    width: 300,
-    height: 50,
-    marginTop: 20,
-    backgroundColor: "#DA9791",
-    alignSelf: "center",
-    borderRadius: 20,
-    gap: 30,
-  },
-  button: {
-    backgroundColor: "#E9B9B4",
-    width: 65,
-    height: 30,
-    marginVertical: 10,
-    borderRadius: 10,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  buttonText: {
-    color: "white",
-    fontSize: 12,
-    textAlign: "center",
-    fontWeight: "400",
-    fontFamily: "NotoSerif-Regular",
-  },
-  selectedButton: {
-    borderColor: "green",
-    borderWidth: 2,
-  },
-  rsvpContainer: {
-    flexDirection: "row",
-    alignItems: "flex-end",
-  },
-  profilePicContainer: {
-    marginRight: 10,
-  },
-  profilePic: {
-    width: 50,
-    height: 50,
-    borderRadius: 50,
-  },
-  rsvpImageContainer: {
-    position: "absolute",
-    bottom: 0,
-    right: 0,
-  },
-  rsvpImage: {
-    width: 25,
-    height: 25,
-    borderRadius: 50,
-  },
-});

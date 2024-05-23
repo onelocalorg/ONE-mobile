@@ -83,16 +83,16 @@ const TicketCheckoutModalComp = (
   const [newCardState, addNewCardSate] = useState("");
   const [newCardZip, addNewCardZip] = useState("");
 
-  var [buttonDisable, buttonDisableCheck] = useState(Boolean);
+  var [buttonDisable, buttonDisableCheck] = useState(false);
 
   useEffect(() => {
     getCardDetailAPI();
-    const index = eventData?.ticket.findIndex(
+    const index = eventData?.ticketTypes.findIndex(
       (ele) => !ele.is_ticket_purchased
     );
     setSelectedRadioIndex(index);
-    if (eventData?.tickets.length !== 0) {
-      if (eventData?.tickets[0].available_quantity === 0) {
+    if (eventData?.ticketTypes.length !== 0) {
+      if (eventData?.ticketTypes[0].available_quantity === 0) {
         buttonDisableCheck(true);
       }
       if (eventData?.tickets[0].available_quantity !== 0) {
