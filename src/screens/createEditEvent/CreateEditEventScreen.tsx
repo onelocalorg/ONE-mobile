@@ -46,7 +46,7 @@ import { UserProfileState } from "~/network/reducers/user-profile-reducer";
 import { width } from "~/theme/device/device";
 import { LocalEvent, isLocalEvent } from "~/types/local-event";
 import { LocalEventData } from "~/types/local-event-data";
-import { TicketType } from "~/types/ticket-type";
+import { TicketTypeData } from "~/types/ticket-type-data";
 import { GetAdmintoolsDropDownScreen } from "./getAdmintoolsDropdown";
 
 interface CreateEditEventScreenProps {
@@ -313,7 +313,7 @@ export const CreateEditEventScreen = (props: CreateEditEventScreenProps) => {
   //   setEventDetails({ ...eventDetails, [key]: text });
   // };
 
-  const onTicketAdded = (ticket: TicketType) => {
+  const onTicketAdded = (ticket: TicketTypeData) => {
     LOG.debug("> onTicketAdded", ticket);
     // setIsEdit(false);
     // modalRef.current?.onCloseModal();
@@ -600,7 +600,7 @@ export const CreateEditEventScreen = (props: CreateEditEventScreenProps) => {
               <View>
                 {ticketTypes?.map((t, index) => {
                   return (
-                    <View key={t.id || index} style={styles.rowOnly}>
+                    <View key={t.name} style={styles.rowOnly}>
                       <Text style={styles.ticket}>{`${t?.name} - ${
                         t.quantity ? t.quantity : "Unlimited"
                       } ${

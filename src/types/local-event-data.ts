@@ -1,5 +1,5 @@
 import { DateTime } from "luxon";
-import { TicketType } from "./ticket-type";
+import { TicketTypeData } from "./ticket-type-data";
 
 // The data for creating an event.
 export interface LocalEventData {
@@ -15,6 +15,6 @@ export interface LocalEventData {
   longitude: number;
   event_image?: string;
   email_confirmation_body?: string;
-  ticketTypes: TicketType[];
+  ticketTypes: TicketTypeData[];
   isCanceled?: boolean;
 }

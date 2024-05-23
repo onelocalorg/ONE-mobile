@@ -1,12 +1,7 @@
-import Big from "big.js";
+import { TicketTypeData } from "./ticket-type-data";
 
-export interface TicketType {
-  id?: string;
-  name: string;
-  price: Big;
-  // is_ticket_purchased?: string;
-  // ticket_purchase_link?: string;
-  quantity?: number;
-  // max_quantity_to_show: string;
-  // available_quantity: any;
+export interface TicketType extends TicketTypeData {
+  id: string;
+  sold?: number;
+  isAvailable?: boolean;
 }

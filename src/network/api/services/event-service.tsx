@@ -5,7 +5,7 @@ import { DateTime } from "luxon";
 import { LOG } from "~/config";
 import { apiConstants } from "~/network/constant";
 import { getApiResponse } from "~/network/utils/get-api-response";
-import { EventResponse } from "~/types/event-response";
+import { EventProducer } from "~/types/event-producer";
 import { GeoJSONEventProperties } from "~/types/geojson-event-properties";
 import { LocalEvent } from "~/types/local-event";
 import { LocalEventData } from "~/types/local-event-data";
@@ -127,6 +127,32 @@ FetchEventsProps) => {
   LOG.debug(dataItem?.data);
   return dataItem?.data as GeoJSON.FeatureCollection;
 };
+
+export interface EventResponse {
+  id: string;
+  name: string;
+  start_date: string;
+  end_date?: string;
+  timezone: string;
+  about?: string;
+  address?: string;
+  full_address: string;
+  location: GeoJSON.Point;
+  lat: number;
+  long: number;
+  eventProducer: EventProducer;
+  email_confirmation_body: string;
+  event_image_id?: string;
+  ticketTypes: TicketType[];
+  isCanceled: boolean;
+  viewCount: number;
+  isPayout: boolean;
+  payoutProcess: string;
+  payout: any;
+  event_type: string;
+  is_event_owner: boolean;
+  totalRevenue: number;
+}
 
 export const featureCollectionToLocalEvents = (
   collection: GeoJSON.FeatureCollection

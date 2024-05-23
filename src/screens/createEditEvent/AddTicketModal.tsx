@@ -10,17 +10,17 @@ import { OneModal } from "~/components/modal-component/OneModal";
 import { SizedBox } from "~/components/sized-box";
 import { LOG } from "~/config";
 import { verticalScale } from "~/theme/device/normalize";
-import { TicketType } from "~/types/ticket-type";
+import { TicketTypeData } from "~/types/ticket-type-data";
 import { createStyleSheet } from "./style";
 
 interface AddTicketModalProps {
   // eventDetails: EventData;
   // eventId: string;
-  value?: TicketType;
+  value?: TicketTypeData;
   isVisible: boolean;
   // isEdit?: boolean;
 
-  onSuccess: (ticketDetails: TicketType) => void;
+  onSuccess: (ticketDetails: TicketTypeData) => void;
   onDismiss?: () => void;
 }
 
@@ -109,8 +109,7 @@ export const AddTicketModal = ({
   //   Keyboard.dismiss();
   // };
 
-  const createTicketType = (): TicketType => ({
-    id: value ? value.id : undefined,
+  const createTicketType = (): TicketTypeData => ({
     name,
     price: price ? price : Big(0),
     quantity: quantity ? quantity : undefined,
