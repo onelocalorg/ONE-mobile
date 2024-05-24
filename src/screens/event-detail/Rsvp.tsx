@@ -11,8 +11,8 @@ import { listRsvps, updateRsvp } from "~/network/api/services/event-service";
 import { StoreType } from "~/network/reducers/store";
 import { UserProfileState } from "~/network/reducers/user-profile-reducer";
 import { RsvpList, RsvpType } from "~/types/rsvp";
+import { createStyleSheet as createRsvpStyleSheet } from "./rsvp-style";
 import { createStyleSheet as createBaseStyleSheet } from "./style";
-import { createStyleSheet as createTicketsStyleSheet } from "./tickets-style";
 ``;
 interface RsvpProps {
   eventId: string;
@@ -23,7 +23,7 @@ export const Rsvp = ({ eventId }: RsvpProps) => {
   const { theme } = useAppTheme();
   const { strings } = useStringsAndLabels();
   const styles = createBaseStyleSheet(theme);
-  const styles1 = createTicketsStyleSheet(theme);
+  const styles1 = createRsvpStyleSheet(theme);
   const { user } = useSelector<StoreType, UserProfileState>(
     (state) => state.userProfileReducer
   ) as { user: { stripeCustomerId: string; user_type: string; id: string } };

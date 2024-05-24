@@ -1,6 +1,6 @@
 import { DateTime } from "luxon";
+import { OneUser } from "./one-user";
 import { PostData } from "./post-data";
-import { User } from "./user";
 
 // The data returned from the server for a post
 export interface Post extends PostData {
@@ -8,6 +8,6 @@ export interface Post extends PostData {
   imageUrls: string[];
   numComments: number;
   numGrats: number;
-  author: User;
+  author: OneUser;
   postDate: DateTime;
 }

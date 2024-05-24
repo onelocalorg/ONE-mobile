@@ -1,8 +1,8 @@
 import { DateTime } from "luxon";
 import { LOG } from "~/config";
+import { OneUser } from "~/types/one-user";
 import { Post } from "~/types/post";
 import { PostData } from "~/types/post-data";
-import { User } from "~/types/user";
 import { doPost, doPostPaginated } from "./api-service";
 
 export async function createPost(data: PostData) {
@@ -75,7 +75,7 @@ interface GetPostApiResource {
     location: GeoJSON.Point;
     address: string;
   };
-  user_id: User;
+  user_id: OneUser;
   gratis: number;
   startDate?: string;
   postDate?: string;

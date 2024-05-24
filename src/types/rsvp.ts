@@ -1,4 +1,4 @@
-import { User } from "./user";
+import { OneUser } from "./one-user";
 
 export interface RsvpList {
   rsvps: Rsvp[];
@@ -16,5 +16,5 @@ export enum RsvpType {
 export interface Rsvp {
   id: string;
   rsvp: RsvpType;
-  guest: User;
+  guest: OneUser;
 }

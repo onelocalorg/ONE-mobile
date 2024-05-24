@@ -58,7 +58,9 @@ async function callApi<Body, Resource>(
   body?: Body
 ) {
   LOG.info("callApi", method, url);
-  LOG.debug("=>", body);
+  if (body) {
+    LOG.debug("=>", body);
+  }
   const token = await AsyncStorage.getItem("token");
   const response = await fetch(process.env.API_URL + url, {
     method,

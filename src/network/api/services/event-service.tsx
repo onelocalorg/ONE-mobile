@@ -9,9 +9,10 @@ import { EventProducer } from "~/types/event-producer";
 import { GeoJSONEventProperties } from "~/types/geojson-event-properties";
 import { LocalEvent } from "~/types/local-event";
 import { LocalEventData } from "~/types/local-event-data";
+import { OneUser } from "~/types/one-user";
+import { PriceBreakdown } from "~/types/price-breakdown";
 import { RsvpList, RsvpType } from "~/types/rsvp";
 import { TicketType } from "~/types/ticket-type";
-import { User } from "~/types/user";
 import { API } from "..";
 import { doGet, doPost } from "./api-service";
 
@@ -24,6 +25,21 @@ export async function updateRsvp(eventId: string, rsvp: RsvpType) {
   return await doPost<UpdateRsvpBody, any>(`/v1/events/rsvp/${eventId}`, {
     type: rsvp,
   });
+}
+
+export async function getTicketPriceBreakdown(
+  eventId: string,
+  tickets: Map<string, number>
+) {
+  let qs = "";
+  for (const [tid, quantity] of tickets.entries()) {
+    qs += `tid=${tid}&q=${quantity}&`;
+  }
+
+  const resp = await doGet<PriceBreakdown>(
+    `/v1/events/${eventId}/prices?${qs}`
+  );
+  return resp;
 }
 
 interface UpdateRsvpBody {
@@ -50,7 +66,7 @@ interface RsvpListResource {
 interface RsvpResource {
   id: string;
   rsvp: string;
-  user_id: User;
+  user_id: OneUser;
 }
 
 interface EventProps {

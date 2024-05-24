@@ -12,7 +12,7 @@ import { buttonArrowGreen } from "~/assets/images";
 import { ImageComponent } from "~/components/image-component";
 import { SizedBox } from "~/components/sized-box";
 import { LOG } from "~/config";
-import { User } from "~/types/user";
+import { OneUser } from "~/types/one-user";
 import { createStyleSheet } from "./style";
 
 interface UserListProps {
@@ -22,7 +22,7 @@ export const UserList = ({ onChangeList }: UserListProps) => {
   const { theme } = useAppTheme();
   const styles = createStyleSheet(theme);
 
-  const [userList, setUserList] = useState<User[]>([]);
+  const [userList, setUserList] = useState<OneUser[]>([]);
 
   async function searchForUser(searchText: string) {
     LOG.debug("> searchForUser", searchText);

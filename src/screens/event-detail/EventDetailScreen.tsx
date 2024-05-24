@@ -2,10 +2,9 @@
 import {
   NavigationContainerRef,
   ParamListBase,
-  useFocusEffect,
 } from "@react-navigation/native";
 import { DateTime } from "luxon";
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Image, ScrollView, Text, TouchableOpacity, View } from "react-native";
 import { useSelector } from "react-redux";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
@@ -30,6 +29,7 @@ import { UserProfileState } from "~/network/reducers/user-profile-reducer";
 import { verticalScale } from "~/theme/device/normalize";
 import { LocalEvent } from "~/types/local-event";
 import { Rsvp } from "./Rsvp";
+import { Tickets } from "./Tickets";
 import { createStyleSheet } from "./style";
 
 interface EventDetailScreenProps {
@@ -98,19 +98,6 @@ export const EventDetailScreen = (props: EventDetailScreenProps) => {
       fetchEvent(eventId).then(eventResponseToLocalEvent).then(setEvent);
     }
   }, [eventId]);
-
-  useFocusEffect(
-    useCallback(() => {
-      // const ticketLength = event?.ticketTypes.filter(
-      //   (ele) => !ele?.is_ticket_purchased
-      // )?.length;
-      if (event && event.ticketTypes.length > 0) {
-        setIsTicketAvailable(true);
-      } else {
-        setIsTicketAvailable(false);
-      }
-    }, [event])
-  );
 
   // useFocusEffect(
   //   useCallback(() => {
@@ -242,7 +229,7 @@ export const EventDetailScreen = (props: EventDetailScreenProps) => {
 
           {eventId ? (
             <>
-              {/* <Tickets event={event} /> */}
+              <Tickets event={event} />
               <Rsvp eventId={eventId} />
             </>
           ) : null}
@@ -256,14 +243,6 @@ export const EventDetailScreen = (props: EventDetailScreenProps) => {
           )}
         </ScrollView>
       ) : null}
-      {/* {event ? (
-        <TicketCheckoutModal
-          eventData={event}
-          onPurchase={onPurchaseTicketThroughCard}
-          ref={modalRef}
-          loader={showLoader}
-        />
-      ) : null} */}
     </View>
   );
 };
