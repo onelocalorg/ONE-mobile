@@ -27,7 +27,7 @@ import {
   plus,
 } from "~/assets/images";
 import { ButtonComponent } from "~/components/button-component";
-import { EventList } from "~/components/events/EventList";
+import { EventCard } from "~/components/events/EventCard";
 import { ImageComponent } from "~/components/image-component";
 import { Loader } from "~/components/loader";
 import { ModalComponent } from "~/components/modal-component";
@@ -423,7 +423,7 @@ const TicketCheckoutModalComp = (
         <Loader showOverlay visible={setLoader || loader}></Loader>
         <View style={styles.modalContainer}>
           <ScrollView showsVerticalScrollIndicator={false}>
-            <EventList data={eventData} />
+            <EventCard data={eventData} />
             <Text style={styles.amount}>
               {eventData?.tickets?.[selectedRadioIndex]?.price}
             </Text>

@@ -6,13 +6,13 @@ import { ImageComponent } from "~/components/image-component";
 import { LocalEventData } from "~/types/local-event-data";
 import { createStyleSheet } from "./style";
 
-interface EventListProps {
+interface EventCardProps {
   data: LocalEventData;
   onPress?: () => void;
   disabled?: boolean;
 }
 
-export const EventList = (props: EventListProps) => {
+export const EventCard = (props: EventCardProps) => {
   const { theme } = useAppTheme();
   const styles = createStyleSheet(theme);
   const { data, onPress, disabled = false } = props || {};

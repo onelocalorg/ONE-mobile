@@ -1,28 +1,23 @@
 import { useFocusEffect } from "@react-navigation/native";
-import Big from "big.js";
 import _ from "lodash/fp";
 import React, { useCallback, useRef, useState } from "react";
-import { Alert, ScrollView, Text, View } from "react-native";
+import { Alert, Text, View } from "react-native";
 import Toast from "react-native-simple-toast";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
 import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
 import { ButtonComponent } from "~/components/button-component";
-import { EventList } from "~/components/events/EventList";
 import { ModalRefProps } from "~/components/modal-component";
-import { OneModal } from "~/components/modal-component/OneModal";
 import { PurchaseProps } from "~/network/api/services/event-service";
 import { usePurchaseTicket } from "~/network/hooks/home-service-hooks/use-purchase-ticket";
 import { LocalEvent } from "~/types/local-event";
-import { SubtotalView } from "./SubtotalView";
-import { TicketSelector } from "./TicketSelector";
 import { createStyleSheet as createBaseStyleSheet } from "./style";
 
 interface TicketsProps {
   event: LocalEvent;
-  onLoading?: (isLoading: boolean) => void;
+  onButtonPressed?: () => void;
 }
 
-export const Tickets = ({ event, onLoading }: TicketsProps) => {
+export const Tickets = ({ event, onButtonPressed }: TicketsProps) => {
   const { theme } = useAppTheme();
   const { strings } = useStringsAndLabels();
   const styles = createBaseStyleSheet(theme);
@@ -30,11 +25,6 @@ export const Tickets = ({ event, onLoading }: TicketsProps) => {
     usePurchaseTicket();
   const [isTicketAvailable, setIsTicketAvailable] = useState(false);
   const modalRef: React.Ref<ModalRefProps> = useRef(null);
-  const [isBuyTicketVisible, setBuyTicketVisible] = useState(false);
-  const [totalPrice, setTotalPrice] = useState(0);
-  const [selectedTickets, setSelectedTickets] = useState<Map<string, number>>(
-    new Map()
-  );
 
   useFocusEffect(
     useCallback(() => {
@@ -124,15 +114,6 @@ export const Tickets = ({ event, onLoading }: TicketsProps) => {
   //   });
   // };
 
-  const selectedTicketPrice = () =>
-    event.ticketTypes.reduce(
-      (total, ticketType) =>
-        (total = total.plus(
-          ticketType.price.times(selectedTickets.get(ticketType.id) ?? 0)
-        )),
-      Big(0)
-    );
-
   return (
     <View style={styles.container}>
       {event.ticketTypes?.length ? (
@@ -152,64 +133,9 @@ export const Tickets = ({ event, onLoading }: TicketsProps) => {
         <ButtonComponent
           disabled={event.isCanceled}
           title={strings.chooseTickets}
-          onPress={() => setBuyTicketVisible(true)}
+          onPress={onButtonPressed}
         />
       ) : null}
-      <OneModal title={strings.ticketCheckout} isVisible={isBuyTicketVisible}>
-        <View style={styles.modalContainer}>
-          <ScrollView showsVerticalScrollIndicator={false}>
-            <EventList data={event} />
-            <Text style={styles.amount}>
-              ${selectedTicketPrice().toFixed(0)}
-            </Text>
-            <TicketSelector
-              ticketTypes={event.ticketTypes}
-              onSelectedChanged={setSelectedTickets}
-            />
-            <View style={styles.lineSpace} />
-
-            <SubtotalView
-              eventId={event.id}
-              ticketTypes={event.ticketTypes}
-              tickets={selectedTickets}
-            />
-            <ButtonComponent
-              // disabled={buttonDisable}
-              // onPress={onSubmit}
-              // onPress={() =>
-              //   onPurchase(
-              //     setPrice,
-              //     eventData?.tickets?.[selectedRadioIndex]?.id ?? '',
-              //     eventData?.tickets?.[selectedRadioIndex]?.name,
-              //     quantityticket,
-              //   )
-              // }
-              title={strings.purchase}
-            />
-            {/* <OneModal isVisible={false}>
-              <>
-                <CardList />
-                <View>
-                  <TouchableOpacity
-                    //   onPress={() => OnCardValidation()}
-                    activeOpacity={0.8}
-                    style={styles.addCardContainer}
-                  >
-                    <View />
-                    <Text style={styles.titleTwo}>
-                      {strings.pay} ${totalPrice}
-                    </Text>
-                    <ImageComponent
-                      source={buttonArrowBlue}
-                      style={styles.buttonArrow}
-                    />
-                  </TouchableOpacity>
-                </View>
-              </>
-            </OneModal> */}
-          </ScrollView>
-        </View>
-      </OneModal>
     </View>
   );
 };

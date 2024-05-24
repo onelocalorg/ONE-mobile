@@ -8,7 +8,7 @@ import React, { useCallback, useState } from "react";
 import { FlatList, ListRenderItem, Text, View } from "react-native";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
 import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
-import { EventList } from "~/components/events/EventList";
+import { EventCard } from "~/components/events/EventCard";
 import { Loader } from "~/components/loader";
 import { navigations } from "~/config/app-navigation/constant";
 import {
@@ -77,7 +77,7 @@ export const MyEvents = (props: MyEventsProps) => {
     const { name } = item || {};
 
     return (
-      <EventList key={name} onPress={() => onNavigate(item)} data={item} />
+      <EventCard key={name} onPress={() => onNavigate(item)} data={item} />
     );
   };
 

@@ -1,3 +1,4 @@
+import _ from "lodash/fp";
 import React, { useEffect, useState } from "react";
 import { Text, View } from "react-native";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
@@ -25,9 +26,11 @@ export const SubtotalView = ({
   const [priceBreakdown, setPriceBreakdown] = useState<PriceBreakdown>();
 
   useEffect(() => {
-    const tid = tickets.keys().next().value;
-    const quantity = tickets.get(tid);
-    calculatePrices(tid, quantity!);
+    if (!_.isEmpty(tickets)) {
+      const tid = tickets.keys().next().value;
+      const quantity = tickets.get(tid);
+      calculatePrices(tid, quantity!);
+    }
   }, [eventId, tickets]);
 
   async function calculatePrices(ticketId: string, quantity: number) {

@@ -5,7 +5,14 @@ import {
 } from "@react-navigation/native";
 import { DateTime } from "luxon";
 import React, { useEffect, useRef, useState } from "react";
-import { Image, ScrollView, Text, TouchableOpacity, View } from "react-native";
+import {
+  Image,
+  Pressable,
+  ScrollView,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { useSelector } from "react-redux";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
 import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
@@ -14,6 +21,7 @@ import { ButtonComponent } from "~/components/button-component";
 import { ImageComponent } from "~/components/image-component";
 import { Loader } from "~/components/loader";
 import { ModalRefProps } from "~/components/modal-component";
+import { OneModal } from "~/components/modal-component/OneModal";
 import { Navbar } from "~/components/navbar/Navbar";
 import { SizedBox } from "~/components/sized-box";
 import { navigations } from "~/config/app-navigation/constant";
@@ -28,6 +36,7 @@ import { StoreType } from "~/network/reducers/store";
 import { UserProfileState } from "~/network/reducers/user-profile-reducer";
 import { verticalScale } from "~/theme/device/normalize";
 import { LocalEvent } from "~/types/local-event";
+import { ChooseTickets } from "./ChooseTickets";
 import { Rsvp } from "./Rsvp";
 import { Tickets } from "./Tickets";
 import { createStyleSheet } from "./style";
@@ -84,6 +93,8 @@ export const EventDetailScreen = (props: EventDetailScreenProps) => {
     (state) => state.userProfileReducer
   ) as { user: { stripeCustomerId: string; user_type: string; id: string } };
   const [event, setEvent] = useState<LocalEvent>();
+  const [isChooseTicketsModalVisible, setChooseTicketsModalVisible] =
+    useState(false);
   // const { refetch, isLoading, isRefetching, data } = useEventDetails(eventId);
 
   const { mutateAsync: createPayoutIntent } = useCreatePayoutIntent();
@@ -154,94 +165,108 @@ export const EventDetailScreen = (props: EventDetailScreenProps) => {
       <Loader visible={!event} showOverlay />
       {event ? (
         <ScrollView contentContainerStyle={styles.scrollView}>
-          <View style={styles.container}>
-            <Text style={styles.title}>{event.name}</Text>
-            <SizedBox height={verticalScale(16)} />
-            <View style={{ position: "relative" }}>
-              <Image
-                resizeMode="cover"
-                source={
-                  event.event_image
-                    ? { uri: event.event_image }
-                    : require("~/assets/images/defaultEvent.png")
-                }
-                style={styles.eventImage}
-              />
+          <Pressable onPress={() => console.log("click")}>
+            <View style={styles.container}>
+              <Text style={styles.title}>{event.name}</Text>
+              <SizedBox height={verticalScale(16)} />
+              <View style={{ position: "relative" }}>
+                <Image
+                  resizeMode="cover"
+                  source={
+                    event.event_image
+                      ? { uri: event.event_image }
+                      : require("~/assets/images/defaultEvent.png")
+                  }
+                  style={styles.eventImage}
+                />
 
-              {/* <View style={{position:'absolute',bottom:-10,width:165,height:34,backgroundColor:'#DA9791',alignSelf:'center',borderRadius:7,justifyContent:'center'}}>
+                {/* <View style={{position:'absolute',bottom:-10,width:165,height:34,backgroundColor:'#DA9791',alignSelf:'center',borderRadius:7,justifyContent:'center'}}>
               <TouchableOpacity style={{width:46,height:15,backgroundColor:'black',justifyContent:'center',alignItems:'center'}}>
                 <Text style={{color:'white',textAlign:'center',justifyContent:'center',alignItems:'center',alignSelf:'center'}}>hello</Text>
               </TouchableOpacity>
             </View> */}
+              </View>
+              <SizedBox height={verticalScale(35)} />
+              <View style={styles.row}>
+                <View style={styles.circularView}>
+                  <ImageComponent
+                    source={calendarTime}
+                    style={styles.calendarTime}
+                  />
+                </View>
+                <View style={styles.margin}>
+                  <Text style={styles.date}>
+                    {event.start_date.toLocaleString(DateTime.DATE_MED)}
+                  </Text>
+                  <Text style={styles.time}>
+                    {event.start_date.toLocaleString(DateTime.TIME_SIMPLE)}
+                  </Text>
+                </View>
+              </View>
+              <View style={[styles.row, styles.marginTop]}>
+                <View style={[styles.circularView, styles.yellow]}>
+                  <ImageComponent source={pinWhite} style={styles.pinWhite} />
+                </View>
+                <View style={styles.margin}>
+                  <Text style={styles.date}>{event.address}</Text>
+                  <Text style={styles.time}>{event.full_address}</Text>
+                </View>
+              </View>
+              <View style={[styles.row, styles.marginTop]}>
+                <TouchableOpacity
+                  activeOpacity={0.8}
+                  onPress={onNavigateToProducerProfile}
+                >
+                  <ImageComponent
+                    resizeMode="cover"
+                    source={{ uri: event.eventProducer?.pic }}
+                    style={styles.dummy}
+                  />
+                </TouchableOpacity>
+                <View style={styles.margin}>
+                  <Text
+                    style={styles.date}
+                  >{`${event.eventProducer?.first_name} ${event.eventProducer?.last_name}`}</Text>
+                  <Text style={styles.time}>
+                    {user?.user_type === "player"
+                      ? strings.player
+                      : strings.producer}
+                  </Text>
+                </View>
+              </View>
+              <SizedBox height={verticalScale(30)} />
+              <Text style={styles.event}>{strings.aboutEvent}</Text>
+              <Text style={styles.desc}>{event.about}</Text>
             </View>
-            <SizedBox height={verticalScale(35)} />
-            <View style={styles.row}>
-              <View style={styles.circularView}>
-                <ImageComponent
-                  source={calendarTime}
-                  style={styles.calendarTime}
-                />
-              </View>
-              <View style={styles.margin}>
-                <Text style={styles.date}>
-                  {event.start_date.toLocaleString(DateTime.DATE_MED)}
-                </Text>
-                <Text style={styles.time}>
-                  {event.start_date.toLocaleString(DateTime.TIME_SIMPLE)}
-                </Text>
-              </View>
-            </View>
-            <View style={[styles.row, styles.marginTop]}>
-              <View style={[styles.circularView, styles.yellow]}>
-                <ImageComponent source={pinWhite} style={styles.pinWhite} />
-              </View>
-              <View style={styles.margin}>
-                <Text style={styles.date}>{event.address}</Text>
-                <Text style={styles.time}>{event.full_address}</Text>
-              </View>
-            </View>
-            <View style={[styles.row, styles.marginTop]}>
-              <TouchableOpacity
-                activeOpacity={0.8}
-                onPress={onNavigateToProducerProfile}
-              >
-                <ImageComponent
-                  resizeMode="cover"
-                  source={{ uri: event.eventProducer?.pic }}
-                  style={styles.dummy}
-                />
-              </TouchableOpacity>
-              <View style={styles.margin}>
-                <Text
-                  style={styles.date}
-                >{`${event.eventProducer?.first_name} ${event.eventProducer?.last_name}`}</Text>
-                <Text style={styles.time}>
-                  {user?.user_type === "player"
-                    ? strings.player
-                    : strings.producer}
-                </Text>
-              </View>
-            </View>
-            <SizedBox height={verticalScale(30)} />
-            <Text style={styles.event}>{strings.aboutEvent}</Text>
-            <Text style={styles.desc}>{event.about}</Text>
-          </View>
 
-          {eventId ? (
-            <>
-              <Tickets event={event} />
-              <Rsvp eventId={eventId} />
-            </>
-          ) : null}
-          {event.is_event_owner ? (
-            <ButtonComponent
-              title={strings.adminTools}
-              onPress={handleEditEvent}
-            />
-          ) : (
-            <></>
-          )}
+            {eventId ? (
+              <>
+                <Tickets
+                  event={event}
+                  onButtonPressed={() => setChooseTicketsModalVisible(true)}
+                />
+                <Rsvp eventId={eventId} />
+              </>
+            ) : null}
+            {event.is_event_owner ? (
+              <ButtonComponent
+                title={strings.adminTools}
+                onPress={handleEditEvent}
+              />
+            ) : (
+              <></>
+            )}
+          </Pressable>
         </ScrollView>
+      ) : null}
+      {event ? (
+        <OneModal
+          title={strings.ticketCheckout}
+          isVisible={isChooseTicketsModalVisible}
+          onRequestClose={() => setChooseTicketsModalVisible(false)}
+        >
+          <ChooseTickets event={event} />
+        </OneModal>
       ) : null}
     </View>
   );
