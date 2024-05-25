@@ -119,7 +119,7 @@ export const AddTicketModal = ({
     <View>
       <OneModal
         isVisible={isVisible}
-        onRequestClose={() => {
+        onDismiss={() => {
           resetState();
           onDismiss?.();
         }}

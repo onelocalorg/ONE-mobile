@@ -2,13 +2,12 @@ import { useFocusEffect } from "@react-navigation/native";
 import _ from "lodash/fp";
 import React, { useCallback, useRef, useState } from "react";
 import { Alert, Text, View } from "react-native";
-import Toast from "react-native-simple-toast";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
 import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
 import { ButtonComponent } from "~/components/button-component";
 import { ModalRefProps } from "~/components/modal-component";
 import { PurchaseProps } from "~/network/api/services/event-service";
-import { usePurchaseTicket } from "~/network/hooks/home-service-hooks/use-purchase-ticket";
+// import { usePurchaseTicket } from "~/network/hooks/home-service-hooks/use-purchase-ticket";
 import { LocalEvent } from "~/types/local-event";
 import { createStyleSheet as createBaseStyleSheet } from "./style";
 
@@ -21,8 +20,8 @@ export const Tickets = ({ event, onButtonPressed }: TicketsProps) => {
   const { theme } = useAppTheme();
   const { strings } = useStringsAndLabels();
   const styles = createBaseStyleSheet(theme);
-  const { mutateAsync: purchaseTicket, isLoading: purchaseTicketLoading } =
-    usePurchaseTicket();
+  // const { mutateAsync: purchaseTicket, isLoading: purchaseTicketLoading } =
+  //   usePurchaseTicket();
   const [isTicketAvailable, setIsTicketAvailable] = useState(false);
   const modalRef: React.Ref<ModalRefProps> = useRef(null);
 
@@ -59,17 +58,17 @@ export const Tickets = ({ event, onButtonPressed }: TicketsProps) => {
         ticket_quantity: quantityticket,
       },
     };
-    const res = await purchaseTicket(request);
-    if (res?.success === true) {
-      Toast.show(res.message, Toast.LONG, {
-        backgroundColor: "black",
-      });
+    // const res = await purchaseTicket(request);
+    // if (res?.success === true) {
+    //   Toast.show(res.message, Toast.LONG, {
+    //     backgroundColor: "black",
+    //   });
 
-      //   LoadingData(false);
-      //   navigation?.goBack();
-    } else {
-      //   LoadingData(false);
-    }
+    //   LoadingData(false);
+    //   navigation?.goBack();
+    // } else {
+    //   //   LoadingData(false);
+    // }
   };
 
   // const onPurchaseTicket = async (

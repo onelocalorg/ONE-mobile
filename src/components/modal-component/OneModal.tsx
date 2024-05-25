@@ -1,16 +1,6 @@
 import React from "react";
-import {
-  KeyboardAvoidingView,
-  Modal,
-  Platform,
-  Pressable,
-  StyleProp,
-  Text,
-  TextStyle,
-  View,
-  ViewStyle,
-} from "react-native";
-import GestureRecognizer from "react-native-swipe-gestures";
+import { StyleProp, Text, TextStyle, View, ViewStyle } from "react-native";
+import { Modal, Portal } from "react-native-paper";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
 import { createStyleSheet } from "./style";
 
@@ -20,7 +10,7 @@ interface OneModalProps {
   viewStyle?: StyleProp<ViewStyle>;
   titleStyle?: StyleProp<TextStyle>;
   isVisible: boolean;
-  onRequestClose: () => void;
+  onDismiss: () => void;
 }
 export const OneModal = ({
   children,
@@ -28,33 +18,19 @@ export const OneModal = ({
   viewStyle,
   titleStyle,
   isVisible,
-  onRequestClose,
+  onDismiss,
 }: OneModalProps) => {
   const { theme } = useAppTheme();
   const styles = createStyleSheet(theme);
 
   return (
-    <View style={{ height: "100%" }}>
-      <Modal
-        transparent={true}
-        visible={isVisible}
-        onRequestClose={onRequestClose}
-      >
-        <GestureRecognizer onSwipeDown={onRequestClose} style={styles.gesture}>
-          <KeyboardAvoidingView
-            behavior={Platform.OS === "ios" ? "padding" : "height"}
-            style={styles.keyboardView}
-          >
-            <View style={[styles.gradient, viewStyle]}>
-              <Pressable onPress={onRequestClose}></Pressable>
-              {!!title && (
-                <Text style={[styles.title, titleStyle]}>{title}</Text>
-              )}
-              {children}
-            </View>
-          </KeyboardAvoidingView>
-        </GestureRecognizer>
+    <Portal>
+      <Modal visible={isVisible} onDismiss={onDismiss}>
+        <View style={[styles.gradient, viewStyle]}>
+          {!!title && <Text style={[styles.title, titleStyle]}>{title}</Text>}
+          {children}
+        </View>
       </Modal>
-    </View>
+    </Portal>
   );
 };

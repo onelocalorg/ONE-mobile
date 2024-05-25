@@ -1,6 +1,6 @@
 import Big from "big.js";
 import { useState } from "react";
-import { ScrollView, Text, View } from "react-native";
+import { Text, View } from "react-native";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
 import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
 import { ButtonComponent } from "~/components/button-component";
@@ -32,34 +32,34 @@ export const ChooseTickets = ({ event }: ChooseTicketsProps) => {
 
   return (
     <View style={styles.modalContainer}>
-      <ScrollView showsVerticalScrollIndicator={false}>
-        <EventCard data={event} />
-        <Text style={styles.amount}>${selectedTicketPrice().toFixed(0)}</Text>
-        <TicketSelector
-          ticketTypes={event.ticketTypes}
-          onSelectedChanged={setSelectedTickets}
-        />
-        <View style={styles.lineSpace} />
+      {/* <ScrollView showsVerticalScrollIndicator={false}> */}
+      <EventCard data={event} />
+      <Text style={styles.amount}>${selectedTicketPrice().toFixed(0)}</Text>
+      <TicketSelector
+        ticketTypes={event.ticketTypes}
+        onSelectedChanged={setSelectedTickets}
+      />
+      <View style={styles.lineSpace} />
 
-        <SubtotalView
-          eventId={event.id}
-          ticketTypes={event.ticketTypes}
-          tickets={selectedTickets}
-        />
-        <ButtonComponent
-          // disabled={buttonDisable}
-          // onPress={onSubmit}
-          // onPress={() =>
-          //   onPurchase(
-          //     setPrice,
-          //     eventData?.tickets?.[selectedRadioIndex]?.id ?? '',
-          //     eventData?.tickets?.[selectedRadioIndex]?.name,
-          //     quantityticket,
-          //   )
-          // }
-          title={strings.purchase}
-        />
-        {/* <OneModal isVisible={false}>
+      <SubtotalView
+        eventId={event.id}
+        ticketTypes={event.ticketTypes}
+        tickets={selectedTickets}
+      />
+      <ButtonComponent
+        // disabled={buttonDisable}
+        // onPress={onSubmit}
+        // onPress={() =>
+        //   onPurchase(
+        //     setPrice,
+        //     eventData?.tickets?.[selectedRadioIndex]?.id ?? '',
+        //     eventData?.tickets?.[selectedRadioIndex]?.name,
+        //     quantityticket,
+        //   )
+        // }
+        title={strings.purchase}
+      />
+      {/* <OneModal isVisible={false}>
       <>
         <CardList />
         <View>
@@ -80,7 +80,7 @@ export const ChooseTickets = ({ event }: ChooseTicketsProps) => {
         </View>
       </>
     </OneModal> */}
-      </ScrollView>
+      {/* </ScrollView> */}
     </View>
   );
 };

@@ -29,9 +29,6 @@ import {
   eventResponseToLocalEvent,
   fetchEvent,
 } from "~/network/api/services/event-service";
-import { getData } from "~/network/constant";
-import { usePurchaseTicket } from "~/network/hooks/home-service-hooks/use-purchase-ticket";
-import { useCreatePayoutIntent } from "~/network/hooks/payment-service-hooks/use-create-payout-intent";
 import { StoreType } from "~/network/reducers/store";
 import { UserProfileState } from "~/network/reducers/user-profile-reducer";
 import { verticalScale } from "~/theme/device/normalize";
@@ -50,45 +47,15 @@ interface EventDetailScreenProps {
   };
 }
 
-interface RSVP {
-  _id: string;
-  rsvp: string;
-  user_id: {
-    first_name: string;
-    last_name: string;
-    pic: string;
-    id: string;
-  };
-}
-
-interface RsvpData {
-  success: boolean;
-  code: number;
-  message: string;
-  data: {
-    rsvps: RSVP[];
-    going: number;
-    interested: number;
-    cantgo: number;
-  };
-}
-
-interface User {
-  id: string;
-}
-
-export const EventDetailScreen = (props: EventDetailScreenProps) => {
-  const eventId = props.route?.params.id;
+export const EventDetailScreen = ({
+  navigation,
+  route,
+}: EventDetailScreenProps) => {
+  const eventId = route?.params.id;
   const { theme } = useAppTheme();
   const { strings } = useStringsAndLabels();
-  const { navigation, route } = props || {};
-  const [Loading, LodingData] = useState(false);
   const styles = createStyleSheet(theme);
   const modalRef: React.Ref<ModalRefProps> = useRef(null);
-  const [showLoader, LoadingData] = useState(false);
-  const [isTicketAvailable, setIsTicketAvailable] = useState(false);
-  const [rsvpData, setRsvpData] = useState<RsvpData | null>(null);
-  const [selectedButton, setSelectedButton] = useState<string | null>(null);
   const { user } = useSelector<StoreType, UserProfileState>(
     (state) => state.userProfileReducer
   ) as { user: { stripeCustomerId: string; user_type: string; id: string } };
@@ -96,13 +63,6 @@ export const EventDetailScreen = (props: EventDetailScreenProps) => {
   const [isChooseTicketsModalVisible, setChooseTicketsModalVisible] =
     useState(false);
   // const { refetch, isLoading, isRefetching, data } = useEventDetails(eventId);
-
-  const { mutateAsync: createPayoutIntent } = useCreatePayoutIntent();
-  const { mutateAsync: purchaseTicket, isLoading: purchaseTicketLoading } =
-    usePurchaseTicket();
-  const [searchQuery, setSearchQuery] = useState("");
-  const isShowPaymentCheck = getData("isShowPaymentFlow");
-  const [issLoading, setLoading] = useState(true);
 
   useEffect(() => {
     if (eventId) {
@@ -161,7 +121,7 @@ export const EventDetailScreen = (props: EventDetailScreenProps) => {
 
   return (
     <View>
-      <Navbar navigation={props.navigation} />
+      <Navbar navigation={navigation} />
       <Loader visible={!event} showOverlay />
       {event ? (
         <ScrollView contentContainerStyle={styles.scrollView}>
@@ -263,7 +223,7 @@ export const EventDetailScreen = (props: EventDetailScreenProps) => {
         <OneModal
           title={strings.ticketCheckout}
           isVisible={isChooseTicketsModalVisible}
-          onRequestClose={() => setChooseTicketsModalVisible(false)}
+          onDismiss={() => setChooseTicketsModalVisible(false)}
         >
           <ChooseTickets event={event} />
         </OneModal>
