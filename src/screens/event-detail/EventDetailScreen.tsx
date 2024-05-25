@@ -21,7 +21,6 @@ import { ButtonComponent } from "~/components/button-component";
 import { ImageComponent } from "~/components/image-component";
 import { Loader } from "~/components/loader";
 import { ModalRefProps } from "~/components/modal-component";
-import { OneModal } from "~/components/modal-component/OneModal";
 import { Navbar } from "~/components/navbar/Navbar";
 import { SizedBox } from "~/components/sized-box";
 import { navigations } from "~/config/app-navigation/constant";
@@ -33,7 +32,6 @@ import { StoreType } from "~/network/reducers/store";
 import { UserProfileState } from "~/network/reducers/user-profile-reducer";
 import { verticalScale } from "~/theme/device/normalize";
 import { LocalEvent } from "~/types/local-event";
-import { ChooseTickets } from "./ChooseTickets";
 import { Rsvp } from "./Rsvp";
 import { Tickets } from "./Tickets";
 import { createStyleSheet } from "./style";
@@ -60,8 +58,6 @@ export const EventDetailScreen = ({
     (state) => state.userProfileReducer
   ) as { user: { stripeCustomerId: string; user_type: string; id: string } };
   const [event, setEvent] = useState<LocalEvent>();
-  const [isChooseTicketsModalVisible, setChooseTicketsModalVisible] =
-    useState(false);
   // const { refetch, isLoading, isRefetching, data } = useEventDetails(eventId);
 
   useEffect(() => {
@@ -201,10 +197,7 @@ export const EventDetailScreen = ({
 
             {eventId ? (
               <>
-                <Tickets
-                  event={event}
-                  onButtonPressed={() => setChooseTicketsModalVisible(true)}
-                />
+                <Tickets event={event} />
                 <Rsvp eventId={eventId} />
               </>
             ) : null}
@@ -218,15 +211,6 @@ export const EventDetailScreen = ({
             )}
           </Pressable>
         </ScrollView>
-      ) : null}
-      {event ? (
-        <OneModal
-          title={strings.ticketCheckout}
-          isVisible={isChooseTicketsModalVisible}
-          onDismiss={() => setChooseTicketsModalVisible(false)}
-        >
-          <ChooseTickets event={event} />
-        </OneModal>
       ) : null}
     </View>
   );

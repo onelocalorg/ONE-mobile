@@ -8,15 +8,16 @@ import { ButtonComponent } from "~/components/button-component";
 import { ModalRefProps } from "~/components/modal-component";
 import { PurchaseProps } from "~/network/api/services/event-service";
 // import { usePurchaseTicket } from "~/network/hooks/home-service-hooks/use-purchase-ticket";
+import { OneModal } from "~/components/modal-component/OneModal";
 import { LocalEvent } from "~/types/local-event";
+import { ChooseTickets } from "./ChooseTickets";
 import { createStyleSheet as createBaseStyleSheet } from "./style";
 
 interface TicketsProps {
   event: LocalEvent;
-  onButtonPressed?: () => void;
 }
 
-export const Tickets = ({ event, onButtonPressed }: TicketsProps) => {
+export const Tickets = ({ event }: TicketsProps) => {
   const { theme } = useAppTheme();
   const { strings } = useStringsAndLabels();
   const styles = createBaseStyleSheet(theme);
@@ -24,6 +25,8 @@ export const Tickets = ({ event, onButtonPressed }: TicketsProps) => {
   //   usePurchaseTicket();
   const [isTicketAvailable, setIsTicketAvailable] = useState(false);
   const modalRef: React.Ref<ModalRefProps> = useRef(null);
+  const [isChooseTicketsModalVisible, setChooseTicketsModalVisible] =
+    useState(false);
 
   useFocusEffect(
     useCallback(() => {
@@ -132,8 +135,17 @@ export const Tickets = ({ event, onButtonPressed }: TicketsProps) => {
         <ButtonComponent
           disabled={event.isCanceled}
           title={strings.chooseTickets}
-          onPress={onButtonPressed}
+          onPress={() => setChooseTicketsModalVisible(true)}
         />
+      ) : null}
+      {event ? (
+        <OneModal
+          title={strings.ticketCheckout}
+          isVisible={isChooseTicketsModalVisible}
+          onDismiss={() => setChooseTicketsModalVisible(false)}
+        >
+          <ChooseTickets event={event} />
+        </OneModal>
       ) : null}
     </View>
   );
