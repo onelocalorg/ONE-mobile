@@ -5,7 +5,9 @@ import { useAppTheme } from "~/app-hooks/use-app-theme";
 import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
 import { ButtonComponent } from "~/components/button-component";
 import { EventCard } from "~/components/events/EventCard";
+import { createOrder } from "~/network/api/services/order-service";
 import { LocalEvent } from "~/types/local-event";
+import { TicketSelection } from "~/types/ticket-selection";
 import { SubtotalView } from "./SubtotalView";
 import { TicketSelector } from "./TicketSelector";
 import { createStyleSheet } from "./style";
@@ -17,18 +19,25 @@ export const ChooseTickets = ({ event }: ChooseTicketsProps) => {
   const { theme } = useAppTheme();
   const { strings } = useStringsAndLabels();
   const styles = createStyleSheet(theme);
-  const [selectedTickets, setSelectedTickets] = useState<Map<string, number>>(
-    new Map()
-  );
+  const [tickets, setTickets] = useState<TicketSelection[]>([]);
+
+  const ticketTypeById = (id: string) =>
+    event.ticketTypes.find((tt) => tt.id === id);
 
   const selectedTicketPrice = () =>
-    event.ticketTypes.reduce(
-      (total, ticketType) =>
-        (total = total.plus(
-          ticketType.price.times(selectedTickets.get(ticketType.id) ?? 0)
-        )),
-      Big(0)
-    );
+    tickets
+      .filter((t) => t.quantity > 0)
+      .reduce(
+        (total, ticket) =>
+          total.plus(
+            ticketTypeById(ticket.id)?.price.times(ticket.quantity) ?? 0
+          ),
+        Big(0)
+      );
+
+  const purchaseTickets = async () => {
+    const resp = await createOrder(event.id, tickets);
+  };
 
   return (
     <View style={styles.modalContainer}>
@@ -37,26 +46,18 @@ export const ChooseTickets = ({ event }: ChooseTicketsProps) => {
       <Text style={styles.amount}>${selectedTicketPrice().toFixed(0)}</Text>
       <TicketSelector
         ticketTypes={event.ticketTypes}
-        onSelectedChanged={setSelectedTickets}
+        onSelectedChanged={setTickets}
       />
       <View style={styles.lineSpace} />
 
       <SubtotalView
         eventId={event.id}
         ticketTypes={event.ticketTypes}
-        tickets={selectedTickets}
+        tickets={tickets}
       />
       <ButtonComponent
         // disabled={buttonDisable}
-        // onPress={onSubmit}
-        // onPress={() =>
-        //   onPurchase(
-        //     setPrice,
-        //     eventData?.tickets?.[selectedRadioIndex]?.id ?? '',
-        //     eventData?.tickets?.[selectedRadioIndex]?.name,
-        //     quantityticket,
-        //   )
-        // }
+        onPress={purchaseTickets}
         title={strings.purchase}
       />
       {/* <OneModal isVisible={false}>

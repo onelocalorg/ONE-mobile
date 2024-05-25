@@ -12,13 +12,19 @@ import { LocalEventData } from "~/types/local-event-data";
 import { OneUser } from "~/types/one-user";
 import { PriceBreakdown } from "~/types/price-breakdown";
 import { RsvpList, RsvpType } from "~/types/rsvp";
-import { TicketSelection } from "~/types/ticket-selection";
 import { TicketType } from "~/types/ticket-type";
 import { API } from "..";
 import { doGet, doPost } from "./api-service";
 
-export async function listRsvps(eventId: string) {
-  const resp = await doGet<RsvpListResource>(`/v1/events/rsvp/${eventId}`);
+export async function createOrder(
+  eventId: string,
+  tickets: Map<string, number>
+) {
+  const body = {
+    eventId,
+    tickets: TicketSelection,
+  };
+  const resp = await doPost<RsvpListResource>(`/v1/orders/`);
   return { ...resp, data: apiToRsvps(resp.data) };
 }
 
@@ -57,9 +63,12 @@ const apiToRsvps = (data: RsvpListResource) =>
 
 export async function getTicketPriceBreakdown(
   eventId: string,
-  tickets: TicketSelection[]
+  tickets: Map<string, number>
 ) {
-  let qs = tickets.map((ts) => `tid=${ts.id}&q=${ts.quantity}`).join("&");
+  let qs = "";
+  for (const [tid, quantity] of tickets.entries()) {
+    qs += `tid=${tid}&q=${quantity}&`;
+  }
 
   const resp = await doGet<PriceBreakdown>(
     `/v1/events/${eventId}/prices?${qs}`

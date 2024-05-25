@@ -83,7 +83,7 @@ android {
         applicationId "one.oneboulder.one"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 12
+        versionCode 13
         versionName "1.1.0"
         missingDimensionStrategy 'react-native-camera', 'general'
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'

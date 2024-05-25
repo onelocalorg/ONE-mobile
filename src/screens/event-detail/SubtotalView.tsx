@@ -6,13 +6,14 @@ import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
 import { LOG } from "~/config";
 import { getTicketPriceBreakdown } from "~/network/api/services/event-service";
 import { PriceBreakdown } from "~/types/price-breakdown";
+import { TicketSelection } from "~/types/ticket-selection";
 import { TicketType } from "~/types/ticket-type";
 import { createStyleSheet } from "./style";
 
 interface SubtotalViewProps {
   eventId: string;
   ticketTypes: TicketType[];
-  tickets: Map<string, number>;
+  tickets: TicketSelection[];
 }
 
 export const SubtotalView = ({
@@ -27,14 +28,11 @@ export const SubtotalView = ({
 
   useEffect(() => {
     if (!_.isEmpty(tickets)) {
-      const tid = tickets.keys().next().value;
-      const quantity = tickets.get(tid);
-      calculatePrices(tid, quantity!);
+      calculatePrices();
     }
   }, [eventId, tickets]);
 
-  async function calculatePrices(ticketId: string, quantity: number) {
-    LOG.debug("calculatePrices", ticketId, quantity);
+  async function calculatePrices() {
     const resp = await getTicketPriceBreakdown(eventId, tickets);
     if (resp.success) {
       setPriceBreakdown(resp.data);
