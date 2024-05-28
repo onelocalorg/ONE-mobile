@@ -49,7 +49,7 @@ const apiToRsvps = (data: RsvpListResource) =>
     ...data,
     rsvps: data.rsvps.map((r) => ({
       id: r.id,
-      rsvp: r.rsvp as keyof typeof RsvpType,
+      rsvp: r.rsvp,
       guest: r.user_id,
     })),
   } as RsvpList);

@@ -8,9 +8,9 @@ export interface RsvpList {
 }
 
 export enum RsvpType {
-  going = "going",
-  interested = "interested",
-  cantgo = "cantgo",
+  GOING = "going",
+  INTERESTED = "interested",
+  CANT_GO = "cantgo",
 }
 
 export interface Rsvp {

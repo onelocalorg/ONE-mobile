@@ -6,20 +6,21 @@ import { useAppTheme } from "~/app-hooks/use-app-theme";
 import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
 import { startImg } from "~/assets/images";
 import Going from "~/assets/images/going.png";
-import { LOG } from "~/config";
-import { listRsvps, updateRsvp } from "~/network/api/services/event-service";
+import { updateRsvp } from "~/network/api/services/event-service";
 import { StoreType } from "~/network/reducers/store";
 import { UserProfileState } from "~/network/reducers/user-profile-reducer";
+import { LocalEvent } from "~/types/local-event";
 import { RsvpList, RsvpType } from "~/types/rsvp";
 import { createStyleSheet as createRsvpStyleSheet } from "./rsvp-style";
 import { createStyleSheet as createBaseStyleSheet } from "./style";
 ``;
 interface RsvpProps {
-  eventId: string;
+  event: LocalEvent;
+  rsvpData: RsvpList;
+  onRsvpsChanged: () => void;
 }
 
-export const Rsvp = ({ eventId }: RsvpProps) => {
-  LOG.debug("Rsvp", eventId);
+export const Rsvp = ({ event, rsvpData, onRsvpsChanged }: RsvpProps) => {
   const { theme } = useAppTheme();
   const { strings } = useStringsAndLabels();
   const styles = createBaseStyleSheet(theme);
@@ -28,29 +29,14 @@ export const Rsvp = ({ eventId }: RsvpProps) => {
     (state) => state.userProfileReducer
   ) as { user: { stripeCustomerId: string; user_type: string; id: string } };
 
-  const [rsvpData, setRsvpData] = useState<RsvpList>();
   const [selectedButton, setSelectedButton] = useState<RsvpType>();
 
   useEffect(() => {
-    fetchRsvpData();
-  }, [eventId]);
+    findItemById();
+  }, [rsvpData]);
 
-  const fetchRsvpData = async () => {
-    try {
-      const rsvps = await listRsvps(eventId);
-      if (rsvps.success) {
-        setRsvpData(rsvps.data);
-        findItemById(rsvps.data);
-      }
-    } catch (error) {
-      console.error("Error fetching RSVP data:", error);
-    }
-  };
-
-  const findItemById = (rsvpDatas: RsvpList) => {
-    const foundItem = rsvpDatas.rsvps.find(
-      (item) => item.guest.id === user?.id
-    );
+  const findItemById = () => {
+    const foundItem = rsvpData.rsvps.find((item) => item.guest.id === user?.id);
     if (foundItem) {
       setSelectedButton(foundItem.rsvp);
     } else {
@@ -72,8 +58,8 @@ export const Rsvp = ({ eventId }: RsvpProps) => {
   const rsvpsFilter = async (type: RsvpType) => {
     setSelectedButton(type === selectedButton ? undefined : type);
 
-    const resp = await updateRsvp(eventId, type);
-    fetchRsvpData();
+    const resp = await updateRsvp(event.id, type);
+    onRsvpsChanged();
     Toast.show(resp.message, Toast.LONG, {
       backgroundColor: "black",
     });
@@ -85,10 +71,10 @@ export const Rsvp = ({ eventId }: RsvpProps) => {
         <TouchableOpacity
           style={[
             styles1.button,
-            selectedButton === RsvpType.going && styles1.selectedButton,
-            isCurrentUserRSVP(RsvpType.going) && { backgroundColor: "#E9B9B4" },
+            selectedButton === RsvpType.GOING && styles1.selectedButton,
+            isCurrentUserRSVP(RsvpType.GOING) && { backgroundColor: "#E9B9B4" },
           ]}
-          onPress={() => rsvpsFilter(RsvpType.going)}
+          onPress={() => rsvpsFilter(RsvpType.GOING)}
         >
           <View
             style={{
@@ -103,12 +89,12 @@ export const Rsvp = ({ eventId }: RsvpProps) => {
         <TouchableOpacity
           style={[
             styles1.button,
-            selectedButton === RsvpType.interested && styles1.selectedButton,
-            isCurrentUserRSVP(RsvpType.interested) && {
+            selectedButton === RsvpType.INTERESTED && styles1.selectedButton,
+            isCurrentUserRSVP(RsvpType.INTERESTED) && {
               backgroundColor: "#E9B9B4",
             },
           ]}
-          onPress={() => rsvpsFilter(RsvpType.interested)}
+          onPress={() => rsvpsFilter(RsvpType.INTERESTED)}
         >
           <View
             style={{

@@ -27,11 +27,14 @@ import { navigations } from "~/config/app-navigation/constant";
 import {
   eventResponseToLocalEvent,
   fetchEvent,
+  listRsvps,
+  updateRsvp,
 } from "~/network/api/services/event-service";
 import { StoreType } from "~/network/reducers/store";
 import { UserProfileState } from "~/network/reducers/user-profile-reducer";
 import { verticalScale } from "~/theme/device/normalize";
 import { LocalEvent } from "~/types/local-event";
+import { RsvpList, RsvpType } from "~/types/rsvp";
 import { Rsvp } from "./Rsvp";
 import { Tickets } from "./Tickets";
 import { createStyleSheet } from "./style";
@@ -58,49 +61,27 @@ export const EventDetailScreen = ({
     (state) => state.userProfileReducer
   ) as { user: { stripeCustomerId: string; user_type: string; id: string } };
   const [event, setEvent] = useState<LocalEvent>();
+  const [rsvpData, setRsvpData] = useState<RsvpList>();
+
   // const { refetch, isLoading, isRefetching, data } = useEventDetails(eventId);
 
   useEffect(() => {
     if (eventId) {
       fetchEvent(eventId).then(eventResponseToLocalEvent).then(setEvent);
+      fetchRsvpData();
     }
   }, [eventId]);
 
-  // useFocusEffect(
-  //   useCallback(() => {
-  //     getUserProfileAPI();
-  //     eventViewAPI();
-  //     refetch();
-  //   }, [])
-  // );
-
-  // async function eventViewAPI() {
-  //   // LodingData(true);
-  //   const token = await AsyncStorage.getItem("token");
-
-  //   try {
-  //     const response = await fetch(
-  //       process.env.API_URL + "/v1/events/event-count/" + eventId,
-  //       // process.env.API_URL + '/v1/events/event-count/6565af618267f45414608d66',
-  //       {
-  //         method: "post",
-  //         headers: new Headers({
-  //           Authorization: "Bearer " + token,
-  //           "Content-Type": "application/json",
-  //         }),
-  //       }
-  //     );
-
-  //     const dataItem = await response.json();
-  //     // LodingData(false);
-  //     console.log("=========== eventViewAPI response==============");
-  //     console.log("eventId....................", response);
-  //     console.log(dataItem);
-  //   } catch (error) {
-  //     console.error(error);
-  //     // LodingData(false);
-  //   }
-  // }
+  const fetchRsvpData = async () => {
+    try {
+      const rsvps = await listRsvps(eventId!);
+      if (rsvps.success) {
+        setRsvpData(rsvps.data);
+      }
+    } catch (error) {
+      console.error("Error fetching RSVP data:", error);
+    }
+  };
 
   const onNavigateToProducerProfile = () => {
     // if (event?.is_event_owner) {
@@ -113,6 +94,12 @@ export const EventDetailScreen = ({
 
   const handleEditEvent = () => {
     navigation?.navigate(navigations.ADMIN_TOOLS, { eventData: event });
+  };
+
+  const addGoingRsvp = () => {
+    if (eventId) {
+      updateRsvp(eventId, RsvpType.GOING).then(fetchRsvpData);
+    }
   };
 
   return (
@@ -197,8 +184,17 @@ export const EventDetailScreen = ({
 
             {eventId ? (
               <>
-                <Tickets event={event} />
-                <Rsvp eventId={eventId} />
+                <Tickets
+                  event={event}
+                  onTicketPurchased={() => addGoingRsvp()}
+                />
+                {rsvpData ? (
+                  <Rsvp
+                    event={event}
+                    rsvpData={rsvpData}
+                    onRsvpsChanged={() => fetchRsvpData()}
+                  />
+                ) : null}
               </>
             ) : null}
             {event.is_event_owner ? (
