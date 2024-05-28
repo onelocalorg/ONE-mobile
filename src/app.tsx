@@ -9,7 +9,6 @@ import { AppNavigation } from "~/config/app-navigation";
 import { API } from "~/network/api";
 import { queryConfig } from "~/network/utils/query-config";
 import { InternetConnectionHandle } from "~/utils/internet-connection-handle";
-import { initializeStripe } from "~/utils/stripe";
 import { getTheme } from "./theme";
 
 export const queryClient = new QueryClient(queryConfig);
@@ -17,10 +16,6 @@ const theme = getTheme(light);
 
 export const App = () => {
   const { token } = useToken();
-
-  useEffect(() => {
-    initializeStripe();
-  }, []);
 
   useEffect(() => {
     LOG.debug(

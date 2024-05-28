@@ -1,11 +1,10 @@
 import { createStackNavigator } from "@react-navigation/stack";
 import React from "react";
 import { CheckInScreen } from "~/screens/check-in";
-import { CreateEventScreen } from "~/screens/createEditEvent/CreateEditEventScreen";
+import { CreateEditEventScreen } from "~/screens/createEditEvent/CreateEditEventScreen";
 import { AddPayoutExpenseScreen } from "~/screens/createEditEvent/addPayoutExpense-modal";
 import { EditPayoutModalScreen } from "~/screens/createEditEvent/editPayoutExpense-modal";
 import { EventDetailScreen } from "~/screens/event-detail/EventDetailScreen";
-import { PaymentScreen } from "~/screens/payment-screen";
 import { ProfileScreen } from "~/screens/profile";
 import { navigations } from "./constant";
 
@@ -28,17 +27,12 @@ export const ProfileRoute = () => {
       />
       <ProfileStack.Screen
         name={navigations.ADMIN_TOOLS}
-        component={CreateEventScreen}
+        component={CreateEditEventScreen}
         options={{ header }}
       />
       <ProfileStack.Screen
         name={navigations.CHECK_IN}
         component={CheckInScreen}
-        options={{ header }}
-      />
-      <ProfileStack.Screen
-        name={navigations.PAYMENT}
-        component={PaymentScreen}
         options={{ header }}
       />
       <ProfileStack.Screen

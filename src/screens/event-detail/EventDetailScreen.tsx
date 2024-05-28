@@ -59,7 +59,7 @@ export const EventDetailScreen = ({
   const modalRef: React.Ref<ModalRefProps> = useRef(null);
   const { user } = useSelector<StoreType, UserProfileState>(
     (state) => state.userProfileReducer
-  ) as { user: { stripeCustomerId: string; user_type: string; id: string } };
+  ) as { user: { user_type: string; id: string } };
   const [event, setEvent] = useState<LocalEvent>();
   const [rsvpData, setRsvpData] = useState<RsvpList>();
 

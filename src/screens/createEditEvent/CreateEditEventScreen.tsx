@@ -604,7 +604,7 @@ export const CreateEditEventScreen = (props: CreateEditEventScreenProps) => {
                       <Text style={styles.ticket}>{`${t?.name} - ${
                         t.quantity ? t.quantity : "Unlimited"
                       } ${
-                        t.price.gt(0) ? "@ $" + t.price.toFixed(2) : "Free"
+                        t.price > 0 ? "@ $" + t.price.toFixed(2) : "Free"
                       }`}</Text>
                       <View style={styles.rowOnly}>
                         <Pressable onPress={() => setCurTicket(index)}>

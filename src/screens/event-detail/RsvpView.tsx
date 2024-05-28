@@ -31,7 +31,7 @@ export const RsvpView = ({
   const styles1 = createRsvpStyleSheet(theme);
   const { user } = useSelector<StoreType, UserProfileState>(
     (state) => state.userProfileReducer
-  ) as { user: { stripeCustomerId: string; user_type: string; id: string } };
+  ) as { user: { user_type: string; id: string } };
 
   const [selectedButton, setSelectedButton] = useState<RsvpType>();
 

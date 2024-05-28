@@ -272,8 +272,6 @@ export const HomeScreen = (props: HomeScreenProps) => {
       setRefresh(false);
       if (page == 1) {
         setPostList(postResponse.posts);
-        {
-        }
       } else {
         setPostList([...postList, ...postResponse.posts]);
       }

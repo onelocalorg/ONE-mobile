@@ -9,7 +9,6 @@ import { EditPostScreen } from "~/screens/createEditPost/EditPostScreen";
 import { CreateEditPostGratisScreen } from "~/screens/createEditPost/gratis";
 import { EventDetailScreen } from "~/screens/event-detail/EventDetailScreen";
 import { EventListScreen } from "~/screens/event/EventListScreen";
-import { PaymentScreen } from "~/screens/payment-screen";
 import { ProfileScreen } from "~/screens/profile";
 import { RecentProfileScreen } from "~/screens/recentProfile";
 import { navigations } from "./constant";
@@ -44,11 +43,6 @@ export const EventRoute = () => {
       <EventStack.Screen
         name={navigations.CHECK_IN}
         component={CheckInScreen}
-        options={{ header }}
-      />
-      <EventStack.Screen
-        name={navigations.PAYMENT}
-        component={PaymentScreen}
         options={{ header }}
       />
       <EventStack.Screen

@@ -469,127 +469,12 @@ export const About = (props: AboutDataProps) => {
           "Content-Type": "application/x-www-form-urlencoded",
         }),
       });
-      const dataItem = await response.json();
-      console.log("-----------------add card config list------------");
-      const keyId = dataItem?.data?.stripe?.stripePublicKey;
-      console.log(dataItem);
-      setTimeout(() => {
-        cardStripeAPI(keyId);
-      }, 2000);
-      setTimeout(() => {
-        LodingData(false);
-      }, 7000);
     } catch (error) {
       LOG.error(error);
     }
   };
 
   // ======================Stripe API=========================
-
-  async function cardStripeAPI(stripeId: any) {
-    const genCard: any = {
-      "card[number]": cardnumber,
-      "card[exp_month]": cardExpmonth,
-      "card[exp_year]": cardExpyear,
-      "card[cvc]": cardCvv,
-    };
-
-    console.log(genCard);
-
-    const results = await fetch("https://api.stripe.com/v1/tokens", {
-      method: "post",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/x-www-form-urlencoded",
-        Authorization: "Bearer " + stripeId,
-      },
-      body: Object.keys(genCard)
-        .map((key) => key + "=" + genCard[key])
-        .join("&"),
-    }).then((response) => response.json());
-
-    const card_tok = results.id;
-
-    setTimeout(() => {
-      if (results.id) {
-        CreateCardAPI(card_tok);
-        console.log("============CreateCardAPI============");
-      }
-    }, 3000);
-
-    console.log("================card stripe api==================");
-    console.log(results);
-
-    if (results.error) {
-      Toast.show(results.error.message, Toast.LONG, {
-        backgroundColor: "black",
-      });
-    }
-
-    return;
-  }
-
-  // ======================Create Card API=========================
-  async function CreateCardAPI(cardId: any) {
-    var cardtokenData: any = {
-      token: cardId,
-    };
-    try {
-      const response = await fetch(
-        process.env.API_URL + "/v1/subscriptions/cards/create",
-        {
-          method: "post",
-          headers: new Headers({
-            Authorization: "Bearer " + tokens,
-            "Content-Type": "application/x-www-form-urlencoded",
-          }),
-          body: Object.keys(cardtokenData)
-            .map((key) => key + "=" + cardtokenData[key])
-            .join("&"),
-        }
-      );
-      console.log(cardId);
-      const dataItem = await response.json();
-      console.log("-----------------create card------------");
-      console.log(dataItem);
-      cardNumberData("");
-      cardExpMonth("");
-      cardExpYears("");
-      cardCVVData("");
-      setDate("");
-      // memberShipCheckoutAPI(membershipId);
-      if (dataItem.success == true) {
-        addCardModal(false);
-      }
-      Toast.show(dataItem.message, Toast.LONG, {
-        backgroundColor: "black",
-      });
-    } catch (error) {
-      LOG.error(error);
-    }
-  }
-
-  async function onCheckValidation() {
-    LodingData(true);
-    if (cardnumber.length != 16) {
-      LodingData(false);
-      Toast.show("Invalide Card Number", Toast.LONG, {
-        backgroundColor: "black",
-      });
-    } else if (date.length != 5) {
-      LodingData(false);
-      Toast.show("Invalide Date", Toast.LONG, {
-        backgroundColor: "black",
-      });
-    } else if (cardCvv.length != 3) {
-      LodingData(false);
-      Toast.show("Invalide CVV Number", Toast.LONG, {
-        backgroundColor: "black",
-      });
-    } else {
-      ConfigListAPI();
-    }
-  }
 
   function handleToggleYourList(name: any, jindex: any) {
     let newArr = ansQueDataTwo.map((item, index) => {
