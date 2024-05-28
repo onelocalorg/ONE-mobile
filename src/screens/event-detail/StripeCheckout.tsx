@@ -1,9 +1,10 @@
 import { StripeProvider, useStripe } from "@stripe/stripe-react-native";
 import React, { useEffect, useState } from "react";
-import { Alert, Button } from "react-native";
+import { Alert, Button, Text, View } from "react-native";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
 import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
 import { Order } from "~/types/order";
+import { toCurrency } from "~/utils/common";
 import { SubtotalView } from "./SubtotalView";
 import { createStyleSheet } from "./style";
 
@@ -62,6 +63,18 @@ export const StripeCheckout = ({
 
   return (
     <StripeProvider publishableKey={order.stripe.publishableKey}>
+      <>
+        {order.lineItems.map((li) => (
+          <View key={li.ticketType.id} style={styles.rowOnly}>
+            <Text style={styles.ticket}>{`${toCurrency(
+              li.ticketType.price
+            )} - ${li.ticketType.name}`}</Text>
+            <Text>
+              x {li.quantity} = {toCurrency(li.ticketType.price * li.quantity)}
+            </Text>
+          </View>
+        ))}
+      </>
       <SubtotalView order={order} />
       <Button disabled={!loading} title="Checkout" onPress={openPaymentSheet} />
     </StripeProvider>

@@ -50,8 +50,9 @@ const apiToOrder = (data: OrderResource, lineItems: LineItem[]) =>
       ...liResource,
       type: LineItemTypes.TICKET,
       event: lineItems.find((li) => li.event.id === liResource.event)?.event,
-      ticketType: lineItems.find((li) => li.event.id === liResource.event)
-        ?.ticketType,
+      ticketType: lineItems.find(
+        (li) => li.ticketType.id === liResource.ticketType
+      )?.ticketType,
     })),
     // timestamp: DateTime.fromISO(data.timestamp),
   } as unknown as Order);

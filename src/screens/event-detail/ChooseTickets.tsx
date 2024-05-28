@@ -27,7 +27,6 @@ export const ChooseTickets = ({
   const { strings } = useStringsAndLabels();
   const styles = createStyleSheet(theme);
   const [tickets, setTickets] = useState<TicketSelection[]>([]);
-  const [total, setTotal] = useState(0);
   const [order, setOrder] = useState<Order>();
   const [isCheckoutVisible, setCheckoutVisible] = useState(false);
 
