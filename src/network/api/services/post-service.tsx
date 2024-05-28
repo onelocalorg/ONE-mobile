@@ -33,7 +33,7 @@ export async function deletePost(id: string) {
 
 export async function listPosts() {
   const resp = await doPostPaginated<never, GetPostApiResource>(
-    "/v1/posts/list?limit=10"
+    "/v1/posts/list?limit=50"
   );
   return { pageInfo: resp.pageInfo, posts: resp.results.map(apiToPost) };
 }
