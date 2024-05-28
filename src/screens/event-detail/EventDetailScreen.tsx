@@ -35,7 +35,7 @@ import { UserProfileState } from "~/network/reducers/user-profile-reducer";
 import { verticalScale } from "~/theme/device/normalize";
 import { LocalEvent } from "~/types/local-event";
 import { RsvpList, RsvpType } from "~/types/rsvp";
-import { Rsvp } from "./Rsvp";
+import { RsvpView } from "./RsvpView";
 import { Tickets } from "./Tickets";
 import { createStyleSheet } from "./style";
 
@@ -97,7 +97,11 @@ export const EventDetailScreen = ({
   };
 
   const addGoingRsvp = () => {
-    if (eventId) {
+    if (
+      eventId &&
+      rsvpData?.rsvps.find((r) => r.guest.id === user.id)?.rsvp !==
+        RsvpType.GOING
+    ) {
       updateRsvp(eventId, RsvpType.GOING).then(fetchRsvpData);
     }
   };
@@ -189,7 +193,7 @@ export const EventDetailScreen = ({
                   onTicketPurchased={() => addGoingRsvp()}
                 />
                 {rsvpData ? (
-                  <Rsvp
+                  <RsvpView
                     event={event}
                     rsvpData={rsvpData}
                     onRsvpsChanged={() => fetchRsvpData()}

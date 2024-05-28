@@ -14,13 +14,17 @@ import { RsvpList, RsvpType } from "~/types/rsvp";
 import { createStyleSheet as createRsvpStyleSheet } from "./rsvp-style";
 import { createStyleSheet as createBaseStyleSheet } from "./style";
 ``;
-interface RsvpProps {
+interface RsvpViewProps {
   event: LocalEvent;
   rsvpData: RsvpList;
   onRsvpsChanged: () => void;
 }
 
-export const Rsvp = ({ event, rsvpData, onRsvpsChanged }: RsvpProps) => {
+export const RsvpView = ({
+  event,
+  rsvpData,
+  onRsvpsChanged,
+}: RsvpViewProps) => {
   const { theme } = useAppTheme();
   const { strings } = useStringsAndLabels();
   const styles = createBaseStyleSheet(theme);
