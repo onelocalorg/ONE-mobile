@@ -33,10 +33,7 @@ import { SizedBox } from "~/components/sized-box";
 import { LOG } from "~/config";
 import { navigations } from "~/config/app-navigation/constant";
 import { getData } from "~/network/constant";
-import { useCreateStripeCustomer } from "~/network/hooks/payment-service-hooks/use-create-stripe-customer";
 import { useLogin } from "~/network/hooks/user-service-hooks/use-login";
-import { useSaveCustomerId } from "~/network/hooks/user-service-hooks/use-save-customer-id";
-import { onSetUser } from "~/network/reducers/user-profile-reducer";
 import { verticalScale } from "~/theme/device/normalize";
 import { createStyleSheet } from "./style";
 
@@ -61,8 +58,6 @@ export const LoginScreen = (props: LoginScreenProps) => {
   const { onSetToken } = useToken();
   const dispatch = useDispatch();
   const [user, setUser] = useState({ emailOrMobile: "", password: "" });
-  const { mutateAsync: createStripeCustomer } = useCreateStripeCustomer();
-  const { mutateAsync: saveCustomerId } = useSaveCustomerId();
   const [searchQuery, setSearchQuery] = useState("");
   const [googleUserGmail, setGoogleEmail]: any = useState();
   const [googleAuth, setGoogleAuth]: any = useState();
@@ -195,28 +190,6 @@ export const LoginScreen = (props: LoginScreenProps) => {
 
         AsyncStorage.setItem("token", data.access_token);
 
-        if (!customer_id) {
-          const stripeRes = await createStripeCustomer({
-            bodyParams: {
-              name: `${first_name} ${last_name}`,
-              phone: mobile_number,
-              description: "Test",
-            },
-          });
-          let stripeCustomerId = "";
-          if (stripeRes?.statusCode === 200) {
-            stripeCustomerId = stripeRes?.data?.id;
-          }
-          dispatch(onSetUser({ ...data, stripeCustomerId }));
-
-          if (stripeCustomerId) {
-            await saveCustomerId({
-              bodyParams: { userId: id, customerId: stripeCustomerId },
-            });
-          }
-        } else {
-          dispatch(onSetUser({ ...data, stripeCustomerId: customer_id }));
-        }
         LodingData(false);
         navigation.reset({
           index: 0,
@@ -280,27 +253,6 @@ export const LoginScreen = (props: LoginScreenProps) => {
 
         AsyncStorage.setItem("token", data.access_token);
 
-        if (!customer_id) {
-          const stripeRes = await createStripeCustomer({
-            bodyParams: {
-              name: `${first_name} ${last_name}`,
-              phone: mobile_number,
-              description: "Test",
-            },
-          });
-          let stripeCustomerId = "";
-          if (stripeRes?.statusCode === 200) {
-            stripeCustomerId = stripeRes?.data?.id;
-          }
-          dispatch(onSetUser({ ...data, stripeCustomerId }));
-
-          await saveCustomerId({
-            bodyParams: { userId: id, customerId: stripeCustomerId },
-          });
-        } else {
-          dispatch(onSetUser({ ...data, stripeCustomerId: customer_id }));
-        }
-
         navigation.reset({
           index: 0,
           routes: [{ name: navigations.BOTTOM_NAVIGATION }],
@@ -357,26 +309,6 @@ export const LoginScreen = (props: LoginScreenProps) => {
 
         AsyncStorage.setItem("token", data.access_token);
 
-        if (!customer_id) {
-          const stripeRes = await createStripeCustomer({
-            bodyParams: {
-              name: `${first_name} ${last_name}`,
-              phone: mobile_number,
-              description: "Test",
-            },
-          });
-          let stripeCustomerId = "";
-          if (stripeRes?.statusCode === 200) {
-            stripeCustomerId = stripeRes?.data?.id;
-          }
-          dispatch(onSetUser({ ...data, stripeCustomerId }));
-
-          await saveCustomerId({
-            bodyParams: { userId: id, customerId: stripeCustomerId },
-          });
-        } else {
-          dispatch(onSetUser({ ...data, stripeCustomerId: customer_id }));
-        }
         LodingData(false);
         navigation.reset({
           index: 0,
@@ -427,29 +359,6 @@ export const LoginScreen = (props: LoginScreenProps) => {
 
       AsyncStorage.setItem("token", data.access_token);
       AsyncStorage.setItem("userProfileId", data.id);
-
-      if (!customer_id) {
-        const stripeRes = await createStripeCustomer({
-          bodyParams: {
-            name: `${first_name} ${last_name}`,
-            phone: mobile_number,
-            description: "Test",
-          },
-        });
-        let stripeCustomerId = "";
-        if (stripeRes?.statusCode === 200) {
-          stripeCustomerId = stripeRes?.data?.id;
-        }
-        dispatch(onSetUser({ ...data, stripeCustomerId }));
-
-        await saveCustomerId({
-          bodyParams: { userId: id, customerId: stripeCustomerId },
-        });
-        LodingData(false);
-      } else {
-        LodingData(false);
-        dispatch(onSetUser({ ...data, stripeCustomerId: customer_id }));
-      }
 
       LodingData(false);
       navigation.reset({

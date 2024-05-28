@@ -33,9 +33,7 @@ import { ImageComponent } from "~/components/image-component";
 import { Navbar } from "~/components/navbar/Navbar";
 import { SizedBox } from "~/components/sized-box";
 import { navigations } from "~/config/app-navigation/constant";
-import { useCreateStripeCustomer } from "~/network/hooks/payment-service-hooks/use-create-stripe-customer";
 import { useSaveCustomerId } from "~/network/hooks/user-service-hooks/use-save-customer-id";
-import { onSetUser } from "~/network/reducers/user-profile-reducer";
 import { normalScale, verticalScale } from "~/theme/device/normalize";
 
 interface SignUpProps {
@@ -70,7 +68,6 @@ export const SignUp = (props: SignUpProps) => {
     setUser({ ...user, [key]: value });
   };
   const [isLoading, LodingData] = useState(false);
-  const { mutateAsync: createStripeCustomer } = useCreateStripeCustomer();
   const { mutateAsync: saveCustomerId } = useSaveCustomerId();
   const [imageOption, ImageOptionModal] = useState(false);
   const [filename, assetsData] = useState("");
@@ -129,27 +126,6 @@ export const SignUp = (props: SignUpProps) => {
         } = data || {};
 
         await onSetToken(access_token);
-
-        if (!customer_id) {
-          const stripeRes = await createStripeCustomer({
-            bodyParams: {
-              name: `${first_name} ${last_name}`,
-              phone: mobile_number,
-              description: "Test",
-            },
-          });
-          let stripeCustomerId = "";
-          if (stripeRes?.statusCode === 200) {
-            stripeCustomerId = stripeRes?.data?.id;
-          }
-          dispatch(onSetUser({ ...data, stripeCustomerId }));
-
-          await saveCustomerId({
-            bodyParams: { userId: id, customerId: stripeCustomerId },
-          });
-        } else {
-          dispatch(onSetUser({ ...data, stripeCustomerId: customer_id }));
-        }
 
         navigation?.reset({
           index: 0,
