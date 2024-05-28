@@ -1,4 +1,6 @@
+import { TicketType } from "./ticket-type";
+
 export interface TicketSelection {
-  id: string;
+  type: TicketType;
   quantity: number;
 }

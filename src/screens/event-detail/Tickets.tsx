@@ -10,6 +10,7 @@ import { PurchaseProps } from "~/network/api/services/event-service";
 // import { usePurchaseTicket } from "~/network/hooks/home-service-hooks/use-purchase-ticket";
 import { OneModal } from "~/components/modal-component/OneModal";
 import { LocalEvent } from "~/types/local-event";
+import { toCurrency } from "~/utils/common";
 import { ChooseTickets } from "./ChooseTickets";
 import { createStyleSheet as createBaseStyleSheet } from "./style";
 
@@ -126,7 +127,9 @@ export const Tickets = ({ event }: TicketsProps) => {
       <View>
         {event.ticketTypes?.map((ele) => (
           <View key={ele?.price.toString()} style={styles.rowOnly}>
-            <Text style={styles.ticket}>{`$${ele?.price} - ${ele?.name}`}</Text>
+            <Text style={styles.ticket}>{`${toCurrency(ele?.price)} - ${
+              ele?.name
+            }`}</Text>
           </View>
         ))}
       </View>
@@ -140,11 +143,14 @@ export const Tickets = ({ event }: TicketsProps) => {
       ) : null}
       {event ? (
         <OneModal
-          title={strings.ticketCheckout}
+          title={strings.chooseTickets}
           isVisible={isChooseTicketsModalVisible}
           onDismiss={() => setChooseTicketsModalVisible(false)}
         >
-          <ChooseTickets event={event} />
+          <ChooseTickets
+            event={event}
+            onCheckoutComplete={() => setChooseTicketsModalVisible(false)}
+          />
         </OneModal>
       ) : null}
     </View>

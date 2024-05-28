@@ -9,6 +9,7 @@ export const stringsAndLabels = {
   loginGoogle: "Google Sign On",
   loginApple: "Apple Sign On",
   aboutEvent: "About Event",
+  checkout: "Checkout",
   chooseTickets: "Choose Tickets",
   buyTicket: "Buy Ticket",
   ticketCheckout: "Ticket Checkout",

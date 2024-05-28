@@ -1,3 +1,4 @@
+import Big from "big.js";
 import { DateTime, Interval } from "luxon";
 
 export const formatPrice = (price: string) => {
@@ -24,3 +25,8 @@ export const formatTimeFromNow = (dt: DateTime) => {
 
   return `${dur.as("days").toFixed(0)} days ago`;
 };
+
+export const toCents = (val: Big) => val.times(2).round().toNumber();
+
+export const toCurrency = (val?: number) =>
+  `$${!val ? "0.00" : Big(val).div(100).toFixed(2)}`;

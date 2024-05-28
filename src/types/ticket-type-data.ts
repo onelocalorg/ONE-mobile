@@ -1,7 +1,5 @@
-import Big from "big.js";
-
 export interface TicketTypeData {
   name: string;
-  price: Big;
+  price: number;
   quantity?: number;
 }

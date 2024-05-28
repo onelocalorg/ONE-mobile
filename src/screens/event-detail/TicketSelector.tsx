@@ -7,6 +7,7 @@ import { ImageComponent } from "~/components/image-component";
 import { LOG } from "~/config";
 import { TicketSelection } from "~/types/ticket-selection";
 import { TicketType } from "~/types/ticket-type";
+import { toCurrency } from "~/utils/common";
 import { createStyleSheet } from "./style";
 
 interface TicketSelectorProps {
@@ -23,19 +24,21 @@ export const TicketSelector = ({
   const styles = createStyleSheet(theme);
 
   const [tickets, setTickets] = useState<TicketSelection[]>(
-    ticketTypes.map((tt) => ({ id: tt.id, quantity: 0 }))
+    ticketTypes.map((tt) => ({ type: tt, quantity: 0 }))
   );
 
   const handleMinusClick = (tid: string) => {
     setTickets((curTicketSelection) => {
-      const ticketIndex = curTicketSelection.findIndex((ts) => ts.id === tid);
+      const ticketIndex = curTicketSelection.findIndex(
+        (ts) => ts.type.id === tid
+      );
       if (ticketIndex >= 0) {
         const ticket = curTicketSelection[ticketIndex];
         const curQuantity = ticket.quantity;
         if (curQuantity && curQuantity > 0) {
           const updatedSelection = [
             ...curTicketSelection.slice(0, ticketIndex),
-            { id: tid, quantity: curQuantity - 1 },
+            { ...ticket, quantity: curQuantity - 1 },
             ...curTicketSelection.slice(ticketIndex + 1),
           ];
           onSelectedChanged?.(updatedSelection);
@@ -48,7 +51,9 @@ export const TicketSelector = ({
 
   const handlePlusClick = (tid: string) => {
     setTickets((curTicketSelection) => {
-      const ticketIndex = curTicketSelection.findIndex((ts) => ts.id === tid);
+      const ticketIndex = curTicketSelection.findIndex(
+        (ts) => ts.type.id === tid
+      );
       if (ticketIndex >= 0) {
         const ticket = curTicketSelection[ticketIndex];
         const ticketType = ticketTypes[ticketIndex];
@@ -56,7 +61,7 @@ export const TicketSelector = ({
         if (_.isNil(ticketType.quantity) || ticketType.quantity > curQuantity) {
           const updatedSelection = [
             ...curTicketSelection.slice(0, ticketIndex),
-            { id: tid, quantity: curQuantity + 1 },
+            { ...ticket, quantity: curQuantity + 1 },
             ...curTicketSelection.slice(ticketIndex + 1),
           ];
           onSelectedChanged?.(updatedSelection);
@@ -70,12 +75,14 @@ export const TicketSelector = ({
   return (
     <>
       {tickets.map((selection) => {
-        const ticketType = ticketTypes.find((tt) => tt.id === selection.id)!;
+        const ticketType = ticketTypes.find(
+          (tt) => tt.id === selection.type.id
+        )!;
         return (
           <View key={ticketType.id} style={[styles.row, styles.marginTop]}>
-            <Text
-              style={styles.text}
-            >{`$${ticketType.price} - ${ticketType.name}`}</Text>
+            <Text style={styles.text}>{`${toCurrency(ticketType.price)} - ${
+              ticketType.name
+            }`}</Text>
             <View style={styles.quantityContainer}>
               <TouchableOpacity onPress={() => handleMinusClick(ticketType.id)}>
                 <ImageComponent

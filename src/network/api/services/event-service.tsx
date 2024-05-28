@@ -1,5 +1,4 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import Big from "big.js";
 import _ from "lodash/fp";
 import { DateTime } from "luxon";
 import { LOG } from "~/config";
@@ -59,7 +58,7 @@ export async function getTicketPriceBreakdown(
   eventId: string,
   tickets: TicketSelection[]
 ) {
-  let qs = tickets.map((ts) => `tid=${ts.id}&q=${ts.quantity}`).join("&");
+  let qs = tickets.map((ts) => `tid=${ts.type.id}&q=${ts.quantity}`).join("&");
 
   const resp = await doGet<PriceBreakdown>(
     `/v1/events/${eventId}/prices?${qs}`
@@ -216,7 +215,7 @@ export const eventResponseToLocalEvent = (data: EventResponse) =>
     event_image: data.event_image_id,
     ticketTypes: data.ticketTypes.map((tt) => ({
       ...tt,
-      price: Big(tt.price),
+      price: tt.price,
     })),
   } as LocalEvent);
 

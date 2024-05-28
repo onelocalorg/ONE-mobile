@@ -1,4 +1,3 @@
-import { StripeProvider } from "@stripe/stripe-react-native";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import React from "react";
 import { AppRegistry } from "react-native";
@@ -12,17 +11,15 @@ import { App } from "./src/app";
 export default function Main() {
   const queryClient = new QueryClient(queryConfig);
   return (
-    <StripeProvider publishableKey={process.env.STRIPE_PUBLIC_KEY}>
-      <SafeAreaProvider>
-        <QueryClientProvider client={queryClient}>
-          <Provider store={store}>
-            <PaperProvider>
-              <App />
-            </PaperProvider>
-          </Provider>
-        </QueryClientProvider>
-      </SafeAreaProvider>
-    </StripeProvider>
+    <SafeAreaProvider>
+      <QueryClientProvider client={queryClient}>
+        <Provider store={store}>
+          <PaperProvider>
+            <App />
+          </PaperProvider>
+        </Provider>
+      </QueryClientProvider>
+    </SafeAreaProvider>
   );
 }
 
