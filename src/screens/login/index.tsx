@@ -32,7 +32,7 @@ import { Navbar } from "~/components/navbar/Navbar";
 import { SizedBox } from "~/components/sized-box";
 import { LOG } from "~/config";
 import { navigations } from "~/config/app-navigation/constant";
-import { getData } from "~/network/constant";
+import { getData, persistKeys } from "~/network/constant";
 import { useLogin } from "~/network/hooks/user-service-hooks/use-login";
 import { verticalScale } from "~/theme/device/normalize";
 import { createStyleSheet } from "./style";
@@ -69,6 +69,12 @@ export const LoginScreen = (props: LoginScreenProps) => {
   // const onHandleCheckBox = () => {
   //   setIsChecked(!isChecked);
   // };
+
+  const storeAuthDataInAsyncStorage = (data: any) => {
+    AsyncStorage.setItem(persistKeys.token, data.access_token);
+    AsyncStorage.setItem(persistKeys.userProfileId, data.id);
+    AsyncStorage.setItem(persistKeys.userProfilePic, data.pic);
+  };
 
   const signInWithGoogle = async () => {
     LOG.debug("> signInWithGoogle");
@@ -251,7 +257,7 @@ export const LoginScreen = (props: LoginScreenProps) => {
 
         await onSetToken(access_token);
 
-        AsyncStorage.setItem("token", data.access_token);
+        storeAuthDataInAsyncStorage(data);
 
         navigation.reset({
           index: 0,
@@ -307,7 +313,7 @@ export const LoginScreen = (props: LoginScreenProps) => {
 
         await onSetToken(access_token);
 
-        AsyncStorage.setItem("token", data.access_token);
+        storeAuthDataInAsyncStorage(data);
 
         LodingData(false);
         navigation.reset({
@@ -357,8 +363,7 @@ export const LoginScreen = (props: LoginScreenProps) => {
 
       await onSetToken(access_token);
 
-      AsyncStorage.setItem("token", data.access_token);
-      AsyncStorage.setItem("userProfileId", data.id);
+      storeAuthDataInAsyncStorage(data);
 
       LodingData(false);
       navigation.reset({

@@ -26,7 +26,7 @@ import { launchCamera } from "react-native-image-picker";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import Toast from "react-native-simple-toast";
 import GestureRecognizer from "react-native-swipe-gestures";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
 import { useLogout } from "~/app-hooks/use-logout";
 import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
@@ -35,34 +35,13 @@ import { ImageComponent } from "~/components/image-component";
 import { Input } from "~/components/input";
 import { Navbar } from "~/components/navbar/Navbar";
 import { TabComponent } from "~/components/tab-component";
-import { getData } from "~/network/constant";
+import { getUserProfile } from "~/network/api/services/user-service";
+import { getData, persistKeys } from "~/network/constant";
 import { useEditProfile } from "~/network/hooks/user-service-hooks/use-edit-profile";
-import { StoreType } from "~/network/reducers/store";
-import { UserProfileState } from "~/network/reducers/user-profile-reducer";
+import { UserProfile } from "~/types/user-profile";
 import { About } from "./about";
 import { MyEvents } from "./my-events";
 import { createStyleSheet } from "./style";
-
-interface UserData {
-  id: string;
-  bio: string;
-  name: string;
-  pic: string;
-  status: string;
-  about: string;
-  skills: string[];
-  userType: string;
-  isActiveSubscription: boolean;
-  coverImage: string;
-  profile_answers: string[];
-  cover_image: string;
-  points_balance: number;
-  city: string;
-  first_name: string;
-  last_name: string;
-  nick_name: string;
-  isConnectedLinked: boolean;
-}
 
 interface ProfileScreenProps {
   navigation: NavigationContainerRef<ParamListBase>;
@@ -74,40 +53,24 @@ export const ProfileScreen = (props: ProfileScreenProps) => {
   const styles = createStyleSheet(theme);
   const { navigation } = props || {};
   const [selectedTab, setSelectedTab] = useState(0);
-  const [profileUri, setProfileUri] = useState("");
-  const [backgroundImageUri, setbackgroundUri] = useState("");
+  const [userProfile, setUserProfile] = useState<UserProfile>();
+  const [profileUri, setProfileUri] = useState<string>();
+  const [backgroundUri, setBackgroundUri] = useState<string>();
   const [setimageType, selectImage] = useState();
-  const [updatedBio, setBio] = useState("");
-  const [filename, assetsData] = useState("");
-  const [base64string, setBase64Path] = useState("");
+  const [updatedBio, setBio] = useState();
+  const [filename, setFilename] = useState<string>();
+  const [base64string, setBase64Path] = useState<string>();
   const [imageOption, ImageOptionModal] = useState(false);
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [nickName, setNickName] = useState("");
+  const [firstName, setFirstName] = useState<string>();
+  const [lastName, setLastName] = useState<string>();
+  const [nickName, setNickName] = useState<string>();
+  const [catchphrase, setCatchphrase] = useState<string>();
+  const [skills, setSkills] = useState<string[]>([]);
+  const [profileAnswers, setProfileAnswers] = useState<string[]>([]);
   const [isLoading, LodingData] = useState(false);
 
-  const { user } = useSelector<StoreType, UserProfileState>(
-    (state) => state.userProfileReducer
-  ) as { user: UserData };
   const { onLogout } = useLogout();
-  const {
-    about,
-    bio,
-    name,
-    pic,
-    skills,
-    status,
-    id,
-    profile_answers,
-    cover_image,
-    points_balance,
-    city,
-    first_name,
-    last_name,
-    nick_name,
-    isConnectedLinked,
-    isActiveSubscription,
-  } = user || {};
+
   const { mutateAsync } = useEditProfile();
   const dispatch = useDispatch();
   const [searchQuery, setSearchQuery] = useState("");
@@ -115,22 +78,26 @@ export const ProfileScreen = (props: ProfileScreenProps) => {
   const [appStateVisible, setAppStateVisible] = useState(appState.current);
 
   useEffect(() => {
-    setBio(bio);
-    setProfileUri(pic);
-    setbackgroundUri(cover_image);
-    setFirstName(first_name);
-    setLastName(last_name);
-    setNickName(nick_name);
-  }, [
-    bio,
-    pic,
-    cover_image,
-    first_name,
-    last_name,
-    nick_name,
-    isActiveSubscription,
-    profile_answers,
-  ]);
+    retrieveUser();
+  }, []);
+
+  const retrieveUser = async () => {
+    const userId = await AsyncStorage.getItem(persistKeys.userProfileId);
+    if (userId) {
+      const userProfile = await getUserProfile(userId);
+      if (userProfile) {
+        setUserProfile(userProfile);
+        setProfileUri(userProfile.pic);
+        setBackgroundUri(userProfile.coverImage);
+        setFirstName(userProfile.first_name);
+        setLastName(userProfile.last_name);
+        setNickName(userProfile.nick_name);
+        setCatchphrase(userProfile.catch_phrase);
+        setSkills(userProfile.skills);
+        setProfileAnswers(userProfile.profile_answers);
+      }
+    }
+  };
 
   useEffect(() => {
     const subscription = AppState.addEventListener("change", (nextAppState) => {
@@ -238,7 +205,7 @@ export const ProfileScreen = (props: ProfileScreenProps) => {
         fileNameTwo.substr(0, fileNameTwo.lastIndexOf(".")) || fileNameTwo;
       var base64Two = img?.base64 ?? "";
 
-      assetsData(output);
+      setFilename(output);
       setBase64Path(base64Two);
 
       if (setimageType === 1) {
@@ -274,7 +241,7 @@ export const ProfileScreen = (props: ProfileScreenProps) => {
           fileNameTwo.substr(0, fileNameTwo.lastIndexOf(".")) || fileNameTwo;
         var base64Two = image?.data ?? "";
 
-        assetsData(output);
+        setFilename(output);
         setBase64Path(base64Two);
         if (setimageType === 1) {
           ProfileImageUploadAPI(output, base64Two);
@@ -291,7 +258,7 @@ export const ProfileScreen = (props: ProfileScreenProps) => {
     if (Platform.OS === "ios") {
       var pic: any = {
         uploadKey: "pic",
-        userId: user.id,
+        userId: userProfile?.id,
         imageName: fileItem,
         base64String: "data:image/jpeg;base64," + base64Item,
       };
@@ -299,7 +266,7 @@ export const ProfileScreen = (props: ProfileScreenProps) => {
       var isImg: any = ".JPG";
       var pic: any = {
         uploadKey: "pic",
-        userId: user.id,
+        userId: userProfile?.id,
         imageName: Math.random().toString() + isImg,
         base64String: "data:image/jpeg;base64," + base64Item,
       };
@@ -330,7 +297,7 @@ export const ProfileScreen = (props: ProfileScreenProps) => {
     if (Platform.OS == "ios") {
       var pic: any = {
         uploadKey: "cover_image",
-        userId: user.id,
+        userId: userProfile?.id,
         imageName: fileItem,
         base64String: "data:image/jpeg;base64," + base64Item,
       };
@@ -338,7 +305,7 @@ export const ProfileScreen = (props: ProfileScreenProps) => {
       var isImg: any = ".JPG";
       var pic: any = {
         uploadKey: "cover_image",
-        userId: user.id,
+        userId: userProfile?.id,
         imageName: Math.random().toString() + isImg,
         base64String: "data:image/jpeg;base64," + base64Item,
       };
@@ -358,7 +325,7 @@ export const ProfileScreen = (props: ProfileScreenProps) => {
       );
       const dataItem = await response.json();
       LodingData(false);
-      setbackgroundUri(dataItem?.data?.imageUrl);
+      setBackgroundUri(dataItem?.data?.imageUrl);
     } catch (error) {
       LodingData(false);
       console.log(error);
@@ -401,7 +368,7 @@ export const ProfileScreen = (props: ProfileScreenProps) => {
     let body = {
       ...request,
       bio: updatedBio,
-      coverImage: user?.coverImage,
+      coverImage: userProfile?.coverImage,
       first_name: firstName,
       last_name: lastName,
       nick_name: nickName,
@@ -414,11 +381,14 @@ export const ProfileScreen = (props: ProfileScreenProps) => {
       nick_name?: string;
     };
     LodingData(true);
-    if (pic !== profileUri) {
+    if (userProfile?.pic !== profileUri) {
       body.profile = profileUri;
     }
 
-    const res = await mutateAsync({ bodyParams: body, userId: user?.id });
+    const res = await mutateAsync({
+      bodyParams: body,
+      userId: userProfile!.id,
+    });
     if (res?.success) {
       navigation.goBack();
     } else {
@@ -439,151 +409,162 @@ export const ProfileScreen = (props: ProfileScreenProps) => {
   return (
     <KeyboardAwareScrollView showsVerticalScrollIndicator={false}>
       <Navbar navigation={navigation} isAvatarVisible={false} />
-      <ImageComponent
-        isUrl={!!profileUri}
-        resizeMode="cover"
-        uri={profileUri}
-        source={dummy}
-        style={styles.profile}
-      />
-      <TouchableOpacity
-        activeOpacity={0.8}
-        style={{ position: "absolute", right: 10, top: 60 }}
-        onPress={onLogout}
-      >
-        <Text
-          style={{
-            fontSize: 16,
-            color: theme.colors.white,
-            fontWeight: "500",
-            fontFamily: theme.fontType.medium,
-          }}
-        >
-          {strings.logout}
-        </Text>
-      </TouchableOpacity>
-
-      <TouchableOpacity
-        style={styles.container}
-        activeOpacity={1}
-        onPress={keyboardDismiss}
-      >
-        <Modal transparent onDismiss={closeModal} visible={imageOption}>
-          <GestureRecognizer onSwipeDown={closeModal} style={styles.gesture}>
-            <TouchableOpacity
-              style={styles.containerGallery}
-              activeOpacity={1}
-              onPress={closeModal}
-            />
-          </GestureRecognizer>
-          <KeyboardAvoidingView
-            behavior={Platform.OS === "ios" ? "padding" : "height"}
-            style={styles.keyboardViewTwo}
-          >
-            <View style={styles.imageActionSheet}>
-              <TouchableOpacity onPress={() => imageOptionSelect(1)}>
-                <Text style={styles.galleryText}>Gallery</Text>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={() => imageOptionSelect(2)}>
-                <Text style={styles.cameraText}>Camera</Text>
-              </TouchableOpacity>
-            </View>
-          </KeyboardAvoidingView>
-        </Modal>
-        <View style={styles.center}>
-          <View style={styles.userNameClass}>
-            <TextInput
-              onChangeText={(text) => setFirstName(text)}
-              placeholder="first name"
-              placeholderTextColor="#818181"
-              style={styles.firstName}
-            >
-              {firstName}
-            </TextInput>
-            <TextInput
-              onChangeText={(text) => setLastName(text)}
-              placeholder="last name"
-              placeholderTextColor="#818181"
-              style={styles.lastName}
-            >
-              {lastName}
-            </TextInput>
-          </View>
-          <View style={styles.circularView}>
-            <TextInput
-              onChangeText={(text) => setNickName(text)}
-              placeholder="enter nickname"
-              placeholderTextColor="#818181"
-              style={styles.des}
-            >
-              {nickName}
-            </TextInput>
-          </View>
-        </View>
-
-        <View style={styles.gratiesCont}>
-          <View style={styles.payoutAndGratisCont}>
-            <Image
-              source={Gratis}
-              resizeMode="cover"
-              style={styles.gratiesImage}
-            ></Image>
-            <Text style={styles.gratiesNumber}>{points_balance}</Text>
-          </View>
-
-          {onCheckReleaseHideShow() ? (
-            <TouchableOpacity
-              onPress={getPayoutConnectListAPI}
-              activeOpacity={0.8}
-              style={styles.payView}
-            >
-              <ImageComponent
-                style={styles.payoutIcon}
-                source={sendPayoutImg}
-              ></ImageComponent>
-              <Text style={styles.pay}>
-                {" "}
-                {isConnectedLinked ? "Payout Connected" : "link payout method"}
-              </Text>
-            </TouchableOpacity>
-          ) : (
-            <></>
-          )}
-        </View>
-
-        <View style={styles.aboutView}>
-          <Input
-            inputStyle={styles.input}
-            value={updatedBio}
-            placeholderTextColor="#818181"
-            placeholder="enter a catchphrase"
-            onChangeText={setBio}
-            multiline
+      {userProfile ? (
+        <>
+          <ImageComponent
+            isUrl={!!profileUri}
+            resizeMode="cover"
+            uri={profileUri}
+            source={dummy}
+            style={styles.profile}
           />
-        </View>
+          <TouchableOpacity
+            activeOpacity={0.8}
+            style={{ position: "absolute", right: 10, top: 60 }}
+            onPress={onLogout}
+          >
+            <Text
+              style={{
+                fontSize: 16,
+                color: theme.colors.white,
+                fontWeight: "500",
+                fontFamily: theme.fontType.medium,
+              }}
+            >
+              {strings.logout}
+            </Text>
+          </TouchableOpacity>
 
-        <View style={styles.line} />
-        <TabComponent
-          tabs={[strings.about, strings.myEvents]}
-          onPressTab={setSelectedTab}
-        />
-        <KeyboardAwareScrollView showsVerticalScrollIndicator={false}>
-          {selectedTab === 0 && (
-            <About
-              about={about}
-              idUser={user?.id}
-              skills={skills}
-              profileAnswers={profile_answers}
-              onEditProfile={onSaveProfile}
-              navigation={navigation}
-              ref={undefined}
+          <TouchableOpacity
+            style={styles.container}
+            activeOpacity={1}
+            onPress={keyboardDismiss}
+          >
+            <Modal transparent onDismiss={closeModal} visible={imageOption}>
+              <GestureRecognizer
+                onSwipeDown={closeModal}
+                style={styles.gesture}
+              >
+                <TouchableOpacity
+                  style={styles.containerGallery}
+                  activeOpacity={1}
+                  onPress={closeModal}
+                />
+              </GestureRecognizer>
+              <KeyboardAvoidingView
+                behavior={Platform.OS === "ios" ? "padding" : "height"}
+                style={styles.keyboardViewTwo}
+              >
+                <View style={styles.imageActionSheet}>
+                  <TouchableOpacity onPress={() => imageOptionSelect(1)}>
+                    <Text style={styles.galleryText}>Gallery</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity onPress={() => imageOptionSelect(2)}>
+                    <Text style={styles.cameraText}>Camera</Text>
+                  </TouchableOpacity>
+                </View>
+              </KeyboardAvoidingView>
+            </Modal>
+            <View style={styles.center}>
+              <View style={styles.userNameClass}>
+                <TextInput
+                  onChangeText={(text) => setFirstName(text)}
+                  placeholder="first name"
+                  placeholderTextColor="#818181"
+                  style={styles.firstName}
+                >
+                  {firstName}
+                </TextInput>
+                <TextInput
+                  onChangeText={(text) => setLastName(text)}
+                  placeholder="last name"
+                  placeholderTextColor="#818181"
+                  style={styles.lastName}
+                >
+                  {lastName}
+                </TextInput>
+              </View>
+              <View style={styles.circularView}>
+                <TextInput
+                  onChangeText={(text) => setNickName(text)}
+                  placeholder="enter nickname"
+                  placeholderTextColor="#818181"
+                  style={styles.des}
+                >
+                  {nickName}
+                </TextInput>
+              </View>
+            </View>
+
+            <View style={styles.gratiesCont}>
+              <View style={styles.payoutAndGratisCont}>
+                <Image
+                  source={Gratis}
+                  resizeMode="cover"
+                  style={styles.gratiesImage}
+                ></Image>
+                <Text style={styles.gratiesNumber}>
+                  {userProfile.points_balance}
+                </Text>
+              </View>
+
+              {onCheckReleaseHideShow() ? (
+                <TouchableOpacity
+                  onPress={getPayoutConnectListAPI}
+                  activeOpacity={0.8}
+                  style={styles.payView}
+                >
+                  <ImageComponent
+                    style={styles.payoutIcon}
+                    source={sendPayoutImg}
+                  ></ImageComponent>
+                  <Text style={styles.pay}>
+                    {" "}
+                    {userProfile.isConnectedLinked
+                      ? "Payout Connected"
+                      : "link payout method"}
+                  </Text>
+                </TouchableOpacity>
+              ) : (
+                <></>
+              )}
+            </View>
+
+            <View style={styles.aboutView}>
+              <Input
+                inputStyle={styles.input}
+                value={updatedBio}
+                placeholderTextColor="#818181"
+                placeholder="enter a catchphrase"
+                onChangeText={setCatchphrase}
+                multiline
+              />
+            </View>
+
+            <View style={styles.line} />
+            <TabComponent
+              tabs={[strings.about, strings.myEvents]}
+              onPressTab={setSelectedTab}
             />
-          )}
-          {selectedTab === 1 && (
-            <MyEvents userId={id} navigation={navigation} />
-          )}
-        </KeyboardAwareScrollView>
-      </TouchableOpacity>
+            <KeyboardAwareScrollView showsVerticalScrollIndicator={false}>
+              {selectedTab === 0 && (
+                <About
+                  about={userProfile.about}
+                  idUser={userProfile.id}
+                  skills={userProfile.skills}
+                  profileAnswers={userProfile.profile_answers}
+                  onEditProfile={onSaveProfile}
+                  navigation={navigation}
+                  ref={undefined}
+                />
+              )}
+              {selectedTab === 1 && (
+                <MyEvents userId={userProfile.id} navigation={navigation} />
+              )}
+            </KeyboardAwareScrollView>
+          </TouchableOpacity>
+        </>
+      ) : null}
     </KeyboardAwareScrollView>
   );
 };

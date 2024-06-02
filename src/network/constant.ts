@@ -39,6 +39,8 @@ export const methods = {
 export const persistKeys = {
   token: "token",
   fcmToken: "@fcmToken",
+  userProfileId: "userProfileId",
+  userProfilePic: "userProfilePic",
 };
 
 export const apiKeys = {

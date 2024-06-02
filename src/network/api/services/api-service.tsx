@@ -9,6 +9,10 @@ export async function doPost<Body, Resource>(url: string, body?: Body) {
   return callApi<Body, Resource>("POST", url, body);
 }
 
+export async function doPatch<Body, Resource>(url: string, body?: Body) {
+  return callApi<Body, Resource>("PATCH", url, body);
+}
+
 export async function doPostPaginated<Body, Resource>(
   url: string,
   body?: Body
@@ -72,12 +76,11 @@ async function callApi<Body, Resource>(
     body: JSON.stringify(body),
   });
   LOG.info(response.status);
-  const data = (await response.json()) as ApiResponse<Resource>;
+  const retVal = (await response.json()) as ApiResponse<Resource>;
   if (response.ok) {
-    LOG.debug("=> ", data);
-    return data;
+    LOG.debug("=> ", retVal);
   } else {
-    LOG.error("=>", data);
-    throw new ApiError(data);
+    LOG.error("=> ", retVal);
   }
+  return retVal;
 }

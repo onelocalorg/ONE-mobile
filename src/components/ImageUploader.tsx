@@ -6,7 +6,7 @@ import { launchImageLibrary } from "react-native-image-picker";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
 import { ImageComponent } from "~/components/image-component";
 import { LOG } from "~/config";
-import { createStyleSheet } from "./style";
+import { createStyleSheet } from "../screens/createEditPost/style";
 
 interface ImageUploaderProps {
   onLoading?: (isLoading: boolean) => void;

@@ -7,18 +7,18 @@ import {
   NavigationContainerRef,
   ParamListBase,
 } from "@react-navigation/native";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 
 import { arrowLeft, dummy, onelogo } from "~/assets/images";
 import { ImageComponent } from "~/components/image-component";
 import { navigations } from "~/config/app-navigation/constant";
-import { useUserProfile } from "~/network/hooks/user-service-hooks/use-user-profile";
 import { UserProfileState } from "~/network/reducers/user-profile-reducer";
 
 import { createStyleSheet } from "./style";
 
 import { useAppTheme } from "~/app-hooks/use-app-theme";
-import { LOG } from "~/config";
+import { getUserProfile } from "~/network/api/services/user-service";
+import { persistKeys } from "~/network/constant";
 
 interface NavbarProps {
   navigation?: NavigationContainerRef<ParamListBase>;
@@ -34,11 +34,20 @@ export const Navbar = ({
   const styles = createStyleSheet(theme);
 
   const [searchQuery, setSearchQuery] = useState("");
-  const [page, setPage] = useState(1);
-  const [profileData, setUserProfile]: any = useState();
+  const [profilePic, setProfilePic] = useState<string>();
+
+  const { user } = useSelector<StoreType, UserProfileState>(
+    (state) => state.userProfileReducer
+  ) as { user: { id: string; pic: string } };
 
   useEffect(() => {
-    getUserProfileAPI();
+    AsyncStorage.getItem(persistKeys.userProfilePic).then((pic) => {
+      if (!pic) {
+        getUserProfileAPI();
+      } else {
+        setProfilePic(pic);
+      }
+    });
   }, []);
 
   // const setSerchValue = useCallback(
@@ -51,39 +60,14 @@ export const Navbar = ({
   //   [searchQuery]
   // );
 
-  const { user } = useSelector<StoreType, UserProfileState>(
-    (state) => state.userProfileReducer
-  ) as { user: { id: string; pic: string } };
-  const { refetch } = useUserProfile({
-    userId: user?.id,
-  });
-
-  const dispatch = useDispatch();
-
   const getUserProfileAPI = async () => {
-    const token = await AsyncStorage.getItem("token");
-    try {
-      const response = await fetch(
-        process.env.API_URL + "/v1/users/" + user.id,
-        {
-          method: "get",
-          headers: new Headers({
-            Authorization: "Bearer " + token,
-            "Content-Type": "application/json",
-          }),
-        }
-      );
-      const dataItem = await response.json();
-      setUserProfile(dataItem.data);
-      if (dataItem?.data?.isEventActiveSubscription === true) {
-        AsyncStorage.setItem("isEventActive", "true");
-      } else {
-        AsyncStorage.setItem("isEventActive", "false");
+    const userId = await AsyncStorage.getItem(persistKeys.userProfileId);
+    if (userId) {
+      const userProfile = await getUserProfile(userId);
+      if (userProfile) {
+        setProfilePic(userProfile.pic);
+        AsyncStorage.setItem(persistKeys.userProfilePic, userProfile.pic);
       }
-      AsyncStorage.setItem("profile", dataItem.data.pic);
-      AsyncStorage.setItem("uniqueId", dataItem.data.user_unique_id);
-    } catch (error) {
-      LOG.error("gertUserProfileAPI", error);
     }
   };
 
@@ -155,9 +139,9 @@ export const Navbar = ({
           >
             <ImageComponent
               resizeMode="cover"
-              isUrl={!!profileData?.pic}
+              isUrl={!!profilePic}
               source={dummy}
-              uri={profileData?.pic}
+              uri={profilePic}
               style={styles.profile}
             />
           </TouchableOpacity>

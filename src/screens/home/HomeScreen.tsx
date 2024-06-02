@@ -99,6 +99,7 @@ export const HomeScreen = (props: HomeScreenProps) => {
   const { user } = useSelector<StoreType, UserProfileState>(
     (state) => state.userProfileReducer
   ) as { user: { id: string; pic: string; city: string; state: string } };
+
   var makeDate = new Date();
   makeDate.setMonth(makeDate.getMonth() - 1);
   const [range, setRange] = useState<Range>({

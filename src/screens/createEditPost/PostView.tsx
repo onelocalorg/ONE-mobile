@@ -10,7 +10,7 @@ import { SizedBox } from "~/components/sized-box";
 import { LOG } from "~/config";
 import { verticalScale } from "~/theme/device/normalize";
 import { PostData } from "~/types/post-data";
-import { ImageUploader } from "./ImageUploader";
+import { ImageUploader } from "../../components/ImageUploader";
 import { createStyleSheet } from "./style";
 
 interface PostViewProps {

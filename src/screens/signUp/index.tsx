@@ -1,3 +1,4 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   NavigationContainerRef,
   ParamListBase,
@@ -126,6 +127,9 @@ export const SignUp = (props: SignUpProps) => {
         } = data || {};
 
         await onSetToken(access_token);
+
+        AsyncStorage.setItem("userProfileId", data.id);
+        AsyncStorage.setItem("userProfilePic", data.pic);
 
         navigation?.reset({
           index: 0,
