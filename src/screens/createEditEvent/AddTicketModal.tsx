@@ -1,6 +1,5 @@
-import Big from "big.js";
 import React, { useEffect, useState } from "react";
-import { Text, View } from "react-native";
+import { Alert, Text, TextInput, View } from "react-native";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
 import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
 import { save } from "~/assets/images";
@@ -38,7 +37,7 @@ export const AddTicketModal = ({
   // const [startDate, setStartDate] = useState(new Date());
   // const [endDate, setEndDate] = useState(new Date());
   const [name, setName] = useState(value ? value.name : "");
-  const [price, setPrice] = useState(value?.price || Big(0));
+  const [price, setPrice] = useState(value?.price ?? 0);
   const [quantity, setQuantity] = useState(value?.quantity || undefined);
 
   useEffect(() => {
@@ -100,7 +99,7 @@ export const AddTicketModal = ({
   const resetState = () => {
     // setStartDate(new Date());
     // setEndDate(new Date());
-    setPrice(Big(0));
+    setPrice(0);
     setName("");
     setQuantity(undefined);
   };
@@ -111,7 +110,7 @@ export const AddTicketModal = ({
 
   const createTicketType = (): TicketTypeData => ({
     name,
-    price: price ? price : Big(0),
+    price,
     quantity: quantity ? quantity : undefined,
   });
 
@@ -163,10 +162,14 @@ export const AddTicketModal = ({
               </TouchableOpacity>
             </View> */}
           <Text style={styles.label}>{strings.ticketPrice}</Text>
-          <Input
-            value={price.eq(0) ? undefined : price.toString()}
-            onChangeText={(v) => (v ? setPrice(Big(v)) : setPrice(Big(0)))}
+          <TextInput
+            value={price ? price.toString() : "Free"}
+            onChangeText={(v) => setPrice(Number.parseFloat(v))}
             placeholder={strings.ticketPriceFree}
+            editable={false}
+            onPressIn={() => {
+              Alert.alert("Only free tickets allowed in this release");
+            }}
           />
           <Text style={styles.label}>{strings.ticketQuantity}</Text>
           <Input
