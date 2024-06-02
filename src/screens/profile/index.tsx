@@ -3,7 +3,6 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   NavigationContainerRef,
   ParamListBase,
-  useFocusEffect,
 } from "@react-navigation/native";
 import React, { useEffect, useRef, useState } from "react";
 import {
@@ -117,17 +116,6 @@ export const ProfileScreen = (props: ProfileScreenProps) => {
       subscription.remove();
     };
   }, []);
-
-  useFocusEffect(
-    React.useCallback(() => {
-      console.log("appState appState appState", appState);
-      // Alert.alert('appState')
-    }, [appState])
-  );
-
-  const onBackPress = () => {
-    navigation.goBack();
-  };
 
   const onCheckReleaseHideShow = () => {
     if (Platform.OS === "ios") {

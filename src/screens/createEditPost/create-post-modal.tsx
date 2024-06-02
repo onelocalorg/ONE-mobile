@@ -7,7 +7,6 @@ import {
 } from "@react-navigation/native";
 import React, { useCallback, useEffect, useState } from "react";
 import {
-  Modal,
   Platform,
   StyleProp,
   Text,
@@ -28,10 +27,6 @@ import { useUserProfile } from "~/network/hooks/user-service-hooks/use-user-prof
 import { StoreType } from "~/network/reducers/store";
 import { UserProfileState } from "~/network/reducers/user-profile-reducer";
 import { createStyleSheet } from "../event/style";
-
-import GestureRecognizer from "react-native-swipe-gestures";
-import { Subscription } from "~/components/subcription";
-import { MembershipCheckoutModal } from "~/screens/profile/membership-checkout-modal";
 
 interface CreatePostModalProps {
   modalRef?: React.Ref<ModalRefProps>;
@@ -111,17 +106,17 @@ export const CreatePostModal = (props: CreatePostModalProps) => {
   };
 
   const onNavigate = async () => {
-    const isEventPurched = await AsyncStorage.getItem("isEventActive");
-    if (isEventPurched === "true") {
-      navigation?.navigate(navigations.ADMIN_TOOLS, { isCreateEvent: true });
-      const ref = modalRef as { current: { onCloseModal: () => void } };
-      ref?.current?.onCloseModal();
-    } else {
-      setTimeout(() => {
-        setEventProducerModal(true);
-      }, 1000);
-      packageDetailAPI();
-    }
+    // const isEventPurched = await AsyncStorage.getItem("isEventActive");
+    // if (isEventPurched === "true") {
+    navigation?.navigate(navigations.ADMIN_TOOLS, { isCreateEvent: true });
+    const ref = modalRef as { current: { onCloseModal: () => void } };
+    ref?.current?.onCloseModal();
+    // } else {
+    //   setTimeout(() => {
+    //     setEventProducerModal(true);
+    //   }, 1000);
+    //   packageDetailAPI();
+    // }
   };
 
   const onEventProducer = async () => {
@@ -298,7 +293,7 @@ export const CreatePostModal = (props: CreatePostModalProps) => {
             )} */}
           </View>
         </View>
-        <Modal
+        {/* <Modal
           transparent
           visible={iseventProducerModal}
           onDismiss={onEventDismiss}
@@ -344,7 +339,7 @@ export const CreatePostModal = (props: CreatePostModalProps) => {
           ) : (
             <></>
           )}
-        </Modal>
+        </Modal> */}
       </ModalComponent>
     </>
   );
