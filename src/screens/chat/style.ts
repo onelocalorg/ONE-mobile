@@ -11,6 +11,10 @@ export const createStyleSheet = (theme: ThemeProps) => {
       alignItems: "center",
       flex: 1,
     },
+    chatContainer: {
+      backgroundColor: theme.colors.white,
+      flex: 1,
+    },
     text: {
       fontSize: theme.fontSize.font14,
       fontFamily: theme.fontType.regular,
