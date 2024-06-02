@@ -49,7 +49,7 @@ import { ImageComponent } from "~/components/image-component";
 import { Navbar } from "~/components/navbar/Navbar";
 import { navigations } from "~/config/app-navigation/constant";
 import { deletePost, listPosts } from "~/network/api/services/post-service";
-import { getData, setData } from "~/network/constant";
+import { getData, persistKeys, setData } from "~/network/constant";
 import { StoreType } from "~/network/reducers/store";
 import { UserProfileState } from "~/network/reducers/user-profile-reducer";
 import { Post } from "~/types/post";
@@ -95,6 +95,7 @@ export const HomeScreen = (props: HomeScreenProps) => {
   const [showCommentListModal, setShowCommentListData] = useState(false);
   const [refresh, setRefresh] = useState(false);
   const [Post_Id, setPostDataId] = useState("");
+  const [userProfilePic, setUserProfilePic] = useState<string>();
 
   const { user } = useSelector<StoreType, UserProfileState>(
     (state) => state.userProfileReducer
@@ -135,6 +136,9 @@ export const HomeScreen = (props: HomeScreenProps) => {
 
   useEffect(() => {
     handleEnabledPressed();
+    AsyncStorage.getItem(persistKeys.userProfilePic).then((pic) =>
+      pic ? setUserProfilePic(pic) : null
+    );
   }, []);
 
   useFocusEffect(
@@ -819,9 +823,9 @@ export const HomeScreen = (props: HomeScreenProps) => {
                   <ImageComponent
                     style={styles.avatar}
                     resizeMode="cover"
-                    isUrl={!!user?.pic}
+                    isUrl={!!userProfilePic}
                     source={dummy}
-                    uri={ProfileData?.pic}
+                    uri={userProfilePic}
                   ></ImageComponent>
                   <View style={styles.postInput}>
                     <Text style={{ textAlign: "left", color: "gray" }}>
