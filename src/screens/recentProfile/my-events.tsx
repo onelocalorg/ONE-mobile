@@ -11,10 +11,8 @@ import { EventCard } from "~/components/events/EventCard";
 import { FlatListComponent } from "~/components/flatlist-component";
 import { Loader } from "~/components/loader";
 import { navigations } from "~/config/app-navigation/constant";
-import {
-  EventData,
-  useEventLists,
-} from "~/network/hooks/home-service-hooks/use-event-lists";
+import { useEventLists } from "~/network/hooks/home-service-hooks/use-event-lists";
+import { LocalEventData } from "~/types/local-event-data";
 import { createStyleSheet } from "./style";
 
 interface RecentMyEventsProps {
@@ -27,7 +25,7 @@ export const RecentMyEvents = (props: RecentMyEventsProps) => {
   const styles = createStyleSheet(theme);
   const { strings } = useStringsAndLabels();
   const { userId, navigation } = props || {};
-  const [events, setEvents] = useState<EventData[]>([]);
+  const [events, setEvents] = useState<LocalEventData[]>([]);
   const [totalPages, setTotalPages] = useState(0);
   const { mutateAsync, isLoading } = useEventLists();
   const [page, setPage] = useState(1);
@@ -50,7 +48,7 @@ export const RecentMyEvents = (props: RecentMyEventsProps) => {
     setPage(page + 1);
   };
 
-  const renderItem: ListRenderItem<EventData> = ({ item }) => {
+  const renderItem: ListRenderItem<LocalEventData> = ({ item }) => {
     const { name } = item || {};
 
     return (
@@ -58,7 +56,7 @@ export const RecentMyEvents = (props: RecentMyEventsProps) => {
     );
   };
 
-  const onNavigate = (item: EventData) => {
+  const onNavigate = (item: LocalEventData) => {
     navigation.navigate(navigations.EVENT_DETAIL, { id: item?.id });
   };
 

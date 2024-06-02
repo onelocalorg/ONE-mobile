@@ -1,9 +1,4 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import {
-  NavigationContainerRef,
-  ParamListBase,
-} from "@react-navigation/native";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import {
   ListRenderItem,
   LogBox,
@@ -14,99 +9,20 @@ import {
 import { FlatList } from "react-native-gesture-handler";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
 import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
-import { useToken } from "~/app-hooks/use-token";
 import { FlatListComponent } from "~/components/flatlist-component";
 import { Loader } from "~/components/loader";
-import { Navbar } from "~/components/navbar/Navbar";
 import { Pill } from "~/components/pill";
+import { UserProfile } from "~/types/user-profile";
 import { createStyleSheet } from "./style";
 
 interface RecentaboutDataProps {
-  ref: React.Ref<unknown> | undefined;
-  about: string;
-  skills: string[];
-  profileAnswers: any[];
-  idUser: string;
-  onEditProfile?: (data: { about?: string; skills?: string[] }) => void;
-  navigation: NavigationContainerRef<ParamListBase>;
-  route?: {
-    params: {
-      id: string;
-    };
-  };
+  userProfile: UserProfile;
 }
 
-export const Recentabout = (props: RecentaboutDataProps) => {
+export const Recentabout = ({ userProfile }: RecentaboutDataProps) => {
   const { theme } = useAppTheme();
   const { strings } = useStringsAndLabels();
   const styles = createStyleSheet(theme);
-  const { about, skills, profileAnswers, idUser, route, navigation } =
-    props || {};
-  const [updatedAbout, setAbout] = useState(about);
-  const [allSkills, setSkills] = useState(skills);
-  const [skillValue, setSkillValue]: any = useState("");
-  const [isLoading, LodingData] = useState(false);
-  const [profileUri, setProfileUri] = useState("");
-  const [updatedBio, setBio] = useState("");
-  const [recentUser, recentUserDetail]: any = useState([]);
-  const { token } = useToken();
-  const { id } = route?.params ?? {};
-  const [openQues, quesAnsModal] = useState(false);
-  var [ansQueData, submitAnsState] = useState(profileAnswers);
-  var [ansQueDataTwo, submitAnsStateTwo] = useState(profileAnswers);
-  const {} = props || {};
-  useEffect(() => {
-    LodingData(true);
-    userRecentProfileUpdate();
-    setAbout(about);
-    setSkills(skills);
-  }, [about, skills]);
-
-  // =================Update Answer API====================
-
-  async function userRecentProfileUpdate() {
-    const token = await AsyncStorage.getItem("token");
-    const userID = await AsyncStorage.getItem("recentUserId");
-    try {
-      const response = await fetch(
-        process.env.API_URL + "/v1/users/userprofile/" + userID,
-        {
-          method: "get",
-          headers: new Headers({
-            Authorization: "Bearer " + token,
-            "Content-Type": "application/json",
-          }),
-        }
-      );
-      const dataItem = await response.json();
-      submitAnsState(dataItem?.data?.profile_answers);
-      recentUserDetail(dataItem?.data);
-      setAbout(dataItem?.about);
-      setSkills(dataItem?.skills);
-      LodingData(false);
-    } catch (error) {
-      LodingData(false);
-      console.error(error);
-    }
-  }
-
-  const updateAnsBack = () => {
-    quesAnsModal(false);
-  };
-
-  const handleRemove = (id: any) => {
-    const newPeople = allSkills.filter((person) => person !== id);
-
-    setSkills(newPeople);
-  };
-
-  const onAddSkill = (text: any) => {
-    if (text !== "" && text !== undefined) {
-      setSkills([...allSkills, text]);
-      setSkillValue("");
-    }
-  };
-
   const renderItem: ListRenderItem<string> = ({ item }) => (
     <Pill pillStyle={styles.marginBottom} key={item} label={item} />
   );
@@ -115,60 +31,31 @@ export const Recentabout = (props: RecentaboutDataProps) => {
     LogBox.ignoreAllLogs();
   }, []);
 
-  function handleToggleYourList(name: any, jindex: any) {
-    let newArr = ansQueDataTwo.map((item, index) => {
-      const target: Partial<typeof item> = { ...item };
-      delete target["question"];
-
-      if (index == jindex) {
-        return { ...target, answer: name };
-      } else {
-        return target;
-      }
-    });
-    let newArrs = ansQueDataTwo.map((item, index) => {
-      const target: Partial<typeof item> = { ...item };
-
-      if (index == jindex) {
-        return { ...target, answer: name };
-      } else {
-        return target;
-      }
-    });
-    submitAnsState(newArr);
-    submitAnsStateTwo(newArrs);
-  }
-
-  const onBackPress = () => {
-    navigation.goBack();
-  };
-
   return (
     <>
-      <Navbar navigation={navigation} />
       <View style={styles.container}>
         <View style={styles.center}>
           <Text style={styles.name}>
-            {recentUser?.first_name} {recentUser?.last_name}
+            {userProfile.first_name} {userProfile.last_name}
           </Text>
-          <View style={styles.circularView}>
-            <Text style={styles.des}>{recentUser?.status}</Text>
-          </View>
+          {/* <View style={styles.circularView}>
+            <Text style={styles.des}>{userProfile.status}</Text>
+          </View> */}
         </View>
         <View style={styles.aboutView}>
-          <Text style={styles.input}>{recentUser?.bio}</Text>
+          <Text style={styles.input}>{userProfile.catch_phrase}</Text>
         </View>
         <View style={styles.line} />
       </View>
       <View style={styles.innerConatiner}>
         <Loader visible={false} showOverlay />
         <Text style={styles.membership}>About</Text>
-        <Text style={styles.input}>{recentUser?.about}</Text>
+        <Text style={styles.input}>{userProfile.about}</Text>
         <Text style={styles.membership}>{strings.skills}</Text>
 
         <View style={styles.row}>
           <FlatListComponent
-            data={recentUser?.skills}
+            data={userProfile.skills}
             keyExtractor={(item) => item.toString()}
             renderItem={renderItem}
             numColumns={100}
@@ -188,17 +75,17 @@ export const Recentabout = (props: RecentaboutDataProps) => {
             </TouchableOpacity>
             <View style={{ marginBottom: 30 }}>
               <FlatList
-                data={recentUser?.profile_answers}
+                data={userProfile.profile_answers}
                 renderItem={({ item }) => (
                   <View>
                     {item.length != 0 ? (
                       <View>
-                        <Text style={styles.questionsDisplayLbl}>
+                        {/* <Text style={styles.questionsDisplayLbl}>x
                           {item.question}
                         </Text>
                         <Text style={styles.answerDisplayCont}>
                           {item.answer}
-                        </Text>
+                        </Text> */}
                       </View>
                     ) : (
                       <View></View>

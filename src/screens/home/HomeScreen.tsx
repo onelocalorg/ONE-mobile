@@ -439,7 +439,7 @@ export const HomeScreen = (props: HomeScreenProps) => {
 
   const recentUserProfilePress = (id: any) => {
     AsyncStorage.setItem("recentUserId", id);
-    navigation.navigate(navigations.RECENTUSERPROFILE);
+    navigation.navigate(navigations.RECENTUSERPROFILE, { userId: id });
   };
 
   const onCommentOpen = (item: any, post_index: any) => {
