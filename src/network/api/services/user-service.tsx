@@ -114,28 +114,6 @@ export const onEditUserProfile = async (props: EditProfileProps) => {
   return response;
 };
 
-interface SaveCustomerIdProps {
-  bodyParams: {
-    userId: string;
-    customerId: string;
-  };
-}
-
-export const onSaveCustomerId = async (props: SaveCustomerIdProps) => {
-  const { bodyParams } = props || {};
-  let response;
-
-  try {
-    const endPoint = apiConstants.saveCustomerId;
-    const data = await API.userService.post(endPoint, bodyParams);
-    response = getApiResponse(data);
-  } catch (error: any) {
-    response = getApiResponse(error);
-  }
-
-  return response;
-};
-
 export const onGetAppConfig = async () => {
   let response;
 
