@@ -28,10 +28,6 @@ import { LocalEvent } from "~/types/local-event";
 import { LocalEventData } from "~/types/local-event-data";
 import { createStyleSheet } from "./style";
 
-const BOULDER_LON = -105.2705;
-const BOULDER_LAT = 40.015;
-const DEFAULT_ZOOM = 12;
-
 interface Range {
   startDate: Date | undefined;
   endDate: Date | undefined;
