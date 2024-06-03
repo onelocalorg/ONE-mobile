@@ -1,11 +1,12 @@
 import { View } from "react-native";
 import Swiper from "react-native-swiper";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
+import { LocalEvent } from "~/types/local-event";
 import { EventInfo } from "./EventInfo";
 import { createStyleSheet } from "./style";
 
 interface EventListProps {
-  eventList: any;
+  eventList: LocalEvent[];
 }
 export const EventList = ({ eventList }: EventListProps) => {
   const { theme } = useAppTheme();
