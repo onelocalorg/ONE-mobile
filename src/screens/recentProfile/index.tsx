@@ -44,7 +44,7 @@ export const RecentProfileScreen = ({
 
   return (
     <View style={styles.container}>
-      <Navbar navigation={navigation} isAvatarVisible={false} />
+      <Navbar navigation={navigation} />
 
       {userProfile ? (
         <>
