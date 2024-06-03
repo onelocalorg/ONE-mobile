@@ -47,7 +47,7 @@ export const ForgotPassword = ({ onDismiss }: ForgotPasswordProps) => {
               forgotPassword(email!).then((result) => {
                 if (result.success) {
                   setForgotPasswordSent(true);
-                  setOtpKey(result.data.otpKey);
+                  setOtpKey(result.data!.otpKey);
                 } else {
                   Alert.alert("Failed sending reset link", result.message);
                 }

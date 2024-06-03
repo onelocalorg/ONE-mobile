@@ -86,12 +86,20 @@ async function callApi<Resource>(
     body: JSON.stringify(body),
   });
   LOG.info(response.status);
-
-  const json = await response.json();
-  const result = {
-    ...json,
-    data: json.data && transform ? transform(json.data) : json.data,
-  };
-  LOG.debug("<=", result);
-  return result as ApiResponse<Resource>;
+  if (response.status < 500) {
+    const json = await response.json();
+    const result = {
+      ...json,
+      data: json.data && transform ? transform(json.data) : json.data,
+    };
+    LOG.debug("<=", result);
+    return result as ApiResponse<Resource>;
+  } else {
+    LOG.error("<=", response.statusText);
+    return {
+      success: false,
+      code: response.status,
+      message: response.statusText || "Internal server error",
+    };
+  }
 }
