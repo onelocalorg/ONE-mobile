@@ -1,58 +1,23 @@
 import { DateTime } from "luxon";
-import { LOG } from "~/config";
 import { OneUser } from "~/types/one-user";
 import { Post } from "~/types/post";
 import { PostData } from "~/types/post-data";
 import { doPost, doPostPaginated } from "./api-service";
 
 export async function createPost(data: PostData) {
-  const resp = await doPost<CreatePostApiResource, PostWrappedInUselessPost>(
-    "/v1/posts/create",
-    postToApi(data)
-  );
-  return { ...resp, data: apiToPost(resp.data.post) };
+  return doPost<Post>("/v1/posts/create", postToBody(data), apiToPost);
 }
 
 export async function updatePost(id: string, data: PostData) {
-  try {
-    const resp = await doPost<CreatePostApiResource, PostWrappedInUselessPost>(
-      `/v2/posts/update/${id}`,
-      postToApi(data)
-    );
-    return { ...resp, data: apiToPost(resp.data.post) };
-  } catch (e) {
-    console.log(e);
-    LOG.error(e);
-    throw e;
-  }
+  return doPost<Post>(`/v2/posts/update/${id}`, postToBody(data), apiToPost);
 }
 
 export async function deletePost(id: string) {
-  return doPost<never, never>(`/v2/posts/delete/${id}`);
+  return doPost<never>(`/v2/posts/delete/${id}`);
 }
 
 export async function listPosts() {
-  const resp = await doPostPaginated<never, GetPostApiResource>(
-    "/v1/posts/list?limit=50"
-  );
-  return { pageInfo: resp.pageInfo, posts: resp.results.map(apiToPost) };
-}
-
-// The JSON sent for an API call
-interface CreatePostApiResource {
-  type: string;
-  what_name: string;
-  where_address?: string;
-  where_lat?: string;
-  where_lng?: string;
-  startDate?: string;
-  hasStartTime?: boolean;
-  content?: string;
-  post_image?: string[];
-}
-
-interface PostWrappedInUselessPost {
-  post: GetPostApiResource;
+  return doPostPaginated<Post>("/v1/posts/list?limit=50", undefined, apiToPost);
 }
 
 // The JSON returned from the API call
@@ -104,15 +69,14 @@ const apiToPost = (data: GetPostApiResource) =>
     author: data.user_id,
   } as Post);
 
-const postToApi = (data: PostData) =>
-  ({
-    type: data.type.toLowerCase(),
-    what_name: data.name,
-    where_address: data.address,
-    where_lat: data.latitude?.toString(),
-    where_lng: data.longitude?.toString(),
-    startDate: data.startDate?.toISO(),
-    hasStartTime: data.hasStartTime ?? false,
-    content: data.details,
-    post_image: data.imageUrls,
-  } as CreatePostApiResource);
+const postToBody = (data: PostData) => ({
+  type: data.type.toLowerCase(),
+  what_name: data.name,
+  where_address: data.address,
+  where_lat: data.latitude?.toString(),
+  where_lng: data.longitude?.toString(),
+  startDate: data.startDate?.toISO(),
+  hasStartTime: data.hasStartTime ?? false,
+  content: data.details,
+  post_image: data.imageUrls,
+});

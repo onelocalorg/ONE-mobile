@@ -38,9 +38,9 @@ import { ChooseDate } from "~/components/choose-date/ChooseDate";
 import { Loader } from "~/components/loader";
 import { Navbar } from "~/components/navbar/Navbar";
 import { LOG } from "~/config";
+import { updateEvent } from "~/network/api/services/event-service";
 import { useCreateEvent } from "~/network/hooks/home-service-hooks/use-create-event";
 import { useTicketHolderCheckinsList } from "~/network/hooks/home-service-hooks/use-ticket-holder-checkin-list";
-import { useUpdateEvent } from "~/network/hooks/home-service-hooks/use-update-event";
 import { StoreType } from "~/network/reducers/store";
 import { UserProfileState } from "~/network/reducers/user-profile-reducer";
 import { width } from "~/theme/device/device";
@@ -54,7 +54,6 @@ interface CreateEditEventScreenProps {
   route?: {
     params: {
       eventData?: LocalEventData | LocalEvent;
-      isCreateEvent: boolean;
     };
   };
 }
@@ -63,7 +62,8 @@ export const CreateEditEventScreen = (props: CreateEditEventScreenProps) => {
   const { theme } = useAppTheme();
   const { strings } = useStringsAndLabels();
   const { navigation, route } = props || {};
-  const isCreateEvent = route?.params.isCreateEvent ?? false;
+  const isCreateEvent = !route?.params.eventData;
+  const eventId = route?.params.eventData?.id;
   const viewCount = isLocalEvent(route?.params.eventData)
     ? route?.params.eventData.viewCount
     : undefined;
@@ -109,7 +109,6 @@ export const CreateEditEventScreen = (props: CreateEditEventScreenProps) => {
     eventId: id,
     queryParams: { pagination: false },
   });
-  const { mutateAsync: updateEvent } = useUpdateEvent();
   const [isLoading, LodingData] = useState(false);
   const { mutateAsync: createEvent, isLoading: createEventLoading } =
     useCreateEvent();
@@ -300,12 +299,12 @@ export const CreateEditEventScreen = (props: CreateEditEventScreenProps) => {
 
     LOG.debug("> onUpdateEvent", request);
 
-    const res = await updateEvent({ bodyParams: request, eventId: id });
-    if (res?.success) {
-      LodingData(false);
+    const res = await updateEvent(eventId!, request);
+    LodingData(false);
+    if (res.success) {
       navigation?.goBack();
     } else {
-      LodingData(false);
+      Alert.alert("Failed to update event", res.message);
     }
   };
 

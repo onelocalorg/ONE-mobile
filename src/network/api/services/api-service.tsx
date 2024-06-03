@@ -1,34 +1,54 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { LOG } from "~/config";
+import { PaginatedResponse } from "~/types/paginated-response";
 
-export async function doGet<Resource>(url: string) {
-  return callApi<never, Resource>("GET", url);
-}
-
-export async function doPost<Body, Resource>(url: string, body?: Body) {
-  return callApi<Body, Resource>("POST", url, body);
-}
-
-export async function doPatch<Body, Resource>(url: string, body?: Body) {
-  return callApi<Body, Resource>("PATCH", url, body);
-}
-
-export async function doPostPaginated<Body, Resource>(
+// Perform a GET against the given url and return the resource generated via
+// the given transform fundction
+export async function doGet<Resource>(
   url: string,
-  body?: Body
+  transform?: (data: any) => Resource
 ) {
-  const resp = await callApi<Body, any>("POST", url, body);
+  return callApi<Resource>("GET", url, undefined, transform);
+}
 
-  const { page, limit, totalPages, totalResults } = resp.data;
+// Perform a POST against the given url and return the resource generated via
+// the given transform fundction
+export async function doPost<Resource>(
+  url: string,
+  body?: any,
+  transform?: (data: any) => Resource
+) {
+  return callApi<Resource>("POST", url, body, transform);
+}
 
-  return {
-    pageInfo: { page, limit, totalPages, totalResults },
-    results: resp.data.results,
-  } as PaginatedResponse<Resource>;
+// Perform a PATCH against the given url and return the resource generated via
+// the given transform fundction
+export async function doPatch<Resource>(
+  url: string,
+  body: any,
+  transform?: (data: any) => Resource
+) {
+  return callApi<Resource>("PATCH", url, body, transform);
+}
+
+export async function doPostPaginated<Resource>(
+  url: string,
+  body?: any,
+  transform?: (data: any) => Resource
+) {
+  return callApi<PaginatedResponse<Resource>>("POST", url, body, (json) => ({
+    pageInfo: {
+      page: json.page,
+      limit: json.limit,
+      totalPages: json.totalPages,
+      totalResults: json.totalResults,
+    },
+    results: json.data.results.map(transform),
+  }));
 }
 
 export async function doDelete<Resource>(url: string) {
-  return callApi<never, Resource>("DELETE", url);
+  return callApi<Resource>("DELETE", url);
 }
 
 class ApiError extends Error {
@@ -41,25 +61,15 @@ interface ApiResponse<Resource> {
   success: boolean;
   code: number;
   message: string;
-  data: Resource;
+  data?: Resource;
 }
 
-export interface PageData {
-  page: number;
-  limit: number;
-  totalPages: number;
-  totalResults: number;
-}
-
-export interface PaginatedResponse<Resource> {
-  pageInfo: PageData;
-  results: Resource[];
-}
-
-async function callApi<Body, Resource>(
+// Returns ApiResponse<Resource>
+async function callApi<Resource>(
   method: string,
   url: string,
-  body?: Body
+  body?: any,
+  transform?: (data: any) => Resource
 ) {
   LOG.info("callApi", method, url);
   if (body) {
@@ -76,11 +86,12 @@ async function callApi<Body, Resource>(
     body: JSON.stringify(body),
   });
   LOG.info(response.status);
-  const retVal = (await response.json()) as ApiResponse<Resource>;
-  if (response.ok) {
-    LOG.debug("=> ", retVal);
-  } else {
-    LOG.error("=> ", retVal);
-  }
-  return retVal;
+
+  const json = await response.json();
+  const result = {
+    ...json,
+    data: json.data && transform ? transform(json.data) : json.data,
+  };
+  LOG.debug("<=", result);
+  return result as ApiResponse<Resource>;
 }

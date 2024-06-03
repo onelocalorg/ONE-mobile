@@ -20,9 +20,7 @@ export const updateUserProfile = async (
   userId: string,
   data: UserProfileData
 ) => {
-  const response = await doPatch<UserProfileData, UserProfile>(
-    `/v1/users/${userId}`
-  );
+  const response = await doPatch<UserProfile>(`/v1/users/${userId}`, data);
   if (!response.success) {
     Alert.alert("Failed updating user profile", response.message);
   } else {

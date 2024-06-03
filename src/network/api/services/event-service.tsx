@@ -5,31 +5,27 @@ import { LOG } from "~/config";
 import { apiConstants } from "~/network/constant";
 import { getApiResponse } from "~/network/utils/get-api-response";
 import { EventProducer } from "~/types/event-producer";
+import { ForgotPassword } from "~/types/forgot-password";
 import { GeoJSONEventProperties } from "~/types/geojson-event-properties";
 import { LocalEvent } from "~/types/local-event";
 import { LocalEventData } from "~/types/local-event-data";
 import { OneUser } from "~/types/one-user";
 import { PriceBreakdown } from "~/types/price-breakdown";
-import { RsvpList, RsvpType } from "~/types/rsvp";
+import { Rsvp, RsvpList, RsvpType } from "~/types/rsvp";
 import { TicketSelection } from "~/types/ticket-selection";
 import { TicketType } from "~/types/ticket-type";
 import { API } from "..";
-import { doGet, doPost } from "./api-service";
+import { doGet, doPatch, doPost } from "./api-service";
 
-export async function listRsvps(eventId: string) {
-  const resp = await doGet<RsvpListResource>(`/v1/events/rsvp/${eventId}`);
-  return { ...resp, data: apiToRsvps(resp.data) };
-}
+export const listRsvps = (eventId: string) => {
+  return doGet<RsvpList>(`/v1/events/rsvp/${eventId}`, apiToRsvps);
+};
 
-export async function updateRsvp(eventId: string, rsvp: RsvpType) {
-  return await doPost<UpdateRsvpBody, any>(`/v1/events/rsvp/${eventId}`, {
+export const updateRsvp = (eventId: string, rsvp: RsvpType) => {
+  return doPost<Rsvp>(`/v1/events/rsvp/${eventId}`, {
     type: rsvp,
   });
-}
-
-interface UpdateRsvpBody {
-  type: string;
-}
+};
 
 interface RsvpListResource {
   rsvps: RsvpResource[];
@@ -39,7 +35,7 @@ interface RsvpListResource {
 }
 
 interface RsvpResource {
-  id: string;
+  _id: string;
   rsvp: string;
   user_id: OneUser;
 }
@@ -47,12 +43,15 @@ interface RsvpResource {
 const apiToRsvps = (data: RsvpListResource) =>
   ({
     ...data,
-    rsvps: data.rsvps.map((r) => ({
-      id: r.id,
-      rsvp: r.rsvp,
-      guest: r.user_id,
-    })),
+    rsvps: data.rsvps.map(apiToRsvp),
   } as RsvpList);
+
+const apiToRsvp = (data: RsvpResource) =>
+  ({
+    id: data._id,
+    rsvp: data.rsvp,
+    guest: data.user_id,
+  } as Rsvp);
 
 export async function getTicketPriceBreakdown(
   eventId: string,
@@ -84,12 +83,6 @@ interface EventProps {
   };
   userId?: string;
 }
-
-export const getData = async () => {
-  try {
-    const reso = await AsyncStorage.getItem("item");
-  } catch (error) {}
-};
 
 export const onFetchEvents = async ({
   queryParams,
@@ -308,26 +301,25 @@ export const onCheckedInUser = async (props: CheckedInUserProps) => {
   return response;
 };
 
-interface UpdateEventProps {
-  bodyParams: {
-    name?: string;
-    startDate?: string;
-    endDate?: string;
-    address?: string;
-    full_address?: string;
-    emailConfirmationBody?: string;
-    tickets?: TicketType[];
-    eventImage?: string;
-    about?: string;
-    latitude?: string;
-    longitude?: string;
-    type?: string;
-  };
-  eventId?: string;
+interface UpdateEventFields {
+  name?: string;
+  startDate?: string;
+  endDate?: string;
+  address?: string;
+  full_address?: string;
+  emailConfirmationBody?: string;
+  tickets?: TicketType[];
+  eventImage?: string;
+  about?: string;
+  latitude?: string;
+  longitude?: string;
+  type?: string;
 }
 
-export const onUpdateEvent = async (props: UpdateEventProps) => {
-  const { bodyParams, eventId } = props || {};
+export const updateEvent = async (
+  eventId: string,
+  fields: UpdateEventFields
+) => {
   const {
     address,
     emailConfirmationBody,
@@ -341,10 +333,9 @@ export const onUpdateEvent = async (props: UpdateEventProps) => {
     latitude,
     longitude,
     type,
-  } = bodyParams || {};
-  let response;
+  } = fields || {};
 
-  const attachments = {
+  const body = {
     name: name,
     start_date: startDate,
     end_date: endDate,
@@ -359,19 +350,7 @@ export const onUpdateEvent = async (props: UpdateEventProps) => {
     event_image: eventImage,
   };
 
-  console.log(
-    attachments,
-    "-------------------update event request--------------------"
-  );
-  try {
-    const endPoint = `/v2/events/${eventId}`;
-    const data = await API.homeService.patch(endPoint, attachments);
-    response = getApiResponse(data);
-  } catch (error: any) {
-    response = getApiResponse(error);
-  }
-
-  return response;
+  return doPatch<ForgotPassword>(`/v2/events/${eventId}`, body);
 };
 
 export const onCreateEvent = async ({

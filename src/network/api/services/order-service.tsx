@@ -3,7 +3,7 @@ import { Order } from "~/types/order";
 import { PriceBreakdown } from "~/types/price-breakdown";
 import { doPost } from "./api-service";
 
-export async function createOrder(lineItems: LineItem[]) {
+export const createOrder = (lineItems: LineItem[]) => {
   const body = {
     lineItems: lineItems.map((li) => ({
       ...li,
@@ -12,16 +12,8 @@ export async function createOrder(lineItems: LineItem[]) {
       ticketType: li.ticketType.id,
     })),
   };
-  const resp = await doPost<CreateOrderBody, OrderResource>(
-    `/v1/orders/`,
-    body
-  );
-  return { ...resp, data: apiToOrder(resp.data, lineItems) };
-}
-
-interface CreateOrderBody {
-  lineItems: LineItemResource[];
-}
+  return doPost<Order>(`/v1/orders/`, body, apiToOrder(lineItems));
+};
 
 interface LineItemResource {
   type: string;
@@ -43,7 +35,7 @@ interface OrderResource {
   };
 }
 
-const apiToOrder = (data: OrderResource, lineItems: LineItem[]) =>
+const apiToOrder = (lineItems: LineItem[]) => (data: OrderResource) =>
   ({
     ...data,
     lineItems: data.lineItems.map((liResource) => ({
@@ -55,4 +47,4 @@ const apiToOrder = (data: OrderResource, lineItems: LineItem[]) =>
       )?.ticketType,
     })),
     // timestamp: DateTime.fromISO(data.timestamp),
-  } as unknown as Order);
+  } as Order);
