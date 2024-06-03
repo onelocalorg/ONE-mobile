@@ -15,11 +15,12 @@ import {
   Linking,
   Platform,
   Text,
+  TextInput,
   TouchableOpacity,
 } from "react-native";
 import { getDeviceName, getUniqueId } from "react-native-device-info";
-import { TextInput } from "react-native-gesture-handler";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import { Modal, Portal } from "react-native-paper";
 import Toast from "react-native-simple-toast";
 import { useDispatch } from "react-redux";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
@@ -35,6 +36,7 @@ import { navigations } from "~/config/app-navigation/constant";
 import { getData, persistKeys } from "~/network/constant";
 import { useLogin } from "~/network/hooks/user-service-hooks/use-login";
 import { verticalScale } from "~/theme/device/normalize";
+import { ForgotPassword } from "./ForgotPassword";
 import { createStyleSheet } from "./style";
 
 GoogleSignin.configure({
@@ -63,6 +65,7 @@ export const LoginScreen = (props: LoginScreenProps) => {
   const [googleAuth, setGoogleAuth]: any = useState();
   const [userToken, setUserToken] = useState();
   const [appleAuthAvailable, setAppleAuthAvailable] = useState(false);
+  const [isForgotPasswordVisible, setForgotPasswordVisible] = useState(false);
 
   useEffect(() => {}, []);
 
@@ -477,9 +480,22 @@ export const LoginScreen = (props: LoginScreenProps) => {
           title={strings.signUp}
         /> */}
         <SizedBox height={verticalScale(8)} />
-        <TouchableOpacity activeOpacity={0.8}>
+        <TouchableOpacity
+          activeOpacity={0.8}
+          onPress={() => setForgotPasswordVisible(true)}
+        >
           <Text style={styles.forgot}>{`${strings.forgotPassword}?`}</Text>
         </TouchableOpacity>
+
+        <Portal>
+          <Modal
+            visible={isForgotPasswordVisible}
+            onDismiss={() => setForgotPasswordVisible(false)}
+            contentContainerStyle={styles.modal}
+          >
+            <ForgotPassword onDismiss={() => setForgotPasswordVisible(false)} />
+          </Modal>
+        </Portal>
 
         {onCheckReleaseHideShow() ? (
           <>

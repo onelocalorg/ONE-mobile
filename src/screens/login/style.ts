@@ -1,4 +1,5 @@
 import { StyleSheet } from "react-native";
+import { colors } from "~/theme/colors";
 import { normalScale, verticalScale } from "~/theme/device/normalize";
 import { ThemeProps } from "~/theme/theme";
 
@@ -223,6 +224,10 @@ export const createStyleSheet = (theme: ThemeProps) => {
       fontFamily: theme.fontType.medium,
       height: verticalScale(38),
       color: "black",
+    },
+    modal: {
+      backgroundColor: colors.lightGrey,
+      padding: 20,
     },
   });
 };
