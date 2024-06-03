@@ -7,7 +7,7 @@ import MapboxGL, {
   UserLocation,
 } from "@rnmapbox/maps";
 import { FeatureCollection } from "geojson";
-import React, { useCallback, useRef, useState } from "react";
+import React, { useCallback, useState } from "react";
 import { View } from "react-native";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
 import { createStyleSheet } from "./style";
@@ -23,6 +23,7 @@ import {
   featureToLocalEvent,
   fetchEvents,
 } from "~/network/api/services/event-service";
+import { LocalEvent } from "~/types/local-event";
 import { LocalEventData } from "~/types/local-event-data";
 import { EventItem } from "../events/EventItem";
 
@@ -51,17 +52,9 @@ export const Map = ({ onClicked }: MapProps) => {
     BOULDER_LAT,
   ]);
 
-  const [eventList, eventDataStore] = useState([]);
-  const [eventType, eventTypeData] = useState("event");
-  const [isLoading, setIsLoading] = useState(false);
   const [events, setEvents] = useState<FeatureCollection>();
-  const [selectedEvent, setSelectedEvent] = useState<LocalEventData>();
-  // const mileStoneSwiperRef: any = useRef(null);
-  // var zoomLeveDefault = getData("mapCircleRadius");
-  // const [shape, setShapData]: any = useState();
-  // const { user } = useSelector<StoreType, UserProfileState>(
-  //   (state) => state.userProfileReducer
-  // ) as { user: { id: string; pic: string } };
+  const [selectedEvents, setSelectedEvents] = useState<LocalEvent[]>([]);
+
   var makeDate = new Date();
   makeDate.setMonth(makeDate.getMonth() + 1);
   const [range, setRange] = useState<Range>({
@@ -73,56 +66,24 @@ export const Map = ({ onClicked }: MapProps) => {
     event: eventIcon,
     gift: giftIcon,
   };
-  // const mapRef = useRef(null);
-  // const [mapLoaded, setMapLoaded] = useState(false);
-
-  // const mapRef = useRef(null);
-
-  // useFocusEffect(
-  //   useCallback(() => {
-  //     if (!latitude) {
-  //       requestLocationPermission();
-  //     }
-  //   }, [])
-  // );
-
-  const camera = useRef<MapboxGL.Camera>(null);
-
-  // useEffect(() => {
-  //   fetchEvents({
-  //     startDate: DateTime.now(),
-  //     isCanceled: false,
-  //     // endDate: DateTime.now().plus({ months: 3 }),
-  //   }).then(setEvents);
-
-  // async function fetchEvents() {
-  //   const url = process.env.API_URL + "/v2/events";
-  //   LOG.info(url);
-  //   const token = await AsyncStorage.getItem("token");
-  //   const response = await fetch(url, {
-  //     headers: new Headers({
-  //       Authorization: "Bearer " + token,
-  //       "Content-Type": "application/json",
-  //     }),
-  //   });
-  //   LOG.info(response.status);
-  //   const dataItem = await response.json();
-
-  //   LOG.debug(dataItem?.data);
-  //   setEvents(dataItem?.data);
-  // }
-
-  // fetchEvents();
-  // }, []);
 
   useFocusEffect(
     useCallback(() => {
-      setSelectedEvent(undefined);
+      setSelectedEvents([]);
       fetchEvents({
         startDate: DateTime.now(),
         isCanceled: false,
         // endDate: DateTime.now().plus({ months: 3 }),
-      }).then(setEvents);
+      })
+        .then((fc) => ({
+          ...fc,
+          features: fc.features.map((f) => ({ ...f, id: f.properties?.id })),
+        }))
+        .then((events) => {
+          console.log("after", events);
+          return events;
+        })
+        .then(setEvents);
     }, [])
   );
 
@@ -405,12 +366,11 @@ export const Map = ({ onClicked }: MapProps) => {
   //   }
   // };
 
-  const handleMapPress = (event: OnPressEvent) => {
-    const localEvent = featureToLocalEvent(event.features[0]);
-    LOG.debug("pressed", localEvent);
-    setSelectedEvent(
-      selectedEvent?.id === localEvent.id ? undefined : localEvent
-    );
+  const handleMapEventPress = (event: OnPressEvent) => {
+    LOG.debug("Map clicked", event);
+    const localEvents = event.features.map(featureToLocalEvent);
+    setSelectedEvents(localEvents);
+    // selectedEvent?.id === localEvent.id ? undefined : localEvent
   };
 
   return (
@@ -419,7 +379,7 @@ export const Map = ({ onClicked }: MapProps) => {
         style={styles.map}
         zoomEnabled={true}
         compassEnabled={true}
-        onPress={() => setSelectedEvent(undefined)}
+        onPress={() => setSelectedEvents([])}
         gestureSettings={{
           pinchPanEnabled: false,
         }}
@@ -444,97 +404,32 @@ export const Map = ({ onClicked }: MapProps) => {
           //   parseFloat(tempdata?.latitude),
           // ]}
         />
-        <Images
-          images={imageMarkers}
-          onImageMissing={(imageKey: string) =>
-            console.log("=> on image missing", imageKey)
-          }
-        />
-        <ShapeSource id="events" shape={events} onPress={handleMapPress}>
+        <ShapeSource
+          id="events"
+          shape={events}
+          hitbox={{ width: 20, height: 20 }}
+          onPress={handleMapEventPress}
+        >
           <SymbolLayer
             id="eventSymbol"
-            minZoomLevel={5}
+            minZoomLevel={1}
             style={{
               iconImage: "event",
             }}
-            slot={"middle"}
           />
-          {/* <HeatmapLayer
-            id="heatmap"
-            maxZoomLevel={11}
-            style={{
-              heatmapColor: [
-                "interpolate",
-                ["linear"],
-                ["heatmap-density"],
-                0,
-                "rgba(33,102,172,0)",
-                0.2,
-                "rgb(103,169,207)",
-                0.4,
-                "rgb(209,229,240)",
-                0.6,
-                "rgb(253,219,199)",
-                0.8,
-                "rgb(239,138,98)",
-                1,
-                "rgb(178,24,43)",
-              ],
-            }}
-          /> */}
+          <Images
+            images={imageMarkers}
+            onImageMissing={(imageKey: string) =>
+              console.log("=> on image missing", imageKey)
+            }
+          />
         </ShapeSource>
-        {selectedEvent ? (
-          <EventItem
-            event={selectedEvent!}
-            onPress={() => onClicked?.(selectedEvent)}
-          />
-        ) : null}
-        {/* <MapboxGL.PointAnnotation
-            style={{ flex: 1 }}
-            key="pointAnnotation"
-            id="pointAnnotation"
-            coordinate={[
-              parseFloat(tempdata?.longitude),
-              parseFloat(tempdata?.latitude),
-            ]}
-            draggable
-            onDragEnd={onCircleDrag}
-          >
-            <View
-              style={{
-                height: 200,
-                width: 200,
-                borderWidth: 1,
-                borderRadius: 200 / 2,
-                borderColor: "black",
-                backgroundColor: "rgba(112, 68, 139, 0.7)",
-              }}
-            ></View>
-          </MapboxGL.PointAnnotation> */}
-        {/* 
-        {eventList.map((event: any, jindex) => (
-          <MarkerView
-            key={Math.random()}
-            coordinate={[
-              event?.location?.coordinates[0],
-              event?.location?.coordinates[1],
-            ]}
-            id={event._id}
-          >
-            <TouchableOpacity onPress={() => onMarkerClick(jindex)}>
-              <Image
-                resizeMode="contain"
-                source={event?.isActive ? redPin : blackPin}
-                style={{ width: 20, height: 20 }}
-              />
-            </TouchableOpacity>
-          </MarkerView>
-        ))} */}
+        <>
+          {selectedEvents.map((se) => (
+            <EventItem key={se.id} event={se} onPress={() => onClicked?.(se)} />
+          ))}
+        </>
       </MapView>
-      {/* ) : (
-        <></> */}
-      {/* )} */}
-      {/* <EventList /> */}
     </View>
   );
 };
