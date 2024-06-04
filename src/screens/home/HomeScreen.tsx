@@ -46,6 +46,7 @@ import {
 } from "~/assets/images";
 import { ImageComponent } from "~/components/image-component";
 import { Navbar } from "~/components/navbar/Navbar";
+import { LOG } from "~/config";
 import { navigations } from "~/config/app-navigation/constant";
 import {
   deletePost,
@@ -54,6 +55,7 @@ import {
 } from "~/network/api/services/post-service";
 import { getData, persistKeys, setData } from "~/network/constant";
 import { Post } from "~/types/post";
+import { RecentlyJoined } from "~/types/recently-joined";
 import { createStyleSheet } from "./style";
 // import Geolocation from "@react-native-community/geolocation";
 
@@ -327,7 +329,12 @@ export const HomeScreen = (props: HomeScreenProps) => {
         }
       );
       const dataItem = await response.json();
-      setUserList(dataItem?.data);
+      LOG.debug("Recently joined", dataItem);
+      setUserList(
+        dataItem?.data.filter(
+          (d: RecentlyJoined) => d.pic && !d.pic.includes("defaultUser.jpg")
+        )
+      );
     } catch (error) {
       console.error(error);
     }

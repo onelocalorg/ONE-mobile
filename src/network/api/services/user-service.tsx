@@ -27,10 +27,6 @@ interface LoginProps {
 export const login = async (props: LoginProps) =>
   doPost<CurrentUser>("/v1/auth/login", props);
 
-export interface UserProfileProps {
-  userId: string;
-}
-
 interface EditProfileProps {
   bodyParams: {
     profile?: string;
