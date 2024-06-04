@@ -84,6 +84,7 @@ export const ProfileScreen = (props: ProfileScreenProps) => {
     const userId = await AsyncStorage.getItem(persistKeys.userProfileId);
     if (userId) {
       const userProfile = await getUserProfile(userId);
+      console.log(userProfile);
       setUserProfile(userProfile);
       setProfileUri(userProfile.pic);
       setBackgroundUri(userProfile.coverImage);
@@ -550,7 +551,24 @@ export const ProfileScreen = (props: ProfileScreenProps) => {
             </KeyboardAwareScrollView>
           </TouchableOpacity>
         </>
-      ) : null}
+      ) : (
+        <TouchableOpacity
+          activeOpacity={0.8}
+          style={{ position: "absolute", right: 10, top: 60 }}
+          onPress={onLogout}
+        >
+          <Text
+            style={{
+              fontSize: 16,
+              color: theme.colors.white,
+              fontWeight: "500",
+              fontFamily: theme.fontType.medium,
+            }}
+          >
+            {strings.logout}
+          </Text>
+        </TouchableOpacity>
+      )}
     </KeyboardAwareScrollView>
   );
 };

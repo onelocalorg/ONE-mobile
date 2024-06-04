@@ -7,7 +7,7 @@ import {
   ParamListBase,
 } from "@react-navigation/native";
 
-import { arrowLeft, dummy, onelogo } from "~/assets/images";
+import { arrowLeft, defaultUser, onelogo } from "~/assets/images";
 import { ImageComponent } from "~/components/image-component";
 import { navigations } from "~/config/app-navigation/constant";
 
@@ -130,7 +130,7 @@ export const Navbar = ({
             <ImageComponent
               resizeMode="cover"
               isUrl={!!profilePic}
-              source={dummy}
+              source={defaultUser}
               uri={profilePic}
               style={styles.profile}
             />
