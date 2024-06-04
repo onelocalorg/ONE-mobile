@@ -2,10 +2,13 @@ import { DateTime } from "luxon";
 import { OneUser } from "~/types/one-user";
 import { Post } from "~/types/post";
 import { PostData } from "~/types/post-data";
+import { PostGratis } from "~/types/post-gratis";
 import { doPost, doPostPaginated } from "./api-service";
 
 export async function createPost(data: PostData) {
-  return doPost<Post>("/v1/posts/create", postToBody(data), resourceToPost);
+  return doPost<Post>("/v1/posts/create", postToBody(data), (data) =>
+    resourceToPost(data.post)
+  );
 }
 
 export async function updatePost(id: string, data: PostData) {
@@ -88,3 +91,6 @@ const postToBody = (data: PostData) => ({
   content: data.details,
   post_image: data.imageUrls,
 });
+
+export const sendGratis = (postId: string, points: number) =>
+  doPost<PostGratis>("/v1/posts/gratis-sharing", { postId, points });

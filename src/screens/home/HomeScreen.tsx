@@ -48,7 +48,11 @@ import {
 import { ImageComponent } from "~/components/image-component";
 import { Navbar } from "~/components/navbar/Navbar";
 import { navigations } from "~/config/app-navigation/constant";
-import { deletePost, listPosts } from "~/network/api/services/post-service";
+import {
+  deletePost,
+  listPosts,
+  sendGratis,
+} from "~/network/api/services/post-service";
 import { getData, persistKeys, setData } from "~/network/constant";
 import { StoreType } from "~/network/reducers/store";
 import { UserProfileState } from "~/network/reducers/user-profile-reducer";
@@ -227,14 +231,14 @@ export const HomeScreen = (props: HomeScreenProps) => {
     navigation?.navigate(navigations?.EDIT_POST);
   };
 
-  const OfferModalShow = (postIds: any, index: any) => {
-    postIdData(postIds);
+  const OfferModalShow = (postId: string, index: number) => {
+    postIdData(postId);
     gratisIndexData(index);
     CreateOfferModal(true);
     totalGratisData(10);
   };
 
-  const OfferModalHide = () => {
+  const sendGratisAndDismiss = () => {
     CreateOfferModal(false);
     addGratisAPI();
   };
@@ -282,45 +286,17 @@ export const HomeScreen = (props: HomeScreenProps) => {
     }
   }
   async function addGratisAPI() {
-    LodingData(true);
-    const token = await AsyncStorage.getItem("token");
-    var data: any = {
-      postId: postId,
-      points: gratisNo,
-    };
-    try {
-      const response = await fetch(
-        process.env.API_URL + "/v1/posts/gratis-sharing",
-        {
-          method: "post",
-          headers: new Headers({
-            Authorization: "Bearer " + token,
-            "Content-Type": "application/x-www-form-urlencoded",
-          }),
-          body: Object.keys(data)
-            .map((key) => key + "=" + data[key])
-            .join("&"),
-        }
+    const result = await sendGratis(postId, gratisNo);
+    if (!result.success) {
+      Alert.alert("Could not award gratis", result.message);
+    } else {
+      setPostList(
+        postList.map((p: Post) =>
+          p.id === postId
+            ? { ...p, numGrats: result.data?.postGratis ?? p.numGrats }
+            : p
+        )
       );
-      const dataItem = await response.json();
-      // if (dataItem?.success === true) {
-      //   let markers = [...postList];
-      //   markers[gratisIndex] = {
-      //     ...markers[gratisIndex],
-      //     gratis: dataItem?.data?.data?.postGratis,
-      //   };
-      //   setPostList(markers);
-      // }
-      if (dataItem?.success === false) {
-        Toast.show(dataItem?.message, Toast.LONG, {
-          backgroundColor: "black",
-        });
-      }
-
-      LodingData(false);
-    } catch (error) {
-      LodingData(false);
-      console.error(error);
     }
   }
 
@@ -880,7 +856,7 @@ export const HomeScreen = (props: HomeScreenProps) => {
                 </TouchableOpacity>
               </View>
               <TouchableOpacity
-                onPress={() => OfferModalHide()}
+                onPress={() => sendGratisAndDismiss()}
                 activeOpacity={0.8}
                 style={styles.purchaseContainer}
               >

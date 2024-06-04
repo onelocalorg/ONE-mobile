@@ -17,6 +17,7 @@ import { buttonArrowGreen } from "~/assets/images";
 import { ButtonComponent } from "~/components/button-component";
 import { LOG } from "~/config";
 import { createPost, updatePost } from "~/network/api/services/post-service";
+import { ApiResponse } from "~/types/api-response";
 import { Post } from "~/types/post";
 import { PostData } from "~/types/post-data";
 import { PostView } from "./PostView";
@@ -49,17 +50,21 @@ export const PostOffer = ({ navigation, post }: PostOfferProps) => {
       });
     } else {
       setLoading(true);
-      let dataItem;
-      if (post) {
-        dataItem = await updatePost(post.id, postData);
-      } else {
-        dataItem = await createPost(postData);
-      }
-      Toast.show(dataItem.message, Toast.LONG, {
-        backgroundColor: "black",
-      });
-      if (dataItem.success) {
-        navigation?.goBack();
+      try {
+        let dataItem: ApiResponse<Post>;
+        if (post) {
+          dataItem = await updatePost(post.id, postData);
+        } else {
+          dataItem = await createPost(postData);
+        }
+        Toast.show(dataItem.message, Toast.LONG, {
+          backgroundColor: "black",
+        });
+        if (dataItem.success) {
+          navigation?.goBack();
+        }
+      } catch (e) {
+        console.error(e);
       }
 
       setLoading(false);
