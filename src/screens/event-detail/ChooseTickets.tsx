@@ -37,7 +37,7 @@ export const ChooseTickets = ({
     );
 
   const createTicketOrder = async () => {
-    const resp = await createOrder(
+    const order = await createOrder(
       tickets
         .filter((ts) => ts.quantity > 0)
         .map((ts) => ({
@@ -47,8 +47,8 @@ export const ChooseTickets = ({
           ticketType: ts.type,
         }))
     );
-    if (resp.success) {
-      setOrder(resp.data);
+    if (order) {
+      setOrder(order);
       setCheckoutVisible(true);
     }
   };
