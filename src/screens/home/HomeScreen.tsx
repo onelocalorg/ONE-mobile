@@ -30,7 +30,6 @@ import { ScrollView } from "react-native-gesture-handler";
 import GetLocation from "react-native-get-location";
 import Toast from "react-native-simple-toast";
 import GestureRecognizer from "react-native-swipe-gestures";
-import { useSelector } from "react-redux";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
 import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
 import {
@@ -54,8 +53,6 @@ import {
   sendGratis,
 } from "~/network/api/services/post-service";
 import { getData, persistKeys, setData } from "~/network/constant";
-import { StoreType } from "~/network/reducers/store";
-import { UserProfileState } from "~/network/reducers/user-profile-reducer";
 import { Post } from "~/types/post";
 import { createStyleSheet } from "./style";
 // import Geolocation from "@react-native-community/geolocation";
@@ -99,11 +96,8 @@ export const HomeScreen = (props: HomeScreenProps) => {
   const [showCommentListModal, setShowCommentListData] = useState(false);
   const [refresh, setRefresh] = useState(false);
   const [Post_Id, setPostDataId] = useState("");
+  const [loggedinUserId, setLoggedinUserId] = useState<string>();
   const [userProfilePic, setUserProfilePic] = useState<string>();
-
-  const { user } = useSelector<StoreType, UserProfileState>(
-    (state) => state.userProfileReducer
-  ) as { user: { id: string; pic: string; city: string; state: string } };
 
   var makeDate = new Date();
   makeDate.setMonth(makeDate.getMonth() - 1);
@@ -142,6 +136,9 @@ export const HomeScreen = (props: HomeScreenProps) => {
     handleEnabledPressed();
     AsyncStorage.getItem(persistKeys.userProfilePic).then((pic) =>
       pic ? setUserProfilePic(pic) : null
+    );
+    AsyncStorage.getItem(persistKeys.userProfileId).then((id) =>
+      id ? setLoggedinUserId(id) : null
     );
   }, []);
 
@@ -887,7 +884,7 @@ export const HomeScreen = (props: HomeScreenProps) => {
           style={styles.keyboardViewTwo}
         >
           <View style={styles.postActionSheet}>
-            {editPost?.author.id === user?.id ? (
+            {editPost?.author.id === loggedinUserId ? (
               <>
                 <TouchableOpacity onPress={() => onEditPost()}>
                   <Text style={[styles.postText, { color: "white" }]}>
