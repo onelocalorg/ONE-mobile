@@ -255,40 +255,30 @@ export const HomeScreen = (props: HomeScreenProps) => {
   };
 
   async function postListAPI() {
-    const BOULDER_LON = -105.2705;
-    const BOULDER_LAT = 40.015;
-    const DEFAULT_ZOOM = 12;
     if (page === 1) {
       LodingData(true);
     }
-    const token = await AsyncStorage.getItem("token");
-    var data: any = {
-      // latitude: BOULDER_LAT,
-      // longitude: BOULDER_LON,
-      // zoom_level: DEFAULT_ZOOM,
-      device_type: Platform.OS,
-      // searchtext: searchQuery,
-    };
-
-    console.log("----------------post Location----------------", data);
-
     try {
       const postResponse = await listPosts();
-      setRefresh(false);
-      if (page == 1) {
-        setPostList(postResponse.posts);
-      } else {
-        setPostList([...postList, ...postResponse.posts]);
+      if (postResponse.data) {
+        setRefresh(false);
+        if (page === 1) {
+          setPostList(postResponse.data.results);
+        } else {
+          setPostList([...postList, ...postResponse.data.results]);
+        }
+        onPageLoad(false);
+        isMoreDataLoad(true);
+        LodingData(false);
+        if (
+          postResponse.data.pageInfo.page ===
+          postResponse.data.pageInfo.totalPages
+        ) {
+          isMoreDataLoad(false);
+        }
       }
-      onPageLoad(false);
-      isMoreDataLoad(true);
-      LodingData(false);
-      if (postResponse.pageInfo.page === postResponse.pageInfo.totalPages) {
-        isMoreDataLoad(false);
-      }
-    } catch (error) {
-      LodingData(false);
-      console.error("--------error postListAPI--------" + URL, error);
+    } catch (e) {
+      console.error("postListAPI", e);
     }
   }
   async function addGratisAPI() {

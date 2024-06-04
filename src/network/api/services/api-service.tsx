@@ -43,18 +43,12 @@ export async function doPostPaginated<Resource>(
       totalPages: json.totalPages,
       totalResults: json.totalResults,
     },
-    results: json.data.results.map(transform),
+    results: json.results.map(transform),
   }));
 }
 
 export async function doDelete<Resource>(url: string) {
   return callApi<Resource>("DELETE", url);
-}
-
-class ApiError extends Error {
-  constructor(data: ApiResponse<any>) {
-    super(`${data.code}: ${data.message}`);
-  }
 }
 
 interface ApiResponse<Resource> {

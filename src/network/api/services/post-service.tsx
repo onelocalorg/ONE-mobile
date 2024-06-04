@@ -5,11 +5,15 @@ import { PostData } from "~/types/post-data";
 import { doPost, doPostPaginated } from "./api-service";
 
 export async function createPost(data: PostData) {
-  return doPost<Post>("/v1/posts/create", postToBody(data), apiToPost);
+  return doPost<Post>("/v1/posts/create", postToBody(data), resourceToPost);
 }
 
 export async function updatePost(id: string, data: PostData) {
-  return doPost<Post>(`/v2/posts/update/${id}`, postToBody(data), apiToPost);
+  return doPost<Post>(
+    `/v2/posts/update/${id}`,
+    postToBody(data),
+    resourceToPost
+  );
 }
 
 export async function deletePost(id: string) {
@@ -17,7 +21,11 @@ export async function deletePost(id: string) {
 }
 
 export async function listPosts() {
-  return doPostPaginated<Post>("/v1/posts/list?limit=50", undefined, apiToPost);
+  return doPostPaginated<Post>(
+    "/v1/posts/list?limit=50",
+    undefined,
+    resourceToPost
+  );
 }
 
 // The JSON returned from the API call
@@ -51,7 +59,7 @@ interface GetPostApiResource {
   comments: string[];
 }
 
-const apiToPost = (data: GetPostApiResource) =>
+const resourceToPost = (data: GetPostApiResource) =>
   ({
     id: data.id!,
     type: data.type.toLowerCase(),
