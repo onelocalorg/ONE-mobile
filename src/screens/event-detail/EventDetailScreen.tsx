@@ -34,6 +34,7 @@ import { StoreType } from "~/network/reducers/store";
 import { UserProfileState } from "~/network/reducers/user-profile-reducer";
 import { verticalScale } from "~/theme/device/normalize";
 import { LocalEvent } from "~/types/local-event";
+import { OneUser } from "~/types/one-user";
 import { RsvpList, RsvpType } from "~/types/rsvp";
 import { RsvpView } from "./RsvpView";
 import { Tickets } from "./Tickets";
@@ -72,16 +73,7 @@ export const EventDetailScreen = ({
     }
   }, [eventId]);
 
-  const fetchRsvpData = async () => {
-    try {
-      const rsvps = await listRsvps(eventId!);
-      if (rsvps.success) {
-        setRsvpData(rsvps.data);
-      }
-    } catch (error) {
-      console.error("Error fetching RSVP data:", error);
-    }
-  };
+  const fetchRsvpData = () => listRsvps(eventId!).then(setRsvpData);
 
   const onNavigateToProducerProfile = () => {
     // if (event?.is_event_owner) {
@@ -104,6 +96,11 @@ export const EventDetailScreen = ({
     ) {
       updateRsvp(eventId, RsvpType.GOING).then(fetchRsvpData);
     }
+  };
+
+  const navigateToUserProfile = (user: OneUser) => {
+    // FIXME This works, but the type is incorrect on the navigator
+    navigation?.push(navigations.RECENTUSERPROFILE, { userId: user.id });
   };
 
   return (
@@ -196,6 +193,7 @@ export const EventDetailScreen = ({
                   <RsvpView
                     event={event}
                     rsvpData={rsvpData}
+                    onUserPressed={navigateToUserProfile}
                     onRsvpsChanged={() => fetchRsvpData()}
                   />
                 ) : null}

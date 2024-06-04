@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Image, Text, TouchableOpacity, View } from "react-native";
+import { Image, Pressable, Text, TouchableOpacity, View } from "react-native";
 import Toast from "react-native-simple-toast";
 import { useSelector } from "react-redux";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
@@ -10,6 +10,7 @@ import { updateRsvp } from "~/network/api/services/event-service";
 import { StoreType } from "~/network/reducers/store";
 import { UserProfileState } from "~/network/reducers/user-profile-reducer";
 import { LocalEvent } from "~/types/local-event";
+import { OneUser } from "~/types/one-user";
 import { RsvpList, RsvpType } from "~/types/rsvp";
 import { createStyleSheet as createRsvpStyleSheet } from "./rsvp-style";
 import { createStyleSheet as createBaseStyleSheet } from "./style";
@@ -17,12 +18,14 @@ import { createStyleSheet as createBaseStyleSheet } from "./style";
 interface RsvpViewProps {
   event: LocalEvent;
   rsvpData: RsvpList;
+  onUserPressed?: (user: OneUser) => void;
   onRsvpsChanged: () => void;
 }
 
 export const RsvpView = ({
   event,
   rsvpData,
+  onUserPressed,
   onRsvpsChanged,
 }: RsvpViewProps) => {
   const { theme } = useAppTheme();
@@ -64,7 +67,7 @@ export const RsvpView = ({
 
     const resp = await updateRsvp(event.id, type);
     onRsvpsChanged();
-    Toast.show(resp.message, Toast.LONG, {
+    Toast.show("RSVP updated", Toast.LONG, {
       backgroundColor: "black",
     });
   };
@@ -164,12 +167,14 @@ export const RsvpView = ({
           >
             {rsvpData?.rsvps.map((rsvp, index) => (
               <View key={index} style={styles1.rsvpContainer}>
-                <View style={styles1.profilePicContainer}>
-                  <Image
-                    source={{ uri: rsvp.guest.pic }}
-                    style={styles1.profilePic}
-                  />
-                </View>
+                <Pressable onPress={() => onUserPressed?.(rsvp.guest)}>
+                  <View style={styles1.profilePicContainer}>
+                    <Image
+                      source={{ uri: rsvp.guest.pic }}
+                      style={styles1.profilePic}
+                    />
+                  </View>
+                </Pressable>
                 <View style={styles1.rsvpImageContainer}>
                   {rsvp.rsvp === "going" && (
                     <Image source={Going} style={styles1.rsvpImage} />

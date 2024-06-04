@@ -84,17 +84,15 @@ export const ProfileScreen = (props: ProfileScreenProps) => {
     const userId = await AsyncStorage.getItem(persistKeys.userProfileId);
     if (userId) {
       const userProfile = await getUserProfile(userId);
-      if (userProfile) {
-        setUserProfile(userProfile);
-        setProfileUri(userProfile.pic);
-        setBackgroundUri(userProfile.coverImage);
-        setFirstName(userProfile.first_name);
-        setLastName(userProfile.last_name);
-        setNickName(userProfile.nick_name);
-        setCatchphrase(userProfile.catch_phrase);
-        setSkills(userProfile.skills);
-        setProfileAnswers(userProfile.profile_answers);
-      }
+      setUserProfile(userProfile);
+      setProfileUri(userProfile.pic);
+      setBackgroundUri(userProfile.coverImage);
+      setFirstName(userProfile.first_name);
+      setLastName(userProfile.last_name);
+      setNickName(userProfile.nick_name);
+      setCatchphrase(userProfile.catch_phrase);
+      setSkills(userProfile.skills);
+      setProfileAnswers(userProfile.profile_answers);
     }
   };
 

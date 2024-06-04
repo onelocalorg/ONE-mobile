@@ -36,7 +36,7 @@ import {
   Gratis,
   buttonArrowGreen,
   comment,
-  dummy,
+  defaultUser,
   gratitudeBlack,
   greenImage,
   minus,
@@ -46,7 +46,6 @@ import {
 } from "~/assets/images";
 import { ImageComponent } from "~/components/image-component";
 import { Navbar } from "~/components/navbar/Navbar";
-import { LOG } from "~/config";
 import { navigations } from "~/config/app-navigation/constant";
 import {
   deletePost,
@@ -227,7 +226,7 @@ export const HomeScreen = (props: HomeScreenProps) => {
   }
   const onNavigateToCreatePost = () => {
     setData("POST_TAB_OPEN_INDEX", 1);
-    navigation?.navigate(navigations?.EDIT_POST);
+    navigation?.navigate(navigations?.CREATE_POST);
   };
 
   const OfferModalShow = (postId: string, index: number) => {
@@ -261,42 +260,29 @@ export const HomeScreen = (props: HomeScreenProps) => {
     if (page === 1) {
       LodingData(true);
     }
-    try {
-      const postResponse = await listPosts();
-      if (postResponse.data) {
-        setRefresh(false);
-        if (page === 1) {
-          setPostList(postResponse.data.results);
-        } else {
-          setPostList([...postList, ...postResponse.data.results]);
-        }
-        onPageLoad(false);
-        isMoreDataLoad(true);
-        LodingData(false);
-        if (
-          postResponse.data.pageInfo.page ===
-          postResponse.data.pageInfo.totalPages
-        ) {
-          isMoreDataLoad(false);
-        }
-      }
-    } catch (e) {
-      console.error("postListAPI", e);
+    const posts = await listPosts();
+    setRefresh(false);
+    if (page === 1) {
+      setPostList(posts.results);
+    } else {
+      setPostList([...postList, ...posts.results]);
+    }
+    onPageLoad(false);
+    isMoreDataLoad(true);
+    LodingData(false);
+    if (posts.pageInfo.page === posts.pageInfo.totalPages) {
+      isMoreDataLoad(false);
     }
   }
   async function addGratisAPI() {
     const result = await sendGratis(postId, gratisNo);
-    if (!result.success) {
-      Alert.alert("Could not award gratis", result.message);
-    } else {
-      setPostList(
-        postList.map((p: Post) =>
-          p.id === postId
-            ? { ...p, numGrats: result.data?.postGratis ?? p.numGrats }
-            : p
-        )
-      );
-    }
+    setPostList(
+      postList.map((p: Post) =>
+        p.id === postId
+          ? { ...p, numGrats: result.postGratis ?? p.numGrats }
+          : p
+      )
+    );
   }
 
   async function getRecentlyJoinUserAPI(getLocation: any) {
@@ -329,7 +315,6 @@ export const HomeScreen = (props: HomeScreenProps) => {
         }
       );
       const dataItem = await response.json();
-      LOG.debug("Recently joined", dataItem);
       setUserList(
         dataItem?.data.filter(
           (d: RecentlyJoined) => d.pic && !d.pic.includes("defaultUser.jpg")
@@ -343,7 +328,7 @@ export const HomeScreen = (props: HomeScreenProps) => {
   async function deletePostAPI() {
     try {
       const response = await deletePost(editPost!.id);
-      Toast.show(response.message, Toast.LONG, {
+      Toast.show("Post deleted", Toast.LONG, {
         backgroundColor: "black",
       });
       setRefresh(true);
@@ -794,7 +779,7 @@ export const HomeScreen = (props: HomeScreenProps) => {
                     style={styles.avatar}
                     resizeMode="cover"
                     isUrl={!!userProfilePic}
-                    source={dummy}
+                    source={defaultUser}
                     uri={userProfilePic}
                   ></ImageComponent>
                   <View style={styles.postInput}>

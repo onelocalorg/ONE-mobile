@@ -1,4 +1,4 @@
-export interface PaginatedResponse<Resource> {
+export interface Paginated<Resource> {
   pageInfo: PageData;
   results: Resource[];
 }

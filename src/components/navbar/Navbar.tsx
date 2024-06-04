@@ -1,23 +1,19 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import React, { useEffect, useState } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
-import { StoreType } from "~/network/reducers/store";
 
 import {
   NavigationContainerRef,
   ParamListBase,
 } from "@react-navigation/native";
-import { useSelector } from "react-redux";
 
 import { arrowLeft, dummy, onelogo } from "~/assets/images";
 import { ImageComponent } from "~/components/image-component";
 import { navigations } from "~/config/app-navigation/constant";
-import { UserProfileState } from "~/network/reducers/user-profile-reducer";
 
 import { createStyleSheet } from "./style";
 
 import { useAppTheme } from "~/app-hooks/use-app-theme";
-import { getUserProfile } from "~/network/api/services/user-service";
 import { persistKeys } from "~/network/constant";
 
 interface NavbarProps {
@@ -36,15 +32,9 @@ export const Navbar = ({
   const [searchQuery, setSearchQuery] = useState("");
   const [profilePic, setProfilePic] = useState<string>();
 
-  const { user } = useSelector<StoreType, UserProfileState>(
-    (state) => state.userProfileReducer
-  ) as { user: { id: string; pic: string } };
-
   useEffect(() => {
     AsyncStorage.getItem(persistKeys.userProfilePic).then((pic) => {
-      if (!pic) {
-        getUserProfileAPI();
-      } else {
+      if (pic) {
         setProfilePic(pic);
       }
     });
@@ -60,16 +50,16 @@ export const Navbar = ({
   //   [searchQuery]
   // );
 
-  const getUserProfileAPI = async () => {
-    const userId = await AsyncStorage.getItem(persistKeys.userProfileId);
-    if (userId) {
-      const userProfile = await getUserProfile(userId);
-      if (userProfile) {
-        setProfilePic(userProfile.pic);
-        AsyncStorage.setItem(persistKeys.userProfilePic, userProfile.pic);
-      }
-    }
-  };
+  // const getUserProfileAPI = async () => {
+  //   const userId = await AsyncStorage.getItem(persistKeys.userProfileId);
+  //   if (userId) {
+  //     const userProfile = await getUserProfile(userId);
+  //     if (userProfile) {
+  //       setProfilePic(userProfile.pic);
+  //       AsyncStorage.setItem(persistKeys.userProfilePic, userProfile.pic);
+  //     }
+  //   }
+  // };
 
   const onNavigateToProfile = () => {
     if (navigation) {

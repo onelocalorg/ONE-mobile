@@ -37,7 +37,6 @@ import { login } from "~/network/api/services/user-service";
 import { getData, persistKeys } from "~/network/constant";
 import { useLogin } from "~/network/hooks/user-service-hooks/use-login";
 import { verticalScale } from "~/theme/device/normalize";
-import { ApiResponse } from "~/types/api-response";
 import { CurrentUser } from "~/types/current-user";
 import { ForgotPassword } from "./ForgotPassword";
 import { createStyleSheet } from "./style";
@@ -76,10 +75,10 @@ export const LoginScreen = (props: LoginScreenProps) => {
   //   setIsChecked(!isChecked);
   // };
 
-  const storeAuthDataInAsyncStorage = (data: any) => {
-    AsyncStorage.setItem(persistKeys.token, data.access_token);
-    AsyncStorage.setItem(persistKeys.userProfileId, data.id);
-    AsyncStorage.setItem(persistKeys.userProfilePic, data.pic);
+  const storeAuthDataInAsyncStorage = (user: CurrentUser) => {
+    AsyncStorage.setItem(persistKeys.token, user.access_token);
+    AsyncStorage.setItem(persistKeys.userProfileId, user.id);
+    AsyncStorage.setItem(persistKeys.userProfilePic, user.pic);
   };
 
   const signInWithGoogle = async () => {
@@ -333,20 +332,10 @@ export const LoginScreen = (props: LoginScreenProps) => {
     }
   }
 
-  const handleLoginResponse = async (res: ApiResponse<CurrentUser>) => {
-    const { success, data } = res;
-    if (!success) {
-      Toast.show(res.message, Toast.LONG, {
-        backgroundColor: "black",
-      });
-      LodingData(false);
-    }
-    if (success) {
-      LOG.debug("logged in", data);
-      if (data) {
-        await onSetToken(data.access_token);
-        storeAuthDataInAsyncStorage(data);
-      }
+  const handleLoginResponse = async (currentUser?: CurrentUser) => {
+    if (currentUser) {
+      await onSetToken(currentUser.access_token);
+      storeAuthDataInAsyncStorage(currentUser);
 
       LodingData(false);
       navigation.reset({
@@ -370,8 +359,8 @@ export const LoginScreen = (props: LoginScreenProps) => {
       googleToken: "fasdfasdfdsasdfad",
     };
     LOG.debug("login", _.omit(["password"], body));
-    const res = await login(body);
-    handleLoginResponse(res);
+    const currentUser = await login(body);
+    handleLoginResponse(currentUser);
   };
 
   const onSignUp = async () => {
