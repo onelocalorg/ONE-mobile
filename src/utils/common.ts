@@ -1,5 +1,6 @@
 import Big from "big.js";
 import { DateTime, Interval } from "luxon";
+import { Alert } from "react-native";
 
 export const formatPrice = (price: string) => {
   return `$${price?.replace("USD", "")}`;
@@ -30,3 +31,7 @@ export const toCents = (val: Big) => val.times(2).round().toNumber();
 
 export const toCurrency = (val?: number) =>
   `$${!val ? "0.00" : Big(val).div(100).toFixed(2)}`;
+
+export const handleApiError = (e: any) => {
+  Alert.alert("Error logging in", e?.message ?? e);
+};

@@ -1,7 +1,11 @@
-import { appleAuth } from "@invertase/react-native-apple-authentication";
+import {
+  AppleRequestResponse,
+  appleAuth,
+} from "@invertase/react-native-apple-authentication";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   GoogleSignin,
+  User,
   statusCodes,
 } from "@react-native-google-signin/google-signin";
 import {
@@ -33,11 +37,16 @@ import { Navbar } from "~/components/navbar/Navbar";
 import { SizedBox } from "~/components/sized-box";
 import { LOG } from "~/config";
 import { navigations } from "~/config/app-navigation/constant";
-import { login } from "~/network/api/services/user-service";
+import {
+  appleLogin,
+  googleLogin,
+  login,
+} from "~/network/api/services/auth-service";
 import { getData, persistKeys } from "~/network/constant";
 import { useLogin } from "~/network/hooks/user-service-hooks/use-login";
 import { verticalScale } from "~/theme/device/normalize";
 import { CurrentUser } from "~/types/current-user";
+import { handleApiError } from "~/utils/common";
 import { ForgotPassword } from "./ForgotPassword";
 import { createStyleSheet } from "./style";
 
@@ -86,15 +95,10 @@ export const LoginScreen = (props: LoginScreenProps) => {
     try {
       const hasPlayServices = await GoogleSignin.hasPlayServices();
       LOG.debug("hasPlayServices", hasPlayServices);
-      const userInfo = await GoogleSignin.signIn();
-      LOG.debug("GoogleSignIn user info", userInfo);
-      if (userInfo) {
-        onGoogleSignUpAPI(
-          userInfo?.user?.email,
-          userInfo?.serverAuthCode,
-          userInfo?.user?.givenName,
-          userInfo?.user?.familyName
-        );
+      const googleUser = await GoogleSignin.signIn();
+      LOG.debug("GoogleSignIn user info", googleUser);
+      if (googleUser) {
+        onGoogleSignUpAPI(googleUser);
         // setGoogleEmail(userInfo?.user?.email)
         // setGoogleAuth(userInfo?.serverAuthCode)
       }
@@ -121,20 +125,15 @@ export const LoginScreen = (props: LoginScreenProps) => {
     LOG.debug("> signInWithApple");
 
     try {
-      const appleAuthRequestResponse: any = await appleAuth.performRequest({
+      const appleAuthRequestResponse = await appleAuth.performRequest({
         requestedOperation: appleAuth.Operation.LOGIN,
         // Note: it appears putting FULL_NAME first is important, see issue #293
         requestedScopes: [appleAuth.Scope.FULL_NAME, appleAuth.Scope.EMAIL],
       });
 
       LOG.debug("signInWithApple:", appleAuthRequestResponse);
-      if (appleAuthRequestResponse?.email !== null) {
-        await onAppleSignUpAPI(
-          appleAuthRequestResponse?.email,
-          appleAuthRequestResponse?.user,
-          appleAuthRequestResponse?.fullName?.givenName,
-          appleAuthRequestResponse?.fullName?.familyName
-        );
+      if (appleAuthRequestResponse.email !== null) {
+        await onAppleSignUpAPI(appleAuthRequestResponse);
       } else {
         getAppleIdCredAPI(appleAuthRequestResponse);
       }
@@ -144,135 +143,56 @@ export const LoginScreen = (props: LoginScreenProps) => {
     }
   };
 
-  async function onGoogleSignUpAPI(
-    googleUserGmail: any,
-    googleAuth: any,
-    firstName: any,
-    lastName: any
-  ) {
-    const userData: any = {
-      // "email":"vipul.tuvoc@gmail.com",
-      // //"mobile_number": "9104773896",
-      // "googleAuth": "4/0AfJohXnFnJwpmnCTvCf87S8EFj8nr41VvW1ld_8TDC4w3oZM-xLplsS_GhRQnDawehonMA"
-
-      email: googleUserGmail,
-      googleAuth: googleAuth,
-      first_name: firstName,
-      last_name: lastName,
-    };
-    console.log("==========on Google Sign Up API Request==============");
-    console.log(userData);
-    LodingData(true);
+  async function onGoogleSignUpAPI(googleUser: User) {
     try {
-      const response = await fetch(
-        process.env.API_URL + "/v1/auth/googleSignupLogin",
-        {
-          method: "post",
-          headers: new Headers({
-            "Content-Type": "application/x-www-form-urlencoded",
-          }),
-          body: Object.keys(userData)
-            .map((key) => key + "=" + userData[key])
-            .join("&"),
-        }
-      );
-      const signData = await response.json();
-      console.log("==========on Google Sign Up API Response==============");
-      console.log(signData);
+      const userData = {
+        email: googleUser.user.email,
+        first_name: googleUser.user.givenName,
+        last_name: googleUser.user.familyName,
+        pic: googleUser.user.photo,
+        googleAuth: googleUser.serverAuthCode,
+      };
+      const loggedInUser = await googleLogin(userData);
 
-      if (signData?.success === false) {
-        Toast.show(signData.message, Toast.LONG, {
-          backgroundColor: "black",
-        });
-        LodingData(false);
-      }
-      const { success, data } = signData || {};
-      if (success) {
-        const {
-          first_name,
-          last_name,
-          mobile_number,
-          customer_id,
-          access_token,
-          id,
-        } = data || {};
+      await onSetToken(loggedInUser.access_token);
+      storeAuthDataInAsyncStorage(loggedInUser);
 
-        await onSetToken(access_token);
-
-        AsyncStorage.setItem("token", data.access_token);
-
-        LodingData(false);
-        navigation.reset({
-          index: 0,
-          routes: [{ name: navigations.BOTTOM_NAVIGATION }],
-        });
-      }
-    } catch (error) {
       LodingData(false);
-      console.error(error);
+      navigation.reset({
+        index: 0,
+        routes: [{ name: navigations.BOTTOM_NAVIGATION }],
+      });
+    } catch (e) {
+      LodingData(false);
+      handleApiError(e);
     }
   }
 
-  async function onAppleSignUpAPI(
-    appleUsermail: any,
-    appleAuth: any,
-    firstName: any,
-    lastName: any
-  ) {
-    const userData: any = {
-      email: appleUsermail,
-      authorizationCode: appleAuth,
-      givenName: firstName,
-      familyName: lastName,
-    };
-    try {
-      LodingData(true);
-      const response = await fetch(
-        process.env.API_URL + "/v1/auth/appleSignupLogin",
-        {
-          method: "post",
-          headers: new Headers({
-            "Content-Type": "application/x-www-form-urlencoded",
-          }),
-          body: Object.keys(userData)
-            .map((key) => key + "=" + userData[key])
-            .join("&"),
-        }
-      );
-      const signData = await response.json();
-      console.log("==========on Apple Sign Up API Response==============");
-      console.log(signData);
-      LodingData(false);
-      if (signData?.success === false) {
-        Toast.show(signData.message, Toast.LONG, {
-          backgroundColor: "black",
-        });
-        LodingData(false);
-      }
-      const { success, data } = signData || {};
-      if (success) {
-        const {
-          first_name,
-          last_name,
-          mobile_number,
-          customer_id,
-          access_token,
-          id,
-        } = data || {};
-
-        await onSetToken(access_token);
-
-        storeAuthDataInAsyncStorage(data);
-
-        navigation.reset({
-          index: 0,
-          routes: [{ name: navigations.BOTTOM_NAVIGATION }],
-        });
-      }
-    } catch (error) {
-      LodingData(false);
-      console.error(error);
+  async function onAppleSignUpAPI(resp: AppleRequestResponse) {
+    if (!resp.authorizationCode) {
+      throw new Error("Apple login did not return authorization code");
     }
+
+    const userData = {
+      nonce: resp.nonce,
+      user: resp.user,
+      email: resp.email,
+      identityToken: resp.identityToken,
+      authorizationCode: resp.authorizationCode,
+      givenName: resp.fullName?.givenName,
+      familyName: resp.fullName?.familyName,
+      nickname: resp.fullName?.nickname,
+    };
+
+    const loggedInUser = await appleLogin(userData);
+
+    await onSetToken(loggedInUser.access_token);
+    storeAuthDataInAsyncStorage(loggedInUser);
+
+    navigation.reset({
+      index: 0,
+      routes: [{ name: navigations.BOTTOM_NAVIGATION }],
+    });
   }
 
   async function getAppleIdCredAPI(userid: any) {
@@ -328,7 +248,7 @@ export const LoginScreen = (props: LoginScreenProps) => {
       }
     } catch (error) {
       LodingData(false);
-      console.error(error);
+      handleApiError(error);
     }
   }
 
@@ -359,8 +279,12 @@ export const LoginScreen = (props: LoginScreenProps) => {
       googleToken: "fasdfasdfdsasdfad",
     };
     LOG.debug("login", _.omit(["password"], body));
-    const currentUser = await login(body);
-    handleLoginResponse(currentUser);
+    try {
+      const currentUser = await login(body);
+      handleLoginResponse(currentUser);
+    } catch (e: any) {
+      handleApiError(e);
+    }
   };
 
   const onSignUp = async () => {

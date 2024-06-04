@@ -52,9 +52,11 @@ import {
   listPosts,
   sendGratis,
 } from "~/network/api/services/post-service";
+import { getRecentlyJoined } from "~/network/api/services/user-service";
 import { getData, persistKeys, setData } from "~/network/constant";
 import { Post } from "~/types/post";
 import { RecentlyJoined } from "~/types/recently-joined";
+import { handleApiError } from "~/utils/common";
 import { createStyleSheet } from "./style";
 // import Geolocation from "@react-native-community/geolocation";
 
@@ -74,7 +76,7 @@ export const HomeScreen = (props: HomeScreenProps) => {
   const { navigation } = props || {};
   const [searchQuery, setSearchQuery] = useState("");
   const [ProfileData, setUserProfile]: any = useState("");
-  const [userList, setUserList] = useState([]);
+  const [userList, setUserList] = useState<RecentlyJoined[]>([]);
   var [postList, setPostList] = useState<Post[]>([]);
   const [offerModal, CreateOfferModal] = useState(false);
   var [location, setUserLocation]: any = useState();
@@ -286,42 +288,15 @@ export const HomeScreen = (props: HomeScreenProps) => {
   }
 
   async function getRecentlyJoinUserAPI(getLocation: any) {
-    const token = await AsyncStorage.getItem("token");
-
-    if (getLocation) {
-      var data: any = {
-        radius: 25,
-        user_lat: getLocation?.latitude,
-        user_long: getLocation?.longitude,
-      };
-    } else {
-      var data: any = {
-        radius: 25,
-      };
-    }
-
     try {
-      const response = await fetch(
-        process.env.API_URL + "/v1/users/recently-joined",
-        {
-          method: "post",
-          headers: new Headers({
-            Authorization: "Bearer " + token,
-            "Content-Type": "application/x-www-form-urlencoded",
-          }),
-          body: Object.keys(data)
-            .map((key) => key + "=" + data[key])
-            .join("&"),
-        }
-      );
-      const dataItem = await response.json();
+      const recentlyJoined = await getRecentlyJoined();
       setUserList(
-        dataItem?.data.filter(
+        recentlyJoined.filter(
           (d: RecentlyJoined) => d.pic && !d.pic.includes("defaultUser.jpg")
         )
       );
     } catch (error) {
-      console.error(error);
+      handleApiError(error);
     }
   }
 

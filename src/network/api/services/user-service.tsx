@@ -1,10 +1,10 @@
 import { apiConstants } from "~/network/constant";
 import { getApiResponse } from "~/network/utils/get-api-response";
-import { CurrentUser } from "~/types/current-user";
+import { RecentlyJoined } from "~/types/recently-joined";
 import { UserProfile } from "~/types/user-profile";
 import { UserProfileData } from "~/types/user-profile-data";
 import { API } from "..";
-import { doGet, doPatch, doPost } from "./api-service";
+import { doGet, doGetList, doPatch } from "./api-service";
 
 export const getUserProfile = async (userId: string) =>
   doGet<UserProfile>(`/v1/users/${userId}`);
@@ -14,18 +14,8 @@ export const updateUserProfile = async (
   data: UserProfileData
 ) => doPatch<UserProfile>(`/v1/users/${userId}`, data);
 
-interface LoginProps {
-  emailOrMobile: string;
-  password: string;
-  loginType: string;
-  deviceToken: string;
-  version: string;
-  deviceInfo: string;
-  googleToken: string;
-}
-
-export const login = async (props: LoginProps) =>
-  doPost<CurrentUser>("/v1/auth/login", props);
+export const getRecentlyJoined = async () =>
+  doGetList<RecentlyJoined>("/v1/users/recently-joined");
 
 interface EditProfileProps {
   bodyParams: {

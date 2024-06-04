@@ -5,7 +5,6 @@ import { LOG } from "~/config";
 import { apiConstants } from "~/network/constant";
 import { getApiResponse } from "~/network/utils/get-api-response";
 import { EventProducer } from "~/types/event-producer";
-import { ForgotPassword } from "~/types/forgot-password";
 import { GeoJSONEventProperties } from "~/types/geojson-event-properties";
 import { LocalEvent } from "~/types/local-event";
 import { LocalEventData } from "~/types/local-event-data";
@@ -350,7 +349,7 @@ export const updateEvent = async (
     event_image: eventImage,
   };
 
-  return doPatch<ForgotPassword>(`/v2/events/${eventId}`, body);
+  return doPatch<LocalEvent>(`/v2/events/${eventId}`, body);
 };
 
 export const onCreateEvent = async ({

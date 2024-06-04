@@ -23,9 +23,9 @@ export async function deletePost(id: string) {
   return doPost<never>(`/v2/posts/delete/${id}`);
 }
 
-export async function listPosts() {
+export async function listPosts(numPosts: number = 20) {
   return doPostPaginated<Post>(
-    "/v1/posts/list?limit=50",
+    `/v1/posts/list?limit=${numPosts}`,
     undefined,
     resourceToPost
   );

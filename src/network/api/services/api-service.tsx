@@ -5,12 +5,23 @@ import { ApiError } from "~/types/api-error";
 import { Paginated } from "~/types/paginated";
 
 // Perform a GET against the given url and return the resource generated via
-// the given transform fundction
+// the given transform function
 export async function doGet<Resource>(
   url: string,
   transform?: (data: any) => Resource
 ) {
   return callApi<Resource>("GET", url, undefined, transform);
+}
+
+// Perform a GET against the given url and return a list of resources generated via
+// the given transform fundtion
+export async function doGetList<Resource>(
+  url: string,
+  transform?: (data: any) => Resource
+) {
+  return callApi<Resource[]>("GET", url, undefined, (data) =>
+    data.map(transform)
+  );
 }
 
 // Perform a POST against the given url and return the resource generated via
@@ -82,14 +93,15 @@ async function callApi<Resource>(
     body: JSON.stringify(body),
   });
   LOG.info(response.status);
-  if (!response.ok && _.isNull(response.body)) {
-    LOG.error("<=", response.statusText);
+  const json = (await response.json()) as ApiResponse<any>;
+  console.log("json", json);
+  if (!response.ok && _.isNull(json)) {
+    LOG.error("<=0", response.statusText);
     throw new ApiError(response.status, response.statusText);
   }
-  const json = (await response.json()) as ApiResponse<any>;
 
   if (!response.ok) {
-    LOG.error("<=", response);
+    LOG.error("<=", url, json);
     throw new ApiError(json.code, json.message);
   }
 

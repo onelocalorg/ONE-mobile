@@ -160,7 +160,7 @@ export const CreateEditEventScreen = (props: CreateEditEventScreenProps) => {
   //     });
   // };
 
-  async function onCancleEvent(eventID: any) {
+  async function onCancelEvent(eventID: any) {
     LodingData(true);
     const token = await AsyncStorage.getItem("token");
 
@@ -299,12 +299,13 @@ export const CreateEditEventScreen = (props: CreateEditEventScreenProps) => {
 
     LOG.debug("> onUpdateEvent", request);
 
-    const res = await updateEvent(eventId!, request);
-    LodingData(false);
-    if (res.success) {
+    try {
+      await updateEvent(eventId!, request);
+      LodingData(false);
       navigation?.goBack();
-    } else {
-      Alert.alert("Failed to update event", res.message);
+    } catch (e: any) {
+      LodingData(false);
+      Alert.alert("Failed to update event", e.message);
     }
   };
 
@@ -675,7 +676,7 @@ export const CreateEditEventScreen = (props: CreateEditEventScreenProps) => {
                       />
                       <TouchableOpacity
                         activeOpacity={0.8}
-                        onPress={() => onCancleEvent(id)}
+                        onPress={() => onCancelEvent(id)}
                         style={styles.cancleEventBtn}
                       >
                         <Text style={styles.cancleEventText}>
