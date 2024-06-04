@@ -1,5 +1,6 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { LOG } from "~/config";
+import { ApiResponse } from "~/types/api-response";
 import { PaginatedResponse } from "~/types/paginated-response";
 
 // Perform a GET against the given url and return the resource generated via
@@ -49,13 +50,6 @@ export async function doPostPaginated<Resource>(
 
 export async function doDelete<Resource>(url: string) {
   return callApi<Resource>("DELETE", url);
-}
-
-interface ApiResponse<Resource> {
-  success: boolean;
-  code: number;
-  message: string;
-  data?: Resource;
 }
 
 // Returns ApiResponse<Resource>

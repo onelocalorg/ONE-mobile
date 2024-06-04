@@ -33,9 +33,12 @@ import { Navbar } from "~/components/navbar/Navbar";
 import { SizedBox } from "~/components/sized-box";
 import { LOG } from "~/config";
 import { navigations } from "~/config/app-navigation/constant";
+import { login } from "~/network/api/services/user-service";
 import { getData, persistKeys } from "~/network/constant";
 import { useLogin } from "~/network/hooks/user-service-hooks/use-login";
 import { verticalScale } from "~/theme/device/normalize";
+import { ApiResponse } from "~/types/api-response";
+import { CurrentUser } from "~/types/current-user";
 import { ForgotPassword } from "./ForgotPassword";
 import { createStyleSheet } from "./style";
 
@@ -330,6 +333,29 @@ export const LoginScreen = (props: LoginScreenProps) => {
     }
   }
 
+  const handleLoginResponse = async (res: ApiResponse<CurrentUser>) => {
+    const { success, data } = res;
+    if (!success) {
+      Toast.show(res.message, Toast.LONG, {
+        backgroundColor: "black",
+      });
+      LodingData(false);
+    }
+    if (success) {
+      LOG.debug("logged in", data);
+      if (data) {
+        await onSetToken(data.access_token);
+        storeAuthDataInAsyncStorage(data);
+      }
+
+      LodingData(false);
+      navigation.reset({
+        index: 0,
+        routes: [{ name: navigations.BOTTOM_NAVIGATION }],
+      });
+    }
+  };
+
   const onSubmit = async () => {
     LodingData(true);
     const deviceToken = await getUniqueId();
@@ -344,36 +370,8 @@ export const LoginScreen = (props: LoginScreenProps) => {
       googleToken: "fasdfasdfdsasdfad",
     };
     LOG.debug("login", _.omit(["password"], body));
-    const res = await doLogin(body);
-    LOG.debug("result:", res);
-    const { success, data } = res || {};
-    if (!success) {
-      Toast.show(res?.message, Toast.LONG, {
-        backgroundColor: "black",
-      });
-      LodingData(false);
-    }
-    if (success) {
-      LOG.debug("logged in", data);
-      const {
-        first_name,
-        last_name,
-        mobile_number,
-        customer_id,
-        access_token,
-        id,
-      } = data || {};
-
-      await onSetToken(access_token);
-
-      storeAuthDataInAsyncStorage(data);
-
-      LodingData(false);
-      navigation.reset({
-        index: 0,
-        routes: [{ name: navigations.BOTTOM_NAVIGATION }],
-      });
-    }
+    const res = await login(body);
+    handleLoginResponse(res);
   };
 
   const onSignUp = async () => {
@@ -466,7 +464,7 @@ export const LoginScreen = (props: LoginScreenProps) => {
         /> */}
 
         <TouchableOpacity
-          disabled={onCheckValidation()}
+          // disabled={onCheckValidation()}
           activeOpacity={0.8}
           onPress={onSubmit}
           style={styles.loginBtn}

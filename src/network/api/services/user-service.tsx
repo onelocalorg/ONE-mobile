@@ -1,32 +1,18 @@
-import { Alert } from "react-native";
-import { LOG } from "~/config";
 import { apiConstants } from "~/network/constant";
 import { getApiResponse } from "~/network/utils/get-api-response";
+import { CurrentUser } from "~/types/current-user";
 import { UserProfile } from "~/types/user-profile";
 import { UserProfileData } from "~/types/user-profile-data";
 import { API } from "..";
-import { doGet, doPatch } from "./api-service";
+import { doGet, doPatch, doPost } from "./api-service";
 
-export const getUserProfile = async (userId: string) => {
-  const response = await doGet<UserProfile>(`/v1/users/${userId}`);
-  if (!response.success) {
-    Alert.alert("Failed getting user profile", response.message);
-  } else {
-    return response.data;
-  }
-};
+export const getUserProfile = async (userId: string) =>
+  doGet<UserProfile>(`/v1/users/${userId}`);
 
 export const updateUserProfile = async (
   userId: string,
   data: UserProfileData
-) => {
-  const response = await doPatch<UserProfile>(`/v1/users/${userId}`, data);
-  if (!response.success) {
-    Alert.alert("Failed updating user profile", response.message);
-  } else {
-    return response.data;
-  }
-};
+) => doPatch<UserProfile>(`/v1/users/${userId}`, data);
 
 interface LoginProps {
   emailOrMobile: string;
@@ -38,20 +24,8 @@ interface LoginProps {
   googleToken: string;
 }
 
-export const onLogin = async (props: LoginProps) => {
-  let response;
-  try {
-    const endPoint = apiConstants.login;
-    const data = await API.userService.post(endPoint, props);
-    LOG.debug("data", data);
-    response = getApiResponse(data);
-  } catch (error: any) {
-    LOG.error("onLogin", error);
-    response = getApiResponse(error);
-  }
-
-  return response;
-};
+export const login = async (props: LoginProps) =>
+  doPost<CurrentUser>("/v1/auth/login", props);
 
 export interface UserProfileProps {
   userId: string;
