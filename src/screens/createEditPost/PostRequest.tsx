@@ -4,6 +4,7 @@ import {
 } from "@react-navigation/native";
 import React, { useState } from "react";
 import {
+  ActivityIndicator,
   Keyboard,
   ScrollView,
   Text,
@@ -15,10 +16,10 @@ import { useAppTheme } from "~/app-hooks/use-app-theme";
 import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
 import { buttonArrowGreen } from "~/assets/images";
 import { ButtonComponent } from "~/components/button-component";
-import { LOG } from "~/config";
 import { createPost, updatePost } from "~/network/api/services/post-service";
 import { Post } from "~/types/post";
 import { PostData } from "~/types/post-data";
+import { handleApiError } from "~/utils/common";
 import { PostView } from "./PostView";
 import { createStyleSheet } from "./style";
 
@@ -28,14 +29,11 @@ interface PostRequestProps {
 }
 
 export const PostRequest = ({ navigation, post }: PostRequestProps) => {
-  LOG.debug("PostRequest", post);
   const { theme } = useAppTheme();
   const styles = createStyleSheet(theme);
   const { strings } = useStringsAndLabels();
   const [isLoading, setLoading] = useState(false);
   const [postData, setPostData] = useState<PostData | undefined>(post);
-
-  LOG.debug("postData", postData);
 
   const keyboardDismiss = () => {
     Keyboard.dismiss();
@@ -57,20 +55,18 @@ export const PostRequest = ({ navigation, post }: PostRequestProps) => {
       });
     } else {
       setLoading(true);
-      let dataItem;
-      if (post) {
-        dataItem = await updatePost(post.id, postData);
-      } else {
-        dataItem = await createPost(postData);
-      }
-      Toast.show(dataItem.message, Toast.LONG, {
-        backgroundColor: "black",
-      });
-      if (dataItem.success) {
+      try {
+        if (post) {
+          await updatePost(post.id, { ...postData, type: "request" });
+        } else {
+          await createPost(postData);
+        }
         navigation?.goBack();
+      } catch (e) {
+        handleApiError("Failed to save post", e);
+      } finally {
+        setLoading(false);
       }
-
-      setLoading(false);
     }
   };
 
@@ -80,6 +76,7 @@ export const PostRequest = ({ navigation, post }: PostRequestProps) => {
         keyboardShouldPersistTaps="always"
         showsVerticalScrollIndicator={false}
       >
+        <ActivityIndicator animating={isLoading} />
         <TouchableOpacity
           onPress={keyboardDismiss}
           activeOpacity={1}
@@ -100,7 +97,7 @@ export const PostRequest = ({ navigation, post }: PostRequestProps) => {
                   icon={buttonArrowGreen}
                   title={post ? strings.editRequest : strings.postRequest}
                   style={styles.postButton}
-                  disabled={!postData}
+                  disabled={!postData || isLoading}
                 />
               </View>
             </View>

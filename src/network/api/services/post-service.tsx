@@ -3,6 +3,7 @@ import { OneUser } from "~/types/one-user";
 import { Post } from "~/types/post";
 import { PostData } from "~/types/post-data";
 import { PostGratis } from "~/types/post-gratis";
+import { PostUpdateData } from "~/types/post-update-data";
 import { doPost, doPostPaginated } from "./api-service";
 
 export async function createPost(data: PostData) {
@@ -11,11 +12,9 @@ export async function createPost(data: PostData) {
   );
 }
 
-export async function updatePost(id: string, data: PostData) {
-  return doPost<Post>(
-    `/v2/posts/update/${id}`,
-    postToBody(data),
-    resourceToPost
+export async function updatePost(id: string, data: PostUpdateData) {
+  return doPost<Post>(`/v2/posts/update/${id}`, postToBody(data), (data) =>
+    resourceToPost(data.post)
   );
 }
 
@@ -65,7 +64,7 @@ interface GetPostApiResource {
 const resourceToPost = (data: GetPostApiResource) =>
   ({
     id: data.id!,
-    type: data.type.toLowerCase(),
+    type: data.type?.toLowerCase(),
     name: data.what.name,
     address: data.where?.address,
     latitude: data.where?.location.coordinates[1],
@@ -80,7 +79,7 @@ const resourceToPost = (data: GetPostApiResource) =>
     author: data.user_id,
   } as Post);
 
-const postToBody = (data: PostData) => ({
+const postToBody = (data: PostUpdateData) => ({
   type: data.type.toLowerCase(),
   what_name: data.name,
   where_address: data.address,

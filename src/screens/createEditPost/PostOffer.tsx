@@ -4,6 +4,7 @@ import {
 } from "@react-navigation/native";
 import React, { useState } from "react";
 import {
+  ActivityIndicator,
   Keyboard,
   ScrollView,
   Text,
@@ -15,11 +16,10 @@ import { useAppTheme } from "~/app-hooks/use-app-theme";
 import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
 import { buttonArrowGreen } from "~/assets/images";
 import { ButtonComponent } from "~/components/button-component";
-import { LOG } from "~/config";
 import { createPost, updatePost } from "~/network/api/services/post-service";
-import { ApiResponse } from "~/types/api-response";
 import { Post } from "~/types/post";
 import { PostData } from "~/types/post-data";
+import { handleApiError } from "~/utils/common";
 import { PostView } from "./PostView";
 import { createStyleSheet } from "./style";
 
@@ -28,7 +28,6 @@ interface PostOfferProps {
   post?: Post;
 }
 export const PostOffer = ({ navigation, post }: PostOfferProps) => {
-  LOG.debug("PostOffer", post);
   const { theme } = useAppTheme();
   const styles = createStyleSheet(theme);
   const { strings } = useStringsAndLabels();
@@ -51,23 +50,17 @@ export const PostOffer = ({ navigation, post }: PostOfferProps) => {
     } else {
       setLoading(true);
       try {
-        let dataItem: ApiResponse<Post>;
         if (post) {
-          dataItem = await updatePost(post.id, postData);
+          await updatePost(post.id, { ...postData, type: "offer" });
         } else {
-          dataItem = await createPost(postData);
+          await createPost(postData);
         }
-        Toast.show(dataItem.message, Toast.LONG, {
-          backgroundColor: "black",
-        });
-        if (dataItem.success) {
-          navigation?.goBack();
-        }
+        navigation?.goBack();
       } catch (e) {
-        console.error(e);
+        handleApiError("Failed to save post", e);
+      } finally {
+        setLoading(false);
       }
-
-      setLoading(false);
     }
   };
 
@@ -77,6 +70,7 @@ export const PostOffer = ({ navigation, post }: PostOfferProps) => {
         keyboardShouldPersistTaps="always"
         showsVerticalScrollIndicator={false}
       >
+        <ActivityIndicator animating={isLoading} />
         <TouchableOpacity
           onPress={keyboardDismiss}
           activeOpacity={1}
@@ -97,7 +91,7 @@ export const PostOffer = ({ navigation, post }: PostOfferProps) => {
                   icon={buttonArrowGreen}
                   title={post ? strings.editOffer : strings.postOffer}
                   style={styles.postButton}
-                  disabled={!postData}
+                  disabled={!postData || isLoading}
                 />
               </View>
             </View>
