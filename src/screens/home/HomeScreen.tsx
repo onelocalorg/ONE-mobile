@@ -80,7 +80,7 @@ export const HomeScreen = (props: HomeScreenProps) => {
   var [postList, setPostList] = useState<Post[]>([]);
   const [offerModal, CreateOfferModal] = useState(false);
   var [location, setUserLocation]: any = useState();
-  const [isLoading, LodingData] = useState(false);
+  const [isLoading, setLoading] = useState(false);
   const [loading, onPageLoad] = useState(false);
   const [ismoreData, isMoreDataLoad] = useState(false);
   var [postId, postIdData]: any = useState();
@@ -259,22 +259,13 @@ export const HomeScreen = (props: HomeScreenProps) => {
   };
 
   async function postListAPI() {
-    if (page === 1) {
-      LodingData(true);
-    }
     const posts = await listPosts();
     setRefresh(false);
-    if (page === 1) {
-      setPostList(posts.results);
-    } else {
-      setPostList([...postList, ...posts.results]);
-    }
-    onPageLoad(false);
-    isMoreDataLoad(true);
-    LodingData(false);
-    if (posts.pageInfo.page === posts.pageInfo.totalPages) {
-      isMoreDataLoad(false);
-    }
+    setPostList(posts);
+    setLoading(false);
+    // if (posts.pageInfo.page === posts.pageInfo.totalPages) {
+    //   isMoreDataLoad(false);
+    // }
   }
   async function addGratisAPI() {
     const result = await sendGratis(postId, gratisNo);
@@ -301,16 +292,18 @@ export const HomeScreen = (props: HomeScreenProps) => {
   }
 
   async function deletePostAPI() {
+    setLoading(true);
     try {
       await deletePost(editPost!.id);
       Toast.show("Post deleted", Toast.LONG, {
         backgroundColor: "black",
       });
       setRefresh(true);
-      LodingData(false);
     } catch (error) {
-      LodingData(false);
+      handleApiError("Error deleting post", error);
       console.error(error);
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -322,6 +315,7 @@ export const HomeScreen = (props: HomeScreenProps) => {
   }
 
   async function blockUserAPI(postID: any, selectOP: any) {
+    setLoading(true);
     const token = await AsyncStorage.getItem("token");
     try {
       const response = await fetch(
@@ -335,7 +329,6 @@ export const HomeScreen = (props: HomeScreenProps) => {
         }
       );
       const dataItem = await response.json();
-      LodingData(false);
       if (dataItem.success === true) {
         if (selectOP === 1) {
           Toast.show("User Block successfully", Toast.LONG, {
@@ -358,8 +351,9 @@ export const HomeScreen = (props: HomeScreenProps) => {
         });
       }
     } catch (error) {
-      LodingData(false);
       console.error(error);
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -390,7 +384,6 @@ export const HomeScreen = (props: HomeScreenProps) => {
           text: strings.yes,
           onPress: () => {
             blockUserAPI(postHideId, type);
-            LodingData(true);
           },
         },
       ],
@@ -409,7 +402,6 @@ export const HomeScreen = (props: HomeScreenProps) => {
           text: strings.yes,
           onPress: () => {
             blockUserAPI(postHideId, type);
-            LodingData(true);
           },
         },
       ],
@@ -536,10 +528,10 @@ export const HomeScreen = (props: HomeScreenProps) => {
             </TouchableOpacity> */}
           </View>
           <Text style={styles.postDes}>{item.details}</Text>
-          {item.imageUrls?.length > 0 ? (
+          {item.images?.length > 0 ? (
             <ImageComponent
               resizeMode="cover"
-              source={{ uri: item.imageUrls[0] }}
+              source={{ uri: item.images[0] }}
               style={styles.userPost}
             ></ImageComponent>
           ) : null}
@@ -686,7 +678,6 @@ export const HomeScreen = (props: HomeScreenProps) => {
           text: strings.yes,
           onPress: () => {
             deletePostAPI();
-            LodingData(true);
           },
         },
       ],

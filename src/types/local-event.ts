@@ -13,6 +13,7 @@ export interface LocalEvent extends LocalEventData {
   isCanceled: boolean;
   isPayout: boolean;
   viewCount: number;
+  timeOffset: string;
 }
 
 export function isLocalEvent(object?: any): object is LocalEvent {

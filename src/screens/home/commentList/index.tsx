@@ -250,8 +250,8 @@ export const CommentList = ({ navigation, route }: commentListProps) => {
 
         setGratisData(dataItem?.data?.data?.postGratis);
         let markersTwo = { ...postData };
-        markersTwo["gratis"] = dataItem?.data?.data?.postGratis;
-        setPostData(markersTwo);
+        // markersTwo["gratis"] = dataItem?.data?.data?.postGratis;
+        // setPostData(markersTwo);
       }
 
       if (dataItem?.success === false) {
@@ -304,8 +304,8 @@ export const CommentList = ({ navigation, route }: commentListProps) => {
 
         setGratisData(dataItem?.data?.data?.postGratis);
         let markersTwo = { ...postData };
-        markersTwo["gratis"] = dataItem?.data?.data?.postGratis;
-        setPostData(markersTwo);
+        // markersTwo["gratis"] = dataItem?.data?.data?.postGratis;
+        // setPostData(markersTwo);
         console.log(
           "commentListData 222",
           markers[gratisIndex]["commentListData"]
@@ -428,8 +428,8 @@ export const CommentList = ({ navigation, route }: commentListProps) => {
       console.log(dataItem);
       if (dataItem?.success === true) {
         let markers = { ...postData };
-        markers["gratis"] = dataItem?.data?.data?.postGratis;
-        setPostData(markers);
+        // markers["gratis"] = dataItem?.data?.data?.postGratis;
+        // setPostData(markers);
         setGratisData(dataItem?.data?.data?.postGratis);
       }
       if (dataItem?.success === false) {
@@ -798,10 +798,10 @@ export const CommentList = ({ navigation, route }: commentListProps) => {
                       </TouchableOpacity> */}
                     </View>
                     <Text style={styles.postDes}>{postData?.details}</Text>
-                    {!_.isEmpty(postData?.imageUrls) ? (
+                    {!_.isEmpty(postData?.images) ? (
                       <ImageComponent
                         resizeMode="cover"
-                        source={{ uri: postData?.imageUrls[0] }}
+                        source={{ uri: postData?.images[0] }}
                         style={styles.userPost}
                       ></ImageComponent>
                     ) : null}
@@ -901,7 +901,7 @@ export const CommentList = ({ navigation, route }: commentListProps) => {
                       </TouchableOpacity>
                     ) : (
                       <View style={{ alignSelf: "center" }}>
-                        <Text>No Comment Found</Text>
+                        <Text>No comments found</Text>
                       </View>
                     )}
                   </View>

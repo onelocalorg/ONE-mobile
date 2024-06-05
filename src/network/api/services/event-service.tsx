@@ -69,10 +69,19 @@ const listEventsInternal = async ({
 export const getEvent = (id: string) =>
   doGet(`/v1/events/${id}`, resourceToLocalEvent);
 
+interface CreateEventBody {
+  name: string;
+  start_date: string;
+  timeOffset: string;
+  lat: number;
+  lng: number;
+}
+
 interface EventBody {
   name?: string;
   start_date?: string;
   end_date?: string;
+  timeOffset?: string;
   about?: string;
   address?: string;
   full_address?: string;

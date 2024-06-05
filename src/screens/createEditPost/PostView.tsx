@@ -35,7 +35,7 @@ export const PostView = ({
   const [address, setAddress] = useState(post?.address);
   const [latitude, setLatitude] = useState(post?.latitude);
   const [longitude, setLongitude] = useState(post?.longitude);
-  const [imageUrls, setImageUrls] = useState(post?.imageUrls);
+  const [imageUrls, setImageUrls] = useState(post?.images);
   const [isDirty, setDirty] = useState(false);
   const [isDatePickerVisible, setDatePickerVisible] = useState(false);
 

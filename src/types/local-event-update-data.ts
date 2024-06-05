@@ -7,6 +7,7 @@ export interface LocalEventUpdateData {
   type?: string;
   startDate?: DateTime;
   endDate?: DateTime;
+  timeOffset?: string;
   about?: string;
   address?: string;
   fullAddress?: string;

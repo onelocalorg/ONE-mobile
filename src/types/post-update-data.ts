@@ -15,7 +15,7 @@ export interface PostUpdateData {
   hasStartTime?: boolean;
   details?: string;
   // tags: tagArray ? tagArray : undefined,
-  imageUrls?: string[];
+  images?: string[];
   // to_type: valueTotype,
   // to_offer_users: userListArray,
 }

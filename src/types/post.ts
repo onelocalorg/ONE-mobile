@@ -5,7 +5,7 @@ import { PostData } from "./post-data";
 // The data returned from the server for a post
 export interface Post extends PostData {
   id: string;
-  imageUrls: string[];
+  images: string[];
   numComments: number;
   numGrats: number;
   author: OneUser;

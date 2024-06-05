@@ -4,12 +4,10 @@ import { Post } from "~/types/post";
 import { PostData } from "~/types/post-data";
 import { PostGratis } from "~/types/post-gratis";
 import { PostUpdateData } from "~/types/post-update-data";
-import { doPost, doPostPaginated } from "./api-service";
+import { doGetList, doPost } from "./api-service";
 
 export async function createPost(data: PostData) {
-  return doPost<Post>("/v1/posts/create", postToBody(data), (data) =>
-    resourceToPost(data.post)
-  );
+  return doPost<Post>("/v1/posts/create", postToBody(data), resourceToPost);
 }
 
 export async function updatePost(id: string, data: PostUpdateData) {
@@ -22,61 +20,33 @@ export async function deletePost(id: string) {
   return doPost<never>(`/v2/posts/delete/${id}`);
 }
 
-export async function listPosts(numPosts: number = 20) {
-  return doPostPaginated<Post>(
-    `/v1/posts/list?limit=${numPosts}`,
-    undefined,
-    resourceToPost
-  );
+// TODO 'start' is for pagination
+export async function listPosts(numPosts: number = 20, start?: string) {
+  return doGetList(`/v2/posts?limit=${numPosts}`, resourceToPost);
 }
 
 // The JSON returned from the API call
 interface GetPostApiResource {
   id: string;
   type: string;
-  what: {
-    name: string;
-    quantity?: number;
-  };
-  to?: {
-    type?: string;
-    name?: string;
-    users?: string[];
-  };
-  for?: {
-    quantity: number;
-  };
-  where?: {
-    location: GeoJSON.Point;
-    address: string;
-  };
-  user_id: OneUser;
-  gratis: number;
+  name: string;
+  author: OneUser;
+  numGrats: number;
   startDate?: string;
-  postDate?: string;
+  postDate: string;
+  timeOffset: string;
   hasStartTime?: boolean;
   content?: string;
-  post_image?: string[];
-  comment: number;
+  images: string[];
   comments: string[];
+  numComments: number;
 }
 
 const resourceToPost = (data: GetPostApiResource) =>
   ({
-    id: data.id!,
-    type: data.type?.toLowerCase(),
-    name: data.what.name,
-    address: data.where?.address,
-    latitude: data.where?.location.coordinates[1],
-    longitude: data.where?.location.coordinates[0],
+    ...data,
     startDate: data.startDate ? DateTime.fromISO(data.startDate) : undefined,
-    hasStartTime: data.hasStartTime,
-    postDate: data.postDate ? DateTime.fromISO(data.postDate) : undefined,
-    details: data.content,
-    imageUrls: data.post_image ?? [],
-    numComments: data.comment,
-    numGrats: data.gratis,
-    author: data.user_id,
+    postDate: DateTime.fromISO(data.postDate),
   } as Post);
 
 const postToBody = (data: PostUpdateData) => ({
@@ -88,7 +58,7 @@ const postToBody = (data: PostUpdateData) => ({
   startDate: data.startDate?.toISO(),
   hasStartTime: data.hasStartTime ?? false,
   content: data.details,
-  post_image: data.imageUrls,
+  // post_image: data.imageUrls,
 });
 
 export const sendGratis = (postId: string, points: number) =>

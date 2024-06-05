@@ -2,7 +2,6 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import _ from "lodash/fp";
 import { LOG } from "~/config";
 import { ApiError } from "~/types/api-error";
-import { Paginated } from "~/types/paginated";
 
 // Perform a GET against the given url and return the resource generated via
 // the given transform function
@@ -19,17 +18,7 @@ export async function doGetList<Resource>(
   url: string,
   transform?: (data: any) => Resource
 ) {
-  return doList<Resource>("GET", url, undefined, transform);
-}
-
-// Perform a GET against the given url and return a list of resources generated via
-// the given transform fundtion
-export async function doPostList<Resource>(
-  url: string,
-  body?: any,
-  transform?: (data: any) => Resource
-) {
-  return doList<Resource>("POST", url, body, transform);
+  return callApiAndMap<Resource>("GET", url, undefined, transform);
 }
 
 // Perform a POST against the given url and return the resource generated via
@@ -42,6 +31,16 @@ export async function doPost<Resource>(
   return callApi<Resource>("POST", url, body, transform);
 }
 
+// Perform a GET against the given url and return a list of resources generated via
+// the given transform fundtion
+export async function doPostList<Resource>(
+  url: string,
+  body?: any,
+  transform?: (data: any) => Resource
+) {
+  return callApiAndMap<Resource>("POST", url, body, transform);
+}
+
 // Perform a PATCH against the given url and return the resource generated via
 // the given transform fundction
 export async function doPatch<Resource>(
@@ -50,22 +49,6 @@ export async function doPatch<Resource>(
   transform?: (data: any) => Resource
 ) {
   return callApi<Resource>("PATCH", url, body, transform);
-}
-
-export async function doPostPaginated<Resource>(
-  url: string,
-  body?: any,
-  transform?: (data: any) => Resource
-) {
-  return callApi<Paginated<Resource>>("POST", url, body, (json) => ({
-    pageInfo: {
-      page: json.page,
-      limit: json.limit,
-      totalPages: json.totalPages,
-      totalResults: json.totalResults,
-    },
-    results: json.results.map(transform),
-  }));
 }
 
 export async function doDelete<Resource>(url: string) {
@@ -118,7 +101,7 @@ async function callApi<Resource>(
   return resource as Resource;
 }
 
-export async function doList<Resource>(
+export async function callApiAndMap<Resource>(
   method: string,
   url: string,
   body?: any,
