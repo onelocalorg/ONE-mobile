@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Platform } from "react-native";
+import semver from "semver";
 import { AppUpdate } from "~/components/app-update";
 import { LOG } from "~/config";
 import { ANDROID_VERSION, IOS_VERSION, setData } from "~/network/constant";
@@ -69,7 +70,7 @@ export const AppNavigation = () => {
   }
 
   function iosVersionCheck(dataIOS: any) {
-    if (IOS_VERSION < dataIOS.ios_version) {
+    if (semver.lt(IOS_VERSION, dataIOS.ios_version)) {
       if (dataIOS.isForceforIOS) {
         setShowUpdateIOS(true);
       } else if (dataIOS.inMaintananceIOS) {
@@ -83,7 +84,7 @@ export const AppNavigation = () => {
   }
 
   function androidVersionCheck(dataAndroid: any) {
-    if (ANDROID_VERSION < dataAndroid.android_version) {
+    if (semver.lt(ANDROID_VERSION, dataAndroid.android_version)) {
       if (dataAndroid.isForceforAndroid) {
         setShowUpdateAndroind(true);
       } else if (dataAndroid.inMaintananceAndroid) {

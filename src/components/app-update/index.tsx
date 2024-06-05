@@ -12,7 +12,8 @@ export const AppUpdate = () => {
 
   const onOpenAppStore = () => {
     if (Platform.OS === "ios") {
-      const link = "itms-apps://itunes.apple.com/app/id/1534246640";
+      const link =
+        "itms-apps://apps.apple.com/id/app/one-local/id1534246640?l=id";
       Linking.canOpenURL(link).then(
         (supported) => {
           supported && Linking.openURL(link);
