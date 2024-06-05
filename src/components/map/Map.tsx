@@ -21,10 +21,11 @@ import giftIcon from "~/assets/map/gift.png";
 import { LOG } from "~/config";
 import {
   featureToLocalEvent,
-  fetchEvents,
+  listEventsForMap,
 } from "~/network/api/services/event-service";
 import { LocalEvent } from "~/types/local-event";
 import { LocalEventData } from "~/types/local-event-data";
+import { handleApiError } from "~/utils/common";
 import { EventItem } from "../events/EventItem";
 
 interface Range {
@@ -70,22 +71,22 @@ export const Map = ({ onClicked }: MapProps) => {
   useFocusEffect(
     useCallback(() => {
       setSelectedEvents([]);
-      fetchEvents({
+      fetchEvents();
+    }, [])
+  );
+
+  const fetchEvents = async () => {
+    try {
+      const events = await listEventsForMap({
         startDate: DateTime.now(),
         isCanceled: false,
         // endDate: DateTime.now().plus({ months: 3 }),
-      })
-        .then((fc) => ({
-          ...fc,
-          features: fc.features.map((f) => ({ ...f, id: f.properties?.id })),
-        }))
-        .then((events) => {
-          console.log("after", events);
-          return events;
-        })
-        .then(setEvents);
-    }, [])
-  );
+      });
+      setEvents(events);
+    } catch (e) {
+      handleApiError("Failed loading events", e);
+    }
+  };
 
   // async function checkLocation() {
   //   if (Platform.OS === "android") {
@@ -370,7 +371,7 @@ export const Map = ({ onClicked }: MapProps) => {
     LOG.debug("Map clicked", event);
     const localEvents = event.features.map(featureToLocalEvent);
     setSelectedEvents(localEvents);
-    // selectedEvent?.id === localEvent.id ? undefined : localEvent
+    // selectedEvent?.id === localEvent.id ? undefined : localEvent;
   };
 
   return (

@@ -3,11 +3,11 @@ import { Image, Pressable, Text, View } from "react-native";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
 import { pin } from "~/assets/images";
 import { LOG } from "~/config";
-import { LocalEventData } from "~/types/local-event-data";
+import { LocalEvent } from "~/types/local-event";
 import { createStyleSheet } from "./style";
 
 interface EventItemProps {
-  event: LocalEventData;
+  event: LocalEvent;
   onPress?: () => void;
   style?: any;
 }
@@ -23,8 +23,8 @@ export const EventItem = ({ event, onPress, style }: EventItemProps) => {
       <Image
         resizeMode="stretch"
         source={
-          event?.event_image
-            ? { uri: event?.event_image }
+          event?.eventImage
+            ? { uri: event?.eventImage }
             : require("~/assets/images/defaultEvent.png")
         }
         style={styles.dummy}
@@ -33,8 +33,8 @@ export const EventItem = ({ event, onPress, style }: EventItemProps) => {
         <View style={styles.rowClass}>
           <View style={styles.flex}>
             <Text style={styles.dateText}>
-              {event.start_date.toLocaleString(DateTime.DATE_MED_WITH_WEEKDAY)}{" "}
-              • {event.start_date.toLocaleString(DateTime.TIME_SIMPLE)}
+              {event.startDate.toLocaleString(DateTime.DATE_MED_WITH_WEEKDAY)} •{" "}
+              {event.startDate.toLocaleString(DateTime.TIME_SIMPLE)}
             </Text>
             <Text numberOfLines={2} style={styles.title}>
               {event.name}
@@ -46,7 +46,7 @@ export const EventItem = ({ event, onPress, style }: EventItemProps) => {
         <View style={styles.rowClass}>
           <Image source={pin} style={styles.pin} />
           <Text numberOfLines={1} style={styles.location}>
-            {event.address || event.full_address?.split(",")[0]}
+            {event.address || event.fullAddress?.split(",")[0]}
           </Text>
         </View>
         {event.isCanceled ? (

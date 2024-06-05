@@ -1,8 +1,11 @@
 /* eslint-disable react-hooks/exhaustive-deps */
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   NavigationContainerRef,
   ParamListBase,
 } from "@react-navigation/native";
+import _ from "lodash/fp";
+import { DateTime } from "luxon";
 import React, { useRef, useState } from "react";
 import {
   Alert,
@@ -12,56 +15,53 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { useAppTheme } from "~/app-hooks/use-app-theme";
-import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
-import { addGreen, dummy, edit, pinWhite, save, ticket } from "~/assets/images";
-
-import { ImageComponent } from "~/components/image-component";
-import { Input } from "~/components/input";
-import { LocationAutocomplete } from "~/components/location-autocomplete/LocationAutocomplete";
-import { ModalRefProps } from "~/components/modal-component";
-import { Pill } from "~/components/pill";
-import { SizedBox } from "~/components/sized-box";
-import { navigations } from "~/config/app-navigation/constant";
-import { normalScale, verticalScale } from "~/theme/device/normalize";
-import { AddTicketModal } from "./AddTicketModal";
-import { createStyleSheet } from "./style";
-
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { DateTime } from "luxon";
 import { launchImageLibrary } from "react-native-image-picker";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import Toast from "react-native-simple-toast";
-import { useSelector } from "react-redux";
+import { useAppTheme } from "~/app-hooks/use-app-theme";
+import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
+import { addGreen, dummy, edit, pinWhite, save, ticket } from "~/assets/images";
 import { ButtonComponent } from "~/components/button-component";
 import { ChooseDate } from "~/components/choose-date/ChooseDate";
+import { ImageComponent } from "~/components/image-component";
+import { Input } from "~/components/input";
 import { Loader } from "~/components/loader";
+import { LocationAutocomplete } from "~/components/location-autocomplete/LocationAutocomplete";
+import { ModalRefProps } from "~/components/modal-component";
 import { Navbar } from "~/components/navbar/Navbar";
+import { Pill } from "~/components/pill";
+import { SizedBox } from "~/components/sized-box";
 import { LOG } from "~/config";
-import { updateEvent } from "~/network/api/services/event-service";
-import { useCreateEvent } from "~/network/hooks/home-service-hooks/use-create-event";
+import { navigations } from "~/config/app-navigation/constant";
+import { createEvent, updateEvent } from "~/network/api/services/event-service";
 import { useTicketHolderCheckinsList } from "~/network/hooks/home-service-hooks/use-ticket-holder-checkin-list";
-import { StoreType } from "~/network/reducers/store";
-import { UserProfileState } from "~/network/reducers/user-profile-reducer";
 import { width } from "~/theme/device/device";
-import { LocalEvent, isLocalEvent } from "~/types/local-event";
+import { normalScale, verticalScale } from "~/theme/device/normalize";
+import { isLocalEvent } from "~/types/local-event";
 import { LocalEventData } from "~/types/local-event-data";
+import { LocalEventUpdateData } from "~/types/local-event-update-data";
 import { TicketTypeData } from "~/types/ticket-type-data";
+import { handleApiError } from "~/utils/common";
+import { AddTicketModal } from "./AddTicketModal";
 import { GetAdmintoolsDropDownScreen } from "./getAdmintoolsDropdown";
+import { createStyleSheet } from "./style";
 
 interface CreateEditEventScreenProps {
   navigation?: NavigationContainerRef<ParamListBase>;
   route?: {
     params: {
-      eventData?: LocalEventData | LocalEvent;
+      eventData?: LocalEventData;
     };
   };
 }
 
-export const CreateEditEventScreen = (props: CreateEditEventScreenProps) => {
+export const CreateEditEventScreen = ({
+  route,
+  navigation,
+}: CreateEditEventScreenProps) => {
+  const event = route?.params.eventData;
   const { theme } = useAppTheme();
   const { strings } = useStringsAndLabels();
-  const { navigation, route } = props || {};
   const isCreateEvent = !route?.params.eventData;
   const eventId = route?.params.eventData?.id;
   const viewCount = isLocalEvent(route?.params.eventData)
@@ -75,7 +75,7 @@ export const CreateEditEventScreen = (props: CreateEditEventScreenProps) => {
   const addItemRef: React.Ref<ModalRefProps> = useRef(null);
 
   const [startDate, setStartDate] = useState<DateTime>(
-    route?.params.eventData?.start_date ??
+    route?.params.eventData?.startDate ??
       DateTime.now().startOf("hour").plus({ hour: 1 })
   );
   const [endDate, setEndDate] = useState<DateTime>();
@@ -90,26 +90,19 @@ export const CreateEditEventScreen = (props: CreateEditEventScreenProps) => {
   );
   const [isTicketTypesDirty, setTicketTypesDirty] = useState(false);
   const [fullAddress, setFullAddress] = useState(
-    route?.params.eventData?.full_address
+    route?.params.eventData?.fullAddress
   );
   const [latitude, setLatitude] = useState(route?.params.eventData?.latitude);
   const [longitude, setLongitude] = useState(
     route?.params.eventData?.longitude
   );
-  const { address, start_date, end_date, email_confirmation_body, id } =
-    eventDetails || {};
-  const { user } = useSelector<StoreType, UserProfileState>(
-    (state) => state.userProfileReducer
-  ) as { user: { id: string; pic: string; city: string } };
-  const [eventImage, setEventImage] = useState("");
-  const [eventImageDisplay, setEventImageDisplay] = useState("");
+  const [eventImage, setEventImage] = useState<string>();
+  const [eventImageDisplay, setEventImageDisplay] = useState<string>();
   const { refetch, data } = useTicketHolderCheckinsList({
-    eventId: id,
+    eventId: event?.id,
     queryParams: { pagination: false },
   });
-  const [isLoading, LodingData] = useState(false);
-  const { mutateAsync: createEvent, isLoading: createEventLoading } =
-    useCreateEvent();
+  const [isLoading, setLoading] = useState(false);
   const [curTicket, setCurTicket] = useState<number | undefined>();
 
   // useEffect(() => {
@@ -159,7 +152,7 @@ export const CreateEditEventScreen = (props: CreateEditEventScreenProps) => {
   // };
 
   async function onCancelEvent(eventID: any) {
-    LodingData(true);
+    setLoading(true);
     const token = await AsyncStorage.getItem("token");
 
     console.log("=========== Cancle Event API Request ==============");
@@ -184,28 +177,24 @@ export const CreateEditEventScreen = (props: CreateEditEventScreenProps) => {
         backgroundColor: "black",
       });
       if (dataItem?.success === true) {
-        LodingData(false);
+        setLoading(false);
         navigation?.navigate(navigations.EVENT_ROUTE);
       } else {
-        LodingData(false);
+        setLoading(false);
       }
 
       // postListAPI();
     } catch (error) {
-      LodingData(false);
+      setLoading(false);
       console.error(error);
     }
   }
 
-  const onBackPress = () => {
-    navigation?.goBack();
-  };
+  // const onNavigate = () => {
+  //   navigation?.navigate(navigations.CHECK_IN, { eventId: id });
+  // };
 
-  const onNavigate = () => {
-    navigation?.navigate(navigations.CHECK_IN, { eventId: id });
-  };
-
-  const checkValidation = () => {
+  const isValid = () => {
     return !(
       (name && startDate && latitude && longitude)
       // tickets?.length &&
@@ -216,94 +205,62 @@ export const CreateEditEventScreen = (props: CreateEditEventScreenProps) => {
     );
   };
 
-  const onCreateEvent = async () => {
-    LodingData(true);
+  const handleCreateEvent = async () => {
+    setLoading(true);
     Keyboard.dismiss();
-    const res = await createEvent({
-      ...eventDetails,
-      name: name!,
-      about,
-      start_date: startDate,
-      end_date: isEndDateActive ? endDate : undefined,
-      ticketTypes,
-      event_image: eventImage ? eventImage : undefined,
-      full_address: fullAddress!,
-      latitude: latitude!,
-      longitude: longitude!,
-      // type: setFilter,
-    });
-    LOG.debug("onCreateEvent", res);
-    if (res?.success) {
-      LodingData(false);
-      navigation?.goBack();
-    } else {
-      LodingData(false);
+    try {
+      if (name && latitude && longitude) {
+        await createEvent({
+          ...eventDetails,
+          name,
+          about,
+          startDate,
+          endDate: isEndDateActive ? endDate : undefined,
+          ticketTypes,
+          eventImage,
+          fullAddress,
+          latitude,
+          longitude,
+          // type: setFilter,
+        });
+        navigation?.goBack();
+      }
+    } catch (e) {
+      handleApiError("Failed to create event", e);
+    } finally {
+      setLoading(false);
     }
   };
 
-  const onUpdateEvent = async () => {
+  const handleUpdateEvent = async () => {
     // var getTicket: any = ticketTypes?.map((ele) => ele?.id ?? "");
-    LodingData(true);
+    setLoading(true);
     Keyboard.dismiss();
-    let request = {};
-    if (name !== props.route?.params.eventData?.name) {
-      request = { ...request, name };
-    }
-    if (address !== props.route?.params.eventData?.address) {
-      request = { ...request, address };
-    }
-    if (fullAddress !== props.route?.params.eventData?.full_address) {
-      request = { ...request, fullAddress };
-    }
-    if (startDate !== props.route?.params.eventData?.start_date) {
-      request = { ...request, startDate: startDate.toISO() };
-    }
-    if (endDate !== props.route?.params.eventData?.end_date) {
-      request = { ...request, endDate: endDate!.toISO() };
-    }
-    if (
-      email_confirmation_body !==
-      props.route?.params.eventData?.email_confirmation_body
-    ) {
-      request = { ...request, emailConfirmationBody: email_confirmation_body };
-    }
-    if (about !== props.route?.params.eventData?.about) {
-      request = { ...request, about };
-    }
-    if (
-      latitude !== props.route?.params.eventData?.latitude ||
-      longitude !== props.route?.params.eventData?.longitude
-    ) {
-      request = { ...request, latitude: latitude?.toString() };
-      request = { ...request, longitude: longitude?.toString() };
-    }
-    if (isTicketTypesDirty) {
-      request = { ...request, ticketTypes };
-    }
+    const data: LocalEventUpdateData = {
+      name: name !== event?.name ? name : undefined,
+      fullAddress: fullAddress !== event?.fullAddress ? fullAddress : undefined,
+      startDate: startDate !== event?.startDate ? startDate : undefined,
+      endDate: endDate !== event?.endDate ? endDate : undefined,
+      eventImage: eventImage !== event?.eventImage ? eventImage : undefined,
+      // emailConfirmationBody: emailConfirmationBody !== event?.emailConfirmationBody ? emailConfirmationBody : undefined,
+      about: about !== event?.about ? about : undefined,
+      latitude: latitude !== event?.latitude ? latitude : undefined,
+      longitude: longitude !== event?.longitude ? longitude : undefined,
+      ticketTypes: isTicketTypesDirty ? ticketTypes : undefined,
+    };
 
-    // request = { ...request, type: setFilter };
-    // }
-
-    // request = {
-    //   ...request,
-    //   tickets: getTicket.join(","),
-    //   eventImage,
-    // };
-
-    if (Object.keys(request).length === 0) {
+    if (_.isEmpty(data)) {
       Alert.alert("", strings.pleaseEdit);
       return;
     }
 
-    LOG.debug("> onUpdateEvent", request);
-
     try {
-      await updateEvent(eventId!, request);
-      LodingData(false);
+      await updateEvent(eventId!, data);
       navigation?.goBack();
     } catch (e: any) {
-      LodingData(false);
-      Alert.alert("Failed to update event", e.message);
+      handleApiError("Failed to update event", e);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -370,7 +327,7 @@ export const CreateEditEventScreen = (props: CreateEditEventScreenProps) => {
     if (assets) {
       const img = assets?.[0];
       var fileNameTwo = img?.fileName ?? "";
-      LodingData(true);
+      setLoading(true);
       var output =
         fileNameTwo.substr(0, fileNameTwo.lastIndexOf(".")) || fileNameTwo;
       var base64Two = img?.base64 ?? "";
@@ -398,12 +355,12 @@ export const CreateEditEventScreen = (props: CreateEditEventScreenProps) => {
         }
       );
       const dataItem = await response.json();
-      LodingData(false);
+      setLoading(false);
       setEventImage(dataItem?.data?.key);
       setEventImageDisplay(dataItem?.data?.imageUrl);
       console.log(dataItem);
     } catch (error) {
-      LodingData(false);
+      setLoading(false);
       console.log(error);
     }
   };
@@ -470,7 +427,7 @@ export const CreateEditEventScreen = (props: CreateEditEventScreenProps) => {
   return (
     <Pressable style={styles.container} onPress={keyboardDismiss}>
       <Navbar navigation={navigation} />
-      <Loader visible={isLoading || createEventLoading} showOverlay />
+      <Loader visible={isLoading} showOverlay />
       <KeyboardAwareScrollView
         keyboardShouldPersistTaps="always"
         showsVerticalScrollIndicator={false}
@@ -510,14 +467,14 @@ export const CreateEditEventScreen = (props: CreateEditEventScreenProps) => {
             </View>
 
             <SizedBox height={verticalScale(6)} />
-            {!isCreateEvent && (
+            {/* {!isCreateEvent && (
               <Pill
                 label={strings.checkIns}
                 backgroundColor={theme.colors.lightRed}
                 pillStyle={styles.checkIn}
                 onPressPill={onNavigate}
               />
-            )}
+            )} */}
             {/* <View style={styles.toggleContainer}>
               <Text style={styles.villageLblTwo}>Village Friendly </Text>
               <View style={styles.switchToggle}>
@@ -679,7 +636,7 @@ export const CreateEditEventScreen = (props: CreateEditEventScreenProps) => {
               )}
             </View>
 
-            {!isCreateEvent ? (
+            {event ? (
               <View>
                 {isEventOwner ? (
                   <View>
@@ -689,12 +646,12 @@ export const CreateEditEventScreen = (props: CreateEditEventScreenProps) => {
                     </View>
                     <View>
                       <GetAdmintoolsDropDownScreen
-                        eventId={id!}
+                        eventId={event.id!}
                         navigation={navigation}
                       />
                       <TouchableOpacity
                         activeOpacity={0.8}
-                        onPress={() => verifyCancelEvent(id!)}
+                        onPress={() => verifyCancelEvent(event.id!)}
                         style={styles.cancleEventBtn}
                       >
                         <Text style={styles.cancleEventText}>
@@ -712,10 +669,10 @@ export const CreateEditEventScreen = (props: CreateEditEventScreenProps) => {
 
       <View style={styles.bottomButton}>
         <ButtonComponent
-          onPress={isCreateEvent ? onCreateEvent : onUpdateEvent}
+          onPress={isCreateEvent ? handleCreateEvent : handleUpdateEvent}
           icon={save}
           title={strings.save}
-          disabled={checkValidation()}
+          disabled={isValid() || isLoading}
         />
       </View>
 

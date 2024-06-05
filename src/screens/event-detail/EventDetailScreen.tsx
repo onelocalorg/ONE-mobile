@@ -25,8 +25,7 @@ import { Navbar } from "~/components/navbar/Navbar";
 import { SizedBox } from "~/components/sized-box";
 import { navigations } from "~/config/app-navigation/constant";
 import {
-  eventResponseToLocalEvent,
-  fetchEvent,
+  getEvent,
   listRsvps,
   updateRsvp,
 } from "~/network/api/services/event-service";
@@ -36,6 +35,7 @@ import { verticalScale } from "~/theme/device/normalize";
 import { LocalEvent } from "~/types/local-event";
 import { OneUser } from "~/types/one-user";
 import { RsvpList, RsvpType } from "~/types/rsvp";
+import { handleApiError } from "~/utils/common";
 import { RsvpView } from "./RsvpView";
 import { Tickets } from "./Tickets";
 import { createStyleSheet } from "./style";
@@ -68,12 +68,28 @@ export const EventDetailScreen = ({
 
   useEffect(() => {
     if (eventId) {
-      fetchEvent(eventId).then(eventResponseToLocalEvent).then(setEvent);
+      fetchEvent();
       fetchRsvpData();
     }
   }, [eventId]);
 
-  const fetchRsvpData = () => listRsvps(eventId!).then(setRsvpData);
+  const fetchEvent = async () => {
+    try {
+      const event = await getEvent(eventId!);
+      setEvent(event);
+    } catch (e) {
+      handleApiError("Failed getting Event", e);
+    }
+  };
+
+  const fetchRsvpData = async () => {
+    try {
+      const rsvps = await listRsvps(eventId!);
+      setRsvpData(rsvps);
+    } catch (e) {
+      handleApiError("Failed getting RSVPs", e);
+    }
+  };
 
   const onNavigateToProducerProfile = () => {
     // if (event?.is_event_owner) {

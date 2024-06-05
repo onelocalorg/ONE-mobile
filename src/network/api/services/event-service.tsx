@@ -1,13 +1,11 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import _ from "lodash/fp";
 import { DateTime } from "luxon";
-import { LOG } from "~/config";
 import { apiConstants } from "~/network/constant";
 import { getApiResponse } from "~/network/utils/get-api-response";
 import { EventProducer } from "~/types/event-producer";
-import { GeoJSONEventProperties } from "~/types/geojson-event-properties";
 import { LocalEvent } from "~/types/local-event";
 import { LocalEventData } from "~/types/local-event-data";
+import { LocalEventUpdateData } from "~/types/local-event-update-data";
 import { OneUser } from "~/types/one-user";
 import { PriceBreakdown } from "~/types/price-breakdown";
 import { Rsvp, RsvpList, RsvpType } from "~/types/rsvp";
@@ -15,6 +13,172 @@ import { TicketSelection } from "~/types/ticket-selection";
 import { TicketType } from "~/types/ticket-type";
 import { API } from "..";
 import { doGet, doPatch, doPost } from "./api-service";
+
+export const createEvent = (eventData: LocalEventData) =>
+  doPost(`/v2/events`, localEventToBody(eventData), resourceToLocalEvent);
+
+export const updateEvent = (eventId: string, event: LocalEventUpdateData) =>
+  doPatch(
+    `/v2/events/${eventId}`,
+    localEventToBody(event),
+    resourceToLocalEvent
+  );
+
+type ListEventsParams = {
+  startDate?: DateTime;
+  isCanceled?: boolean;
+};
+export const listEventsForMap = (params: ListEventsParams) =>
+  listEventsInternal({
+    ...params,
+    formatForMap: true,
+  }) as Promise<GeoJSON.FeatureCollection>;
+
+export const listEvents = (params: ListEventsParams) =>
+  listEventsInternal({
+    ...params,
+    formatForMap: false,
+  }) as Promise<LocalEvent[]>;
+
+type ListEventsInternalParams = {
+  startDate?: DateTime;
+  isCanceled?: boolean;
+  formatForMap?: boolean;
+};
+const listEventsInternal = async ({
+  startDate,
+  isCanceled,
+  formatForMap = false,
+}: ListEventsInternalParams) => {
+  const urlParams: string[] = [];
+  if (!_.isNil(startDate)) urlParams.push(`start_date=${startDate.toISO()}`);
+  if (!_.isNil(isCanceled)) urlParams.push(`canceled=${isCanceled.toString()}`);
+
+  const urlSearchParams = urlParams.join("&");
+
+  const events = await doGet(
+    `/v2/events?${urlSearchParams.toString()}`,
+    formatForMap
+      ? resourcesToFeatureCollection
+      : (data) => data.map(resourceToLocalEvent)
+  );
+  console.log("events", events);
+  return events;
+};
+
+export const getEvent = (id: string) =>
+  doGet(`/v1/events/${id}`, resourceToLocalEvent);
+
+interface EventBody {
+  name?: string;
+  start_date?: string;
+  end_date?: string;
+  about?: string;
+  address?: string;
+  full_address?: string;
+  location?: GeoJSON.Point;
+  lat?: number;
+  long?: number;
+  eventProducer?: EventProducer;
+  email_confirmation_body?: string;
+  event_image_id?: string;
+  ticketTypes?: TicketType[];
+  isCanceled?: boolean;
+  event_type?: string;
+}
+
+interface EventResource extends EventBody {
+  id: string;
+  name: string;
+  start_date: string;
+  full_address: string;
+  location: GeoJSON.Point;
+  lat: number;
+  long: number;
+  eventProducer: EventProducer;
+  email_confirmation_body: string;
+  ticketTypes: TicketType[];
+  isCanceled: boolean;
+  viewCount: number;
+  isPayout: boolean;
+  payoutProcess: string;
+  payout: any;
+  event_type: string;
+  is_event_owner: boolean;
+  totalRevenue: number;
+}
+
+const resourcesToFeatureCollection = (events: EventResource[]) => ({
+  type: "FeatureCollection",
+  features: events.map((event) => ({
+    type: "Feature",
+    properties: { ..._.omit(["location", "_id"], event) },
+    geometry: event.location,
+  })),
+});
+
+const resourceToLocalEvent = (data: EventResource) =>
+  ({
+    ...data,
+    startDate: DateTime.fromISO(data.start_date),
+    endDate: data.end_date ? DateTime.fromISO(data.end_date) : undefined,
+    latitude: data.lat,
+    longitude: data.long,
+    eventImage: data.event_image_id,
+    fullAddress: data.full_address,
+    ticketTypes:
+      data.ticketTypes?.map((tt) => ({
+        ...tt,
+        price: tt.price,
+      })) ?? [],
+  } as LocalEvent);
+
+const localEventToBody = (data: LocalEventUpdateData) =>
+  ({
+    name: data.name,
+    start_date: data.startDate?.toISO(),
+    end_date: data.endDate?.toISO(),
+    about: data.about,
+    address: data.address,
+    full_address: data.fullAddress,
+    email_confirmation_body: data.emailConfirmationBody,
+    ticketTypes: data.ticketTypes,
+    event_lat: data.latitude,
+    event_lng: data.longitude,
+    event_type: data.type,
+    event_image: data.eventImage,
+  } as EventBody);
+
+export const featureToLocalEvent = (feature: GeoJSON.Feature) => {
+  const properties = feature.properties as EventResource;
+  console.log("featureToLocalEvent", properties);
+  return {
+    ..._.omit(
+      ["location", "start_date", "end_date", "full_address"],
+      resourceToLocalEvent(properties)
+    ),
+
+    startDate: DateTime.fromISO(properties.start_date),
+    endDate: properties.end_date
+      ? DateTime.fromISO(properties.end_date)
+      : undefined,
+    latitude: (feature.geometry as GeoJSON.Point).coordinates[1],
+    longitude: (feature.geometry as GeoJSON.Point).coordinates[0],
+    fullAddress: properties.full_address,
+  } as LocalEvent;
+};
+
+export interface TicketBodyParamProps {
+  id?: string;
+  name: string;
+  start_date: string;
+  end_date: string;
+  price: string;
+  event: string;
+  quantity: string;
+  max_quantity_to_show: string;
+  available_quantity: string;
+}
 
 export const listRsvps = (eventId: string) => {
   return doGet<RsvpList>(`/v1/events/rsvp/${eventId}`, apiToRsvps);
@@ -62,165 +226,6 @@ export async function getTicketPriceBreakdown(
     `/v1/events/${eventId}/prices?${qs}`
   );
   return resp;
-}
-
-interface EventProps {
-  queryParams?: {
-    limit: number;
-    page: number;
-  };
-  bodyParams?: {
-    start_date: DateTime;
-    end_date?: DateTime;
-    event_type?: string;
-    only_upcoming?: number;
-    searchtext?: string;
-    latitude?: number;
-    longitude?: number;
-    zoom_level?: number;
-    device_type?: string;
-  };
-  userId?: string;
-}
-
-export const onFetchEvents = async ({
-  queryParams,
-  bodyParams,
-  userId,
-}: EventProps) => {
-  LOG.debug("> onFetchEvents", bodyParams);
-  let response;
-  try {
-    const endPoint = `/v1/events/list${userId ? `/${userId}` : ""}`;
-    const data = await API.homeService.post(endPoint, bodyParams, {
-      params: queryParams,
-    });
-    response = getApiResponse(data);
-  } catch (error: any) {
-    response = getApiResponse(error);
-  }
-
-  LOG.debug("< onFetchEvents", response);
-  return response;
-};
-
-interface FetchEventsProps {
-  startDate: DateTime;
-  isCanceled?: boolean;
-  // endDate?: DateTime;
-}
-export const fetchEvents = async ({
-  startDate,
-  isCanceled,
-}: // endDate,
-FetchEventsProps) => {
-  const url = `${
-    process.env.API_URL
-  }/v2/events?start_date=${startDate.toISO()}&${
-    !_.isUndefined(isCanceled) ? "isCanceled=" + isCanceled : ""
-  }`;
-  LOG.info("fetchEvents", url);
-  const token = await AsyncStorage.getItem("token");
-  const response = await fetch(url, {
-    headers: new Headers({
-      Authorization: "Bearer " + token,
-      "Content-Type": "application/json",
-    }),
-  });
-  LOG.info(response.status);
-  const dataItem = await response.json();
-  LOG.debug(dataItem?.data);
-  return dataItem?.data as GeoJSON.FeatureCollection;
-};
-
-export interface EventResponse {
-  id: string;
-  name: string;
-  start_date: string;
-  end_date?: string;
-  timezone: string;
-  about?: string;
-  address?: string;
-  full_address: string;
-  location: GeoJSON.Point;
-  lat: number;
-  long: number;
-  eventProducer: EventProducer;
-  email_confirmation_body: string;
-  event_image_id?: string;
-  ticketTypes: TicketType[];
-  isCanceled: boolean;
-  viewCount: number;
-  isPayout: boolean;
-  payoutProcess: string;
-  payout: any;
-  event_type: string;
-  is_event_owner: boolean;
-  totalRevenue: number;
-}
-
-export const featureCollectionToLocalEvents = (
-  collection: GeoJSON.FeatureCollection
-) => _.sortBy(["start_date"], collection.features.map(featureToLocalEvent));
-
-export const featureToLocalEvent = (feature: GeoJSON.Feature) => {
-  const properties = feature.properties as GeoJSONEventProperties;
-  return {
-    ..._.omit(["location"], properties),
-    start_date: DateTime.fromISO(properties.start_date),
-    end_date: properties.end_date
-      ? DateTime.fromISO(properties.end_date)
-      : undefined,
-    latitude: (feature.geometry as GeoJSON.Point).coordinates[1],
-    longitude: (feature.geometry as GeoJSON.Point).coordinates[0],
-  } as LocalEvent;
-};
-
-interface FetchEventsProps {
-  startDate: DateTime;
-  isCanceled?: boolean;
-  // endDate?: DateTime;
-}
-export const fetchEvent = async (eventId: string) => {
-  const url = `${process.env.API_URL}/v1/events/${eventId}`;
-  LOG.info("fetchEvent", url);
-  const token = await AsyncStorage.getItem("token");
-  const response = await fetch(url, {
-    headers: new Headers({
-      Authorization: "Bearer " + token,
-      "Content-Type": "application/json",
-    }),
-  });
-  LOG.info(response.status);
-  const dataItem = await response.json();
-  LOG.debug(dataItem?.data);
-  return dataItem?.data as EventResponse;
-};
-
-export const eventResponseToLocalEvent = (data: EventResponse) =>
-  ({
-    ...data,
-    start_date: DateTime.fromISO(data.start_date),
-    end_date: data.end_date ? DateTime.fromISO(data.end_date) : undefined,
-    latitude: data.lat,
-    longitude: data.long,
-    event_image: data.event_image_id,
-    ticketTypes: data.ticketTypes.map((tt) => ({
-      ...tt,
-      price: tt.price,
-    })),
-  } as LocalEvent);
-
-export interface TicketBodyParamProps {
-  name: string;
-  start_date: string;
-  end_date: string;
-  price: string;
-  event: string;
-  id?: string;
-  quantity: string;
-  max_quantity_to_show: string;
-  available_quantity: string;
 }
 
 export interface TicketBodyParamPropsData {
@@ -292,124 +297,6 @@ export const onCheckedInUser = async (props: CheckedInUserProps) => {
   try {
     const endPoint = `${apiConstants.checkedInUser}/${checkInUserId}`;
     const data = await API.homeService.patch(endPoint, bodyParams);
-    response = getApiResponse(data);
-  } catch (error: any) {
-    response = getApiResponse(error);
-  }
-
-  return response;
-};
-
-interface UpdateEventFields {
-  name?: string;
-  startDate?: string;
-  endDate?: string;
-  address?: string;
-  full_address?: string;
-  emailConfirmationBody?: string;
-  tickets?: TicketType[];
-  eventImage?: string;
-  about?: string;
-  latitude?: string;
-  longitude?: string;
-  type?: string;
-}
-
-export const updateEvent = async (
-  eventId: string,
-  fields: UpdateEventFields
-) => {
-  const {
-    address,
-    emailConfirmationBody,
-    endDate,
-    name,
-    startDate,
-    tickets,
-    full_address,
-    eventImage,
-    about,
-    latitude,
-    longitude,
-    type,
-  } = fields || {};
-
-  const body = {
-    name: name,
-    start_date: startDate,
-    end_date: endDate,
-    about: about,
-    address: address,
-    full_address: full_address,
-    email_confirmation_body: emailConfirmationBody,
-    ticketTypes: tickets,
-    event_lat: latitude,
-    event_lng: longitude,
-    event_type: type,
-    event_image: eventImage,
-  };
-
-  return doPatch<LocalEvent>(`/v2/events/${eventId}`, body);
-};
-
-export const onCreateEvent = async ({
-  address,
-  email_confirmation_body,
-  start_date,
-  name,
-  end_date,
-  ticketTypes,
-  full_address,
-  event_image,
-  about,
-  latitude,
-  longitude,
-  type,
-}: LocalEventData) => {
-  console.log("2");
-  let response;
-
-  var attachments = {};
-  attachments = {
-    name: name,
-    start_date: start_date.toISO(),
-    end_date: end_date?.toISO(),
-    about: about,
-    address: address,
-    full_address: full_address,
-    ticketTypes: ticketTypes,
-    email_confirmation_body: email_confirmation_body,
-    event_lat: latitude.toString(),
-    event_lng: longitude.toString(),
-    event_type: type,
-    event_image: event_image,
-  };
-  console.log(
-    attachments,
-    "-------------------create event request start date--------------------"
-  );
-  try {
-    console.log(attachments);
-    const endPoint = `${apiConstants.createEvent}`;
-    const data = await API.homeService.post(endPoint, attachments);
-    response = getApiResponse(data);
-    console.log(response, "response response");
-  } catch (error: any) {
-    response = getApiResponse(error);
-  }
-  return response;
-};
-
-export interface EventDetailsProps {
-  eventId: string;
-}
-
-export const onFetchEventDetails = async (eventId: string) => {
-  let response;
-
-  try {
-    const endPoint = `/v1/events/${eventId}`;
-    const data = await API.homeService.get(endPoint);
     response = getApiResponse(data);
   } catch (error: any) {
     response = getApiResponse(error);

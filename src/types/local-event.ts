@@ -1,14 +1,11 @@
 import { EventProducer } from "./event-producer";
 import { LocalEventData } from "./local-event-data";
-import { TicketType } from "./ticket-type";
 
 // The data returned from the server for an event
 export interface LocalEvent extends LocalEventData {
   id: string;
-  event_image?: string;
   eventProducer: EventProducer;
   is_event_owner: boolean;
-  ticketTypes: TicketType[];
   // quantity: string;
   // max_quantity_to_show: string;
   // available_quantity: string;

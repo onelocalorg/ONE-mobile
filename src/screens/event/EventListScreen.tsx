@@ -16,16 +16,14 @@ import { EventItem } from "~/components/events/EventItem";
 import { Loader } from "~/components/loader";
 import { Navbar } from "~/components/navbar/Navbar";
 import { navigations } from "~/config/app-navigation/constant";
-import {
-  featureCollectionToLocalEvents,
-  fetchEvents,
-} from "~/network/api/services/event-service";
+import { listEvents } from "~/network/api/services/event-service";
 import { useEventLists } from "~/network/hooks/home-service-hooks/use-event-lists";
 import { useUserProfile } from "~/network/hooks/user-service-hooks/use-user-profile";
 import { StoreType } from "~/network/reducers/store";
 import { UserProfileState } from "~/network/reducers/user-profile-reducer";
 import { LocalEvent } from "~/types/local-event";
 import { LocalEventData } from "~/types/local-event-data";
+import { handleApiError } from "~/utils/common";
 import { createStyleSheet } from "./style";
 
 interface Range {
@@ -79,11 +77,18 @@ export const EventListScreen = (props: EventListScreenProps) => {
 
   useFocusEffect(
     useCallback(() => {
-      fetchEvents({ startDate: DateTime.now() })
-        .then(featureCollectionToLocalEvents)
-        .then(setEventsList);
+      fetchEvents();
     }, [])
   );
+
+  const fetchEvents = async () => {
+    try {
+      const events = await listEvents({ startDate: DateTime.now() });
+      setEventsList(events);
+    } catch (e) {
+      handleApiError("Failed to get events", e);
+    }
+  };
 
   // useFocusEffect(
   //   useCallback(() => {
