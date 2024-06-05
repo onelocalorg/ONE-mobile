@@ -4,18 +4,13 @@ import { DateTime } from "luxon";
 export interface PostUpdateData {
   type: string;
   name?: string;
-  // what_quantity: whatQuantity,
-  // for_type: whatForType,
-  // for_name: forName ? forName : undefined,
-  // for_quantity: forQuantity ? forQuantity : undefined,
   address?: string;
+  location?: GeoJSON.Point;
   latitude?: number;
   longitude?: number;
   startDate?: DateTime;
   hasStartTime?: boolean;
   details?: string;
-  // tags: tagArray ? tagArray : undefined,
+  tags?: string[];
   images?: string[];
-  // to_type: valueTotype,
-  // to_offer_users: userListArray,
 }

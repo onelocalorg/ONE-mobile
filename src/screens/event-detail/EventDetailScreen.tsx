@@ -133,8 +133,8 @@ export const EventDetailScreen = ({
                 <Image
                   resizeMode="cover"
                   source={
-                    event.event_image
-                      ? { uri: event.event_image }
+                    event.eventImage
+                      ? { uri: event.eventImage }
                       : require("~/assets/images/defaultEvent.png")
                   }
                   style={styles.eventImage}
@@ -156,10 +156,10 @@ export const EventDetailScreen = ({
                 </View>
                 <View style={styles.margin}>
                   <Text style={styles.date}>
-                    {event.start_date.toLocaleString(DateTime.DATE_MED)}
+                    {event.startDate.toLocaleString(DateTime.DATE_MED)}
                   </Text>
                   <Text style={styles.time}>
-                    {event.start_date.toLocaleString(DateTime.TIME_SIMPLE)}
+                    {event.startDate.toLocaleString(DateTime.TIME_SIMPLE)}
                   </Text>
                 </View>
               </View>
@@ -169,7 +169,7 @@ export const EventDetailScreen = ({
                 </View>
                 <View style={styles.margin}>
                   <Text style={styles.date}>{event.address}</Text>
-                  <Text style={styles.time}>{event.full_address}</Text>
+                  <Text style={styles.time}>{event.fullAddress}</Text>
                 </View>
               </View>
               <View style={[styles.row, styles.marginTop]}>

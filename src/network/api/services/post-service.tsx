@@ -31,15 +31,18 @@ interface GetPostApiResource {
   type: string;
   name: string;
   author: OneUser;
+  location?: GeoJSON.Point;
+  address?: string;
   numGrats: number;
   startDate?: string;
   postDate: string;
   timeOffset: string;
   hasStartTime?: boolean;
-  content?: string;
+  details?: string;
   images: string[];
   comments: string[];
   numComments: number;
+  tags: string[];
 }
 
 const resourceToPost = (data: GetPostApiResource) =>
@@ -57,7 +60,6 @@ const postToBody = (data: PostUpdateData) => ({
   where_lng: data.longitude,
   startDate: data.startDate?.toISO(),
   hasStartTime: data.hasStartTime ?? false,
-  content: data.details,
   // post_image: data.imageUrls,
 });
 

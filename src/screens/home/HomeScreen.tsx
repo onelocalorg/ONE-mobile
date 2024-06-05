@@ -487,9 +487,9 @@ export const HomeScreen = (props: HomeScreenProps) => {
                     {item.author.first_name} {item.author.last_name}
                   </Text>
                 )}
-                {item.startDate ? (
+                {item.postDate ? (
                   <Text style={styles.postTime}>
-                    {item.startDate.toLocaleString()}
+                    {item.postDate.toLocaleString()}
                   </Text>
                 ) : null}
               </View>
