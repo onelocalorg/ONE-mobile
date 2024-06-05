@@ -78,9 +78,7 @@ export const CreateEditEventScreen = (props: CreateEditEventScreenProps) => {
     route?.params.eventData?.start_date ??
       DateTime.now().startOf("hour").plus({ hour: 1 })
   );
-  const [endDate, setEndDate] = useState(
-    route?.params.eventData?.end_date ?? startDate.plus({ hour: 1 })
-  );
+  const [endDate, setEndDate] = useState<DateTime>();
   const [isEndDateActive, setEndDateActive] = useState(false);
 
   const [name, setName] = useState(route?.params.eventData?.name);
@@ -261,7 +259,7 @@ export const CreateEditEventScreen = (props: CreateEditEventScreenProps) => {
       request = { ...request, startDate: startDate.toISO() };
     }
     if (endDate !== props.route?.params.eventData?.end_date) {
-      request = { ...request, endDate: endDate.toISO() };
+      request = { ...request, endDate: endDate!.toISO() };
     }
     if (
       email_confirmation_body !==
@@ -431,13 +429,16 @@ export const CreateEditEventScreen = (props: CreateEditEventScreenProps) => {
       </ChooseDate>
 
       {isEndDateActive ? (
-        <ChooseDate date={endDate} setDate={setEndDate}>
+        <ChooseDate date={endDate!} setDate={setEndDate}>
           End date
         </ChooseDate>
       ) : (
         <TouchableOpacity
           activeOpacity={0.3}
-          onPress={() => setEndDateActive(true)}
+          onPress={() => {
+            setEndDateActive(true);
+            setEndDate(startDate.plus({ hour: 1 }));
+          }}
           style={{
             paddingHorizontal: normalScale(4),
             paddingVertical: verticalScale(4),
