@@ -1,11 +1,7 @@
-import {
-  AppleRequestResponse,
-  appleAuth,
-} from "@invertase/react-native-apple-authentication";
+import { appleAuth } from "@invertase/react-native-apple-authentication";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   GoogleSignin,
-  User,
   statusCodes,
 } from "@react-native-google-signin/google-signin";
 import {
@@ -90,19 +86,37 @@ export const LoginScreen = (props: LoginScreenProps) => {
     AsyncStorage.setItem(persistKeys.userProfilePic, user.pic);
   };
 
+  const handleLoginResponse = async (currentUser?: CurrentUser) => {
+    if (currentUser) {
+      await onSetToken(currentUser.access_token);
+      storeAuthDataInAsyncStorage(currentUser);
+
+      LodingData(false);
+      navigation.reset({
+        index: 0,
+        routes: [{ name: navigations.BOTTOM_NAVIGATION }],
+      });
+    }
+  };
+
   const signInWithGoogle = async () => {
-    LOG.debug("> signInWithGoogle");
     try {
       const hasPlayServices = await GoogleSignin.hasPlayServices();
       LOG.debug("hasPlayServices", hasPlayServices);
       const googleUser = await GoogleSignin.signIn();
       LOG.debug("GoogleSignIn user info", googleUser);
-      if (googleUser) {
-        onGoogleSignUpAPI(googleUser);
-        // setGoogleEmail(userInfo?.user?.email)
-        // setGoogleAuth(userInfo?.serverAuthCode)
-      }
-      LOG.debug("< signInWithGoogle");
+
+      const userData = {
+        id: googleUser.user.id,
+        email: googleUser.user.email,
+        first_name: googleUser.user.givenName ?? undefined,
+        last_name: googleUser.user.familyName ?? undefined,
+        pic: googleUser.user.photo ?? undefined,
+        googleAuth: googleUser.serverAuthCode ?? undefined,
+      };
+      const loggedInUser = await googleLogin(userData);
+
+      handleLoginResponse(loggedInUser);
     } catch (error: any) {
       if (error.code === statusCodes.SIGN_IN_CANCELLED) {
         // user cancelled the login flow
@@ -115,153 +129,41 @@ export const LoginScreen = (props: LoginScreenProps) => {
         // TODO Display error
         LOG.error("signInWithGoogle:", error);
       } else {
-        // some other error happened
+        handleApiError("Could not sign in with Google", error);
         LOG.error("signInWithGoogle:", error);
       }
     }
   };
 
   const signInWithApple = async () => {
-    LOG.debug("> signInWithApple");
-
     try {
-      const appleAuthRequestResponse = await appleAuth.performRequest({
+      const resp = await appleAuth.performRequest({
         requestedOperation: appleAuth.Operation.LOGIN,
         // Note: it appears putting FULL_NAME first is important, see issue #293
         requestedScopes: [appleAuth.Scope.FULL_NAME, appleAuth.Scope.EMAIL],
       });
 
-      LOG.debug("signInWithApple:", appleAuthRequestResponse);
-      if (appleAuthRequestResponse.email !== null) {
-        await onAppleSignUpAPI(appleAuthRequestResponse);
-      } else {
-        getAppleIdCredAPI(appleAuthRequestResponse);
+      LOG.debug("signInWithApple:", resp);
+      if (!resp.authorizationCode) {
+        throw new Error("Apple login did not return authorization code");
       }
-      LOG.debug("< signInWithApple");
-    } catch (error: any) {
-      LOG.error("signInWithApple", error);
-    }
-  };
 
-  async function onGoogleSignUpAPI(googleUser: User) {
-    try {
       const userData = {
-        email: googleUser.user.email,
-        first_name: googleUser.user.givenName,
-        last_name: googleUser.user.familyName,
-        pic: googleUser.user.photo,
-        googleAuth: googleUser.serverAuthCode,
+        nonce: resp.nonce,
+        user: resp.user,
+        email: resp.email ?? undefined,
+        identityToken: resp.identityToken ?? undefined,
+        authorizationCode: resp.authorizationCode,
+        givenName: resp.fullName?.givenName ?? undefined,
+        familyName: resp.fullName?.familyName ?? undefined,
+        nickname: resp.fullName?.nickname ?? undefined,
       };
-      const loggedInUser = await googleLogin(userData);
 
-      await onSetToken(loggedInUser.access_token);
-      storeAuthDataInAsyncStorage(loggedInUser);
-
-      LodingData(false);
-      navigation.reset({
-        index: 0,
-        routes: [{ name: navigations.BOTTOM_NAVIGATION }],
-      });
-    } catch (e) {
-      LodingData(false);
-      handleApiError("Error signing in with Google", e);
-    }
-  }
-
-  async function onAppleSignUpAPI(resp: AppleRequestResponse) {
-    if (!resp.authorizationCode) {
-      throw new Error("Apple login did not return authorization code");
-    }
-
-    const userData = {
-      nonce: resp.nonce,
-      user: resp.user,
-      email: resp.email,
-      identityToken: resp.identityToken,
-      authorizationCode: resp.authorizationCode,
-      givenName: resp.fullName?.givenName,
-      familyName: resp.fullName?.familyName,
-      nickname: resp.fullName?.nickname,
-    };
-
-    const loggedInUser = await appleLogin(userData);
-
-    await onSetToken(loggedInUser.access_token);
-    storeAuthDataInAsyncStorage(loggedInUser);
-
-    navigation.reset({
-      index: 0,
-      routes: [{ name: navigations.BOTTOM_NAVIGATION }],
-    });
-  }
-
-  async function getAppleIdCredAPI(userid: any) {
-    const userData: any = {
-      authorizationCode: userid.user,
-    };
-    try {
-      LodingData(true);
-      const response = await fetch(
-        process.env.API_URL + "/v1/auth/appleSignupLogin",
-        {
-          method: "post",
-          headers: new Headers({
-            "Content-Type": "application/x-www-form-urlencoded",
-          }),
-          body: Object.keys(userData)
-            .map((key) => key + "=" + userData[key])
-            .join("&"),
-        }
-      );
-      const userinfo = await response.json();
-      console.log(
-        "==========get user Apple Cred two API Response=============="
-      );
-      console.log(userinfo);
-
-      if (userinfo?.success === false) {
-        Toast.show(userinfo?.message, Toast.LONG, {
-          backgroundColor: "black",
-        });
-        LodingData(false);
-      }
-      const { success, data } = userinfo || {};
-      if (success) {
-        const {
-          first_name,
-          last_name,
-          mobile_number,
-          customer_id,
-          access_token,
-          id,
-        } = data || {};
-
-        await onSetToken(access_token);
-
-        storeAuthDataInAsyncStorage(data);
-
-        LodingData(false);
-        navigation.reset({
-          index: 0,
-          routes: [{ name: navigations.BOTTOM_NAVIGATION }],
-        });
-      }
+      const loggedInUser = await appleLogin(userData);
+      handleLoginResponse(loggedInUser);
     } catch (error) {
-      LodingData(false);
-      handleApiError("Error signing in with Apple", error);
-    }
-  }
-
-  const handleLoginResponse = async (currentUser?: CurrentUser) => {
-    if (currentUser) {
-      await onSetToken(currentUser.access_token);
-      storeAuthDataInAsyncStorage(currentUser);
-
-      LodingData(false);
-      navigation.reset({
-        index: 0,
-        routes: [{ name: navigations.BOTTOM_NAVIGATION }],
-      });
+      handleApiError("Could not sign in with Apple", error);
+      LOG.error("signInWithApple:", error);
     }
   };
 
@@ -307,6 +209,7 @@ export const LoginScreen = (props: LoginScreenProps) => {
   const handleUserData = (value: string, key: string) => {
     setUser({ ...user, [key]: value });
   };
+
   const onCheckValidation = () => {
     return !(
       (emailRegexEx.test(String(user.emailOrMobile).toLowerCase()) ||

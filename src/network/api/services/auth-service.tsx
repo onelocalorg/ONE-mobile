@@ -16,11 +16,12 @@ export const login = async (props: LoginProps) =>
   doPost<CurrentUser>("/v1/auth/login", props);
 
 interface GoogleLoginProps {
+  id: string;
   email: string;
-  googleAuth: string | null;
-  first_name?: string | null;
-  last_name?: string | null;
-  pic?: string | null;
+  googleAuth?: string;
+  first_name?: string;
+  last_name?: string;
+  pic?: string;
 }
 export const googleLogin = async (props: GoogleLoginProps) =>
   doPost<CurrentUser>("/v1/auth/googleSignupLogin", props);
@@ -28,12 +29,12 @@ export const googleLogin = async (props: GoogleLoginProps) =>
 interface AppleLoginProps {
   nonce: string;
   user: string;
-  identityToken: string | null;
-  email: string | null;
-  authorizationCode: string | null;
-  givenName?: string | null;
-  familyName?: string | null;
-  nickName?: string | null;
+  identityToken?: string;
+  email?: string;
+  authorizationCode: string;
+  givenName?: string;
+  familyName?: string;
+  nickName?: string;
 }
 export const appleLogin = async (props: AppleLoginProps) =>
   doPost<CurrentUser>("/v1/auth/appleSignupLogin", props);
