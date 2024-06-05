@@ -296,13 +296,13 @@ export const HomeScreen = (props: HomeScreenProps) => {
         )
       );
     } catch (error) {
-      handleApiError(error);
+      handleApiError("Error loading recent users", error);
     }
   }
 
   async function deletePostAPI() {
     try {
-      const response = await deletePost(editPost!.id);
+      await deletePost(editPost!.id);
       Toast.show("Post deleted", Toast.LONG, {
         backgroundColor: "black",
       });

@@ -4,7 +4,7 @@ import { RecentlyJoined } from "~/types/recently-joined";
 import { UserProfile } from "~/types/user-profile";
 import { UserProfileData } from "~/types/user-profile-data";
 import { API } from "..";
-import { doGet, doGetList, doPatch } from "./api-service";
+import { doGet, doPatch, doPostList } from "./api-service";
 
 export const getUserProfile = async (userId: string) =>
   doGet<UserProfile>(`/v1/users/${userId}`);
@@ -15,7 +15,7 @@ export const updateUserProfile = async (
 ) => doPatch<UserProfile>(`/v1/users/${userId}`, data);
 
 export const getRecentlyJoined = async () =>
-  doGetList<RecentlyJoined>("/v1/users/recently-joined");
+  doPostList<RecentlyJoined>("/v1/users/recently-joined");
 
 interface EditProfileProps {
   bodyParams: {

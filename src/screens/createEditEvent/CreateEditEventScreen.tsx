@@ -187,7 +187,7 @@ export const CreateEditEventScreen = (props: CreateEditEventScreenProps) => {
       });
       if (dataItem?.success === true) {
         LodingData(false);
-        navigation?.goBack();
+        navigation?.navigate(navigations.EVENT_ROUTE);
       } else {
         LodingData(false);
       }
@@ -449,6 +449,23 @@ export const CreateEditEventScreen = (props: CreateEditEventScreenProps) => {
     </View>
   );
 
+  const verifyCancelEvent = (id: string) => {
+    Alert.alert(
+      strings.cancle,
+      strings.verifyCancel,
+      [
+        { text: strings.no, onPress: () => null, style: "cancel" },
+        {
+          text: strings.yes,
+          onPress: () => {
+            onCancelEvent(id);
+          },
+        },
+      ],
+      { cancelable: false }
+    );
+  };
+
   return (
     <Pressable style={styles.container} onPress={keyboardDismiss}>
       <Navbar navigation={navigation} />
@@ -676,7 +693,7 @@ export const CreateEditEventScreen = (props: CreateEditEventScreenProps) => {
                       />
                       <TouchableOpacity
                         activeOpacity={0.8}
-                        onPress={() => onCancelEvent(id)}
+                        onPress={() => verifyCancelEvent(id!)}
                         style={styles.cancleEventBtn}
                       >
                         <Text style={styles.cancleEventText}>

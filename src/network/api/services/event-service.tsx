@@ -528,19 +528,19 @@ export const onPurchaseTicket = async (props: PurchaseTicketProps) => {
   return response;
 };
 
-export const onGetSubscriptionPlans = async () => {
-  let response;
+// export const onGetSubscriptionPlans = async () => {
+//   let response;
 
-  try {
-    const endPoint = apiConstants.subscriptionPlans;
-    const data = await API.homeService.get(endPoint);
-    response = getApiResponse(data);
-  } catch (error: any) {
-    response = getApiResponse(error);
-  }
+//   try {
+//     const endPoint = apiConstants.subscriptionPlans;
+//     const data = await API.homeService.get(endPoint);
+//     response = getApiResponse(data);
+//   } catch (error: any) {
+//     response = getApiResponse(error);
+//   }
 
-  return response;
-};
+//   return response;
+// };
 
 export interface AboutBodyProps {
   title: string;

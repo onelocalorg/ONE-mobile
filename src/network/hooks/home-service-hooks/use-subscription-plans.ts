@@ -1,6 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
-import { onGetSubscriptionPlans } from "~/network/api/services/event-service";
-import { apiKeys } from "~/network/constant";
+// import { onGetSubscriptionPlans } from "~/network/api/services/event-service";
 
 export type Root = PlanData[];
 
@@ -22,11 +20,11 @@ const subscriptionPlansParsedData = (data: Root) => {
   return data;
 };
 
-export const useSubscriptionPlans = () => {
-  const query = useQuery([apiKeys.subscriptionPlans], onGetSubscriptionPlans, {
-    staleTime: 0,
-    refetchOnWindowFocus: false,
-  });
+// export const useSubscriptionPlans = () => {
+//   const query = useQuery([apiKeys.subscriptionPlans], onGetSubscriptionPlans, {
+//     staleTime: 0,
+//     refetchOnWindowFocus: false,
+//   });
 
-  return { ...query, data: subscriptionPlansParsedData(query?.data?.data) };
-};
+//   return { ...query, data: subscriptionPlansParsedData(query?.data?.data) };
+// };

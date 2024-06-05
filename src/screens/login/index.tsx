@@ -164,7 +164,7 @@ export const LoginScreen = (props: LoginScreenProps) => {
       });
     } catch (e) {
       LodingData(false);
-      handleApiError(e);
+      handleApiError("Error signing in with Google", e);
     }
   }
 
@@ -248,7 +248,7 @@ export const LoginScreen = (props: LoginScreenProps) => {
       }
     } catch (error) {
       LodingData(false);
-      handleApiError(error);
+      handleApiError("Error signing in with Apple", error);
     }
   }
 
@@ -283,7 +283,7 @@ export const LoginScreen = (props: LoginScreenProps) => {
       const currentUser = await login(body);
       handleLoginResponse(currentUser);
     } catch (e: any) {
-      handleApiError(e);
+      handleApiError("Error signing in", e);
     }
   };
 

@@ -99,6 +99,7 @@ export const stringsAndLabels = {
   addCard: "+ Add Card",
   addCardTwo: "ADD CARD",
   cancle: "Cancel",
+  verifyCancel: "Are you sure you want to cancel?",
   paymentinfo: "Payment Information",
   exp: "Exp.",
   addCardOne: "Add Card",

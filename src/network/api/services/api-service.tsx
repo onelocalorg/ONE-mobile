@@ -19,9 +19,17 @@ export async function doGetList<Resource>(
   url: string,
   transform?: (data: any) => Resource
 ) {
-  return callApi<Resource[]>("GET", url, undefined, (data) =>
-    data.map(transform)
-  );
+  return doList<Resource>("GET", url, undefined, transform);
+}
+
+// Perform a GET against the given url and return a list of resources generated via
+// the given transform fundtion
+export async function doPostList<Resource>(
+  url: string,
+  body?: any,
+  transform?: (data: any) => Resource
+) {
+  return doList<Resource>("POST", url, body, transform);
 }
 
 // Perform a POST against the given url and return the resource generated via
@@ -94,9 +102,8 @@ async function callApi<Resource>(
   });
   LOG.info(response.status);
   const json = (await response.json()) as ApiResponse<any>;
-  console.log("json", json);
   if (!response.ok && _.isNull(json)) {
-    LOG.error("<=0", response.statusText);
+    LOG.error("<=", response.statusText);
     throw new ApiError(response.status, response.statusText);
   }
 
@@ -108,4 +115,15 @@ async function callApi<Resource>(
   const resource = transform ? transform(json.data) : json.data;
   LOG.debug("<=", resource);
   return resource as Resource;
+}
+
+export async function doList<Resource>(
+  method: string,
+  url: string,
+  body?: any,
+  transform?: (data: any) => Resource
+) {
+  return callApi<Resource[]>(method, url, body, (data) =>
+    transform ? data.map(transform) : data
+  );
 }
