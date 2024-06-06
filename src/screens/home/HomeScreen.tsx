@@ -532,10 +532,10 @@ export const HomeScreen = (props: HomeScreenProps) => {
             </TouchableOpacity> */}
           </View>
           <Text style={styles.postDes}>{item.details}</Text>
-          {item.images?.length > 0 ? (
+          {item.event_image ? (
             <ImageComponent
               resizeMode="cover"
-              source={{ uri: item.images[0] }}
+              source={{ uri: item.event_image }}
               style={styles.userPost}
             ></ImageComponent>
           ) : null}

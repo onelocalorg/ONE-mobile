@@ -10,5 +10,5 @@ export interface Post extends PostData {
   author: OneUser;
   postDate: DateTime;
   tags: string[];
-  images: string[];
+  event_image?: string;
 }

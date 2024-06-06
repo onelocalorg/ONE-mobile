@@ -90,7 +90,7 @@ interface EventBody {
   long?: number;
   eventProducer?: EventProducer;
   email_confirmation_body?: string;
-  event_image_id?: string;
+  event_image?: string;
   ticketTypes?: TicketType[];
   isCanceled?: boolean;
   event_type?: string;
@@ -133,7 +133,7 @@ const resourceToLocalEvent = (data: EventResource) =>
     endDate: data.end_date ? DateTime.fromISO(data.end_date) : undefined,
     latitude: data.lat,
     longitude: data.long,
-    eventImage: data.event_image_id,
+    eventImage: data.event_image,
     fullAddress: data.full_address,
     ticketTypes:
       data.ticketTypes?.map((tt) => ({
