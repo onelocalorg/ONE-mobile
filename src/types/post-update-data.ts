@@ -12,5 +12,5 @@ export interface PostUpdateData {
   hasStartTime?: boolean;
   details?: string;
   tags?: string[];
-  event_image?: string;
+  images?: string[];
 }

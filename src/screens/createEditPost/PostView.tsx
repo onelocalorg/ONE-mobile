@@ -491,7 +491,7 @@ export const PostView = ({
         <ImageUploader
           onLoading={onLoading}
           onChangeImages={(images) => {
-            setImageUrls(images);
+            setImageUrls(images || []);
             setDirty(true);
           }}
         />
