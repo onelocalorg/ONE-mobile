@@ -239,8 +239,12 @@ export const HomeScreen = (props: HomeScreenProps) => {
   };
 
   const sendGratisAndDismiss = () => {
-    CreateOfferModal(false);
-    addGratisAPI();
+    try {
+      CreateOfferModal(false);
+      addGratisAPI();
+    } catch (e) {
+      handleApiError("Error sending gratis", e);
+    }
   };
 
   const OfferModalClose = () => {
@@ -604,28 +608,28 @@ export const HomeScreen = (props: HomeScreenProps) => {
     );
   };
 
-  const onCloseCommentListModal = (setGraisTwo: any, commentTwo: any) => {
-    setPostCommentData(commentTwo);
-    setPostGratisData(setGraisTwo);
+  // const onCloseCommentListModal = (setGraisTwo: any, commentTwo: any) => {
+  //   setPostCommentData(commentTwo);
+  //   setPostGratisData(setGraisTwo);
 
-    setShowCommentListData(false);
-    let markers = [...postList];
+  //   setShowCommentListData(false);
+  //   let markers = [...postList];
 
-    // markers[post_index]["gratis"] = setGraisTwo;
-    // markers[post_index]["comment"] = commentTwo;
+  //   // markers[post_index]["gratis"] = setGraisTwo;
+  //   // markers[post_index]["comment"] = commentTwo;
 
-    setPostList(markers);
-  };
+  //   setPostList(markers);
+  // };
 
-  const onCommentListModal = (item: any, post_index: any) => {
-    AsyncStorage.setItem("postID", item.id);
-    setPostCommentIndexTwo(post_index);
-    setPostDataId(item.id);
-    setPostGratisData(item.gratis);
-    setPostCommentData(item.comment);
-    setPostDataForComment(item);
-    setShowCommentListData(true);
-  };
+  // const onCommentListModal = (item: any, post_index: any) => {
+  //   AsyncStorage.setItem("postID", item.id);
+  //   setPostCommentIndexTwo(post_index);
+  //   setPostDataId(item.id);
+  //   setPostGratisData(item.gratis);
+  //   setPostCommentData(item.comment);
+  //   setPostDataForComment(item);
+  //   setShowCommentListData(true);
+  // };
 
   const submitReportReason = () => {
     if (reportPost === "") {

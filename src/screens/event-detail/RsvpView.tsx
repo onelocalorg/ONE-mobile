@@ -1,20 +1,20 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import React, { useEffect, useState } from "react";
 import { Image, Pressable, Text, TouchableOpacity, View } from "react-native";
 import Toast from "react-native-simple-toast";
-import { useSelector } from "react-redux";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
 import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
 import { startImg } from "~/assets/images";
 import Going from "~/assets/images/going.png";
 import { updateRsvp } from "~/network/api/services/event-service";
-import { StoreType } from "~/network/reducers/store";
-import { UserProfileState } from "~/network/reducers/user-profile-reducer";
+import { persistKeys } from "~/network/constant";
 import { LocalEvent } from "~/types/local-event";
 import { OneUser } from "~/types/one-user";
 import { RsvpList, RsvpType } from "~/types/rsvp";
+import { handleApiError } from "~/utils/common";
 import { createStyleSheet as createRsvpStyleSheet } from "./rsvp-style";
 import { createStyleSheet as createBaseStyleSheet } from "./style";
-``;
+
 interface RsvpViewProps {
   event: LocalEvent;
   rsvpData: RsvpList;
@@ -32,18 +32,19 @@ export const RsvpView = ({
   const { strings } = useStringsAndLabels();
   const styles = createBaseStyleSheet(theme);
   const styles1 = createRsvpStyleSheet(theme);
-  const { user } = useSelector<StoreType, UserProfileState>(
-    (state) => state.userProfileReducer
-  ) as { user: { user_type: string; id: string } };
 
   const [selectedButton, setSelectedButton] = useState<RsvpType>();
+  const [userId, setUserId] = useState<string>();
 
   useEffect(() => {
     findItemById();
+    AsyncStorage.getItem(persistKeys.userProfileId).then((id) =>
+      setUserId(id ? id : undefined)
+    );
   }, [rsvpData]);
 
   const findItemById = () => {
-    const foundItem = rsvpData.rsvps.find((item) => item.guest.id === user?.id);
+    const foundItem = rsvpData.rsvps.find((item) => item.guest.id === userId);
     if (foundItem) {
       setSelectedButton(foundItem.rsvp);
     } else {
@@ -55,7 +56,7 @@ export const RsvpView = ({
   const isCurrentUserRSVP = (type: RsvpType) => {
     if (rsvpData) {
       const currentUserRSVP = rsvpData.rsvps.find(
-        (rsvp) => rsvp.guest.id === user?.id
+        (rsvp) => rsvp.guest.id === userId
       );
       return currentUserRSVP && currentUserRSVP.rsvp === type;
     }
@@ -65,11 +66,15 @@ export const RsvpView = ({
   const rsvpsFilter = async (type: RsvpType) => {
     setSelectedButton(type === selectedButton ? undefined : type);
 
-    const resp = await updateRsvp(event.id, type);
-    onRsvpsChanged();
-    Toast.show("RSVP updated", Toast.LONG, {
-      backgroundColor: "black",
-    });
+    try {
+      await updateRsvp(event.id, type);
+      onRsvpsChanged();
+      Toast.show("RSVP updated", Toast.LONG, {
+        backgroundColor: "black",
+      });
+    } catch (e) {
+      handleApiError("Error updating RSVP", e);
+    }
   };
 
   return (
