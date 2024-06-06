@@ -128,7 +128,10 @@ const resourcesToFeatureCollection = (events: EventResource[]) => ({
 
 const resourceToLocalEvent = (data: EventResource) =>
   ({
-    ...data,
+    ..._.omit(
+      ["start_date", "end_date", "lat", "long", "event_image", "full_address"],
+      data
+    ),
     startDate: DateTime.fromISO(data.start_date),
     endDate: data.end_date ? DateTime.fromISO(data.end_date) : undefined,
     latitude: data.lat,

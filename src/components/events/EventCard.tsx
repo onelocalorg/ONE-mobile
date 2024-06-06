@@ -12,20 +12,14 @@ interface EventCardProps {
   disabled?: boolean;
 }
 
-export const EventCard = (props: EventCardProps) => {
+export const EventCard = ({
+  data,
+  onPress,
+  disabled = false,
+}: EventCardProps) => {
   const { theme } = useAppTheme();
   const styles = createStyleSheet(theme);
-  const { data, onPress, disabled = false } = props || {};
-  const {
-    start_date,
-    address,
-    name,
-    event_image,
-    full_address,
-    cancelled,
-    start_date_label,
-    start_time_label,
-  } = data || {};
+  const { eventImage } = data;
 
   return (
     <TouchableOpacity
@@ -36,9 +30,9 @@ export const EventCard = (props: EventCardProps) => {
     >
       <ImageComponent
         resizeMode="stretch"
-        uri={event_image}
+        uri={eventImage}
         source={dummy}
-        isUrl={!!event_image}
+        isUrl={!!eventImage}
         style={styles.dummy}
       />
       <View style={styles.flex}>

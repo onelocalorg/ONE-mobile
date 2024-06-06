@@ -97,7 +97,7 @@ export const CreateEditEventScreen = ({
     route?.params.eventData?.longitude
   );
   const [eventImage, setEventImage] = useState<string>();
-  const [eventImageDisplay, setEventImageDisplay] = useState<string>();
+  const [eventImageDisplay, setEventImageDisplay] = useState(event?.eventImage);
   const { refetch, data } = useTicketHolderCheckinsList({
     eventId: event?.id,
     queryParams: { pagination: false },
