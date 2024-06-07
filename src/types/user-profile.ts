@@ -13,6 +13,7 @@ export interface UserProfile extends UserProfileData {
   about: string;
   skills: string[];
   user_type: string;
+  isThisUser: boolean;
   points_balance: number;
   isActiveSubscription: boolean;
   coverImage: string;

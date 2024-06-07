@@ -4,7 +4,7 @@ import {
   ParamListBase,
 } from "@react-navigation/native";
 import { DateTime } from "luxon";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Image,
   Pressable,
@@ -20,7 +20,6 @@ import { calendarTime, pinWhite } from "~/assets/images";
 import { ButtonComponent } from "~/components/button-component";
 import { ImageComponent } from "~/components/image-component";
 import { Loader } from "~/components/loader";
-import { ModalRefProps } from "~/components/modal-component";
 import { Navbar } from "~/components/navbar/Navbar";
 import { SizedBox } from "~/components/sized-box";
 import { navigations } from "~/config/app-navigation/constant";
@@ -57,7 +56,6 @@ export const EventDetailScreen = ({
   const { theme } = useAppTheme();
   const { strings } = useStringsAndLabels();
   const styles = createStyleSheet(theme);
-  const modalRef: React.Ref<ModalRefProps> = useRef(null);
   const { user } = useSelector<StoreType, UserProfileState>(
     (state) => state.userProfileReducer
   ) as { user: { user_type: string; id: string } };

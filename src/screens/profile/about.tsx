@@ -1,337 +1,44 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   NavigationContainerRef,
   ParamListBase,
 } from "@react-navigation/native";
-import React, { useEffect, useState } from "react";
-import {
-  Alert,
-  KeyboardAvoidingView,
-  ListRenderItem,
-  LogBox,
-  Modal,
-  Platform,
-  ScrollView,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-} from "react-native";
-import { getReadableVersion } from "react-native-device-info";
-import { FlatList } from "react-native-gesture-handler";
+import React, { useState } from "react";
+import { ListRenderItem, Text, TouchableOpacity, View } from "react-native";
 import Toast from "react-native-simple-toast";
-import GestureRecognizer from "react-native-swipe-gestures";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
 import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
-import { useToken } from "~/app-hooks/use-token";
-import { addGreen, downImg, save } from "~/assets/images";
+import { addGreen } from "~/assets/images";
 import { FlatListComponent } from "~/components/flatlist-component";
 import { ImageComponent } from "~/components/image-component";
 import { Input } from "~/components/input";
 import { Loader } from "~/components/loader";
 import { Pill } from "~/components/pill";
-import { Subscription } from "~/components/subcription";
-import { LOG } from "~/config";
-import { navigations } from "~/config/app-navigation/constant";
-import { getData, persistKeys } from "~/network/constant";
 import { normalScale, verticalScale } from "~/theme/device/normalize";
-import { MembershipCheckoutModal } from "./membership-checkout-modal";
+import { UserProfile } from "~/types/user-profile";
 import { createStyleSheet } from "./style";
 
 interface AboutDataProps {
-  ref: React.Ref<unknown> | undefined;
-  about: string;
-  skills: string[];
-  profileAnswers: any[];
-  idUser: string;
-  onEditProfile?: (data: { about?: string; skills?: string[] }) => void;
   navigation: NavigationContainerRef<ParamListBase>;
-  route?: {
-    params: {
-      id: string;
-    };
-  };
+  user: UserProfile;
+  onEditProfile?: (data: { about?: string; skills?: string[] }) => void;
 }
 
-export const About = (props: AboutDataProps) => {
+export const About = ({ navigation, user, onEditProfile }: AboutDataProps) => {
   const { theme } = useAppTheme();
   const { strings } = useStringsAndLabels();
   const styles = createStyleSheet(theme);
-  const {
-    about,
-    skills,
-    profileAnswers,
-    idUser,
-    onEditProfile,
-    navigation,
-    route,
-  } = props || {};
+  const { id: userId, about, skills } = user;
   const [updatedAbout, setAbout] = useState(about);
   const [allSkills, setSkills] = useState(skills);
   const [skillValue, setSkillValue]: any = useState("");
-  // var { data } = usePackagePlans();
-  const [packageItem, setPackageItem]: any = useState();
   const [modalVisible, setModalVisible] = useState(false);
   const [memberModal, setMemberModal] = useState(false);
-  const [postData, setDataEntries]: any = useState({});
-
-  const [isBilledMonthly, setIsBilledMonthly] = useState(true);
-  const [isLoading, LodingData] = useState(false);
-  const { token } = useToken();
-  const { id } = route?.params ?? {};
-  const [dataItem, memberShipData] = useState();
-  const [monthlyPlan, monthlyPlanData]: any = useState<any[]>([]);
-  const [yearlyPlan, yearlyPlanData]: any = useState<any[]>([]);
-  // const [, ] = useState();
-  const [cardData, addCardList]: any = useState<any[]>([]);
-  const [description, descriptionData] = useState();
-  const [idPackage, packageIdData] = useState();
-  const [monthPrice, monthlyPrice] = useState();
-  const [YerlyPrice, yearlyPrices] = useState();
-  const [membershipId, MembershipCheckOutID] = useState();
-  const handleBillingSubscription = (value: boolean) => {
-    setIsBilledMonthly(value);
-  };
-  const [tokens, setToken] = useState("");
-  const [cardnumber, cardNumberData] = useState("");
-  const [cardExpmonth, cardExpMonth] = useState("");
-  const [cardExpyear, cardExpYears] = useState("");
-  const [cardCvv, cardCVVData] = useState("");
-  const [date, setDate] = useState("");
-  const [addcard, addCardModal] = useState(false);
   const [openQues, quesAnsModal] = useState(false);
-  const [planId, cancleSubscription] = useState();
-  // var [usersId, userIdData] = useState(idUser);
-  var [ansQueData, submitAnsState] = useState(profileAnswers);
-  var [ansQueDataTwo, submitAnsStateTwo] = useState(profileAnswers);
-  const {} = props || {};
-  useEffect(() => {
-    packageListAPI();
-    setAbout(about);
-    setSkills(skills);
-    submitAnsState(profileAnswers);
-    submitAnsStateTwo(profileAnswers);
-  }, [about, skills, profileAnswers]);
+  const [ansQueData, submitAnsState] = useState(user.profile_answers);
+  const [isLoading, setLoading] = useState(false);
 
-  const onCheckReleaseHideShow = () => {
-    if (Platform.OS === "ios") {
-      const isShowPaymentCheck = getData("isShowPaymentFlow");
-      return isShowPaymentCheck;
-    } else {
-      const isShowPaymentCheckAndroid = getData("isShowPaymentFlowAndroid");
-      return isShowPaymentCheckAndroid;
-    }
-  };
-
-  // =================Update Answer API====================
-
-  async function updateAnswerAPI() {
-    var queAns: any = {
-      profile_answers: ansQueData,
-    };
-    try {
-      const response = await fetch(
-        process.env.API_URL + "/v1/users/profile/que-answers",
-        {
-          method: "PATCH",
-          headers: new Headers({
-            Authorization: "Bearer " + token,
-            "Content-Type": "application/json; charset=UTF-8",
-          }),
-          body: JSON.stringify({
-            profile_answers: ansQueData,
-          }),
-        }
-      );
-      const QuestioAnswer = await response.json();
-
-      console.log("===========Response==============");
-      LodingData(false);
-      console.log(QuestioAnswer);
-      userProfileUpdate();
-    } catch (error) {
-      LodingData(false);
-      LOG.error(error);
-    }
-  }
-
-  // =================Package List API====================
-
-  async function packageListAPI() {
-    LOG.debug("> packageListAPI");
-    const token = await AsyncStorage.getItem("token");
-    try {
-      const url = process.env.API_URL + "/v1/subscriptions/packages";
-      LOG.info("packageListAPI", url);
-      const response = await fetch(url, {
-        method: "get",
-        headers: new Headers({
-          Authorization: "Bearer " + token,
-          "Content-Type": "application/x-www-form-urlencoded",
-        }),
-      });
-      const data = await response.json();
-      LOG.debug("packageListAPI: ", data?.data);
-      setPackageItem(data?.data);
-      LOG.debug("< packageListAPI");
-    } catch (error) {
-      LOG.error("packageListAPI", error);
-    }
-  }
-
-  async function userProfileUpdate() {
-    try {
-      const response = await fetch(
-        process.env.API_URL + "/v1/users/" + idUser,
-        {
-          method: "get",
-          headers: new Headers({
-            Authorization: "Bearer " + token,
-            "Content-Type": "application/json",
-          }),
-        }
-      );
-      const dataItem = await response.json();
-      console.log("===========User Profile data Response==============");
-      if (dataItem?.data?.isEventActiveSubscription === true) {
-        AsyncStorage.setItem("isEventActive", "true");
-      } else {
-        AsyncStorage.setItem("isEventActive", "false");
-      }
-      submitAnsState(dataItem?.data?.profile_answers);
-
-      console.log(dataItem?.data?.profile_answers);
-    } catch (error) {
-      LOG.error(error);
-    }
-  }
-
-  // =================Package Detail API====================
-
-  async function packageDetailAPI(dataId: any) {
-    try {
-      const response = await fetch(
-        process.env.API_URL + "/v1/subscriptions/packages/" + dataId,
-        {
-          method: "get",
-          headers: new Headers({
-            Authorization: "Bearer " + token,
-            "Content-Type": "application/x-www-form-urlencoded",
-          }),
-        }
-      );
-      packageIdData(dataId);
-      const dataItem = await response.json();
-      setDataEntries(dataItem?.data);
-      cancleSubscription(dataItem?.data?.current_plan_id);
-    } catch (error) {
-      LOG.error("packageDetailAPI", error);
-    }
-  }
-
-  // ================= Cancle Subscription API ====================
-
-  async function cancleSubscriptionAPI() {
-    LodingData(true);
-    var data: any = {
-      plan_id: planId,
-    };
-    try {
-      const response = await fetch(
-        process.env.API_URL + "/v1/subscriptions/" + idPackage + "/cancel",
-        {
-          method: "post",
-          headers: new Headers({
-            Authorization: "Bearer " + token,
-            "Content-Type": "application/x-www-form-urlencoded",
-          }),
-          body: Object.keys(data)
-            .map((key) => key + "=" + data[key])
-            .join("&"),
-        }
-      );
-      const dataItem = await response.json();
-      console.log("=========== Cancle Subscription API ==============");
-      console.log(dataItem);
-      if (dataItem.success == true) {
-        Toast.show(dataItem.message, Toast.LONG, {
-          backgroundColor: "black",
-        });
-        packageListAPI();
-        setModalVisible(false);
-      } else {
-        Toast.show(dataItem.message, Toast.LONG, {
-          backgroundColor: "black",
-        });
-        packageListAPI();
-        setModalVisible(false);
-      }
-      LodingData(false);
-    } catch (error) {
-      LodingData(false);
-
-      LOG.error("cancleSubscriptionAPI", error);
-    }
-  }
-
-  const quesAnsModalHide = () => {
-    LodingData(true);
-    updateAnswerAPI();
-    quesAnsModal(false);
-  };
-
-  const updateAnsBack = () => {
-    quesAnsModal(false);
-  };
-
-  const quesAnsModalOpen = () => {
-    updateAnswerAPI();
-    quesAnsModal(true);
-  };
-
-  const onPlayerClick = async (id: any) => {
-    console.log("====id===", id);
-    setTimeout(() => {
-      setModalVisible(true);
-      setMemberModal(false);
-    }, 1000);
-    packageDetailAPI(id);
-  };
-
-  const openSettingsModal = () => {
-    setModalVisible(false);
-  };
-
-  const memberShipClick = async (id: any) => {
-    console.log(id, "event detail");
-    setTimeout(() => {
-      setMemberModal(true);
-    }, 1000);
-    // memberShipCheckoutAPI(id);
-  };
-
-  const memberShipHide = () => {
-    setMemberModal(false);
-  };
-
-  const memberShipModalClose = () => {
-    setMemberModal(false);
-    setModalVisible(false);
-    packageListAPI();
-    userProfileUpdate();
-  };
-
-  const addCardModalHide = () => {
-    addCardModal(false);
-    cardNumberData("");
-    cardExpMonth("");
-    cardExpYears("");
-    cardCVVData("");
-  };
-
-  const handleRemove = (id: any) => {
+  const handleRemoveSkill = (id: any) => {
     const newPeople = allSkills.filter((person) => person !== id);
-    console.log("--------newPeople---------", newPeople);
 
     setSkills(newPeople);
   };
@@ -367,7 +74,7 @@ export const About = (props: AboutDataProps) => {
 
   const renderItem: ListRenderItem<string> = ({ item }) => (
     <Pill
-      onPressPill={() => handleRemove(item)}
+      onPressPill={() => handleRemoveSkill(item)}
       pillStyle={styles.marginBottom}
       key={item}
       label={item}
@@ -447,122 +154,18 @@ export const About = (props: AboutDataProps) => {
     };
   };
 
-  useEffect(() => {
-    LogBox.ignoreAllLogs();
-    const checkToken = async () => {
-      const tok = (await AsyncStorage.getItem(persistKeys.token)) ?? "";
-      setToken(tok);
-      console.log(tokens);
-    };
-    setTimeout(() => {}, 3000);
-
-    checkToken();
-  }, []);
-
-  // ======================Config API=========================
-  const ConfigListAPI = async () => {
-    try {
-      const response = await fetch(process.env.API_URL + "/v1/config/list", {
-        method: "get",
-        headers: new Headers({
-          Authorization: "Bearer " + tokens,
-          "Content-Type": "application/x-www-form-urlencoded",
-        }),
-      });
-    } catch (error) {
-      LOG.error(error);
-    }
-  };
-
-  // ======================Stripe API=========================
-
-  function handleToggleYourList(name: any, jindex: any) {
-    let newArr = ansQueDataTwo.map((item, index) => {
-      const target: Partial<typeof item> = { ...item };
-      delete target["question"];
-
-      if (index == jindex) {
-        return { ...target, answer: name };
-      } else {
-        return target;
-      }
-    });
-    let newArrs = ansQueDataTwo.map((item, index) => {
-      const target: Partial<typeof item> = { ...item };
-
-      if (index == jindex) {
-        return { ...target, answer: name };
-      } else {
-        return target;
-      }
-    });
-    submitAnsState(newArr);
-    submitAnsStateTwo(newArrs);
-  }
-
-  async function deleteUserAccountAPI() {
-    const token = await AsyncStorage.getItem("token");
-    console.log(token);
-    try {
-      const response = await fetch(
-        process.env.API_URL + "/v1/users/delete/" + idUser,
-        {
-          method: "post",
-          headers: new Headers({
-            Authorization: "Bearer " + token,
-            "Content-Type": "application/x-www-form-urlencoded",
-          }),
-        }
-      );
-      const dataItem = await response.json();
-      console.log("===========Delete Account data Response==============");
-      console.log(process.env.API_URL + "/v1/users/delete/" + idUser);
-      LodingData(false);
-      console.log(dataItem);
-      if (dataItem.success === true) {
-        navigation?.navigate(navigations?.LOGIN);
-      }
-      Toast.show(dataItem.message, Toast.LONG, {
-        backgroundColor: "black",
-      });
-    } catch (error) {
-      LodingData(false);
-      LOG.error(error);
-    }
-  }
-
-  const deleteAccount = () => {
-    Alert.alert(
-      strings.deleteAccount,
-      strings.areYouDeleteAccount,
-      [
-        { text: strings.no, onPress: () => null, style: "cancel" },
-        {
-          text: strings.yes,
-          onPress: () => {
-            deleteUserAccountAPI();
-            LodingData(true);
-          },
-        },
-      ],
-      { cancelable: false }
-    );
-  };
-
   return (
     <>
       <View style={styles.innerConatiner}>
         <Loader visible={false} showOverlay />
 
-        {onCheckReleaseHideShow() ? (
-          <>
-            <View style={styles.rowOnly}>
-              <Text style={styles.membership}>{strings.membership}</Text>
-              <TouchableOpacity activeOpacity={0.8} onPress={onSaveProfile}>
-                <ImageComponent source={save} style={styles.save} />
-              </TouchableOpacity>
-            </View>
-            <GestureRecognizer>
+        {/* <View style={styles.rowOnly}>
+          <Text style={styles.membership}>{strings.membership}</Text>
+          <TouchableOpacity activeOpacity={0.8} onPress={onSaveProfile}>
+            <ImageComponent source={save} style={styles.save} />
+          </TouchableOpacity>
+        </View> */}
+        {/* <GestureRecognizer>
               <TouchableOpacity
                 onPressOut={() => {
                   setModalVisible(false);
@@ -587,7 +190,6 @@ export const About = (props: AboutDataProps) => {
                     behavior={Platform.OS === "ios" ? "padding" : "height"}
                     style={styles.keyboardViewTwo}
                   >
-                    <Loader visible={false} showOverlay />
                     <View style={styles.packageDetailModal}>
                       <ScrollView
                         showsVerticalScrollIndicator={false}
@@ -613,7 +215,6 @@ export const About = (props: AboutDataProps) => {
                           <Text style={styles.playerDescription}>
                             {postData.description}
                           </Text>
-                          {/* <ImageComponent source={{ uri: val.background_image }} style={styles.postImageStyle}></ImageComponent> */}
                           {postData.status == false ? (
                             <Subscription
                               label={strings.signUp}
@@ -639,21 +240,11 @@ export const About = (props: AboutDataProps) => {
                         </TouchableOpacity>
                       </ScrollView>
                     </View>
-                    {/* </>
-                    );
-                  })} */}
                   </KeyboardAvoidingView>
-
-                  <MembershipCheckoutModal
-                    memberModal={memberModal}
-                    onCancel={memberShipHide}
-                    dataId={postData.id}
-                    successData={memberShipModalClose}
-                  />
                 </Modal>
               </TouchableOpacity>
-            </GestureRecognizer>
-            <View style={{ flex: 1 }}>
+            </GestureRecognizer> */}
+        {/* <View style={{ flex: 1 }}>
               {packageItem ? (
                 <FlatList
                   keyExtractor={(item) => item.id}
@@ -691,51 +282,56 @@ export const About = (props: AboutDataProps) => {
                 ></FlatList>
               ) : (
                 <View />
-              )}
-            </View>
-          </>
-        ) : (
-          <></>
-        )}
+              )} */}
 
-        <Text style={styles.membership}>{strings.aboutMe}</Text>
-        <Input
-          inputStyle={styles.input}
-          value={updatedAbout}
-          placeholder="tell us about yourself!"
-          placeholderTextColor="#818181"
-          onChangeText={setAbout}
-          multiline
-        />
-
-        <Text style={styles.membership}>{strings.skills}</Text>
-        {skillValue !== "" ? (
-          <TouchableOpacity
-            style={{ zIndex: 1111111 }}
-            onPress={() => {
-              onAddSkill(skillValue);
-            }}
-          >
-            <ImageComponent
-              style={styles.skillAddImage}
-              source={addGreen}
-            ></ImageComponent>
-          </TouchableOpacity>
-        ) : (
-          <View></View>
-        )}
-
-        <View style={styles.skillCont}>
+        <Text style={styles.membership}>
+          {user.isThisUser ? strings.aboutMe : `About ${user.first_name}`}
+        </Text>
+        {user.isThisUser ? (
           <Input
             inputStyle={styles.input}
-            // onSubmitEditing={onAddSkill}
-            placeholder={strings.addSkill}
-            value={skillValue}
-            onChangeText={setSkillValue}
+            value={updatedAbout}
+            placeholder="tell us about yourself!"
             placeholderTextColor="#818181"
-            children
+            onChangeText={setAbout}
+            multiline
           />
-        </View>
+        ) : (
+          <Text>{user.about}</Text>
+        )}
+
+        <Text style={styles.membership}>{strings.skills}</Text>
+        {user.isThisUser ? (
+          <>
+            {skillValue !== "" ? (
+              <TouchableOpacity
+                style={{ zIndex: 1111111 }}
+                onPress={() => {
+                  onAddSkill(skillValue);
+                }}
+              >
+                <ImageComponent
+                  style={styles.skillAddImage}
+                  source={addGreen}
+                ></ImageComponent>
+              </TouchableOpacity>
+            ) : (
+              <View></View>
+            )}
+
+            <View style={styles.skillCont}>
+              <Input
+                inputStyle={styles.input}
+                // onSubmitEditing={onAddSkill}
+                placeholder={strings.addSkill}
+                value={skillValue}
+                onChangeText={setSkillValue}
+                placeholderTextColor="#818181"
+                children
+              />
+            </View>
+          </>
+        ) : null}
 
         <View style={styles.row}>
           <FlatListComponent
@@ -748,9 +344,7 @@ export const About = (props: AboutDataProps) => {
           />
         </View>
 
-        {/* ==========================Question Answer========================  */}
-
-        <View>
+        {/* <View>
           <Modal transparent={false} animationType="slide" visible={openQues}>
             <View>
               <View
@@ -797,10 +391,6 @@ export const About = (props: AboutDataProps) => {
                         }}
                       >
                         <Text style={styles.questionsLbl}>{item.question}</Text>
-                        {/* {item.answer ?
-
-                          <Text style={styles.answerLbl}>{item.answer}</Text>
-                          : */}
                         <View style={{ height: 110 }}>
                           <TextInput
                             editable={true}
@@ -815,8 +405,6 @@ export const About = (props: AboutDataProps) => {
                             }
                           ></TextInput>
                         </View>
-
-                        {/* } */}
                       </View>
                     )}
                   ></FlatList>
@@ -860,22 +448,7 @@ export const About = (props: AboutDataProps) => {
               ></FlatList>
             </View>
           </View>
-        </View>
-
-        <TouchableOpacity onPress={deleteAccount}>
-          <Text style={styles.deleteAccount}>{strings.deleteAccount}</Text>
-        </TouchableOpacity>
-        <Text>
-          Build: {getReadableVersion()} -{" "}
-          {process.env.API_URL?.includes("app.onelocal.one")
-            ? "Production"
-            : process.env.API_URL?.includes("beta.onelocal.one")
-            ? "Beta"
-            : process.env.API_URL?.includes("dev.onelocal.one")
-            ? "Dev"
-            : `??? ${process.env.API_URL}`}
-        </Text>
-        <View style={{ height: 40 }}></View>
+        </View> */}
       </View>
     </>
   );

@@ -35,11 +35,19 @@ export const createStyleSheet = (theme: ThemeProps) => {
       marginLeft: normalScale(50),
       alignItems: "center",
     },
+    fullName: {
+      alignSelf: "center",
+      marginTop: verticalScale(12),
+      marginLeft: normalScale(50),
+      marginBottom: verticalScale(48),
+      alignItems: "center",
+    },
     name: {
+      marginTop: normalScale(2),
       fontFamily: theme.fontType.medium,
       fontSize: theme.fontSize.font24,
       color: theme.colors.darkBlack,
-      marginBottom: verticalScale(4),
+      // marginBottom: verticalScale(4),
       maxWidth: normalScale(150),
     },
     circularView: {

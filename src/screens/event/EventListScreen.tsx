@@ -3,6 +3,7 @@ import {
   NavigationContainerRef,
   ParamListBase,
   useFocusEffect,
+  useNavigation,
   useRoute,
 } from "@react-navigation/native";
 import { DateTime } from "luxon";
@@ -17,7 +18,6 @@ import { Loader } from "~/components/loader";
 import { Navbar } from "~/components/navbar/Navbar";
 import { navigations } from "~/config/app-navigation/constant";
 import { listEvents } from "~/network/api/services/event-service";
-import { useEventLists } from "~/network/hooks/home-service-hooks/use-event-lists";
 import { useUserProfile } from "~/network/hooks/user-service-hooks/use-user-profile";
 import { StoreType } from "~/network/reducers/store";
 import { UserProfileState } from "~/network/reducers/user-profile-reducer";
@@ -51,7 +51,6 @@ export const EventListScreen = (props: EventListScreenProps) => {
   const [eventsList, setEventsList] = useState<LocalEvent[]>([]);
   const [totalPages, setTotalPages] = useState(0);
   const [currentPages, setCurrentPage] = useState(0);
-  const { mutateAsync } = useEventLists();
   const [isLoading, LoadingData] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [page, setPage] = useState(1);
@@ -59,6 +58,7 @@ export const EventListScreen = (props: EventListScreenProps) => {
   const [loading, onPageLoad] = useState(true);
   const route = useRoute();
   const [isEnabled, setIsEnabled] = useState(false);
+  const nav = useNavigation();
   // const toggleSwitch = () => setIsEnabled(previousState => !previousState);
   const { user } = useSelector<StoreType, UserProfileState>(
     (state) => state.userProfileReducer
@@ -177,7 +177,7 @@ export const EventListScreen = (props: EventListScreenProps) => {
 
   const onNavigate = (item: LocalEventData) => {
     console.log(route.name);
-    navigation?.navigate(navigations.EVENT_DETAIL, { id: item?.id });
+    nav.navigate(navigations.EVENT_DETAIL, { id: item?.id });
   };
 
   // const postDataLoad = () => {

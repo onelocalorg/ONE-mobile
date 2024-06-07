@@ -1,5 +1,6 @@
 import _ from "lodash/fp";
 import { DateTime } from "luxon";
+import { LOG } from "~/config";
 import { apiConstants } from "~/network/constant";
 import { getApiResponse } from "~/network/utils/get-api-response";
 import { EventProducer } from "~/types/event-producer";
@@ -27,6 +28,7 @@ export const updateEvent = (eventId: string, event: LocalEventUpdateData) =>
 type ListEventsParams = {
   startDate?: DateTime;
   isCanceled?: boolean;
+  host?: string;
 };
 export const listEventsForMap = (params: ListEventsParams) =>
   listEventsInternal({
@@ -43,18 +45,22 @@ export const listEvents = (params: ListEventsParams) =>
 type ListEventsInternalParams = {
   startDate?: DateTime;
   isCanceled?: boolean;
+  host?: string;
   formatForMap?: boolean;
 };
 const listEventsInternal = async ({
   startDate,
   isCanceled,
+  host,
   formatForMap = false,
 }: ListEventsInternalParams) => {
   const urlParams: string[] = [];
   if (!_.isNil(startDate)) urlParams.push(`start_date=${startDate.toISO()}`);
   if (!_.isNil(isCanceled)) urlParams.push(`canceled=${isCanceled.toString()}`);
+  if (!_.isNil(host)) urlParams.push(`host=${host}`);
 
   const urlSearchParams = urlParams.join("&");
+  LOG.debug("search", urlSearchParams);
 
   const events = await doGet(
     `/v2/events?${urlSearchParams.toString()}`,

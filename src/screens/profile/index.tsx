@@ -19,6 +19,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import { getReadableVersion } from "react-native-device-info";
 import { TextInput } from "react-native-gesture-handler";
 import ImagePicker from "react-native-image-crop-picker";
 import { launchCamera } from "react-native-image-picker";
@@ -34,10 +35,15 @@ import { ImageComponent } from "~/components/image-component";
 import { Input } from "~/components/input";
 import { Navbar } from "~/components/navbar/Navbar";
 import { TabComponent } from "~/components/tab-component";
-import { getUserProfile } from "~/network/api/services/user-service";
+import { navigations } from "~/config/app-navigation/constant";
+import {
+  deleteUser,
+  getUserProfile,
+} from "~/network/api/services/user-service";
 import { getData, persistKeys } from "~/network/constant";
 import { useEditProfile } from "~/network/hooks/user-service-hooks/use-edit-profile";
 import { UserProfile } from "~/types/user-profile";
+import { handleApiError } from "~/utils/common";
 import { About } from "./about";
 import { MyEvents } from "./my-events";
 import { createStyleSheet } from "./style";
@@ -66,7 +72,7 @@ export const ProfileScreen = (props: ProfileScreenProps) => {
   const [catchphrase, setCatchphrase] = useState<string>();
   const [skills, setSkills] = useState<string[]>([]);
   const [profileAnswers, setProfileAnswers] = useState<string[]>([]);
-  const [isLoading, LodingData] = useState(false);
+  const [isLoading, setLoading] = useState(false);
 
   const { onLogout } = useLogout();
 
@@ -81,19 +87,23 @@ export const ProfileScreen = (props: ProfileScreenProps) => {
   }, []);
 
   const retrieveUser = async () => {
-    const userId = await AsyncStorage.getItem(persistKeys.userProfileId);
-    if (userId) {
-      const userProfile = await getUserProfile(userId);
-      console.log(userProfile);
-      setUserProfile(userProfile);
-      setProfileUri(userProfile.pic);
-      setBackgroundUri(userProfile.coverImage);
-      setFirstName(userProfile.first_name);
-      setLastName(userProfile.last_name);
-      setNickName(userProfile.nick_name);
-      setCatchphrase(userProfile.catch_phrase);
-      setSkills(userProfile.skills);
-      setProfileAnswers(userProfile.profile_answers);
+    try {
+      const userId = await AsyncStorage.getItem(persistKeys.userProfileId);
+      if (userId) {
+        const userProfile = await getUserProfile(userId);
+        console.log("userProfile", userProfile);
+        setUserProfile(userProfile);
+        setProfileUri(userProfile.pic);
+        setBackgroundUri(userProfile.coverImage);
+        setFirstName(userProfile.first_name);
+        setLastName(userProfile.last_name);
+        setNickName(userProfile.nick_name);
+        setCatchphrase(userProfile.catch_phrase);
+        setSkills(userProfile.skills);
+        setProfileAnswers(userProfile.profile_answers);
+      }
+    } catch (e) {
+      handleApiError("Error retrieving user", e);
     }
   };
 
@@ -187,7 +197,7 @@ export const ProfileScreen = (props: ProfileScreenProps) => {
       console.log("---------------assets Gallery 222---------------");
       console.log(assets);
       var fileNameTwo = img?.fileName ?? "";
-      LodingData(true);
+      setLoading(true);
       var output =
         fileNameTwo.substr(0, fileNameTwo.lastIndexOf(".")) || fileNameTwo;
       var base64Two = img?.base64 ?? "";
@@ -223,7 +233,7 @@ export const ProfileScreen = (props: ProfileScreenProps) => {
     }).then((image) => {
       if (image) {
         var fileNameTwo = image?.filename ?? "";
-        LodingData(true);
+        setLoading(true);
         var output =
           fileNameTwo.substr(0, fileNameTwo.lastIndexOf(".")) || fileNameTwo;
         var base64Two = image?.data ?? "";
@@ -272,10 +282,10 @@ export const ProfileScreen = (props: ProfileScreenProps) => {
         }
       );
       const dataItem = await response.json();
-      LodingData(false);
+      setLoading(false);
       setProfileUri(dataItem?.data?.imageUrl);
     } catch (error) {
-      LodingData(false);
+      setLoading(false);
       console.log(error);
     }
   };
@@ -311,10 +321,10 @@ export const ProfileScreen = (props: ProfileScreenProps) => {
         }
       );
       const dataItem = await response.json();
-      LodingData(false);
+      setLoading(false);
       setBackgroundUri(dataItem?.data?.imageUrl);
     } catch (error) {
-      LodingData(false);
+      setLoading(false);
       console.log(error);
     }
   };
@@ -322,7 +332,7 @@ export const ProfileScreen = (props: ProfileScreenProps) => {
   const getPayoutConnectListAPI = async () => {
     var pic: any = {};
 
-    LodingData(true);
+    setLoading(true);
     console.log(process.env.API_URL + "/v1/users/connect-link");
     try {
       const token = await AsyncStorage.getItem("token");
@@ -340,9 +350,9 @@ export const ProfileScreen = (props: ProfileScreenProps) => {
       if (dataItem?.data) {
         Linking.openURL(dataItem?.data);
       }
-      LodingData(false);
+      setLoading(false);
     } catch (error) {
-      LodingData(false);
+      setLoading(false);
       console.log(error);
     }
   };
@@ -367,7 +377,7 @@ export const ProfileScreen = (props: ProfileScreenProps) => {
       last_name?: string;
       nick_name?: string;
     };
-    LodingData(true);
+    setLoading(true);
     if (userProfile?.pic !== profileUri) {
       body.profile = profileUri;
     }
@@ -382,7 +392,7 @@ export const ProfileScreen = (props: ProfileScreenProps) => {
       Toast.show(res?.message, Toast.LONG, {
         backgroundColor: "black",
       });
-      LodingData(false);
+      setLoading(false);
     }
   };
   const keyboardDismiss = () => {
@@ -392,6 +402,36 @@ export const ProfileScreen = (props: ProfileScreenProps) => {
   const closeModal = () => {
     ImageOptionModal(false);
   };
+
+  const deleteAccount = () => {
+    Alert.alert(
+      strings.deleteAccount,
+      strings.areYouDeleteAccount,
+      [
+        { text: strings.no, onPress: () => null, style: "cancel" },
+        {
+          text: strings.yes,
+          onPress: () => {
+            deleteUserAccountAPI();
+          },
+        },
+      ],
+      { cancelable: false }
+    );
+  };
+
+  async function deleteUserAccountAPI() {
+    try {
+      if (userProfile) {
+        await deleteUser(userProfile.id);
+        navigation?.navigate(navigations?.LOGIN);
+      }
+    } catch (error) {
+      handleApiError("Error deleting user", error);
+    } finally {
+      setLoading(false);
+    }
+  }
 
   return (
     <KeyboardAwareScrollView showsVerticalScrollIndicator={false}>
@@ -536,20 +576,30 @@ export const ProfileScreen = (props: ProfileScreenProps) => {
             <KeyboardAwareScrollView showsVerticalScrollIndicator={false}>
               {selectedTab === 0 && (
                 <About
-                  about={userProfile.about}
-                  idUser={userProfile.id}
-                  skills={userProfile.skills}
-                  profileAnswers={userProfile.profile_answers}
+                  user={userProfile}
                   onEditProfile={onSaveProfile}
                   navigation={navigation}
-                  ref={undefined}
                 />
               )}
               {selectedTab === 1 && (
-                <MyEvents userId={userProfile.id} navigation={navigation} />
+                <MyEvents user={userProfile} navigation={navigation} />
               )}
             </KeyboardAwareScrollView>
           </TouchableOpacity>
+          <TouchableOpacity onPress={deleteAccount}>
+            <Text style={styles.deleteAccount}>{strings.deleteAccount}</Text>
+          </TouchableOpacity>
+          <Text>
+            Build: {getReadableVersion()} -{" "}
+            {process.env.API_URL?.includes("app.onelocal.one")
+              ? "Production"
+              : process.env.API_URL?.includes("beta.onelocal.one")
+              ? "Beta"
+              : process.env.API_URL?.includes("dev.onelocal.one")
+              ? "Dev"
+              : `??? ${process.env.API_URL}`}
+          </Text>
+          <View style={{ height: 40 }}></View>
         </>
       ) : (
         <TouchableOpacity

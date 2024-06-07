@@ -4,15 +4,18 @@ import { RecentlyJoined } from "~/types/recently-joined";
 import { UserProfile } from "~/types/user-profile";
 import { UserProfileData } from "~/types/user-profile-data";
 import { API } from "..";
-import { doGet, doPatch, doPostList } from "./api-service";
+import { doDelete, doGet, doPatch, doPostList } from "./api-service";
 
 export const getUserProfile = async (userId: string) =>
-  doGet<UserProfile>(`/v1/users/${userId}`);
+  doGet<UserProfile>(`/v1/users/${userId}/profile`);
 
 export const updateUserProfile = async (
   userId: string,
   data: UserProfileData
-) => doPatch<UserProfile>(`/v1/users/${userId}`, data);
+) => doPatch<UserProfile>(`/v1/users/${userId}/profile`, data);
+
+export const deleteUser = async (userId: string) =>
+  doDelete<never>(`/v1/users/${userId}`);
 
 export const getRecentlyJoined = async () =>
   doPostList<RecentlyJoined>("/v1/users/recently-joined");

@@ -4,6 +4,7 @@ import { CreateEditEventScreen } from "~/screens/createEditEvent/CreateEditEvent
 import { CreatePostScreen } from "~/screens/createEditPost/CreatePostScreen";
 import { EditPostScreen } from "~/screens/createEditPost/EditPostScreen";
 import { CreateEditPostGratisScreen } from "~/screens/createEditPost/gratis";
+import { EventDetailScreen } from "~/screens/event-detail/EventDetailScreen";
 import { HomeScreen } from "~/screens/home/HomeScreen";
 import { CommentList } from "~/screens/home/commentList";
 import { ProfileScreen } from "~/screens/profile";
@@ -21,6 +22,11 @@ export const HomeRoute = () => {
       <HomeStack.Screen
         name={navigations.HOMESCREEN}
         component={HomeScreen}
+        options={{ header }}
+      />
+      <HomeStack.Screen
+        name={navigations.EVENT_DETAIL}
+        component={EventDetailScreen}
         options={{ header }}
       />
       <HomeStack.Screen

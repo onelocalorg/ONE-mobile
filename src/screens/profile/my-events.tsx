@@ -10,92 +10,58 @@ import { useAppTheme } from "~/app-hooks/use-app-theme";
 import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
 import { EventCard } from "~/components/events/EventCard";
 import { Loader } from "~/components/loader";
+import { LOG } from "~/config";
 import { navigations } from "~/config/app-navigation/constant";
-import {
-  EventData,
-  useEventLists,
-} from "~/network/hooks/home-service-hooks/use-event-lists";
+import { listEvents } from "~/network/api/services/event-service";
+import { LocalEvent } from "~/types/local-event";
+import { UserProfile } from "~/types/user-profile";
+import { handleApiError } from "~/utils/common";
 import { createStyleSheet } from "./style";
 
 interface MyEventsProps {
-  userId: string;
   navigation: NavigationContainerRef<ParamListBase>;
+  user: UserProfile;
 }
 
-export const MyEvents = (props: MyEventsProps) => {
+export const MyEvents = ({ user, navigation }: MyEventsProps) => {
+  LOG.debug("MyEvents", user);
   const { theme } = useAppTheme();
   const styles = createStyleSheet(theme);
   const { strings } = useStringsAndLabels();
-  const { userId, navigation } = props || {};
-  const [events, setEvents] = useState<EventData[]>([]);
-  const [totalPages, setTotalPages] = useState(0);
-  const [currentPages, setCurrentPage] = useState(0);
-  const [loading, onPageLoad] = useState(false);
-  const { mutateAsync, isLoading } = useEventLists();
-  const [page, setPage] = useState(0);
+  const [events, setEvents] = useState<LocalEvent[]>([]);
+  const [isLoading, setLoading] = useState(false);
 
   useFocusEffect(
     useCallback(() => {
-      console.log(
-        "--------------useFocusEffect getEventListAPI------------------"
-      );
-      getEventListsAPI();
-    }, [page])
+      getMyEvents();
+    }, [user])
   );
 
-  useFocusEffect(
-    useCallback(() => {
-      onPageLoad(false);
-      setPage(1);
-      setEvents([]);
-    }, [])
-  );
-
-  const getEventListsAPI = async () => {
-    const res = await mutateAsync({
-      queryParams: { limit: 15, page },
-      userId,
-    });
-
-    var dataTemp = [...events, ...res?.data.results];
-    setEvents(dataTemp);
-
-    setTotalPages(res?.data?.totalPages);
-    setCurrentPage(res?.data?.page);
-    if (events.length !== 0) {
-      onPageLoad(true);
+  const getMyEvents = async () => {
+    try {
+      setLoading(true);
+      const events = await listEvents({ host: user.id });
+      setEvents(events);
+    } catch (e) {
+      handleApiError("Error getting events", e);
+    } finally {
+      setLoading(false);
     }
   };
 
-  const onLoadMoreData = () => {
-    if (totalPages !== currentPages) {
-      setPage(page + 1);
-    }
-  };
-
-  const renderItem: ListRenderItem<EventData> = ({ item }) => {
-    const { name } = item || {};
-
+  const renderItem: ListRenderItem<LocalEvent> = ({ item }) => {
     return (
-      <EventCard key={name} onPress={() => onNavigate(item)} data={item} />
+      <EventCard key={item.id} onPress={() => onNavigate(item)} event={item} />
     );
   };
 
-  const onNavigate = (item: EventData) => {
+  const onNavigate = (item: LocalEvent) => {
     navigation.navigate(navigations.EVENT_DETAIL, { id: item?.id });
   };
 
-  if (isLoading) {
-    return (
-      <Loader
-        containerStyle={styles.loader}
-        visible={page === 1 && isLoading}
-      />
-    );
-  }
-
   return (
     <View>
+      <Loader containerStyle={styles.loader} visible={isLoading} />
       {/* <FlatListComponent
         keyExtractor={(item, index) => index.toString()}
         renderItem={renderItem}
@@ -108,7 +74,6 @@ export const MyEvents = (props: MyEventsProps) => {
         enablePagination
         contentContainerStyle={styles.scrollViewEvent}
       /> */}
-
       <FlatList
         renderItem={renderItem}
         keyExtractor={(item, index) => index.toString()}
@@ -117,10 +82,8 @@ export const MyEvents = (props: MyEventsProps) => {
         data={events}
         initialNumToRender={10}
         onEndReached={() => {
-          console.log("-------------onEndReached---------------");
-          if (loading) {
-            onPageLoad(false);
-            onLoadMoreData();
+          if (isLoading) {
+            setLoading(false);
           }
         }}
         onEndReachedThreshold={0.8}
