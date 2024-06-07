@@ -76,7 +76,7 @@ export const RecentProfileScreen = ({
 
           <View style={styles.line} />
           <TabComponent
-            tabs={[strings.about, strings.myEvents]}
+            tabs={[strings.about, `${userProfile.first_name}'s Events`]}
             onPressTab={setSelectedTab}
           />
           {navigation ? (
