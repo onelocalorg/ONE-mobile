@@ -25,10 +25,10 @@ interface LineItemResource {
 interface OrderResource {
   id: string;
   user: string;
-  paymentIntent: string;
+  paymentIntent?: string;
   lineItems: LineItemResource[];
   costs: PriceBreakdown;
-  stripe: {
+  stripe?: {
     customer: string;
     publishableKey: string;
     ephemeralKey: string;

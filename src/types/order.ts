@@ -5,8 +5,8 @@ export interface Order {
   id: string;
   costs: PriceBreakdown;
   lineItems: LineItem[];
-  paymentIntent: string;
-  stripe: {
+  paymentIntent?: string;
+  stripe?: {
     customer: string;
     publishableKey: string;
     ephemeralKey: string;
