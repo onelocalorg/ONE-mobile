@@ -13,21 +13,20 @@ export const createStyleSheet = (theme: ThemeProps) => {
       flex: 1,
     },
     profileContainer: {
-      borderColor: theme.colors.white,
-      borderRadius: normalScale(56),
-      borderWidth: theme.borderWidth.borderWidth1,
-      marginTop: verticalScale(100),
+      // borderColor: theme.colors.white,
+      // borderRadius: normalScale(56),
+      // borderWidth: theme.borderWidth.borderWidth1,
+      marginTop: verticalScale(-56),
       alignSelf: "flex-start",
-      marginLeft: normalScale(7),
-      position: "absolute",
+      marginLeft: normalScale(14),
+      zIndex: 10,
+      // position: "absolute",
     },
     profile: {
       height: normalScale(112),
       width: normalScale(112),
       borderRadius: normalScale(112),
-      marginLeft: normalScale(7),
-      marginTop: normalScale(96),
-      position: "absolute",
+      marginBottom: -8,
     },
     center: {
       alignSelf: "center",
@@ -53,6 +52,10 @@ export const createStyleSheet = (theme: ThemeProps) => {
     userNameClass: {
       flexDirection: "row",
       marginLeft: 50,
+    },
+    userData: {
+      flex: 1,
+      marginTop: -80,
     },
     firstName: {
       fontFamily: theme.fontType.medium,
@@ -1059,6 +1062,7 @@ export const createStyleSheet = (theme: ThemeProps) => {
       flexDirection: "row",
       paddingLeft: 30,
       paddingRight: 15,
+      marginTop: 15,
       justifyContent: "space-between",
     },
 

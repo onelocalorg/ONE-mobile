@@ -1,10 +1,11 @@
 import { apiConstants } from "~/network/constant";
 import { getApiResponse } from "~/network/utils/get-api-response";
 import { RecentlyJoined } from "~/types/recently-joined";
+import { RemoteImage } from "~/types/remote-image";
 import { UserProfile } from "~/types/user-profile";
 import { UserProfileData } from "~/types/user-profile-data";
 import { API } from "..";
-import { doDelete, doGet, doPatch, doPostList } from "./api-service";
+import { doDelete, doGet, doPatch, doPost, doPostList } from "./api-service";
 
 export const getUserProfile = async (userId: string) =>
   doGet<UserProfile>(`/v1/users/${userId}/profile`);
@@ -19,6 +20,18 @@ export const deleteUser = async (userId: string) =>
 
 export const getRecentlyJoined = async () =>
   doPostList<RecentlyJoined>("/v1/users/recently-joined");
+
+export const uploadFile = async (
+  uploadKey: UploadKey,
+  name: string,
+  base64: string
+) => {
+  return doPost<RemoteImage>("/v1/users/upload/file", {
+    uploadKey,
+    imageName: name,
+    base64String: base64,
+  });
+};
 
 interface EditProfileProps {
   bodyParams: {

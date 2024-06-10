@@ -8,13 +8,13 @@ import React, { useEffect, useRef, useState } from "react";
 import {
   Alert,
   AppState,
+  Button,
   Image,
   Keyboard,
-  KeyboardAvoidingView,
   Linking,
-  Modal,
   PermissionsAndroid,
   Platform,
+  Pressable,
   Text,
   TouchableOpacity,
   View,
@@ -22,10 +22,9 @@ import {
 import { getReadableVersion } from "react-native-device-info";
 import { TextInput } from "react-native-gesture-handler";
 import ImagePicker from "react-native-image-crop-picker";
-import { launchCamera } from "react-native-image-picker";
+import { launchCamera, launchImageLibrary } from "react-native-image-picker";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import Toast from "react-native-simple-toast";
-import GestureRecognizer from "react-native-swipe-gestures";
 import { useDispatch } from "react-redux";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
 import { useLogout } from "~/app-hooks/use-logout";
@@ -39,6 +38,7 @@ import { navigations } from "~/config/app-navigation/constant";
 import {
   deleteUser,
   getUserProfile,
+  uploadFile,
 } from "~/network/api/services/user-service";
 import { getData, persistKeys } from "~/network/constant";
 import { useEditProfile } from "~/network/hooks/user-service-hooks/use-edit-profile";
@@ -403,6 +403,38 @@ export const ProfileScreen = (props: ProfileScreenProps) => {
     ImageOptionModal(false);
   };
 
+  const chooseImage = async () => {
+    const { didCancel, errorCode, errorMessage, assets } =
+      await launchImageLibrary({
+        mediaType: "photo",
+        includeBase64: true,
+        maxWidth: 300,
+        maxHeight: 300,
+      });
+    if (!didCancel) {
+      if (!assets) {
+        Alert.alert("No images returned");
+      } else if (errorCode) {
+        if (errorCode === "permission") {
+          Alert.alert(
+            "Please grant permission to your photo library",
+            errorMessage
+          );
+        } else {
+          Alert.alert("Could not get photo", errorMessage);
+        }
+      } else {
+        const image = assets[0];
+        const remote = await uploadFile(
+          UploadKey.SIGNUP_PIC,
+          image.fileName || "profile_pic",
+          image.base64!
+        );
+        setProfileUri(remote.imageUrl);
+      }
+    }
+  };
+
   const deleteAccount = () => {
     Alert.alert(
       strings.deleteAccount,
@@ -438,13 +470,18 @@ export const ProfileScreen = (props: ProfileScreenProps) => {
       <Navbar navigation={navigation} isAvatarVisible={false} />
       {userProfile ? (
         <>
-          <ImageComponent
-            isUrl={!!profileUri}
-            resizeMode="cover"
-            uri={profileUri}
-            source={dummy}
-            style={styles.profile}
-          />
+          <View style={styles.profileContainer}>
+            <Pressable onPress={chooseImage}>
+              <ImageComponent
+                isUrl={!!profileUri}
+                resizeMode="cover"
+                style={styles.profile}
+                uri={profileUri}
+                source={dummy}
+              />
+              <Button title="Update" onPress={chooseImage} />
+            </Pressable>
+          </View>
           <TouchableOpacity
             activeOpacity={0.8}
             style={{ position: "absolute", right: 10, top: 60 }}
@@ -463,35 +500,10 @@ export const ProfileScreen = (props: ProfileScreenProps) => {
           </TouchableOpacity>
 
           <TouchableOpacity
-            style={styles.container}
+            style={styles.userData}
             activeOpacity={1}
             onPress={keyboardDismiss}
           >
-            <Modal transparent onDismiss={closeModal} visible={imageOption}>
-              <GestureRecognizer
-                onSwipeDown={closeModal}
-                style={styles.gesture}
-              >
-                <TouchableOpacity
-                  style={styles.containerGallery}
-                  activeOpacity={1}
-                  onPress={closeModal}
-                />
-              </GestureRecognizer>
-              <KeyboardAvoidingView
-                behavior={Platform.OS === "ios" ? "padding" : "height"}
-                style={styles.keyboardViewTwo}
-              >
-                <View style={styles.imageActionSheet}>
-                  <TouchableOpacity onPress={() => imageOptionSelect(1)}>
-                    <Text style={styles.galleryText}>Gallery</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity onPress={() => imageOptionSelect(2)}>
-                    <Text style={styles.cameraText}>Camera</Text>
-                  </TouchableOpacity>
-                </View>
-              </KeyboardAvoidingView>
-            </Modal>
             <View style={styles.center}>
               <View style={styles.userNameClass}>
                 <TextInput
