@@ -44,7 +44,7 @@ export function useLogout() {
   const { strings } = useStringsAndLabels();
   const navigationRef = getNavigator();
 
-  const onLogout = async (force = false) => {
+  const onLogout = async (force: boolean | undefined = false) => {
     if (force) {
       await logoutUser(navigationRef);
       return;
