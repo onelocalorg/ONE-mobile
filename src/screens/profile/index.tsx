@@ -11,8 +11,6 @@ import {
   Button,
   Image,
   Keyboard,
-  Linking,
-  PermissionsAndroid,
   Platform,
   Pressable,
   Text,
@@ -22,7 +20,6 @@ import {
 import { getReadableVersion } from "react-native-device-info";
 import { TextInput } from "react-native-gesture-handler";
 import ImagePicker from "react-native-image-crop-picker";
-import { launchCamera, launchImageLibrary } from "react-native-image-picker";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import Toast from "react-native-simple-toast";
 import { useDispatch } from "react-redux";
@@ -32,16 +29,19 @@ import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
 import { Gratis, dummy } from "~/assets/images";
 import { ImageComponent } from "~/components/image-component";
 import { Input } from "~/components/input";
+import { Loader } from "~/components/loader";
 import { Navbar } from "~/components/navbar/Navbar";
 import { TabComponent } from "~/components/tab-component";
 import { navigations } from "~/config/app-navigation/constant";
 import {
   deleteUser,
   getUserProfile,
+  updateUserProfile,
   uploadFile,
 } from "~/network/api/services/user-service";
 import { getData, persistKeys } from "~/network/constant";
 import { useEditProfile } from "~/network/hooks/user-service-hooks/use-edit-profile";
+import { UploadKey } from "~/types/upload-key";
 import { UserProfile } from "~/types/user-profile";
 import { handleApiError } from "~/utils/common";
 import { About } from "./about";
@@ -136,227 +136,6 @@ export const ProfileScreen = (props: ProfileScreenProps) => {
     }
   };
 
-  const imageSelection = async (no: any) => {
-    selectImage(no);
-    ImageOptionModal(true);
-  };
-
-  const imageOptionSelect = async (item: any) => {
-    if (item === 1) {
-      if (Platform.OS === "ios") {
-        GallerySelect();
-      } else if (Platform.OS === "android") {
-        try {
-          const granted = await PermissionsAndroid.request(
-            PermissionsAndroid.PERMISSIONS.CAMERA
-          );
-          if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-            console.log("You can use the camera");
-            GallerySelect();
-          } else {
-            Alert.alert("Camera permission denied");
-          }
-        } catch (err) {
-          console.warn(err);
-        }
-      }
-    } else if (item === 2) {
-      if (Platform.OS === "ios") {
-        onUploadImage();
-      } else if (Platform.OS === "android") {
-        try {
-          const granted = await PermissionsAndroid.request(
-            PermissionsAndroid.PERMISSIONS.CAMERA
-          );
-          if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-            console.log("You can use the camera");
-            onUploadImage();
-          } else {
-            Alert.alert("Camera permission denied");
-          }
-        } catch (err) {
-          console.warn(err);
-        }
-      }
-    } else {
-      ImageOptionModal(false);
-    }
-  };
-
-  const onUploadImage = async () => {
-    const { assets } = await launchCamera({
-      mediaType: "photo",
-      includeBase64: true,
-      maxWidth: 800,
-      maxHeight: 800,
-    });
-    ImageOptionModal(false);
-    console.log("--------assets----------", assets);
-    if (assets) {
-      const img = assets?.[0];
-      console.log("---------------assets Gallery 222---------------");
-      console.log(assets);
-      var fileNameTwo = img?.fileName ?? "";
-      setLoading(true);
-      var output =
-        fileNameTwo.substr(0, fileNameTwo.lastIndexOf(".")) || fileNameTwo;
-      var base64Two = img?.base64 ?? "";
-
-      setFilename(output);
-      setBase64Path(base64Two);
-
-      if (setimageType === 1) {
-        ProfileImageUploadAPI(output, base64Two);
-      }
-      if (setimageType === 2) {
-        BackgroundImageUploadAPI(output, base64Two);
-      }
-      // imageUploadAPI(output, base64Two);
-    }
-  };
-
-  const GallerySelect = async () => {
-    // const {assets} = await launchImageLibrary({
-    //   mediaType: 'photo',
-    //   includeBase64: true,
-    //   maxWidth: 800,
-    //   maxHeight: 800,
-    // });
-    console.log("===============111111==================");
-    ImagePicker.openPicker({
-      width: 300,
-      height: 400,
-      cropperRotateButtonsHidden: true,
-      mediaType: "photo",
-      includeBase64: true,
-      cropping: true,
-    }).then((image) => {
-      if (image) {
-        var fileNameTwo = image?.filename ?? "";
-        setLoading(true);
-        var output =
-          fileNameTwo.substr(0, fileNameTwo.lastIndexOf(".")) || fileNameTwo;
-        var base64Two = image?.data ?? "";
-
-        setFilename(output);
-        setBase64Path(base64Two);
-        if (setimageType === 1) {
-          ProfileImageUploadAPI(output, base64Two);
-        }
-        if (setimageType === 2) {
-          BackgroundImageUploadAPI(output, base64Two);
-        }
-        // imageUploadAPI(output, base64Two);
-      }
-    });
-  };
-
-  const ProfileImageUploadAPI = async (fileItem: any, base64Item: any) => {
-    if (Platform.OS === "ios") {
-      var pic: any = {
-        uploadKey: "pic",
-        userId: userProfile?.id,
-        imageName: fileItem,
-        base64String: "data:image/jpeg;base64," + base64Item,
-      };
-    } else {
-      var isImg: any = ".JPG";
-      var pic: any = {
-        uploadKey: "pic",
-        userId: userProfile?.id,
-        imageName: Math.random().toString() + isImg,
-        base64String: "data:image/jpeg;base64," + base64Item,
-      };
-    }
-
-    ImageOptionModal(false);
-    try {
-      const response = await fetch(
-        process.env.API_URL + "/v1/users/upload/file",
-        {
-          method: "post",
-          headers: new Headers({
-            "Content-Type": "application/json",
-          }),
-          body: JSON.stringify(pic),
-        }
-      );
-      const dataItem = await response.json();
-      setLoading(false);
-      setProfileUri(dataItem?.data?.imageUrl);
-    } catch (error) {
-      setLoading(false);
-      console.log(error);
-    }
-  };
-
-  const BackgroundImageUploadAPI = async (fileItem: any, base64Item: any) => {
-    if (Platform.OS == "ios") {
-      var pic: any = {
-        uploadKey: "cover_image",
-        userId: userProfile?.id,
-        imageName: fileItem,
-        base64String: "data:image/jpeg;base64," + base64Item,
-      };
-    } else {
-      var isImg: any = ".JPG";
-      var pic: any = {
-        uploadKey: "cover_image",
-        userId: userProfile?.id,
-        imageName: Math.random().toString() + isImg,
-        base64String: "data:image/jpeg;base64," + base64Item,
-      };
-    }
-
-    ImageOptionModal(false);
-    try {
-      const response = await fetch(
-        process.env.API_URL + "/v1/users/upload/file",
-        {
-          method: "post",
-          headers: new Headers({
-            "Content-Type": "application/json",
-          }),
-          body: JSON.stringify(pic),
-        }
-      );
-      const dataItem = await response.json();
-      setLoading(false);
-      setBackgroundUri(dataItem?.data?.imageUrl);
-    } catch (error) {
-      setLoading(false);
-      console.log(error);
-    }
-  };
-
-  const getPayoutConnectListAPI = async () => {
-    var pic: any = {};
-
-    setLoading(true);
-    console.log(process.env.API_URL + "/v1/users/connect-link");
-    try {
-      const token = await AsyncStorage.getItem("token");
-      const response = await fetch(
-        process.env.API_URL + "/v1/users/connect-link",
-        {
-          method: "post",
-          headers: new Headers({
-            Authorization: "Bearer " + token,
-            "Content-Type": "application/json",
-          }),
-        }
-      );
-      const dataItem = await response.json();
-      if (dataItem?.data) {
-        Linking.openURL(dataItem?.data);
-      }
-      setLoading(false);
-    } catch (error) {
-      setLoading(false);
-      console.log(error);
-    }
-  };
-
   const onSaveProfile = async (request: {
     about?: string;
     skills?: string[];
@@ -399,39 +178,50 @@ export const ProfileScreen = (props: ProfileScreenProps) => {
     Keyboard.dismiss();
   };
 
-  const closeModal = () => {
-    ImageOptionModal(false);
-  };
-
   const chooseImage = async () => {
-    const { didCancel, errorCode, errorMessage, assets } =
-      await launchImageLibrary({
+    if (!userProfile) {
+      return;
+    }
+
+    try {
+      const {
+        mime,
+        data: base64,
+        filename: fileName,
+      } = await ImagePicker.openPicker({
+        width: 300,
+        height: 300,
+        cropping: true,
         mediaType: "photo",
         includeBase64: true,
-        maxWidth: 300,
-        maxHeight: 300,
+        multiple: false,
+        cropperCircleOverlay: true,
+        showsSelectedCount: false,
       });
-    if (!didCancel) {
-      if (!assets) {
-        Alert.alert("No images returned");
-      } else if (errorCode) {
-        if (errorCode === "permission") {
-          Alert.alert(
-            "Please grant permission to your photo library",
-            errorMessage
-          );
-        } else {
-          Alert.alert("Could not get photo", errorMessage);
-        }
+      console.log(mime, fileName, base64);
+      if (!base64) {
+        Alert.alert("Image picker did not return data");
       } else {
-        const image = assets[0];
+        setLoading(true);
         const remote = await uploadFile(
           UploadKey.SIGNUP_PIC,
-          image.fileName || "profile_pic",
-          image.base64!
+          fileName || "profile_pic",
+          mime || "image/jpg",
+          base64
         );
         setProfileUri(remote.imageUrl);
+        await Promise.all([
+          updateUserProfile(userProfile?.id, {
+            pic: remote.key,
+          }),
+          AsyncStorage.setItem(persistKeys.userProfilePic, remote.imageUrl),
+        ]);
       }
+    } catch (e) {
+      Alert.alert("caught exception", JSON.stringify(e));
+      handleApiError("Error uploading image", e);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -468,6 +258,7 @@ export const ProfileScreen = (props: ProfileScreenProps) => {
   return (
     <KeyboardAwareScrollView showsVerticalScrollIndicator={false}>
       <Navbar navigation={navigation} isAvatarVisible={false} />
+      <Loader visible={isLoading} showOverlay={true} />
       {userProfile ? (
         <>
           <View style={styles.profileContainer}>

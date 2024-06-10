@@ -2,36 +2,35 @@ import { apiConstants } from "~/network/constant";
 import { getApiResponse } from "~/network/utils/get-api-response";
 import { RecentlyJoined } from "~/types/recently-joined";
 import { RemoteImage } from "~/types/remote-image";
+import { UploadKey } from "~/types/upload-key";
 import { UserProfile } from "~/types/user-profile";
 import { UserProfileData } from "~/types/user-profile-data";
 import { API } from "..";
 import { doDelete, doGet, doPatch, doPost, doPostList } from "./api-service";
 
-export const getUserProfile = async (userId: string) =>
+export const getUserProfile = (userId: string) =>
   doGet<UserProfile>(`/v1/users/${userId}/profile`);
 
-export const updateUserProfile = async (
-  userId: string,
-  data: UserProfileData
-) => doPatch<UserProfile>(`/v1/users/${userId}/profile`, data);
+export const updateUserProfile = (userId: string, data: UserProfileData) =>
+  doPatch<UserProfile>(`/v1/users/${userId}/profile`, data);
 
-export const deleteUser = async (userId: string) =>
+export const deleteUser = (userId: string) =>
   doDelete<never>(`/v1/users/${userId}`);
 
-export const getRecentlyJoined = async () =>
+export const getRecentlyJoined = () =>
   doPostList<RecentlyJoined>("/v1/users/recently-joined");
 
-export const uploadFile = async (
+export const uploadFile = (
   uploadKey: UploadKey,
   name: string,
+  type: string,
   base64: string
-) => {
-  return doPost<RemoteImage>("/v1/users/upload/file", {
-    uploadKey,
+) =>
+  doPost<RemoteImage>("/v1/users/upload/file", {
+    uploadKey: uploadKey.toString(),
     imageName: name,
-    base64String: base64,
+    base64String: `data:${type};base64,${base64}`,
   });
-};
 
 interface EditProfileProps {
   bodyParams: {

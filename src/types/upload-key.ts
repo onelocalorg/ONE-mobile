@@ -1,4 +1,4 @@
-enum UploadKey {
+export enum UploadKey {
   PIC = "pic",
   COVER_IMAGE = "cover_image",
   SIGNUP_PIC = "signup_pic",
