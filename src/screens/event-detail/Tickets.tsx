@@ -32,6 +32,9 @@ export const Tickets = ({ event, onTicketPurchased }: TicketsProps) => {
     }, [event])
   );
 
+  const ticketQuantityToString = (quantity?: number) =>
+    !quantity || quantity === 0 ? "Unlimited" : quantity.toString();
+
   return (
     <View style={styles.container}>
       {event.ticketTypes?.length ? (
@@ -40,11 +43,11 @@ export const Tickets = ({ event, onTicketPurchased }: TicketsProps) => {
         <></>
       )}
       <View>
-        {event.ticketTypes?.map((ele) => (
-          <View key={ele?.price.toString()} style={styles.rowOnly}>
-            <Text style={styles.ticket}>{`${toCurrency(ele?.price)} - ${
-              ele?.name
-            }`}</Text>
+        {event.ticketTypes?.map((tt) => (
+          <View key={tt.id} style={styles.rowOnly}>
+            <Text style={styles.ticket}>{`${ticketQuantityToString(
+              tt.quantity
+            )} ${toCurrency(tt.price)} - ${tt.name}`}</Text>
           </View>
         ))}
       </View>
