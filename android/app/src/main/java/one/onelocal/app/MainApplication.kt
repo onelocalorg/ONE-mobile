@@ -1,4 +1,4 @@
-package one.oneboulder.one
+package one.onelocal.app
 
 import android.app.Application
 import com.facebook.react.PackageList

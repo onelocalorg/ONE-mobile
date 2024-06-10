@@ -1,6 +1,6 @@
 {
-  "name": "OneBoulder",
-  "version": "0.0.1",
+  "name": "one-local",
+  "version": "7.10.0",
   "private": true,
   "scripts": {
     "start": "npm run start:development",

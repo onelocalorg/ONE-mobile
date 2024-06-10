@@ -22,7 +22,7 @@ export const AppUpdate = () => {
       );
     } else {
       const link =
-        "https://play.google.com/store/apps/details?id=one.oneboulder.one";
+        "https://play.google.com/store/apps/details?id=one.onelocal.app";
       Linking.canOpenURL(link).then(
         (supported) => {
           supported && Linking.openURL(link);

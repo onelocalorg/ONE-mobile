@@ -1,4 +1,4 @@
-package one.oneboulder.one
+package one.onelocal.app
 
 import com.facebook.react.ReactActivity
 import com.facebook.react.ReactActivityDelegate

@@ -78,13 +78,13 @@ android {
         buildConfig true
     }
 
-    namespace "one.oneboulder.one"
+    namespace "one.onelocal.app"
     defaultConfig {
-        applicationId "one.oneboulder.one"
+        applicationId "one.onelocal.app"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 13
-        versionName "1.1.0"
+        versionCode 15
+        versionName "1.10.0"
         missingDimensionStrategy 'react-native-camera', 'general'
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
     }
