@@ -29,7 +29,7 @@ import { useDispatch } from "react-redux";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
 import { useLogout } from "~/app-hooks/use-logout";
 import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
-import { Gratis, dummy, sendPayoutImg } from "~/assets/images";
+import { Gratis, dummy } from "~/assets/images";
 import { ImageComponent } from "~/components/image-component";
 import { Input } from "~/components/input";
 import { Navbar } from "~/components/navbar/Navbar";
@@ -547,7 +547,7 @@ export const ProfileScreen = (props: ProfileScreenProps) => {
                 </Text>
               </View>
 
-              {onCheckReleaseHideShow() ? (
+              {/* {onCheckReleaseHideShow() ? (
                 <TouchableOpacity
                   onPress={getPayoutConnectListAPI}
                   activeOpacity={0.8}
@@ -566,7 +566,7 @@ export const ProfileScreen = (props: ProfileScreenProps) => {
                 </TouchableOpacity>
               ) : (
                 <></>
-              )}
+              )} */}
             </View>
 
             <View style={styles.aboutView}>
