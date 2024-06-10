@@ -448,7 +448,7 @@ export const ProfileScreen = (props: ProfileScreenProps) => {
           <TouchableOpacity
             activeOpacity={0.8}
             style={{ position: "absolute", right: 10, top: 60 }}
-            onPress={onLogout}
+            onPress={() => onLogout()}
           >
             <Text
               style={{
@@ -605,7 +605,7 @@ export const ProfileScreen = (props: ProfileScreenProps) => {
         <TouchableOpacity
           activeOpacity={0.8}
           style={{ position: "absolute", right: 10, top: 60 }}
-          onPress={onLogout}
+          onPress={() => onLogout()}
         >
           <Text
             style={{
