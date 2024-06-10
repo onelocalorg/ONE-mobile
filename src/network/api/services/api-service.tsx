@@ -85,7 +85,6 @@ async function callApi<Resource>(
   });
   LOG.info(response.status);
   const json = (await response.json()) as ApiResponse<any>;
-  LOG.debug("json", json);
   if (!response.ok && _.isNull(json)) {
     LOG.error("<=", response.statusText);
     throw new ApiError(response.status, response.statusText);

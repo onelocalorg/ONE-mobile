@@ -10,6 +10,7 @@ import {
 } from "@react-navigation/native";
 import React, { useRef } from "react";
 import { TouchableOpacity } from "react-native";
+import { useLogout } from "~/app-hooks/use-logout";
 import { bottomTabs } from "~/assets/constants";
 import {
   addGreen,
@@ -38,6 +39,7 @@ export const BottomNavigator = () => {
   const styles = createStyleSheet(theme);
   const modalRef: React.Ref<ModalRefProps> = useRef(null);
   const navigation = useNavigation();
+  const logout = useLogout();
 
   const bottomNav = [bottomTabs.home, "event", bottomTabs.map, bottomTabs.chat];
 

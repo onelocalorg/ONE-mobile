@@ -1,6 +1,8 @@
+import { HttpStatusCode } from "axios";
 import Big from "big.js";
 import { DateTime, Interval } from "luxon";
 import { Alert } from "react-native";
+import { useLogout } from "~/app-hooks/use-logout";
 
 export const formatPrice = (price: string) => {
   return `$${price?.replace("USD", "")}`;
@@ -33,5 +35,11 @@ export const toCurrency = (val?: number) =>
   `$${!val ? "0.00" : Big(val).div(100).toFixed(2)}`;
 
 export const handleApiError = (title: string, e: any) => {
-  Alert.alert(title, e?.message ?? e);
+  // Added to handle old token
+  // TODO Manage properly with storing and using refresh token
+  if (e?.code === HttpStatusCode.Unauthorized) {
+    useLogout().onLogout(true);
+  } else {
+    Alert.alert(title, e?.message ?? e);
+  }
 };

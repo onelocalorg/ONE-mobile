@@ -130,7 +130,6 @@ export const LoginScreen = (props: LoginScreenProps) => {
         LOG.error("signInWithGoogle:", error);
       } else {
         handleApiError("Could not sign in with Google", error);
-        LOG.error("signInWithGoogle:", error);
       }
     }
   };
@@ -163,7 +162,6 @@ export const LoginScreen = (props: LoginScreenProps) => {
       handleLoginResponse(loggedInUser);
     } catch (error) {
       handleApiError("Could not sign in with Apple", error);
-      LOG.error("signInWithApple:", error);
     }
   };
 

@@ -1,6 +1,6 @@
 import { CurrentUser } from "~/types/current-user";
 import { ForgotPassword } from "~/types/forgot-password";
-import { doPost } from "./api-service";
+import { doGet, doPost } from "./api-service";
 
 interface LoginProps {
   emailOrMobile: string;
@@ -44,6 +44,8 @@ export const forgotPassword = (email: string) =>
 
 export const verifyOtp = (otp: string, otpUniqueKey: string) =>
   doPost<boolean>(`/v1/auth/verify-otp`, { otp, otpUniqueKey });
+
+export const authPing = () => doGet<never>("/v1/auth/ping");
 
 export const resetPassword = (
   password: string,

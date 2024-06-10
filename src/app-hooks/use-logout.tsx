@@ -14,6 +14,7 @@ import { store } from "~/network/reducers/store";
 import { queryClient } from "../app";
 
 export const logoutUser = async (navigation: NavigationContainerRef<any>) => {
+  console.log("logoutUser");
   navigation.reset({ index: 0, routes: [{ name: navigations.LOGIN }] });
 
   store.dispatch(clearReducer());
@@ -29,13 +30,25 @@ export const logoutUser = async (navigation: NavigationContainerRef<any>) => {
 
   axios.defaults.headers.common.Authorization = "";
   API.initService();
+
+  try {
+    await GoogleSignin.revokeAccess();
+    await GoogleSignin.signOut();
+    // this.setState({ user: null }); // Remember to remove the user from your app's state as well
+  } catch (error) {
+    console.error(error);
+  }
 };
 
-export const useLogout = () => {
+export function useLogout() {
   const { strings } = useStringsAndLabels();
   const navigationRef = getNavigator();
 
-  const onLogout = async () => {
+  const onLogout = async (force = false) => {
+    if (force) {
+      await logoutUser(navigationRef);
+      return;
+    }
     Alert.alert(
       strings.logout,
       strings.areYouLogout,
@@ -50,14 +63,7 @@ export const useLogout = () => {
       ],
       { cancelable: false }
     );
-    try {
-      await GoogleSignin.revokeAccess();
-      await GoogleSignin.signOut();
-      // this.setState({ user: null }); // Remember to remove the user from your app's state as well
-    } catch (error) {
-      console.error(error);
-    }
   };
 
   return { onLogout };
-};
+}
