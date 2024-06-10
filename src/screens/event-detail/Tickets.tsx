@@ -47,7 +47,7 @@ export const Tickets = ({ event, onTicketPurchased }: TicketsProps) => {
           <View key={tt.id} style={styles.rowOnly}>
             <Text style={styles.ticket}>{`${ticketQuantityToString(
               tt.quantity
-            )} ${toCurrency(tt.price)} - ${tt.name}`}</Text>
+            )} ${tt.name} - ${toCurrency(tt.price)}`}</Text>
           </View>
         ))}
       </View>
