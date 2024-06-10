@@ -2,9 +2,10 @@
 import {
   NavigationContainerRef,
   ParamListBase,
+  useFocusEffect,
 } from "@react-navigation/native";
 import { DateTime } from "luxon";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useState } from "react";
 import {
   Image,
   Pressable,
@@ -64,12 +65,14 @@ export const EventDetailScreen = ({
 
   // const { refetch, isLoading, isRefetching, data } = useEventDetails(eventId);
 
-  useEffect(() => {
-    if (eventId) {
-      fetchEvent();
-      fetchRsvpData();
-    }
-  }, [eventId]);
+  useFocusEffect(
+    useCallback(() => {
+      if (eventId) {
+        fetchEvent();
+        fetchRsvpData();
+      }
+    }, [eventId])
+  );
 
   const fetchEvent = async () => {
     try {
