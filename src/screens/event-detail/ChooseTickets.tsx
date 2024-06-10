@@ -56,7 +56,7 @@ export const ChooseTickets = ({
   return (
     <View style={styles.modalContainer}>
       {/* <ScrollView showsVerticalScrollIndicator={false}> */}
-      <EventCard data={event} />
+      <EventCard event={event} />
       <Text style={styles.amount}>{toCurrency(selectedTicketPrice())}</Text>
       <TicketSelector
         ticketTypes={event.ticketTypes}
