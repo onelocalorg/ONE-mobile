@@ -1,5 +1,4 @@
 import { appleAuth } from "@invertase/react-native-apple-authentication";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   GoogleSignin,
   statusCodes,
@@ -21,12 +20,10 @@ import {
 import { getDeviceName, getUniqueId } from "react-native-device-info";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { Modal, Portal } from "react-native-paper";
-import Toast from "react-native-simple-toast";
 import { useDispatch } from "react-redux";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
 import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
 import { useToken } from "~/app-hooks/use-token";
-import { emailRegexEx } from "~/assets/constants";
 import { apple, google } from "~/assets/images";
 import { ImageComponent } from "~/components/image-component";
 import { Navbar } from "~/components/navbar/Navbar";
@@ -38,13 +35,14 @@ import {
   googleLogin,
   login,
 } from "~/network/api/services/auth-service";
-import { getData, persistKeys } from "~/network/constant";
+import { getData } from "~/network/constant";
 import { useLogin } from "~/network/hooks/user-service-hooks/use-login";
 import { verticalScale } from "~/theme/device/normalize";
 import { CurrentUser } from "~/types/current-user";
 import { handleApiError } from "~/utils/common";
 import { ForgotPassword } from "./ForgotPassword";
 import { createStyleSheet } from "./style";
+import { storeAuthDataInAsyncStorage } from "./utils";
 
 GoogleSignin.configure({
   iosClientId: process.env.GOOGLE_SIGNIN_IOS_CLIENT_ID,
@@ -79,12 +77,6 @@ export const LoginScreen = (props: LoginScreenProps) => {
   // const onHandleCheckBox = () => {
   //   setIsChecked(!isChecked);
   // };
-
-  const storeAuthDataInAsyncStorage = (user: CurrentUser) => {
-    AsyncStorage.setItem(persistKeys.token, user.access_token);
-    AsyncStorage.setItem(persistKeys.userProfileId, user.id);
-    AsyncStorage.setItem(persistKeys.userProfilePic, user.pic);
-  };
 
   const handleLoginResponse = async (currentUser?: CurrentUser) => {
     if (currentUser) {
@@ -188,32 +180,11 @@ export const LoginScreen = (props: LoginScreenProps) => {
   };
 
   const onSignUp = async () => {
-    if (!emailRegexEx.test(String(user?.emailOrMobile).toLowerCase())) {
-      Toast.show("Enter your Valid Email", Toast.LONG, {
-        backgroundColor: "black",
-      });
-    } else if (user?.password.length < 8) {
-      Toast.show("Password Must be 8 Digit", Toast.LONG, {
-        backgroundColor: "black",
-      });
-    } else {
-      navigation.navigate(navigations.SIGNUP, {
-        email: user?.emailOrMobile,
-        password: user?.password,
-      });
-    }
+    navigation.navigate(navigations.SIGNUP);
   };
 
   const handleUserData = (value: string, key: string) => {
     setUser({ ...user, [key]: value });
-  };
-
-  const onCheckValidation = () => {
-    return !(
-      (emailRegexEx.test(String(user.emailOrMobile).toLowerCase()) ||
-        user.emailOrMobile.length === 10) &&
-      user.password.length >= 8
-    );
   };
 
   const loadInBrowser = () => {

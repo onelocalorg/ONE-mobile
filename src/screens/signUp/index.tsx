@@ -1,4 +1,3 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   NavigationContainerRef,
   ParamListBase,
@@ -8,7 +7,6 @@ import {
   Alert,
   Keyboard,
   KeyboardAvoidingView,
-  Linking,
   Modal,
   PermissionsAndroid,
   Platform,
@@ -26,6 +24,7 @@ import GestureRecognizer from "react-native-swipe-gestures";
 import { useDispatch } from "react-redux";
 import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
 import { useToken } from "~/app-hooks/use-token";
+import { emailRegexEx } from "~/assets/constants";
 import { selectPic } from "~/assets/images";
 import { CalenderRefProps } from "~/components/Calender/calenderComponent";
 import { ButtonComponent } from "~/components/button-component";
@@ -36,43 +35,26 @@ import { SizedBox } from "~/components/sized-box";
 import { navigations } from "~/config/app-navigation/constant";
 import { useSaveCustomerId } from "~/network/hooks/user-service-hooks/use-save-customer-id";
 import { normalScale, verticalScale } from "~/theme/device/normalize";
+import { storeAuthDataInAsyncStorage } from "../login/utils";
 
 interface SignUpProps {
   navigation?: NavigationContainerRef<ParamListBase>;
-  route?: {
-    params: {
-      email: any;
-      password: any;
-    };
-  };
 }
 
-export const SignUp = (props: SignUpProps) => {
-  const [user, setUser] = useState({
-    firstName: "",
-    lastName: "",
-    email: "",
-    phoneNo: "",
-    password: "",
-    confirmPass: "",
-    city: "",
-    state: "",
-    nick_name: "",
-    catch_phrase: "",
-  });
+export const SignUp = ({ navigation }: SignUpProps) => {
   const [isChecked, setIsChecked] = useState(false);
   const { strings } = useStringsAndLabels();
-  const { navigation, route } = props || {};
-  const { email, password } = route?.params ?? {};
   const { onSetToken } = useToken();
-  const handleUserData = (value: string, key: string) => {
-    setUser({ ...user, [key]: value });
-  };
   const [isLoading, LodingData] = useState(false);
   const { mutateAsync: saveCustomerId } = useSaveCustomerId();
   const [imageOption, ImageOptionModal] = useState(false);
   const [filename, assetsData] = useState("");
   const [base64string, setBase64Path] = useState("");
+  const [firstName, setFirstName] = useState<string>();
+  const [lastName, setLastName] = useState<string>();
+  const [email, setEmail] = useState<string>();
+  const [password, setPassword] = useState<string>();
+  const [confirmPassword, setConfirmPassword] = useState<string>();
   const [profileUri, setProfileUri]: any = useState("");
   const [backgroundImageUri, setbackgroundUri]: any = useState("");
   const [setimageType, selectImage] = useState();
@@ -87,17 +69,17 @@ export const SignUp = (props: SignUpProps) => {
   async function onSignUpAPI() {
     LodingData(true);
     const userData = {
-      first_name: user.firstName,
-      last_name: user.lastName,
+      first_name: firstName,
+      last_name: lastName,
       email: email,
       // "mobile_number": '',
       password: password,
-      cpassword: password,
+      // cpassword: password,
       // city: user.city,
       // state: user.state,
       // nick_name: user.nick_name,
       // catch_phrase: user.catch_phrase,
-      birth_date: when,
+      // birth_date: when,
       pic: profileUri?.key,
       // cover_image: backgroundImageUri?.key,
     };
@@ -127,9 +109,7 @@ export const SignUp = (props: SignUpProps) => {
         } = data || {};
 
         await onSetToken(access_token);
-
-        AsyncStorage.setItem("userProfileId", data.id);
-        AsyncStorage.setItem("userProfilePic", data.pic);
+        storeAuthDataInAsyncStorage(data);
 
         navigation?.reset({
           index: 0,
@@ -147,11 +127,27 @@ export const SignUp = (props: SignUpProps) => {
   }
 
   const onSignUp = () => {
-    if (user.firstName.length === 0) {
+    if (!email) {
+      Toast.show("Enter your Email", Toast.LONG, {
+        backgroundColor: "black",
+      });
+    } else if (!emailRegexEx.test(email.toLowerCase())) {
+      Toast.show("Bad email", Toast.LONG, {
+        backgroundColor: "black",
+      });
+    } else if (!password) {
+      Toast.show("Enter your Password", Toast.LONG, {
+        backgroundColor: "black",
+      });
+    } else if (password !== confirmPassword) {
+      Toast.show("Passwords do not match", Toast.LONG, {
+        backgroundColor: "black",
+      });
+    } else if (!firstName) {
       Toast.show("Enter your First Name", Toast.LONG, {
         backgroundColor: "black",
       });
-    } else if (user.lastName.length === 0) {
+    } else if (!lastName) {
       Toast.show("Enter your Last Name", Toast.LONG, {
         backgroundColor: "black",
       });
@@ -228,6 +224,7 @@ export const SignUp = (props: SignUpProps) => {
       console.log(error);
     }
   };
+
   const BackgroundImageUploadAPI = async (fileItem: any, base64Item: any) => {
     var isImg: any = ".JPG";
     var pic: any = {
@@ -257,22 +254,8 @@ export const SignUp = (props: SignUpProps) => {
     }
   };
 
-  const onBackPress = () => {
-    navigation?.goBack();
-  };
-
-  const onHandleCheckBox = () => {
-    setIsChecked(!isChecked);
-  };
-
   const keyboardDismiss = () => {
     Keyboard.dismiss();
-  };
-  const loadInBrowser = () => {
-    const url = "https://onelocal.one/privacypolicy";
-    if (url) {
-      Linking.openURL(url);
-    }
   };
 
   const imageOptionSelect = async (item: any) => {
@@ -374,20 +357,53 @@ export const SignUp = (props: SignUpProps) => {
         contentContainerStyle={styles.scrollView}
       >
         <View style={styles.container}>
+          <Text style={styles.texClass}>{strings.email}</Text>
+          <TextInput
+            placeholderTextColor="#8B8888"
+            style={styles.textInput}
+            autoCapitalize="none"
+            autoComplete="email"
+            inputMode="email"
+            keyboardType="email-address"
+            onChangeText={setEmail}
+          />
+          <SizedBox height={verticalScale(10)} />
+          <Text style={styles.texClass}>{strings.password}</Text>
+          <TextInput
+            secureTextEntry
+            placeholderTextColor="#8B8888"
+            style={styles.textInput}
+            autoCapitalize="none"
+            autoComplete="new-password"
+            inputMode="text"
+            onChangeText={setPassword}
+          />
+          <SizedBox height={verticalScale(10)} />
+          <Text style={styles.texClass}>{strings.confirmPassword}</Text>
+          <TextInput
+            secureTextEntry
+            placeholderTextColor="#8B8888"
+            style={styles.textInput}
+            autoCapitalize="none"
+            autoComplete="new-password"
+            inputMode="text"
+            onChangeText={setConfirmPassword}
+          />
+          <SizedBox height={verticalScale(10)} />
           <Text style={styles.texClass}>{strings.firstName}</Text>
           <TextInput
             placeholderTextColor="#8B8888"
             style={styles.textInput}
-            value={user.firstName}
-            onChangeText={(text) => handleUserData(text, "firstName")}
+            value={firstName}
+            onChangeText={setFirstName}
           />
           <SizedBox height={verticalScale(14)} />
           <Text style={styles.texClass}>{strings.lastName}</Text>
           <TextInput
             placeholderTextColor="#8B8888"
             style={styles.textInput}
-            value={user.lastName}
-            onChangeText={(text) => handleUserData(text, "lastName")}
+            value={lastName}
+            onChangeText={setLastName}
           />
           {/* <SizedBox height={verticalScale(14)} /> */}
           {/* <Text style={styles.texClass}>{strings.birthday}</Text> */}

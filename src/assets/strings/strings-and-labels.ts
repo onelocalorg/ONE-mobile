@@ -1,6 +1,7 @@
 export const stringsAndLabels = {
   mobileOrEmail: "Email",
   password: "Password",
+  confirmPassword: "Confirm password",
   iAgree:
     "Your data is safe with ONE|Local. By clicking the “sign up” button above, you agree to the  ",
   tnc: "terms, policy, & EULA",
