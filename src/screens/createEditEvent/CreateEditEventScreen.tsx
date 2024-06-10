@@ -246,7 +246,11 @@ export const CreateEditEventScreen = ({
       about: about !== event?.about ? about : undefined,
       latitude: latitude !== event?.latitude ? latitude : undefined,
       longitude: longitude !== event?.longitude ? longitude : undefined,
-      ticketTypes: isTicketTypesDirty ? ticketTypes : undefined,
+      ticketTypes: isTicketTypesDirty
+        ? ticketTypes.map(
+            (tt) => _.omit(["sold", "isAvailable"], tt) as TicketTypeData
+          )
+        : undefined,
     };
 
     if (_.isEmpty(data)) {
