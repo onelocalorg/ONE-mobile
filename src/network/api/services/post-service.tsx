@@ -75,6 +75,17 @@ export const createComment = (postId: string, content: string) =>
     resourceToComment
   );
 
+export const createReplyToComment = (
+  postId: string,
+  commentId: string,
+  content: string
+) =>
+  doPost<Comment>(
+    `/v1/posts/${postId}/comments/create`,
+    { content, comment_id: commentId },
+    resourceToComment
+  );
+
 export const listComments = (postId: string) =>
   doPost<Comment[]>(
     `/v1/comments?post_id=${postId}`,
@@ -84,11 +95,11 @@ export const listComments = (postId: string) =>
 
 const resourceToComment = (c: any) =>
   ({
-    ..._.omit(["reply", "date"], c),
+    ..._.omit(["reply", "date", "postDate"], c),
     postDate: DateTime.fromISO(c.postDate),
     replies:
       c.reply?.map((r: any) => ({
-        ...r,
+        ..._.omit(["date", "postDate"], r),
         postDate: DateTime.fromISO(r.postDate),
       })) ?? [],
   } as Comment);

@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useState } from "react";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -43,6 +43,7 @@ import { LOG } from "~/config";
 import { navigations } from "~/config/app-navigation/constant";
 import {
   createComment,
+  createReplyToComment,
   listComments,
 } from "~/network/api/services/post-service";
 import { Comment } from "~/types/comment";
@@ -51,7 +52,7 @@ import { Reply } from "~/types/reply";
 import { formatTimeFromNow, handleApiError } from "~/utils/common";
 import { createStyleSheet } from "../style";
 
-interface commentListProps {
+interface CommentListProps {
   navigation?: NavigationContainerRef<ParamListBase>;
   route?: {
     params: {
@@ -61,7 +62,8 @@ interface commentListProps {
   };
 }
 
-export const CommentList = ({ navigation, route }: commentListProps) => {
+export const CommentList = ({ navigation, route }: CommentListProps) => {
+  const postData = route?.params.postData;
   LOG.debug("CommentList", route?.params.postData);
   // console.log(props, "props");
   const { theme } = useAppTheme();
@@ -69,48 +71,38 @@ export const CommentList = ({ navigation, route }: commentListProps) => {
   const { strings } = useStringsAndLabels();
   const [offerModal, CreateOfferModal] = useState(false);
   const [replyofferModal, openReplyOfferModal] = useState(false);
-  var [gratisNo, totalGratisData]: any = useState(10);
-  var [gratisNoComment, totalGratisCommentData]: any = useState(10);
-  var [addComment, addCommentModal] = useState(false);
+  var [gratisNo, totalGratisData] = useState(10);
+  var [gratisNoComment, totalGratisCommentData] = useState(10);
+  var [isCommentModalVisible, setCommentModalVisible] = useState(false);
   var [isCommentData, showMoreComment] = useState(false);
-  const [addnewCmtReply, onAddCommentReply] = useState("");
+  const [addnewCmtReply, onAddCommentReply] = useState<string>();
   var [postId, postIdData]: any = useState();
   var [gratisIndex, gratisIndexData]: any = useState();
   const [isLoading, setLoading] = useState(false);
   const [pageCmt, setCmtPage] = useState(1);
   const [commentContent, setCommentContent] = useState("");
-  const [totalPages, setTotalPages] = useState(0);
-  const [currentPages, setCurrentPage] = useState(0);
-  const [commentList, setCommentListData] = useState<Comment[]>([]);
+  const [commentList, setCommentList] = useState<Comment[]>([]);
   const [gratisCmtID, setreplyGratisId] = useState();
   const [gratisCmtKey, setreplyGratisKey] = useState();
   var [commentIndex, setCommentIndex]: any = useState();
   const [gratistype, setGratisSelectType] = useState();
   const [childjIndex, setChildIndexForGratis]: any = useState();
-  const [replyId, commentReplyPostId] = useState("");
+  const [commentId, setCommentId] = useState<string>();
+  const [replyId, setReplyId] = useState<string>();
   const [replyIndex, setReplayIndex] = useState("");
-  const [gratisData, setGratisData] = useState(
-    route?.params.postData?.numGrats
+  const [numGrats, setNumGrats] = useState(
+    route?.params.postData?.numGrats ?? 0
   );
-  const [commentData, setCommentData] = useState(
-    route?.params.postData.numComments
+  const [numComments, setNumComments] = useState(
+    route?.params.postData.numComments ?? 0
   );
   const [postCommentIndexTwo, setPostCommentIndexTwo]: any = useState();
-  const [postData, setPostData] = useState(route?.params.postData);
-  const [commentListScrollEnable, setCommentListScrollEnable] = useState(true);
   const flatListRef: any = React.useRef();
-
-  useEffect(() => {
-    setGratisData(postData?.numGrats);
-    setCommentData(postData?.numComments);
-  }, [route?.params.postData]);
 
   useFocusEffect(
     useCallback(() => {
       if (postData?.id) {
-        setCommentListData([]);
-        setCmtPage(1);
-        getCommentListAPI(1);
+        getCommentListAPI();
       }
     }, [postData?.id])
   );
@@ -120,12 +112,12 @@ export const CommentList = ({ navigation, route }: commentListProps) => {
     navigation?.navigate(navigations.RECENTUSERPROFILE);
   };
 
-  async function getCommentListAPI(pageCount: any) {
+  async function getCommentListAPI() {
     if (postData) {
       setLoading(true);
       try {
         const comments = await listComments(postData.id);
-        setCommentListData(comments);
+        setCommentList(comments);
       } catch (e) {
         handleApiError("Error getting comments", e);
       } finally {
@@ -139,7 +131,7 @@ export const CommentList = ({ navigation, route }: commentListProps) => {
       setLoading(true);
       try {
         const newComment = await createComment(postData.id, commentContent);
-        setCommentListData([newComment, ...commentList]);
+        setCommentList([newComment, ...commentList]);
         setCommentContent("");
 
         flatListRef.current.scrollToOffset({ animated: true, offset: 0 });
@@ -187,7 +179,7 @@ export const CommentList = ({ navigation, route }: commentListProps) => {
         markers[commentIndex]["gratis"] =
           dataItem?.data?.data?.numCommentssGratis;
 
-        setGratisData(dataItem?.data?.data?.postGratis);
+        setNumGrats(dataItem?.data?.data?.postGratis);
         let markersTwo = { ...postData };
         // markersTwo["gratis"] = dataItem?.data?.data?.postGratis;
         // setPostData(markersTwo);
@@ -241,7 +233,7 @@ export const CommentList = ({ navigation, route }: commentListProps) => {
         markers[commentIndex]["replies"][childjIndex]["gratis"] =
           dataItem?.data?.data?.replayGratis;
 
-        setGratisData(dataItem?.data?.data?.postGratis);
+        setNumGrats(dataItem?.data?.data?.postGratis);
       }
 
       if (dataItem?.success === false) {
@@ -257,6 +249,27 @@ export const CommentList = ({ navigation, route }: commentListProps) => {
   }
 
   async function replyCommentOnPostAPI() {
+    setLoading(true);
+    if (!postData) {
+      return;
+    }
+
+    try {
+      const updatedComment = await createReplyToComment(
+        postData.id,
+        commentId!,
+        addnewCmtReply!
+      );
+      setCommentList(
+        commentList.map((c) => (c.id === commentId ? updatedComment : c))
+      );
+      setNumComments(numComments + 1);
+    } catch (e) {
+      handleApiError("Error creating reply", e);
+    } finally {
+      setLoading(false);
+    }
+
     const token = await AsyncStorage.getItem("token");
     var data: any = {
       content: addnewCmtReply,
@@ -289,7 +302,7 @@ export const CommentList = ({ navigation, route }: commentListProps) => {
         commentReplyArray[commentReplyArray.length - 1]
       );
 
-      setCommentData(dataItem.data.totalComment);
+      setNumComments(dataItem.data.totalComment);
 
       console.log(
         "---------------responce reply comment post----------",
@@ -304,12 +317,9 @@ export const CommentList = ({ navigation, route }: commentListProps) => {
     }
   }
 
-  const onReplyClick = (postId: any, index: any) => {
-    commentReplyPostId(postId);
-    setReplayIndex(replyId);
-    setPostCommentIndexTwo(index);
-    // setPostIndexTwo(parentIndex);
-    addCommentModal(true);
+  const handleReplyToComment = (commentId: string) => {
+    setCommentId(commentId);
+    setCommentModalVisible(true);
   };
 
   const openReplyGratis = (
@@ -361,7 +371,7 @@ export const CommentList = ({ navigation, route }: commentListProps) => {
         let markers = { ...postData };
         // markers["gratis"] = dataItem?.data?.data?.postGratis;
         // setPostData(markers);
-        setGratisData(dataItem?.data?.data?.postGratis);
+        setNumGrats(dataItem?.data?.data?.postGratis);
       }
       if (dataItem?.success === false) {
         Toast.show(dataItem?.message, Toast.LONG, {
@@ -421,7 +431,7 @@ export const CommentList = ({ navigation, route }: commentListProps) => {
     Keyboard.dismiss();
   };
 
-  const onReplyClose = () => {
+  const onReplyAdd = () => {
     if (addnewCmtReply === "") {
       Toast.show("Add Comment", Toast.LONG, {
         backgroundColor: "black",
@@ -429,7 +439,7 @@ export const CommentList = ({ navigation, route }: commentListProps) => {
     } else {
       setLoading(true);
       replyCommentOnPostAPI();
-      addCommentModal(false);
+      setCommentModalVisible(false);
     }
   };
 
@@ -444,28 +454,27 @@ export const CommentList = ({ navigation, route }: commentListProps) => {
     }
   };
 
-  const renderItem: ListRenderItem<Comment> = ({ item, index }) => {
-    LOG.debug("renderItem", item);
+  const renderItem: ListRenderItem<Comment> = ({ item: comment, index }) => {
     return (
       <View>
         <View style={styles.commentImgProfile}>
           <TouchableOpacity
             activeOpacity={0.8}
-            onPress={() => recentUserProfilePress(item?.commenter?.id)}
+            onPress={() => recentUserProfilePress(comment.commenter.id)}
           >
             <ImageComponent
               resizeMode="cover"
               style={styles.postProfile}
               source={{
-                uri: item?.commenter?.pic,
+                uri: comment.commenter.pic,
               }}
             ></ImageComponent>
           </TouchableOpacity>
           <View style={styles.commentDisplayCont}>
             <Text style={{ fontSize: 12, color: "#110101" }}>
-              {item?.commenter?.first_name} {item?.commenter?.last_name}
+              {comment.commenter.first_name} {comment.commenter.last_name}
             </Text>
-            <Text style={styles.replyMsgCont}>{item?.content}</Text>
+            <Text style={styles.replyMsgCont}>{comment.content}</Text>
           </View>
         </View>
 
@@ -474,19 +483,19 @@ export const CommentList = ({ navigation, route }: commentListProps) => {
             source={Vector}
             style={styles.vectorImg}
           ></ImageComponent>
-          <TouchableOpacity onPress={() => onReplyClick(item.id, index)}>
+          <TouchableOpacity onPress={() => handleReplyToComment(comment.id)}>
             <Text style={styles.replyLbl}>reply</Text>
           </TouchableOpacity>
 
           <Text style={styles.minuteCont}>
-            {formatTimeFromNow(item.postDate)}
+            {formatTimeFromNow(comment.postDate)}
           </Text>
-          <Text style={styles.minuteCont}>{item.gratis}</Text>
+          <Text style={styles.minuteCont}>{comment.gratis}</Text>
           <TouchableOpacity
             onPress={() =>
               openReplyGratis(
-                item.post_id,
-                item.id,
+                comment.post_id,
+                comment.id,
                 "",
                 // indexParent,
                 index,
@@ -505,7 +514,7 @@ export const CommentList = ({ navigation, route }: commentListProps) => {
 
         {/* {commentList?.reply?.content ? ( */}
 
-        {item.replies.map((reply: Reply, jindex: number) => {
+        {comment.replies.map((reply: Reply, jindex: number) => {
           return (
             <>
               <View>
@@ -541,7 +550,7 @@ export const CommentList = ({ navigation, route }: commentListProps) => {
                     style={styles.vectorImgTwo}
                   ></ImageComponent>
                   <TouchableOpacity
-                    onPress={() => onReplyClick(item.id, index)}
+                    onPress={() => handleReplyToComment(comment.id)}
                   >
                     <Text style={styles.replyLbl}>reply</Text>
                   </TouchableOpacity>
@@ -553,8 +562,8 @@ export const CommentList = ({ navigation, route }: commentListProps) => {
                   <TouchableOpacity
                     onPress={() =>
                       openReplyGratis(
-                        item.post_id,
-                        item.id,
+                        comment.post_id,
+                        comment.id,
                         reply.key,
                         // indexParent,
                         index,
@@ -580,7 +589,7 @@ export const CommentList = ({ navigation, route }: commentListProps) => {
   const postDataLoad = () => {
     if (isCommentData) {
       setCmtPage(pageCmt + 1);
-      getCommentListAPI(pageCmt + 1);
+      getCommentListAPI();
     }
   };
 
@@ -1006,7 +1015,7 @@ export const CommentList = ({ navigation, route }: commentListProps) => {
 
           <Modal
             transparent={true}
-            visible={addComment}
+            visible={isCommentModalVisible}
             animationType="slide"
             //  onDismiss={() => addCommentModal(false)}
           >
@@ -1039,7 +1048,7 @@ export const CommentList = ({ navigation, route }: commentListProps) => {
                       zIndex: 111122,
                     }}
                     activeOpacity={0.5}
-                    onPress={() => addCommentModal(false)}
+                    onPress={() => setCommentModalVisible(false)}
                   >
                     <ImageComponent
                       source={closeCard}
@@ -1056,7 +1065,7 @@ export const CommentList = ({ navigation, route }: commentListProps) => {
                     ></TextInput>
                   </View>
                   <TouchableOpacity
-                    onPress={() => onReplyClose()}
+                    onPress={() => onReplyAdd()}
                     activeOpacity={0.8}
                     style={styles.purchaseContainer}
                   >
