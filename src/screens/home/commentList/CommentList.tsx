@@ -39,7 +39,6 @@ import {
 } from "~/assets/images";
 import { ImageComponent } from "~/components/image-component";
 import { Navbar } from "~/components/navbar/Navbar";
-import { LOG } from "~/config";
 import { navigations } from "~/config/app-navigation/constant";
 import {
   createComment,
@@ -64,7 +63,6 @@ interface CommentListProps {
 
 export const CommentList = ({ navigation, route }: CommentListProps) => {
   const postData = route?.params.postData;
-  LOG.debug("CommentList", route?.params.postData);
   // console.log(props, "props");
   const { theme } = useAppTheme();
   const styles = createStyleSheet(theme);
@@ -152,12 +150,6 @@ export const CommentList = ({ navigation, route }: CommentListProps) => {
       commentId: gratisCmtID,
       commentKey: gratisCmtKey,
     };
-    console.log(
-      "=========== Gratis Reply Data API Reques" +
-        process.env.API_URL +
-        "/v1/posts/gratis-sharing =============="
-    );
-    console.log(data);
     try {
       const response = await fetch(
         process.env.API_URL + "/v1/posts/gratis-sharing",
@@ -171,8 +163,6 @@ export const CommentList = ({ navigation, route }: CommentListProps) => {
         }
       );
       const dataItem = await response.json();
-      console.log("=========== Gratis Data Reply API Response ==============");
-      console.log(dataItem);
       if (dataItem?.success === true) {
         let markers = [...commentList];
 
@@ -190,10 +180,10 @@ export const CommentList = ({ navigation, route }: CommentListProps) => {
           backgroundColor: "black",
         });
       }
-      setLoading(false);
     } catch (error) {
+      handleApiError("Error sharing", error);
+    } finally {
       setLoading(false);
-      console.error(error);
     }
   }
 
@@ -206,12 +196,6 @@ export const CommentList = ({ navigation, route }: CommentListProps) => {
       commentId: gratisCmtID,
       commentKey: gratisCmtKey,
     };
-    console.log(
-      "=========== Gratis Reply Data API Reques" +
-        process.env.API_URL +
-        "/v1/posts/gratis-sharing =============="
-    );
-    console.log(data);
     try {
       const response = await fetch(
         process.env.API_URL + "/v1/posts/gratis-sharing",
@@ -225,8 +209,6 @@ export const CommentList = ({ navigation, route }: CommentListProps) => {
         }
       );
       const dataItem = await response.json();
-      console.log("=========== Gratis Data Reply API Response ==============");
-      console.log(dataItem);
       if (dataItem?.success === true) {
         let markers = [...commentList];
 
@@ -268,52 +250,6 @@ export const CommentList = ({ navigation, route }: CommentListProps) => {
       handleApiError("Error creating reply", e);
     } finally {
       setLoading(false);
-    }
-
-    const token = await AsyncStorage.getItem("token");
-    var data: any = {
-      content: addnewCmtReply,
-      comment_id: replyId,
-    };
-    console.log(data);
-    console.log(
-      process.env.API_URL + "/v1/posts/" + postData?.id + "/comments/create"
-    );
-    try {
-      const response = await fetch(
-        process.env.API_URL + "/v1/posts/" + postData?.id + "/comments/create",
-        {
-          method: "post",
-          headers: new Headers({
-            Authorization: "Bearer " + token,
-            "Content-Type": "application/json",
-          }),
-          body: JSON.stringify(data),
-        }
-      );
-      const dataItem = await response.json();
-      console.log("===========Comment on Post API Request ==============");
-
-      let markers = [...commentList];
-      var commentReplyArray = dataItem.data["reply"];
-
-      // markers[postIndexTwo]["comment"] = dataItem.data.totalComment;
-      markers[postCommentIndexTwo]["replies"].push(
-        commentReplyArray[commentReplyArray.length - 1]
-      );
-
-      setNumComments(dataItem.data.totalComment);
-
-      console.log(
-        "---------------responce reply comment post----------",
-        JSON.stringify(dataItem)
-      );
-      setLoading(false);
-      // getCommentListAPI(setReplyId, replyIndex);
-
-      console.log(dataItem);
-    } catch (error) {
-      console.error(error);
     }
   }
 
@@ -366,7 +302,6 @@ export const CommentList = ({ navigation, route }: CommentListProps) => {
         }
       );
       const dataItem = await response.json();
-      console.log(dataItem);
       if (dataItem?.success === true) {
         let markers = { ...postData };
         // markers["gratis"] = dataItem?.data?.data?.postGratis;
