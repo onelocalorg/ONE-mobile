@@ -1,4 +1,6 @@
+import _ from "lodash/fp";
 import { DateTime } from "luxon";
+import { Comment } from "~/types/comment";
 import { OneUser } from "~/types/one-user";
 import { Post } from "~/types/post";
 import { PostData } from "~/types/post-data";
@@ -65,3 +67,31 @@ const postToBody = (data: PostUpdateData) => ({
 
 export const sendGratis = (postId: string, points: number) =>
   doPost<PostGratis>("/v1/posts/gratis-sharing", { postId, points });
+
+export const createComment = (postId: string, content: string) =>
+  doPost<Comment>(
+    `/v1/posts/${postId}/comments/create`,
+    { content },
+    resourceToComment
+  );
+
+export const listComments = (postId: string) =>
+  doPost<Comment[]>(
+    `/v1/comments?post_id=${postId}`,
+    undefined,
+    pagedResourceToComments
+  );
+
+const resourceToComment = (c: any) =>
+  ({
+    ..._.omit(["reply", "date"], c),
+    postDate: DateTime.fromISO(c.postDate),
+    replies:
+      c.reply?.map((r: any) => ({
+        ...r,
+        postDate: DateTime.fromISO(r.postDate),
+      })) ?? [],
+  } as Comment);
+
+const pagedResourceToComments = (data: any) =>
+  data.results.map(resourceToComment);
