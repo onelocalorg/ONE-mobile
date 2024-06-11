@@ -101,7 +101,10 @@ export const Map = ({ onEventPress, onPostPress, onAvatarPress }: MapProps) => {
 
   const fetchPosts = async () => {
     try {
-      const posts = await listPostsForMap({ numPosts: 50 });
+      const posts = await listPostsForMap({
+        startDate: DateTime.now(),
+        numPosts: 50,
+      });
       setPosts(posts);
     } catch (e) {
       handleApiError("Failed loading posts", e);

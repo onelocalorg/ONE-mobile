@@ -420,7 +420,6 @@ interface Card {
 export const onPurchaseTicket = async (props: PurchaseTicketProps) => {
   const { bodyParams } = props ?? {};
   let response;
-  console.log(bodyParams, "bodyParams");
   try {
     const endPoint = apiConstants.purchaseTicket;
     const data = await API.homeService.post(endPoint, bodyParams);

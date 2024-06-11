@@ -26,29 +26,38 @@ export async function deletePost(id: string) {
 type ListPostsParams = {
   numPosts?: number;
   start?: string;
+  startDate?: DateTime;
 };
-export const listPostsForMap = ({ numPosts = 20, start }: ListPostsParams) =>
+export const listPostsForMap = (props: ListPostsParams) =>
   listPostsInternal({
-    numPosts,
-    start,
+    ...props,
     formatForMap: true,
   }) as Promise<GeoJSON.FeatureCollection>;
 
 // TODO 'start' is for pagination
-export const listPosts = ({ numPosts = 20, start }: ListPostsParams) =>
-  listPostsInternal({ numPosts, start }) as Promise<Post[]>;
+export const listPosts = (props: ListPostsParams) =>
+  listPostsInternal(props) as Promise<Post[]>;
 
 type ListPostsInternalParams = {
   numPosts?: number;
   start?: string;
+  startDate?: DateTime;
   formatForMap?: boolean;
 };
 const listPostsInternal = ({
   numPosts = 20,
+  startDate,
   formatForMap = false,
 }: ListPostsInternalParams) => {
+  const urlParams: string[] = [];
+  if (!_.isNil(startDate)) urlParams.push(`start_date=${startDate.toISO()}`);
+  if (!_.isNil(numPosts)) urlParams.push(`limit=${numPosts.toString()}`);
+
+  const urlSearchParams = urlParams.join("&");
+  LOG.debug("search", urlSearchParams);
+
   return doGet(
-    `/v2/posts?limit=${numPosts}`,
+    `/v2/posts?${urlSearchParams.toString()}`,
     formatForMap
       ? resourcesToFeatureCollection
       : (data) => data.map(resourceToPost)
