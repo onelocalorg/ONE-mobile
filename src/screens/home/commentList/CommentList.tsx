@@ -78,7 +78,7 @@ export const CommentList = ({ navigation, route }: commentListProps) => {
   var [gratisIndex, gratisIndexData]: any = useState();
   const [isLoading, setLoading] = useState(false);
   const [pageCmt, setCmtPage] = useState(1);
-  const [addnewCmt, onAddComment] = useState("");
+  const [commentContent, setCommentContent] = useState("");
   const [totalPages, setTotalPages] = useState(0);
   const [currentPages, setCurrentPage] = useState(0);
   const [commentList, setCommentListData] = useState<Comment[]>([]);
@@ -138,56 +138,16 @@ export const CommentList = ({ navigation, route }: commentListProps) => {
     if (postData) {
       setLoading(true);
       try {
-        const newComment = await createComment(postData.id, addnewCmt);
-        setCommentListData([...commentList, newComment]);
+        const newComment = await createComment(postData.id, commentContent);
+        setCommentListData([newComment, ...commentList]);
+        setCommentContent("");
+
+        flatListRef.current.scrollToOffset({ animated: true, offset: 0 });
       } catch (e) {
-        handleApiError("Error getting comments", e);
+        handleApiError("Error creating comment", e);
       } finally {
         setLoading(false);
       }
-    }
-
-    const token = await AsyncStorage.getItem("token");
-    var data: any = {
-      content: addnewCmt,
-    };
-    console.log("===========Comment on Post API Request ==============");
-    console.log(data);
-    console.log(
-      process.env.API_URL + "/v1/posts/" + postData?.id + "/comments/create"
-    );
-    try {
-      const response = await fetch(
-        process.env.API_URL + "/v1/posts/" + postData?.id + "/comments/create",
-        {
-          method: "post",
-          headers: new Headers({
-            Authorization: "Bearer " + token,
-            "Content-Type": "application/json",
-          }),
-          body: JSON.stringify(data),
-        }
-      );
-      const dataItem = await response.json();
-
-      var dataTemp = dataItem?.data;
-      var marker = commentList;
-
-      marker.splice(0, 0, ...[dataTemp]);
-
-      setCommentListData(marker);
-      setCommentData(dataItem.data.totalComment);
-      flatListRef.current.scrollToOffset({ animated: true, offset: 0 });
-      console.log("=========== Comment on Post API Response ==============");
-      console.log(JSON.stringify(marker));
-      onAddComment("");
-      onAddCommentReply("");
-      // getCommentListAPITwo(postId);
-      setCommentListScrollEnable(true);
-      setLoading(false);
-    } catch (error) {
-      setLoading(false);
-      console.error(error);
     }
   }
 
@@ -474,7 +434,7 @@ export const CommentList = ({ navigation, route }: commentListProps) => {
   };
 
   const addCommentHide = () => {
-    if (addnewCmt === "") {
+    if (commentContent === "") {
       Toast.show("Add Comment", Toast.LONG, {
         backgroundColor: "black",
       });
@@ -885,8 +845,8 @@ export const CommentList = ({ navigation, route }: commentListProps) => {
                     style={styles.commentInput}
                     placeholder="Make a Comment"
                     placeholderTextColor="gray"
-                    value={addnewCmt}
-                    onChangeText={(text) => onAddComment(text)}
+                    value={commentContent}
+                    onChangeText={(text) => setCommentContent(text)}
                   ></TextInput>
                   <TouchableOpacity
                     style={{ alignSelf: "center" }}
