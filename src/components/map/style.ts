@@ -215,15 +215,17 @@ export const createStyleSheet = (theme: ThemeProps) => {
     listContainer: {
       borderRadius: theme.borderRadius.radius16,
       borderWidth: theme.borderWidth.borderWidth1,
-      borderColor: theme.colors.black,
-      paddingVertical: verticalScale(6),
-      paddingHorizontal: normalScale(6),
+      borderColor: theme.colors.red,
+      paddingVertical: verticalScale(8),
+      paddingHorizontal: normalScale(8),
       backgroundColor: theme.colors.white,
       flexDirection: "row",
       marginTop: verticalScale(13),
-      marginHorizontal: 10,
+      shadowColor: theme.colors.darkGrey,
+      shadowOffset: { width: 1, height: 2 },
+      shadowOpacity: 0.9,
+      shadowRadius: 4,
     },
-
     dummy: {
       width: normalScale(80),
       height: verticalScale(92),

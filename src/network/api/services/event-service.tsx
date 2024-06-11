@@ -169,7 +169,7 @@ const localEventToBody = (data: LocalEventUpdateData) =>
 
 export const featureToLocalEvent = (feature: GeoJSON.Feature) => {
   const properties = feature.properties as EventResource;
-  console.log("featureToLocalEvent", properties);
+  LOG.debug("featureToLocalEvent", properties);
   return {
     ..._.omit(
       ["location", "start_date", "end_date", "full_address"],

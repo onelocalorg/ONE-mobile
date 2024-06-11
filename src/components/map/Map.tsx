@@ -23,8 +23,14 @@ import {
   featureToLocalEvent,
   listEventsForMap,
 } from "~/network/api/services/event-service";
+import {
+  featureToPost,
+  listPostsForMap,
+} from "~/network/api/services/post-service";
+import { PostContentView } from "~/screens/home/PostContentView";
 import { LocalEvent } from "~/types/local-event";
-import { LocalEventData } from "~/types/local-event-data";
+import { OneUser } from "~/types/one-user";
+import { Post } from "~/types/post";
 import { handleApiError } from "~/utils/common";
 import { EventItem } from "../events/EventItem";
 
@@ -40,9 +46,11 @@ const BOULDER_LAT = 40.015;
 const DEFAULT_ZOOM = 11.5;
 
 interface MapProps {
-  onClicked?: (event: LocalEventData) => void;
+  onEventPress?: (event: LocalEvent) => void;
+  onPostPress?: (post: Post) => void;
+  onAvatarPress?: (user: OneUser) => void;
 }
-export const Map = ({ onClicked }: MapProps) => {
+export const Map = ({ onEventPress, onPostPress, onAvatarPress }: MapProps) => {
   const { theme } = useAppTheme();
   const styles = createStyleSheet(theme);
   var [eventData, eventDetail]: any = useState([]);
@@ -54,7 +62,9 @@ export const Map = ({ onClicked }: MapProps) => {
   ]);
 
   const [events, setEvents] = useState<FeatureCollection>();
+  const [posts, setPosts] = useState<FeatureCollection>();
   const [selectedEvents, setSelectedEvents] = useState<LocalEvent[]>([]);
+  const [selectedPosts, setSelectedPosts] = useState<Post[]>([]);
 
   var makeDate = new Date();
   makeDate.setMonth(makeDate.getMonth() + 1);
@@ -65,13 +75,14 @@ export const Map = ({ onClicked }: MapProps) => {
 
   const imageMarkers = {
     event: eventIcon,
-    gift: giftIcon,
+    post: giftIcon,
   };
 
   useFocusEffect(
     useCallback(() => {
       setSelectedEvents([]);
-      fetchEvents();
+      setSelectedPosts([]);
+      Promise.all([fetchEvents(), fetchPosts()]);
     }, [])
   );
 
@@ -85,6 +96,15 @@ export const Map = ({ onClicked }: MapProps) => {
       setEvents(events);
     } catch (e) {
       handleApiError("Failed loading events", e);
+    }
+  };
+
+  const fetchPosts = async () => {
+    try {
+      const posts = await listPostsForMap({ numPosts: 50 });
+      setPosts(posts);
+    } catch (e) {
+      handleApiError("Failed loading posts", e);
     }
   };
 
@@ -370,8 +390,22 @@ export const Map = ({ onClicked }: MapProps) => {
   const handleMapEventPress = (event: OnPressEvent) => {
     LOG.debug("Map clicked", event);
     const localEvents = event.features.map(featureToLocalEvent);
+    setSelectedPosts([]);
     setSelectedEvents(localEvents);
     // selectedEvent?.id === localEvent.id ? undefined : localEvent;
+  };
+
+  const handleMapPostPress = (event: OnPressEvent) => {
+    LOG.debug("Map clicked", event);
+    const localPosts = event.features.map(featureToPost);
+    setSelectedEvents([]);
+    setSelectedPosts(localPosts);
+    // selectedEvent?.id === localEvent.id ? undefined : localEvent;
+  };
+
+  const clearSelected = () => {
+    setSelectedEvents([]);
+    setSelectedPosts([]);
   };
 
   return (
@@ -380,7 +414,7 @@ export const Map = ({ onClicked }: MapProps) => {
         style={styles.map}
         zoomEnabled={true}
         compassEnabled={true}
-        onPress={() => setSelectedEvents([])}
+        onPress={clearSelected}
         gestureSettings={{
           pinchPanEnabled: false,
         }}
@@ -405,32 +439,57 @@ export const Map = ({ onClicked }: MapProps) => {
           //   parseFloat(tempdata?.latitude),
           // ]}
         />
-        <ShapeSource
-          id="events"
-          shape={events}
-          hitbox={{ width: 20, height: 20 }}
-          onPress={handleMapEventPress}
-        >
-          <SymbolLayer
-            id="eventSymbol"
-            minZoomLevel={1}
-            style={{
-              iconImage: "event",
-            }}
-          />
-          <Images
-            images={imageMarkers}
-            onImageMissing={(imageKey: string) =>
-              console.log("=> on image missing", imageKey)
-            }
-          />
-        </ShapeSource>
+        {events ? buildLayer("event", events, handleMapEventPress) : null}
+        {posts ? buildLayer("post", posts, handleMapPostPress) : null}
         <>
           {selectedEvents.map((se) => (
-            <EventItem key={se.id} event={se} onPress={() => onClicked?.(se)} />
+            <EventItem
+              key={se.id}
+              event={se}
+              onPress={() => onEventPress?.(se)}
+            />
+          ))}
+          {selectedPosts.map((sp) => (
+            <View style={styles.listContainer}>
+              <PostContentView
+                key={sp.id}
+                post={sp}
+                onPress={() => onPostPress?.(sp)}
+                onAvatarPress={onAvatarPress}
+              />
+            </View>
           ))}
         </>
       </MapView>
     </View>
   );
+
+  function buildLayer(
+    type: string,
+    data: FeatureCollection,
+    onPress: (e: OnPressEvent) => void
+  ) {
+    return (
+      <ShapeSource
+        id={type}
+        shape={data}
+        hitbox={{ width: 20, height: 20 }}
+        onPress={onPress}
+      >
+        <SymbolLayer
+          id={`${type}Symbol`}
+          minZoomLevel={1}
+          style={{
+            iconImage: type,
+          }}
+        />
+        <Images
+          images={imageMarkers}
+          onImageMissing={(imageKey: string) =>
+            console.log("=> on image missing", imageKey)
+          }
+        />
+      </ShapeSource>
+    );
+  }
 };

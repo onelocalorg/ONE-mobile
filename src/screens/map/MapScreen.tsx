@@ -7,7 +7,9 @@ import { View } from "react-native";
 import { Map } from "~/components/map/Map";
 import { Navbar } from "~/components/navbar/Navbar";
 import { navigations } from "~/config/app-navigation/constant";
-import { LocalEventData } from "~/types/local-event-data";
+import { LocalEvent } from "~/types/local-event";
+import { OneUser } from "~/types/one-user";
+import { Post } from "~/types/post";
 
 interface MapScreenProps {
   navigation: NavigationContainerRef<ParamListBase>;
@@ -16,18 +18,28 @@ interface MapScreenProps {
 export const MapScreen = (props: MapScreenProps) => {
   const { navigation } = props || {};
 
-  const onNavigate = (item: LocalEventData) => {
-    navigation?.navigate(navigations.EVENT_DETAIL, { id: item?.id });
+  const onNavigateToEvent = (item: LocalEvent) => {
+    navigation?.push(navigations.EVENT_DETAIL, { id: item?.id });
+  };
+
+  const onNavigateToPost = (item: Post) => {
+    navigation.push(navigations.COMMENTLIST, {
+      postData: item,
+    });
+  };
+
+  const onNavigateToUserProfile = (user: OneUser) => {
+    navigation.push(navigations.RECENTUSERPROFILE, { userId: user.id });
   };
 
   return (
     <View style={{ flex: 1 }}>
-      <Navbar
-        navigation={
-          navigation as unknown as NavigationContainerRef<ParamListBase>
-        }
+      <Navbar navigation={navigation} />
+      <Map
+        onEventPress={onNavigateToEvent}
+        onPostPress={onNavigateToPost}
+        onAvatarPress={onNavigateToUserProfile}
       />
-      <Map onClicked={onNavigate} />
     </View>
   );
 };

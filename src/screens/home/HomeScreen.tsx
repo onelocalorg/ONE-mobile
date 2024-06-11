@@ -4,13 +4,11 @@ import {
   ParamListBase,
   useFocusEffect,
 } from "@react-navigation/native";
-import _ from "lodash/fp";
 import React, { useCallback, useEffect, useState } from "react";
 import {
   ActivityIndicator,
   Alert,
   FlatList,
-  Image,
   Keyboard,
   KeyboardAvoidingView,
   ListRenderItem,
@@ -38,11 +36,8 @@ import {
   comment,
   defaultUser,
   gratitudeBlack,
-  greenImage,
   minus,
-  pin,
   plus,
-  postCalender,
 } from "~/assets/images";
 import { ImageComponent } from "~/components/image-component";
 import { Navbar } from "~/components/navbar/Navbar";
@@ -54,9 +49,11 @@ import {
 } from "~/network/api/services/post-service";
 import { getRecentlyJoined } from "~/network/api/services/user-service";
 import { getData, persistKeys, setData } from "~/network/constant";
+import { OneUser } from "~/types/one-user";
 import { Post } from "~/types/post";
 import { RecentlyJoined } from "~/types/recently-joined";
 import { handleApiError } from "~/utils/common";
+import { PostContentView } from "./PostContentView";
 import { createStyleSheet } from "./style";
 // import Geolocation from "@react-native-community/geolocation";
 
@@ -178,31 +175,6 @@ export const HomeScreen = (props: HomeScreenProps) => {
       });
   };
 
-  const getCurrentLocation = () => {
-    return new Promise((resolve, reject) => {
-      GetLocation.getCurrentPosition({
-        enableHighAccuracy: false,
-        timeout: 15000,
-      })
-        .then((location) => {
-          resolve({ location });
-          console.log(location);
-          setUserLocation(location);
-          if (location.latitude && location.longitude) {
-            getRecentlyJoinUserAPI(location);
-          } else {
-            getRecentlyJoinUserAPI("");
-          }
-        })
-        .catch((error) => {
-          reject(error.message);
-          console.log(error);
-          getRecentlyJoinUserAPI("");
-          const { code, message } = error;
-        });
-    });
-  };
-
   async function handleEnabledPressed() {
     if (Platform.OS === "android") {
       try {
@@ -263,7 +235,7 @@ export const HomeScreen = (props: HomeScreenProps) => {
   };
 
   async function postListAPI() {
-    const posts = await listPosts();
+    const posts = await listPosts({ numPosts: 30 });
     setRefresh(false);
     setPostList(posts);
     setLoading(false);
@@ -365,12 +337,11 @@ export const HomeScreen = (props: HomeScreenProps) => {
     Keyboard.dismiss();
   };
 
-  const recentUserProfilePress = (id: any) => {
-    AsyncStorage.setItem("recentUserId", id);
-    navigation.navigate(navigations.RECENTUSERPROFILE, { userId: id });
+  const recentUserProfilePress = (user: OneUser) => {
+    navigation.navigate(navigations.RECENTUSERPROFILE, { userId: user.id });
   };
 
-  const onCommentOpen = (item: any, post_index: any) => {
+  const onCommentOpen = (item: Post, post_index: number) => {
     navigation.navigate(navigations.COMMENTLIST, {
       postData: item,
       postIndex: post_index,
@@ -436,173 +407,40 @@ export const HomeScreen = (props: HomeScreenProps) => {
 
   const renderItem: ListRenderItem<Post> = ({ item, index }) => {
     return (
-      <TouchableOpacity activeOpacity={1} onPress={keyboardDismiss} key={index}>
-        <View style={styles.feedContainer}>
-          <Text style={styles.posttitle}>{_.capitalize(item?.type)}</Text>
+      <TouchableOpacity
+        activeOpacity={1}
+        onPress={keyboardDismiss}
+        key={index}
+        style={styles.feedContainer}
+      >
+        <PostContentView
+          post={item}
+          onPress={() => openPostModal(item.id, item)}
+          onAvatarPress={(author: OneUser) => recentUserProfilePress(author)}
+        />
+        <View style={styles.gratisAndCommentContainer}>
           <TouchableOpacity
-            style={{
-              position: "absolute",
-              right: 14,
-              top: 10,
-              zIndex: 111122,
-            }}
+            activeOpacity={0.8}
+            style={styles.gratisContainer}
+            onPress={() => OfferModalShow(item.id, index)}
           >
-            <TouchableOpacity onPress={() => openPostModal(item.id, item)}>
-              <ImageComponent
-                resizeMode="cover"
-                style={styles.postfilterImage}
-                source={greenImage}
-              ></ImageComponent>
-            </TouchableOpacity>
-          </TouchableOpacity>
-          <View style={styles.userDetailcont}>
-            <TouchableOpacity
-              onPress={() => recentUserProfilePress(item.author.id)}
-            >
-              <ImageComponent
-                resizeMode="cover"
-                style={styles.postProfile}
-                source={{ uri: item.author.pic }}
-              ></ImageComponent>
-            </TouchableOpacity>
-            <View>
-              <View>
-                {item?.type === "Gratis" ? (
-                  <View>
-                    <Text numberOfLines={1} style={styles.userName}>
-                      {item.author.first_name} {item.author.last_name}{" "}
-                    </Text>
-                    {/* {item?.to?.users.length !== 0 ? (
-                      <Text numberOfLines={1} style={styles.sentPointClass}>
-                        sent {item?.to?.users[0]?.point} gratis to{" "}
-                        <Text style={styles.userName}>
-                          {item?.to?.users[0]?.user_id["first_name"]}{" "}
-                          {item?.to?.users[0]?.user_id["last_name"]}{" "}
-                          {item?.to?.users[1]?.user_id["first_name"]}{" "}
-                          {item?.to?.users[1]?.user_id["last_name"]}
-                        </Text>
-                      </Text>
-                    ) : (
-                      <></>
-                    )} */}
-                  </View>
-                ) : (
-                  <Text numberOfLines={1} style={styles.userName}>
-                    {item.author.first_name} {item.author.last_name}
-                  </Text>
-                )}
-                {item.postDate ? (
-                  <Text style={styles.postTime}>
-                    {item.postDate.toLocaleString()}
-                  </Text>
-                ) : null}
-              </View>
-            </View>
-          </View>
-          <View
-            style={
-              Platform.OS === "ios"
-                ? styles.userListDisplayCont
-                : styles.userListDisplayContTwo
-            }
-          >
-            {/* <TouchableOpacity
-              onPress={() =>
-                recentUserProfilePress(item?.to?.users[0]?.user_id["id"])
-              }
-            >
-              <ImageComponent
-                resizeMode="cover"
-                style={styles.userListDisplay}
-                source={{
-                  uri: item?.to?.users[0]?.user_id["pic"],
-                }}
-              ></ImageComponent>
-            </TouchableOpacity> */}
-            {/* <TouchableOpacity
-              onPress={() =>
-                recentUserProfilePress(item?.to?.users[1]?.user_id["id"])
-              }
-            >
-              <ImageComponent
-                resizeMode="cover"
-                style={styles.userListDisplay}
-                source={{ uri: item?.to?.users[1]?.user_id["pic"] }}
-              ></ImageComponent>
-            </TouchableOpacity> */}
-          </View>
-          <Text style={styles.postDes}>{item.details}</Text>
-          {item.event_image ? (
+            <Text style={styles.gratisClass}>+{item.numGrats}</Text>
             <ImageComponent
-              resizeMode="cover"
-              source={{ uri: item.event_image }}
-              style={styles.userPost}
+              source={gratitudeBlack}
+              style={styles.commentImgTwo}
             ></ImageComponent>
-          ) : null}
-          <View style={styles.postDetailCont}>
-            <Text style={styles.postDetailTitle}>What:</Text>
-            {/* <ImageComponent
-              source={{ uri: item?.what?.icon }}
-              style={styles.detailImage}
-            ></ImageComponent> */}
-            <Text style={styles.postDetail}>{item.name}</Text>
-          </View>
-          {/* {item?.type !== "Gratis" && item?.for?.name ? (
-            <View style={styles.postDetailCont}>
-              <Text style={styles.postDetailTitle}>For:</Text>
-              <Image
-                source={{ uri: item?.for?.icon }}
-                style={styles.detailImage}
-              ></Image>
-              <Text style={styles.postDetail}>{item?.for?.name}</Text>
-            </View>
-          ) : (
-            <></>
-          )} */}
-          {item?.type !== "Gratis" && item.address ? (
-            <View style={styles.postDetailCont}>
-              <Text style={styles.postDetailTitle}>Where:</Text>
-              <Image source={pin} style={styles.detailImage}></Image>
-              <Text style={styles.postDetail}>{item.address}</Text>
-            </View>
-          ) : (
-            <></>
-          )}
-
-          {item?.startDate ? (
-            <View style={styles.postDetailCont}>
-              <Text style={styles.postDetailTitle}>When:</Text>
-              <Image source={postCalender} style={styles.detailImage}></Image>
-              <Text style={styles.postDetail}>
-                {item.startDate.toLocaleString()}
-              </Text>
-            </View>
-          ) : null}
-
-          <View style={styles.gratisAndCommentContainer}>
-            <TouchableOpacity
-              activeOpacity={0.8}
-              style={styles.gratisContainer}
-              onPress={() => OfferModalShow(item.id, index)}
-            >
-              <Text style={styles.gratisClass}>+{item.numGrats}</Text>
-              <ImageComponent
-                source={gratitudeBlack}
-                style={styles.commentImgTwo}
-              ></ImageComponent>
-            </TouchableOpacity>
-            <TouchableOpacity
-              activeOpacity={0.8}
-              onPress={() => onCommentOpen(item, index)}
-              style={styles.commentsContainer}
-            >
-              <Text style={styles.commentClass}>{item.numComments}</Text>
-              <ImageComponent
-                source={comment}
-                style={styles.commentImageThree}
-              ></ImageComponent>
-            </TouchableOpacity>
-          </View>
+          </TouchableOpacity>
+          <TouchableOpacity
+            activeOpacity={0.8}
+            onPress={() => onCommentOpen(item, index)}
+            style={styles.commentsContainer}
+          >
+            <Text style={styles.commentClass}>{item.numComments}</Text>
+            <ImageComponent
+              source={comment}
+              style={styles.commentImageThree}
+            ></ImageComponent>
+          </TouchableOpacity>
         </View>
       </TouchableOpacity>
     );
@@ -718,26 +556,22 @@ export const HomeScreen = (props: HomeScreenProps) => {
                     horizontal={true}
                     showsHorizontalScrollIndicator={false}
                   >
-                    {userList?.map((userList: any) => {
-                      return (
-                        <TouchableOpacity
-                          key={Math.random()}
-                          onPress={() => recentUserProfilePress(userList.id)}
-                        >
-                          <ImageComponent
-                            style={styles.avatarImage}
-                            isUrl={!!userList?.pic}
-                            resizeMode="cover"
-                            uri={userList?.pic}
-                          ></ImageComponent>
-                        </TouchableOpacity>
-                      );
-                    })}
+                    {userList?.map((userList: any) => (
+                      <TouchableOpacity
+                        key={Math.random()}
+                        onPress={() => recentUserProfilePress(userList.id)}
+                      >
+                        <ImageComponent
+                          style={styles.avatarImage}
+                          isUrl={!!userList?.pic}
+                          resizeMode="cover"
+                          uri={userList?.pic}
+                        ></ImageComponent>
+                      </TouchableOpacity>
+                    ))}
                   </ScrollView>
                 </View>
-              ) : (
-                <View></View>
-              )}
+              ) : null}
 
               <TouchableOpacity
                 activeOpacity={0.8}

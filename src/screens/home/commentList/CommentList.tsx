@@ -56,7 +56,7 @@ interface CommentListProps {
   route?: {
     params: {
       postData: Post;
-      postIndex: number;
+      postIndex?: number;
     };
   };
 }
