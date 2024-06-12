@@ -50,12 +50,12 @@ export const PostContentView = ({
         </TouchableOpacity>
         <View>
           <View>
-            {post?.type === "Gratis" ? (
+            {/* {post?.type === "Gratis" ? (
               <View>
                 <Text numberOfLines={1} style={styles.userName}>
                   {post.author.first_name} {post.author.last_name}
                 </Text>
-                {/* {post?.to?.users.length !== 0 ? (
+                {post?.to?.users.length !== 0 ? (
                   <Text numberOfLines={1} style={styles.sentPointClass}>
                     sent {post?.to?.users[0]?.point} gratis to{" "}
                     <Text style={styles.userName}>
@@ -67,13 +67,13 @@ export const PostContentView = ({
                   </Text>
                 ) : (
                   <></>
-                )} */}
+                )}
               </View>
-            ) : (
-              <Text numberOfLines={1} style={styles.userName}>
-                {post.author.first_name} {post.author.last_name}
-              </Text>
-            )}
+            ) : ( */}
+            <Text numberOfLines={1} style={styles.userName}>
+              {post.author.first_name} {post.author.last_name}
+            </Text>
+            {/* )} */}
             {post.postDate ? (
               <Text style={styles.postTime}>
                 {post.postDate.toLocaleString()}

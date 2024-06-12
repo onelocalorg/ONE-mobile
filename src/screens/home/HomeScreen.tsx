@@ -4,6 +4,7 @@ import {
   ParamListBase,
   useFocusEffect,
 } from "@react-navigation/native";
+import _ from "lodash/fp";
 import React, { useCallback, useEffect, useState } from "react";
 import {
   ActivityIndicator,
@@ -291,7 +292,6 @@ export const HomeScreen = (props: HomeScreenProps) => {
   }
 
   async function blockUserAPI(postID: any, selectOP: any) {
-    setLoading(true);
     const token = await AsyncStorage.getItem("token");
     try {
       const response = await fetch(
@@ -310,6 +310,14 @@ export const HomeScreen = (props: HomeScreenProps) => {
           Toast.show("User Block successfully", Toast.LONG, {
             backgroundColor: "black",
           });
+          const blockedUser = postList.find((p) => p.id === postID)?.author;
+
+          if (blockedUser) {
+            setPostList(
+              _.reject((p) => p.author.id === blockedUser.id, postList)
+            );
+            setUserList(_.reject((u) => u.id === blockedUser.id, userList));
+          }
         } else if (selectOP === 2) {
           Toast.show("Report Submit successfully", Toast.LONG, {
             backgroundColor: "black",
@@ -400,8 +408,8 @@ export const HomeScreen = (props: HomeScreenProps) => {
     } else if (postSelectType === 2) {
       addReportReason("");
       reportModalShowHide(true);
-    } else if (postSelectType === 3) {
-      hideUserAlert(postSelectType);
+      // } else if (postSelectType === 3) {
+      //   hideUserAlert(postSelectType);
     }
   };
 
@@ -694,20 +702,24 @@ export const HomeScreen = (props: HomeScreenProps) => {
                 </TouchableOpacity>
               </>
             ) : (
-              <></>
+              <>
+                <TouchableOpacity onPress={() => postHideOptionSelect(1)}>
+                  <Text style={[styles.postText, { color: "white" }]}>
+                    Block User
+                  </Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => postHideOptionSelect(2)}>
+                  <Text style={[styles.postText, { color: "white" }]}>
+                    Report Content
+                  </Text>
+                </TouchableOpacity>
+              </>
             )}
-
-            <TouchableOpacity onPress={() => postHideOptionSelect(1)}>
-              <Text style={[styles.postText, { color: "white" }]}>Block</Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => postHideOptionSelect(2)}>
-              <Text style={[styles.postText, { color: "white" }]}>Report</Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => postHideOptionSelect(3)}>
+            {/* <TouchableOpacity onPress={() => postHideOptionSelect(3)}>
               <Text style={[styles.postText, { color: "white" }]}>
                 Hide this Content
               </Text>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
           </View>
         </KeyboardAvoidingView>
 
