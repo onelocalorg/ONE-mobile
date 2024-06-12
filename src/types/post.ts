@@ -9,6 +9,5 @@ export interface Post extends PostData {
   numGrats: number;
   author: OneUser;
   postDate: DateTime;
-  tags: string[];
   event_image?: string;
 }

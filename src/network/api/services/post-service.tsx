@@ -7,16 +7,14 @@ import { Post } from "~/types/post";
 import { PostData } from "~/types/post-data";
 import { PostGratis } from "~/types/post-gratis";
 import { PostUpdateData } from "~/types/post-update-data";
-import { doGet, doPost } from "./api-service";
+import { doGet, doPatch, doPost } from "./api-service";
 
 export async function createPost(data: PostData) {
-  return doPost<Post>("/v1/posts/create", postToBody(data), resourceToPost);
+  return doPost<Post>("/v2/posts", postToBody(data), resourceToPost);
 }
 
 export async function updatePost(id: string, data: PostUpdateData) {
-  return doPost<Post>(`/v2/posts/update/${id}`, postToBody(data), (data) =>
-    resourceToPost(data.post)
-  );
+  return doPatch<Post>(`/v2/posts/${id}`, postToBody(data), resourceToPost);
 }
 
 export async function deletePost(id: string) {
@@ -69,11 +67,14 @@ const resourcesToFeatureCollection = (posts: PostResource[]) =>
     type: "FeatureCollection",
     features: _.flow([
       _.map((post: PostResource) =>
-        post.location
+        post.coordinates
           ? {
               type: "Feature",
-              properties: { ..._.omit(["location", "_id"], post) },
-              geometry: post.location,
+              properties: { ..._.omit(["location"], post) },
+              geometry: {
+                type: "Point",
+                coordinates: post.coordinates,
+              },
             }
           : null
       ),
@@ -87,18 +88,16 @@ interface PostResource {
   type: string;
   name: string;
   author: OneUser;
-  location?: GeoJSON.Point;
+  coordinates?: number[];
   address?: string;
   numGrats: number;
   startDate?: string;
   postDate: string;
   timeOffset: string;
-  hasStartTime?: boolean;
   details?: string;
   images: string[];
   comments: string[];
   numComments: number;
-  tags: string[];
 }
 
 const resourceToPost = (data: PostResource) =>
@@ -127,14 +126,9 @@ export const featureToPost = (feature: GeoJSON.Feature) => {
 };
 
 const postToBody = (data: PostUpdateData) => ({
-  type: data.type.toLowerCase(),
-  what_name: data.name,
-  where_address: data.address,
-  where_lat: data.latitude,
-  where_lng: data.longitude,
+  ...data,
   startDate: data.startDate?.toISO(),
-  hasStartTime: data.hasStartTime ?? false,
-  // post_image: data.imageUrls,
+  timezone: data.startDate ? data.startDate.zoneName : undefined,
 });
 
 export const sendGratis = (postId: string, points: number) =>

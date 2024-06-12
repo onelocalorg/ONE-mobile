@@ -78,7 +78,7 @@ export const PostOffer = ({ navigation, post }: PostOfferProps) => {
         >
           <View>
             <View style={styles.postClass}>
-              <Text style={styles.title}>My Abundance</Text>
+              <Text style={styles.title}>Give</Text>
               <PostView
                 type="offer"
                 post={post}

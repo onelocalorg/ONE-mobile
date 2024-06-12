@@ -33,9 +33,8 @@ export const PostView = ({
   const [details, setDetails] = useState(post?.details);
   const [startDate, setStartDate] = useState(post?.startDate);
   const [address, setAddress] = useState(post?.address);
-  const [latitude, setLatitude] = useState(post?.latitude);
-  const [longitude, setLongitude] = useState(post?.longitude);
-  const [imageUrls, setImageUrls] = useState(post?.images);
+  const [coordinates, setCoordinates] = useState(post?.coordinates);
+  const [images, setImages] = useState(post?.images);
   const [isDirty, setDirty] = useState(false);
   const [isDatePickerVisible, setDatePickerVisible] = useState(false);
 
@@ -47,16 +46,14 @@ export const PostView = ({
       startDate,
       hasStartTime: false,
       address,
-      latitude,
-      longitude,
-      imageUrls,
+      coordinates,
+      images: [],
     } as PostData);
 
   // Call after render
   useEffect(() => {
     if (isDirty) {
       const data = buildPostData();
-      LOG.debug("postdata", data);
       onFieldsChanged(data);
       setDirty(false);
     }
@@ -437,8 +434,10 @@ export const PostView = ({
               LOG.debug("data", data);
               LOG.debug("details", details);
               setAddress(data.description);
-              setLatitude(details!.geometry.location.lat);
-              setLongitude(details!.geometry.location.lng);
+              setCoordinates([
+                details!.geometry.location.lng,
+                details!.geometry.location.lat,
+              ]);
               setDirty(true);
             }}
           />
@@ -491,7 +490,7 @@ export const PostView = ({
         <ImageUploader
           onLoading={onLoading}
           onChangeImages={(images) => {
-            setImageUrls(images || []);
+            setImages(images || []);
             setDirty(true);
           }}
         />

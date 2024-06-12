@@ -84,7 +84,7 @@ export const PostRequest = ({ navigation, post }: PostRequestProps) => {
         >
           <View>
             <View style={styles.postClass}>
-              <Text style={styles.title}>Your Abundance</Text>
+              <Text style={styles.title}>Ask</Text>
               <PostView
                 type="request"
                 post={postData}

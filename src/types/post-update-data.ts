@@ -4,13 +4,10 @@ import { DateTime } from "luxon";
 export interface PostUpdateData {
   type: string;
   name?: string;
-  address?: string;
-  location?: GeoJSON.Point;
-  latitude?: number;
-  longitude?: number;
-  startDate?: DateTime;
-  hasStartTime?: boolean;
   details?: string;
-  tags?: string[];
+  address?: string;
+  coordinates?: number[];
+  startDate?: DateTime;
+  timezone?: string;
   images?: string[];
 }

@@ -104,7 +104,10 @@ export const ImageUploader = ({
       <View style={styles.multipleImagecont}>
         {images.map((ie) => {
           return (
-            <TouchableOpacity onPress={() => removeSelectImage(ie.key)}>
+            <TouchableOpacity
+              key={ie.key}
+              onPress={() => removeSelectImage(ie.key)}
+            >
               <ImageComponent
                 source={{ uri: ie.imageUrl }}
                 style={styles.selectImage}
