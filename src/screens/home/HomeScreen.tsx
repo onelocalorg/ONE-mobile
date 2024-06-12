@@ -345,8 +345,8 @@ export const HomeScreen = (props: HomeScreenProps) => {
     Keyboard.dismiss();
   };
 
-  const recentUserProfilePress = (user: OneUser) => {
-    navigation.navigate(navigations.RECENTUSERPROFILE, { userId: user.id });
+  const recentUserProfilePress = (userId: string) => {
+    navigation.push(navigations.RECENTUSERPROFILE, { userId: userId });
   };
 
   const onCommentOpen = (item: Post, post_index: number) => {
@@ -424,7 +424,7 @@ export const HomeScreen = (props: HomeScreenProps) => {
         <PostContentView
           post={item}
           onPress={() => openPostModal(item.id, item)}
-          onAvatarPress={(author: OneUser) => recentUserProfilePress(author)}
+          onAvatarPress={(author: OneUser) => recentUserProfilePress(author.id)}
         />
         <View style={styles.gratisAndCommentContainer}>
           <TouchableOpacity
@@ -564,16 +564,16 @@ export const HomeScreen = (props: HomeScreenProps) => {
                     horizontal={true}
                     showsHorizontalScrollIndicator={false}
                   >
-                    {userList?.map((userList: any) => (
+                    {userList.map((user) => (
                       <TouchableOpacity
                         key={Math.random()}
-                        onPress={() => recentUserProfilePress(userList.id)}
+                        onPress={() => recentUserProfilePress(user.id)}
                       >
                         <ImageComponent
                           style={styles.avatarImage}
-                          isUrl={!!userList?.pic}
+                          isUrl={!!user.pic}
                           resizeMode="cover"
-                          uri={userList?.pic}
+                          uri={user.pic}
                         ></ImageComponent>
                       </TouchableOpacity>
                     ))}
