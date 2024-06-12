@@ -94,7 +94,9 @@ export const EventDetailScreen = ({
 
   const onNavigateToProducerProfile = () => {
     // if (event?.is_event_owner) {
-    navigation?.navigate(navigations.PROFILE);
+    navigation?.push(navigations.RECENTUSERPROFILE, {
+      userId: event?.eventProducer.id,
+    });
     // } else {
     //   AsyncStorage.setItem("recentUserId", event?.eventProducer?.id);
     //   navigation?.navigate(navigations.RECENTUSERPROFILE);
