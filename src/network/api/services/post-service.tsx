@@ -170,5 +170,8 @@ const resourceToComment = (c: any) =>
       })) ?? [],
   } as Comment);
 
+export const reportPost = (postId: string, reason: string) =>
+  doPost(`/v2/posts/${postId}/report`, { reason });
+
 const pagedResourceToComments = (data: any) =>
   data.results.map(resourceToComment);

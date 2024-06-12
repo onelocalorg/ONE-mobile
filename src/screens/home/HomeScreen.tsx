@@ -46,6 +46,7 @@ import { navigations } from "~/config/app-navigation/constant";
 import {
   deletePost,
   listPosts,
+  reportPost,
   sendGratis,
 } from "~/network/api/services/post-service";
 import { getRecentlyJoined } from "~/network/api/services/user-service";
@@ -87,8 +88,8 @@ export const HomeScreen = (props: HomeScreenProps) => {
   var [page, setPage] = useState(1);
   const [postContent, postContentModal] = useState(false);
   const [reoportModal, reportModalShowHide] = useState(false);
-  const [postHideId, hidePostContentIDData] = useState<String>();
-  const [reportPost, addReportReason] = useState("");
+  const [postHideId, hidePostContentIDData] = useState<string>();
+  const [reportReason, setReportReason] = useState("");
   const [setGratis, setPostGratisData] = useState();
   const [setComment, setPostCommentData] = useState();
   const [postData, setPostDataForComment] = useState();
@@ -318,10 +319,6 @@ export const HomeScreen = (props: HomeScreenProps) => {
             );
             setUserList(_.reject((u) => u.id === blockedUser.id, userList));
           }
-        } else if (selectOP === 2) {
-          Toast.show("Report Submit successfully", Toast.LONG, {
-            backgroundColor: "black",
-          });
         } else {
           Toast.show("Post Hide successfully", Toast.LONG, {
             backgroundColor: "black",
@@ -406,7 +403,7 @@ export const HomeScreen = (props: HomeScreenProps) => {
     if (postSelectType === 1) {
       blockUserAlert(postSelectType);
     } else if (postSelectType === 2) {
-      addReportReason("");
+      setReportReason("");
       reportModalShowHide(true);
       // } else if (postSelectType === 3) {
       //   hideUserAlert(postSelectType);
@@ -477,15 +474,25 @@ export const HomeScreen = (props: HomeScreenProps) => {
   //   setShowCommentListData(true);
   // };
 
-  const submitReportReason = () => {
-    if (reportPost === "") {
+  const submitReportReason = async () => {
+    if (reportReason === "") {
       Toast.show("Add Reason", Toast.LONG, {
         backgroundColor: "black",
       });
     } else {
-      blockUserAPI(postHideId, 2);
-      postContentModal(false);
-      reportModalShowHide(false);
+      setLoading(true);
+      try {
+        await reportPost(postHideId!, reportReason);
+        postContentModal(false);
+        reportModalShowHide(false);
+        Toast.show("Report Submit successfully", Toast.LONG, {
+          backgroundColor: "black",
+        });
+      } catch (e) {
+        handleApiError("Error reporting post", e);
+      } finally {
+        setLoading(false);
+      }
     }
   };
 
@@ -747,7 +754,7 @@ export const HomeScreen = (props: HomeScreenProps) => {
                 <Text style={styles.gratiesTitle}>Report Content</Text>
                 <View>
                   <TextInput
-                    onChangeText={(text) => addReportReason(text)}
+                    onChangeText={(text) => setReportReason(text)}
                     style={styles.commentInput}
                     placeholder="Add Reason"
                   ></TextInput>
