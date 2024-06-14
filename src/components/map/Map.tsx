@@ -453,9 +453,8 @@ export const Map = ({ onEventPress, onPostPress, onAvatarPress }: MapProps) => {
             />
           ))}
           {selectedPosts.map((sp) => (
-            <View style={styles.listContainer}>
+            <View key={sp.id} style={styles.listContainer}>
               <PostContentView
-                key={sp.id}
                 post={sp}
                 onPress={() => onPostPress?.(sp)}
                 onAvatarPress={onAvatarPress}

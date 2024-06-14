@@ -2,6 +2,7 @@ import _ from "lodash/fp";
 import React, { useEffect, useState } from "react";
 import { View } from "react-native";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
+import { AuthContext } from "~/navigation/AuthContext";
 import { HomeStackScreenProps, Screens } from "~/navigation/types";
 import { getRecentlyJoined } from "~/network/api/services/user-service";
 import { OneUser } from "~/types/one-user";
@@ -18,6 +19,7 @@ export const HomeScreen = ({
   const { theme } = useAppTheme();
   const styles = createStyleSheet(theme);
   const [userList, setUserList] = useState<OneUser[]>([]);
+  const { myProfile } = React.useContext(AuthContext);
 
   useEffect(() => {
     async function fetchRecentlyJoinedUsers() {
@@ -62,7 +64,10 @@ export const HomeScreen = ({
   };
 
   const showContextMenu = (post: Post) =>
-    navigation.push(Screens.POST_CONTEXT_MENU_MODAL, { id: post.id });
+    navigation.push(Screens.POST_CONTEXT_MENU_MODAL, {
+      id: post.id,
+      isMine: myProfile?.id == post.author.id,
+    });
 
   return (
     <>
