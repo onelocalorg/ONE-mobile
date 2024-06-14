@@ -4,9 +4,13 @@ import { UserProfile } from "~/types/user-profile";
 
 type AuthContextType = {
   myProfile: UserProfile | null;
+  accessToken: string | null;
 };
 
-export const AuthContext = createContext<AuthContextType>({ myProfile: null });
+export const AuthContext = createContext<AuthContextType>({
+  myProfile: null,
+  accessToken: null,
+});
 
 type AuthDispatchContextType = {
   handleSignIn: (user: CurrentUser) => void;

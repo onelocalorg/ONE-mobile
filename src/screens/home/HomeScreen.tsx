@@ -10,7 +10,6 @@ import { OneUser } from "~/types/one-user";
 import { Post } from "~/types/post";
 import { handleApiError } from "~/utils/common";
 import { AddPostView } from "./AddPostView";
-import { CreatePostButton } from "./CreatePostButton";
 import { RecentUsers } from "./HorizontalAvatarView";
 import { PostsList } from "./PostsList";
 import { createStyleSheet } from "./style";
@@ -88,7 +87,6 @@ export const HomeScreen = ({
           onPostPress={handlePostPress}
           onAvatarPress={navigateToProfile}
         />
-        <CreatePostButton />
       </View>
     </>
   );
