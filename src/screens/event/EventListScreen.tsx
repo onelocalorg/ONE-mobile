@@ -1,28 +1,15 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import {
-  NavigationContainerRef,
-  ParamListBase,
-  useFocusEffect,
-  useNavigation,
-  useRoute,
-} from "@react-navigation/native";
+import { useFocusEffect, useRoute } from "@react-navigation/native";
 import { DateTime } from "luxon";
 import React, { useCallback, useState } from "react";
-import { ListRenderItem, Text, View } from "react-native";
-import { FlatList } from "react-native-gesture-handler";
-import { useDispatch, useSelector } from "react-redux";
+import { FlatList, ListRenderItem, Text, View } from "react-native";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
 import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
 import { EventItem } from "~/components/events/EventItem";
 import { Loader } from "~/components/loader";
-import { Navbar } from "~/components/navbar/Navbar";
-import { navigations } from "~/config/app-navigation/constant";
+import { EventsStackScreenProps, Screens } from "~/navigation/types";
 import { listEvents } from "~/network/api/services/event-service";
-import { useUserProfile } from "~/network/hooks/user-service-hooks/use-user-profile";
-import { StoreType } from "~/network/reducers/store";
-import { UserProfileState } from "~/network/reducers/user-profile-reducer";
 import { LocalEvent } from "~/types/local-event";
-import { LocalEventData } from "~/types/local-event-data";
 import { handleApiError } from "~/utils/common";
 import { createStyleSheet } from "./style";
 
@@ -31,15 +18,12 @@ interface Range {
   endDate: Date | undefined;
 }
 
-interface EventListScreenProps {
-  navigation: NavigationContainerRef<ParamListBase>;
-}
-
-export const EventListScreen = (props: EventListScreenProps) => {
+export const EventListScreen = ({
+  navigation,
+}: EventsStackScreenProps<Screens.EVENTS_LIST>) => {
   const { theme } = useAppTheme();
   const styles = createStyleSheet(theme);
   const { strings } = useStringsAndLabels();
-  const { navigation } = props || {};
   var makeDate = new Date();
   makeDate.setMonth(makeDate.getMonth() + 1);
   const [range, setRange] = useState<Range>({
@@ -58,37 +42,21 @@ export const EventListScreen = (props: EventListScreenProps) => {
   const [loading, onPageLoad] = useState(true);
   const route = useRoute();
   const [isEnabled, setIsEnabled] = useState(false);
-  const nav = useNavigation();
-  // const toggleSwitch = () => setIsEnabled(previousState => !previousState);
-  const { user } = useSelector<StoreType, UserProfileState>(
-    (state) => state.userProfileReducer
-  ) as { user: { id: string; pic: string } };
-  const { refetch } = useUserProfile({
-    userId: user?.id,
-  });
-
-  const dispatch = useDispatch();
-
-  // useEffect(() => {
-  //   fetchEvents({ startDate: DateTime.now() })
-  //     .then(featureCollectionToLocalEvents)
-  //     .then(setEventsList);
-  // }, []);
 
   useFocusEffect(
     useCallback(() => {
+      const fetchEvents = async () => {
+        try {
+          const events = await listEvents({ startDate: DateTime.now() });
+          setEventsList(events);
+        } catch (e) {
+          handleApiError("Failed to get events", e);
+        }
+      };
+
       fetchEvents();
     }, [])
   );
-
-  const fetchEvents = async () => {
-    try {
-      const events = await listEvents({ startDate: DateTime.now() });
-      setEventsList(events);
-    } catch (e) {
-      handleApiError("Failed to get events", e);
-    }
-  };
 
   // useFocusEffect(
   //   useCallback(() => {
@@ -175,9 +143,8 @@ export const EventListScreen = (props: EventListScreenProps) => {
   //   [setOpen, setRange, range?.startDate, range?.endDate]
   // );
 
-  const onNavigate = (item: LocalEventData) => {
-    console.log(route.name);
-    nav.navigate(navigations.EVENT_DETAIL, { id: item?.id });
+  const onNavigate = (item: LocalEvent) => {
+    navigation.push(Screens.EVENT_DETAIL, { event: item });
   };
 
   // const postDataLoad = () => {
@@ -263,7 +230,6 @@ export const EventListScreen = (props: EventListScreenProps) => {
 
   return (
     <View>
-      <Navbar navigation={navigation} />
       <Loader visible={page === 1 && isLoading} showOverlay />
       <View style={styles.backgroundToggle}>
         {/* <View style={styles.toggleCont}>

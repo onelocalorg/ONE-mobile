@@ -1,7 +1,3 @@
-import {
-  NavigationContainerRef,
-  ParamListBase,
-} from "@react-navigation/native";
 import React, { useState } from "react";
 import {
   ActivityIndicator,
@@ -24,10 +20,10 @@ import { PostView } from "./PostView";
 import { createStyleSheet } from "./style";
 
 interface PostOfferProps {
-  navigation?: NavigationContainerRef<ParamListBase>;
   post?: Post;
+  onSubmit?: (postData: PostData) => void;
 }
-export const PostOffer = ({ navigation, post }: PostOfferProps) => {
+export const PostOffer = ({ post, onSubmit }: PostOfferProps) => {
   const { theme } = useAppTheme();
   const styles = createStyleSheet(theme);
   const { strings } = useStringsAndLabels();
@@ -55,7 +51,7 @@ export const PostOffer = ({ navigation, post }: PostOfferProps) => {
         } else {
           await createPost(postData);
         }
-        navigation?.goBack();
+        onSubmit?.(postData);
       } catch (e) {
         handleApiError("Failed to save post", e);
       } finally {

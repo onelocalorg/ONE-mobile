@@ -21,7 +21,7 @@ import { eventBlack, offer, request } from "~/assets/images";
 import { ImageComponent } from "~/components/image-component";
 import { ModalComponent, ModalRefProps } from "~/components/modal-component";
 import { LOG } from "~/config";
-import { navigations } from "~/config/app-navigation/constant";
+import { navigations } from "~/navigation/constant";
 import { getData, setData } from "~/network/constant";
 import { useUserProfile } from "~/network/hooks/user-service-hooks/use-user-profile";
 import { StoreType } from "~/network/reducers/store";

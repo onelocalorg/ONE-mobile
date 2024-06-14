@@ -40,7 +40,6 @@ import {
 import { FlatListComponent } from "~/components/flatlist-component";
 import { ImageComponent } from "~/components/image-component";
 import { LocationAutocomplete } from "~/components/location-autocomplete/LocationAutocomplete";
-import { Navbar } from "~/components/navbar/Navbar";
 import { Pill } from "~/components/pill";
 import { SizedBox } from "~/components/sized-box";
 import { useUserProfile } from "~/network/hooks/user-service-hooks/use-user-profile";
@@ -626,7 +625,6 @@ export const EditPostOfferScreen = (props: EditPostOfferScreenProps) => {
 
   return (
     <>
-      <Navbar navigation={navigation} />
       <ScrollView
         keyboardShouldPersistTaps="always"
         showsVerticalScrollIndicator={false}

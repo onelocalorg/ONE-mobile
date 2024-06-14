@@ -1,17 +1,11 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import {
-  NavigationContainerRef,
-  ParamListBase,
-  useFocusEffect,
-} from "@react-navigation/native";
+import { useFocusEffect } from "@react-navigation/native";
 import React, { useCallback, useState } from "react";
 import { FlatList, ListRenderItem, Text, View } from "react-native";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
 import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
 import { EventCard } from "~/components/events/EventCard";
 import { Loader } from "~/components/loader";
-import { LOG } from "~/config";
-import { navigations } from "~/config/app-navigation/constant";
 import { listEvents } from "~/network/api/services/event-service";
 import { LocalEvent } from "~/types/local-event";
 import { UserProfile } from "~/types/user-profile";
@@ -19,12 +13,11 @@ import { handleApiError } from "~/utils/common";
 import { createStyleSheet } from "./style";
 
 interface MyEventsProps {
-  navigation: NavigationContainerRef<ParamListBase>;
   user: UserProfile;
+  onEventPress?: (event: LocalEvent) => void;
 }
 
-export const MyEvents = ({ user, navigation }: MyEventsProps) => {
-  LOG.debug("MyEvents", user);
+export const MyEvents = ({ user, onEventPress }: MyEventsProps) => {
   const { theme } = useAppTheme();
   const styles = createStyleSheet(theme);
   const { strings } = useStringsAndLabels();
@@ -51,12 +44,12 @@ export const MyEvents = ({ user, navigation }: MyEventsProps) => {
 
   const renderItem: ListRenderItem<LocalEvent> = ({ item }) => {
     return (
-      <EventCard key={item.id} onPress={() => onNavigate(item)} event={item} />
+      <EventCard
+        key={item.id}
+        onPress={() => onEventPress?.(item)}
+        event={item}
+      />
     );
-  };
-
-  const onNavigate = (item: LocalEvent) => {
-    navigation.navigate(navigations.EVENT_DETAIL, { id: item?.id });
   };
 
   return (

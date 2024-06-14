@@ -1,64 +1,51 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import {
-  NavigationContainerRef,
-  ParamListBase,
-} from "@react-navigation/native";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useContext, useRef, useState } from "react";
 import {
   Alert,
   AppState,
   Button,
   Image,
   Keyboard,
-  Platform,
   Pressable,
   Text,
+  TextInput,
   TouchableOpacity,
   View,
 } from "react-native";
 import { getReadableVersion } from "react-native-device-info";
-import { TextInput } from "react-native-gesture-handler";
 import ImagePicker from "react-native-image-crop-picker";
-import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import Toast from "react-native-simple-toast";
 import { useDispatch } from "react-redux";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
-import { useLogout } from "~/app-hooks/use-logout";
 import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
 import { Gratis, dummy } from "~/assets/images";
 import { ImageComponent } from "~/components/image-component";
 import { Input } from "~/components/input";
 import { Loader } from "~/components/loader";
-import { Navbar } from "~/components/navbar/Navbar";
 import { TabComponent } from "~/components/tab-component";
-import { navigations } from "~/config/app-navigation/constant";
+import { AuthContext, AuthDispatchContext } from "~/navigation/AuthContext";
+import { RootStackScreenProps, Screens } from "~/navigation/types";
 import {
   deleteUser,
-  getUserProfile,
   updateUserProfile,
   uploadFile,
 } from "~/network/api/services/user-service";
-import { getData, persistKeys } from "~/network/constant";
 import { useEditProfile } from "~/network/hooks/user-service-hooks/use-edit-profile";
+import { LocalEvent } from "~/types/local-event";
 import { UploadKey } from "~/types/upload-key";
-import { UserProfile } from "~/types/user-profile";
 import { handleApiError } from "~/utils/common";
+import { LogoutPressable } from "./LogoutPressable";
 import { About } from "./about";
 import { MyEvents } from "./my-events";
 import { createStyleSheet } from "./style";
 
-interface ProfileScreenProps {
-  navigation: NavigationContainerRef<ParamListBase>;
-}
-
-export const ProfileScreen = (props: ProfileScreenProps) => {
+export const MyProfileScreen = ({
+  navigation,
+}: RootStackScreenProps<Screens.MY_PROFILE>) => {
   const { theme } = useAppTheme();
   const { strings } = useStringsAndLabels();
   const styles = createStyleSheet(theme);
-  const { navigation } = props || {};
   const [selectedTab, setSelectedTab] = useState(0);
-  const [userProfile, setUserProfile] = useState<UserProfile>();
   const [profileUri, setProfileUri] = useState<string>();
   const [backgroundUri, setBackgroundUri] = useState<string>();
   const [setimageType, selectImage] = useState();
@@ -73,39 +60,24 @@ export const ProfileScreen = (props: ProfileScreenProps) => {
   const [skills, setSkills] = useState<string[]>([]);
   const [profileAnswers, setProfileAnswers] = useState<string[]>([]);
   const [isLoading, setLoading] = useState(false);
-
-  const { onLogout } = useLogout();
-
   const { mutateAsync } = useEditProfile();
   const dispatch = useDispatch();
   const [searchQuery, setSearchQuery] = useState("");
   const appState = useRef(AppState.currentState);
   const [appStateVisible, setAppStateVisible] = useState(appState.current);
+  const { handleSignOut } = useContext(AuthDispatchContext);
+  const { myProfile } = useContext(AuthContext);
 
-  useEffect(() => {
-    retrieveUser();
-  }, []);
-
-  const retrieveUser = async () => {
-    try {
-      const userId = await AsyncStorage.getItem(persistKeys.userProfileId);
-      if (userId) {
-        const userProfile = await getUserProfile(userId);
-        console.log("userProfile", userProfile);
-        setUserProfile(userProfile);
-        setProfileUri(userProfile.pic);
-        setBackgroundUri(userProfile.coverImage);
-        setFirstName(userProfile.first_name);
-        setLastName(userProfile.last_name);
-        setNickName(userProfile.nick_name);
-        setCatchphrase(userProfile.catch_phrase);
-        setSkills(userProfile.skills);
-        setProfileAnswers(userProfile.profile_answers);
-      }
-    } catch (e) {
-      handleApiError("Error retrieving user", e);
+  React.useEffect(() => {
+    if (myProfile) {
+      setFirstName(myProfile.first_name);
+      setLastName(myProfile.last_name);
+      setNickName(myProfile.nick_name);
+      setSkills(myProfile.skills);
+      setCatchphrase(myProfile.catch_phrase);
+      setProfileUri(myProfile.pic);
     }
-  };
+  }, []);
 
   // useEffect(() => {
   //   const subscription = AppState.addEventListener("change", (nextAppState) => {
@@ -126,16 +98,6 @@ export const ProfileScreen = (props: ProfileScreenProps) => {
   //   };
   // }, []);
 
-  const onCheckReleaseHideShow = () => {
-    if (Platform.OS === "ios") {
-      const isShowPaymentCheck = getData("isShowPaymentFlow");
-      return isShowPaymentCheck;
-    } else {
-      const isShowPaymentCheckAndroid = getData("isShowPaymentFlowAndroid");
-      return isShowPaymentCheckAndroid;
-    }
-  };
-
   const onSaveProfile = async (request: {
     about?: string;
     skills?: string[];
@@ -144,7 +106,7 @@ export const ProfileScreen = (props: ProfileScreenProps) => {
     let body = {
       ...request,
       bio: updatedBio,
-      coverImage: userProfile?.coverImage,
+      coverImage: myProfile?.coverImage,
       first_name: firstName,
       last_name: lastName,
       nick_name: nickName,
@@ -157,13 +119,13 @@ export const ProfileScreen = (props: ProfileScreenProps) => {
       nick_name?: string;
     };
     setLoading(true);
-    if (userProfile?.pic !== profileUri) {
+    if (myProfile?.pic !== profileUri) {
       body.profile = profileUri;
     }
 
     const res = await mutateAsync({
       bodyParams: body,
-      userId: userProfile!.id,
+      userId: myProfile!.id,
     });
     if (res?.success) {
       navigation.goBack();
@@ -179,7 +141,7 @@ export const ProfileScreen = (props: ProfileScreenProps) => {
   };
 
   const chooseImage = async () => {
-    if (!userProfile) {
+    if (!myProfile) {
       return;
     }
 
@@ -211,10 +173,9 @@ export const ProfileScreen = (props: ProfileScreenProps) => {
         );
         setProfileUri(remote.imageUrl);
         await Promise.all([
-          updateUserProfile(userProfile?.id, {
+          updateUserProfile(myProfile?.id, {
             pic: remote.key,
           }),
-          AsyncStorage.setItem(persistKeys.userProfilePic, remote.imageUrl),
         ]);
       }
     } catch (e) {
@@ -244,9 +205,9 @@ export const ProfileScreen = (props: ProfileScreenProps) => {
 
   async function deleteUserAccountAPI() {
     try {
-      if (userProfile) {
-        await deleteUser(userProfile.id);
-        navigation?.navigate(navigations?.LOGIN);
+      if (myProfile) {
+        await deleteUser(myProfile.id);
+        handleSignOut();
       }
     } catch (error) {
       handleApiError("Error deleting user", error);
@@ -255,11 +216,20 @@ export const ProfileScreen = (props: ProfileScreenProps) => {
     }
   }
 
+  const navigateToEventDetail = (event: LocalEvent) => {
+    navigation.push(Screens.MAIN_TABS, {
+      screen: Screens.EVENTS_STACK,
+      params: {
+        screen: Screens.EVENT_DETAIL,
+        params: { id: event.id },
+      },
+    });
+  };
+
   return (
-    <KeyboardAwareScrollView showsVerticalScrollIndicator={false}>
-      <Navbar navigation={navigation} isAvatarVisible={false} />
+    <>
       <Loader visible={isLoading} showOverlay={true} />
-      {userProfile ? (
+      {myProfile ? (
         <>
           <View style={styles.profileContainer}>
             <Pressable onPress={chooseImage}>
@@ -273,22 +243,6 @@ export const ProfileScreen = (props: ProfileScreenProps) => {
               <Button title="Update" onPress={chooseImage} />
             </Pressable>
           </View>
-          <TouchableOpacity
-            activeOpacity={0.8}
-            style={{ position: "absolute", right: 10, top: 60 }}
-            onPress={() => onLogout()}
-          >
-            <Text
-              style={{
-                fontSize: 16,
-                color: theme.colors.white,
-                fontWeight: "500",
-                fontFamily: theme.fontType.medium,
-              }}
-            >
-              {strings.logout}
-            </Text>
-          </TouchableOpacity>
 
           <TouchableOpacity
             style={styles.userData}
@@ -334,7 +288,7 @@ export const ProfileScreen = (props: ProfileScreenProps) => {
                   style={styles.gratiesImage}
                 ></Image>
                 <Text style={styles.gratiesNumber}>
-                  {userProfile.points_balance}
+                  {myProfile.points_balance}
                 </Text>
               </View>
 
@@ -350,7 +304,7 @@ export const ProfileScreen = (props: ProfileScreenProps) => {
                   ></ImageComponent>
                   <Text style={styles.pay}>
                     {" "}
-                    {userProfile.isConnectedLinked
+                    {myProfile.isConnectedLinked
                       ? "Payout Connected"
                       : "link payout method"}
                   </Text>
@@ -376,18 +330,12 @@ export const ProfileScreen = (props: ProfileScreenProps) => {
               tabs={[strings.about, strings.myEvents]}
               onPressTab={setSelectedTab}
             />
-            <KeyboardAwareScrollView showsVerticalScrollIndicator={false}>
-              {selectedTab === 0 && (
-                <About
-                  user={userProfile}
-                  onEditProfile={onSaveProfile}
-                  navigation={navigation}
-                />
-              )}
-              {selectedTab === 1 && (
-                <MyEvents user={userProfile} navigation={navigation} />
-              )}
-            </KeyboardAwareScrollView>
+            {selectedTab === 0 && (
+              <About user={myProfile} onEditProfile={onSaveProfile} />
+            )}
+            {selectedTab === 1 && (
+              <MyEvents user={myProfile} onEventPress={navigateToEventDetail} />
+            )}
           </TouchableOpacity>
           <TouchableOpacity onPress={deleteAccount}>
             <Text style={styles.deleteAccount}>{strings.deleteAccount}</Text>
@@ -405,23 +353,10 @@ export const ProfileScreen = (props: ProfileScreenProps) => {
           <View style={{ height: 40 }}></View>
         </>
       ) : (
-        <TouchableOpacity
-          activeOpacity={0.8}
-          style={{ position: "absolute", right: 10, top: 60 }}
-          onPress={() => onLogout()}
-        >
-          <Text
-            style={{
-              fontSize: 16,
-              color: theme.colors.white,
-              fontWeight: "500",
-              fontFamily: theme.fontType.medium,
-            }}
-          >
-            {strings.logout}
-          </Text>
-        </TouchableOpacity>
+        <View style={{ position: "absolute", right: 10, top: 60 }}>
+          <LogoutPressable />
+        </View>
       )}
-    </KeyboardAwareScrollView>
+    </>
   );
 };

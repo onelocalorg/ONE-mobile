@@ -1,8 +1,4 @@
-import {
-  NavigationContainerRef,
-  ParamListBase,
-} from "@react-navigation/native";
-import React, { useRef, useState } from "react";
+import React, { useContext, useRef, useState } from "react";
 import {
   Alert,
   Keyboard,
@@ -20,31 +16,27 @@ import ImagePicker from "react-native-image-crop-picker";
 import { launchCamera } from "react-native-image-picker";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import Toast from "react-native-simple-toast";
-import GestureRecognizer from "react-native-swipe-gestures";
 import { useDispatch } from "react-redux";
 import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
-import { useToken } from "~/app-hooks/use-token";
 import { emailRegexEx } from "~/assets/constants";
 import { selectPic } from "~/assets/images";
 import { CalenderRefProps } from "~/components/Calender/calenderComponent";
 import { ButtonComponent } from "~/components/button-component";
 import { DatePickerRefProps } from "~/components/date-range-picker";
 import { ImageComponent } from "~/components/image-component";
-import { Navbar } from "~/components/navbar/Navbar";
 import { SizedBox } from "~/components/sized-box";
-import { navigations } from "~/config/app-navigation/constant";
+import { AuthContext } from "~/navigation/AuthContext";
+import { GuestStackScreenProps, Screens } from "~/navigation/types";
+import { signUp } from "~/network/api/services/auth-service";
 import { useSaveCustomerId } from "~/network/hooks/user-service-hooks/use-save-customer-id";
 import { normalScale, verticalScale } from "~/theme/device/normalize";
-import { storeAuthDataInAsyncStorage } from "../login/utils";
+import { handleApiError } from "~/utils/common";
 
-interface SignUpProps {
-  navigation?: NavigationContainerRef<ParamListBase>;
-}
-
-export const SignUp = ({ navigation }: SignUpProps) => {
+export const SignUp = ({
+  navigation,
+}: GuestStackScreenProps<Screens.SIGNUP>) => {
   const [isChecked, setIsChecked] = useState(false);
   const { strings } = useStringsAndLabels();
-  const { onSetToken } = useToken();
   const [isLoading, LodingData] = useState(false);
   const { mutateAsync: saveCustomerId } = useSaveCustomerId();
   const [imageOption, ImageOptionModal] = useState(false);
@@ -65,64 +57,28 @@ export const SignUp = ({ navigation }: SignUpProps) => {
   const [selected, setSelected] = useState("");
   const datePickerRef: React.Ref<DatePickerRefProps> = useRef(null);
   const calenderShowRef: React.Ref<CalenderRefProps> = useRef(null);
+  const { handleSignUp } = useContext(AuthContext);
 
   async function onSignUpAPI() {
     LodingData(true);
     const userData = {
-      first_name: firstName,
-      last_name: lastName,
-      email: email,
-      // "mobile_number": '',
-      password: password,
-      // cpassword: password,
-      // city: user.city,
-      // state: user.state,
-      // nick_name: user.nick_name,
-      // catch_phrase: user.catch_phrase,
-      // birth_date: when,
+      first_name: firstName!,
+      last_name: lastName!,
+      email: email!,
+      password: password!,
       pic: profileUri?.key,
-      // cover_image: backgroundImageUri?.key,
     };
     try {
-      const response = await fetch(process.env.API_URL + "/v1/auth/signup", {
-        method: "post",
-        headers: new Headers({
-          "Content-Type": "application/json",
-        }),
-        body: JSON.stringify(userData),
-      });
-      const signData = await response.json();
-      const res = await signData;
+      const currentUser = await signUp(userData);
       LodingData(false);
-      Toast.show(signData.message, Toast.LONG, {
-        backgroundColor: "black",
-      });
-      const { success, data } = res || {};
-      if (success) {
-        const {
-          first_name,
-          last_name,
-          mobile_number,
-          customer_id,
-          access_token,
-          id,
-        } = data || {};
+      handleSignUp(currentUser);
 
-        await onSetToken(access_token);
-        storeAuthDataInAsyncStorage(data);
-
-        navigation?.reset({
-          index: 0,
-          routes: [{ name: navigations.BOTTOM_NAVIGATION }],
-        });
-
-        // navigation.reset({
-        //     index: 0,
-        //     routes: [{ name: navigations.BOTTOM_NAVIGATION }],
-        // });
-      }
+      // navigation?.reset({
+      //   index: 0,
+      //   routes: [{ name: navigations.BOTTOM_NAVIGATION }],
+      // });
     } catch (error) {
-      console.error(error);
+      handleApiError("Error signing up", error);
     }
   }
 
@@ -350,7 +306,6 @@ export const SignUp = ({ navigation }: SignUpProps) => {
 
   return (
     <TouchableOpacity activeOpacity={1} onPress={keyboardDismiss}>
-      <Navbar navigation={navigation} isLoggedIn={false} />
       <SizedBox height={verticalScale(22)} />
       <KeyboardAwareScrollView
         showsVerticalScrollIndicator={false}
@@ -462,13 +417,6 @@ export const SignUp = ({ navigation }: SignUpProps) => {
       </KeyboardAwareScrollView>
 
       <Modal transparent onDismiss={closeModal} visible={imageOption}>
-        <GestureRecognizer onSwipeDown={closeModal} style={styles.gesture}>
-          <TouchableOpacity
-            style={styles.containerGallery}
-            activeOpacity={1}
-            onPress={closeModal}
-          />
-        </GestureRecognizer>
         <KeyboardAvoidingView
           behavior={Platform.OS === "ios" ? "padding" : "height"}
           style={styles.keyboardViewTwo}

@@ -38,7 +38,6 @@ import {
 } from "~/components/date-range-picker";
 import { FlatListComponent } from "~/components/flatlist-component";
 import { ImageComponent } from "~/components/image-component";
-import { Navbar } from "~/components/navbar/Navbar";
 import { Pill } from "~/components/pill";
 import { SizedBox } from "~/components/sized-box";
 import { useUserProfile } from "~/network/hooks/user-service-hooks/use-user-profile";
@@ -595,7 +594,6 @@ export const EditPostRequestScreen = (props: EditPostRequestScreenProps) => {
   };
   return (
     <>
-      <Navbar navigation={navigation} />
       <ScrollView
         keyboardShouldPersistTaps="handled"
         showsVerticalScrollIndicator={false}

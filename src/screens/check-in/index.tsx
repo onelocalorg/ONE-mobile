@@ -10,9 +10,9 @@ import { useAppTheme } from "~/app-hooks/use-app-theme";
 import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
 import { FlatListComponent } from "~/components/flatlist-component";
 import { Loader } from "~/components/loader";
-import { Navbar } from "~/components/navbar/Navbar";
+
 import { Pill } from "~/components/pill";
-import { navigations } from "~/config/app-navigation/constant";
+
 import { useCheckedInUser } from "~/network/hooks/home-service-hooks/use-checked-in-user";
 import {
   Result,
@@ -87,9 +87,6 @@ export const CheckInScreen = (props: CheckInScreenProps) => {
   const onLoadMoreData = () => {
     setPage(page + 1);
   };
-  const onNavigateToProfile = () => {
-    navigation?.navigate(navigations.PROFILE);
-  };
 
   const renderItem: ListRenderItem<Result> = ({ item, index }) => (
     <CheckInList
@@ -105,7 +102,6 @@ export const CheckInScreen = (props: CheckInScreenProps) => {
 
   return (
     <View>
-      <Navbar navigation={navigation} />
       <Loader
         visible={
           (page === 1 && (isLoading || isRefetching)) || checkedInLoading

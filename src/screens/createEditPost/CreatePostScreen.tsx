@@ -1,26 +1,19 @@
-import {
-  NavigationContainerRef,
-  ParamListBase,
-} from "@react-navigation/native";
 import React, { useState } from "react";
 import { ScrollView, Text, TouchableOpacity, View } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
 import { blackOffer, greenOffer, request, requestGreen } from "~/assets/images";
 import { ImageComponent } from "~/components/image-component";
-import { Navbar } from "~/components/navbar/Navbar";
+import { HomeStackScreenProps, Screens } from "~/navigation/types";
 import { getData } from "~/network/constant";
+import { PostData } from "~/types/post-data";
 import { PostOffer } from "./PostOffer";
 import { PostRequest } from "./PostRequest";
-import { CreateEditPostGratisScreen } from "./gratis";
 import { createStyleSheet } from "./style";
 
-interface CreatePostScreenProps {
-  navigation?: NavigationContainerRef<ParamListBase>;
-}
-
-export const CreatePostScreen = (props: CreatePostScreenProps) => {
-  const { navigation } = props || {};
+export const CreatePostScreen = ({
+  navigation,
+}: HomeStackScreenProps<Screens.CREATE_POST>) => {
   const { theme } = useAppTheme();
   const styles = createStyleSheet(theme);
   const [selecttype, createPostSelectType] = useState(
@@ -82,9 +75,12 @@ export const CreatePostScreen = (props: CreatePostScreenProps) => {
   //   }
   // };
 
+  const handleSubmit = (postData: PostData) => {
+    navigation.goBack();
+  };
+
   return (
     <>
-      <Navbar navigation={navigation} />
       <KeyboardAwareScrollView
         keyboardShouldPersistTaps="always"
         showsVerticalScrollIndicator={false}
@@ -137,19 +133,19 @@ export const CreatePostScreen = (props: CreatePostScreenProps) => {
           </View>
           {selecttype === 1 && (
             <PostOffer
+              onSubmit={handleSubmit}
               // about={about}
               // idUser={user?.id}
               // skills={skills}
               // profileAnswers={profile_answers}
               // onEditProfile={onSaveProfile}
-              navigation={navigation}
               // ref={undefined}
             />
           )}
-          {selecttype === 2 && <PostRequest navigation={navigation} />}
-          {selecttype === 3 && (
-            <CreateEditPostGratisScreen navigation={navigation} />
-          )}
+          {selecttype === 2 && <PostRequest onSubmit={handleSubmit} />}
+          {/* {selecttype === 3 && (
+            <CreateEditPostGratisScreen onSubmit={handleSubmit} />
+          )} */}
         </ScrollView>
       </KeyboardAwareScrollView>
     </>

@@ -1,7 +1,3 @@
-import {
-  NavigationContainerRef,
-  ParamListBase,
-} from "@react-navigation/native";
 import React, { useState } from "react";
 import { ListRenderItem, Text, TouchableOpacity, View } from "react-native";
 import Toast from "react-native-simple-toast";
@@ -18,12 +14,11 @@ import { UserProfile } from "~/types/user-profile";
 import { createStyleSheet } from "./style";
 
 interface AboutDataProps {
-  navigation: NavigationContainerRef<ParamListBase>;
   user: UserProfile;
   onEditProfile?: (data: { about?: string; skills?: string[] }) => void;
 }
 
-export const About = ({ navigation, user, onEditProfile }: AboutDataProps) => {
+export const About = ({ user, onEditProfile }: AboutDataProps) => {
   const { theme } = useAppTheme();
   const { strings } = useStringsAndLabels();
   const styles = createStyleSheet(theme);

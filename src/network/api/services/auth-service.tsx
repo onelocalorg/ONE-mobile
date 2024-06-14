@@ -1,5 +1,6 @@
 import { CurrentUser } from "~/types/current-user";
 import { ForgotPassword } from "~/types/forgot-password";
+import { NewUser } from "~/types/new-user";
 import { doGet, doPost } from "./api-service";
 
 interface LoginProps {
@@ -12,8 +13,11 @@ interface LoginProps {
   googleToken: string;
 }
 
-export const login = async (props: LoginProps) =>
+export const logIn = async (props: LoginProps) =>
   doPost<CurrentUser>("/v1/auth/login", props);
+
+export const signUp = async (props: NewUser) =>
+  doPost<CurrentUser>("/v1/auth/signup", props);
 
 interface GoogleLoginProps {
   id: string;

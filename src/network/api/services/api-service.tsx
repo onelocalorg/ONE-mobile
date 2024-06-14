@@ -2,6 +2,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import _ from "lodash/fp";
 import { LOG } from "~/config";
 import { ApiError } from "~/types/api-error";
+import { mapValuesWithKey } from "~/utils/common";
 
 // Perform a GET against the given url and return the resource generated via
 // the given transform function
@@ -70,8 +71,17 @@ async function callApi<Resource>(
   transform?: (data: any) => Resource
 ) {
   LOG.info("callApi", method, url);
+
+  const HIDE_FIELDS = ["password", "access_token", "refresh_token"];
+
   if (body) {
-    LOG.debug("=>", body);
+    LOG.debug(
+      "=>",
+      mapValuesWithKey(
+        (v: string, k: string) => (HIDE_FIELDS.includes(k) ? "<hidden>" : v),
+        body
+      )
+    );
   }
   const token = await AsyncStorage.getItem("token");
   const response = await fetch(process.env.API_URL + url, {
@@ -96,7 +106,13 @@ async function callApi<Resource>(
   }
 
   const resource = transform ? transform(json.data) : json.data;
-  LOG.debug("<=", resource);
+  LOG.debug(
+    "<=",
+    mapValuesWithKey(
+      (v: string, k: string) => (HIDE_FIELDS.includes(k) ? "<hidden>" : v),
+      resource
+    )
+  );
   return resource as Resource;
 }
 

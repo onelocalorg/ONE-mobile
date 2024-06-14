@@ -234,7 +234,6 @@ export const createStyleSheet = (theme: ThemeProps) => {
       flexDirection: "row",
       justifyContent: "center",
       position: "relative",
-      top: 50,
     },
     oneContainerImage: {
       height: 60,

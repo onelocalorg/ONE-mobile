@@ -1,31 +1,23 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { NativeStackHeaderProps } from "@react-navigation/native-stack";
 import React, { useEffect, useState } from "react";
-import { Text, TouchableOpacity, View } from "react-native";
-
-import {
-  NavigationContainerRef,
-  ParamListBase,
-} from "@react-navigation/native";
-
-import { arrowLeft, defaultUser, onelogo } from "~/assets/images";
+import { TouchableOpacity, View } from "react-native";
+import { useAppTheme } from "~/app-hooks/use-app-theme";
+import { arrowLeft, defaultUser } from "~/assets/images";
 import { ImageComponent } from "~/components/image-component";
-import { navigations } from "~/config/app-navigation/constant";
-
+import { Screens } from "~/navigation/types";
+import { persistKeys } from "~/network/constant";
+import { OneLogo } from "./OneLogo";
 import { createStyleSheet } from "./style";
 
-import { useAppTheme } from "~/app-hooks/use-app-theme";
-import { persistKeys } from "~/network/constant";
-
-interface NavbarProps {
-  navigation?: NavigationContainerRef<ParamListBase>;
-  isLoggedIn?: boolean;
-  isAvatarVisible?: boolean;
-}
 export const Navbar = ({
   navigation,
-  isLoggedIn = true,
-  isAvatarVisible = true,
-}: NavbarProps) => {
+  route,
+  options,
+  back,
+}: NativeStackHeaderProps) => {
+  const HIDE_HEADER_SCREENS = ["Login", "Signup"];
+
   const { theme } = useAppTheme();
   const styles = createStyleSheet(theme);
 
@@ -62,25 +54,16 @@ export const Navbar = ({
   // };
 
   const onNavigateToProfile = () => {
-    if (navigation) {
-      // if (user?.id) {
-      //   refetch().then((res) => {
-      //     const userData = userProfileParsedData(res?.data?.data);
-      //     console.log("check1===", userData);
-      //     dispatch(onSetUser(userData));
-      //   });
-      // }
-      navigation.navigate(navigations.PROFILE);
-    }
+    navigation.push(Screens.MY_PROFILE);
   };
 
   const onBackPress = () => {
-    navigation?.goBack();
+    navigation.pop();
   };
 
   return (
     <TouchableOpacity style={styles.HeaderContainerTwo} activeOpacity={1}>
-      {navigation?.canGoBack() ? (
+      {navigation.canGoBack() ? (
         <TouchableOpacity onPress={onBackPress} style={{ zIndex: 11111222222 }}>
           <View style={styles.row2}>
             <ImageComponent source={arrowLeft} style={styles.arrowLeft} />
@@ -103,21 +86,15 @@ export const Navbar = ({
           }}
         ></TextInput>
       </View> */}
-      <View style={styles.oneContainer}>
-        <ImageComponent
-          style={styles.oneContainerImage}
-          source={onelogo}
-        ></ImageComponent>
-        <View>
-          <Text style={styles.oneContainerText}>NE</Text>
-          {isLoggedIn ? (
-            <Text style={styles.localText}>B o u l d e r</Text>
-          ) : (
-            <Text style={styles.localText}>L o c a l</Text>
-          )}
-        </View>
-      </View>
-      {isLoggedIn && isAvatarVisible ? (
+      <OneLogo
+        localText={
+          !HIDE_HEADER_SCREENS.includes(route?.name)
+            ? "B o u l d e r"
+            : "L o c a l"
+        }
+      />
+
+      {!HIDE_HEADER_SCREENS.includes(route?.name) ? (
         <View style={styles.profileContainer}>
           {/* <ImageComponent
         style={styles.bellIcon}

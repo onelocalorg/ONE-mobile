@@ -2,11 +2,7 @@ import React, { useCallback, useState } from "react";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import {
-  NavigationContainerRef,
-  ParamListBase,
-  useFocusEffect,
-} from "@react-navigation/native";
+import { useFocusEffect } from "@react-navigation/native";
 import _ from "lodash/fp";
 import {
   FlatList,
@@ -14,7 +10,6 @@ import {
   Keyboard,
   KeyboardAvoidingView,
   ListRenderItem,
-  Modal,
   Platform,
   Text,
   TextInput,
@@ -22,51 +17,38 @@ import {
   View,
 } from "react-native";
 import Toast from "react-native-simple-toast";
-import GestureRecognizer from "react-native-swipe-gestures";
 import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
 import {
-  Gratis,
   Vector,
-  buttonArrowGreen,
-  closeCard,
   gratisGreen,
   gratitudeBlack,
-  minus,
   pin,
-  plus,
   postCalender,
   send,
 } from "~/assets/images";
 import { ImageComponent } from "~/components/image-component";
-import { Navbar } from "~/components/navbar/Navbar";
-import { navigations } from "~/config/app-navigation/constant";
+import { HomeStackScreenProps, Screens } from "~/navigation/types";
 import {
   createComment,
   createReplyToComment,
+  getPost,
   listComments,
 } from "~/network/api/services/post-service";
 import { Comment } from "~/types/comment";
 import { Post } from "~/types/post";
 import { Reply } from "~/types/reply";
 import { formatTimeFromNow, handleApiError } from "~/utils/common";
-import { createStyleSheet } from "../style";
+import { createStyleSheet } from "./style";
 
-interface CommentListProps {
-  navigation?: NavigationContainerRef<ParamListBase>;
-  route?: {
-    params: {
-      postData: Post;
-      postIndex?: number;
-    };
-  };
-}
-
-export const CommentList = ({ navigation, route }: CommentListProps) => {
-  const postData = route?.params.postData;
-  // console.log(props, "props");
+export const PostDetailScreen = ({
+  navigation,
+  route,
+}: HomeStackScreenProps<Screens.POST_DETAIL>) => {
+  const postId = route.params.id;
   const { theme } = useAppTheme();
   const styles = createStyleSheet(theme);
   const { strings } = useStringsAndLabels();
+  const [post, setPost] = useState<Post>();
   const [offerModal, CreateOfferModal] = useState(false);
   const [replyofferModal, openReplyOfferModal] = useState(false);
   var [gratisNo, totalGratisData] = useState(10);
@@ -74,7 +56,6 @@ export const CommentList = ({ navigation, route }: CommentListProps) => {
   var [isCommentModalVisible, setCommentModalVisible] = useState(false);
   var [isCommentData, showMoreComment] = useState(false);
   const [addnewCmtReply, onAddCommentReply] = useState<string>();
-  var [postId, postIdData]: any = useState();
   var [gratisIndex, gratisIndexData]: any = useState();
   const [isLoading, setLoading] = useState(false);
   const [pageCmt, setCmtPage] = useState(1);
@@ -86,35 +67,39 @@ export const CommentList = ({ navigation, route }: CommentListProps) => {
   const [gratistype, setGratisSelectType] = useState();
   const [childjIndex, setChildIndexForGratis]: any = useState();
   const [commentId, setCommentId] = useState<string>();
-  const [replyId, setReplyId] = useState<string>();
-  const [replyIndex, setReplayIndex] = useState("");
-  const [numGrats, setNumGrats] = useState(
-    route?.params.postData?.numGrats ?? 0
-  );
-  const [numComments, setNumComments] = useState(
-    route?.params.postData.numComments ?? 0
-  );
-  const [postCommentIndexTwo, setPostCommentIndexTwo]: any = useState();
+  const [numGrats, setNumGrats] = useState<number>();
+  const [numComments, setNumComments] = useState<number>();
   const flatListRef: any = React.useRef();
 
   useFocusEffect(
     useCallback(() => {
-      if (postData?.id) {
-        getCommentListAPI();
-      }
-    }, [postData?.id])
+      const fetchPost = async () => {
+        setLoading(true);
+        try {
+          const post = await getPost(postId);
+          setPost(post);
+          setNumComments(post.numComments);
+        } catch (e) {
+          handleApiError("Error loading post", e);
+        } finally {
+          setLoading(false);
+        }
+      };
+
+      fetchPost();
+      getCommentListAPI();
+    }, [postId])
   );
 
   const recentUserProfilePress = (id: any) => {
-    AsyncStorage.setItem("recentUserId", id);
-    navigation?.navigate(navigations.RECENTUSERPROFILE);
+    navigation.push(Screens.USER_PROFILE, { id });
   };
 
   async function getCommentListAPI() {
-    if (postData) {
+    if (post) {
       setLoading(true);
       try {
-        const comments = await listComments(postData.id);
+        const comments = await listComments(post.id);
         setCommentList(comments);
       } catch (e) {
         handleApiError("Error getting comments", e);
@@ -125,10 +110,10 @@ export const CommentList = ({ navigation, route }: CommentListProps) => {
   }
 
   async function commentOnPost() {
-    if (postData) {
+    if (post) {
       setLoading(true);
       try {
-        const newComment = await createComment(postData.id, commentContent);
+        const newComment = await createComment(post.id, commentContent);
         setCommentList([newComment, ...commentList]);
         setCommentContent("");
 
@@ -170,7 +155,7 @@ export const CommentList = ({ navigation, route }: CommentListProps) => {
           dataItem?.data?.data?.numCommentssGratis;
 
         setNumGrats(dataItem?.data?.data?.postGratis);
-        let markersTwo = { ...postData };
+        let markersTwo = { ...post };
         // markersTwo["gratis"] = dataItem?.data?.data?.postGratis;
         // setPostData(markersTwo);
       }
@@ -232,20 +217,20 @@ export const CommentList = ({ navigation, route }: CommentListProps) => {
 
   async function replyCommentOnPostAPI() {
     setLoading(true);
-    if (!postData) {
+    if (!post) {
       return;
     }
 
     try {
       const updatedComment = await createReplyToComment(
-        postData.id,
+        post.id,
         commentId!,
         addnewCmtReply!
       );
       setCommentList(
         commentList.map((c) => (c.id === commentId ? updatedComment : c))
       );
-      setNumComments(numComments + 1);
+      setNumComments(numComments ?? 0 + 1);
     } catch (e) {
       handleApiError("Error creating reply", e);
     } finally {
@@ -274,7 +259,7 @@ export const CommentList = ({ navigation, route }: CommentListProps) => {
     totalGratisCommentData(10);
     setreplyGratisId(replyId);
     setreplyGratisKey(replyKey);
-    postIdData(postIds);
+    1;
     // gratisIndexData(index);
     setCommentIndex(cindex);
     console.log("----------cindex----------", cindex);
@@ -303,7 +288,7 @@ export const CommentList = ({ navigation, route }: CommentListProps) => {
       );
       const dataItem = await response.json();
       if (dataItem?.success === true) {
-        let markers = { ...postData };
+        let markers = { ...post };
         // markers["gratis"] = dataItem?.data?.data?.postGratis;
         // setPostData(markers);
         setNumGrats(dataItem?.data?.data?.postGratis);
@@ -323,28 +308,6 @@ export const CommentList = ({ navigation, route }: CommentListProps) => {
 
   const OfferModalClose = () => {
     CreateOfferModal(false);
-  };
-
-  const gratisPlusClick = () => {
-    gratisNo = gratisNo + 1;
-    totalGratisData(gratisNo);
-  };
-  const gratisMinusClick = () => {
-    if (gratisNo > 10) {
-      gratisNo = gratisNo - 1;
-      totalGratisData(gratisNo);
-    }
-  };
-
-  const gratisCommentPlusClick = () => {
-    gratisNoComment = gratisNoComment + 1;
-    totalGratisCommentData(gratisNoComment);
-  };
-  const gratisCommrntMinusClick = () => {
-    if (gratisNoComment > 10) {
-      gratisNoComment = gratisNoComment - 1;
-      totalGratisCommentData(gratisNoComment);
-    }
   };
 
   const OfferModalHide = () => {
@@ -521,29 +484,14 @@ export const CommentList = ({ navigation, route }: CommentListProps) => {
     );
   };
 
-  const postDataLoad = () => {
+  const postLoad = () => {
     if (isCommentData) {
       setCmtPage(pageCmt + 1);
       getCommentListAPI();
     }
   };
-
-  const OfferModalShow = (postIds: any, index: any) => {
-    postIdData(postIds);
-    gratisIndexData(index);
-    CreateOfferModal(true);
-    totalGratisData(10);
-  };
-
-  const onBackPress = () => {
-    navigation?.goBack();
-  };
-
-  return postData ? (
-    // <SafeAreaView>
-
-    <View style={{ paddingBottom: 300 }}>
-      <Navbar navigation={navigation} />
+  return post ? (
+    <View style={{ flex: 1, paddingBottom: 300 }}>
       <KeyboardAvoidingView
         behavior="padding"
         contentContainerStyle={{ flex: 1 }}
@@ -559,7 +507,7 @@ export const CommentList = ({ navigation, route }: CommentListProps) => {
                 renderItem={renderItem}
                 ListHeaderComponent={
                   <View style={styles.feedPostContainer}>
-                    <Text style={styles.posttitle}>{postData.type}</Text>
+                    <Text style={styles.posttitle}>{post.type}</Text>
                     <TouchableOpacity
                       style={{
                         position: "absolute",
@@ -570,48 +518,45 @@ export const CommentList = ({ navigation, route }: CommentListProps) => {
                     ></TouchableOpacity>
                     <View style={styles.userDetailcont}>
                       <TouchableOpacity
-                        onPress={() =>
-                          recentUserProfilePress(postData.author.id)
-                        }
+                        onPress={() => recentUserProfilePress(post.author.id)}
                       >
                         <ImageComponent
                           resizeMode="cover"
                           style={styles.postProfile}
-                          source={{ uri: postData.author.pic }}
+                          source={{ uri: post.author.pic }}
                         ></ImageComponent>
                       </TouchableOpacity>
                       <View>
                         <View>
-                          {postData?.type === "Gratis" ? (
+                          {post?.type === "Gratis" ? (
                             <View>
                               <Text numberOfLines={1} style={styles.userName}>
-                                {postData.author.first_name}{" "}
-                                {postData.author.last_name}{" "}
+                                {post.author.first_name} {post.author.last_name}{" "}
                               </Text>
-                              {/* {postData?.to?.users.length !== 0 ? (
+                              {/* {post?.to?.users.length !== 0 ? (
                                 <Text
                                   numberOfLines={1}
                                   style={styles.sentPointClass}
                                 >
-                                  sent {postData?.to?.users[0]?.point} gratis to{" "}
+                                  sent {post?.to?.users[0]?.point} gratis to{" "}
                                   <Text style={styles.userName}>
                                     {
-                                      postData?.to?.users[0]?.user_id[
+                                      post?.to?.users[0]?.user_id[
                                         "first_name"
                                       ]
                                     }{" "}
                                     {
-                                      postData?.to?.users[0]?.user_id[
+                                      post?.to?.users[0]?.user_id[
                                         "last_name"
                                       ]
                                     }{" "}
                                     {
-                                      postData?.to?.users[1]?.user_id[
+                                      post?.to?.users[1]?.user_id[
                                         "first_name"
                                       ]
                                     }{" "}
                                     {
-                                      postData?.to?.users[1]?.user_id[
+                                      post?.to?.users[1]?.user_id[
                                         "last_name"
                                       ]
                                     }
@@ -623,13 +568,12 @@ export const CommentList = ({ navigation, route }: CommentListProps) => {
                             </View>
                           ) : (
                             <Text numberOfLines={1} style={styles.userName}>
-                              {postData.author.first_name}{" "}
-                              {postData.author.last_name}
+                              {post.author.first_name} {post.author.last_name}
                             </Text>
                           )}
-                          {postData.postDate ? (
+                          {post.postDate ? (
                             <Text style={styles.postTime}>
-                              {formatTimeFromNow(postData.postDate)}
+                              {formatTimeFromNow(post.postDate)}
                             </Text>
                           ) : null}
                         </View>
@@ -645,7 +589,7 @@ export const CommentList = ({ navigation, route }: CommentListProps) => {
                       {/* <TouchableOpacity
                         onPress={() =>
                           recentUserProfilePress(
-                            postData?.to?.users[0]?.user_id["id"]
+                            post?.to?.users[0]?.user_id["id"]
                           )
                         }
                       >
@@ -653,14 +597,14 @@ export const CommentList = ({ navigation, route }: CommentListProps) => {
                           resizeMode="cover"
                           style={styles.userListDisplay}
                           source={{
-                            uri: postData?.to?.users[0]?.user_id["pic"],
+                            uri: post?.to?.users[0]?.user_id["pic"],
                           }}
                         ></ImageComponent>
                       </TouchableOpacity> */}
                       {/* <TouchableOpacity
                         onPress={() =>
                           recentUserProfilePress(
-                            postData?.to?.users[1]?.user_id["id"]
+                            post?.to?.users[1]?.user_id["id"]
                           )
                         }
                       >
@@ -668,53 +612,51 @@ export const CommentList = ({ navigation, route }: CommentListProps) => {
                           resizeMode="cover"
                           style={styles.userListDisplay}
                           source={{
-                            uri: postData?.to?.users[1]?.user_id["pic"],
+                            uri: post?.to?.users[1]?.user_id["pic"],
                           }}
                         ></ImageComponent>
                       </TouchableOpacity> */}
                     </View>
-                    <Text style={styles.postDes}>{postData?.details}</Text>
-                    {!_.isEmpty(postData?.images) ? (
+                    <Text style={styles.postDes}>{post?.details}</Text>
+                    {!_.isEmpty(post?.images) ? (
                       <ImageComponent
                         resizeMode="cover"
-                        source={{ uri: postData?.images[0] }}
+                        source={{ uri: post?.images[0] }}
                         style={styles.userPost}
                       ></ImageComponent>
                     ) : null}
                     <View style={styles.postDetailCont}>
                       <Text style={styles.postDetailTitle}>What:</Text>
                       {/* <ImageComponent
-                        source={{ uri: postData?.what?.icon }}
+                        source={{ uri: post?.what?.icon }}
                         style={styles.detailImage}
                       ></ImageComponent> */}
-                      <Text style={styles.postDetail}>{postData.name}</Text>
+                      <Text style={styles.postDetail}>{post.name}</Text>
                     </View>
-                    {/* {postData?.type !== "Gratis" ? (
+                    {/* {post?.type !== "Gratis" ? (
                       <View style={styles.postDetailCont}>
                         <Text style={styles.postDetailTitle}>For:</Text>
                         <Image
-                          source={{ uri: postData?.for?.icon }}
+                          source={{ uri: post?.for?.icon }}
                           style={styles.detailImage}
                         ></Image>
                         <Text style={styles.postDetail}>
-                          {postData?.for?.name}
+                          {post?.for?.name}
                         </Text>
                       </View>
                     ) : (
                       <></>
                     )} */}
 
-                    {postData.address ? (
+                    {post.address ? (
                       <View style={styles.postDetailCont}>
                         <Text style={styles.postDetailTitle}>Where:</Text>
                         <Image source={pin} style={styles.detailImage}></Image>
-                        <Text style={styles.postDetail}>
-                          {postData.address}
-                        </Text>
+                        <Text style={styles.postDetail}>{post.address}</Text>
                       </View>
                     ) : null}
 
-                    {postData.startDate ? (
+                    {post.startDate ? (
                       <View style={styles.postDetailCont}>
                         <Text style={styles.postDetailTitle}>When:</Text>
                         <Image
@@ -722,20 +664,18 @@ export const CommentList = ({ navigation, route }: CommentListProps) => {
                           style={styles.detailImage}
                         ></Image>
                         <Text style={styles.postDetail}>
-                          {postData.startDate?.toLocaleString()}
+                          {post.startDate?.toLocaleString()}
                         </Text>
                       </View>
                     ) : null}
                     <TouchableOpacity
                       activeOpacity={0.8}
                       style={styles.gratisContainer}
-                      onPress={() =>
-                        OfferModalShow(postData.id, route?.params.postIndex)
-                      }
+                      // onPress={() =>
+                      //   OfferModalShow(post.id, route?.params.postIndex)
+                      // }
                     >
-                      <Text style={styles.gratisClass}>
-                        +{postData?.numGrats}
-                      </Text>
+                      <Text style={styles.gratisClass}>+{post?.numGrats}</Text>
                       <ImageComponent
                         source={gratitudeBlack}
                         style={styles.commentImgTwo}
@@ -746,7 +686,7 @@ export const CommentList = ({ navigation, route }: CommentListProps) => {
                 ListFooterComponent={
                   <View>
                     {commentList.length !== 0 && !isLoading ? (
-                      <TouchableOpacity onPress={postDataLoad}>
+                      <TouchableOpacity onPress={postLoad}>
                         <View>
                           {isCommentData ? (
                             <Text style={styles.getMoreDataCont}>
@@ -805,218 +745,6 @@ export const CommentList = ({ navigation, route }: CommentListProps) => {
               </View>
             </View>
           </View>
-
-          <Modal transparent onDismiss={OfferModalClose} visible={offerModal}>
-            <GestureRecognizer
-              onSwipeDown={OfferModalClose}
-              style={styles.gesture}
-            >
-              <TouchableOpacity
-                style={styles.containerGallery}
-                activeOpacity={1}
-                onPress={OfferModalClose}
-              />
-            </GestureRecognizer>
-            <KeyboardAvoidingView
-              behavior={Platform.OS === "ios" ? "padding" : "height"}
-              style={styles.keyboardView}
-            >
-              <TouchableOpacity
-                activeOpacity={1}
-                style={styles.gratiescontainer}
-              >
-                <View>
-                  <Text style={styles.gratiesTitle}>Give some Gratis</Text>
-                  <View style={styles.gratisCont}>
-                    <TouchableOpacity onPress={gratisMinusClick}>
-                      <ImageComponent
-                        source={minus}
-                        style={{
-                          height: 30,
-                          width: 30,
-                          marginRight: 50,
-                        }}
-                      ></ImageComponent>
-                    </TouchableOpacity>
-                    <ImageComponent
-                      resizeMode="cover"
-                      style={styles.gratisimg}
-                      source={Gratis}
-                    ></ImageComponent>
-                    <Text style={styles.gratistext}>{gratisNo}</Text>
-                    <TouchableOpacity onPress={gratisPlusClick}>
-                      <ImageComponent
-                        source={plus}
-                        style={{
-                          height: 30,
-                          width: 30,
-                          marginLeft: 50,
-                        }}
-                      ></ImageComponent>
-                    </TouchableOpacity>
-                  </View>
-                  <TouchableOpacity
-                    onPress={() => OfferModalHide()}
-                    activeOpacity={0.8}
-                    style={styles.purchaseContainer}
-                  >
-                    <View />
-                    <Text style={styles.titleTwo}>Give</Text>
-                    <TouchableOpacity>
-                      <ImageComponent
-                        source={buttonArrowGreen}
-                        style={styles.buttonArrow}
-                      />
-                    </TouchableOpacity>
-                  </TouchableOpacity>
-                </View>
-              </TouchableOpacity>
-            </KeyboardAvoidingView>
-          </Modal>
-
-          <Modal
-            transparent
-            onDismiss={() => openReplyOfferModal(false)}
-            visible={replyofferModal}
-          >
-            <GestureRecognizer
-              onSwipeDown={() => openReplyOfferModal(false)}
-              style={styles.gesture}
-            >
-              <TouchableOpacity
-                style={styles.containerGallery}
-                activeOpacity={1}
-                onPress={() => openReplyOfferModal(false)}
-              />
-            </GestureRecognizer>
-            <KeyboardAvoidingView
-              behavior={Platform.OS === "ios" ? "padding" : "height"}
-              style={styles.keyboardView}
-            >
-              <TouchableOpacity
-                activeOpacity={1}
-                style={styles.gratiescontainer}
-              >
-                <View>
-                  <Text style={styles.gratiesTitle}>
-                    Give some Gratis Comment
-                  </Text>
-                  <View style={styles.gratisCont}>
-                    <TouchableOpacity onPress={gratisCommrntMinusClick}>
-                      <ImageComponent
-                        source={minus}
-                        style={{
-                          height: 30,
-                          width: 30,
-                          marginRight: 50,
-                        }}
-                      ></ImageComponent>
-                    </TouchableOpacity>
-                    <ImageComponent
-                      resizeMode="cover"
-                      style={styles.gratisimg}
-                      source={Gratis}
-                    ></ImageComponent>
-                    <Text style={styles.gratistext}>{gratisNoComment}</Text>
-                    <TouchableOpacity onPress={gratisCommentPlusClick}>
-                      <ImageComponent
-                        source={plus}
-                        style={{
-                          height: 30,
-                          width: 30,
-                          marginLeft: 50,
-                        }}
-                      ></ImageComponent>
-                    </TouchableOpacity>
-                  </View>
-                  <TouchableOpacity
-                    onPress={() => replyOfferModalHide()}
-                    activeOpacity={0.8}
-                    style={styles.purchaseContainer}
-                  >
-                    <View />
-                    <Text style={styles.titleTwo}>Give</Text>
-                    <TouchableOpacity>
-                      <ImageComponent
-                        source={buttonArrowGreen}
-                        style={styles.buttonArrow}
-                      />
-                    </TouchableOpacity>
-                  </TouchableOpacity>
-                </View>
-              </TouchableOpacity>
-            </KeyboardAvoidingView>
-          </Modal>
-
-          <Modal
-            transparent={true}
-            visible={isCommentModalVisible}
-            animationType="slide"
-            //  onDismiss={() => addCommentModal(false)}
-          >
-            <GestureRecognizer
-              // onSwipeDown={() => addCommentModal(false)}
-              style={styles.gesture}
-            >
-              <TouchableOpacity
-                style={[styles.containerGallery]}
-                activeOpacity={1}
-                onPress={keyboardDismiss}
-              />
-            </GestureRecognizer>
-            <KeyboardAvoidingView
-              behavior={Platform.OS === "ios" ? "padding" : "height"}
-              style={[
-                styles.keyboardView,
-                { position: "absolute", left: 0, right: 0 },
-              ]}
-            >
-              <TouchableOpacity
-                activeOpacity={1}
-                style={styles.commentContainer}
-              >
-                <View>
-                  <TouchableOpacity
-                    style={{
-                      position: "absolute",
-                      right: 0,
-                      zIndex: 111122,
-                    }}
-                    activeOpacity={0.5}
-                    onPress={() => setCommentModalVisible(false)}
-                  >
-                    <ImageComponent
-                      source={closeCard}
-                      style={{ height: 25, width: 25 }}
-                    ></ImageComponent>
-                  </TouchableOpacity>
-                  <Text style={styles.gratiesTitle}>Add Comment</Text>
-                  <View>
-                    <TextInput
-                      style={styles.commentInput}
-                      placeholder="Comment"
-                      placeholderTextColor="gray"
-                      onChangeText={(text) => onAddCommentReply(text)}
-                    ></TextInput>
-                  </View>
-                  <TouchableOpacity
-                    onPress={() => onReplyAdd()}
-                    activeOpacity={0.8}
-                    style={styles.purchaseContainer}
-                  >
-                    <View />
-                    <Text style={styles.titleTwo}>Add Comment</Text>
-                    <View>
-                      <ImageComponent
-                        source={buttonArrowGreen}
-                        style={styles.buttonArrow}
-                      />
-                    </View>
-                  </TouchableOpacity>
-                </View>
-              </TouchableOpacity>
-            </KeyboardAvoidingView>
-          </Modal>
         </View>
       </KeyboardAvoidingView>
     </View>

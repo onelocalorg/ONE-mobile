@@ -1,12 +1,12 @@
 import React, { useEffect } from "react";
 import {
+  FlatList,
   ListRenderItem,
   LogBox,
   Text,
   TouchableOpacity,
   View,
 } from "react-native";
-import { FlatList } from "react-native-gesture-handler";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
 import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
 import { FlatListComponent } from "~/components/flatlist-component";

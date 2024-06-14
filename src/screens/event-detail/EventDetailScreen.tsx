@@ -1,9 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import {
-  NavigationContainerRef,
-  ParamListBase,
-  useFocusEffect,
-} from "@react-navigation/native";
+import { useFocusEffect } from "@react-navigation/native";
 import { DateTime } from "luxon";
 import React, { useCallback, useState } from "react";
 import {
@@ -21,9 +17,8 @@ import { calendarTime, pinWhite } from "~/assets/images";
 import { ButtonComponent } from "~/components/button-component";
 import { ImageComponent } from "~/components/image-component";
 import { Loader } from "~/components/loader";
-import { Navbar } from "~/components/navbar/Navbar";
 import { SizedBox } from "~/components/sized-box";
-import { navigations } from "~/config/app-navigation/constant";
+import { EventsStackScreenProps, Screens } from "~/navigation/types";
 import {
   getEvent,
   listRsvps,
@@ -40,52 +35,41 @@ import { RsvpView } from "./RsvpView";
 import { Tickets } from "./Tickets";
 import { createStyleSheet } from "./style";
 
-interface EventDetailScreenProps {
-  navigation?: NavigationContainerRef<ParamListBase>;
-  route?: {
-    params: {
-      id: string;
-    };
-  };
-}
-
 export const EventDetailScreen = ({
   navigation,
   route,
-}: EventDetailScreenProps) => {
-  const eventId = route?.params.id;
+}: EventsStackScreenProps<Screens.EVENT_DETAIL>) => {
+  const eventId = route.params.id;
   const { theme } = useAppTheme();
   const { strings } = useStringsAndLabels();
   const styles = createStyleSheet(theme);
   const { user } = useSelector<StoreType, UserProfileState>(
     (state) => state.userProfileReducer
   ) as { user: { user_type: string; id: string } };
-  const [event, setEvent] = useState<LocalEvent>();
   const [rsvpData, setRsvpData] = useState<RsvpList>();
+  const [event, setEvent] = useState<LocalEvent>();
 
   // const { refetch, isLoading, isRefetching, data } = useEventDetails(eventId);
 
   useFocusEffect(
     useCallback(() => {
-      if (eventId) {
-        fetchEvent();
-        fetchRsvpData();
-      }
+      const fetchEvent = async () => {
+        try {
+          const event = await getEvent(eventId!);
+          setEvent(event);
+        } catch (e) {
+          handleApiError("Failed getting Event", e);
+        }
+      };
+
+      fetchRsvpData();
+      fetchEvent();
     }, [eventId])
   );
 
-  const fetchEvent = async () => {
-    try {
-      const event = await getEvent(eventId!);
-      setEvent(event);
-    } catch (e) {
-      handleApiError("Failed getting Event", e);
-    }
-  };
-
   const fetchRsvpData = async () => {
     try {
-      const rsvps = await listRsvps(eventId!);
+      const rsvps = await listRsvps(eventId);
       setRsvpData(rsvps);
     } catch (e) {
       handleApiError("Failed getting RSVPs", e);
@@ -93,18 +77,13 @@ export const EventDetailScreen = ({
   };
 
   const onNavigateToProducerProfile = () => {
-    // if (event?.is_event_owner) {
-    navigation?.push(navigations.RECENTUSERPROFILE, {
-      userId: event?.eventProducer.id,
+    navigation.push(Screens.USER_PROFILE, {
+      id: event!.eventProducer.id,
     });
-    // } else {
-    //   AsyncStorage.setItem("recentUserId", event?.eventProducer?.id);
-    //   navigation?.navigate(navigations.RECENTUSERPROFILE);
-    // }
   };
 
   const handleEditEvent = () => {
-    navigation?.navigate(navigations.ADMIN_TOOLS, { eventData: event });
+    navigation.push(Screens.CREATE_EDIT_EVENT, { id: event!.id });
   };
 
   const addGoingRsvp = () => {
@@ -118,13 +97,11 @@ export const EventDetailScreen = ({
   };
 
   const navigateToUserProfile = (user: OneUser) => {
-    // FIXME This works, but the type is incorrect on the navigator
-    navigation?.push(navigations.RECENTUSERPROFILE, { userId: user.id });
+    navigation.push(Screens.USER_PROFILE, { id: user.id });
   };
 
   return (
     <View>
-      <Navbar navigation={navigation} />
       <Loader visible={!event} showOverlay />
       {event ? (
         <ScrollView contentContainerStyle={styles.scrollView}>
@@ -202,7 +179,7 @@ export const EventDetailScreen = ({
               <Text style={styles.desc}>{event.about}</Text>
             </View>
 
-            {eventId ? (
+            {event.id ? (
               <>
                 <Tickets
                   event={event}
@@ -213,6 +190,7 @@ export const EventDetailScreen = ({
                     event={event}
                     rsvpData={rsvpData}
                     onUserPressed={navigateToUserProfile}
+                    // TODO Instead invoke the focus logic
                     onRsvpsChanged={() => fetchRsvpData()}
                   />
                 ) : null}

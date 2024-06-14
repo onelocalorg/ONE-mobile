@@ -17,6 +17,9 @@ export async function updatePost(id: string, data: PostUpdateData) {
   return doPatch<Post>(`/v2/posts/${id}`, postToBody(data), resourceToPost);
 }
 
+export const getPost = (id: string) =>
+  doGet<Post>(`/v2/posts/${id}`, resourceToPost);
+
 export async function deletePost(id: string) {
   return doPost<never>(`/v2/posts/delete/${id}`);
 }
@@ -26,15 +29,18 @@ type ListPostsParams = {
   start?: string;
   startDate?: DateTime;
 };
-export const listPostsForMap = (props: ListPostsParams) =>
+export const listPostsForMap = (props?: ListPostsParams) =>
   listPostsInternal({
     ...props,
     formatForMap: true,
   }) as Promise<GeoJSON.FeatureCollection>;
 
 // TODO 'start' is for pagination
-export const listPosts = (props: ListPostsParams) =>
-  listPostsInternal(props) as Promise<Post[]>;
+export const listPosts = (props?: ListPostsParams) =>
+  listPostsInternal(props ?? {}) as Promise<Post[]>;
+
+export const blockUser = (postId: string) =>
+  doPost(`/v1/posts/block-user/${postId}`);
 
 type ListPostsInternalParams = {
   numPosts?: number;

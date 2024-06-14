@@ -10,7 +10,6 @@ import {
 } from "@react-navigation/native";
 import React, { useRef } from "react";
 import { TouchableOpacity } from "react-native";
-import { useLogout } from "~/app-hooks/use-logout";
 import { bottomTabs } from "~/assets/constants";
 import {
   addGreen,
@@ -23,25 +22,29 @@ import { ImageComponent } from "~/components/image-component";
 import { ModalRefProps } from "~/components/modal-component";
 import { ChatScreen } from "~/screens/chat";
 import { CreatePostModal } from "~/screens/createEditPost/create-post-modal";
+import { TabIcon } from "./TabIcon";
 import { bottomNavigationVisibleScreens, navigations } from "./constant";
 import { EventRoute } from "./event-route";
 import { HomeRoute } from "./home-route";
 import { MapRoute } from "./map-route";
-import { NavigatorOptionComponent } from "./navigator-option-component";
 import { createStyleSheet } from "./style";
 
 const Tab = createBottomTabNavigator();
 const header = () => null;
 const NullComponent = () => <></>;
 
-export const BottomNavigator = () => {
+export const TabNavigator = () => {
   const { theme } = useAppTheme();
   const styles = createStyleSheet(theme);
   const modalRef: React.Ref<ModalRefProps> = useRef(null);
   const navigation = useNavigation();
-  const logout = useLogout();
 
-  const bottomNav = [bottomTabs.home, "event", bottomTabs.map, bottomTabs.chat];
+  const bottomNav = [
+    bottomTabs.home,
+    bottomTabs.events,
+    bottomTabs.map,
+    bottomTabs.chat,
+  ];
 
   const getTabData = (name: string) => {
     switch (name) {
@@ -50,7 +53,7 @@ export const BottomNavigator = () => {
           screenName: navigations.HOME_ROUTE,
           component: HomeRoute,
         };
-      case "event":
+      case bottomTabs.events:
         return {
           screenName: navigations.EVENT_ROUTE,
           component: EventRoute,
@@ -97,7 +100,7 @@ export const BottomNavigator = () => {
   ) => {
     if (route.name === navigations.HOME_ROUTE) {
       return (
-        <NavigatorOptionComponent
+        <TabIcon
           focused={focused}
           selectedImage={home}
           unSelectedImage={home}
@@ -106,7 +109,7 @@ export const BottomNavigator = () => {
     }
     if (route.name === navigations.EVENT_ROUTE) {
       return (
-        <NavigatorOptionComponent
+        <TabIcon
           focused={focused}
           selectedImage={calendarTime}
           unSelectedImage={calendarTime}
@@ -115,7 +118,7 @@ export const BottomNavigator = () => {
     }
     if (route.name === navigations.CHAT) {
       return (
-        <NavigatorOptionComponent
+        <TabIcon
           focused={focused}
           selectedImage={notificationTwo}
           unSelectedImage={notificationTwo}
@@ -124,7 +127,7 @@ export const BottomNavigator = () => {
     }
     if (route.name === navigations.MAP_ROUTE) {
       return (
-        <NavigatorOptionComponent
+        <TabIcon
           focused={focused}
           selectedImage={eventTwo}
           unSelectedImage={eventTwo}

@@ -6,11 +6,9 @@ import {
   StyleProp,
   Text,
   TextStyle,
-  TouchableOpacity,
   View,
   ViewStyle,
 } from "react-native";
-import GestureRecognizer from "react-native-swipe-gestures";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
 import { createStyleSheet } from "./style";
 
@@ -61,13 +59,6 @@ const ModalView = (
 
   return (
     <Modal transparent onDismiss={closeModal} visible={visibility}>
-      <GestureRecognizer onSwipeDown={closeModal} style={styles.gesture}>
-        <TouchableOpacity
-          style={styles.container}
-          activeOpacity={1}
-          onPress={closeModal}
-        />
-      </GestureRecognizer>
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         style={styles.keyboardView}

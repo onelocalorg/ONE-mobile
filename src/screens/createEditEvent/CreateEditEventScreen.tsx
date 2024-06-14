@@ -1,9 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import {
-  NavigationContainerRef,
-  ParamListBase,
-} from "@react-navigation/native";
 import _ from "lodash/fp";
 import { DateTime } from "luxon";
 import React, { useRef, useState } from "react";
@@ -28,74 +24,53 @@ import { Input } from "~/components/input";
 import { Loader } from "~/components/loader";
 import { LocationAutocomplete } from "~/components/location-autocomplete/LocationAutocomplete";
 import { ModalRefProps } from "~/components/modal-component";
-import { Navbar } from "~/components/navbar/Navbar";
 import { Pill } from "~/components/pill";
 import { SizedBox } from "~/components/sized-box";
 import { LOG } from "~/config";
-import { navigations } from "~/config/app-navigation/constant";
+import { EventsStackScreenProps, Screens } from "~/navigation/types";
 import { createEvent, updateEvent } from "~/network/api/services/event-service";
 import { useTicketHolderCheckinsList } from "~/network/hooks/home-service-hooks/use-ticket-holder-checkin-list";
 import { width } from "~/theme/device/device";
 import { normalScale, verticalScale } from "~/theme/device/normalize";
 import { isLocalEvent } from "~/types/local-event";
-import { LocalEventData } from "~/types/local-event-data";
 import { LocalEventUpdateData } from "~/types/local-event-update-data";
 import { TicketTypeData } from "~/types/ticket-type-data";
 import { handleApiError } from "~/utils/common";
 import { AddTicketModal } from "./AddTicketModal";
-import { GetAdmintoolsDropDownScreen } from "./getAdmintoolsDropdown";
 import { createStyleSheet } from "./style";
-
-interface CreateEditEventScreenProps {
-  navigation?: NavigationContainerRef<ParamListBase>;
-  route?: {
-    params: {
-      eventData?: LocalEventData;
-    };
-  };
-}
 
 export const CreateEditEventScreen = ({
   route,
   navigation,
-}: CreateEditEventScreenProps) => {
-  const event = route?.params.eventData;
+}: EventsStackScreenProps<Screens.CREATE_EDIT_EVENT>) => {
+  const event = route.params.event;
   const { theme } = useAppTheme();
   const { strings } = useStringsAndLabels();
-  const isCreateEvent = !route?.params.eventData;
-  const eventId = route?.params.eventData?.id;
-  const viewCount = isLocalEvent(route?.params.eventData)
-    ? route?.params.eventData.viewCount
-    : undefined;
-  const isEventOwner = isLocalEvent(route?.params.eventData)
-    ? route?.params.eventData.is_event_owner
-    : undefined;
+  const isCreateEvent = !event;
+  const eventId = event?.id;
+  const viewCount = isLocalEvent(event) ? event.viewCount : undefined;
+  const isEventOwner = isLocalEvent(event) ? event.is_event_owner : undefined;
   const styles = createStyleSheet(theme);
   // const modalRef: React.Ref<ModalRefProps> = useRef(null);
   const addItemRef: React.Ref<ModalRefProps> = useRef(null);
 
   const [startDate, setStartDate] = useState<DateTime>(
-    route?.params.eventData?.startDate ??
-      DateTime.now().startOf("hour").plus({ hour: 1 })
+    event?.startDate ?? DateTime.now().startOf("hour").plus({ hour: 1 })
   );
   const [endDate, setEndDate] = useState<DateTime>();
   const [isEndDateActive, setEndDateActive] = useState(false);
 
-  const [name, setName] = useState(route?.params.eventData?.name);
-  const [about, setAbout] = useState(route?.params.eventData?.about);
+  const [name, setName] = useState(event?.name);
+  const [about, setAbout] = useState(event?.about);
   const [setFilter, SetToggleFilter] = useState("VF");
-  const [eventDetails, setEventDetails] = useState(route?.params.eventData);
-  const [ticketTypes, setTicketTypes] = useState(
-    route?.params.eventData?.ticketTypes || []
+  const [eventDetails, setEventDetails] = useState(event);
+  const [ticketTypes, setTicketTypes] = useState<TicketTypeData[]>(
+    event?.ticketTypes || []
   );
   const [isTicketTypesDirty, setTicketTypesDirty] = useState(false);
-  const [fullAddress, setFullAddress] = useState(
-    route?.params.eventData?.fullAddress
-  );
-  const [latitude, setLatitude] = useState(route?.params.eventData?.latitude);
-  const [longitude, setLongitude] = useState(
-    route?.params.eventData?.longitude
-  );
+  const [fullAddress, setFullAddress] = useState(event?.fullAddress);
+  const [latitude, setLatitude] = useState(event?.latitude);
+  const [longitude, setLongitude] = useState(event?.longitude);
   const [eventImage, setEventImage] = useState<string>();
   const [eventImageDisplay, setEventImageDisplay] = useState(event?.eventImage);
   const { refetch, data } = useTicketHolderCheckinsList({
@@ -178,7 +153,7 @@ export const CreateEditEventScreen = ({
       });
       if (dataItem?.success === true) {
         setLoading(false);
-        navigation?.navigate(navigations.EVENT_ROUTE);
+        navigation?.goBack();
       } else {
         setLoading(false);
       }
@@ -430,7 +405,6 @@ export const CreateEditEventScreen = ({
 
   return (
     <Pressable style={styles.container} onPress={keyboardDismiss}>
-      <Navbar navigation={navigation} />
       <Loader visible={isLoading} showOverlay />
       <KeyboardAwareScrollView
         keyboardShouldPersistTaps="always"
@@ -649,10 +623,7 @@ export const CreateEditEventScreen = ({
                       <Text style={styles.uniqueCount}>{viewCount}</Text>
                     </View>
                     <View>
-                      <GetAdmintoolsDropDownScreen
-                        eventId={event.id!}
-                        navigation={navigation}
-                      />
+                      /{" "}
                       <TouchableOpacity
                         activeOpacity={0.8}
                         onPress={() => verifyCancelEvent(event.id!)}

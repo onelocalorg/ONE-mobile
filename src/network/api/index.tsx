@@ -1,6 +1,5 @@
 import axios, { AxiosInstance } from "axios";
 import Toast from "react-native-simple-toast";
-import { onSetToken } from "~/app-hooks/use-token";
 import { apiConstants } from "~/network/constant";
 import { store } from "~/network/reducers/store";
 
@@ -71,7 +70,6 @@ const interceptor = (ref: AxiosInstance) => {
             },
           }
         );
-        onSetToken(res?.data?.data?.access?.token);
         return;
       }
 

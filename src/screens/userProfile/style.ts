@@ -26,8 +26,7 @@ export const createStyleSheet = (theme: ThemeProps) => {
       width: normalScale(112),
       borderRadius: normalScale(112),
       marginLeft: normalScale(7),
-      marginTop: normalScale(96),
-      position: "absolute",
+      marginTop: normalScale(7),
     },
     center: {
       alignSelf: "center",
@@ -38,7 +37,7 @@ export const createStyleSheet = (theme: ThemeProps) => {
     fullName: {
       alignSelf: "center",
       marginTop: verticalScale(12),
-      marginLeft: normalScale(50),
+      marginLeft: normalScale(20),
       marginBottom: verticalScale(48),
       alignItems: "center",
     },
@@ -108,7 +107,7 @@ export const createStyleSheet = (theme: ThemeProps) => {
     },
     rowOnly: {
       flexDirection: "row",
-      justifyContent: "space-between",
+      // justifyContent: "space-between",
     },
     membership: {
       marginVertical: verticalScale(8),

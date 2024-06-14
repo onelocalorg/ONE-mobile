@@ -14,6 +14,7 @@ export const emailRegexEx =
   /^([\w!#$%&'*+/=?^`{|}~-]+(?:\.[\w!#$%&'*+/=?^`{|}~-]+)*)@((?:[\dA-Za-z](?:[\dA-Za-z-]*[\dA-Za-z])?\.)+[\dA-Za-z](?:[\dA-Za-z-]*[\dA-Za-z])?)$/;
 export const bottomTabs = {
   home: "home",
+  events: "events",
   calendar: "calendar",
   chat: "chat",
   map: "map",

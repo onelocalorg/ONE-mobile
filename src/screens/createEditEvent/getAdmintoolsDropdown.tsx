@@ -16,7 +16,6 @@ import {
   sendPayoutImg,
 } from "~/assets/images";
 import { ImageComponent } from "~/components/image-component";
-import { navigations } from "~/config/app-navigation/constant";
 import { createStyleSheet } from "./style";
 
 interface GetAdmintoolsDropDownScreenProps {

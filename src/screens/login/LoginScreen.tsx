@@ -3,12 +3,7 @@ import {
   GoogleSignin,
   statusCodes,
 } from "@react-native-google-signin/google-signin";
-import {
-  NavigationContainerRef,
-  ParamListBase,
-} from "@react-navigation/native";
-import _ from "lodash/fp";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useState } from "react";
 import {
   Keyboard,
   Linking,
@@ -20,20 +15,18 @@ import {
 import { getDeviceName, getUniqueId } from "react-native-device-info";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { Modal, Portal } from "react-native-paper";
-import { useDispatch } from "react-redux";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
 import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
-import { useToken } from "~/app-hooks/use-token";
 import { apple, google } from "~/assets/images";
 import { ImageComponent } from "~/components/image-component";
-import { Navbar } from "~/components/navbar/Navbar";
 import { SizedBox } from "~/components/sized-box";
 import { LOG } from "~/config";
-import { navigations } from "~/config/app-navigation/constant";
+import { AuthDispatchContext } from "~/navigation/AuthContext";
+import { GuestStackScreenProps, Screens } from "~/navigation/types";
 import {
   appleLogin,
   googleLogin,
-  login,
+  logIn,
 } from "~/network/api/services/auth-service";
 import { getData } from "~/network/constant";
 import { useLogin } from "~/network/hooks/user-service-hooks/use-login";
@@ -42,7 +35,6 @@ import { CurrentUser } from "~/types/current-user";
 import { handleApiError } from "~/utils/common";
 import { ForgotPassword } from "./ForgotPassword";
 import { createStyleSheet } from "./style";
-import { storeAuthDataInAsyncStorage } from "./utils";
 
 GoogleSignin.configure({
   iosClientId: process.env.GOOGLE_SIGNIN_IOS_CLIENT_ID,
@@ -50,20 +42,15 @@ GoogleSignin.configure({
   offlineAccess: true,
 });
 
-interface LoginScreenProps {
-  navigation: NavigationContainerRef<ParamListBase>;
-}
-
-export const LoginScreen = (props: LoginScreenProps) => {
+export const LoginScreen = ({
+  navigation,
+}: GuestStackScreenProps<Screens.LOGIN>) => {
   const { theme } = useAppTheme();
   const styles = createStyleSheet(theme);
   const { strings } = useStringsAndLabels();
-  const { navigation } = props || {};
   const [isChecked, setIsChecked] = useState(false);
   const [isLoading, LodingData] = useState(false);
   const { mutateAsync: doLogin } = useLogin();
-  const { onSetToken } = useToken();
-  const dispatch = useDispatch();
   const [user, setUser] = useState({ emailOrMobile: "", password: "" });
   const [searchQuery, setSearchQuery] = useState("");
   const [googleUserGmail, setGoogleEmail]: any = useState();
@@ -72,22 +59,16 @@ export const LoginScreen = (props: LoginScreenProps) => {
   const [appleAuthAvailable, setAppleAuthAvailable] = useState(false);
   const [isForgotPasswordVisible, setForgotPasswordVisible] = useState(false);
 
-  useEffect(() => {}, []);
-
   // const onHandleCheckBox = () => {
   //   setIsChecked(!isChecked);
   // };
 
+  const { handleSignIn } = useContext(AuthDispatchContext);
+
   const handleLoginResponse = async (currentUser?: CurrentUser) => {
     if (currentUser) {
-      await onSetToken(currentUser.access_token);
-      storeAuthDataInAsyncStorage(currentUser);
-
       LodingData(false);
-      navigation.reset({
-        index: 0,
-        routes: [{ name: navigations.BOTTOM_NAVIGATION }],
-      });
+      handleSignIn(currentUser);
     }
   };
 
@@ -170,9 +151,8 @@ export const LoginScreen = (props: LoginScreenProps) => {
       deviceInfo,
       googleToken: "fasdfasdfdsasdfad",
     };
-    LOG.debug("login", _.omit(["password"], body));
     try {
-      const currentUser = await login(body);
+      const currentUser = await logIn(body);
       handleLoginResponse(currentUser);
     } catch (e: any) {
       handleApiError("Error signing in", e);
@@ -180,7 +160,7 @@ export const LoginScreen = (props: LoginScreenProps) => {
   };
 
   const onSignUp = async () => {
-    navigation.navigate(navigations.SIGNUP);
+    navigation.push(Screens.SIGNUP);
   };
 
   const handleUserData = (value: string, key: string) => {
@@ -215,12 +195,8 @@ export const LoginScreen = (props: LoginScreenProps) => {
       onPress={keyboardDismiss}
       style={styles.container}
     >
-      <Navbar navigation={navigation} isLoggedIn={false} />
       <KeyboardAwareScrollView showsVerticalScrollIndicator={false}>
         <Text style={styles.texClass}>{strings.email}</Text>
-        {/* <TextInput
-      // placeholder={strings.mobileOrEmail}
-      /> */}
         <TextInput
           placeholderTextColor="#8B8888"
           style={styles.textInput}
@@ -241,13 +217,11 @@ export const LoginScreen = (props: LoginScreenProps) => {
         
       /> */}
         <SizedBox height={verticalScale(10)} />
-
         {/* <ButtonComponent
           disabled={onCheckValidation()}
           onPress={onSubmit}
           title={strings.login}
         /> */}
-
         <TouchableOpacity
           // disabled={onCheckValidation()}
           activeOpacity={0.8}
@@ -256,7 +230,6 @@ export const LoginScreen = (props: LoginScreenProps) => {
         >
           <Text style={styles.signUpText}>{strings.login}</Text>
         </TouchableOpacity>
-
         {/* <ButtonComponent
           style={styles.signUpBtn}
           onPress={onSignUp}
@@ -269,7 +242,6 @@ export const LoginScreen = (props: LoginScreenProps) => {
         >
           <Text style={styles.forgot}>{`${strings.forgotPassword}?`}</Text>
         </TouchableOpacity>
-
         <Portal>
           <Modal
             visible={isForgotPasswordVisible}
@@ -279,7 +251,6 @@ export const LoginScreen = (props: LoginScreenProps) => {
             <ForgotPassword onDismiss={() => setForgotPasswordVisible(false)} />
           </Modal>
         </Portal>
-
         {onCheckReleaseHideShow() ? (
           <>
             <SizedBox height={verticalScale(18)} />
@@ -295,7 +266,6 @@ export const LoginScreen = (props: LoginScreenProps) => {
         ) : (
           <></>
         )}
-
         {onCheckReleaseHideShow() && Platform.OS === "ios" ? (
           <>
             <SizedBox height={verticalScale(10)} />
@@ -311,9 +281,7 @@ export const LoginScreen = (props: LoginScreenProps) => {
         ) : (
           <></>
         )}
-
         <SizedBox height={verticalScale(12)} />
-
         <Text style={styles.orText}>or</Text>
         {/* <SizedBox height={verticalScale(20)} /> */}
         <TouchableOpacity
@@ -323,9 +291,7 @@ export const LoginScreen = (props: LoginScreenProps) => {
         >
           <Text style={styles.signUpText}>{strings.signUp}</Text>
         </TouchableOpacity>
-
         <SizedBox height={verticalScale(12)} />
-
         <TouchableOpacity style={styles.tncStyle} activeOpacity={0.8}>
           {/* <TouchableOpacity onPress={onHandleCheckBox}>
           <ImageComponent

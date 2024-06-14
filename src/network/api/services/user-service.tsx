@@ -1,6 +1,6 @@
 import { apiConstants } from "~/network/constant";
 import { getApiResponse } from "~/network/utils/get-api-response";
-import { RecentlyJoined } from "~/types/recently-joined";
+import { OneUser } from "~/types/one-user";
 import { RemoteImage } from "~/types/remote-image";
 import { UploadKey } from "~/types/upload-key";
 import { UserProfile } from "~/types/user-profile";
@@ -18,7 +18,7 @@ export const deleteUser = (userId: string) =>
   doDelete<never>(`/v1/users/${userId}`);
 
 export const getRecentlyJoined = () =>
-  doPostList<RecentlyJoined>("/v1/users/recently-joined");
+  doPostList<OneUser>("/v1/users/recently-joined");
 
 export const uploadFile = (
   uploadKey: UploadKey,

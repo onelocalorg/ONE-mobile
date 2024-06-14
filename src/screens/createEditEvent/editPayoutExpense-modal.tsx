@@ -10,10 +10,10 @@ import {
   FlatList,
   ScrollView,
   Text,
+  TextInput,
   TouchableOpacity,
   View,
 } from "react-native";
-import { TextInput } from "react-native-gesture-handler";
 import { launchImageLibrary } from "react-native-image-picker";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import Toast from "react-native-simple-toast";
@@ -21,7 +21,6 @@ import { useAppTheme } from "~/app-hooks/use-app-theme";
 import { buttonArrowGreen, redDeleteIcon, saveIcon } from "~/assets/images";
 import { ImageComponent } from "~/components/image-component";
 import { ModalRefProps } from "~/components/modal-component";
-import { Navbar } from "~/components/navbar/Navbar";
 import { createStyleSheet } from "./style";
 
 interface EditBreakDownModalProps {
@@ -491,7 +490,6 @@ export const EditPayoutModalScreen = (
 
   return (
     <>
-      <Navbar navigation={navigation} />
       <View style={{ flex: 1 }}>
         <View style={styles.breakDownCont}>
           <View style={styles.subBreakdowncont}>

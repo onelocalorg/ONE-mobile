@@ -1,8 +1,9 @@
-import { HttpStatusCode } from "axios";
 import Big from "big.js";
+import _ from "lodash/fp";
 import { DateTime, Interval } from "luxon";
 import { Alert } from "react-native";
-import { useLogout } from "~/app-hooks/use-logout";
+
+// const { handleSignOut } = useContext(AuthDispatchContext);
 
 export const formatPrice = (price: string) => {
   return `$${price?.replace("USD", "")}`;
@@ -34,12 +35,16 @@ export const toCents = (val: Big) => val.times(2).round().toNumber();
 export const toCurrency = (val?: number) =>
   `$${!val ? "0.00" : Big(val).div(100).toFixed(2)}`;
 
+// FIXME when this is called, gets a weird error
+// @ts-ignore Property 'convert' does not exist on type 'LodashMapValues'.
+export const mapValuesWithKey = _.mapValues.convert({ cap: false });
+
 export const handleApiError = (title: string, e: any) => {
   // Added to handle old token
   // TODO Manage properly with storing and using refresh token
-  if (e?.code === HttpStatusCode.Unauthorized) {
-    useLogout().onLogout(true);
-  } else {
-    Alert.alert(title, e?.message ?? e);
-  }
+  // if (e?.code === HttpStatusCode.Unauthorized) {
+  //   handleSignOut();
+  // } else {
+  Alert.alert(title, e?.message ?? e);
+  // }
 };

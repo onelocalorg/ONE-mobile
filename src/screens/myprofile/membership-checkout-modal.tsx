@@ -15,7 +15,6 @@ import Toast from "react-native-simple-toast";
 import GestureRecognizer from "react-native-swipe-gestures";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
 import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
-import { useToken } from "~/app-hooks/use-token";
 import {
   addCard,
   buttonArrow,
@@ -52,7 +51,6 @@ export const MembershipCheckoutModal = (props: membershipModalProps) => {
   const [monthPrice, monthlyPrice] = useState();
   const [YerlyPrice, yearlyPrices] = useState();
   const [yearlyPlan, yearlyPlanData]: any = useState<any[]>([]);
-  const { token } = useToken();
   const [packageItem, PackageListData]: any = useState();
   const [cardData, addCardList]: any = useState<any[]>([]);
   const [description, descriptionData] = useState();
@@ -147,7 +145,7 @@ export const MembershipCheckoutModal = (props: membershipModalProps) => {
       const response = await fetch(url, {
         method: "post",
         headers: new Headers({
-          Authorization: "Bearer " + token,
+          // Authorization: "Bearer " + token,
           "Content-Type": "application/x-www-form-urlencoded",
         }),
         body: Object.keys(purchesData)

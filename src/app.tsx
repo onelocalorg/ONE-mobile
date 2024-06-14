@@ -1,31 +1,33 @@
 import { QueryClient } from "@tanstack/react-query";
-import axios from "axios";
-import React, { useEffect } from "react";
+import React, { useState } from "react";
 import { StatusBar } from "react-native";
-import { useToken } from "~/app-hooks/use-token";
-import { light } from "~/assets/constants";
-import { LOG } from "~/config";
-import { AppNavigation } from "~/config/app-navigation";
-import { API } from "~/network/api";
 import { queryConfig } from "~/network/utils/query-config";
 import { InternetConnectionHandle } from "~/utils/internet-connection-handle";
-import { getTheme } from "./theme";
+import { AppUpdate } from "./components/app-update";
+import Authentication from "./navigation/Authentication";
 
 export const queryClient = new QueryClient(queryConfig);
-const theme = getTheme(light);
-
 export const App = () => {
-  const { token } = useToken();
+  const [isUpdateRequired, setUpdateRequired] = useState<boolean>();
+  const [isNavigationVisible, setNavigationVisible] = useState(false);
 
-  useEffect(() => {
-    LOG.debug(
-      `Launching app with environment ${process.env.NODE_ENV} and API_URL ${process.env.API_URL}`
-    );
-    if (token) {
-      axios.defaults.headers.common.Authorization = `Bearer ${token}`;
-      API.initService();
+  // const { token } = useToken();
+
+  // useEffect(() => {
+  //   LOG.debug(
+  //     `Launching app with environment ${process.env.NODE_ENV} and API_URL ${process.env.API_URL}`
+  //   );
+  //   if (token) {
+  //     axios.defaults.headers.common.Authorization = `Bearer ${token}`;
+  //     API.initService();
+  //   }
+  // }, [token]);
+
+  const onNeedsUpdate = (isUpdateRequired: boolean) => {
+    if (isUpdateRequired === false) {
+      setNavigationVisible(true);
     }
-  }, [token]);
+  };
 
   return (
     <>
@@ -35,7 +37,8 @@ export const App = () => {
         barStyle={"light-content"}
         translucent={true}
       />
-      <AppNavigation />
+      <AppUpdate onNeedsUpdate={onNeedsUpdate} />
+      {isNavigationVisible ? <Authentication /> : null}
     </>
   );
 };
