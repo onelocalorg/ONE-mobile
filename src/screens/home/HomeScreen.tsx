@@ -1,5 +1,6 @@
+import { useFocusEffect } from "@react-navigation/native";
 import _ from "lodash/fp";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useState } from "react";
 import { View } from "react-native";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
 import { AuthContext } from "~/navigation/AuthContext";
@@ -9,6 +10,7 @@ import { OneUser } from "~/types/one-user";
 import { Post } from "~/types/post";
 import { handleApiError } from "~/utils/common";
 import { AddPostView } from "./AddPostView";
+import { CreatePostButton } from "./CreatePostButton";
 import { RecentUsers } from "./HorizontalAvatarView";
 import { PostsList } from "./PostsList";
 import { createStyleSheet } from "./style";
@@ -21,23 +23,25 @@ export const HomeScreen = ({
   const [userList, setUserList] = useState<OneUser[]>([]);
   const { myProfile } = React.useContext(AuthContext);
 
-  useEffect(() => {
-    async function fetchRecentlyJoinedUsers() {
-      try {
-        const recentlyJoined = await getRecentlyJoined();
-        setUserList(
-          _.reject(
-            (u: OneUser) => u.pic?.includes("defaultUser.jpg"),
-            recentlyJoined
-          )
-        );
-      } catch (error) {
-        handleApiError("Error loading recent users", error);
+  useFocusEffect(
+    useCallback(() => {
+      async function fetchRecentlyJoinedUsers() {
+        try {
+          const recentlyJoined = await getRecentlyJoined();
+          setUserList(
+            _.reject(
+              (u: OneUser) => u.pic?.includes("defaultUser.jpg"),
+              recentlyJoined
+            )
+          );
+        } catch (error) {
+          handleApiError("Error loading recent users", error);
+        }
       }
-    }
 
-    fetchRecentlyJoinedUsers();
-  }, []);
+      fetchRecentlyJoinedUsers();
+    }, [])
+  );
 
   const navigateToUserProfile = (user: OneUser) => {
     navigation.push(Screens.USER_PROFILE, { id: user.id });
@@ -84,6 +88,7 @@ export const HomeScreen = ({
           onPostPress={handlePostPress}
           onAvatarPress={navigateToProfile}
         />
+        <CreatePostButton />
       </View>
     </>
   );

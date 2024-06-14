@@ -21,7 +21,7 @@ export const PostContextMenu = ({
   const [isLoading, setLoading] = useState(false);
 
   const confirmBlockUser = () => {
-    Alert.alert(strings.blockUser, strings.areYouBlockUser, [
+    Alert.alert(strings.blockUser, strings.blockUserConfirm, [
       { text: strings.no, onPress: () => null, style: "destructive" },
       {
         text: strings.yes,
@@ -35,9 +35,9 @@ export const PostContextMenu = ({
           setLoading(true);
           try {
             await blockUser(postId);
+            navigation.popToTop();
           } catch (e) {
             handleApiError("Error blocking user", e);
-            navigation.goBack();
           } finally {
             setLoading(false);
           }
@@ -61,9 +61,9 @@ export const PostContextMenu = ({
           setLoading(true);
           try {
             await deletePost(postId);
+            navigation.popToTop();
           } catch (e) {
             handleApiError("Error deleting post", e);
-            navigation.goBack();
           } finally {
             setLoading(false);
           }
