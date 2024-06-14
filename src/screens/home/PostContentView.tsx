@@ -1,15 +1,12 @@
 import _ from "lodash/fp";
 import React from "react";
-import {
-  Image,
-  Platform,
-  Pressable,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { Image, Pressable, Text, TouchableOpacity, View } from "react-native";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
-import { greenImage, pin, postCalender } from "~/assets/images";
+import {
+  pin,
+  postCalender,
+  greenImage as threeVerticalDots,
+} from "~/assets/images";
 import { ImageComponent } from "~/components/image-component";
 import { OneUser } from "~/types/one-user";
 import { Post } from "~/types/post";
@@ -32,7 +29,8 @@ export const PostContentView = ({
     <View>
       <Pressable onPress={onPress}>
         <Text style={styles.posttitle}>{_.capitalize(post?.type)}</Text>
-        <TouchableOpacity
+        <Pressable
+          onPress={onPress}
           style={{
             position: "absolute",
             right: 14,
@@ -40,14 +38,12 @@ export const PostContentView = ({
             zIndex: 111122,
           }}
         >
-          <TouchableOpacity>
-            <ImageComponent
-              resizeMode="cover"
-              style={styles.postfilterImage}
-              source={greenImage}
-            ></ImageComponent>
-          </TouchableOpacity>
-        </TouchableOpacity>
+          <ImageComponent
+            resizeMode="cover"
+            style={styles.postfilterImage}
+            source={threeVerticalDots}
+          ></ImageComponent>
+        </Pressable>
         <View style={styles.userDetailcont}>
           <TouchableOpacity onPress={() => onAvatarPress?.(post.author)}>
             <ImageComponent
@@ -66,38 +62,6 @@ export const PostContentView = ({
               </Text>
             ) : null}
           </View>
-        </View>
-        <View
-          style={
-            Platform.OS === "ios"
-              ? styles.userListDisplayCont
-              : styles.userListDisplayContTwo
-          }
-        >
-          {/* <TouchableOpacity
-          onPress={() =>
-            recentUserProfilePress(post?.to?.users[0]?.user_id["id"])
-          }
-        >
-          <ImageComponent
-            resizeMode="cover"
-            style={styles.userListDisplay}
-            source={{
-              uri: post?.to?.users[0]?.user_id["pic"],
-            }}
-          ></ImageComponent>
-        </TouchableOpacity> */}
-          {/* <TouchableOpacity
-          onPress={() =>
-            recentUserProfilePress(post?.to?.users[1]?.user_id["id"])
-          }
-        >
-          <ImageComponent
-            resizeMode="cover"
-            style={styles.userListDisplay}
-            source={{ uri: post?.to?.users[1]?.user_id["pic"] }}
-          ></ImageComponent>
-        </TouchableOpacity> */}
         </View>
         <Text style={styles.postDes}>{post.details}</Text>
         {post.event_image ? (

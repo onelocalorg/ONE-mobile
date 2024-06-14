@@ -1,9 +1,8 @@
-import { useContext, useState } from "react";
+import { useState } from "react";
 import { Alert, Text, TouchableOpacity, View } from "react-native";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
 import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
 import { ShortModal } from "~/components/ShortModal";
-import { AuthContext } from "~/navigation/AuthContext";
 import { RootStackScreenProps, Screens } from "~/navigation/types";
 import { blockUser, deletePost } from "~/network/api/services/post-service";
 import { handleApiError } from "~/utils/common";
@@ -18,7 +17,6 @@ export const PostContextMenu = ({
   const { theme } = useAppTheme();
   const styles = createStyleSheet(theme);
   const { strings } = useStringsAndLabels();
-  const { myUser } = useContext(AuthContext);
 
   const [isLoading, setLoading] = useState(false);
 
