@@ -131,9 +131,9 @@ export const stringsAndLabels = {
   deleteAccount: "Delete Account",
   areYouDeleteAccount: "Are you sure you want to Delete Account?",
   blockUser: "Block User",
+  blockUserConfirm:
+    "If you continue, you will not be able to see any posts from this user.",
   deletePost: "Delete Post",
-  areYouBlockUser:
-    "If you Block this user you are not able to see any post from this user.",
   hidePost: "Hide Content",
   areyouHide: "Are you sure you want to hide this Post?",
   reportUser: "Report User",
