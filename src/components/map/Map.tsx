@@ -39,7 +39,7 @@ interface Range {
   endDate: Date | undefined;
 }
 
-MapboxGL.setAccessToken(process.env.MAP_ACCESS_TOKEN!);
+void MapboxGL.setAccessToken(process.env.MAP_ACCESS_TOKEN!);
 
 const BOULDER_LON = -105.2705;
 const BOULDER_LAT = 40.015;
@@ -53,7 +53,6 @@ interface MapProps {
 export const Map = ({ onEventPress, onPostPress, onAvatarPress }: MapProps) => {
   const { theme } = useAppTheme();
   const styles = createStyleSheet(theme);
-  var [eventData, eventDetail]: any = useState([]);
 
   // TODO Use the center of the current locale
   const [centerCoordinate, setCenterCoordinate] = useState([
@@ -66,7 +65,7 @@ export const Map = ({ onEventPress, onPostPress, onAvatarPress }: MapProps) => {
   const [selectedEvents, setSelectedEvents] = useState<LocalEvent[]>([]);
   const [selectedPosts, setSelectedPosts] = useState<Post[]>([]);
 
-  var makeDate = new Date();
+  const makeDate = new Date();
   makeDate.setMonth(makeDate.getMonth() + 1);
   const [range, setRange] = useState<Range>({
     startDate: new Date(),
@@ -82,33 +81,27 @@ export const Map = ({ onEventPress, onPostPress, onAvatarPress }: MapProps) => {
     useCallback(() => {
       setSelectedEvents([]);
       setSelectedPosts([]);
-      Promise.all([fetchEvents(), fetchPosts()]);
+      void Promise.all([fetchEvents(), fetchPosts()]);
     }, [])
   );
 
-  const fetchEvents = async () => {
-    try {
-      const events = await listEventsForMap({
-        startDate: DateTime.now(),
-        isCanceled: false,
-        // endDate: DateTime.now().plus({ months: 3 }),
-      });
-      setEvents(events);
-    } catch (e) {
-      handleApiError("Failed loading events", e);
-    }
+  const fetchEvents = () => {
+    listEventsForMap({
+      startDate: DateTime.now(),
+      isCanceled: false,
+      // endDate: DateTime.now().plus({ months: 3 }),
+    })
+      .then(setEvents)
+      .catch(handleApiError("Events"));
   };
 
-  const fetchPosts = async () => {
-    try {
-      const posts = await listPostsForMap({
-        startDate: DateTime.now(),
-        numPosts: 50,
-      });
-      setPosts(posts);
-    } catch (e) {
-      handleApiError("Failed loading posts", e);
-    }
+  const fetchPosts = () => {
+    listPostsForMap({
+      startDate: DateTime.now(),
+      numPosts: 50,
+    })
+      .then(setPosts)
+      .catch(handleApiError("Posts"));
   };
 
   // async function checkLocation() {

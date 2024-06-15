@@ -4,7 +4,7 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view
 import { useAppTheme } from "~/app-hooks/use-app-theme";
 import { blackOffer, greenOffer, request, requestGreen } from "~/assets/images";
 import { ImageComponent } from "~/components/image-component";
-import { HomeStackScreenProps, Screens } from "~/navigation/types";
+import { RootStackScreenProps, Screens } from "~/navigation/types";
 import { getData } from "~/network/constant";
 import { PostData } from "~/types/post-data";
 import { PostOffer } from "./PostOffer";
@@ -13,7 +13,7 @@ import { createStyleSheet } from "./style";
 
 export const CreatePostScreen = ({
   navigation,
-}: HomeStackScreenProps<Screens.CREATE_POST>) => {
+}: RootStackScreenProps<Screens.CREATE_POST>) => {
   const { theme } = useAppTheme();
   const styles = createStyleSheet(theme);
   const [selecttype, createPostSelectType] = useState(
@@ -34,13 +34,6 @@ export const CreatePostScreen = ({
 
   const createPostSetType = (text: any, type: any) => {
     createPostSelectType(text);
-    setType(type);
-  };
-
-  const selectWhatTypePost = (icon: any, type: any) => {
-    setTypeIconWhat(icon);
-    setWhatSelectType(type);
-    setShowWhatPopover(false);
   };
 
   // const getResourcesAPI = async () => {

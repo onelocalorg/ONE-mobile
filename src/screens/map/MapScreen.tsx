@@ -8,25 +8,13 @@ import { Post } from "~/types/post";
 
 export const MapScreen = ({ navigation }: MapStackScreenProps<Screens.MAP>) => {
   const navigateToEventDetail = (event: LocalEvent) => {
-    navigation.push(Screens.MAIN_TABS, {
-      screen: Screens.EVENTS_STACK,
-      params: {
-        screen: Screens.EVENT_DETAIL,
-        params: { id: event.id },
-      },
-    });
+    navigation.push(Screens.EVENT_DETAIL, { id: event.id });
   };
 
   const navigateToPostDetail = (post: Post) => {
-    console.log("click");
-    navigation.push(Screens.MAIN_TABS, {
-      screen: Screens.HOME_STACK,
-      params: {
-        screen: Screens.POST_DETAIL,
-        params: { id: post.id },
-      },
-    });
+    navigation.push(Screens.POST_DETAIL, { id: post.id });
   };
+
   const navigateToUserProfile = (user: OneUser) => {
     navigation.push(Screens.USER_PROFILE, { id: user.id });
   };

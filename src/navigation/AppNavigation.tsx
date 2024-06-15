@@ -10,6 +10,7 @@ import { ShortModalScreenOptions } from "~/components/ShortModal";
 import { GenericWebView } from "~/components/generic-webview";
 import { MyAvatar } from "~/components/navbar/MyAvatar";
 import { OneLogo } from "~/components/navbar/OneLogo";
+import { CreateEditEventScreen } from "~/screens/createEditEvent/CreateEditEventScreen";
 import { CreatePostScreen } from "~/screens/createEditPost/CreatePostScreen";
 import { EditPostScreen } from "~/screens/createEditPost/EditPostScreen";
 import { EventDetailScreen } from "~/screens/event-detail/EventDetailScreen";
@@ -86,15 +87,6 @@ export const AppNavigation = ({ user }: AppNavigationProps) => {
   const HomeStackScreen = () => (
     <HomeStack.Navigator screenOptions={{ headerShown: false }}>
       <HomeStack.Screen name={Screens.HOME_SCREEN} component={HomeScreen} />
-      <HomeStack.Screen
-        name={Screens.POST_DETAIL}
-        component={PostDetailScreen}
-      />
-      <HomeStack.Screen
-        name={Screens.CREATE_POST}
-        component={CreatePostScreen}
-      />
-      <HomeStack.Screen name={Screens.EDIT_POST} component={EditPostScreen} />
     </HomeStack.Navigator>
   );
 
@@ -104,10 +96,6 @@ export const AppNavigation = ({ user }: AppNavigationProps) => {
       <EventsStack.Screen
         name={Screens.EVENTS_LIST}
         component={EventListScreen}
-      />
-      <EventsStack.Screen
-        name={Screens.EVENT_DETAIL}
-        component={EventDetailScreen}
       />
     </EventsStack.Navigator>
   );
@@ -159,6 +147,26 @@ export const AppNavigation = ({ user }: AppNavigationProps) => {
             <RootStack.Screen
               name={Screens.USER_PROFILE}
               component={UserProfileScreen}
+            />
+            <RootStack.Screen
+              name={Screens.POST_DETAIL}
+              component={PostDetailScreen}
+            />
+            <RootStack.Screen
+              name={Screens.CREATE_POST}
+              component={CreatePostScreen}
+            />
+            <RootStack.Screen
+              name={Screens.EDIT_POST}
+              component={EditPostScreen}
+            />
+            <RootStack.Screen
+              name={Screens.EVENT_DETAIL}
+              component={EventDetailScreen}
+            />
+            <RootStack.Screen
+              name={Screens.CREATE_EDIT_EVENT}
+              component={CreateEditEventScreen}
             />
           </RootStack.Group>
         ) : (

@@ -17,7 +17,7 @@ import { ButtonComponent } from "~/components/button-component";
 import { ImageComponent } from "~/components/image-component";
 import { Loader } from "~/components/loader";
 import { SizedBox } from "~/components/sized-box";
-import { EventsStackScreenProps, Screens } from "~/navigation/types";
+import { RootStackScreenProps, Screens } from "~/navigation/types";
 import {
   getEvent,
   listRsvps,
@@ -37,7 +37,7 @@ import { createStyleSheet } from "./style";
 export const EventDetailScreen = ({
   navigation,
   route,
-}: EventsStackScreenProps<Screens.EVENT_DETAIL>) => {
+}: RootStackScreenProps<Screens.EVENT_DETAIL>) => {
   const eventId = route.params.id;
   const { theme } = useAppTheme();
   const { strings } = useStringsAndLabels();

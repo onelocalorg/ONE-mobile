@@ -46,6 +46,11 @@ export type RootStackParamList = {
   [Screens.POST_CONTEXT_MENU_MODAL]: { id: string; isMine?: boolean };
   [Screens.GIVE_GRATS_MODAL]: { postId: string };
   [Screens.REPORT_CONTENT_MODAL]: { postId: string };
+  [Screens.EVENT_DETAIL]: { id: string };
+  [Screens.CREATE_EDIT_EVENT]: { id?: string };
+  [Screens.POST_DETAIL]: { id: string };
+  [Screens.CREATE_POST]: undefined;
+  [Screens.EDIT_POST]: { id: string };
 };
 
 export type RootStackScreenProps<T extends keyof RootStackParamList> =
@@ -65,9 +70,6 @@ export type MainTabsScreenProps<T extends keyof MainTabsParamList> =
 
 export type HomeStackParamList = {
   [Screens.HOME_SCREEN]: undefined;
-  [Screens.POST_DETAIL]: { id: string };
-  [Screens.CREATE_POST]: undefined;
-  [Screens.EDIT_POST]: { id: string };
 };
 
 export type HomeStackScreenProps<T extends keyof HomeStackParamList> =
@@ -78,8 +80,6 @@ export type HomeStackScreenProps<T extends keyof HomeStackParamList> =
 
 export type EventsStackParamList = {
   [Screens.EVENTS_LIST]: undefined;
-  [Screens.EVENT_DETAIL]: { id: string };
-  [Screens.CREATE_EDIT_EVENT]: { id?: string };
 };
 
 export type EventsStackScreenProps<T extends keyof EventsStackParamList> =

@@ -1,18 +1,26 @@
 import React from "react";
 import { ScrollView } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
-import { HomeStackScreenProps, Screens } from "~/navigation/types";
-import { PostData } from "~/types/post-data";
+import { RootStackScreenProps, Screens } from "~/navigation/types";
+import { getPost } from "~/network/api/services/post-service";
+import { Post } from "~/types/post";
+import { handleApiError } from "~/utils/common";
 import { PostOffer } from "./PostOffer";
 import { PostRequest } from "./PostRequest";
 
 export const EditPostScreen = ({
   navigation,
   route,
-}: HomeStackScreenProps<Screens.EDIT_POST>) => {
-  const post = route.params.post;
+}: RootStackScreenProps<Screens.EDIT_POST>) => {
+  const postId = route.params.id;
 
-  const handleSubmit = (postData: PostData) => {
+  const [post, setPost] = React.useState<Post>();
+
+  React.useEffect(() => {
+    getPost(postId).then(setPost).catch(handleApiError("Post"));
+  }, [postId]);
+
+  const handleSubmit = () => {
     navigation.goBack();
   };
 
