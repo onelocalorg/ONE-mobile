@@ -7,7 +7,8 @@ module.exports = {
     "eslint:recommended",
     "plugin:@typescript-eslint/recommended-type-checked",
     "plugin:@tanstack/eslint-plugin-query/recommended",
-    "plugin:@typescript-eslint/strict-type-checked",
+    // "plugin:@typescript-eslint/strict-type-checked",
+    "plugin:react-hooks/recommended",
     // "plugin:@typescript-eslint/stylistic-type-checked",
     "prettier",
   ],
@@ -22,8 +23,9 @@ module.exports = {
   },
   root: true,
   rules: {
-    "@typescript-eslint/no-unused-vars": "warn",
-    "@typescript-eslint/no-explicit-any": "warn",
+    // "@typescript-eslint/no-unused-vars": "warn",
+    // "@typescript-eslint/no-explicit-any": "warn",
+    "@typescript-eslint/no-unsafe-assignment": "warn",
   },
   overrides: [
     {
