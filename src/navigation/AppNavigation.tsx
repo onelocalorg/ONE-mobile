@@ -140,6 +140,7 @@ export const AppNavigation = ({ user }: AppNavigationProps) => {
               <LogoutPressable />
             ) : isLoggedIn ? (
               <MyAvatar
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-member-access
                 onPress={() => navigation.navigate(Screens.MY_PROFILE)}
               />
             ) : null,
