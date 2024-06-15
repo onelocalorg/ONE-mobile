@@ -3,7 +3,6 @@ import type {
   CompositeScreenProps,
   NavigatorScreenParams,
 } from "@react-navigation/native";
-import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { StackScreenProps } from "@react-navigation/stack";
 
 export enum Screens {
@@ -38,7 +37,7 @@ export type GuestStackParamList = {
 };
 
 export type GuestStackScreenProps<T extends keyof GuestStackParamList> =
-  NativeStackScreenProps<GuestStackParamList, T>;
+  StackScreenProps<GuestStackParamList, T>;
 
 export type RootStackParamList = {
   [Screens.MAIN_TABS]: NavigatorScreenParams<MainTabsParamList>;
@@ -50,7 +49,7 @@ export type RootStackParamList = {
 };
 
 export type RootStackScreenProps<T extends keyof RootStackParamList> =
-  NativeStackScreenProps<RootStackParamList, T>;
+  StackScreenProps<RootStackParamList, T>;
 
 export type MainTabsParamList = {
   [Screens.HOME_STACK]: NavigatorScreenParams<HomeStackParamList>;
@@ -99,8 +98,8 @@ export type MapStackScreenProps<T extends keyof MapStackParamList> =
     RootStackScreenProps<keyof RootStackParamList>
   >;
 
-declare global {
-  namespace ReactNavigation {
-    interface RootParamList extends RootStackParamList {}
-  }
-}
+// declare global {
+//   namespace ReactNavigation {
+//     interface RootParamList extends RootStackParamList {}
+//   }
+// }

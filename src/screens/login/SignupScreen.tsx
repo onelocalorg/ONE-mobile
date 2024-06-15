@@ -25,7 +25,7 @@ import { ButtonComponent } from "~/components/button-component";
 import { DatePickerRefProps } from "~/components/date-range-picker";
 import { ImageComponent } from "~/components/image-component";
 import { SizedBox } from "~/components/sized-box";
-import { AuthContext } from "~/navigation/AuthContext";
+import { AuthDispatchContext } from "~/navigation/AuthContext";
 import { GuestStackScreenProps, Screens } from "~/navigation/types";
 import { signUp } from "~/network/api/services/auth-service";
 import { useSaveCustomerId } from "~/network/hooks/user-service-hooks/use-save-customer-id";
@@ -57,7 +57,7 @@ export const SignUp = ({
   const [selected, setSelected] = useState("");
   const datePickerRef: React.Ref<DatePickerRefProps> = useRef(null);
   const calenderShowRef: React.Ref<CalenderRefProps> = useRef(null);
-  const { handleSignUp } = useContext(AuthContext);
+  const { handleSignUp } = useContext(AuthDispatchContext);
 
   async function onSignUpAPI() {
     LodingData(true);

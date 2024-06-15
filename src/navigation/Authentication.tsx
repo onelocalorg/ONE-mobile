@@ -98,7 +98,7 @@ export default function Authentication() {
       }
     };
 
-    bootstrapAsync();
+    void bootstrapAsync();
   }, []);
 
   const authDispatchContext = useMemo(
