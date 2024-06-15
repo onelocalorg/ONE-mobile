@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useFocusEffect, useRoute } from "@react-navigation/native";
+import { useFocusEffect } from "@react-navigation/native";
 import { DateTime } from "luxon";
 import React, { useCallback, useState } from "react";
 import { FlatList, ListRenderItem, Text, View } from "react-native";
@@ -13,48 +13,27 @@ import { LocalEvent } from "~/types/local-event";
 import { handleApiError } from "~/utils/common";
 import { createStyleSheet } from "./style";
 
-interface Range {
-  startDate: Date | undefined;
-  endDate: Date | undefined;
-}
-
 export const EventListScreen = ({
   navigation,
 }: EventsStackScreenProps<Screens.EVENTS_LIST>) => {
   const { theme } = useAppTheme();
   const styles = createStyleSheet(theme);
   const { strings } = useStringsAndLabels();
-  var makeDate = new Date();
+  const makeDate = new Date();
   makeDate.setMonth(makeDate.getMonth() + 1);
-  const [range, setRange] = useState<Range>({
-    startDate: new Date(),
-    endDate: makeDate,
-  });
-  const [open, setOpen] = useState(false);
-  const [profileData, setUserProfile] = useState();
   const [eventsList, setEventsList] = useState<LocalEvent[]>([]);
-  const [totalPages, setTotalPages] = useState(0);
-  const [currentPages, setCurrentPage] = useState(0);
-  const [isLoading, LoadingData] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [page, setPage] = useState(1);
-  const [setFilter, SetToggleFilter] = useState("VF");
-  const [loading, onPageLoad] = useState(true);
-  const route = useRoute();
-  const [isEnabled, setIsEnabled] = useState(false);
+  const [isLoading, setLoading] = useState(false);
 
   useFocusEffect(
     useCallback(() => {
-      const fetchEvents = async () => {
-        try {
-          const events = await listEvents({ startDate: DateTime.now() });
-          setEventsList(events);
-        } catch (e) {
-          handleApiError("Failed to get events", e);
-        }
+      const fetchEvents = () => {
+        listEvents({ startDate: DateTime.now() })
+          .then(setEventsList)
+          .catch(handleApiError("Events"));
       };
-
+      setLoading(true);
       fetchEvents();
+      setLoading(false);
     }, [])
   );
 
@@ -144,7 +123,7 @@ export const EventListScreen = ({
   // );
 
   const onNavigate = (item: LocalEvent) => {
-    navigation.push(Screens.EVENT_DETAIL, { event: item });
+    navigation.push(Screens.EVENT_DETAIL, { id: item.id });
   };
 
   // const postDataLoad = () => {
@@ -230,7 +209,7 @@ export const EventListScreen = ({
 
   return (
     <View>
-      <Loader visible={page === 1 && isLoading} showOverlay />
+      <Loader visible={isLoading} showOverlay />
       <View style={styles.backgroundToggle}>
         {/* <View style={styles.toggleCont}>
           <Text style={styles.villageLbl}>Village Friendly </Text>

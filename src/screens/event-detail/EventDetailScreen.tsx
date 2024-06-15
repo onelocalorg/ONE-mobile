@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import { useFocusEffect } from "@react-navigation/native";
 import { DateTime } from "luxon";
 import React, { useCallback, useState } from "react";
@@ -53,27 +52,25 @@ export const EventDetailScreen = ({
 
   useFocusEffect(
     useCallback(() => {
-      const fetchEvent = async () => {
-        try {
-          const event = await getEvent(eventId!);
-          setEvent(event);
-        } catch (e) {
-          handleApiError("Failed getting Event", e);
-        }
-      };
+      void getEvent(eventId).then(setEvent).catch(handleApiError("Event"));
+      // const fetchEvent = async () => {
+      //   try {
+      //     const event = await getEvent(eventId);
+      //     setEvent(event);
+      //   } catch (e) {
+      //     handleApiError("Failed getting Event", e);
+      //   }
+      // };
 
-      fetchRsvpData();
-      fetchEvent();
+      void fetchRsvpData();
+      // void fetchEvent();
     }, [eventId])
   );
 
-  const fetchRsvpData = async () => {
-    try {
-      const rsvps = await listRsvps(eventId);
-      setRsvpData(rsvps);
-    } catch (e) {
-      handleApiError("Failed getting RSVPs", e);
-    }
+  const fetchRsvpData = () => {
+    return void listRsvps(eventId)
+      .then(setRsvpData)
+      .catch(handleApiError("RSVPs"));
   };
 
   const onNavigateToProducerProfile = () => {
@@ -92,7 +89,9 @@ export const EventDetailScreen = ({
       rsvpData?.rsvps.find((r) => r.guest.id === user.id)?.rsvp !==
         RsvpType.GOING
     ) {
-      updateRsvp(eventId, RsvpType.GOING).then(fetchRsvpData);
+      void updateRsvp(eventId, RsvpType.GOING)
+        .then(fetchRsvpData)
+        .catch(handleApiError("RSVP"));
     }
   };
 
@@ -105,7 +104,11 @@ export const EventDetailScreen = ({
       <Loader visible={!event} showOverlay />
       {event ? (
         <ScrollView contentContainerStyle={styles.scrollView}>
-          <Pressable onPress={() => console.log("click")}>
+          <Pressable
+            onPress={() => {
+              console.log("click");
+            }}
+          >
             <View style={styles.container}>
               <Text style={styles.title}>{event.name}</Text>
               <SizedBox height={verticalScale(16)} />
@@ -159,16 +162,16 @@ export const EventDetailScreen = ({
                 >
                   <ImageComponent
                     resizeMode="cover"
-                    source={{ uri: event.eventProducer?.pic }}
+                    source={{ uri: event.eventProducer.pic }}
                     style={styles.dummy}
                   />
                 </TouchableOpacity>
                 <View style={styles.margin}>
                   <Text
                     style={styles.date}
-                  >{`${event.eventProducer?.first_name} ${event.eventProducer?.last_name}`}</Text>
+                  >{`${event.eventProducer.first_name} ${event.eventProducer.last_name}`}</Text>
                   <Text style={styles.time}>
-                    {user?.user_type === "player"
+                    {user.user_type === "player"
                       ? strings.player
                       : strings.producer}
                   </Text>
@@ -181,17 +184,14 @@ export const EventDetailScreen = ({
 
             {event.id ? (
               <>
-                <Tickets
-                  event={event}
-                  onTicketPurchased={() => addGoingRsvp()}
-                />
+                <Tickets event={event} onTicketPurchased={addGoingRsvp} />
                 {rsvpData ? (
                   <RsvpView
                     event={event}
                     rsvpData={rsvpData}
                     onUserPressed={navigateToUserProfile}
                     // TODO Instead invoke the focus logic
-                    onRsvpsChanged={() => fetchRsvpData()}
+                    onRsvpsChanged={fetchRsvpData}
                   />
                 ) : null}
               </>
