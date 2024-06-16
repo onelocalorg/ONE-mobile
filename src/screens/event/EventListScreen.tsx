@@ -11,6 +11,7 @@ import { EventsStackScreenProps, Screens } from "~/navigation/types";
 import { useEventService } from "~/network/api/services/event-service";
 import { LocalEvent } from "~/types/local-event";
 import { handleApiError } from "~/utils/common";
+import { AddEventView } from "./AddEventView";
 import { createStyleSheet } from "./style";
 
 export const EventListScreen = ({
@@ -104,57 +105,7 @@ export const EventListScreen = ({
   return (
     <View>
       <Loader visible={isLoading} showOverlay />
-      <View style={styles.backgroundToggle}>
-        {/* <View style={styles.toggleCont}>
-          <Text style={styles.villageLbl}>Village Friendly </Text>
-          <View style={styles.switchToggle}>
-            {Platform.OS === "ios" ? (
-              <Switch
-                style={{ transform: [{ scaleX: 0.9 }, { scaleY: 0.5 }] }}
-                thumbColor={"white"}
-                ios_backgroundColor="#008000"
-                onChange={() => toggleSwitch(isEnabled)}
-                value={isEnabled}
-              />
-            ) : (
-              <Switch
-                style={{ transform: [{ scaleX: 1.2 }, { scaleY: 1.0 }] }}
-                trackColor={{ false: "#008000", true: "#008000" }}
-                thumbColor={"white"}
-                ios_backgroundColor="#008000"
-                onChange={() => toggleSwitch(isEnabled)}
-                value={isEnabled}
-              />
-            )}
-          </View>
-          <Text style={styles.villageLbl}> Adult Oriented</Text>
-        </View> */}
-        {/* <TouchableOpacity activeOpacity={0.8} style={styles.dateContainer}>
-          <ImageComponent source={calendar} style={styles.calendar} />
-          <TouchableOpacity activeOpacity={0.8} onPress={() => setOpen(true)}>
-            <Text style={styles.date}>{`${moment(range?.startDate).format(
-              "MMM DD, YYYY"
-            )} - ${moment(range?.endDate).format("MMM DD, YYYY")}`}</Text>
-          </TouchableOpacity>
-
-          <DatePickerModal
-            locale="en"
-            mode="range"
-            visible={open}
-            onDismiss={onDismiss}
-            startDate={range.startDate}
-            endDate={range.endDate}
-            onConfirm={onConfirm}
-            validRange={{ startDate: new Date() }}
-            closeIcon={close}
-            editIcon={close}
-            calendarIcon={close}
-          />
-
-          <ImageComponent source={arrowDown} style={styles.arrowDown} />
-        </TouchableOpacity> */}
-      </View>
-
+      <AddEventView />
       <FlatList
         renderItem={renderLocalEvent}
         keyExtractor={(item) => item.id}

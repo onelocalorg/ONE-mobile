@@ -1,4 +1,5 @@
 import { StyleSheet } from "react-native";
+import { width } from "~/theme/device/device";
 import { normalScale, verticalScale } from "~/theme/device/normalize";
 import { ThemeProps } from "~/theme/theme";
 
@@ -366,6 +367,34 @@ export const createStyleSheet = (theme: ThemeProps) => {
       borderColor: theme.colors.lightGreen,
       borderWidth: 4,
       borderRadius: theme.borderRadius.radius16,
+    },
+    mainPostCont: {
+      backgroundColor: theme.colors.white,
+      margin: 10,
+      borderRadius: 12,
+      shadowColor: "lightgray",
+      shadowOffset: { width: 1, height: 2 },
+      shadowOpacity: 0.9,
+      shadowRadius: 2,
+    },
+    postContainer: {
+      marginVertical: 10,
+      flexDirection: "row",
+    },
+    postInput: {
+      backgroundColor: "lightgray",
+      borderRadius: 22,
+      width: width - 90,
+      marginLeft: 10,
+      paddingHorizontal: 10,
+      justifyContent: "center",
+      fontFamily: theme.fontType.regular,
+    },
+    avatar: {
+      height: 40,
+      width: 40,
+      borderRadius: 100,
+      marginLeft: 10,
     },
   });
 };
