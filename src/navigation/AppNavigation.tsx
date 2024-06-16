@@ -11,6 +11,7 @@ import { GenericWebView } from "~/components/generic-webview";
 import { MyAvatar } from "~/components/navbar/MyAvatar";
 import { OneLogo } from "~/components/navbar/OneLogo";
 import { CreateEditEventScreen } from "~/screens/createEditEvent/CreateEditEventScreen";
+import { CreateEventModal } from "~/screens/createEditEvent/CreateEventModal";
 import { CreatePostScreen } from "~/screens/createEditPost/CreatePostScreen";
 import { EditPostScreen } from "~/screens/createEditPost/EditPostScreen";
 import { EventDetailScreen } from "~/screens/event-detail/EventDetailScreen";
@@ -182,20 +183,32 @@ export const AppNavigation = ({ token }: AppNavigationProps) => {
           screenOptions={{
             presentation: "modal",
             headerShown: false,
-            ...ShortModalScreenOptions,
           }}
         >
           <RootStack.Screen
             name={Screens.POST_CONTEXT_MENU_MODAL}
             component={PostContextMenu}
+            options={{
+              ...ShortModalScreenOptions,
+            }}
           />
           <RootStack.Screen
             name={Screens.GIVE_GRATS_MODAL}
             component={GiveGrats}
+            options={{
+              ...ShortModalScreenOptions,
+            }}
           />
           <RootStack.Screen
             name={Screens.REPORT_CONTENT_MODAL}
             component={ReportContent}
+            options={{
+              ...ShortModalScreenOptions,
+            }}
+          />
+          <RootStack.Screen
+            name={Screens.CREATE_EVENT_MODAL}
+            component={CreateEventModal}
           />
         </RootStack.Group>
       </RootStack.Navigator>

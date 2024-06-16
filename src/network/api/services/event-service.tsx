@@ -11,21 +11,18 @@ import { PriceBreakdown } from "~/types/price-breakdown";
 import { Rsvp, RsvpList, RsvpType } from "~/types/rsvp";
 import { TicketSelection } from "~/types/ticket-selection";
 import { API } from "..";
-import { localEventToBody, resourceToLocalEvent } from "../types/LocalEvent";
 import { useApiService } from "./api-service";
 
 export function useEventService() {
   const { doGet, doPatch, doPost } = useApiService();
 
+  const getEvent = (id: string) => doGet<LocalEvent>(`/v1/events/${id}`);
+
   const createEvent = (eventData: LocalEventData) =>
-    doPost(`/v3/events`, localEventToBody(eventData), resourceToLocalEvent);
+    doPost(`/v3/events`, eventData);
 
   const updateEvent = (eventId: string, event: LocalEventUpdateData) =>
-    doPatch(
-      `/v3/events/${eventId}`,
-      localEventToBody(event),
-      resourceToLocalEvent
-    );
+    doPatch(`/v3/events/${eventId}`, event);
 
   type ListEventsParams = {
     startDate?: DateTime;
@@ -44,9 +41,6 @@ export function useEventService() {
 
     return doGet<LocalEvent[]>(`/v3/events?${urlSearchParams.toString()}`);
   };
-
-  const getEvent = (id: string) =>
-    doGet(`/v1/events/${id}`, resourceToLocalEvent);
 
   interface TicketBodyParamProps {
     id?: string;

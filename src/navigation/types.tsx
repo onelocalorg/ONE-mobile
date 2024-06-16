@@ -28,6 +28,7 @@ export enum Screens {
   POST_CONTEXT_MENU_MODAL = "PostContextMenu",
   GIVE_GRATS_MODAL = "GiveGrats",
   REPORT_CONTENT_MODAL = "ReportContent",
+  CREATE_EVENT_MODAL = "CreateEventModal",
 }
 
 export type GuestStackParamList = {
@@ -43,14 +44,15 @@ export type RootStackParamList = {
   [Screens.MAIN_TABS]: NavigatorScreenParams<MainTabsParamList>;
   [Screens.USER_PROFILE]: { id: string };
   [Screens.MY_PROFILE]: undefined;
-  [Screens.POST_CONTEXT_MENU_MODAL]: { id: string; isMine?: boolean };
-  [Screens.GIVE_GRATS_MODAL]: { postId: string };
-  [Screens.REPORT_CONTENT_MODAL]: { postId: string };
   [Screens.EVENT_DETAIL]: { id: string };
   [Screens.CREATE_EDIT_EVENT]: { id?: string };
   [Screens.POST_DETAIL]: { id: string };
   [Screens.CREATE_POST]: undefined;
   [Screens.EDIT_POST]: { id: string };
+  [Screens.POST_CONTEXT_MENU_MODAL]: { id: string; isMine?: boolean };
+  [Screens.GIVE_GRATS_MODAL]: { postId: string };
+  [Screens.REPORT_CONTENT_MODAL]: { postId: string };
+  [Screens.CREATE_EVENT_MODAL]: undefined;
 };
 
 export type RootStackScreenProps<T extends keyof RootStackParamList> =
@@ -98,8 +100,9 @@ export type MapStackScreenProps<T extends keyof MapStackParamList> =
     RootStackScreenProps<keyof RootStackParamList>
   >;
 
-// declare global {
-//   namespace ReactNavigation {
-//     interface RootParamList extends RootStackParamList {}
-//   }
-// }
+declare global {
+  // eslint-disable-next-line @typescript-eslint/no-namespace
+  namespace ReactNavigation {
+    interface RootParamList extends RootStackParamList {}
+  }
+}

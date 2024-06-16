@@ -174,6 +174,8 @@ export function ApiService({ children }: ApiServiceProviderProps) {
   function convertDateTimes(from: unknown) {
     return _.isArray(from)
       ? from.map(convertDateTimes)
+      : !_.isObject(from)
+      ? from
       : mapValuesWithKey(
           (v: string, k: string) =>
             _.isArray(v)

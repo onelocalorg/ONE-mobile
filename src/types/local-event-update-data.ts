@@ -7,14 +7,12 @@ export interface LocalEventUpdateData {
   type?: string;
   startDate?: DateTime;
   endDate?: DateTime;
-  timeOffset?: string;
+  timezone?: string;
   about?: string;
+  venue?: string;
   address?: string;
-  fullAddress?: string;
-  latitude?: number;
-  longitude?: number;
-  eventImage?: string;
-  emailConfirmationBody?: string;
+  coordinates?: number[];
+  image?: string;
   ticketTypes?: TicketTypeData[];
   isCanceled?: boolean;
 }

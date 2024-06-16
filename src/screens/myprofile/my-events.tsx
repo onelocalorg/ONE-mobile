@@ -34,7 +34,7 @@ export const MyEvents = ({ user }: MyEventsProps) => {
     data: events,
     error,
   } = useQuery({
-    queryKey: ["myEvents", user.id],
+    queryKey: ["eventsForUser", user.id],
     queryFn: () => listEvents({ host: user.id }),
   });
   if (isPending !== isLoading) setLoading(isPending);

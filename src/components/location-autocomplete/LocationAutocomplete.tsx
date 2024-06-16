@@ -1,5 +1,7 @@
 import { useEffect, useRef } from "react";
 import {
+  GooglePlaceData,
+  GooglePlaceDetail,
   GooglePlacesAutocomplete,
   GooglePlacesAutocompleteRef,
 } from "react-native-google-places-autocomplete";
@@ -9,7 +11,7 @@ import { LOG } from "~/config";
 interface LocationAutocompleteProps {
   placeholder: string;
   address?: string;
-  onPress: (data: any, details: any) => void;
+  onPress: (data: GooglePlaceData, details: GooglePlaceDetail | null) => void;
 }
 export const LocationAutocomplete = ({
   address,
@@ -22,7 +24,7 @@ export const LocationAutocomplete = ({
 
   useEffect(() => {
     ref.current?.setAddressText(address ?? "");
-  }, []);
+  }, [address]);
 
   return (
     <GooglePlacesAutocomplete
@@ -58,7 +60,7 @@ export const LocationAutocomplete = ({
       placeholder={placeholder}
       GooglePlacesDetailsQuery={{ fields: "geometry" }}
       fetchDetails={true}
-      onPress={(data: any, details) => {
+      onPress={(data, details) => {
         LOG.debug("GooglePlacesAutocomplete", details?.geometry.location);
 
         onPress(data, details);
