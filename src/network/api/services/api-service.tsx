@@ -1,4 +1,5 @@
 import _ from "lodash/fp";
+import { DateTime } from "luxon";
 import { ReactNode, createContext, useContext } from "react";
 import { LOG } from "~/config";
 import { useAccessToken } from "~/navigation/AuthContext";
@@ -30,9 +31,12 @@ export function useApiService() {
 interface ApiServiceProviderProps {
   children: ReactNode;
 }
+
 export function ApiService({ children }: ApiServiceProviderProps) {
   const token = useAccessToken();
-  console.log("accesstoken", token);
+
+  const DATETIME_KEYS = ["startDate", "endDate", "postDate"];
+  const NO_LOG_KEYS = ["password", "access_token", "refresh_token"];
 
   const client = {
     doGet,
@@ -116,14 +120,12 @@ export function ApiService({ children }: ApiServiceProviderProps) {
   ) {
     LOG.info("callApi", method, url);
 
-    const HIDE_FIELDS = ["password", "access_token", "refresh_token"];
-
     if (body) {
       LOG.debug(
         "=>",
         // eslint-disable-next-line @typescript-eslint/no-unsafe-call
         mapValuesWithKey(
-          (v: string, k: string) => (HIDE_FIELDS.includes(k) ? "<hidden>" : v),
+          (v: string, k: string) => (NO_LOG_KEYS.includes(k) ? "<hidden>" : v),
           body
         )
       );
@@ -149,17 +151,12 @@ export function ApiService({ children }: ApiServiceProviderProps) {
       throw new ApiError(json.code, json.message);
     }
 
-    const resource = transform ? transform(json.data) : json.data;
-    LOG.debug(
-      "<=",
-      resource
-      // FIXME Remove fields we should hide
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-      // mapValuesWithKey(
-      //   (v: string, k: string) => (HIDE_FIELDS.includes(k) ? "<hidden>" : v),
-      //   resource
-      // )
-    );
+    LOG.debug("<=", hideFields(json.data));
+
+    let resource = convertDateTimes(json.data);
+
+    resource = transform ? transform(resource) : resource;
+
     return resource as Resource;
   }
 
@@ -172,5 +169,28 @@ export function ApiService({ children }: ApiServiceProviderProps) {
     return callApi<Resource[]>(method, url, body, (data) =>
       transform ? data.map(transform) : data
     );
+  }
+
+  function convertDateTimes(from: unknown) {
+    return _.isArray(from)
+      ? from.map(convertDateTimes)
+      : mapValuesWithKey(
+          (v: string, k: string) =>
+            _.isArray(v)
+              ? v.map(convertDateTimes)
+              : DATETIME_KEYS.includes(k)
+              ? DateTime.fromISO(v)
+              : v,
+          from
+        );
+  }
+
+  function hideFields(from: unknown) {
+    return _.isArray(from)
+      ? from.map(convertDateTimes)
+      : mapValuesWithKey(
+          (v: string, k: string) => (NO_LOG_KEYS.includes(k) ? "<hidden>" : v),
+          from
+        );
   }
 }

@@ -2,6 +2,7 @@ import Big from "big.js";
 import _ from "lodash/fp";
 import { DateTime, Interval } from "luxon";
 import { Alert } from "react-native";
+import { LOG } from "~/config";
 
 // const { handleSignOut } = useContext(AuthDispatchContext);
 
@@ -40,6 +41,7 @@ export const toCurrency = (val?: number) =>
 export const mapValuesWithKey = _.mapValues.convert({ cap: false });
 
 export const handleApiError = _.curry((resource: string, e: Error | null) => {
+  LOG.error(`Failure with ${resource}`, e?.message ?? e);
   // Added to handle old token
   // TODO Manage properly with storing and using refresh token
   // if (e?.code === HttpStatusCode.Unauthorized) {

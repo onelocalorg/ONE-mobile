@@ -45,59 +45,11 @@ export const EventListScreen = ({
   const renderLocalEvent: ListRenderItem<LocalEvent> = ({ item }) => {
     return (
       <View>
-        {/* Header */}
-        {/* <View style={styles.dateDisplyContainer}>
-          <Text style={styles.displayDate}>
-            {item?.date_title} {item.day_title}
-          </Text>
-        </View> */}
         <EventItem
           style={styles.listContainer}
           event={item}
           onPress={() => onNavigate(item)}
         />
-        {/* <TouchableOpacity
-          style={styles.listContainer}
-          onPress={() => onNavigate(item)}
-          activeOpacity={0.8}
-          key={Math.random()}
-          // disabled={disabled}
-        >
-          <ImageComponent
-            resizeMode="stretch"
-            uri={item.event_image}
-            source={dummy}
-            isUrl={!!item.event_image}
-            style={styles.dummy}
-          />
-          <View style={styles.flex}>
-            <View style={styles.rowClass}>
-              <View style={styles.flex}>
-                <Text style={styles.dateText}>
-                  {item.start_date_label}
-                  {" • "}
-                  {item.start_time_label}
-                </Text>
-                <Text numberOfLines={2} style={styles.title}>
-                  {item.name}
-                </Text>
-              </View>
-              <ImageComponent source={event} style={styles.event} />
-            </View>
-
-            <View style={styles.rowClass}>
-              <ImageComponent source={pin} style={styles.pin} />
-              <Text numberOfLines={1} style={styles.location}>
-                {item.address || item.full_address?.split(",")[0]}
-              </Text>
-            </View>
-            {item.cancelled ? (
-              <Text style={styles.cancleText}>CANCELED</Text>
-            ) : (
-              <View></View>
-            )}
-          </View>
-        </TouchableOpacity> */}
       </View>
     );
   };
@@ -111,16 +63,8 @@ export const EventListScreen = ({
         keyExtractor={(item) => item.id}
         contentContainerStyle={styles.scrollView}
         data={eventsList}
-        // initialNumToRender={10}
-        // onEndReached={() => {
-        //   console.log("-------------onEndReached---------------");
-        //   if (loading) {
-        //     onPageLoad(false);
-        //     postDataLoad();
-        //   }
-        // }}
-        // onEndReachedThreshold={0.1}
-      ></FlatList>
+      />
+
       {!isLoading && eventsList?.length === 0 ? (
         <View style={{ justifyContent: "center", alignItems: "center" }}>
           <Text style={styles.noEventLbl}>{strings.noEventsFound}</Text>
