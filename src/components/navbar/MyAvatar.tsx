@@ -1,8 +1,10 @@
-import { useContext } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { Pressable, View } from "react-native";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
 import { defaultUser } from "~/assets/images";
-import { AuthContext } from "~/navigation/AuthContext";
+import { useMyUserId } from "~/navigation/AuthContext";
+import { useUserService } from "~/network/api/services/user-service";
+import { handleApiError } from "~/utils/common";
 import { ImageComponent } from "../image-component";
 import { createStyleSheet } from "./style";
 
@@ -12,9 +14,20 @@ type MyAvatarProps = {
 export const MyAvatar = ({ onPress }: MyAvatarProps) => {
   const { theme } = useAppTheme();
   const styles = createStyleSheet(theme);
-  const { myProfile } = useContext(AuthContext);
 
-  console.log("MyAvatar user", myProfile);
+  const { getUserProfile } = useUserService();
+  const myUserId = useMyUserId();
+
+  const {
+    isError,
+    data: myProfile,
+    error,
+  } = useQuery({
+    queryKey: ["getUserProfile", myUserId],
+    queryFn: () => getUserProfile(myUserId!),
+    enabled: !!myUserId,
+  });
+  if (isError) handleApiError("User profile", error);
 
   return (
     <View>

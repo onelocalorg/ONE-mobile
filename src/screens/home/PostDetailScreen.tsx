@@ -1,8 +1,7 @@
-import React, { useCallback, useState } from "react";
+import React, { useState } from "react";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useFocusEffect } from "@react-navigation/native";
 import _ from "lodash/fp";
 import {
   FlatList,
@@ -17,7 +16,6 @@ import {
   View,
 } from "react-native";
 import Toast from "react-native-simple-toast";
-import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
 import {
   Vector,
   gratisGreen,
@@ -27,15 +25,11 @@ import {
   send,
 } from "~/assets/images";
 import { ImageComponent } from "~/components/image-component";
-import { HomeStackScreenProps, Screens } from "~/navigation/types";
-import {
-  createComment,
-  createReplyToComment,
-  getPost,
-  listComments,
-} from "~/network/api/services/post-service";
+import { RootStackScreenProps, Screens } from "~/navigation/types";
+
+import { useQuery } from "@tanstack/react-query";
+import { usePostService } from "~/network/api/services/post-service";
 import { Comment } from "~/types/comment";
-import { Post } from "~/types/post";
 import { Reply } from "~/types/reply";
 import { formatTimeFromNow, handleApiError } from "~/utils/common";
 import { createStyleSheet } from "./style";
@@ -43,71 +37,51 @@ import { createStyleSheet } from "./style";
 export const PostDetailScreen = ({
   navigation,
   route,
-}: HomeStackScreenProps<Screens.POST_DETAIL>) => {
+}: RootStackScreenProps<Screens.POST_DETAIL>) => {
   const postId = route.params.id;
   const { theme } = useAppTheme();
   const styles = createStyleSheet(theme);
-  const { strings } = useStringsAndLabels();
-  const [post, setPost] = useState<Post>();
   const [offerModal, CreateOfferModal] = useState(false);
   const [replyofferModal, openReplyOfferModal] = useState(false);
-  var [gratisNo, totalGratisData] = useState(10);
-  var [gratisNoComment, totalGratisCommentData] = useState(10);
-  var [isCommentModalVisible, setCommentModalVisible] = useState(false);
-  var [isCommentData, showMoreComment] = useState(false);
+  const [gratisNo, totalGratisData] = useState(10);
+  const [gratisNoComment, totalGratisCommentData] = useState(10);
+  const [isCommentModalVisible, setCommentModalVisible] = useState(false);
   const [addnewCmtReply, onAddCommentReply] = useState<string>();
-  var [gratisIndex, gratisIndexData]: any = useState();
+  const [gratisIndex, gratisIndexData]: any = useState();
   const [isLoading, setLoading] = useState(false);
   const [pageCmt, setCmtPage] = useState(1);
   const [commentContent, setCommentContent] = useState("");
-  const [commentList, setCommentList] = useState<Comment[]>([]);
   const [gratisCmtID, setreplyGratisId] = useState();
   const [gratisCmtKey, setreplyGratisKey] = useState();
-  var [commentIndex, setCommentIndex]: any = useState();
+  const [commentIndex, setCommentIndex]: any = useState();
   const [gratistype, setGratisSelectType] = useState();
   const [childjIndex, setChildIndexForGratis]: any = useState();
   const [commentId, setCommentId] = useState<string>();
-  const [numGrats, setNumGrats] = useState<number>();
-  const [numComments, setNumComments] = useState<number>();
   const flatListRef: any = React.useRef();
 
-  useFocusEffect(
-    useCallback(() => {
-      const fetchPost = async () => {
-        setLoading(true);
-        try {
-          const post = await getPost(postId);
-          setPost(post);
-          setNumComments(post.numComments);
-        } catch (e) {
-          handleApiError("Error loading post", e);
-        } finally {
-          setLoading(false);
-        }
-      };
+  const { getPost, listComments } = usePostService();
 
-      fetchPost();
-      getCommentListAPI();
-    }, [postId])
-  );
+  const postQuery = useQuery({
+    queryKey: ["post", postId],
+    queryFn: () => getPost(postId),
+  });
+  const commentQuery = useQuery({
+    queryKey: ["comments", postId],
+    queryFn: () => listComments(postId),
+  });
+
+  if (postQuery.isPending && commentQuery.isPending !== isLoading) {
+    setLoading(postQuery.isPending && commentQuery.isPending);
+  }
+  if (postQuery.isError) handleApiError("Post", postQuery.error);
+  if (commentQuery.isError) handleApiError("Comments", commentQuery.error);
 
   const recentUserProfilePress = (id: any) => {
     navigation.push(Screens.USER_PROFILE, { id });
   };
 
-  async function getCommentListAPI() {
-    if (post) {
-      setLoading(true);
-      try {
-        const comments = await listComments(post.id);
-        setCommentList(comments);
-      } catch (e) {
-        handleApiError("Error getting comments", e);
-      } finally {
-        setLoading(false);
-      }
-    }
-  }
+  const post = postQuery.data;
+  const comments = commentQuery.data;
 
   async function commentOnPost() {
     if (post) {
@@ -129,7 +103,7 @@ export const PostDetailScreen = ({
   async function addReplyGratisAPI() {
     setLoading(true);
     const token = await AsyncStorage.getItem("token");
-    var data: any = {
+    const data: any = {
       postId: postId,
       points: gratisNoComment,
       commentId: gratisCmtID,
@@ -149,13 +123,13 @@ export const PostDetailScreen = ({
       );
       const dataItem = await response.json();
       if (dataItem?.success === true) {
-        let markers = [...commentList];
+        const markers = [...commentList];
 
         markers[commentIndex]["gratis"] =
           dataItem?.data?.data?.numCommentssGratis;
 
         setNumGrats(dataItem?.data?.data?.postGratis);
-        let markersTwo = { ...post };
+        const markersTwo = { ...post };
         // markersTwo["gratis"] = dataItem?.data?.data?.postGratis;
         // setPostData(markersTwo);
       }
@@ -175,7 +149,7 @@ export const PostDetailScreen = ({
   async function addChildReplyGratisAPI() {
     setLoading(true);
     const token = await AsyncStorage.getItem("token");
-    var data: any = {
+    const data: any = {
       postId: postId,
       points: gratisNoComment,
       commentId: gratisCmtID,
@@ -195,7 +169,7 @@ export const PostDetailScreen = ({
       );
       const dataItem = await response.json();
       if (dataItem?.success === true) {
-        let markers = [...commentList];
+        const markers = [...commentList];
 
         markers[commentIndex]["replies"][childjIndex]["gratis"] =
           dataItem?.data?.data?.replayGratis;
@@ -268,7 +242,7 @@ export const PostDetailScreen = ({
   async function addGratisAPI() {
     setLoading(true);
     const token = await AsyncStorage.getItem("token");
-    var data: any = {
+    const data: any = {
       postId: postId,
       points: gratisNo,
     };
@@ -288,7 +262,7 @@ export const PostDetailScreen = ({
       );
       const dataItem = await response.json();
       if (dataItem?.success === true) {
-        let markers = { ...post };
+        const markers = { ...post };
         // markers["gratis"] = dataItem?.data?.data?.postGratis;
         // setPostData(markers);
         setNumGrats(dataItem?.data?.data?.postGratis);
@@ -370,7 +344,7 @@ export const PostDetailScreen = ({
           </TouchableOpacity>
           <View style={styles.commentDisplayCont}>
             <Text style={{ fontSize: 12, color: "#110101" }}>
-              {comment.commenter.first_name} {comment.commenter.last_name}
+              {comment.commenter.firstName} {comment.commenter.lastName}
             </Text>
             <Text style={styles.replyMsgCont}>{comment.content}</Text>
           </View>
@@ -436,7 +410,7 @@ export const PostDetailScreen = ({
                         color: "#110101",
                       }}
                     >
-                      {reply.commenter.first_name} {reply.commenter.last_name}
+                      {reply.commenter.firstName} {reply.commenter.lastName}
                     </Text>
                     <Text style={styles.replyMsgCont}>{reply.content}</Text>
                   </View>
@@ -484,12 +458,6 @@ export const PostDetailScreen = ({
     );
   };
 
-  const postLoad = () => {
-    if (isCommentData) {
-      setCmtPage(pageCmt + 1);
-      getCommentListAPI();
-    }
-  };
   return post ? (
     <View style={{ flex: 1, paddingBottom: 300 }}>
       <KeyboardAvoidingView
@@ -500,7 +468,7 @@ export const PostDetailScreen = ({
           <View style={{ flex: 1 }}>
             <View style={styles.scrollViewComment}>
               <FlatList
-                data={commentList}
+                data={comments}
                 ref={flatListRef}
                 onEndReachedThreshold={0.005}
                 keyExtractor={(item, index) => index.toString()}
@@ -528,10 +496,10 @@ export const PostDetailScreen = ({
                       </TouchableOpacity>
                       <View>
                         <View>
-                          {post?.type === "Gratis" ? (
+                          {post.type === "Gratis" ? (
                             <View>
                               <Text numberOfLines={1} style={styles.userName}>
-                                {post.author.first_name} {post.author.last_name}{" "}
+                                {post.author.firstName} {post.author.lastName}{" "}
                               </Text>
                               {/* {post?.to?.users.length !== 0 ? (
                                 <Text
@@ -568,7 +536,7 @@ export const PostDetailScreen = ({
                             </View>
                           ) : (
                             <Text numberOfLines={1} style={styles.userName}>
-                              {post.author.first_name} {post.author.last_name}
+                              {post.author.firstName} {post.author.lastName}
                             </Text>
                           )}
                           {post.postDate ? (
@@ -685,7 +653,7 @@ export const PostDetailScreen = ({
                 }
                 ListFooterComponent={
                   <View>
-                    {commentList.length !== 0 && !isLoading ? (
+                    {comments?.length !== 0 && !isLoading ? (
                       <TouchableOpacity onPress={postLoad}>
                         <View>
                           {isCommentData ? (

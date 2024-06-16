@@ -1,10 +1,11 @@
-import { useContext } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { Text, TouchableOpacity, View } from "react-native";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
-import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
 import { defaultUser } from "~/assets/images";
 import { ImageComponent } from "~/components/image-component";
-import { AuthContext } from "~/navigation/AuthContext";
+import { useMyUserId } from "~/navigation/AuthContext";
+import { useUserService } from "~/network/api/services/user-service";
+import { handleApiError } from "~/utils/common";
 import { createStyleSheet } from "./style";
 
 type AddPostView = {
@@ -13,8 +14,20 @@ type AddPostView = {
 export const AddPostView = ({ onPress }: AddPostView) => {
   const { theme } = useAppTheme();
   const styles = createStyleSheet(theme);
-  const { strings } = useStringsAndLabels();
-  const { myProfile } = useContext(AuthContext);
+
+  const { getUserProfile } = useUserService();
+  const myUserId = useMyUserId();
+
+  const {
+    isError,
+    data: myProfile,
+    error,
+  } = useQuery({
+    queryKey: ["getUserProfile", myUserId],
+    queryFn: () => getUserProfile(myUserId!),
+    enabled: !!myUserId,
+  });
+  if (isError) handleApiError("User profile", error);
 
   return (
     <View>

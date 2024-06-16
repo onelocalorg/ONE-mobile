@@ -1,14 +1,14 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useFocusEffect } from "@react-navigation/native";
+import { useQuery } from "@tanstack/react-query";
 import { DateTime } from "luxon";
-import React, { useCallback, useState } from "react";
+import React, { useState } from "react";
 import { FlatList, ListRenderItem, Text, View } from "react-native";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
 import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
 import { EventItem } from "~/components/events/EventItem";
 import { Loader } from "~/components/loader";
 import { EventsStackScreenProps, Screens } from "~/navigation/types";
-import { listEvents } from "~/network/api/services/event-service";
+import { useEventService } from "~/network/api/services/event-service";
 import { LocalEvent } from "~/types/local-event";
 import { handleApiError } from "~/utils/common";
 import { createStyleSheet } from "./style";
@@ -21,131 +21,25 @@ export const EventListScreen = ({
   const { strings } = useStringsAndLabels();
   const makeDate = new Date();
   makeDate.setMonth(makeDate.getMonth() + 1);
-  const [eventsList, setEventsList] = useState<LocalEvent[]>([]);
   const [isLoading, setLoading] = useState(false);
 
-  useFocusEffect(
-    useCallback(() => {
-      const fetchEvents = () => {
-        listEvents({ startDate: DateTime.now() })
-          .then(setEventsList)
-          .catch(handleApiError("Events"));
-      };
-      setLoading(true);
-      fetchEvents();
-      setLoading(false);
-    }, [])
-  );
+  const { listEvents } = useEventService();
 
-  // useFocusEffect(
-  //   useCallback(() => {
-  //     var tempdataTwo = getData("defaultLocation");
-  //     getEventListAPI();
-  //   }, [setFilter, page, range, searchQuery])
-  // );
-
-  // const getEventListAPI = async () => {
-  //   LOG.debug("> getEventListAPI");
-  //   if (page === 1) {
-  //     LoadingData(true);
-  //   }
-
-  //   var eventList_url = `${
-  //     process.env.API_URL
-  //   }/v2/events/list?start_date=${DateTime.now().toISO()}`;
-  //   LOG.debug(eventList_url);
-  //   try {
-  //     const token = await AsyncStorage.getItem("token");
-  //     const response = await fetch(eventList_url, {
-  //       headers: new Headers({
-  //         Authorization: "Bearer " + token,
-  //         "Content-Type": "application/json",
-  //       }),
-  //     });
-  //     const dataItem = await response.json();
-  //     LOG.debug("events:", dataItem?.data);
-
-  //     setEventsList(dataItem?.data.events);
-
-  //     // if (page == 1) {
-  //     //   var dataTemp = [...eventsList, ...dataItem?.data.results];
-  //     //   setEventsList(dataTemp);
-  //     // } else {
-  //     //   manageSameHeader(dataItem?.data.results);
-  //     // }
-
-  //     setTotalPages(dataItem?.data?.totalPages);
-  //     setCurrentPage(dataItem?.data?.page);
-  //     LoadingData(false);
-  //     onPageLoad(true);
-  //     LOG.debug("< getEventListAPI");
-  //   } catch (error) {
-  //     LOG.error("getEventListAPI", error);
-  //     LoadingData(false);
-  //   }
-  // };
-
-  // function manageSameHeader(newEventArray: any) {
-  //   var oldEventLastIndex = eventsList.length - 1;
-  //   if (
-  //     newEventArray[0]["date_title"] ==
-  //     eventsList[oldEventLastIndex]["date_title"]
-  //   ) {
-  //     var oldEventTempOne = [...eventsList];
-  //     oldEventTempOne[oldEventLastIndex]["events"] = [
-  //       ...eventsList[oldEventLastIndex]["events"],
-  //       ...newEventArray[0]["events"],
-  //     ];
-  //     newEventArray.splice(0, 1);
-  //     setEventsList([...oldEventTempOne, ...newEventArray]);
-  //   } else {
-  //     var dataTempTwo = [...eventsList, ...newEventArray];
-  //     setEventsList(dataTempTwo);
-  //     console.log("not same date display");
-  //   }
-  // }
-
-  // const onDismiss = useCallback(() => {
-  //   setOpen(false);
-  // }, [setOpen]);
-
-  // const onConfirm = useCallback(
-  //   (res: Range) => {
-  //     const startDate = res?.startDate;
-  //     const endDate = res?.endDate;
-  //     setOpen(false);
-  //     setRange({ startDate, endDate });
-  //     setTotalPages(0);
-  //     setPage(1);
-  //     setEventsList([]);
-  //   },
-  //   [setOpen, setRange, range?.startDate, range?.endDate]
-  // );
+  const {
+    isPending,
+    isError,
+    data: eventsList,
+    error,
+  } = useQuery({
+    queryKey: ["upcomingEvents"],
+    queryFn: () => listEvents({ startDate: DateTime.now() }),
+  });
+  if (isPending !== isLoading) setLoading(isPending);
+  if (isError) handleApiError("Profile", error);
 
   const onNavigate = (item: LocalEvent) => {
     navigation.push(Screens.EVENT_DETAIL, { id: item.id });
   };
-
-  // const postDataLoad = () => {
-  //   if (totalPages !== currentPages) {
-  //     setPage(page + 1);
-  //   }
-  // };
-
-  // const toggleSwitch = (value: any) => {
-  //   onPageLoad(false);
-  //   if (isEnabled === false) {
-  //     setEventsList([]);
-  //     setPage(1);
-  //     setIsEnabled(true);
-  //     SetToggleFilter("AO");
-  //   } else {
-  //     setEventsList([]);
-  //     setPage(1);
-  //     setIsEnabled(false);
-  //     SetToggleFilter("VF");
-  //   }
-  // };
 
   const renderLocalEvent: ListRenderItem<LocalEvent> = ({ item }) => {
     return (

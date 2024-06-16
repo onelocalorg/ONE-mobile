@@ -76,19 +76,19 @@ export const EditPostGratisScreen = (props: EditPostGratisScreenProps) => {
   const [whatName, createPostwhatName] = useState("");
   const [addnewCmt, onAddComment] = useState("");
   const [addnewCmtReply, onAddCommentReply] = useState("");
-  var [whatQuantity, createPostwhatQuantity] = useState(1);
+  let [whatQuantity, createPostwhatQuantity] = useState(1);
   const [typeIconTo, getTypeIconTo]: any = useState();
   const [typrTovalue, getToTypeValue]: any = useState();
   const [showToPopover, setToShowPopover] = useState(false);
   const [isLoading, LodingData] = useState(false);
   const [isuser, userCheck] = useState(false);
   const [usergratisList, userGratiesListData]: any = useState([]);
-  var [location, setUserLocation]: any = useState();
+  const [location, setUserLocation]: any = useState();
   const [userList, recentlyJoinUser]: any = useState([]);
   const [userListArray, setuserListArray]: any = useState([]);
   const [imageArray, setImageArray]: any = useState([]);
   const [imageArrayKey, setImageArrayKey]: any = useState([]);
-  var [gratisNo, totalGratisData]: any = useState(1);
+  const [gratisNo, totalGratisData]: any = useState(1);
   const [usertext, onUserSearch] = useState("");
   const datePickerRef: React.Ref<DatePickerRefProps> = useRef(null);
   const { user } = useSelector<StoreType, UserProfileState>(
@@ -181,7 +181,7 @@ export const EditPostGratisScreen = (props: EditPostGratisScreenProps) => {
 
   const postImageUploadAPI = async (fileItem: any, base64Item: any) => {
     const token = await AsyncStorage.getItem("token");
-    var pic: any = {
+    const pic: any = {
       uploadKey: "createPostImg",
       imageName: fileItem,
       base64String: "data:image/jpeg;base64," + base64Item,
@@ -201,11 +201,11 @@ export const EditPostGratisScreen = (props: EditPostGratisScreenProps) => {
       );
       const dataItem = await response.json();
       console.log(dataItem?.data);
-      var tempData = imageArray;
+      const tempData = imageArray;
       tempData.push(dataItem?.data);
       setImageArray(tempData);
 
-      var tempTwo = imageArrayKey;
+      const tempTwo = imageArrayKey;
       tempTwo.push(dataItem?.data?.key);
       setImageArrayKey(tempTwo);
       // setCreatePostUri(dataItem?.data?.imageUrl);
@@ -221,12 +221,12 @@ export const EditPostGratisScreen = (props: EditPostGratisScreenProps) => {
     LodingData(true);
     const token = await AsyncStorage.getItem("token");
 
-    console.log(process.env.API_URL + "/v2/posts/get/detail/" + postData?.id);
+    console.log(process.env.API_URL + "/v3/posts/get/detail/" + postData?.id);
     try {
       console.log("222222");
 
       const response = await fetch(
-        process.env.API_URL + "/v2/posts/get/detail/" + postData?.id,
+        process.env.API_URL + "/v3/posts/get/detail/" + postData?.id,
         {
           method: "get",
           headers: new Headers({
@@ -245,7 +245,7 @@ export const EditPostGratisScreen = (props: EditPostGratisScreenProps) => {
       getTypeIconWhat(dataItem?.data?.what?.icon);
       createPostcontent(dataItem?.data?.content);
       recentlyJoinUser(dataItem?.data?.usersArray);
-      let modifiedArray = dataItem?.data?.usersArray.map((obj: any) => {
+      const modifiedArray = dataItem?.data?.usersArray.map((obj: any) => {
         const { first_name, last_name, pic, id, point, ...rest } = obj;
         return { ...rest, user_id: obj.id, point: obj.point };
       });
@@ -265,7 +265,7 @@ export const EditPostGratisScreen = (props: EditPostGratisScreenProps) => {
   async function createPostAPI() {
     LodingData(true);
     const token = await AsyncStorage.getItem("token");
-    var data: any = {
+    const data: any = {
       type: "gratis",
       what_type: whatSelectType,
       what_name: whatName,
@@ -277,12 +277,12 @@ export const EditPostGratisScreen = (props: EditPostGratisScreenProps) => {
       post_image: imageArrayKey,
     };
 
-    console.log(process.env.API_URL + "/v2/posts/update/" + postData?.id);
+    console.log(process.env.API_URL + "/v3/posts/update/" + postData?.id);
 
     console.log(data);
     try {
       const response = await fetch(
-        process.env.API_URL + "/v2/posts/update/" + postData?.id,
+        process.env.API_URL + "/v3/posts/update/" + postData?.id,
         {
           method: "post",
           headers: new Headers({
@@ -311,7 +311,7 @@ export const EditPostGratisScreen = (props: EditPostGratisScreenProps) => {
 
   async function gratisUserList(textUser: any) {
     const token = await AsyncStorage.getItem("token");
-    var datas: any = {
+    const datas: any = {
       searchtext: textUser,
     };
     onUserSearch(textUser);
@@ -359,11 +359,11 @@ export const EditPostGratisScreen = (props: EditPostGratisScreenProps) => {
       const img = assets?.[0];
       console.log("---------------assets Gallery 222---------------");
       console.log(assets);
-      var fileNameTwo = img?.fileName ?? "";
+      const fileNameTwo = img?.fileName ?? "";
       LodingData(true);
-      var output =
+      const output =
         fileNameTwo.substr(0, fileNameTwo.lastIndexOf(".")) || fileNameTwo;
-      var base64Two = img?.base64 ?? "";
+      const base64Two = img?.base64 ?? "";
       postImageUploadAPI(output, base64Two);
     }
   };
@@ -372,7 +372,7 @@ export const EditPostGratisScreen = (props: EditPostGratisScreenProps) => {
     const newPeople = userList.filter((person: any) => person !== userlist);
     console.log("--------newPeople---------", newPeople);
     recentlyJoinUser(newPeople);
-    let modifiedArray = newPeople.map((obj: any) => {
+    const modifiedArray = newPeople.map((obj: any) => {
       const { first_name, last_name, pic, id, gratisNo, ...rest } = obj;
       return { ...rest, user_id: obj.id, point: obj.gratisNo };
     });
@@ -415,7 +415,7 @@ export const EditPostGratisScreen = (props: EditPostGratisScreenProps) => {
     // console.log(item)
     item.gratisNo = item.gratisNo + 1;
     console.log(item.gratisNo);
-    let markers = [...usergratisList];
+    const markers = [...usergratisList];
     markers[index] = {
       ...markers[index],
       gratisNo: item.gratisNo,
@@ -426,7 +426,7 @@ export const EditPostGratisScreen = (props: EditPostGratisScreenProps) => {
     // console.log(item)
     if (item.gratisNo > 1) {
       item.gratisNo = item.gratisNo - 1;
-      let markers = [...usergratisList];
+      const markers = [...usergratisList];
       markers[index] = {
         ...markers[index],
         gratisNo: item.gratisNo,

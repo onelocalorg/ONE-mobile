@@ -78,7 +78,7 @@ export const EditPostRequestScreen = (props: EditPostRequestScreenProps) => {
   const [imageArray, setImageArray]: any = useState([]);
   const [imageArrayKey, setImageArrayKey]: any = useState([]);
   const [forName, createPostforName] = useState("");
-  var [forQuantity, createPostforQuantity] = useState(1);
+  let [forQuantity, createPostforQuantity] = useState(1);
   const [whereAddress, createPostwhereAddress] = useState("");
   const [imageKey, selectedImageKey] = useState();
   const [when, createPostwhen]: any = useState();
@@ -89,21 +89,21 @@ export const EditPostRequestScreen = (props: EditPostRequestScreenProps) => {
   const [fromName, createPostFromName] = useState("");
   const [addnewCmt, onAddComment] = useState("");
   const [addnewCmtReply, onAddCommentReply] = useState("");
-  var [whatQuantity, createPostwhatQuantity] = useState(1);
+  let [whatQuantity, createPostwhatQuantity] = useState(1);
   const [typeIconFor, getTypeIconFor]: any = useState();
   const [whatForType, getForTypeValue]: any = useState();
   const [showForPopover, setForShowPopover] = useState(false);
   const [isLoading, LodingData] = useState(false);
   const [showFromPopover, setFronShowPopover] = useState(false);
-  var [location, setUserLocation]: any = useState();
-  var [gratisNo, totalGratisData]: any = useState(1);
+  const [location, setUserLocation]: any = useState();
+  const [gratisNo, totalGratisData]: any = useState(1);
   const [userList, recentlyJoinUser]: any = useState([]);
   const [userListArray, setuserListArray]: any = useState([]);
   const [usergratisList, userGratiesListData]: any = useState([]);
   const [usertext, onUserSearch] = useState("");
   const [settoTitle, setToTitleData]: any = useState();
-  var [latitude, setLatitude]: any = useState();
-  var [longitude, setLongitude]: any = useState();
+  const [latitude, setLatitude]: any = useState();
+  const [longitude, setLongitude]: any = useState();
   const datePickerRef: React.Ref<DatePickerRefProps> = useRef(null);
   const { user } = useSelector<StoreType, UserProfileState>(
     (state) => state.userProfileReducer
@@ -225,7 +225,7 @@ export const EditPostRequestScreen = (props: EditPostRequestScreenProps) => {
 
   const postImageUploadAPI = async (fileItem: any, base64Item: any) => {
     const token = await AsyncStorage.getItem("token");
-    var pic: any = {
+    const pic: any = {
       uploadKey: "createPostImg",
       imageName: fileItem,
       base64String: "data:image/jpeg;base64," + base64Item,
@@ -247,11 +247,11 @@ export const EditPostRequestScreen = (props: EditPostRequestScreenProps) => {
       );
       const dataItem = await response.json();
       console.log("-----------------Response------------");
-      var tempData = imageArray;
+      const tempData = imageArray;
       tempData.push(dataItem?.data);
       setImageArray(tempData);
 
-      var tempTwo = imageArrayKey;
+      const tempTwo = imageArrayKey;
       tempTwo.push(dataItem?.data?.key);
       setImageArrayKey(tempTwo);
       selectedImageKey(dataItem?.data?.key);
@@ -267,12 +267,12 @@ export const EditPostRequestScreen = (props: EditPostRequestScreenProps) => {
     LodingData(true);
     const token = await AsyncStorage.getItem("token");
 
-    console.log(process.env.API_URL + "/v2/posts/get/detail/" + postData?.id);
+    console.log(process.env.API_URL + "/v3/posts/get/detail/" + postData?.id);
     try {
       console.log("222222");
 
       const response = await fetch(
-        process.env.API_URL + "/v2/posts/get/detail/" + postData?.id,
+        process.env.API_URL + "/v3/posts/get/detail/" + postData?.id,
         {
           method: "get",
           headers: new Headers({
@@ -295,7 +295,7 @@ export const EditPostRequestScreen = (props: EditPostRequestScreenProps) => {
       if (dataItem?.data?.from?.type === "person") {
         setToTitleData();
         recentlyJoinUser(dataItem?.data?.usersArray);
-        let modifiedArray = dataItem?.data?.usersArray.map((obj: any) => {
+        const modifiedArray = dataItem?.data?.usersArray.map((obj: any) => {
           const { first_name, last_name, pic, id, point, ...rest } = obj;
           setuserListArray([...userListArray, obj.id]);
         });
@@ -326,7 +326,7 @@ export const EditPostRequestScreen = (props: EditPostRequestScreenProps) => {
   async function createPostAPI() {
     LodingData(true);
     const token = await AsyncStorage.getItem("token");
-    var data: any = {
+    const data: any = {
       type: "request",
       what_type: whatSelectType,
       what_name: whatName,
@@ -345,11 +345,11 @@ export const EditPostRequestScreen = (props: EditPostRequestScreenProps) => {
       from_users: userListArray,
     };
 
-    console.log(process.env.API_URL + "/v2/posts/update/" + postData?.id);
+    console.log(process.env.API_URL + "/v3/posts/update/" + postData?.id);
     console.log(data);
     try {
       const response = await fetch(
-        process.env.API_URL + "/v2/posts/update/" + postData?.id,
+        process.env.API_URL + "/v3/posts/update/" + postData?.id,
         {
           method: "post",
           headers: new Headers({
@@ -394,11 +394,11 @@ export const EditPostRequestScreen = (props: EditPostRequestScreenProps) => {
       const img = assets?.[0];
       console.log("---------------assets Gallery 222---------------");
       console.log(assets);
-      var fileNameTwo = img?.fileName ?? "";
+      const fileNameTwo = img?.fileName ?? "";
       LodingData(true);
-      var output =
+      const output =
         fileNameTwo.substr(0, fileNameTwo.lastIndexOf(".")) || fileNameTwo;
-      var base64Two = img?.base64 ?? "";
+      const base64Two = img?.base64 ?? "";
       postImageUploadAPI(output, base64Two);
     }
   };
@@ -512,7 +512,7 @@ export const EditPostRequestScreen = (props: EditPostRequestScreenProps) => {
 
   async function gratisUserList(textUser: any) {
     const token = await AsyncStorage.getItem("token");
-    var datas: any = {
+    const datas: any = {
       searchtext: textUser,
     };
     onUserSearch(textUser);
@@ -569,7 +569,7 @@ export const EditPostRequestScreen = (props: EditPostRequestScreenProps) => {
     // console.log(item)
     item.gratisNo = item.gratisNo + 1;
     console.log(item.gratisNo);
-    let markers = [...usergratisList];
+    const markers = [...usergratisList];
     markers[index] = {
       ...markers[index],
       gratisNo: item.gratisNo,
@@ -580,7 +580,7 @@ export const EditPostRequestScreen = (props: EditPostRequestScreenProps) => {
     // console.log(item)
     if (item.gratisNo > 1) {
       item.gratisNo = item.gratisNo - 1;
-      let markers = [...usergratisList];
+      const markers = [...usergratisList];
       markers[index] = {
         ...markers[index],
         gratisNo: item.gratisNo,

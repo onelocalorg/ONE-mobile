@@ -7,7 +7,6 @@ export interface LocalEventData extends LocalEventUpdateData {
   id?: string;
   name: string;
   startDate: DateTime;
-  latitude: number;
-  longitude: number;
+  coordinates: number[];
   ticketTypes: TicketTypeData[];
 }

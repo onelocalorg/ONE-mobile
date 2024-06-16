@@ -1,6 +1,6 @@
 export interface OneUser {
   id: string;
-  first_name: string;
-  last_name: string;
+  firstName: string;
+  lastName: string;
   pic: string;
 }

@@ -39,12 +39,14 @@ export const toCurrency = (val?: number) =>
 // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-assignment
 export const mapValuesWithKey = _.mapValues.convert({ cap: false });
 
-export const handleApiError = _.curry((resource: string, e: Error) => {
+export const handleApiError = _.curry((resource: string, e: Error | null) => {
   // Added to handle old token
   // TODO Manage properly with storing and using refresh token
   // if (e?.code === HttpStatusCode.Unauthorized) {
   //   handleSignOut();
   // } else {
-  Alert.alert(`Failure with ${resource}`, e?.message ?? e);
+  if (e) {
+    Alert.alert(`Failure with ${resource}`, e?.message ?? e);
+  }
   // }
 });

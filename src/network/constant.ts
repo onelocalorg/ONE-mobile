@@ -21,7 +21,7 @@ export const apiConstants = {
   refreshTokens: "/v1/auth/refresh-tokens",
   ticketHolderCheckins: "/v1/events/getTicketHolders",
   checkedInUser: "/v1/tickets/checkedInEvent",
-  createEvent: "/v2/events",
+  createEvent: "/v3/events",
   createEventDetail: "/v1/events",
   appConfig: "/v1/auth/appConfig",
   purchaseTicket: "/v1/tickets/store-purchase-response",

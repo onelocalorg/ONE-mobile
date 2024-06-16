@@ -23,11 +23,7 @@ import { SizedBox } from "~/components/sized-box";
 import { LOG } from "~/config";
 import { AuthDispatchContext } from "~/navigation/AuthContext";
 import { GuestStackScreenProps, Screens } from "~/navigation/types";
-import {
-  appleLogin,
-  googleLogin,
-  logIn,
-} from "~/network/api/services/auth-service";
+import { useAuthService } from "~/network/api/services/auth-service";
 import { getData } from "~/network/constant";
 import { useLogin } from "~/network/hooks/user-service-hooks/use-login";
 import { verticalScale } from "~/theme/device/normalize";
@@ -58,6 +54,8 @@ export const LoginScreen = ({
   const [userToken, setUserToken] = useState();
   const [appleAuthAvailable, setAppleAuthAvailable] = useState(false);
   const [isForgotPasswordVisible, setForgotPasswordVisible] = useState(false);
+
+  const { appleLogin, googleLogin, logIn } = useAuthService();
 
   // const onHandleCheckBox = () => {
   //   setIsChecked(!isChecked);

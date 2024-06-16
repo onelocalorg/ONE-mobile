@@ -1,5 +1,5 @@
-import { useFocusEffect } from "@react-navigation/native";
-import React, { ReactElement, useCallback, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import React, { ReactElement, useState } from "react";
 import {
   FlatList,
   ListRenderItem,
@@ -12,7 +12,7 @@ import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
 import { comment, gratitudeBlack } from "~/assets/images";
 import { ImageComponent } from "~/components/image-component";
 import { Loader } from "~/components/loader";
-import { listPosts } from "~/network/api/services/post-service";
+import { usePostService } from "~/network/api/services/post-service";
 import { OneUser } from "~/types/one-user";
 import { Post } from "~/types/post";
 import { handleApiError } from "~/utils/common";
@@ -26,7 +26,6 @@ type PostsListProps = {
   onAvatarPress?: (user: OneUser) => void;
   onGiveGratsPress?: (post: Post) => void;
 };
-
 export const PostsList = ({
   header,
   onContextMenuPress,
@@ -37,29 +36,21 @@ export const PostsList = ({
   const { theme } = useAppTheme();
   const styles = createStyleSheet(theme);
   const { strings } = useStringsAndLabels();
-  const [searchQuery, setSearchQuery] = useState("");
-  const [postList, setPostList] = useState<Post[]>([]);
   const [isLoading, setLoading] = useState(false);
-  const [isRefreshing, setRefreshing] = useState(false);
 
-  useFocusEffect(
-    useCallback(() => {
-      async function fetchPosts() {
-        if (!postList) {
-          setLoading(true);
-        }
-        try {
-          const posts = await listPosts({ numPosts: 30 });
-          setPostList(posts);
-        } catch (e) {
-          handleApiError("Error fetching posts", e);
-        } finally {
-          setLoading(false);
-        }
-      }
-      fetchPosts();
-    }, [searchQuery])
-  );
+  const { listPosts } = usePostService();
+
+  const {
+    isPending,
+    isError,
+    data: posts,
+    error,
+  } = useQuery({
+    queryKey: ["posts", { numPosts: 30 }],
+    queryFn: () => listPosts({ numPosts: 30 }),
+  });
+  if (isPending !== isLoading) setLoading(isPending);
+  if (isError) handleApiError("Posts", error);
 
   const postRenderer: ListRenderItem<Post> = ({ item: post, index }) => {
     return (
@@ -101,7 +92,7 @@ export const PostsList = ({
     <>
       <Loader visible={isLoading} />
       <FlatList
-        data={postList}
+        data={posts}
         keyExtractor={(item) => item.id}
         renderItem={postRenderer}
         contentContainerStyle={styles.scrollView}
@@ -110,7 +101,7 @@ export const PostsList = ({
       ></FlatList>
       <View style={{ flex: 1, justifyContent: "center", alignSelf: "center" }}>
         <Text style={{ color: "white", fontSize: 18 }}>
-          {postList?.length === 0 ? strings.noPostFound : ""}
+          {posts?.length === 0 ? strings.noPostFound : ""}
         </Text>
       </View>
     </>

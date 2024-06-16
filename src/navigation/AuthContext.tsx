@@ -1,16 +1,12 @@
-import { createContext } from "react";
+import { createContext, useContext } from "react";
 import { CurrentUser } from "~/types/current-user";
-import { UserProfile } from "~/types/user-profile";
 
 type AuthContextType = {
-  myProfile: UserProfile | null;
   accessToken: string | null;
+  myUserId: string | null;
 };
 
-export const AuthContext = createContext<AuthContextType>({
-  myProfile: null,
-  accessToken: null,
-});
+export const AuthContext = createContext<AuthContextType | null>(null);
 
 type AuthDispatchContextType = {
   handleSignIn: (user: CurrentUser) => void;
@@ -23,3 +19,11 @@ export const AuthDispatchContext = createContext<AuthDispatchContextType>({
   handleSignOut: () => {},
   handleSignUp: () => {},
 });
+
+export function useAccessToken() {
+  return useContext(AuthContext)?.accessToken;
+}
+
+export function useMyUserId() {
+  return useContext(AuthContext)?.myUserId;
+}

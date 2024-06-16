@@ -54,7 +54,7 @@ export const PostContentView = ({
           </TouchableOpacity>
           <View>
             <Text numberOfLines={1} style={styles.userName}>
-              {post.author.first_name} {post.author.last_name}
+              {post.author.firstName} {post.author.lastName}
             </Text>
             {post.postDate ? (
               <Text style={styles.postTime}>

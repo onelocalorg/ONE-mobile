@@ -80,7 +80,7 @@ export const EditPostOfferScreen = (props: EditPostOfferScreenProps) => {
   const [imageArray, setImageArray]: any = useState([]);
   const [imageArrayKey, setImageArrayKey]: any = useState([]);
   const [forName, createPostforName] = useState("");
-  var [forQuantity, createPostforQuantity] = useState(1);
+  let [forQuantity, createPostforQuantity] = useState(1);
   const [whereAddress, createPostwhereAddress] = useState("");
   const [settoTitle, setToTitleData]: any = useState();
   const [whenDate, createPostwhen]: any = useState(new Date());
@@ -90,7 +90,7 @@ export const EditPostOfferScreen = (props: EditPostOfferScreenProps) => {
   const [whatName, createPostwhatName] = useState("");
   const [addnewCmt, onAddComment] = useState("");
   const [addnewCmtReply, onAddCommentReply] = useState("");
-  var [whatQuantity, createPostwhatQuantity] = useState(1);
+  let [whatQuantity, createPostwhatQuantity] = useState(1);
   const [typeIconFor, getTypeIconFor]: any = useState();
   const [whatForType, getForTypeValue]: any = useState();
   const [icontotype, getTypeIconTo]: any = useState();
@@ -102,15 +102,15 @@ export const EditPostOfferScreen = (props: EditPostOfferScreenProps) => {
   const [showFronPopover, setFronShowPopover] = useState(false);
   const [isLoading, LodingData] = useState(false);
   const [usergratisList, userGratiesListData]: any = useState([]);
-  var [gratisNo, totalGratisData]: any = useState(1);
+  const [gratisNo, totalGratisData]: any = useState(1);
   const [userList, recentlyJoinUser]: any = useState([]);
   const [userListArray, setuserListArray]: any = useState([]);
   const [usertext, onUserSearch] = useState("");
-  var [latitude, setLatitude]: any = useState();
-  var [longitude, setLongitude]: any = useState();
+  const [latitude, setLatitude]: any = useState();
+  const [longitude, setLongitude]: any = useState();
   const [open, setOpen] = useState(false);
-  var [location, setUserLocation]: any = useState();
-  var makeDate = new Date();
+  const [location, setUserLocation]: any = useState();
+  const makeDate = new Date();
   const [range, setRange] = useState<Range>({
     startDate: new Date(),
     endDate: makeDate,
@@ -250,7 +250,7 @@ export const EditPostOfferScreen = (props: EditPostOfferScreenProps) => {
 
   const postImageUploadAPI = async (fileItem: any, base64Item: any) => {
     const token = await AsyncStorage.getItem("token");
-    var pic: any = {
+    const pic: any = {
       uploadKey: "createPostImg",
       imageName: fileItem,
       base64String: "data:image/jpeg;base64," + base64Item,
@@ -272,11 +272,11 @@ export const EditPostOfferScreen = (props: EditPostOfferScreenProps) => {
       );
       const dataItem = await response.json();
       console.log("-----------------Response------------");
-      var tempData = imageArray;
+      const tempData = imageArray;
       tempData.push(dataItem?.data);
       setImageArray(tempData);
 
-      var tempTwo = imageArrayKey;
+      const tempTwo = imageArrayKey;
       tempTwo.push(dataItem?.data?.key);
       setImageArrayKey(tempTwo);
       LodingData(false);
@@ -290,12 +290,12 @@ export const EditPostOfferScreen = (props: EditPostOfferScreenProps) => {
     LodingData(true);
     const token = await AsyncStorage.getItem("token");
 
-    console.log(process.env.API_URL + "/v2/posts/get/detail/" + postData?.id);
+    console.log(process.env.API_URL + "/v3/posts/get/detail/" + postData?.id);
     try {
       console.log("222222");
 
       const response = await fetch(
-        process.env.API_URL + "/v2/posts/get/detail/" + postData?.id,
+        process.env.API_URL + "/v3/posts/get/detail/" + postData?.id,
         {
           method: "get",
           headers: new Headers({
@@ -330,7 +330,7 @@ export const EditPostOfferScreen = (props: EditPostOfferScreenProps) => {
       if (dataItem?.data?.to_offer.type === "person") {
         recentlyJoinUser(dataItem?.data?.usersArray);
         setToTitleData();
-        let modifiedArray = dataItem?.data?.usersArray.map((obj: any) => {
+        const modifiedArray = dataItem?.data?.usersArray.map((obj: any) => {
           const { first_name, last_name, pic, id, point, ...rest } = obj;
           setuserListArray([...userListArray, obj.id]);
         });
@@ -350,7 +350,7 @@ export const EditPostOfferScreen = (props: EditPostOfferScreenProps) => {
   async function createPostAPI() {
     LodingData(true);
     const token = await AsyncStorage.getItem("token");
-    var data = {
+    const data = {
       type: "offer",
       what_type: whatSelectType,
       what_name: whatName,
@@ -369,13 +369,13 @@ export const EditPostOfferScreen = (props: EditPostOfferScreenProps) => {
       to_offer_users: userListArray,
     };
 
-    console.log(process.env.API_URL + "/v2/posts/update/" + postData?.id);
+    console.log(process.env.API_URL + "/v3/posts/update/" + postData?.id);
     console.log(data);
     try {
       console.log("222222");
 
       const response = await fetch(
-        process.env.API_URL + "/v2/posts/update/" + postData?.id,
+        process.env.API_URL + "/v3/posts/update/" + postData?.id,
         {
           method: "post",
           headers: new Headers({
@@ -422,11 +422,11 @@ export const EditPostOfferScreen = (props: EditPostOfferScreenProps) => {
       const img = assets?.[0];
       console.log("---------------assets Gallery 222---------------");
       console.log(assets);
-      var fileNameTwo = img?.fileName ?? "";
+      const fileNameTwo = img?.fileName ?? "";
       LodingData(true);
-      var output =
+      const output =
         fileNameTwo.substr(0, fileNameTwo.lastIndexOf(".")) || fileNameTwo;
-      var base64Two = img?.base64 ?? "";
+      const base64Two = img?.base64 ?? "";
       postImageUploadAPI(output, base64Two);
     }
   };
@@ -540,7 +540,7 @@ export const EditPostOfferScreen = (props: EditPostOfferScreenProps) => {
 
   async function gratisUserList(textUser: any) {
     const token = await AsyncStorage.getItem("token");
-    var datas: any = {
+    const datas: any = {
       searchtext: textUser,
     };
     onUserSearch(textUser);

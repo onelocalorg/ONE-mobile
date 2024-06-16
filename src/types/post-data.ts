@@ -4,5 +4,4 @@ import { PostUpdateData } from "./post-update-data";
 export interface PostData extends PostUpdateData {
   name: string;
   details: string;
-  images: string[];
 }

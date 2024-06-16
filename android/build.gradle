@@ -23,7 +23,7 @@ apply plugin: "com.facebook.react.rootproject"
 allprojects {
     repositories {
         maven {
-            url 'https://api.mapbox.com/downloads/v2/releases/maven'
+            url 'https://api.mapbox.com/downloads/v3/releases/maven'
             authentication {
                 basic(BasicAuthentication)
             }

@@ -1,6 +1,6 @@
-import { useFocusEffect } from "@react-navigation/native";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { DateTime } from "luxon";
-import React, { useCallback, useState } from "react";
+import React, { useState } from "react";
 import {
   Image,
   Pressable,
@@ -9,7 +9,6 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { useSelector } from "react-redux";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
 import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
 import { calendarTime, pinWhite } from "~/assets/images";
@@ -17,18 +16,12 @@ import { ButtonComponent } from "~/components/button-component";
 import { ImageComponent } from "~/components/image-component";
 import { Loader } from "~/components/loader";
 import { SizedBox } from "~/components/sized-box";
+import { useMyUserId } from "~/navigation/AuthContext";
 import { RootStackScreenProps, Screens } from "~/navigation/types";
-import {
-  getEvent,
-  listRsvps,
-  updateRsvp,
-} from "~/network/api/services/event-service";
-import { StoreType } from "~/network/reducers/store";
-import { UserProfileState } from "~/network/reducers/user-profile-reducer";
+import { useEventService } from "~/network/api/services/event-service";
 import { verticalScale } from "~/theme/device/normalize";
-import { LocalEvent } from "~/types/local-event";
 import { OneUser } from "~/types/one-user";
-import { RsvpList, RsvpType } from "~/types/rsvp";
+import { RsvpType } from "~/types/rsvp";
 import { handleApiError } from "~/utils/common";
 import { RsvpView } from "./RsvpView";
 import { Tickets } from "./Tickets";
@@ -42,36 +35,29 @@ export const EventDetailScreen = ({
   const { theme } = useAppTheme();
   const { strings } = useStringsAndLabels();
   const styles = createStyleSheet(theme);
-  const { user } = useSelector<StoreType, UserProfileState>(
-    (state) => state.userProfileReducer
-  ) as { user: { user_type: string; id: string } };
-  const [rsvpData, setRsvpData] = useState<RsvpList>();
-  const [event, setEvent] = useState<LocalEvent>();
+  const [isLoading, setLoading] = useState(false);
+  const myUserId = useMyUserId();
+  const queryClient = useQueryClient();
 
-  // const { refetch, isLoading, isRefetching, data } = useEventDetails(eventId);
+  const { getEvent, listRsvps } = useEventService();
 
-  useFocusEffect(
-    useCallback(() => {
-      void getEvent(eventId).then(setEvent).catch(handleApiError("Event"));
-      // const fetchEvent = async () => {
-      //   try {
-      //     const event = await getEvent(eventId);
-      //     setEvent(event);
-      //   } catch (e) {
-      //     handleApiError("Failed getting Event", e);
-      //   }
-      // };
+  const eventQuery = useQuery({
+    queryKey: ["event", eventId],
+    queryFn: () => getEvent(eventId),
+  });
+  const rsvpQuery = useQuery({
+    queryKey: ["rsvps", eventId],
+    queryFn: () => listRsvps(eventId),
+  });
 
-      void fetchRsvpData();
-      // void fetchEvent();
-    }, [eventId])
-  );
+  if (eventQuery.isPending && rsvpQuery.isPending !== isLoading) {
+    setLoading(eventQuery.isPending);
+  }
+  if (eventQuery.isError) handleApiError("Event", eventQuery.error);
+  if (rsvpQuery.isError) handleApiError("RSVP", rsvpQuery.error);
 
-  const fetchRsvpData = () => {
-    return void listRsvps(eventId)
-      .then(setRsvpData)
-      .catch(handleApiError("RSVPs"));
-  };
+  const event = eventQuery.data;
+  const rsvpList = rsvpQuery.data;
 
   const onNavigateToProducerProfile = () => {
     navigation.push(Screens.USER_PROFILE, {
@@ -85,14 +71,19 @@ export const EventDetailScreen = ({
 
   const addGoingRsvp = () => {
     if (
-      eventId &&
-      rsvpData?.rsvps.find((r) => r.guest.id === user.id)?.rsvp !==
-        RsvpType.GOING
+      rsvpList?.rsvps.find((r) => r.guest.id === myUserId)?.rsvp !==
+      RsvpType.GOING
     ) {
       void updateRsvp(eventId, RsvpType.GOING)
         .then(fetchRsvpData)
         .catch(handleApiError("RSVP"));
     }
+  };
+
+  const refreshRsvps = () => {
+    void queryClient.invalidateQueries({
+      queryKey: ["rsvps", eventId],
+    });
   };
 
   const navigateToUserProfile = (user: OneUser) => {
@@ -101,7 +92,7 @@ export const EventDetailScreen = ({
 
   return (
     <View>
-      <Loader visible={!event} showOverlay />
+      <Loader visible={isLoading} showOverlay />
       {event ? (
         <ScrollView contentContainerStyle={styles.scrollView}>
           <Pressable
@@ -170,11 +161,11 @@ export const EventDetailScreen = ({
                   <Text
                     style={styles.date}
                   >{`${event.eventProducer.first_name} ${event.eventProducer.last_name}`}</Text>
-                  <Text style={styles.time}>
+                  {/* <Text style={styles.time}>
                     {user.user_type === "player"
                       ? strings.player
                       : strings.producer}
-                  </Text>
+                  </Text> */}
                 </View>
               </View>
               <SizedBox height={verticalScale(30)} />
@@ -185,13 +176,13 @@ export const EventDetailScreen = ({
             {event.id ? (
               <>
                 <Tickets event={event} onTicketPurchased={addGoingRsvp} />
-                {rsvpData ? (
+                {rsvpList ? (
                   <RsvpView
                     event={event}
-                    rsvpData={rsvpData}
+                    rsvpData={rsvpList}
                     onUserPressed={navigateToUserProfile}
                     // TODO Instead invoke the focus logic
-                    onRsvpsChanged={fetchRsvpData}
+                    onRsvpsChanged={refreshRsvps}
                   />
                 ) : null}
               </>

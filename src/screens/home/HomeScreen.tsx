@@ -1,11 +1,11 @@
-import { useFocusEffect } from "@react-navigation/native";
+import { useQuery } from "@tanstack/react-query";
 import _ from "lodash/fp";
-import React, { useCallback, useState } from "react";
+import React from "react";
 import { View } from "react-native";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
-import { AuthContext } from "~/navigation/AuthContext";
+import { useMyUserId } from "~/navigation/AuthContext";
 import { HomeStackScreenProps, Screens } from "~/navigation/types";
-import { getRecentlyJoined } from "~/network/api/services/user-service";
+import { useUserService } from "~/network/api/services/user-service";
 import { OneUser } from "~/types/one-user";
 import { Post } from "~/types/post";
 import { handleApiError } from "~/utils/common";
@@ -19,27 +19,21 @@ export const HomeScreen = ({
 }: HomeStackScreenProps<Screens.HOME_SCREEN>) => {
   const { theme } = useAppTheme();
   const styles = createStyleSheet(theme);
-  const [userList, setUserList] = useState<OneUser[]>([]);
-  const { myProfile } = React.useContext(AuthContext);
+  const { getRecentlyJoined } = useUserService();
+  const myUserId = useMyUserId();
 
-  useFocusEffect(
-    useCallback(() => {
-      async function fetchRecentlyJoinedUsers() {
-        try {
-          const recentlyJoined = await getRecentlyJoined();
-          setUserList(
-            _.reject(
-              (u: OneUser) => u.pic?.includes("defaultUser.jpg"),
-              recentlyJoined
-            )
-          );
-        } catch (error) {
-          handleApiError("Error loading recent users", error);
-        }
-      }
+  const {
+    isError,
+    data: userList,
+    error,
+  } = useQuery({
+    queryKey: ["recentUsers"],
+    queryFn: () => getRecentlyJoined(),
+  });
+  if (isError) handleApiError("Recent users", error);
 
-      fetchRecentlyJoinedUsers();
-    }, [])
+  const withoutProfilePic = _.reject((u: OneUser) =>
+    u.pic?.includes("defaultUser.jpg")
   );
 
   const navigateToUserProfile = (user: OneUser) => {
@@ -69,7 +63,7 @@ export const HomeScreen = ({
   const showContextMenu = (post: Post) =>
     navigation.push(Screens.POST_CONTEXT_MENU_MODAL, {
       id: post.id,
-      isMine: myProfile?.id == post.author.id,
+      isMine: myUserId == post.author.id,
     });
 
   return (
@@ -78,7 +72,12 @@ export const HomeScreen = ({
         <PostsList
           header={
             <>
-              <RecentUsers users={userList} onPress={navigateToUserProfile} />
+              {userList ? (
+                <RecentUsers
+                  users={withoutProfilePic(userList)}
+                  onPress={navigateToUserProfile}
+                />
+              ) : null}
               <AddPostView onPress={navigateToCreatePost} />
             </>
           }

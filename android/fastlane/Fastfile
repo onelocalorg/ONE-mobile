@@ -9,7 +9,7 @@ platform :android do
 
   # Patched this because of bug https://github.com/fastlane/fastlane/issues/21500
   lane :patched_google_play_track_version_codes do |options|
-    track_version_codes = [7]
+    track_version_codes = [8]
     begin
       track_version_codes = google_play_track_version_codes(
         package_name: options[:package_name],

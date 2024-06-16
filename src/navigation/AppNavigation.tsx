@@ -26,7 +26,6 @@ import { MapScreen } from "~/screens/map/MapScreen";
 import { LogoutPressable } from "~/screens/myprofile/LogoutPressable";
 import { MyProfileScreen } from "~/screens/myprofile/MyProfileScreen";
 import { UserProfileScreen } from "~/screens/userProfile/UserProfileScreen";
-import { UserProfile } from "~/types/user-profile";
 import { EventIcon, HomeIcon, MapIcon, TabIcon } from "./TabIcon";
 import {
   EventsStackParamList,
@@ -39,12 +38,12 @@ import {
 } from "./types";
 
 type AppNavigationProps = {
-  user: UserProfile | null;
+  token: string | null;
 };
-export const AppNavigation = ({ user }: AppNavigationProps) => {
+export const AppNavigation = ({ token }: AppNavigationProps) => {
   const { theme } = useAppTheme();
 
-  const isLoggedIn = !!user;
+  const isLoggedIn = !!token;
   console.log("isLoggedIn", isLoggedIn);
 
   const MainTabs = createBottomTabNavigator<MainTabsParamList>();

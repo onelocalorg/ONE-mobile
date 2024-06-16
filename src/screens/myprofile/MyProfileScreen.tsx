@@ -1,4 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
+import { useQuery } from "@tanstack/react-query";
 import React, { useContext, useRef, useState } from "react";
 import {
   Alert,
@@ -23,13 +24,9 @@ import { ImageComponent } from "~/components/image-component";
 import { Input } from "~/components/input";
 import { Loader } from "~/components/loader";
 import { TabComponent } from "~/components/tab-component";
-import { AuthContext, AuthDispatchContext } from "~/navigation/AuthContext";
+import { AuthDispatchContext, useMyUserId } from "~/navigation/AuthContext";
 import { RootStackScreenProps, Screens } from "~/navigation/types";
-import {
-  deleteUser,
-  updateUserProfile,
-  uploadFile,
-} from "~/network/api/services/user-service";
+import { useUserService } from "~/network/api/services/user-service";
 import { useEditProfile } from "~/network/hooks/user-service-hooks/use-edit-profile";
 import { LocalEvent } from "~/types/local-event";
 import { UploadKey } from "~/types/upload-key";
@@ -66,7 +63,22 @@ export const MyProfileScreen = ({
   const appState = useRef(AppState.currentState);
   const [appStateVisible, setAppStateVisible] = useState(appState.current);
   const { handleSignOut } = useContext(AuthDispatchContext);
-  const { myProfile } = useContext(AuthContext);
+  const myUserId = useMyUserId();
+
+  const { getUserProfile } = useUserService();
+
+  const {
+    isPending,
+    isError,
+    data: myProfile,
+    error,
+  } = useQuery({
+    queryKey: ["getUserProfile", myUserId],
+    queryFn: () => getUserProfile(myUserId!),
+    enabled: !!myUserId,
+  });
+  if (isPending !== isLoading) setLoading(isPending);
+  if (isError) handleApiError("Profile", error);
 
   React.useEffect(() => {
     if (myProfile) {
@@ -103,7 +115,7 @@ export const MyProfileScreen = ({
     skills?: string[];
   }) => {
     Keyboard.dismiss();
-    let body = {
+    const body = {
       ...request,
       bio: updatedBio,
       coverImage: myProfile?.coverImage,
@@ -360,3 +372,6 @@ export const MyProfileScreen = ({
     </>
   );
 };
+function getUserProfile(myUserId: string | null | undefined): any {
+  throw new Error("Function not implemented.");
+}

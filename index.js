@@ -10,8 +10,10 @@ import { store } from "~/network/reducers/store";
 import { queryConfig } from "~/network/utils/query-config";
 import { name as appName } from "./app.json";
 import { App } from "./src/app";
+
+const queryClient = new QueryClient(queryConfig);
+
 export default function Main() {
-  const queryClient = new QueryClient(queryConfig);
   return (
     <SafeAreaProvider>
       <QueryClientProvider client={queryClient}>

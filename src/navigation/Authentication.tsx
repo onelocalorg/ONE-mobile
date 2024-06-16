@@ -2,10 +2,9 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import _ from "lodash/fp";
 import React, { useEffect, useMemo, useReducer } from "react";
 import { LOG } from "~/config";
-import { getUserProfile } from "~/network/api/services/user-service";
+import { ApiService } from "~/network/api/services/api-service";
 import { persistKeys } from "~/network/constant";
 import { CurrentUser as MyUser } from "~/types/current-user";
-import { UserProfile } from "~/types/user-profile";
 import { handleApiError } from "~/utils/common";
 import { AppNavigation } from "./AppNavigation";
 import { AuthContext, AuthDispatchContext } from "./AuthContext";
@@ -16,15 +15,15 @@ export default function Authentication() {
     isSignout: boolean;
     accessToken: string | null;
     refreshToken: string | null;
-    myProfile: UserProfile | null;
+    myUserId: string | null;
   };
 
   type SignIn = { type: "SIGN_IN"; user: MyUser };
   type RestoreToken = {
     type: "RESTORE_TOKENS";
-    myProfile: UserProfile;
-    accessToken: string | null;
+    accessToken: string;
     refreshToken: string | null;
+    userId: string;
   };
   type SignOut = { type: "SIGN_OUT" };
 
@@ -39,6 +38,7 @@ export default function Authentication() {
             ...prevState,
             accessToken: action.accessToken,
             refreshToken: action.refreshToken,
+            myUserId: action.userId,
             isLoading: false,
           };
         case "SIGN_IN":
@@ -48,14 +48,15 @@ export default function Authentication() {
             myProfile: _.omit(["access_token", "refresh_token"], action.user),
             accessToken: action.user.access_token,
             refreshToken: action.user.refresh_token,
+            myUserId: action.user.id,
           };
         case "SIGN_OUT":
           return {
             ...prevState,
             isSignout: true,
-            myProfile: null,
             accessToken: null,
             refreshToken: null,
+            myUserId: null,
             isLoading: false,
           };
       }
@@ -63,9 +64,9 @@ export default function Authentication() {
     {
       isLoading: true,
       isSignout: false,
-      myProfile: null,
       accessToken: null,
       refreshToken: null,
+      myUserId: null,
     }
   );
 
@@ -79,22 +80,22 @@ export default function Authentication() {
           AsyncStorage.getItem(persistKeys.refreshToken),
         ]);
 
+        if (accessToken && userId) {
+          dispatch({
+            type: "RESTORE_TOKENS",
+            accessToken,
+            refreshToken,
+            userId,
+          });
+        }
+
         if (!(userId && accessToken)) {
           dispatch({
             type: "SIGN_OUT",
           });
-        } else {
-          const myProfile = await getUserProfile(userId);
-
-          dispatch({
-            type: "RESTORE_TOKENS",
-            myProfile,
-            accessToken,
-            refreshToken,
-          });
         }
-      } catch (e) {
-        handleApiError("Failed to restore tokens", e);
+      } catch (e: unknown) {
+        handleApiError("Failed to restore tokens", e as Error);
       }
     };
 
@@ -133,9 +134,11 @@ export default function Authentication() {
 
   return (
     <AuthContext.Provider value={state}>
-      <AuthDispatchContext.Provider value={authDispatchContext}>
-        <AppNavigation user={state.myProfile} />
-      </AuthDispatchContext.Provider>
+      <ApiService>
+        <AuthDispatchContext.Provider value={authDispatchContext}>
+          <AppNavigation token={state.accessToken} />
+        </AuthDispatchContext.Provider>
+      </ApiService>
     </AuthContext.Provider>
   );
 }

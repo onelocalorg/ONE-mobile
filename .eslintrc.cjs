@@ -25,7 +25,9 @@ module.exports = {
   rules: {
     "@typescript-eslint/no-unused-vars": "warn",
     "@typescript-eslint/no-explicit-any": "warn",
+    "@typescript-eslint/no-unsafe-call": "warn",
     "@typescript-eslint/no-unsafe-assignment": "warn",
+    "@typescript-eslint/no-unsafe-return": "warn",
   },
   overrides: [
     {

@@ -28,6 +28,7 @@
   "include": [
     "src/**/*.tsx",
     "src/**/*.ts",
+    "index.js",
     ".eslintrc.cjs"
   ],
   "exclude": [
