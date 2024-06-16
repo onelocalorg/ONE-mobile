@@ -1,12 +1,14 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useFocusEffect } from "@react-navigation/native";
-import React, { useCallback, useState } from "react";
+import { useNavigation } from "@react-navigation/native";
+import { useQuery } from "@tanstack/react-query";
+import React, { useState } from "react";
 import { FlatList, ListRenderItem, Text, View } from "react-native";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
 import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
 import { EventCard } from "~/components/events/EventCard";
 import { Loader } from "~/components/loader";
-import { listEvents } from "~/network/api/services/event-service";
+import { Screens } from "~/navigation/types";
+import { useEventService } from "~/network/api/services/event-service";
 import { LocalEvent } from "~/types/local-event";
 import { UserProfile } from "~/types/user-profile";
 import { handleApiError } from "~/utils/common";
@@ -17,36 +19,36 @@ interface MyEventsProps {
   onEventPress?: (event: LocalEvent) => void;
 }
 
-export const MyEvents = ({ user, onEventPress }: MyEventsProps) => {
+export const MyEvents = ({ user }: MyEventsProps) => {
   const { theme } = useAppTheme();
   const styles = createStyleSheet(theme);
   const { strings } = useStringsAndLabels();
-  const [events, setEvents] = useState<LocalEvent[]>([]);
   const [isLoading, setLoading] = useState(false);
+  const navigation = useNavigation();
 
-  useFocusEffect(
-    useCallback(() => {
-      getMyEvents();
-    }, [user])
-  );
+  const { listEvents } = useEventService();
 
-  const getMyEvents = async () => {
-    try {
-      setLoading(true);
-      const events = await listEvents({ host: user.id });
-      setEvents(events);
-    } catch (e) {
-      handleApiError("Error getting events", e);
-    } finally {
-      setLoading(false);
-    }
+  const {
+    isPending,
+    isError,
+    data: events,
+    error,
+  } = useQuery({
+    queryKey: ["myEvents", user.id],
+    queryFn: () => listEvents({ host: user.id }),
+  });
+  if (isPending !== isLoading) setLoading(isPending);
+  if (isError) handleApiError("My events", error);
+
+  const navigateToEventDetail = (event: LocalEvent) => {
+    navigation.navigate(Screens.EVENT_DETAIL, { id: event.id });
   };
 
   const renderItem: ListRenderItem<LocalEvent> = ({ item }) => {
     return (
       <EventCard
         key={item.id}
-        onPress={() => onEventPress?.(item)}
+        onPress={() => navigateToEventDetail(item)}
         event={item}
       />
     );
@@ -55,21 +57,9 @@ export const MyEvents = ({ user, onEventPress }: MyEventsProps) => {
   return (
     <View>
       <Loader containerStyle={styles.loader} visible={isLoading} />
-      {/* <FlatListComponent
-        keyExtractor={(item, index) => index.toString()}
-        renderItem={renderItem}
-        data={events}
-        onLoadMoreData={onLoadMoreData}
-        emptyComponentData={{ title: strings.noEventsFound }}
-        totalPages={totalPages}
-        currentPage={page}
-        dataLength={events.length}
-        enablePagination
-        contentContainerStyle={styles.scrollViewEvent}
-      /> */}
       <FlatList
         renderItem={renderItem}
-        keyExtractor={(item, index) => index.toString()}
+        keyExtractor={(item) => item.id}
         showsHorizontalScrollIndicator={true}
         contentContainerStyle={styles.scrollViewEvent}
         data={events}
@@ -81,7 +71,7 @@ export const MyEvents = ({ user, onEventPress }: MyEventsProps) => {
         }}
         onEndReachedThreshold={0.8}
       ></FlatList>
-      {events.length === 0 ? (
+      {!events ? (
         <Text style={styles.noMoreTitle}>{strings.noEventsFound}</Text>
       ) : (
         <></>
