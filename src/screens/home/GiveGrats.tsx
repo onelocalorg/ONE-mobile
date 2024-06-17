@@ -1,3 +1,4 @@
+import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
@@ -6,8 +7,7 @@ import { Gratis, buttonArrowGreen, minus, plus } from "~/assets/images";
 import { ShortModal } from "~/components/ShortModal";
 import { ImageComponent } from "~/components/image-component";
 import { RootStackScreenProps, Screens } from "~/navigation/types";
-import { sendGratis } from "~/network/api/services/usePostService";
-import { handleApiError } from "~/utils/common";
+import { usePostService } from "~/network/api/services/usePostService";
 import { createStyleSheet } from "./style";
 
 export const GiveGrats = ({
@@ -18,8 +18,12 @@ export const GiveGrats = ({
   const { theme } = useAppTheme();
   const styles = createStyleSheet(theme);
   const { strings } = useStringsAndLabels();
+  const [numGrats, setNumGrats] = useState(10);
 
-  const [numGrats, setNumGrats]: any = useState(10);
+  const {
+    mutations: { giveGrats },
+  } = usePostService();
+  const mutateGiveGrats = useMutation(giveGrats);
 
   const gratisPlusClick = () => {
     setNumGrats((numGrats: number) => numGrats + 1);
@@ -31,13 +35,18 @@ export const GiveGrats = ({
     );
   };
 
-  const giveGrats = async () => {
-    try {
-      await sendGratis(postId, numGrats);
-      navigation.goBack();
-    } catch (e) {
-      handleApiError("Error sending Grats", e);
-    }
+  const handlePress = () => {
+    mutateGiveGrats.mutate(
+      {
+        postId: postId,
+        points: numGrats,
+      },
+      {
+        onSuccess: () => {
+          navigation.goBack();
+        },
+      }
+    );
   };
 
   return (
@@ -72,7 +81,7 @@ export const GiveGrats = ({
         </TouchableOpacity>
       </View>
       <TouchableOpacity
-        onPress={giveGrats}
+        onPress={handlePress}
         activeOpacity={0.8}
         style={styles.purchaseContainer}
       >

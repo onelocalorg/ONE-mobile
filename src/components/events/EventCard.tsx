@@ -30,9 +30,9 @@ export const EventCard = ({
     >
       <ImageComponent
         resizeMode="stretch"
-        uri={event.eventImage}
+        uri={event.image}
         source={dummy}
-        isUrl={!!event.eventImage}
+        isUrl={!!event.image}
         style={styles.dummy}
       />
       <View style={styles.flex}>
@@ -53,7 +53,7 @@ export const EventCard = ({
         <View style={styles.row}>
           <ImageComponent source={pin} style={styles.pin} />
           <Text numberOfLines={3} style={styles.location}>
-            {event.address || event.fullAddress?.split(",")[0]}
+            {event.venue || event.address?.split(",")[0]}
           </Text>
           {/* <ImageComponent style={styles.addressDot} source={activeRadio}></ImageComponent> */}
           {/* <Text style={styles.fullAddress}>{full_address}</Text> */}

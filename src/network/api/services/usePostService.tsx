@@ -4,8 +4,8 @@ import { LOG } from "~/config";
 import { Comment } from "~/types/comment";
 import { Post } from "~/types/post";
 import { PostData } from "~/types/post-data";
-import { PostGratis } from "~/types/post-gratis";
 import { PostUpdateData } from "~/types/post-update-data";
+import { SendGrats } from "~/types/send-grats";
 import { useApiService } from "./ApiService";
 
 export function usePostService() {
@@ -42,7 +42,18 @@ export function usePostService() {
         return createPost(eventData);
       },
       onSuccess: () => {
-        void queryClient.invalidateQueries({ queryKey: queries.all() });
+        void queryClient.invalidateQueries({ queryKey: queries.details() });
+      },
+    },
+    giveGrats: {
+      mutationFn: (props: SendGratsProps) => {
+        return sendGratis(props);
+      },
+      onSuccess: (data: SendGrats) => {
+        void queryClient.invalidateQueries({ queryKey: queries.lists() });
+        void queryClient.invalidateQueries({
+          queryKey: queries.detail(data.post).queryKey,
+        });
       },
     },
   };
@@ -59,9 +70,7 @@ export function usePostService() {
 
   const getPost = (id: string) => doGet<Post>(`/v3/posts/${id}`);
 
-  async function deletePost(id: string) {
-    return doPost<never>(`/v3/posts/delete/${id}`);
-  }
+  const deletePost = (id: string) => doDelete<never>(`/v3/posts/${id}`);
 
   const blockUser = (postId: string) =>
     doPost(`/v3/posts/block-user/${postId}`);
@@ -91,8 +100,12 @@ export function usePostService() {
     timezone: data.startDate ? data.startDate.zoneName : undefined,
   });
 
-  const sendGratis = (postId: string, points: number) =>
-    doPost<PostGratis>("/v3/posts/gratis-sharing", { postId, points });
+  interface SendGratsProps {
+    postId: string;
+    points: number;
+  }
+  const sendGratis = ({ postId, points }: SendGratsProps) =>
+    doPost<SendGrats>(`/v3/posts/${postId}/grats`, { points });
 
   const createComment = (postId: string, content: string) =>
     doPost<Comment>(`/v3/posts/${postId}/comments/create`, { content });
@@ -128,4 +141,7 @@ export function usePostService() {
     blockUser,
     createReplyToComment,
   };
+}
+function doDelete<T>(arg0: string) {
+  throw new Error("Function not implemented.");
 }

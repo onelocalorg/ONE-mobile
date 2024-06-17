@@ -8,7 +8,7 @@ import { CreateEditEvent } from "./CreateEditEvent";
 export const CreateEditEventScreen = ({
   route,
 }: RootStackScreenProps<Screens.CREATE_EDIT_EVENT>) => {
-  const eventId = route.params.id;
+  const eventId = route.params?.id;
 
   const { getEvent } = useEventService();
 
@@ -18,7 +18,7 @@ export const CreateEditEventScreen = ({
     error,
   } = useQuery({
     queryKey: ["event", eventId],
-    queryFn: () => getEvent(eventId),
+    queryFn: () => getEvent(eventId!),
     enabled: !!eventId,
   });
   if (isError) handleApiError("Event", error);
