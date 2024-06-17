@@ -16,7 +16,7 @@ export const createStyleSheet = (theme: ThemeProps) => {
       // borderColor: theme.colors.white,
       // borderRadius: normalScale(56),
       // borderWidth: theme.borderWidth.borderWidth1,
-      marginTop: verticalScale(-56),
+      marginTop: verticalScale(12),
       alignSelf: "flex-start",
       marginLeft: normalScale(14),
       zIndex: 10,
@@ -55,7 +55,7 @@ export const createStyleSheet = (theme: ThemeProps) => {
     },
     userData: {
       flex: 1,
-      marginTop: -80,
+      marginTop: -100,
     },
     firstName: {
       fontFamily: theme.fontType.medium,

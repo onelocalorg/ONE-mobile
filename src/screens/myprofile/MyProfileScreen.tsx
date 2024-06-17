@@ -16,7 +16,6 @@ import {
 import { getReadableVersion } from "react-native-device-info";
 import ImagePicker from "react-native-image-crop-picker";
 import Toast from "react-native-simple-toast";
-import { useDispatch } from "react-redux";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
 import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
 import { Gratis, dummy } from "~/assets/images";
@@ -55,9 +54,6 @@ export const MyProfileScreen = ({
   const [catchphrase, setCatchphrase] = useState<string>();
   const [skills, setSkills] = useState<string[]>([]);
   const [profileAnswers, setProfileAnswers] = useState<string[]>([]);
-  const [isLoading, setLoading] = useState(false);
-  const dispatch = useDispatch();
-  const [searchQuery, setSearchQuery] = useState("");
   const appState = useRef(AppState.currentState);
   const [appStateVisible, setAppStateVisible] = useState(appState.current);
   const { handleSignOut } = useContext(AuthDispatchContext);
@@ -73,7 +69,6 @@ export const MyProfileScreen = ({
     data: myProfile,
     error,
   } = useQuery(getUser(myUserId));
-  if (isPending !== isLoading) setLoading(isPending);
   if (isError) handleApiError("Profile", error);
 
   React.useEffect(() => {
@@ -236,7 +231,7 @@ export const MyProfileScreen = ({
 
   return (
     <>
-      <Loader visible={isLoading} showOverlay={true} />
+      <Loader visible={isPending} showOverlay={true} />
       {myProfile ? (
         <>
           <View style={styles.profileContainer}>
