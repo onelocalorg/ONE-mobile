@@ -1,4 +1,4 @@
-import { queryOptions } from "@tanstack/react-query";
+import { queryOptions, useQueryClient } from "@tanstack/react-query";
 import _ from "lodash/fp";
 import { LOG } from "~/config";
 import { Comment } from "~/types/comment";
@@ -9,6 +9,8 @@ import { PostUpdateData } from "~/types/post-update-data";
 import { useApiService } from "./ApiService";
 
 export function usePostService() {
+  const queryClient = useQueryClient();
+
   const queries = {
     all: () => ["posts"],
     lists: () => [...queries.all(), "list"],
@@ -32,6 +34,17 @@ export function usePostService() {
         queryFn: () => getComments(postId),
         staleTime: 5000,
       }),
+  };
+
+  const mutations = {
+    createPost: {
+      mutationFn: (eventData: PostData) => {
+        return createPost(eventData);
+      },
+      onSuccess: () => {
+        void queryClient.invalidateQueries({ queryKey: queries.all() });
+      },
+    },
   };
 
   const { doPost, doPatch, doGet } = useApiService();
@@ -102,6 +115,7 @@ export function usePostService() {
 
   return {
     queries,
+    mutations,
     createPost,
     updatePost,
     listPosts: getPosts,

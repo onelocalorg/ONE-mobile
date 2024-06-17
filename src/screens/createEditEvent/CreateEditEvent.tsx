@@ -48,13 +48,16 @@ export const CreateEditEvent = ({ event }: CreateEditEventProps) => {
   const isCreateEvent = !event;
   const viewCount = isLocalEvent(event) ? event.viewCount : undefined;
   const styles = createStyleSheet(theme);
-  const { createEvent } = useEventService();
   const navigation = useNavigation();
   const [isEndDateActive, setEndDateActive] = useState(false);
   const [isLoading, setLoading] = useState(false);
   const [curTicket, setCurTicket] = useState<number | undefined>();
   const queryClient = useQueryClient();
   const myUserId = useMyUserId();
+
+  const {
+    mutations: { createEvent },
+  } = useEventService();
 
   const {
     control,
@@ -72,17 +75,7 @@ export const CreateEditEvent = ({ event }: CreateEditEventProps) => {
     },
   });
 
-  const mutateCreateEvent = useMutation({
-    mutationFn: (eventData: LocalEventData) => {
-      return createEvent(eventData);
-    },
-    onSuccess: () => {
-      void queryClient.invalidateQueries({ queryKey: ["upcomingEvents"] });
-      void queryClient.invalidateQueries({
-        queryKey: ["eventsForUser", myUserId],
-      });
-    },
-  });
+  const mutateCreateEvent = useMutation(createEvent);
 
   async function onCancelEvent(eventID: any) {
     setLoading(true);
@@ -139,7 +132,6 @@ export const CreateEditEvent = ({ event }: CreateEditEventProps) => {
   // };
 
   const handleCreateEvent = (data: LocalEventData) => {
-    console.log("createEvent", data);
     if (data.name && data.coordinates) {
       mutateCreateEvent.mutate(data, {
         onSuccess: () => {

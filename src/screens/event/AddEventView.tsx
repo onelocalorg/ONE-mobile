@@ -24,7 +24,7 @@ export const AddEventView = () => {
   if (isError) handleApiError("User profile", error);
 
   const handlePress = () => {
-    navigation.navigate(Screens.CREATE_EVENT_MODAL);
+    navigation.navigate(Screens.CREATE_EDIT_EVENT);
   };
 
   return (

@@ -38,6 +38,14 @@ export function useEventService() {
   };
 
   const mutations = {
+    createEvent: {
+      mutationFn: (eventData: LocalEventData) => {
+        return createEvent(eventData);
+      },
+      onSuccess: () => {
+        void queryClient.invalidateQueries({ queryKey: queries.all() });
+      },
+    },
     createRsvp: {
       mutationFn: (data: RsvpData) => {
         return createRsvp(data);

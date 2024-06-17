@@ -221,7 +221,7 @@ export const Map = ({ onEventPress, onPostPress, onAvatarPress }: MapProps) => {
         },
       })),
     };
-    console.log("post", JSON.stringify(fc));
+    // console.log("post", JSON.stringify(fc));
     return fc;
   }
 
@@ -254,7 +254,7 @@ export const Map = ({ onEventPress, onPostPress, onAvatarPress }: MapProps) => {
         },
       })),
     };
-    console.log("Fc", JSON.stringify(fc));
+    // console.log("Fc", JSON.stringify(fc));
     return fc;
   }
 };
