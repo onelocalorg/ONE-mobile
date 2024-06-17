@@ -3,8 +3,8 @@ import { getApiResponse } from "~/network/utils/get-api-response";
 import { OneUser } from "~/types/one-user";
 import { RemoteImage } from "~/types/remote-image";
 import { UploadKey } from "~/types/upload-key";
-import { UserProfile } from "~/types/user-profile";
-import { UserProfileData } from "~/types/user-profile-data";
+import { UserProfile, UserProfileUpdateData } from "~/types/user-profile";
+
 import { API } from "..";
 import { useApiService } from "./api-service";
 
@@ -12,15 +12,14 @@ export function useUserService() {
   const { doDelete, doGet, doPatch, doPost, doPostList } = useApiService();
 
   const getUserProfile = (userId: string) =>
-    doGet<UserProfile>(`/v1/users/${userId}/profile`);
+    doGet<UserProfile>(`/v3/users/${userId}`);
 
-  const updateUserProfile = (userId: string, data: UserProfileData) =>
-    doPatch<UserProfile>(`/v1/users/${userId}/profile`, data);
+  const updateUserProfile = (userId: string, data: UserProfileUpdateData) =>
+    doPatch<UserProfile>(`/v3/users/${userId}`, data);
 
-  const deleteUser = (userId: string) => doDelete<never>(`/v1/users/${userId}`);
+  const deleteUser = (userId: string) => doDelete<never>(`/v3/users/${userId}`);
 
-  const getRecentlyJoined = () =>
-    doPostList<OneUser>("/v1/users/recently-joined");
+  const getRecentlyJoined = () => doGet<OneUser[]>("/v3/users?sort=joinDate");
 
   const uploadFile = (
     uploadKey: UploadKey,

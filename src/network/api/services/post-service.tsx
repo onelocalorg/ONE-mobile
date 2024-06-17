@@ -67,7 +67,7 @@ export function usePostService() {
     startDate,
   }: ListPostsParams | undefined = {}) => {
     const urlParams: string[] = [];
-    if (!_.isNil(startDate)) urlParams.push(`start_date=${startDate.toISO()}`);
+    if (!_.isNil(startDate)) urlParams.push(`startDate=${startDate.toISO()}`);
     if (!_.isNil(numPosts)) urlParams.push(`limit=${numPosts.toString()}`);
 
     const urlSearchParams = urlParams.join("&");

@@ -32,8 +32,8 @@ import { LocalEvent } from "~/types/local-event";
 import { UploadKey } from "~/types/upload-key";
 import { handleApiError } from "~/utils/common";
 import { LogoutPressable } from "./LogoutPressable";
-import { About } from "./about";
-import { MyEvents } from "./my-events";
+import { MyAbout } from "./MyAbout";
+import { MyEvents } from "./MyEvents";
 import { createStyleSheet } from "./style";
 
 export const MyProfileScreen = ({
@@ -82,11 +82,11 @@ export const MyProfileScreen = ({
 
   React.useEffect(() => {
     if (myProfile) {
-      setFirstName(myProfile.first_name);
-      setLastName(myProfile.last_name);
-      setNickName(myProfile.nick_name);
+      setFirstName(myProfile.firstName);
+      setLastName(myProfile.lastName);
+      setNickName(myProfile.nickname);
       setSkills(myProfile.skills);
-      setCatchphrase(myProfile.catch_phrase);
+      setCatchphrase(myProfile.catchPhrase);
       setProfileUri(myProfile.pic);
     }
   }, []);
@@ -118,7 +118,7 @@ export const MyProfileScreen = ({
     const body = {
       ...request,
       bio: updatedBio,
-      coverImage: myProfile?.coverImage,
+      // coverImage: myProfile?.coverImage,
       first_name: firstName,
       last_name: lastName,
       nick_name: nickName,
@@ -300,7 +300,7 @@ export const MyProfileScreen = ({
                   style={styles.gratiesImage}
                 ></Image>
                 <Text style={styles.gratiesNumber}>
-                  {myProfile.points_balance}
+                  {myProfile.pointsBalance}
                 </Text>
               </View>
 
@@ -343,7 +343,7 @@ export const MyProfileScreen = ({
               onPressTab={setSelectedTab}
             />
             {selectedTab === 0 && (
-              <About user={myProfile} onEditProfile={onSaveProfile} />
+              <MyAbout user={myProfile} onEditProfile={onSaveProfile} />
             )}
             {selectedTab === 1 && (
               <MyEvents user={myProfile} onEventPress={navigateToEventDetail} />
@@ -372,6 +372,3 @@ export const MyProfileScreen = ({
     </>
   );
 };
-function getUserProfile(myUserId: string | null | undefined): any {
-  throw new Error("Function not implemented.");
-}

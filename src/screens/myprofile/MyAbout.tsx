@@ -9,7 +9,6 @@ import { ImageComponent } from "~/components/image-component";
 import { Input } from "~/components/input";
 import { Loader } from "~/components/loader";
 import { Pill } from "~/components/pill";
-import { normalScale, verticalScale } from "~/theme/device/normalize";
 import { UserProfile } from "~/types/user-profile";
 import { createStyleSheet } from "./style";
 
@@ -18,7 +17,7 @@ interface AboutDataProps {
   onEditProfile?: (data: { about?: string; skills?: string[] }) => void;
 }
 
-export const About = ({ user, onEditProfile }: AboutDataProps) => {
+export const MyAbout = ({ user, onEditProfile }: AboutDataProps) => {
   const { theme } = useAppTheme();
   const { strings } = useStringsAndLabels();
   const styles = createStyleSheet(theme);
@@ -29,7 +28,7 @@ export const About = ({ user, onEditProfile }: AboutDataProps) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [memberModal, setMemberModal] = useState(false);
   const [openQues, quesAnsModal] = useState(false);
-  const [ansQueData, submitAnsState] = useState(user.profile_answers);
+  // const [ansQueData, submitAnsState] = useState(user.profile_answers);
   const [isLoading, setLoading] = useState(false);
 
   const handleRemoveSkill = (id: any) => {
@@ -76,78 +75,78 @@ export const About = ({ user, onEditProfile }: AboutDataProps) => {
     />
   );
 
-  const getTextStyle: any = (itemCss: any) => {
-    if (itemCss.status) {
-      return {
-        borderRadius: theme.borderRadius.radius20,
-        paddingVertical: verticalScale(6),
-        paddingHorizontal: normalScale(6),
-        flexDirection: "row",
-        justifyContent: "space-between",
-        alignItems: "center",
-        marginRight: normalScale(8),
-        shadowColor: theme.colors.black,
-        shadowOpacity: theme.opacity.opacity15,
-        shadowRadius: theme.borderRadius.radius8,
-        backgroundColor: itemCss.color,
-        borderWidth: theme.borderWidth.borderWidth1,
-        borderColor: theme.colors.black,
-        shadowOffset: {
-          width: 0,
-          height: verticalScale(0),
-        },
-        elevation: 5,
-      };
-    } else {
-      return {
-        borderRadius: theme.borderRadius.radius20,
-        paddingVertical: verticalScale(8),
-        paddingHorizontal: normalScale(8),
-        flexDirection: "row",
-        justifyContent: "space-between",
-        alignItems: "center",
-        marginRight: normalScale(8),
-        shadowColor: theme.colors.black,
-        shadowOpacity: theme.opacity.opacity15,
-        shadowRadius: theme.borderRadius.radius8,
-        backgroundColor: itemCss.color,
-        // borderWidth:theme.borderWidth.borderWidth1,
-        // borderColor:theme.colors.black,
-        shadowOffset: {
-          width: 0,
-          height: verticalScale(0),
-        },
-        elevation: 5,
-      };
-    }
-  };
+  // const getTextStyle: any = (itemCss: any) => {
+  //   if (itemCss.status) {
+  //     return {
+  //       borderRadius: theme.borderRadius.radius20,
+  //       paddingVertical: verticalScale(6),
+  //       paddingHorizontal: normalScale(6),
+  //       flexDirection: "row",
+  //       justifyContent: "space-between",
+  //       alignItems: "center",
+  //       marginRight: normalScale(8),
+  //       shadowColor: theme.colors.black,
+  //       shadowOpacity: theme.opacity.opacity15,
+  //       shadowRadius: theme.borderRadius.radius8,
+  //       backgroundColor: itemCss.color,
+  //       borderWidth: theme.borderWidth.borderWidth1,
+  //       borderColor: theme.colors.black,
+  //       shadowOffset: {
+  //         width: 0,
+  //         height: verticalScale(0),
+  //       },
+  //       elevation: 5,
+  //     };
+  //   } else {
+  //     return {
+  //       borderRadius: theme.borderRadius.radius20,
+  //       paddingVertical: verticalScale(8),
+  //       paddingHorizontal: normalScale(8),
+  //       flexDirection: "row",
+  //       justifyContent: "space-between",
+  //       alignItems: "center",
+  //       marginRight: normalScale(8),
+  //       shadowColor: theme.colors.black,
+  //       shadowOpacity: theme.opacity.opacity15,
+  //       shadowRadius: theme.borderRadius.radius8,
+  //       backgroundColor: itemCss.color,
+  //       // borderWidth:theme.borderWidth.borderWidth1,
+  //       // borderColor:theme.colors.black,
+  //       shadowOffset: {
+  //         width: 0,
+  //         height: verticalScale(0),
+  //       },
+  //       elevation: 5,
+  //     };
+  //   }
+  // };
 
-  const getTextStyleDetail: any = (itemCss: any) => {
-    return {
-      borderRadius: theme.borderRadius.radius20,
-      paddingVertical: verticalScale(8),
-      paddingHorizontal: normalScale(8),
-      flexDirection: "row",
-      justifyContent: "center",
-      alignItems: "center",
-      backgroundColor: itemCss.color,
-      // marginRight: normalScale(8),
-      shadowColor: theme.colors.black,
-      shadowOpacity: theme.opacity.opacity15,
-      shadowRadius: theme.borderRadius.radius8,
-      marginLeft: 20,
-      marginRight: 20,
-      fontSize: theme.fontSize.font24,
-      fontFamily: theme.fontType.medium,
-      borderWidth: theme.borderWidth.borderWidth1,
-      borderColor: theme.colors.white,
-      shadowOffset: {
-        width: 0,
-        height: verticalScale(0),
-      },
-      elevation: 5,
-    };
-  };
+  // const getTextStyleDetail: any = (itemCss: any) => {
+  //   return {
+  //     borderRadius: theme.borderRadius.radius20,
+  //     paddingVertical: verticalScale(8),
+  //     paddingHorizontal: normalScale(8),
+  //     flexDirection: "row",
+  //     justifyContent: "center",
+  //     alignItems: "center",
+  //     backgroundColor: itemCss.color,
+  //     // marginRight: normalScale(8),
+  //     shadowColor: theme.colors.black,
+  //     shadowOpacity: theme.opacity.opacity15,
+  //     shadowRadius: theme.borderRadius.radius8,
+  //     marginLeft: 20,
+  //     marginRight: 20,
+  //     fontSize: theme.fontSize.font24,
+  //     fontFamily: theme.fontType.medium,
+  //     borderWidth: theme.borderWidth.borderWidth1,
+  //     borderColor: theme.colors.white,
+  //     shadowOffset: {
+  //       width: 0,
+  //       height: verticalScale(0),
+  //     },
+  //     elevation: 5,
+  //   };
+  // };
 
   return (
     <>
@@ -280,9 +279,9 @@ export const About = ({ user, onEditProfile }: AboutDataProps) => {
               )} */}
 
         <Text style={styles.membership}>
-          {user.isThisUser ? strings.aboutMe : `About ${user.first_name}`}
+          {user.isMe ? strings.aboutMe : `About ${user.firstName}`}
         </Text>
-        {user.isThisUser ? (
+        {user.isMe ? (
           <Input
             inputStyle={styles.input}
             value={updatedAbout}
@@ -296,7 +295,7 @@ export const About = ({ user, onEditProfile }: AboutDataProps) => {
         )}
 
         <Text style={styles.membership}>{strings.skills}</Text>
-        {user.isThisUser ? (
+        {user.isMe ? (
           <>
             {skillValue !== "" ? (
               <TouchableOpacity

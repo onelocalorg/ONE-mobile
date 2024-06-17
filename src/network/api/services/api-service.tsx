@@ -35,7 +35,7 @@ interface ApiServiceProviderProps {
 export function ApiService({ children }: ApiServiceProviderProps) {
   const token = useAccessToken();
 
-  const DATETIME_KEYS = ["startDate", "endDate", "postDate"];
+  const DATETIME_KEYS = ["startDate", "endDate", "postDate", "joinDate"];
   const NO_LOG_KEYS = ["password", "access_token", "refresh_token"];
 
   const client = {

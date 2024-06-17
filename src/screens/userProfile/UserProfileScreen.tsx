@@ -11,8 +11,8 @@ import { TabComponent } from "~/components/tab-component";
 import { RootStackScreenProps, Screens } from "~/navigation/types";
 import { useUserService } from "~/network/api/services/user-service";
 import { handleApiError } from "~/utils/common";
-import { About } from "../myprofile/about";
-import { MyEvents } from "../myprofile/my-events";
+import { MyEvents } from "../myprofile/MyEvents";
+import { About } from "./About.tsx";
 import { createStyleSheet } from "./style";
 
 export const UserProfileScreen = ({
@@ -53,15 +53,15 @@ export const UserProfileScreen = ({
               />
               <View style={styles.fullName}>
                 <View style={styles.rowOnly}>
-                  <Text style={styles.name}>{userProfile.first_name} </Text>
-                  <Text style={styles.name}>{userProfile.last_name}</Text>
+                  <Text style={styles.name}>{userProfile.firstName} </Text>
+                  <Text style={styles.name}>{userProfile.lastName}</Text>
                 </View>
               </View>
             </View>
 
             <View style={styles.line} />
             <TabComponent
-              tabs={[strings.about, `${userProfile.first_name}'s Events`]}
+              tabs={[strings.about, `${userProfile.firstName}'s Events`]}
               onPressTab={setSelectedTab}
             />
             {navigation ? (
