@@ -2,6 +2,7 @@ import _ from "lodash/fp";
 import React from "react";
 import { Image, Pressable, Text, TouchableOpacity, View } from "react-native";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
+import { useNavigations } from "~/app-hooks/useNavigations";
 import {
   pin,
   postCalender,
@@ -19,38 +20,33 @@ type PostCardProps = {
   onContextMenuPress?: () => void;
   onAvatarPress?: (author: OneUser) => void;
 };
-export const PostCard = ({
-  post,
-  onPress,
-  onContextMenuPress,
-  onAvatarPress,
-}: PostCardProps) => {
+export const PostCard = ({ post }: PostCardProps) => {
   const { theme } = useAppTheme();
   const styles = createStyleSheet(theme);
+  const { gotoPostContextMenu, gotoPostDetails, gotoUserProfile } =
+    useNavigations();
 
   return (
     <View>
-      <Pressable onPress={onPress}>
+      <Pressable onPress={gotoPostDetails(post)}>
         <Text style={styles.posttitle}>{_.capitalize(post?.type)}</Text>
-        {onContextMenuPress ? (
-          <Pressable
-            onPress={onContextMenuPress}
-            style={{
-              position: "absolute",
-              right: 14,
-              top: 10,
-              zIndex: 111122,
-            }}
-          >
-            <ImageComponent
-              resizeMode="cover"
-              style={styles.postfilterImage}
-              source={threeVerticalDots}
-            ></ImageComponent>
-          </Pressable>
-        ) : null}
+        <Pressable
+          onPress={gotoPostContextMenu(post)}
+          style={{
+            position: "absolute",
+            right: 14,
+            top: 10,
+            zIndex: 111122,
+          }}
+        >
+          <ImageComponent
+            resizeMode="cover"
+            style={styles.postfilterImage}
+            source={threeVerticalDots}
+          ></ImageComponent>
+        </Pressable>
         <View style={styles.userDetailcont}>
-          <TouchableOpacity onPress={() => onAvatarPress?.(post.author)}>
+          <TouchableOpacity onPress={gotoUserProfile(post.author)}>
             <ImageComponent
               resizeMode="cover"
               style={styles.postProfile}

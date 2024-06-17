@@ -21,7 +21,7 @@ export const AddPostView = ({ onPress }: AddPostView) => {
     queries: { detail: getUser },
   } = useUserService();
 
-  const { isError, data: myProfile, error } = useQuery(getUser(myUserId));
+  const { isError, data: myProfile, error } = useQuery(getUser(myUserId!));
   if (isError) handleApiError("User profile", error);
 
   return (

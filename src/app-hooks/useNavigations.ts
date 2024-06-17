@@ -8,21 +8,30 @@ import { Post } from "~/types/post";
 export function useNavigations() {
   const navigation = useNavigation();
 
-  const gotoUserProfile = (user: string | OneUser) => {
+  const asId = (v: string | OneUser | Post | LocalEvent) =>
+    _.isString(v) ? v : v.id;
+
+  const gotoUserProfile = (user: string | OneUser) => () => {
     navigation.navigate(Screens.USER_PROFILE, {
-      id: _.isString(user) ? user : user.id,
+      id: asId(user),
     });
   };
 
-  const gotoPostDetails = (post: string | Post) => {
+  const gotoPostDetails = (post: string | Post) => () => {
     navigation.navigate(Screens.POST_DETAIL, {
-      id: _.isString(post) ? post : post.id,
+      id: asId(post),
     });
   };
 
-  const gotoEventDetails = (event: string | LocalEvent) => {
+  const gotoEventDetails = (event: string | LocalEvent) => () => {
     navigation.navigate(Screens.EVENT_DETAIL, {
-      id: _.isString(event) ? event : event.id,
+      id: asId(event),
+    });
+  };
+
+  const gotoPostContextMenu = (post: string | Post) => () => {
+    navigation.navigate(Screens.POST_CONTEXT_MENU_MODAL, {
+      id: asId(post),
     });
   };
 
@@ -30,5 +39,6 @@ export function useNavigations() {
     gotoUserProfile,
     gotoPostDetails,
     gotoEventDetails,
+    gotoPostContextMenu,
   };
 }
