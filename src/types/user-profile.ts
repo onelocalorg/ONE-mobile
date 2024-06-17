@@ -12,6 +12,7 @@ export interface UserProfileData extends UserProfileUpdateData {
 }
 
 export interface UserProfileUpdateData {
+  id: string;
   firstName?: string;
   lastName?: string;
   nickname?: string;

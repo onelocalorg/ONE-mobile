@@ -142,11 +142,11 @@ export const EditPayoutModalScreen = (
     onUserSearch(textUser);
     LodingData(true);
     console.log(
-      process.env.API_URL + "/v1/users/search-user?searchtext=" + textUser
+      process.env.API_URL + "/v3/users/search-user?searchtext=" + textUser
     );
     try {
       const response = await fetch(
-        process.env.API_URL + "/v1/users/search-user?searchtext=" + textUser,
+        process.env.API_URL + "/v3/users/search-user?searchtext=" + textUser,
         {
           method: "get",
           headers: new Headers({
@@ -175,7 +175,7 @@ export const EditPayoutModalScreen = (
     const token = await AsyncStorage.getItem("token");
     var url =
       process.env.API_URL +
-      "/v1/events/event-financial/" +
+      "/v3/events/event-financial/" +
       id +
       "/edit/expense";
     var item: any = {
@@ -218,7 +218,7 @@ export const EditPayoutModalScreen = (
     LodingData(true);
     const token = await AsyncStorage.getItem("token");
     var url =
-      process.env.API_URL + "/v1/events/event-financial/" + id + "/edit/payout";
+      process.env.API_URL + "/v3/events/event-financial/" + id + "/edit/payout";
 
     var getAmount = (payoutExpenseObject?.profitAmt * amount) / 100;
     if (priceData === 1) {
@@ -306,7 +306,7 @@ export const EditPayoutModalScreen = (
     const token = await AsyncStorage.getItem("token");
     var url =
       process.env.API_URL +
-      "/v1/events/event-financial/" +
+      "/v3/events/event-financial/" +
       id +
       "/delete/expense";
     var dataReq = {
@@ -346,7 +346,7 @@ export const EditPayoutModalScreen = (
     const token = await AsyncStorage.getItem("token");
     var url =
       process.env.API_URL +
-      "/v1/events/event-financial/" +
+      "/v3/events/event-financial/" +
       id +
       "/delete/payout";
     var dataReq = {
@@ -410,7 +410,7 @@ export const EditPayoutModalScreen = (
     console.log("================ postImageUploadAPI Request=================");
     try {
       const response = await fetch(
-        process.env.API_URL + "/v1/users/upload/file",
+        process.env.API_URL + "/v3/users/upload/file",
         {
           method: "post",
           headers: new Headers({

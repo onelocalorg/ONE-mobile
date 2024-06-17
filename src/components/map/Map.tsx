@@ -10,15 +10,14 @@ import { OnPressEvent } from "@rnmapbox/maps/lib/typescript/src/types/OnPressEve
 import { useQuery } from "@tanstack/react-query";
 import { FeatureCollection } from "geojson";
 import _ from "lodash/fp";
-import { DateTime } from "luxon";
 import React, { useState } from "react";
 import { View } from "react-native";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
 import eventIcon from "~/assets/map/event.png";
 import giftIcon from "~/assets/map/gift.png";
 import { LOG } from "~/config";
-import { useEventService } from "~/network/api/services/event-service";
-import { usePostService } from "~/network/api/services/post-service";
+import { useEventService } from "~/network/api/services/useEventService";
+import { usePostService } from "~/network/api/services/usePostService";
 import { PostCard } from "~/screens/home/PostCard";
 import { LocalEvent } from "~/types/local-event";
 import { OneUser } from "~/types/one-user";
@@ -47,29 +46,30 @@ export const Map = ({ onEventPress, onPostPress, onAvatarPress }: MapProps) => {
   // TODO Use the center of the current locale
   const centerCoordinate = [BOULDER_LON, BOULDER_LAT];
 
-  const { listEvents } = useEventService();
-  const { listPosts } = usePostService();
+  const {
+    queries: { list: listEvents },
+  } = useEventService();
+  const {
+    queries: { list: listPosts },
+  } = usePostService();
 
   const [selectedEvents, setSelectedEvents] = useState<LocalEvent[]>([]);
   const [selectedPosts, setSelectedPosts] = useState<Post[]>([]);
 
   // FIXME DateTime.now() should not be embedded in the query
-  const eventsQuery = useQuery({
-    queryKey: ["upcomingEvents"],
-    queryFn: () =>
-      listEvents({
-        startDate: DateTime.now(),
-        isCanceled: false,
-      }),
-  });
+  const eventsQuery = useQuery(
+    listEvents({
+      isPast: false,
+      isCanceled: false,
+    })
+  );
 
-  const postsQuery = useQuery({
-    queryKey: ["posts"],
-    queryFn: () =>
-      listPosts({
-        startDate: DateTime.now(),
-      }),
-  });
+  const postsQuery = useQuery(
+    listPosts({
+      isPast: false,
+    })
+  );
+
   if ((eventsQuery.isPending && postsQuery.isPending) !== isLoading) {
     setLoading(eventsQuery.isPending && postsQuery.isPending);
   }
@@ -89,7 +89,9 @@ export const Map = ({ onEventPress, onPostPress, onAvatarPress }: MapProps) => {
 
   const handleMapEventPress = (ope: OnPressEvent) => {
     LOG.debug("Event clicked", ope);
-    const localEvents = ope.features.map((f) => findEvent(f.properties.id));
+    const localEvents = ope.features.map((f) =>
+      f.properties ? findEvent(f.properties.id) : null
+    );
     setSelectedPosts([]);
     setSelectedEvents(localEvents);
     // selectedEvent?.id === localEvent.id ? undefined : localEvent;
@@ -97,7 +99,9 @@ export const Map = ({ onEventPress, onPostPress, onAvatarPress }: MapProps) => {
 
   const handleMapPostPress = (ope: OnPressEvent) => {
     LOG.debug("Post clicked", ope);
-    const localPosts = ope.features.map((f) => findPost(f.properties.id));
+    const localPosts = ope.features.map((f) =>
+      f.properties ? findPost(f.properties.id) : null
+    );
     setSelectedEvents([]);
     setSelectedPosts(localPosts);
     // selectedEvent?.id === localEvent.id ? undefined : localEvent;

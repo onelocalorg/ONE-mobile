@@ -79,7 +79,7 @@ export const MembershipCheckoutModal = (props: membershipModalProps) => {
     try {
       const url =
         process.env.API_URL +
-        "/v1/subscriptions/packages/" +
+        "/v3/subscriptions/packages/" +
         dataId +
         "/checkout";
       LOG.info(url);
@@ -140,7 +140,7 @@ export const MembershipCheckoutModal = (props: membershipModalProps) => {
 
     try {
       const url =
-        process.env.API_URL + "/v1/subscriptions/" + dataId + "/purchase";
+        process.env.API_URL + "/v3/subscriptions/" + dataId + "/purchase";
       LOG.info(url);
       const response = await fetch(url, {
         method: "post",
@@ -201,7 +201,7 @@ export const MembershipCheckoutModal = (props: membershipModalProps) => {
   const ConfigListAPI = async () => {
     const token = await AsyncStorage.getItem("token");
     try {
-      const response = await fetch(process.env.API_URL + "/v1/config/list", {
+      const response = await fetch(process.env.API_URL + "/v3/config/list", {
         method: "get",
         headers: new Headers({
           Authorization: "Bearer " + token,
@@ -235,7 +235,7 @@ export const MembershipCheckoutModal = (props: membershipModalProps) => {
 
     console.log(genCard);
 
-    const results = await fetch("https://api.stripe.com/v1/tokens", {
+    const results = await fetch("https://api.stripe.com/v3/tokens", {
       method: "post",
       headers: {
         Accept: "application/json",
@@ -271,12 +271,12 @@ export const MembershipCheckoutModal = (props: membershipModalProps) => {
   // ======================Create Card API=========================
   async function CreateCardAPI(cardId: any) {
     const token = await AsyncStorage.getItem("token");
-    var cardtokenData: any = {
+    const cardtokenData: any = {
       token: cardId,
     };
     try {
       const response = await fetch(
-        process.env.API_URL + "/v1/subscriptions/cards/create",
+        process.env.API_URL + "/v3/subscriptions/cards/create",
         {
           method: "post",
           headers: new Headers({

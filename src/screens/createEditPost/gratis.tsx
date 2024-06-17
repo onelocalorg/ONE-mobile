@@ -108,7 +108,7 @@ export const CreateEditPostGratisScreen = (
     const token = await AsyncStorage.getItem("token");
     try {
       const response = await fetch(
-        process.env.API_URL + "/v1/posts/resources",
+        process.env.API_URL + "/v3/posts/resources",
         {
           method: "get",
           headers: new Headers({
@@ -156,7 +156,7 @@ export const CreateEditPostGratisScreen = (
     console.log(pic);
     try {
       const response = await fetch(
-        process.env.API_URL + "/v1/users/upload/file",
+        process.env.API_URL + "/v3/users/upload/file",
         {
           method: "post",
           headers: new Headers({
@@ -205,7 +205,7 @@ export const CreateEditPostGratisScreen = (
 
     console.log(data);
     try {
-      const response = await fetch(process.env.API_URL + "/v1/posts/create", {
+      const response = await fetch(process.env.API_URL + "/v3/posts/create", {
         method: "post",
         headers: new Headers({
           Authorization: "Bearer " + token,
@@ -242,11 +242,11 @@ export const CreateEditPostGratisScreen = (
     console.log("=========== User List Gratis API Request ==============");
     console.log(datas);
     console.log(
-      process.env.API_URL + "/v1/users/search-user?searchtext=" + textUser
+      process.env.API_URL + "/v3/users/search-user?searchtext=" + textUser
     );
     try {
       const response = await fetch(
-        process.env.API_URL + "/v1/users/search-user?searchtext=" + textUser,
+        process.env.API_URL + "/v3/users/search-user?searchtext=" + textUser,
         {
           method: "get",
           headers: new Headers({

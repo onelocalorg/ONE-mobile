@@ -142,10 +142,10 @@ export const AddPayoutExpenseScreen = (
     try {
       const response = await fetch(
         process.env.API_URL +
-          "/v1/events/event-financial/" +
+          "/v3/events/event-financial/" +
           id +
           "/draft/payout",
-        // process.env.API_URL + '/v1/events/event-financial/65d4c08f947463a3a650e663/draft/payout',
+        // process.env.API_URL + '/v3/events/event-financial/65d4c08f947463a3a650e663/draft/payout',
         {
           method: "post",
           headers: new Headers({
@@ -187,7 +187,7 @@ export const AddPayoutExpenseScreen = (
     LodingData(true);
     try {
       const response = await fetch(
-        process.env.API_URL + "/v1/users/search-user?searchtext=" + textUser,
+        process.env.API_URL + "/v3/users/search-user?searchtext=" + textUser,
         {
           method: "get",
           headers: new Headers({
@@ -221,7 +221,7 @@ export const AddPayoutExpenseScreen = (
     try {
       const response = await fetch(
         process.env.API_URL +
-          "/v1/events/event-financial/" +
+          "/v3/events/event-financial/" +
           id +
           "/draft/expense",
         {
@@ -307,7 +307,7 @@ export const AddPayoutExpenseScreen = (
 
     try {
       const response = await fetch(
-        process.env.API_URL + "/v1/users/upload/file",
+        process.env.API_URL + "/v3/users/upload/file",
         {
           method: "post",
           headers: new Headers({

@@ -40,7 +40,6 @@ import { FlatListComponent } from "~/components/flatlist-component";
 import { ImageComponent } from "~/components/image-component";
 import { Pill } from "~/components/pill";
 import { SizedBox } from "~/components/sized-box";
-import { useUserProfile } from "~/network/hooks/user-service-hooks/use-user-profile";
 import { StoreType } from "~/network/reducers/store";
 import { UserProfileState } from "~/network/reducers/user-profile-reducer";
 import { verticalScale } from "~/theme/device/normalize";
@@ -187,7 +186,7 @@ export const EditPostRequestScreen = (props: EditPostRequestScreenProps) => {
     const token = await AsyncStorage.getItem("token");
     try {
       const response = await fetch(
-        process.env.API_URL + "/v1/posts/resources",
+        process.env.API_URL + "/v3/posts/resources",
         {
           method: "get",
           headers: new Headers({
@@ -235,7 +234,7 @@ export const EditPostRequestScreen = (props: EditPostRequestScreenProps) => {
     console.log(pic);
     try {
       const response = await fetch(
-        process.env.API_URL + "/v1/users/upload/file",
+        process.env.API_URL + "/v3/users/upload/file",
         {
           method: "post",
           headers: new Headers({
@@ -520,11 +519,11 @@ export const EditPostRequestScreen = (props: EditPostRequestScreenProps) => {
     console.log("=========== User List Gratis API Request ==============");
     console.log(datas);
     console.log(
-      process.env.API_URL + "/v1/users/search-user?searchtext=" + textUser
+      process.env.API_URL + "/v3/users/search-user?searchtext=" + textUser
     );
     try {
       const response = await fetch(
-        process.env.API_URL + "/v1/users/search-user?searchtext=" + textUser,
+        process.env.API_URL + "/v3/users/search-user?searchtext=" + textUser,
         {
           method: "get",
           headers: new Headers({

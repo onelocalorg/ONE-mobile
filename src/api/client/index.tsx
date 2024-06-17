@@ -1,7 +1,7 @@
 import { ReactNode } from "react";
-import { useAuthService } from "~/network/api/services/auth-service";
-import { usePostService } from "~/network/api/services/post-service";
-import { useUserService } from "~/network/api/services/user-service";
+import { useAuthService } from "~/network/api/services/useAuthService";
+import { usePostService } from "~/network/api/services/usePostService";
+import { useUserService } from "~/network/api/services/useUserService";
 
 // interface IApiContext {
 //   authService: {

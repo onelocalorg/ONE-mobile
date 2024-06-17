@@ -9,7 +9,7 @@ import { ImageComponent } from "~/components/image-component";
 import { Loader } from "~/components/loader";
 import { TabComponent } from "~/components/tab-component";
 import { RootStackScreenProps, Screens } from "~/navigation/types";
-import { useUserService } from "~/network/api/services/user-service";
+import { useUserService } from "~/network/api/services/useUserService";
 import { handleApiError } from "~/utils/common";
 import { MyEvents } from "../myprofile/MyEvents";
 import { About } from "./About.tsx";
@@ -24,17 +24,17 @@ export const UserProfileScreen = ({
   const { strings } = useStringsAndLabels();
   const styles = createStyleSheet(theme);
   const [selectedTab, setSelectedTab] = useState(0);
-  const { getUserProfile } = useUserService();
+
+  const {
+    queries: { detail: getUser },
+  } = useUserService();
 
   const {
     isPending,
     isError,
     data: userProfile,
     error,
-  } = useQuery({
-    queryKey: ["getUserProfile", userId],
-    queryFn: () => getUserProfile(userId),
-  });
+  } = useQuery(getUser(userId));
   if (isError) handleApiError("User profile", error);
 
   return (

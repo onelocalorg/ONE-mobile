@@ -1,5 +1,5 @@
 import { useMutation } from "@tanstack/react-query";
-import { onCreateEvent } from "~/network/api/services/event-service";
+import { onCreateEvent } from "~/network/api/services/useEventService";
 
 export const useCreateEvent = () => {
   const mutate = useMutation(onCreateEvent);

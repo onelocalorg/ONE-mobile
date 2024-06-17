@@ -1,8 +1,8 @@
 import { PostUpdateData } from "./post-update-data";
 
 export enum PostType {
-  ASK = "request",
-  GIVE = "offer",
+  REQUEST = "request",
+  OFFER = "offer",
   GRATIS = "gratis",
 }
 

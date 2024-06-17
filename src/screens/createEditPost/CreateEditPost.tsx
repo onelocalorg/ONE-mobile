@@ -16,7 +16,7 @@ import {
 import { ButtonComponent } from "~/components/button-component";
 import { ImageComponent } from "~/components/image-component";
 import { Loader } from "~/components/loader";
-import { usePostService } from "~/network/api/services/post-service";
+import { usePostService } from "~/network/api/services/usePostService";
 import { Post } from "~/types/post";
 import { PostData, PostType } from "~/types/post-data";
 import { handleApiError } from "~/utils/common";
@@ -37,7 +37,7 @@ export const CreateEditPost = ({ post }: CreateEditPostProps) => {
 
   const formMethods = useForm<PostData>({
     defaultValues: {
-      type: PostType.GIVE,
+      type: PostType.OFFER,
       name: "",
       details: "",
       timezone: "America/Denver",
@@ -95,15 +95,15 @@ export const CreateEditPost = ({ post }: CreateEditPostProps) => {
             <TouchableOpacity
               style={styles.container3}
               activeOpacity={1}
-              onPress={() => onChange(PostType.GIVE)}
+              onPress={() => onChange(PostType.OFFER)}
             >
               <ImageComponent
-                source={value === PostType.GIVE ? greenOffer : blackOffer}
+                source={value === PostType.OFFER ? greenOffer : blackOffer}
                 style={styles.icon1}
               />
               <Text
                 style={[
-                  value === PostType.GIVE ? styles.label3 : styles.label4,
+                  value === PostType.OFFER ? styles.label3 : styles.label4,
                 ]}
               >
                 Offer
@@ -112,14 +112,16 @@ export const CreateEditPost = ({ post }: CreateEditPostProps) => {
             <TouchableOpacity
               style={styles.container3}
               activeOpacity={0.8}
-              onPress={() => onChange(PostType.ASK)}
+              onPress={() => onChange(PostType.REQUEST)}
             >
               <ImageComponent
-                source={value === PostType.ASK ? requestGreen : request}
+                source={value === PostType.REQUEST ? requestGreen : request}
                 style={styles.icon1}
               />
               <Text
-                style={[value === PostType.ASK ? styles.label3 : styles.label4]}
+                style={[
+                  value === PostType.REQUEST ? styles.label3 : styles.label4,
+                ]}
               >
                 Request
               </Text>

@@ -27,7 +27,7 @@ import { RootStackScreenProps, Screens } from "~/navigation/types";
 
 import { useQuery } from "@tanstack/react-query";
 import { useNavigations } from "~/app-hooks/useNavigations";
-import { usePostService } from "~/network/api/services/post-service";
+import { usePostService } from "~/network/api/services/usePostService";
 import { Comment } from "~/types/comment";
 import { PostType } from "~/types/post-data";
 import { Reply } from "~/types/reply";
@@ -55,12 +55,11 @@ export const PostDetailScreen = ({
   const [childjIndex, setChildIndexForGratis]: any = useState();
   const [commentId, setCommentId] = useState<string>();
   const flatListRef: any = React.useRef();
+  const { gotoUserProfile } = useNavigations();
 
   const {
-    postQueries: { detail: postDetail },
-    commentQueries: { forPost: commentsOnPost },
+    queries: { detail: postDetail, commentsOnPost },
   } = usePostService();
-  const { gotoUserProfile } = useNavigations();
 
   const postQuery = useQuery(postDetail(postId));
   const commentQuery = useQuery(commentsOnPost(postId));
@@ -102,7 +101,7 @@ export const PostDetailScreen = ({
     };
     try {
       const response = await fetch(
-        process.env.API_URL + "/v1/posts/gratis-sharing",
+        process.env.API_URL + "/v3/posts/gratis-sharing",
         {
           method: "post",
           headers: new Headers({
@@ -148,7 +147,7 @@ export const PostDetailScreen = ({
     };
     try {
       const response = await fetch(
-        process.env.API_URL + "/v1/posts/gratis-sharing",
+        process.env.API_URL + "/v3/posts/gratis-sharing",
         {
           method: "post",
           headers: new Headers({
@@ -239,7 +238,7 @@ export const PostDetailScreen = ({
     };
     try {
       const response = await fetch(
-        process.env.API_URL + "/v1/posts/gratis-sharing",
+        process.env.API_URL + "/v3/posts/gratis-sharing",
         {
           method: "post",
           headers: new Headers({

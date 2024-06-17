@@ -1,12 +1,28 @@
 import { LineItem, LineItemTypes } from "~/types/line-item";
-import { Order } from "~/types/order";
+import { Order, OrderData } from "~/types/order";
 import { PriceBreakdown } from "~/types/price-breakdown";
-import { useApiService } from "./api-service";
+import { useApiService } from "./ApiService";
 
 export default function OrderService() {
   const { doPost } = useApiService();
 
-  const createOrder = (lineItems: LineItem[]) => {
+  const mutations = {
+    createOrder: {
+      mutationFn: (data: OrderData) => {
+        return createOrder(data);
+      },
+      // onSuccess: (data: RsvpData) => {
+      //   void queryClient.invalidateQueries({
+      //     queryKey: queries.rsvps(),
+      //   });
+      // },
+    },
+  };
+
+  interface CreateOrderProps {
+    lineItems: LineItem[];
+  }
+  const createOrder = ({ lineItems }: CreateOrderProps) => {
     const body = {
       lineItems: lineItems.map((li) => ({
         ...li,
@@ -15,7 +31,7 @@ export default function OrderService() {
         ticketType: li.ticketType.id,
       })),
     };
-    return doPost<Order>(`/v1/orders/`, body, apiToOrder(lineItems));
+    return doPost<Order>(`/v3/orders/`, body, apiToOrder(lineItems));
   };
 
   interface LineItemResource {
@@ -53,6 +69,7 @@ export default function OrderService() {
     } as Order);
 
   return {
+    mutations,
     createOrder,
   };
 }

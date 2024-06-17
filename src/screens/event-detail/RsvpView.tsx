@@ -1,80 +1,83 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import React, { useEffect, useState } from "react";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import React, { useState } from "react";
 import { Image, Pressable, Text, TouchableOpacity, View } from "react-native";
-import Toast from "react-native-simple-toast";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
-import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
+import { useNavigations } from "~/app-hooks/useNavigations";
 import { startImg } from "~/assets/images";
 import Going from "~/assets/images/going.png";
-import { updateRsvp } from "~/network/api/services/event-service";
-import { persistKeys } from "~/network/constant";
+import { useMyUserId } from "~/navigation/AuthContext";
+import { useEventService } from "~/network/api/services/useEventService";
 import { LocalEvent } from "~/types/local-event";
-import { OneUser } from "~/types/one-user";
-import { RsvpList, RsvpType } from "~/types/rsvp";
+import { RsvpType } from "~/types/rsvp";
 import { handleApiError } from "~/utils/common";
 import { createStyleSheet as createRsvpStyleSheet } from "./rsvp-style";
 import { createStyleSheet as createBaseStyleSheet } from "./style";
 
 interface RsvpViewProps {
   event: LocalEvent;
-  rsvpData: RsvpList;
-  onUserPressed?: (user: OneUser) => void;
-  onRsvpsChanged: () => void;
 }
 
-export const RsvpView = ({
-  event,
-  rsvpData,
-  onUserPressed,
-  onRsvpsChanged,
-}: RsvpViewProps) => {
+export const RsvpView = ({ event }: RsvpViewProps) => {
   const { theme } = useAppTheme();
-  const { strings } = useStringsAndLabels();
   const styles = createBaseStyleSheet(theme);
   const styles1 = createRsvpStyleSheet(theme);
+  const myUserId = useMyUserId();
+  const { gotoUserProfile } = useNavigations();
 
   const [selectedButton, setSelectedButton] = useState<RsvpType>();
-  const [userId, setUserId] = useState<string>();
 
-  useEffect(() => {
-    findItemById();
-    AsyncStorage.getItem(persistKeys.userProfileId).then((id) =>
-      setUserId(id ? id : undefined)
-    );
-  }, [rsvpData]);
+  const {
+    queries: { rsvpsForEvent },
+    mutations: { createRsvp },
+  } = useEventService();
 
-  const findItemById = () => {
-    const foundItem = rsvpData.rsvps.find((item) => item.guest.id === userId);
-    if (foundItem) {
-      setSelectedButton(foundItem.rsvp);
-    } else {
-      setSelectedButton(undefined);
-    }
-  };
+  const { isError, data: rsvpList, error } = useQuery(rsvpsForEvent(event.id));
+  if (isError) handleApiError("RSVP", error);
+
+  console.log("rsvpList", rsvpList);
+
+  const mutateCreateRsvp = useMutation(createRsvp);
+
+  // const findItemById = () => {
+  //   const foundItem = rsvpList?.rsvps.find(
+  //     (item) => item.guest.id === myUserId
+  //   );
+  //   if (foundItem) {
+  //     setSelectedButton(foundItem.rsvp);
+  //   } else {
+  //     setSelectedButton(undefined);
+  //   }
+  // };
+
+  // const addGoingRsvp = () => {
+  //   if (
+  //     rsvpList?.rsvps.find((r) => r.guest.id === myUserId)?.rsvp !==
+  //     RsvpType.GOING
+  //   ) {
+  //     void updateRsvp(eventId, RsvpType.GOING)
+  //       .then(fetchRsvpData)
+  //       .catch(handleApiError("RSVP"));
+  //   }
+  // };
 
   // Check if the logged-in user's ID is available in RSVP data
   const isCurrentUserRSVP = (type: RsvpType) => {
-    if (rsvpData) {
-      const currentUserRSVP = rsvpData.rsvps.find(
-        (rsvp) => rsvp.guest.id === userId
+    if (rsvpList) {
+      const currentUserRSVP = rsvpList.rsvps.find(
+        (rsvp) => rsvp.guest.id === myUserId
       );
-      return currentUserRSVP && currentUserRSVP.rsvp === type;
+      return currentUserRSVP && currentUserRSVP.type === type;
     }
     return false;
   };
 
-  const rsvpsFilter = async (type: RsvpType) => {
-    setSelectedButton(type === selectedButton ? undefined : type);
+  const changeRsvp = (type: RsvpType) => {
+    mutateCreateRsvp.mutate({
+      type: selectedButton === type ? RsvpType.CANT_GO : type,
+      eventId: event.id,
+    });
 
-    try {
-      await updateRsvp(event.id, type);
-      onRsvpsChanged();
-      Toast.show("RSVP updated", Toast.LONG, {
-        backgroundColor: "black",
-      });
-    } catch (e) {
-      handleApiError("Error updating RSVP", e);
-    }
+    setSelectedButton(type === selectedButton ? undefined : type);
   };
 
   return (
@@ -86,7 +89,7 @@ export const RsvpView = ({
             selectedButton === RsvpType.GOING && styles1.selectedButton,
             isCurrentUserRSVP(RsvpType.GOING) && { backgroundColor: "#E9B9B4" },
           ]}
-          onPress={() => rsvpsFilter(RsvpType.GOING)}
+          onPress={() => changeRsvp(RsvpType.GOING)}
         >
           <View
             style={{
@@ -106,7 +109,7 @@ export const RsvpView = ({
               backgroundColor: "#E9B9B4",
             },
           ]}
-          onPress={() => rsvpsFilter(RsvpType.INTERESTED)}
+          onPress={() => changeRsvp(RsvpType.INTERESTED)}
         >
           <View
             style={{
@@ -136,7 +139,7 @@ export const RsvpView = ({
         <View style={{ flexDirection: "row", columnGap: 20 }}>
           <View style={{ flexDirection: "column", alignItems: "center" }}>
             <Text style={{ fontSize: 16, color: "black", fontWeight: "600" }}>
-              {rsvpData?.going}
+              {rsvpList?.going}
             </Text>
             <Text style={{ fontSize: 16, color: "black", fontWeight: "600" }}>
               Going
@@ -144,7 +147,7 @@ export const RsvpView = ({
           </View>
           <View style={{ flexDirection: "column", alignItems: "center" }}>
             <Text style={{ fontSize: 16, color: "black", fontWeight: "600" }}>
-              {rsvpData?.interested}
+              {rsvpList?.interested}
             </Text>
             <Text style={{ fontSize: 16, color: "black", fontWeight: "600" }}>
               Maybe
@@ -160,7 +163,7 @@ export const RsvpView = ({
           width: "100%",
         }}
       >
-        {rsvpData ? (
+        {rsvpList ? (
           <View
             style={{
               flexDirection: "row",
@@ -170,9 +173,9 @@ export const RsvpView = ({
               width: "100%",
             }}
           >
-            {rsvpData?.rsvps.map((rsvp, index) => (
+            {rsvpList?.rsvps.map((rsvp, index) => (
               <View key={index} style={styles1.rsvpContainer}>
-                <Pressable onPress={() => onUserPressed?.(rsvp.guest)}>
+                <Pressable onPress={() => gotoUserProfile(rsvp.guest)}>
                   <View style={styles1.profilePicContainer}>
                     <Image
                       source={{ uri: rsvp.guest.pic }}
@@ -181,10 +184,10 @@ export const RsvpView = ({
                   </View>
                 </Pressable>
                 <View style={styles1.rsvpImageContainer}>
-                  {rsvp.rsvp === "going" && (
+                  {rsvp.type === RsvpType.GOING && (
                     <Image source={Going} style={styles1.rsvpImage} />
                   )}
-                  {rsvp.rsvp === "interested" && (
+                  {rsvp.type === RsvpType.INTERESTED && (
                     <Image source={startImg} style={styles1.rsvpImage} />
                   )}
                 </View>

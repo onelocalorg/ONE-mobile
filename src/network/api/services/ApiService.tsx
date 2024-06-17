@@ -171,7 +171,7 @@ export function ApiService({ children }: ApiServiceProviderProps) {
     );
   }
 
-  function convertDateTimes(from: unknown) {
+  function convertDateTimes<T>(from: T): T {
     return _.isArray(from)
       ? from.map(convertDateTimes)
       : !_.isObject(from)

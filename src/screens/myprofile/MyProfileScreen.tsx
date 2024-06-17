@@ -26,8 +26,7 @@ import { Loader } from "~/components/loader";
 import { TabComponent } from "~/components/tab-component";
 import { AuthDispatchContext, useMyUserId } from "~/navigation/AuthContext";
 import { RootStackScreenProps, Screens } from "~/navigation/types";
-import { useUserService } from "~/network/api/services/user-service";
-import { useEditProfile } from "~/network/hooks/user-service-hooks/use-edit-profile";
+import { useUserService } from "~/network/api/services/useUserService";
 import { LocalEvent } from "~/types/local-event";
 import { UploadKey } from "~/types/upload-key";
 import { handleApiError } from "~/utils/common";
@@ -57,7 +56,6 @@ export const MyProfileScreen = ({
   const [skills, setSkills] = useState<string[]>([]);
   const [profileAnswers, setProfileAnswers] = useState<string[]>([]);
   const [isLoading, setLoading] = useState(false);
-  const { mutateAsync } = useEditProfile();
   const dispatch = useDispatch();
   const [searchQuery, setSearchQuery] = useState("");
   const appState = useRef(AppState.currentState);
@@ -65,18 +63,16 @@ export const MyProfileScreen = ({
   const { handleSignOut } = useContext(AuthDispatchContext);
   const myUserId = useMyUserId();
 
-  const { getUserProfile } = useUserService();
+  const {
+    queries: { detail: getUser },
+  } = useUserService();
 
   const {
     isPending,
     isError,
     data: myProfile,
     error,
-  } = useQuery({
-    queryKey: ["getUserProfile", myUserId],
-    queryFn: () => getUserProfile(myUserId!),
-    enabled: !!myUserId,
-  });
+  } = useQuery(getUser(myUserId));
   if (isPending !== isLoading) setLoading(isPending);
   if (isError) handleApiError("Profile", error);
 

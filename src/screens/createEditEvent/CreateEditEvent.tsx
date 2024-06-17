@@ -28,7 +28,7 @@ import { LocationAutocomplete } from "~/components/location-autocomplete/Locatio
 import { SizedBox } from "~/components/sized-box";
 import { LOG } from "~/config";
 import { useMyUserId } from "~/navigation/AuthContext";
-import { useEventService } from "~/network/api/services/event-service";
+import { useEventService } from "~/network/api/services/useEventService";
 import { width } from "~/theme/device/device";
 import { normalScale, verticalScale } from "~/theme/device/normalize";
 import { LocalEvent, isLocalEvent } from "~/types/local-event";
@@ -89,10 +89,10 @@ export const CreateEditEvent = ({ event }: CreateEditEventProps) => {
     const token = await AsyncStorage.getItem("token");
 
     console.log("=========== Cancle Event API Request ==============");
-    console.log(process.env.API_URL + "/v1/events/cancel-event/" + eventID);
+    console.log(process.env.API_URL + "/v3/events/cancel-event/" + eventID);
     try {
       const response = await fetch(
-        process.env.API_URL + "/v1/events/cancel-event/" + eventID,
+        process.env.API_URL + "/v3/events/cancel-event/" + eventID,
         {
           method: "post",
           headers: new Headers({
@@ -269,10 +269,10 @@ export const CreateEditEvent = ({ event }: CreateEditEventProps) => {
       base64String: "data:image/jpeg;base64," + base64Item,
     };
 
-    console.log(process.env.API_URL + "/v1/users/upload/file");
+    console.log(process.env.API_URL + "/v3/users/upload/file");
     try {
       const response = await fetch(
-        process.env.API_URL + "/v1/users/upload/file",
+        process.env.API_URL + "/v3/users/upload/file",
         {
           method: "post",
           headers: new Headers({

@@ -1,4 +1,4 @@
-// import { onGetSubscriptionPlans } from "~/network/api/services/event-service";
+// import { onGetSubscriptionPlans } from "~/network/api/services/useEventService";
 
 export type Root = PlanData[];
 

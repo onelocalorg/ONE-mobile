@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import React from "react";
 import { RootStackScreenProps, Screens } from "~/navigation/types";
-import { usePostService } from "~/network/api/services/post-service";
+import { usePostService } from "~/network/api/services/usePostService";
 import { handleApiError } from "~/utils/common";
 import { CreateEditPost } from "./CreateEditPost";
 

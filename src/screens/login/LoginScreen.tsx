@@ -23,9 +23,8 @@ import { SizedBox } from "~/components/sized-box";
 import { LOG } from "~/config";
 import { AuthDispatchContext } from "~/navigation/AuthContext";
 import { GuestStackScreenProps, Screens } from "~/navigation/types";
-import { useAuthService } from "~/network/api/services/auth-service";
+import { useAuthService } from "~/network/api/services/useAuthService";
 import { getData } from "~/network/constant";
-import { useLogin } from "~/network/hooks/user-service-hooks/use-login";
 import { verticalScale } from "~/theme/device/normalize";
 import { CurrentUser } from "~/types/current-user";
 import { handleApiError } from "~/utils/common";
@@ -46,7 +45,6 @@ export const LoginScreen = ({
   const { strings } = useStringsAndLabels();
   const [isChecked, setIsChecked] = useState(false);
   const [isLoading, LodingData] = useState(false);
-  const { mutateAsync: doLogin } = useLogin();
   const [user, setUser] = useState({ emailOrMobile: "", password: "" });
   const [searchQuery, setSearchQuery] = useState("");
   const [googleUserGmail, setGoogleEmail]: any = useState();
@@ -63,7 +61,7 @@ export const LoginScreen = ({
 
   const { handleSignIn } = useContext(AuthDispatchContext);
 
-  const handleLoginResponse = async (currentUser?: CurrentUser) => {
+  const handleLoginResponse = (currentUser?: CurrentUser) => {
     if (currentUser) {
       LodingData(false);
       handleSignIn(currentUser);
@@ -157,7 +155,7 @@ export const LoginScreen = ({
     }
   };
 
-  const onSignUp = async () => {
+  const onSignUp = () => {
     navigation.push(Screens.SIGNUP);
   };
 

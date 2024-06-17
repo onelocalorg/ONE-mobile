@@ -30,7 +30,7 @@ export const UserList = ({ onChangeList }: UserListProps) => {
     const token = await AsyncStorage.getItem("token");
     try {
       const response = await fetch(
-        process.env.API_URL + "/v1/users/search-user?searchtext=" + searchText,
+        process.env.API_URL + "/v3/users/search-user?searchtext=" + searchText,
         {
           method: "get",
           headers: new Headers({

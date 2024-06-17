@@ -1,38 +1,34 @@
 import { queryOptions } from "@tanstack/react-query";
 import _ from "lodash/fp";
-import { DateTime } from "luxon";
 import { LOG } from "~/config";
 import { Comment } from "~/types/comment";
 import { Post } from "~/types/post";
 import { PostData } from "~/types/post-data";
 import { PostGratis } from "~/types/post-gratis";
 import { PostUpdateData } from "~/types/post-update-data";
-import { useApiService } from "./api-service";
+import { useApiService } from "./ApiService";
 
 export function usePostService() {
-  const postQueries = {
+  const queries = {
     all: () => ["posts"],
-    lists: () => [...postQueries.all(), "list"],
-    list: (filters?: ListPostsParams) =>
+    lists: () => [...queries.all(), "list"],
+    list: (filters?: GetPostsParams) =>
       queryOptions({
-        queryKey: [...postQueries.lists(), filters],
+        queryKey: [...queries.lists(), filters],
         queryFn: () => getPosts(filters),
       }),
-    details: () => [...postQueries.all(), "detail"],
+    details: () => [...queries.all(), "detail"],
     detail: (id: string) =>
       queryOptions({
-        queryKey: [...postQueries.details(), id],
+        queryKey: [...queries.details(), id],
         queryFn: () => getPost(id),
+        enabled: !!id,
         staleTime: 5000,
       }),
-  };
-
-  const commentQueries = {
-    all: () => ["comments"],
-    forPosts: () => [...commentQueries.all(), "detail"],
-    forPost: (postId: string) =>
+    comments: () => [...queries.all(), "comments"],
+    commentsOnPost: (postId: string) =>
       queryOptions({
-        queryKey: [...commentQueries.forPosts(), postId],
+        queryKey: [...queries.comments(), postId],
         queryFn: () => getComments(postId),
         staleTime: 5000,
       }),
@@ -55,19 +51,19 @@ export function usePostService() {
   }
 
   const blockUser = (postId: string) =>
-    doPost(`/v1/posts/block-user/${postId}`);
+    doPost(`/v3/posts/block-user/${postId}`);
 
-  type ListPostsParams = {
+  type GetPostsParams = {
     numPosts?: number;
     start?: string;
-    startDate?: DateTime;
+    isPast?: boolean;
   };
   const getPosts = ({
     numPosts = 20,
-    startDate,
-  }: ListPostsParams | undefined = {}) => {
+    isPast,
+  }: GetPostsParams | undefined = {}) => {
     const urlParams: string[] = [];
-    if (!_.isNil(startDate)) urlParams.push(`startDate=${startDate.toISO()}`);
+    if (!_.isNil(isPast)) urlParams.push(`past=${isPast.toString()}`);
     if (!_.isNil(numPosts)) urlParams.push(`limit=${numPosts.toString()}`);
 
     const urlSearchParams = urlParams.join("&");
@@ -83,30 +79,29 @@ export function usePostService() {
   });
 
   const sendGratis = (postId: string, points: number) =>
-    doPost<PostGratis>("/v1/posts/gratis-sharing", { postId, points });
+    doPost<PostGratis>("/v3/posts/gratis-sharing", { postId, points });
 
   const createComment = (postId: string, content: string) =>
-    doPost<Comment>(`/v1/posts/${postId}/comments/create`, { content });
+    doPost<Comment>(`/v3/posts/${postId}/comments/create`, { content });
 
   const createReplyToComment = (
     postId: string,
     commentId: string,
     content: string
   ) =>
-    doPost<Comment>(`/v1/posts/${postId}/comments/create`, {
+    doPost<Comment>(`/v3/posts/${postId}/comments/create`, {
       content,
       comment_id: commentId,
     });
 
   const getComments = (postId: string) =>
-    doPost<Comment[]>(`/v1/comments?post_id=${postId}`, undefined);
+    doPost<Comment[]>(`/v3/comments?post_id=${postId}`, undefined);
 
   const reportPost = (postId: string, reason: string) =>
     doPost(`/v3/posts/${postId}/report`, { reason });
 
   return {
-    postQueries,
-    commentQueries,
+    queries,
     createPost,
     updatePost,
     listPosts: getPosts,

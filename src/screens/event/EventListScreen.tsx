@@ -1,14 +1,14 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useQuery } from "@tanstack/react-query";
-import { DateTime } from "luxon";
 import React, { useState } from "react";
 import { FlatList, ListRenderItem, Text, View } from "react-native";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
 import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
+import { useNavigations } from "~/app-hooks/useNavigations";
 import { EventItem } from "~/components/events/EventItem";
 import { Loader } from "~/components/loader";
 import { EventsStackScreenProps, Screens } from "~/navigation/types";
-import { useEventService } from "~/network/api/services/event-service";
+import { useEventService } from "~/network/api/services/useEventService";
 import { LocalEvent } from "~/types/local-event";
 import { handleApiError } from "~/utils/common";
 import { AddEventView } from "./AddEventView";
@@ -23,24 +23,20 @@ export const EventListScreen = ({
   const makeDate = new Date();
   makeDate.setMonth(makeDate.getMonth() + 1);
   const [isLoading, setLoading] = useState(false);
+  const { gotoEventDetails } = useNavigations();
 
-  const { listEvents } = useEventService();
+  const {
+    queries: { list: listEvents },
+  } = useEventService();
 
   const {
     isPending,
     isError,
     data: eventsList,
     error,
-  } = useQuery({
-    queryKey: ["upcomingEvents"],
-    queryFn: () => listEvents({ startDate: DateTime.now() }),
-  });
+  } = useQuery(listEvents({ isPast: false }));
   if (isPending !== isLoading) setLoading(isPending);
-  if (isError) handleApiError("Profile", error);
-
-  const onNavigate = (item: LocalEvent) => {
-    navigation.push(Screens.EVENT_DETAIL, { id: item.id });
-  };
+  if (isError) handleApiError("Events", error);
 
   const renderLocalEvent: ListRenderItem<LocalEvent> = ({ item }) => {
     return (
@@ -48,7 +44,7 @@ export const EventListScreen = ({
         <EventItem
           style={styles.listContainer}
           event={item}
-          onPress={() => onNavigate(item)}
+          onPress={gotoEventDetails}
         />
       </View>
     );

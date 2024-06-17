@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import _ from "lodash/fp";
 import { DateTime } from "luxon";
 import { LOG } from "~/config";
-import { onFetchEventDetails } from "~/network/api/services/event-service";
+import { onFetchEventDetails } from "~/network/api/services/useEventService";
 import { apiKeys } from "~/network/constant";
 import { LocalEvent } from "~/types/local-event";
 import { TicketType } from "~/types/ticket-type";

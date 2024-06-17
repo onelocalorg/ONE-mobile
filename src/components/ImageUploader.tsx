@@ -28,7 +28,7 @@ export const ImageUploader = ({
 
   const postImageUploadAPI = async (fileItem: any, base64Item: any) => {
     const token = await AsyncStorage.getItem("token");
-    var pic: any = {
+    const pic: any = {
       uploadKey: "createPostImg",
       imageName: fileItem,
       base64String: "data:image/jpeg;base64," + base64Item,
@@ -39,7 +39,7 @@ export const ImageUploader = ({
       onLoading?.(true);
 
       const response = await fetch(
-        process.env.API_URL + "/v1/users/upload/file",
+        process.env.API_URL + "/v3/users/upload/file",
         {
           method: "post",
           headers: new Headers({
@@ -75,11 +75,11 @@ export const ImageUploader = ({
       const img = assets?.[0];
       console.log("---------------assets Gallery 222---------------");
       console.log(assets);
-      var fileNameTwo = img?.fileName ?? "";
+      const fileNameTwo = img?.fileName ?? "";
       //   LodingData(true);
-      var output =
+      const output =
         fileNameTwo.substr(0, fileNameTwo.lastIndexOf(".")) || fileNameTwo;
-      var base64Two = img?.base64 ?? "";
+      const base64Two = img?.base64 ?? "";
       postImageUploadAPI(output, base64Two);
     }
   };

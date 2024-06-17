@@ -14,7 +14,7 @@ import { useNavigations } from "~/app-hooks/useNavigations";
 import { comment, gratitudeBlack } from "~/assets/images";
 import { ImageComponent } from "~/components/image-component";
 import { Loader } from "~/components/loader";
-import { usePostService } from "~/network/api/services/post-service";
+import { usePostService } from "~/network/api/services/usePostService";
 import { OneUser } from "~/types/one-user";
 import { Post } from "~/types/post";
 import { handleApiError } from "~/utils/common";
@@ -42,7 +42,7 @@ export const PostsList = ({
   const { gotoPostDetails } = useNavigations();
 
   const {
-    postQueries: { list: listPosts },
+    queries: { list: listPosts },
   } = usePostService();
 
   const { isPending, isError, data: posts, error } = useQuery(listPosts());

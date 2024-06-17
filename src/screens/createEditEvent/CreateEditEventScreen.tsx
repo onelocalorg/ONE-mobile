@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import React from "react";
 import { RootStackScreenProps, Screens } from "~/navigation/types";
-import { useEventService } from "~/network/api/services/event-service";
+import { useEventService } from "~/network/api/services/useEventService";
 import { handleApiError } from "~/utils/common";
 import { CreateEditEvent } from "./CreateEditEvent";
 
@@ -18,7 +18,7 @@ export const CreateEditEventScreen = ({
     error,
   } = useQuery({
     queryKey: ["event", eventId],
-    queryFn: () => getEvent(eventId!),
+    queryFn: () => getEvent(eventId),
     enabled: !!eventId,
   });
   if (isError) handleApiError("Event", error);

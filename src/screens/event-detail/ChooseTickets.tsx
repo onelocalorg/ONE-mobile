@@ -1,3 +1,4 @@
+import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
 import { Text, View } from "react-native";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
@@ -6,12 +7,12 @@ import { ButtonComponent } from "~/components/button-component";
 import { EventCard } from "~/components/events/EventCard";
 import { Loader } from "~/components/loader";
 import { OneModal } from "~/components/modal-component/OneModal";
-import { createOrder } from "~/network/api/services/order-service";
+import useOrderService from "~/network/api/services/useOrderService";
 import { LineItemTypes } from "~/types/line-item";
 import { LocalEvent } from "~/types/local-event";
 import { Order } from "~/types/order";
 import { TicketSelection } from "~/types/ticket-selection";
-import { handleApiError, toCurrency } from "~/utils/common";
+import { toCurrency } from "~/utils/common";
 import { StripeCheckout } from "./StripeCheckout";
 import { TicketSelector } from "./TicketSelector";
 import { createStyleSheet } from "./style";
@@ -30,7 +31,6 @@ export const ChooseTickets = ({
   const [tickets, setTickets] = useState<TicketSelection[]>([]);
   const [order, setOrder] = useState<Order>();
   const [isCheckoutVisible, setCheckoutVisible] = useState(false);
-  const [isLoaderVisible, setLoaderVisible] = useState(false);
 
   const selectedTicketPrice = () =>
     tickets.reduce(
@@ -38,36 +38,52 @@ export const ChooseTickets = ({
       0
     );
 
-  const createTicketOrder = async () => {
-    setLoaderVisible(true);
-    try {
-      const order = await createOrder(
-        tickets
-          .filter((ts) => ts.quantity > 0)
-          .map((ts) => ({
-            type: LineItemTypes.TICKET,
-            quantity: ts.quantity,
-            event,
-            ticketType: ts.type,
-          }))
-      );
-      if (order && order.paymentIntent) {
-        setOrder(order);
-        setLoaderVisible(false);
-        setCheckoutVisible(true);
-      } else {
-        onCheckoutComplete?.();
-      }
-    } catch (e) {
-      handleApiError("Error creating order", e);
-    } finally {
-      setLoaderVisible(false);
-    }
+  const {
+    mutations: { createOrder },
+  } = useOrderService();
+
+  const { isPending, mutate } = useMutation(createOrder);
+
+  const createTicketOrder = () => {
+    mutate({
+      lineItems: tickets
+        .filter((ts) => ts.quantity > 0)
+        .map((ts) => ({
+          type: LineItemTypes.TICKET,
+          quantity: ts.quantity,
+          event,
+          ticketType: ts.type,
+        })),
+    });
+
+    // try {
+    //   const order = await createOrder(
+    //     tickets
+    //       .filter((ts) => ts.quantity > 0)
+    //       .map((ts) => ({
+    //         type: LineItemTypes.TICKET,
+    //         quantity: ts.quantity,
+    //         event,
+    //         ticketType: ts.type,
+    //       }))
+    //   );
+    //   if (order && order.paymentIntent) {
+    //     setOrder(order);
+    //     setLoaderVisible(false);
+    //     setCheckoutVisible(true);
+    //   } else {
+    //     onCheckoutComplete?.();
+    //   }
+    // } catch (e) {
+    //   handleApiError("Error creating order", e);
+    // } finally {
+    //   setLoaderVisible(false);
+    // }
   };
 
   return (
     <View style={styles.modalContainer}>
-      <Loader visible={isLoaderVisible} />
+      <Loader visible={isPending} />
       {/* <ScrollView showsVerticalScrollIndicator={false}> */}
       <EventCard event={event} />
       <Text style={styles.amount}>{toCurrency(selectedTicketPrice())}</Text>

@@ -21,8 +21,8 @@ export const EventInfo = ({ event }: EventProps) => {
       <Image
         resizeMode="stretch"
         source={
-          event?.event_image
-            ? { uri: event?.event_image }
+          event?.image
+            ? { uri: event?.image }
             : require("~/assets/images/defaultEvent.png")
         }
         style={styles.dummy}
@@ -31,8 +31,8 @@ export const EventInfo = ({ event }: EventProps) => {
         <View style={styles.row}>
           <View style={styles.flex}>
             <Text style={styles.dateText}>
-              {event?.start_date.toLocaleString(DateTime.DATE_MED_WITH_WEEKDAY)}{" "}
-              • {event?.start_date.toLocaleString(DateTime.TIME_SIMPLE)}
+              {event?.startDate.toLocaleString(DateTime.DATE_MED_WITH_WEEKDAY)}{" "}
+              • {event?.startDate.toLocaleString(DateTime.TIME_SIMPLE)}
             </Text>
             <Text numberOfLines={2} style={styles.title}>
               {event?.name}
@@ -48,7 +48,7 @@ export const EventInfo = ({ event }: EventProps) => {
           <Text style={styles.location}>{event?.address}</Text>
           {/* <Image style={styles.addressDot} source={activeRadio}></Image> */}
           <Text numberOfLines={1} style={styles.fullAddress}>
-            {event?.full_address}
+            {event?.address}
           </Text>
         </View>
       </View>

@@ -66,7 +66,7 @@ export const GetAdmintoolsDropDownScreen = (
     console.log("=========== createPayoutAPI Request ==============");
     try {
       const response = await fetch(
-        process.env.API_URL + "/v1/events/event-financial/" + eventId,
+        process.env.API_URL + "/v3/events/event-financial/" + eventId,
         {
           method: "get",
           headers: new Headers({
@@ -76,7 +76,7 @@ export const GetAdmintoolsDropDownScreen = (
         }
       );
       console.log(
-        process.env.API_URL + "/v1/events/event-financial/" + eventId
+        process.env.API_URL + "/v3/events/event-financial/" + eventId
       );
       const dataItem = await response.json();
       console.log(
@@ -111,7 +111,7 @@ export const GetAdmintoolsDropDownScreen = (
     try {
       const response = await fetch(
         process.env.API_URL +
-          "/v1/events/event-financial/" +
+          "/v3/events/event-financial/" +
           eventId +
           "/create",
         {

@@ -8,7 +8,7 @@ import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
 import { EventCard } from "~/components/events/EventCard";
 import { Loader } from "~/components/loader";
 import { Screens } from "~/navigation/types";
-import { useEventService } from "~/network/api/services/event-service";
+import { useEventService } from "~/network/api/services/useEventService";
 import { LocalEvent } from "~/types/local-event";
 import { UserProfile } from "~/types/user-profile";
 import { handleApiError } from "~/utils/common";
@@ -26,17 +26,16 @@ export const MyEvents = ({ user }: MyEventsProps) => {
   const [isLoading, setLoading] = useState(false);
   const navigation = useNavigation();
 
-  const { listEvents } = useEventService();
+  const {
+    queries: { list: listEvents },
+  } = useEventService();
 
   const {
     isPending,
     isError,
     data: events,
     error,
-  } = useQuery({
-    queryKey: ["eventsForUser", user.id],
-    queryFn: () => listEvents({ host: user.id }),
-  });
+  } = useQuery(listEvents({ host: user.id }));
   if (isPending !== isLoading) setLoading(isPending);
   if (isError) handleApiError("My events", error);
 

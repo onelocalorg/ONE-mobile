@@ -27,8 +27,6 @@ import { ImageComponent } from "~/components/image-component";
 import { SizedBox } from "~/components/sized-box";
 import { AuthDispatchContext } from "~/navigation/AuthContext";
 import { GuestStackScreenProps, Screens } from "~/navigation/types";
-import { signUp } from "~/network/api/services/auth-service";
-import { useSaveCustomerId } from "~/network/hooks/user-service-hooks/use-save-customer-id";
 import { normalScale, verticalScale } from "~/theme/device/normalize";
 import { handleApiError } from "~/utils/common";
 
@@ -38,7 +36,6 @@ export const SignUp = ({
   const [isChecked, setIsChecked] = useState(false);
   const { strings } = useStringsAndLabels();
   const [isLoading, LodingData] = useState(false);
-  const { mutateAsync: saveCustomerId } = useSaveCustomerId();
   const [imageOption, ImageOptionModal] = useState(false);
   const [filename, assetsData] = useState("");
   const [base64string, setBase64Path] = useState("");
@@ -126,11 +123,11 @@ export const SignUp = ({
       cropping: true,
     }).then((image) => {
       if (image) {
-        var fileNameTwo = image?.filename ?? "";
+        const fileNameTwo = image?.filename ?? "";
         LodingData(true);
-        var output =
+        const output =
           fileNameTwo.substr(0, fileNameTwo.lastIndexOf(".")) || fileNameTwo;
-        var base64Two = image?.data ?? "";
+        const base64Two = image?.data ?? "";
 
         assetsData(output);
         setBase64Path(base64Two);
@@ -152,7 +149,7 @@ export const SignUp = ({
         base64String: "data:image/jpeg;base64," + base64Item,
       };
     } else {
-      var isImg: any = ".JPG";
+      const isImg: any = ".JPG";
       var pic: any = {
         uploadKey: "signup_pic",
         imageName: Math.random().toString() + isImg,
@@ -163,7 +160,7 @@ export const SignUp = ({
     ImageOptionModal(false);
     try {
       const response = await fetch(
-        process.env.API_URL + "/v1/users/upload/file",
+        process.env.API_URL + "/v3/users/upload/file",
         {
           method: "post",
           headers: new Headers({
@@ -182,8 +179,8 @@ export const SignUp = ({
   };
 
   const BackgroundImageUploadAPI = async (fileItem: any, base64Item: any) => {
-    var isImg: any = ".JPG";
-    var pic: any = {
+    const isImg: any = ".JPG";
+    const pic: any = {
       uploadKey: "signup_cover_image",
       imageName: Math.random().toString() + isImg,
       // imageName: fileItem,
@@ -192,7 +189,7 @@ export const SignUp = ({
     ImageOptionModal(false);
     try {
       const response = await fetch(
-        process.env.API_URL + "/v1/users/upload/file",
+        process.env.API_URL + "/v3/users/upload/file",
         {
           method: "post",
           headers: new Headers({
@@ -266,11 +263,11 @@ export const SignUp = ({
     ImageOptionModal(false);
     if (assets) {
       const img = assets?.[0];
-      var fileNameTwo = img?.fileName ?? "";
+      const fileNameTwo = img?.fileName ?? "";
       LodingData(true);
-      var output =
+      const output =
         fileNameTwo.substr(0, fileNameTwo.lastIndexOf(".")) || fileNameTwo;
-      var base64Two = img?.base64 ?? "";
+      const base64Two = img?.base64 ?? "";
 
       assetsData(output);
       setBase64Path(base64Two);

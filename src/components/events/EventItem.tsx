@@ -8,7 +8,7 @@ import { createStyleSheet } from "./style";
 
 interface EventItemProps {
   event: LocalEvent;
-  onPress?: () => void;
+  onPress?: (event: LocalEvent) => void;
   style?: any;
 }
 
@@ -19,12 +19,15 @@ export const EventItem = ({ event, onPress, style }: EventItemProps) => {
   LOG.debug(": EventItem:", event);
 
   return (
-    <Pressable style={style ?? styles.listContainer} onPress={onPress}>
+    <Pressable
+      style={style ?? styles.listContainer}
+      onPress={() => onPress?.(event)}
+    >
       <Image
         resizeMode="stretch"
         source={
-          event?.eventImage
-            ? { uri: event?.eventImage }
+          event.image
+            ? { uri: event?.image }
             : require("~/assets/images/defaultEvent.png")
         }
         style={styles.dummy}
@@ -46,7 +49,7 @@ export const EventItem = ({ event, onPress, style }: EventItemProps) => {
         <View style={styles.rowClass}>
           <Image source={pin} style={styles.pin} />
           <Text numberOfLines={1} style={styles.location}>
-            {event.address || event.fullAddress?.split(",")[0]}
+            {event.venue || event.address?.split(",")[0]}
           </Text>
         </View>
         {event.isCanceled ? (

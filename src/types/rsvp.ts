@@ -13,8 +13,12 @@ export enum RsvpType {
   CANT_GO = "cantgo",
 }
 
-export interface Rsvp {
+export interface Rsvp extends RsvpData {
   id: string;
-  rsvp: RsvpType;
   guest: OneUser;
+}
+
+export interface RsvpData {
+  eventId: string;
+  type: RsvpType;
 }

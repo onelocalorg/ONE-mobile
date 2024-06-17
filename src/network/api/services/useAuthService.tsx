@@ -1,7 +1,7 @@
 import { CurrentUser } from "~/types/current-user";
 import { ForgotPassword } from "~/types/forgot-password";
 import { NewUser } from "~/types/new-user";
-import { useApiService } from "./api-service";
+import { useApiService } from "./ApiService";
 
 export function useAuthService() {
   const { doGet, doPost } = useApiService();
@@ -17,10 +17,10 @@ export function useAuthService() {
   }
 
   const logIn = async (props: LoginProps) =>
-    doPost<CurrentUser>("/v1/auth/login", props);
+    doPost<CurrentUser>("/v3/auth/login", props);
 
   const signUp = async (props: NewUser) =>
-    doPost<CurrentUser>("/v1/auth/signup", props);
+    doPost<CurrentUser>("/v3/auth/signup", props);
 
   interface GoogleLoginProps {
     id: string;
@@ -31,7 +31,7 @@ export function useAuthService() {
     pic?: string;
   }
   const googleLogin = async (props: GoogleLoginProps) =>
-    doPost<CurrentUser>("/v1/auth/googleSignupLogin", props);
+    doPost<CurrentUser>("/v3/auth/googleSignupLogin", props);
 
   interface AppleLoginProps {
     nonce: string;
@@ -44,18 +44,18 @@ export function useAuthService() {
     nickName?: string;
   }
   const appleLogin = async (props: AppleLoginProps) =>
-    doPost<CurrentUser>("/v1/auth/appleSignupLogin", props);
+    doPost<CurrentUser>("/v3/auth/appleSignupLogin", props);
 
   const forgotPassword = (email: string) =>
-    doPost<ForgotPassword>(`/v1/auth/forgot-password`, { email });
+    doPost<ForgotPassword>(`/v3/auth/forgot-password`, { email });
 
   const verifyOtp = (otp: string, otpUniqueKey: string) =>
-    doPost<boolean>(`/v1/auth/verify-otp`, { otp, otpUniqueKey });
+    doPost<boolean>(`/v3/auth/verify-otp`, { otp, otpUniqueKey });
 
-  const authPing = () => doGet<never>("/v1/auth/ping");
+  const authPing = () => doGet<never>("/v3/auth/ping");
 
   const resetPassword = (password: string, otp: string, otpUniqueKey: string) =>
-    doPost<never>(`/v1/auth/reset-password`, {
+    doPost<never>(`/v3/auth/reset-password`, {
       password,
       otp,
       otpUniqueKey,

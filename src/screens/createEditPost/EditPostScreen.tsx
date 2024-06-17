@@ -1,12 +1,9 @@
+import { useQuery } from "@tanstack/react-query";
 import React from "react";
-import { ScrollView } from "react-native";
-import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { RootStackScreenProps, Screens } from "~/navigation/types";
-import { getPost } from "~/network/api/services/post-service";
-import { Post } from "~/types/post";
+import { usePostService } from "~/network/api/services/usePostService";
 import { handleApiError } from "~/utils/common";
-import { PostOffer } from "./PostOffer";
-import { PostRequest } from "./PostRequest";
+import { PostEditor } from "./PostEditor";
 
 export const EditPostScreen = ({
   navigation,
@@ -14,11 +11,12 @@ export const EditPostScreen = ({
 }: RootStackScreenProps<Screens.EDIT_POST>) => {
   const postId = route.params.id;
 
-  const [post, setPost] = React.useState<Post>();
+  const {
+    queries: { detail: postDetail },
+  } = usePostService();
 
-  React.useEffect(() => {
-    getPost(postId).then(setPost).catch(handleApiError("Post"));
-  }, [postId]);
+  const { isError, data: post, error } = useQuery(postDetail(postId));
+  if (isError) handleApiError("Post", error);
 
   const handleSubmit = () => {
     navigation.goBack();
@@ -26,23 +24,7 @@ export const EditPostScreen = ({
 
   return (
     <>
-      <KeyboardAwareScrollView
-        keyboardShouldPersistTaps="always"
-        showsVerticalScrollIndicator={false}
-      >
-        <ScrollView
-          showsVerticalScrollIndicator={false}
-          keyboardShouldPersistTaps="always"
-        >
-          {post?.type === "offer" ? (
-            <PostOffer onSubmit={handleSubmit} post={post} />
-          ) : post?.type === "request" ? (
-            <PostRequest onSubmit={handleSubmit} post={post} />
-          ) : // ) : post?.type === "gratis" ? (
-          //   <CreateEditPostGratisScreen navigation={navigation} />
-          null}
-        </ScrollView>
-      </KeyboardAwareScrollView>
+      <PostEditor post={post} />
     </>
   );
 };

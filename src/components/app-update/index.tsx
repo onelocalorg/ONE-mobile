@@ -26,7 +26,7 @@ export const AppUpdate = ({ onNeedsUpdate }: AppUpdateProps) => {
 
   const getAppVersion = async () => {
     LOG.debug("> getAppVersion");
-    var eventList_url = process.env.API_URL + "/v1/config/verions";
+    const eventList_url = process.env.API_URL + "/v1/config/verions";
     LOG.info(eventList_url);
     try {
       const response = await fetch(eventList_url, { method: "get" });
@@ -61,7 +61,7 @@ export const AppUpdate = ({ onNeedsUpdate }: AppUpdateProps) => {
   function checkPaymentFlowHideShow(dataItem: any) {
     if ("isPaymentFlowShowFour" in dataItem) {
       console.log("isPaymentFlowShowFour");
-      var datatemp = dataItem?.isPaymentFlowShowFour;
+      const datatemp = dataItem?.isPaymentFlowShowFour;
       setData("isShowPaymentFlow", datatemp);
     }
     setisVersionApiCalled(true);
@@ -70,7 +70,7 @@ export const AppUpdate = ({ onNeedsUpdate }: AppUpdateProps) => {
   function checkPaymentFlowHideShowAndroid(dataItem: any) {
     if ("isPaymentFlowShowFiveAndroid" in dataItem) {
       console.log("isPaymentFlowShowFiveAndroid");
-      var datatemp = dataItem?.isPaymentFlowShowFiveAndroid;
+      const datatemp = dataItem?.isPaymentFlowShowFiveAndroid;
       setData("isShowPaymentFlowAndroid", datatemp);
     }
     setisVersionApiCalled(true);

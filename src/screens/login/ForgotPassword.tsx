@@ -2,11 +2,6 @@ import React, { useState } from "react";
 import { Alert, SafeAreaView } from "react-native";
 import { Button, Text, TextInput } from "react-native-paper";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
-import {
-  forgotPassword,
-  resetPassword,
-  verifyOtp,
-} from "~/network/api/services/auth-service";
 import { createStyleSheet } from "./style";
 
 interface ForgotPasswordProps {

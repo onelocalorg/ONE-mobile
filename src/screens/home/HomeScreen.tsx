@@ -3,9 +3,13 @@ import _ from "lodash/fp";
 import React from "react";
 import { View } from "react-native";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
+import { useNavigations } from "~/app-hooks/useNavigations";
 import { useMyUserId } from "~/navigation/AuthContext";
 import { HomeStackScreenProps, Screens } from "~/navigation/types";
-import { useUserService } from "~/network/api/services/user-service";
+import {
+  GetUsersSort,
+  useUserService,
+} from "~/network/api/services/useUserService";
 import { OneUser } from "~/types/one-user";
 import { Post } from "~/types/post";
 import { handleApiError } from "~/utils/common";
@@ -19,26 +23,23 @@ export const HomeScreen = ({
 }: HomeStackScreenProps<Screens.HOME_SCREEN>) => {
   const { theme } = useAppTheme();
   const styles = createStyleSheet(theme);
-  const { getRecentlyJoined } = useUserService();
   const myUserId = useMyUserId();
+  const { gotoUserProfile } = useNavigations();
+
+  const {
+    queries: { list: listUsers },
+  } = useUserService();
 
   const {
     isError,
     data: userList,
     error,
-  } = useQuery({
-    queryKey: ["recentUsers"],
-    queryFn: () => getRecentlyJoined(),
-  });
+  } = useQuery(listUsers({ sort: GetUsersSort.joinDate }));
   if (isError) handleApiError("Recent users", error);
 
   const withoutProfilePic = _.reject((u: OneUser) =>
     u.pic?.includes("defaultUser.jpg")
   );
-
-  const navigateToUserProfile = (user: OneUser) => {
-    navigation.push(Screens.USER_PROFILE, { id: user.id });
-  };
 
   const showGiveGratsModal = (post: Post) => {
     navigation.push(Screens.GIVE_GRATS_MODAL, { postId: post.id });
@@ -75,7 +76,7 @@ export const HomeScreen = ({
               {userList ? (
                 <RecentUsers
                   users={withoutProfilePic(userList)}
-                  onPress={navigateToUserProfile}
+                  onPress={gotoUserProfile}
                 />
               ) : null}
               <AddPostView onPress={navigateToCreatePost} />

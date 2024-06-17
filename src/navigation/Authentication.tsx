@@ -2,7 +2,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import _ from "lodash/fp";
 import React, { useEffect, useMemo, useReducer } from "react";
 import { LOG } from "~/config";
-import { ApiService } from "~/network/api/services/api-service";
+import { ApiService } from "~/network/api/services/ApiService";
 import { persistKeys } from "~/network/constant";
 import { CurrentUser as MyUser } from "~/types/current-user";
 import { handleApiError } from "~/utils/common";

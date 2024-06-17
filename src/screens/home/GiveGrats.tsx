@@ -6,7 +6,7 @@ import { Gratis, buttonArrowGreen, minus, plus } from "~/assets/images";
 import { ShortModal } from "~/components/ShortModal";
 import { ImageComponent } from "~/components/image-component";
 import { RootStackScreenProps, Screens } from "~/navigation/types";
-import { sendGratis } from "~/network/api/services/post-service";
+import { sendGratis } from "~/network/api/services/usePostService";
 import { handleApiError } from "~/utils/common";
 import { createStyleSheet } from "./style";
 
