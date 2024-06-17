@@ -1,11 +1,13 @@
 import { queryOptions, useQueryClient } from "@tanstack/react-query";
 import _ from "lodash/fp";
 import { LOG } from "~/config";
+import { ApiError } from "~/types";
 import { Comment } from "~/types/comment";
 import { Post } from "~/types/post";
 import { PostData } from "~/types/post-data";
 import { PostUpdateData } from "~/types/post-update-data";
 import { SendGrats } from "~/types/send-grats";
+import { handleApiError } from "~/utils/common";
 import { useApiService } from "./ApiService";
 
 export function usePostService() {
@@ -54,6 +56,9 @@ export function usePostService() {
         void queryClient.invalidateQueries({
           queryKey: queries.detail(data.post).queryKey,
         });
+      },
+      onError: (err: ApiError) => {
+        handleApiError("sending grats", err);
       },
     },
   };

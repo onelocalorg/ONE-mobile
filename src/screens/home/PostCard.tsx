@@ -23,7 +23,7 @@ type PostCardProps = {
 export const PostCard = ({ post }: PostCardProps) => {
   const { theme } = useAppTheme();
   const styles = createStyleSheet(theme);
-  const { gotoPostContextMenu, gotoPostDetails, gotoUserProfile } =
+  const { showPostContextMenu, gotoPostDetails, gotoUserProfile } =
     useNavigations();
 
   return (
@@ -31,7 +31,7 @@ export const PostCard = ({ post }: PostCardProps) => {
       <Pressable onPress={gotoPostDetails(post)}>
         <Text style={styles.posttitle}>{_.capitalize(post?.type)}</Text>
         <Pressable
-          onPress={gotoPostContextMenu(post)}
+          onPress={showPostContextMenu(post)}
           style={{
             position: "absolute",
             right: 14,

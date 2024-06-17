@@ -55,7 +55,7 @@ export const PostDetailScreen = ({
   const [childjIndex, setChildIndexForGratis]: any = useState();
   const [commentId, setCommentId] = useState<string>();
   const flatListRef: any = React.useRef();
-  const { gotoUserProfile } = useNavigations();
+  const { gotoUserProfile, showGiveGratsModal } = useNavigations();
 
   const {
     queries: { detail: postDetail, commentsOnPost },
@@ -322,7 +322,7 @@ export const PostDetailScreen = ({
         <View style={styles.commentImgProfile}>
           <TouchableOpacity
             activeOpacity={0.8}
-            onPress={() => recentUserProfilePress(comment.commenter.id)}
+            onPress={gotoUserProfile(comment.commenter.id)}
           >
             <ImageComponent
               resizeMode="cover"
@@ -381,7 +381,7 @@ export const PostDetailScreen = ({
                 <View style={styles.commentImgProfileTwo}>
                   <TouchableOpacity
                     activeOpacity={0.8}
-                    onPress={() => recentUserProfilePress(reply.commenter.id)}
+                    onPress={gotoUserProfile(reply.commenter.id)}
                   >
                     <ImageComponent
                       resizeMode="cover"
@@ -469,9 +469,7 @@ export const PostDetailScreen = ({
                     }}
                   ></TouchableOpacity>
                   <View style={styles.userDetailcont}>
-                    <TouchableOpacity
-                      onPress={() => gotoUserProfile(post.author.id)}
-                    >
+                    <TouchableOpacity onPress={gotoUserProfile(post.author.id)}>
                       <ImageComponent
                         resizeMode="cover"
                         style={styles.postProfile}
@@ -535,9 +533,7 @@ export const PostDetailScreen = ({
                   <TouchableOpacity
                     activeOpacity={0.8}
                     style={styles.gratisContainer}
-                    // onPress={() =>
-                    //   OfferModalShow(post.id, route?.params.postIndex)
-                    // }
+                    onPress={showGiveGratsModal(post)}
                   >
                     <Text style={styles.gratisClass}>+{post?.numGrats}</Text>
                     <ImageComponent
