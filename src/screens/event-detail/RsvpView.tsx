@@ -1,5 +1,6 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
-import React, { useState } from "react";
+import _ from "lodash/fp";
+import React from "react";
 import { Image, Pressable, Text, TouchableOpacity, View } from "react-native";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
 import { useNavigations } from "~/app-hooks/useNavigations";
@@ -24,8 +25,6 @@ export const RsvpView = ({ event }: RsvpViewProps) => {
   const myUserId = useMyUserId();
   const { gotoUserProfile } = useNavigations();
 
-  const [selectedButton, setSelectedButton] = useState<RsvpType>();
-
   const {
     queries: { rsvpsForEvent },
     mutations: { createRsvp },
@@ -34,31 +33,10 @@ export const RsvpView = ({ event }: RsvpViewProps) => {
   const { isError, data: rsvpList, error } = useQuery(rsvpsForEvent(event.id));
   if (isError) handleApiError("RSVP", error);
 
-  console.log("rsvpList", rsvpList);
-
   const mutateCreateRsvp = useMutation(createRsvp);
 
-  // const findItemById = () => {
-  //   const foundItem = rsvpList?.rsvps.find(
-  //     (item) => item.guest.id === myUserId
-  //   );
-  //   if (foundItem) {
-  //     setSelectedButton(foundItem.rsvp);
-  //   } else {
-  //     setSelectedButton(undefined);
-  //   }
-  // };
-
-  // const addGoingRsvp = () => {
-  //   if (
-  //     rsvpList?.rsvps.find((r) => r.guest.id === myUserId)?.rsvp !==
-  //     RsvpType.GOING
-  //   ) {
-  //     void updateRsvp(eventId, RsvpType.GOING)
-  //       .then(fetchRsvpData)
-  //       .catch(handleApiError("RSVP"));
-  //   }
-  // };
+  const myRsvp = () =>
+    rsvpList?.rsvps.find((rsvp) => rsvp.guest.id === myUserId);
 
   // Check if the logged-in user's ID is available in RSVP data
   const isCurrentUserRSVP = (type: RsvpType) => {
@@ -73,11 +51,9 @@ export const RsvpView = ({ event }: RsvpViewProps) => {
 
   const changeRsvp = (type: RsvpType) => {
     mutateCreateRsvp.mutate({
-      type: selectedButton === type ? RsvpType.CANT_GO : type,
+      type: myRsvp()?.type === type ? RsvpType.CANT_GO : type,
       eventId: event.id,
     });
-
-    setSelectedButton(type === selectedButton ? undefined : type);
   };
 
   return (
@@ -86,7 +62,7 @@ export const RsvpView = ({ event }: RsvpViewProps) => {
         <TouchableOpacity
           style={[
             styles1.button,
-            selectedButton === RsvpType.GOING && styles1.selectedButton,
+            myRsvp()?.type === RsvpType.GOING && styles1.selectedButton,
             isCurrentUserRSVP(RsvpType.GOING) && { backgroundColor: "#E9B9B4" },
           ]}
           onPress={() => changeRsvp(RsvpType.GOING)}
@@ -104,7 +80,7 @@ export const RsvpView = ({ event }: RsvpViewProps) => {
         <TouchableOpacity
           style={[
             styles1.button,
-            selectedButton === RsvpType.INTERESTED && styles1.selectedButton,
+            myRsvp()?.type === RsvpType.INTERESTED && styles1.selectedButton,
             isCurrentUserRSVP(RsvpType.INTERESTED) && {
               backgroundColor: "#E9B9B4",
             },
@@ -173,26 +149,28 @@ export const RsvpView = ({ event }: RsvpViewProps) => {
               width: "100%",
             }}
           >
-            {rsvpList?.rsvps.map((rsvp, index) => (
-              <View key={index} style={styles1.rsvpContainer}>
-                <Pressable onPress={() => gotoUserProfile(rsvp.guest)}>
-                  <View style={styles1.profilePicContainer}>
-                    <Image
-                      source={{ uri: rsvp.guest.pic }}
-                      style={styles1.profilePic}
-                    />
+            {_.reject((r) => r.type === RsvpType.CANT_GO, rsvpList.rsvps).map(
+              (rsvp, index) => (
+                <View key={index} style={styles1.rsvpContainer}>
+                  <Pressable onPress={() => gotoUserProfile(rsvp.guest)}>
+                    <View style={styles1.profilePicContainer}>
+                      <Image
+                        source={{ uri: rsvp.guest.pic }}
+                        style={styles1.profilePic}
+                      />
+                    </View>
+                  </Pressable>
+                  <View style={styles1.rsvpImageContainer}>
+                    {rsvp.type === RsvpType.GOING && (
+                      <Image source={Going} style={styles1.rsvpImage} />
+                    )}
+                    {rsvp.type === RsvpType.INTERESTED && (
+                      <Image source={startImg} style={styles1.rsvpImage} />
+                    )}
                   </View>
-                </Pressable>
-                <View style={styles1.rsvpImageContainer}>
-                  {rsvp.type === RsvpType.GOING && (
-                    <Image source={Going} style={styles1.rsvpImage} />
-                  )}
-                  {rsvp.type === RsvpType.INTERESTED && (
-                    <Image source={startImg} style={styles1.rsvpImage} />
-                  )}
                 </View>
-              </View>
-            ))}
+              )
+            )}
           </View>
         ) : (
           <Text>No RSVP data available</Text>

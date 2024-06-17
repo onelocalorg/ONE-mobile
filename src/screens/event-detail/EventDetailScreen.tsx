@@ -128,11 +128,6 @@ export const EventDetailScreen = ({
                 <Text
                   style={styles.date}
                 >{`${event.host.firstName} ${event.host.lastName}`}</Text>
-                {/* <Text style={styles.time}>
-                    {user.user_type === "player"
-                      ? strings.player
-                      : strings.producer}
-                  </Text> */}
               </View>
             </View>
             <SizedBox height={verticalScale(30)} />

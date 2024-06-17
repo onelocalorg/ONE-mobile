@@ -52,7 +52,7 @@ export const Tickets = ({ event, onTicketPurchased }: TicketsProps) => {
         ))}
       </View>
 
-      {!event.is_event_owner && event.ticketTypes?.length ? (
+      {!event.isMyEvent && event.ticketTypes?.length ? (
         <ButtonComponent
           disabled={event.isCanceled}
           title={strings.chooseTickets}
