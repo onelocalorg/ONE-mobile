@@ -3,12 +3,14 @@ import React, { ReactElement, useState } from "react";
 import {
   FlatList,
   ListRenderItem,
+  Pressable,
   Text,
   TouchableOpacity,
   View,
 } from "react-native";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
 import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
+import { useNavigations } from "~/app-hooks/useNavigations";
 import { comment, gratitudeBlack } from "~/assets/images";
 import { ImageComponent } from "~/components/image-component";
 import { Loader } from "~/components/loader";
@@ -16,7 +18,7 @@ import { usePostService } from "~/network/api/services/post-service";
 import { OneUser } from "~/types/one-user";
 import { Post } from "~/types/post";
 import { handleApiError } from "~/utils/common";
-import { PostContentView } from "./PostContentView";
+import { PostCard } from "./PostCard";
 import { createStyleSheet } from "./style";
 
 type PostsListProps = {
@@ -37,53 +39,51 @@ export const PostsList = ({
   const styles = createStyleSheet(theme);
   const { strings } = useStringsAndLabels();
   const [isLoading, setLoading] = useState(false);
-
-  const { listPosts } = usePostService();
+  const { gotoPostDetails } = useNavigations();
 
   const {
-    isPending,
-    isError,
-    data: posts,
-    error,
-  } = useQuery({
-    queryKey: ["posts", { numPosts: 30 }],
-    queryFn: () => listPosts({ numPosts: 30 }),
-  });
+    postQueries: { list: listPosts },
+  } = usePostService();
+
+  const { isPending, isError, data: posts, error } = useQuery(listPosts());
+
   if (isPending !== isLoading) setLoading(isPending);
   if (isError) handleApiError("Posts", error);
 
-  const postRenderer: ListRenderItem<Post> = ({ item: post, index }) => {
+  const postRenderer: ListRenderItem<Post> = ({ item: post }) => {
     return (
       <View style={styles.feedContainer}>
-        <PostContentView
-          post={post}
-          onPress={() => onContextMenuPress?.(post)}
-          onAvatarPress={onAvatarPress}
-        />
-        <View style={styles.gratisAndCommentContainer}>
-          <TouchableOpacity
-            activeOpacity={0.8}
-            style={styles.gratisContainer}
-            onPress={() => onGiveGratsPress?.(post)}
-          >
-            <Text style={styles.gratisClass}>+{post.numGrats}</Text>
-            <ImageComponent
-              source={gratitudeBlack}
-              style={styles.commentImgTwo}
-            ></ImageComponent>
-          </TouchableOpacity>
-          <TouchableOpacity
-            activeOpacity={0.8}
-            onPress={() => onPostPress?.(post)}
-            style={styles.commentsContainer}
-          >
-            <Text style={styles.commentClass}>{post.numComments}</Text>
-            <ImageComponent
-              source={comment}
-              style={styles.commentImageThree}
-            ></ImageComponent>
-          </TouchableOpacity>
-        </View>
+        <Pressable onPress={() => gotoPostDetails(post)}>
+          <PostCard
+            post={post}
+            onPress={() => onContextMenuPress?.(post)}
+            onAvatarPress={onAvatarPress}
+          />
+          <View style={styles.gratisAndCommentContainer}>
+            <TouchableOpacity
+              activeOpacity={0.8}
+              style={styles.gratisContainer}
+              onPress={() => onGiveGratsPress?.(post)}
+            >
+              <Text style={styles.gratisClass}>+{post.numGrats}</Text>
+              <ImageComponent
+                source={gratitudeBlack}
+                style={styles.commentImgTwo}
+              ></ImageComponent>
+            </TouchableOpacity>
+            <TouchableOpacity
+              activeOpacity={0.8}
+              onPress={() => onPostPress?.(post)}
+              style={styles.commentsContainer}
+            >
+              <Text style={styles.commentClass}>{post.numComments}</Text>
+              <ImageComponent
+                source={comment}
+                style={styles.commentImageThree}
+              ></ImageComponent>
+            </TouchableOpacity>
+          </View>
+        </Pressable>
       </View>
     );
   };
@@ -91,19 +91,25 @@ export const PostsList = ({
   return (
     <>
       <Loader visible={isLoading} />
-      <FlatList
-        data={posts}
-        keyExtractor={(item) => item.id}
-        renderItem={postRenderer}
-        contentContainerStyle={styles.scrollView}
-        ListHeaderComponent={header}
-        // ListFooterComponent={renderLoader}
-      ></FlatList>
-      <View style={{ flex: 1, justifyContent: "center", alignSelf: "center" }}>
-        <Text style={{ color: "white", fontSize: 18 }}>
-          {posts?.length === 0 ? strings.noPostFound : ""}
-        </Text>
-      </View>
+      {posts ? (
+        <FlatList
+          data={posts}
+          keyExtractor={(item) => item.id}
+          renderItem={postRenderer}
+          contentContainerStyle={styles.scrollView}
+          ListHeaderComponent={header}
+          // ListFooterComponent={renderLoader}
+        ></FlatList>
+      ) : null}
+      {!posts && !isPending ? (
+        <View
+          style={{ flex: 1, justifyContent: "center", alignSelf: "center" }}
+        >
+          <Text style={{ color: "white", fontSize: 18 }}>
+            {strings.noPostFound}
+          </Text>
+        </View>
+      ) : null}
     </>
   );
 };

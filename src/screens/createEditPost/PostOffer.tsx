@@ -1,8 +1,8 @@
 import React, { useState } from "react";
+import { Control } from "react-hook-form";
 import {
   ActivityIndicator,
   Keyboard,
-  ScrollView,
   Text,
   TouchableOpacity,
   View,
@@ -12,14 +12,14 @@ import { useAppTheme } from "~/app-hooks/use-app-theme";
 import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
 import { buttonArrowGreen } from "~/assets/images";
 import { ButtonComponent } from "~/components/button-component";
-import { createPost, updatePost } from "~/network/api/services/post-service";
 import { Post } from "~/types/post";
 import { PostData } from "~/types/post-data";
 import { handleApiError } from "~/utils/common";
-import { PostView } from "./PostView";
+import { PostEditor } from "./PostEditor";
 import { createStyleSheet } from "./style";
 
 interface PostOfferProps {
+  control: Control<PostData>;
   post?: Post;
   onSubmit?: (postData: PostData) => void;
 }
@@ -62,38 +62,33 @@ export const PostOffer = ({ post, onSubmit }: PostOfferProps) => {
 
   return (
     <>
-      <ScrollView
-        keyboardShouldPersistTaps="always"
-        showsVerticalScrollIndicator={false}
+      <ActivityIndicator animating={isLoading} />
+      <TouchableOpacity
+        onPress={keyboardDismiss}
+        activeOpacity={1}
+        style={styles.createPostModal}
       >
-        <ActivityIndicator animating={isLoading} />
-        <TouchableOpacity
-          onPress={keyboardDismiss}
-          activeOpacity={1}
-          style={styles.createPostModal}
-        >
-          <View>
-            <View style={styles.postClass}>
-              <Text style={styles.title}>Give</Text>
-              <PostView
-                type="offer"
-                post={post}
-                onLoading={setLoading}
-                onFieldsChanged={setPostData}
+        <View>
+          <View style={styles.postClass}>
+            <Text style={styles.title}>Give</Text>
+            <PostEditor
+              type="offer"
+              post={post}
+              onLoading={setLoading}
+              onFieldsChanged={setPostData}
+            />
+            <View style={styles.bottomButton}>
+              <ButtonComponent
+                onPress={() => createOrUpdateOffer()}
+                icon={buttonArrowGreen}
+                title={post ? strings.editOffer : strings.postOffer}
+                style={styles.postButton}
+                disabled={!postData || isLoading}
               />
-              <View style={styles.bottomButton}>
-                <ButtonComponent
-                  onPress={() => createOrUpdateOffer()}
-                  icon={buttonArrowGreen}
-                  title={post ? strings.editOffer : strings.postOffer}
-                  style={styles.postButton}
-                  disabled={!postData || isLoading}
-                />
-              </View>
             </View>
           </View>
-        </TouchableOpacity>
-      </ScrollView>
+        </View>
+      </TouchableOpacity>
     </>
   );
 };

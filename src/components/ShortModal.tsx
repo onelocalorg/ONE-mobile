@@ -1,28 +1,39 @@
-import { View } from "react-native";
+import { useNavigation } from "@react-navigation/native";
+import { Pressable, View } from "react-native";
 
 type ShortModalProps = {
   height: number;
   children: React.ReactNode;
 };
 export const ShortModal = ({ height, children }: ShortModalProps) => {
+  const navigation = useNavigation();
+
+  const dismissModal = () => {
+    navigation.goBack();
+  };
+
   return (
-    <View
-      style={{
-        flex: 1,
-        flexDirection: "column",
-        justifyContent: "flex-end",
-      }}
-    >
+    <>
       <View
         style={{
-          height,
-          backgroundColor: "#fff",
-          justifyContent: "center",
+          flex: 1,
+          flexDirection: "column",
+          justifyContent: "flex-end",
         }}
       >
-        {children}
+        <Pressable onPress={dismissModal}>
+          <View
+            style={{
+              height,
+              backgroundColor: "#fff",
+              justifyContent: "center",
+            }}
+          >
+            {children}
+          </View>
+        </Pressable>
       </View>
-    </View>
+    </>
   );
 };
 

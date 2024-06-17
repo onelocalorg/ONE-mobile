@@ -45,7 +45,7 @@ export const HomeScreen = ({
   };
 
   const navigateToCreatePost = () => {
-    navigation.navigate(Screens.CREATE_POST);
+    navigation.navigate(Screens.CREATE_EDIT_POST);
   };
 
   const handlePostPress = (item: Post) => {

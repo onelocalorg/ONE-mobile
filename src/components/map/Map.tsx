@@ -19,7 +19,7 @@ import giftIcon from "~/assets/map/gift.png";
 import { LOG } from "~/config";
 import { useEventService } from "~/network/api/services/event-service";
 import { usePostService } from "~/network/api/services/post-service";
-import { PostContentView } from "~/screens/home/PostContentView";
+import { PostCard } from "~/screens/home/PostCard";
 import { LocalEvent } from "~/types/local-event";
 import { OneUser } from "~/types/one-user";
 import { Post } from "~/types/post";
@@ -164,7 +164,7 @@ export const Map = ({ onEventPress, onPostPress, onAvatarPress }: MapProps) => {
           ))}
           {selectedPosts.map((sp) => (
             <View key={sp.id} style={styles.listContainer}>
-              <PostContentView
+              <PostCard
                 post={sp}
                 onPress={() => onPostPress?.(sp)}
                 onAvatarPress={onAvatarPress}

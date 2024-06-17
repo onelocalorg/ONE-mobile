@@ -7,9 +7,7 @@ import {
   FlatList,
   Image,
   Keyboard,
-  KeyboardAvoidingView,
   ListRenderItem,
-  Platform,
   Text,
   TextInput,
   TouchableOpacity,
@@ -28,14 +26,15 @@ import { ImageComponent } from "~/components/image-component";
 import { RootStackScreenProps, Screens } from "~/navigation/types";
 
 import { useQuery } from "@tanstack/react-query";
+import { useNavigations } from "~/app-hooks/useNavigations";
 import { usePostService } from "~/network/api/services/post-service";
 import { Comment } from "~/types/comment";
+import { PostType } from "~/types/post-data";
 import { Reply } from "~/types/reply";
 import { formatTimeFromNow, handleApiError } from "~/utils/common";
 import { createStyleSheet } from "./style";
 
 export const PostDetailScreen = ({
-  navigation,
   route,
 }: RootStackScreenProps<Screens.POST_DETAIL>) => {
   const postId = route.params.id;
@@ -45,11 +44,9 @@ export const PostDetailScreen = ({
   const [replyofferModal, openReplyOfferModal] = useState(false);
   const [gratisNo, totalGratisData] = useState(10);
   const [gratisNoComment, totalGratisCommentData] = useState(10);
-  const [isCommentModalVisible, setCommentModalVisible] = useState(false);
   const [addnewCmtReply, onAddCommentReply] = useState<string>();
   const [gratisIndex, gratisIndexData]: any = useState();
   const [isLoading, setLoading] = useState(false);
-  const [pageCmt, setCmtPage] = useState(1);
   const [commentContent, setCommentContent] = useState("");
   const [gratisCmtID, setreplyGratisId] = useState();
   const [gratisCmtKey, setreplyGratisKey] = useState();
@@ -59,26 +56,20 @@ export const PostDetailScreen = ({
   const [commentId, setCommentId] = useState<string>();
   const flatListRef: any = React.useRef();
 
-  const { getPost, listComments } = usePostService();
+  const {
+    postQueries: { detail: postDetail },
+    commentQueries: { forPost: commentsOnPost },
+  } = usePostService();
+  const { gotoUserProfile } = useNavigations();
 
-  const postQuery = useQuery({
-    queryKey: ["post", postId],
-    queryFn: () => getPost(postId),
-  });
-  const commentQuery = useQuery({
-    queryKey: ["comments", postId],
-    queryFn: () => listComments(postId),
-  });
+  const postQuery = useQuery(postDetail(postId));
+  const commentQuery = useQuery(commentsOnPost(postId));
 
   if (postQuery.isPending && commentQuery.isPending !== isLoading) {
     setLoading(postQuery.isPending && commentQuery.isPending);
   }
   if (postQuery.isError) handleApiError("Post", postQuery.error);
   if (commentQuery.isError) handleApiError("Comments", commentQuery.error);
-
-  const recentUserProfilePress = (id: any) => {
-    navigation.push(Screens.USER_PROFILE, { id });
-  };
 
   const post = postQuery.data;
   const comments = commentQuery.data;
@@ -326,7 +317,7 @@ export const PostDetailScreen = ({
     }
   };
 
-  const renderItem: ListRenderItem<Comment> = ({ item: comment, index }) => {
+  const renderComment: ListRenderItem<Comment> = ({ item: comment, index }) => {
     return (
       <View>
         <View style={styles.commentImgProfile}>
@@ -383,8 +374,6 @@ export const PostDetailScreen = ({
             ></ImageComponent>
           </TouchableOpacity>
         </View>
-
-        {/* {commentList?.reply?.content ? ( */}
 
         {comment.replies.map((reply: Reply, jindex: number) => {
           return (
@@ -460,261 +449,148 @@ export const PostDetailScreen = ({
 
   return post ? (
     <View style={{ flex: 1, paddingBottom: 300 }}>
-      <KeyboardAvoidingView
-        behavior="padding"
-        contentContainerStyle={{ flex: 1 }}
-      >
-        <View style={styles.commentModalContainer}>
-          <View style={{ flex: 1 }}>
-            <View style={styles.scrollViewComment}>
-              <FlatList
-                data={comments}
-                ref={flatListRef}
-                onEndReachedThreshold={0.005}
-                keyExtractor={(item, index) => index.toString()}
-                renderItem={renderItem}
-                ListHeaderComponent={
-                  <View style={styles.feedPostContainer}>
-                    <Text style={styles.posttitle}>{post.type}</Text>
+      <View style={styles.commentModalContainer}>
+        <View style={{ flex: 1 }}>
+          <View style={styles.scrollViewComment}>
+            <FlatList
+              data={comments}
+              ref={flatListRef}
+              onEndReachedThreshold={0.005}
+              keyExtractor={(item, index) => index.toString()}
+              renderItem={renderComment}
+              ListHeaderComponent={
+                <View style={styles.feedPostContainer}>
+                  <Text style={styles.posttitle}>{post.type}</Text>
+                  <TouchableOpacity
+                    style={{
+                      position: "absolute",
+                      right: 14,
+                      top: 10,
+                      zIndex: 111122,
+                    }}
+                  ></TouchableOpacity>
+                  <View style={styles.userDetailcont}>
                     <TouchableOpacity
-                      style={{
-                        position: "absolute",
-                        right: 14,
-                        top: 10,
-                        zIndex: 111122,
-                      }}
-                    ></TouchableOpacity>
-                    <View style={styles.userDetailcont}>
-                      <TouchableOpacity
-                        onPress={() => recentUserProfilePress(post.author.id)}
-                      >
-                        <ImageComponent
-                          resizeMode="cover"
-                          style={styles.postProfile}
-                          source={{ uri: post.author.pic }}
-                        ></ImageComponent>
-                      </TouchableOpacity>
-                      <View>
-                        <View>
-                          {post.type === "Gratis" ? (
-                            <View>
-                              <Text numberOfLines={1} style={styles.userName}>
-                                {post.author.firstName} {post.author.lastName}{" "}
-                              </Text>
-                              {/* {post?.to?.users.length !== 0 ? (
-                                <Text
-                                  numberOfLines={1}
-                                  style={styles.sentPointClass}
-                                >
-                                  sent {post?.to?.users[0]?.point} gratis to{" "}
-                                  <Text style={styles.userName}>
-                                    {
-                                      post?.to?.users[0]?.user_id[
-                                        "first_name"
-                                      ]
-                                    }{" "}
-                                    {
-                                      post?.to?.users[0]?.user_id[
-                                        "last_name"
-                                      ]
-                                    }{" "}
-                                    {
-                                      post?.to?.users[1]?.user_id[
-                                        "first_name"
-                                      ]
-                                    }{" "}
-                                    {
-                                      post?.to?.users[1]?.user_id[
-                                        "last_name"
-                                      ]
-                                    }
-                                  </Text>
-                                </Text>
-                              ) : (
-                                <></>
-                              )} */}
-                            </View>
-                          ) : (
-                            <Text numberOfLines={1} style={styles.userName}>
-                              {post.author.firstName} {post.author.lastName}
-                            </Text>
-                          )}
-                          {post.postDate ? (
-                            <Text style={styles.postTime}>
-                              {formatTimeFromNow(post.postDate)}
-                            </Text>
-                          ) : null}
-                        </View>
-                      </View>
-                    </View>
-                    <View
-                      style={
-                        Platform.OS === "ios"
-                          ? styles.userListDisplayCont
-                          : styles.userListDisplayContTwo
-                      }
+                      onPress={() => gotoUserProfile(post.author.id)}
                     >
-                      {/* <TouchableOpacity
-                        onPress={() =>
-                          recentUserProfilePress(
-                            post?.to?.users[0]?.user_id["id"]
-                          )
-                        }
-                      >
-                        <ImageComponent
-                          resizeMode="cover"
-                          style={styles.userListDisplay}
-                          source={{
-                            uri: post?.to?.users[0]?.user_id["pic"],
-                          }}
-                        ></ImageComponent>
-                      </TouchableOpacity> */}
-                      {/* <TouchableOpacity
-                        onPress={() =>
-                          recentUserProfilePress(
-                            post?.to?.users[1]?.user_id["id"]
-                          )
-                        }
-                      >
-                        <ImageComponent
-                          resizeMode="cover"
-                          style={styles.userListDisplay}
-                          source={{
-                            uri: post?.to?.users[1]?.user_id["pic"],
-                          }}
-                        ></ImageComponent>
-                      </TouchableOpacity> */}
-                    </View>
-                    <Text style={styles.postDes}>{post?.details}</Text>
-                    {!_.isEmpty(post?.images) ? (
                       <ImageComponent
                         resizeMode="cover"
-                        source={{ uri: post?.images[0] }}
-                        style={styles.userPost}
-                      ></ImageComponent>
-                    ) : null}
-                    <View style={styles.postDetailCont}>
-                      <Text style={styles.postDetailTitle}>What:</Text>
-                      {/* <ImageComponent
-                        source={{ uri: post?.what?.icon }}
-                        style={styles.detailImage}
-                      ></ImageComponent> */}
-                      <Text style={styles.postDetail}>{post.name}</Text>
-                    </View>
-                    {/* {post?.type !== "Gratis" ? (
-                      <View style={styles.postDetailCont}>
-                        <Text style={styles.postDetailTitle}>For:</Text>
-                        <Image
-                          source={{ uri: post?.for?.icon }}
-                          style={styles.detailImage}
-                        ></Image>
-                        <Text style={styles.postDetail}>
-                          {post?.for?.name}
-                        </Text>
-                      </View>
-                    ) : (
-                      <></>
-                    )} */}
-
-                    {post.address ? (
-                      <View style={styles.postDetailCont}>
-                        <Text style={styles.postDetailTitle}>Where:</Text>
-                        <Image source={pin} style={styles.detailImage}></Image>
-                        <Text style={styles.postDetail}>{post.address}</Text>
-                      </View>
-                    ) : null}
-
-                    {post.startDate ? (
-                      <View style={styles.postDetailCont}>
-                        <Text style={styles.postDetailTitle}>When:</Text>
-                        <Image
-                          source={postCalender}
-                          style={styles.detailImage}
-                        ></Image>
-                        <Text style={styles.postDetail}>
-                          {post.startDate?.toLocaleString()}
-                        </Text>
-                      </View>
-                    ) : null}
-                    <TouchableOpacity
-                      activeOpacity={0.8}
-                      style={styles.gratisContainer}
-                      // onPress={() =>
-                      //   OfferModalShow(post.id, route?.params.postIndex)
-                      // }
-                    >
-                      <Text style={styles.gratisClass}>+{post?.numGrats}</Text>
-                      <ImageComponent
-                        source={gratitudeBlack}
-                        style={styles.commentImgTwo}
+                        style={styles.postProfile}
+                        source={{ uri: post.author.pic }}
                       ></ImageComponent>
                     </TouchableOpacity>
-                  </View>
-                }
-                ListFooterComponent={
-                  <View>
-                    {comments?.length !== 0 && !isLoading ? (
-                      <TouchableOpacity onPress={postLoad}>
-                        <View>
-                          {isCommentData ? (
-                            <Text style={styles.getMoreDataCont}>
-                              Get More Comments
-                            </Text>
-                          ) : (
-                            <></>
-                          )}
-                        </View>
-                        {/* {isCommentData && !isLoading ? (
+                    <View>
+                      <View>
+                        {post.type === PostType.GRATIS ? (
                           <View>
-                            <Text style={styles.getMoreDataCont}>
-                              Get More Comments
+                            <Text numberOfLines={1} style={styles.userName}>
+                              {post.author.firstName} {post.author.lastName}{" "}
                             </Text>
                           </View>
                         ) : (
-                          <Text
-                            style={{
-                              alignSelf: "center",
-                              paddingVertical: 10,
-                              color: "black",
-                              fontSize: 16,
-                            }}
-                          >
-                            No More Data Found
+                          <Text numberOfLines={1} style={styles.userName}>
+                            {post.author.firstName} {post.author.lastName}
                           </Text>
-                        )} */}
-                      </TouchableOpacity>
-                    ) : (
-                      <View style={{ alignSelf: "center" }}>
-                        <Text>No comments found</Text>
+                        )}
+                        {post.postDate ? (
+                          <Text style={styles.postTime}>
+                            {formatTimeFromNow(post.postDate)}
+                          </Text>
+                        ) : null}
                       </View>
-                    )}
+                    </View>
                   </View>
-                }
-              ></FlatList>
-              <View style={styles.bottomButton}>
-                <View style={{ flexDirection: "row" }}>
-                  <TextInput
-                    style={styles.commentInput}
-                    placeholder="Make a Comment"
-                    placeholderTextColor="gray"
-                    value={commentContent}
-                    onChangeText={(text) => setCommentContent(text)}
-                  ></TextInput>
-                  <TouchableOpacity
-                    style={{ alignSelf: "center" }}
-                    onPress={() => addCommentHide()}
-                  >
+                  <Text style={styles.postDes}>{post?.details}</Text>
+                  {!_.isEmpty(post?.images) ? (
                     <ImageComponent
-                      style={{ height: 40, width: 40 }}
-                      source={send}
+                      resizeMode="cover"
+                      source={{ uri: post?.images[0] }}
+                      style={styles.userPost}
+                    ></ImageComponent>
+                  ) : null}
+                  <View style={styles.postDetailCont}>
+                    <Text style={styles.postDetailTitle}>What:</Text>
+                    <Text style={styles.postDetail}>{post.name}</Text>
+                  </View>
+
+                  {post.address ? (
+                    <View style={styles.postDetailCont}>
+                      <Text style={styles.postDetailTitle}>Where:</Text>
+                      <Image source={pin} style={styles.detailImage}></Image>
+                      <Text style={styles.postDetail}>{post.address}</Text>
+                    </View>
+                  ) : null}
+
+                  {post.startDate ? (
+                    <View style={styles.postDetailCont}>
+                      <Text style={styles.postDetailTitle}>When:</Text>
+                      <Image
+                        source={postCalender}
+                        style={styles.detailImage}
+                      ></Image>
+                      <Text style={styles.postDetail}>
+                        {post.startDate?.toLocaleString()}
+                      </Text>
+                    </View>
+                  ) : null}
+                  <TouchableOpacity
+                    activeOpacity={0.8}
+                    style={styles.gratisContainer}
+                    // onPress={() =>
+                    //   OfferModalShow(post.id, route?.params.postIndex)
+                    // }
+                  >
+                    <Text style={styles.gratisClass}>+{post?.numGrats}</Text>
+                    <ImageComponent
+                      source={gratitudeBlack}
+                      style={styles.commentImgTwo}
                     ></ImageComponent>
                   </TouchableOpacity>
                 </View>
+              }
+              ListFooterComponent={
+                <View>
+                  {comments?.length !== 0 && !isLoading ? (
+                    <View>
+                      {comments ? (
+                        <Text style={styles.getMoreDataCont}>
+                          Get More Comments
+                        </Text>
+                      ) : (
+                        <></>
+                      )}
+                    </View>
+                  ) : (
+                    <View style={{ alignSelf: "center" }}>
+                      <Text>No comments found</Text>
+                    </View>
+                  )}
+                </View>
+              }
+            ></FlatList>
+            <View style={styles.bottomButton}>
+              <View style={{ flexDirection: "row" }}>
+                <TextInput
+                  style={styles.commentInput}
+                  placeholder="Make a Comment"
+                  placeholderTextColor="gray"
+                  value={commentContent}
+                  onChangeText={(text) => setCommentContent(text)}
+                ></TextInput>
+                <TouchableOpacity
+                  style={{ alignSelf: "center" }}
+                  onPress={() => addCommentHide()}
+                >
+                  <ImageComponent
+                    style={{ height: 40, width: 40 }}
+                    source={send}
+                  ></ImageComponent>
+                </TouchableOpacity>
               </View>
             </View>
           </View>
         </View>
-      </KeyboardAvoidingView>
+      </View>
     </View>
   ) : // </SafeAreaView>
   null;

@@ -4,7 +4,6 @@ import { useAppTheme } from "~/app-hooks/use-app-theme";
 import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
 import { ShortModal } from "~/components/ShortModal";
 import { RootStackScreenProps, Screens } from "~/navigation/types";
-import { blockUser, deletePost } from "~/network/api/services/post-service";
 import { handleApiError } from "~/utils/common";
 import { createStyleSheet } from "./style";
 

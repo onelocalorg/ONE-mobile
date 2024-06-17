@@ -13,12 +13,10 @@ export enum Screens {
   HOME_SCREEN = "HomeScreen",
   POST_DETAIL = "PostDetail",
   EVENT_DETAIL = "EventDetail",
-  CREATE_EDIT_EVENT = "CreateEditEvent",
   USER_PROFILE = "UserProfile",
   MY_PROFILE = "MyProfile",
   EVENTS_LIST = "EventsList",
   MAP = "Map",
-  CREATE_POST = "CreatePost",
   EDIT_POST = "EditPost",
 
   HOME_STACK = "HomeStack",
@@ -28,7 +26,8 @@ export enum Screens {
   POST_CONTEXT_MENU_MODAL = "PostContextMenu",
   GIVE_GRATS_MODAL = "GiveGrats",
   REPORT_CONTENT_MODAL = "ReportContent",
-  CREATE_EVENT_MODAL = "CreateEventModal",
+  CREATE_EDIT_EVENT = "CreateEditEvent",
+  CREATE_EDIT_POST = "CreateEditPost",
 }
 
 export type GuestStackParamList = {
@@ -45,14 +44,13 @@ export type RootStackParamList = {
   [Screens.USER_PROFILE]: { id: string };
   [Screens.MY_PROFILE]: undefined;
   [Screens.EVENT_DETAIL]: { id: string };
-  [Screens.CREATE_EDIT_EVENT]: { id?: string };
+  [Screens.CREATE_EDIT_EVENT]: { id: string } | undefined;
+  [Screens.CREATE_EDIT_POST]: { id: string } | undefined;
   [Screens.POST_DETAIL]: { id: string };
-  [Screens.CREATE_POST]: undefined;
   [Screens.EDIT_POST]: { id: string };
   [Screens.POST_CONTEXT_MENU_MODAL]: { id: string; isMine?: boolean };
   [Screens.GIVE_GRATS_MODAL]: { postId: string };
   [Screens.REPORT_CONTENT_MODAL]: { postId: string };
-  [Screens.CREATE_EVENT_MODAL]: undefined;
 };
 
 export type RootStackScreenProps<T extends keyof RootStackParamList> =

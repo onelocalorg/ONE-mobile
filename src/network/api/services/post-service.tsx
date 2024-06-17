@@ -1,3 +1,4 @@
+import { queryOptions } from "@tanstack/react-query";
 import _ from "lodash/fp";
 import { DateTime } from "luxon";
 import { LOG } from "~/config";
@@ -9,6 +10,34 @@ import { PostUpdateData } from "~/types/post-update-data";
 import { useApiService } from "./api-service";
 
 export function usePostService() {
+  const postQueries = {
+    all: () => ["posts"],
+    lists: () => [...postQueries.all(), "list"],
+    list: (filters?: ListPostsParams) =>
+      queryOptions({
+        queryKey: [...postQueries.lists(), filters],
+        queryFn: () => getPosts(filters),
+      }),
+    details: () => [...postQueries.all(), "detail"],
+    detail: (id: string) =>
+      queryOptions({
+        queryKey: [...postQueries.details(), id],
+        queryFn: () => getPost(id),
+        staleTime: 5000,
+      }),
+  };
+
+  const commentQueries = {
+    all: () => ["comments"],
+    forPosts: () => [...commentQueries.all(), "detail"],
+    forPost: (postId: string) =>
+      queryOptions({
+        queryKey: [...commentQueries.forPosts(), postId],
+        queryFn: () => getComments(postId),
+        staleTime: 5000,
+      }),
+  };
+
   const { doPost, doPatch, doGet } = useApiService();
 
   async function createPost(data: PostData) {
@@ -33,7 +62,10 @@ export function usePostService() {
     start?: string;
     startDate?: DateTime;
   };
-  const listPosts = ({ numPosts = 20, startDate }: ListPostsParams) => {
+  const getPosts = ({
+    numPosts = 20,
+    startDate,
+  }: ListPostsParams | undefined = {}) => {
     const urlParams: string[] = [];
     if (!_.isNil(startDate)) urlParams.push(`start_date=${startDate.toISO()}`);
     if (!_.isNil(numPosts)) urlParams.push(`limit=${numPosts.toString()}`);
@@ -41,7 +73,7 @@ export function usePostService() {
     const urlSearchParams = urlParams.join("&");
     LOG.debug("search", urlSearchParams);
 
-    return doGet(`/v3/posts?${urlSearchParams.toString()}`);
+    return doGet<Post[]>(`/v3/posts?${urlSearchParams.toString()}`);
   };
 
   const postToBody = (data: PostUpdateData) => ({
@@ -66,21 +98,23 @@ export function usePostService() {
       comment_id: commentId,
     });
 
-  const listComments = (postId: string) =>
+  const getComments = (postId: string) =>
     doPost<Comment[]>(`/v1/comments?post_id=${postId}`, undefined);
 
   const reportPost = (postId: string, reason: string) =>
     doPost(`/v3/posts/${postId}/report`, { reason });
 
   return {
+    postQueries,
+    commentQueries,
     createPost,
     updatePost,
-    listPosts,
+    listPosts: getPosts,
     getPost,
     deletePost,
     reportPost,
     createComment,
-    listComments,
+    listComments: getComments,
     sendGratis,
     blockUser,
     createReplyToComment,

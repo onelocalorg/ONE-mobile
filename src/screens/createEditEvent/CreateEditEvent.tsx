@@ -72,9 +72,6 @@ export const CreateEditEvent = ({ event }: CreateEditEventProps) => {
     },
   });
 
-  console.log("errors", errors);
-  console.log("values", getValues());
-
   const mutateCreateEvent = useMutation({
     mutationFn: (eventData: LocalEventData) => {
       return createEvent(eventData);
@@ -192,6 +189,7 @@ export const CreateEditEvent = ({ event }: CreateEditEventProps) => {
     }
   };
 
+  // FIXME flip between create and edit
   const onSubmit = handleSubmit((data) => handleCreateEvent(data));
 
   // const handleText = (text: string, key: string) => {
