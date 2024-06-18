@@ -4,9 +4,9 @@ import { Reply } from "./reply";
 
 export interface Comment {
   id: string;
-  post_id: string;
+  post: string;
   postDate: DateTime;
-  commenter: OneUser;
+  author: OneUser;
   content: string;
   gratis: number;
   replies: Reply[];

@@ -65,7 +65,7 @@ export const PostsList = ({
               style={styles.gratisContainer}
               onPress={() => onGiveGratsPress?.(post)}
             >
-              <Text style={styles.gratisClass}>+{post.numGrats}</Text>
+              <Text style={styles.gratisClass}>+{post.gratis}</Text>
               <ImageComponent
                 source={gratitudeBlack}
                 style={styles.commentImgTwo}
@@ -73,7 +73,7 @@ export const PostsList = ({
             </TouchableOpacity>
             <TouchableOpacity
               activeOpacity={0.8}
-              onPress={() => onPostPress?.(post)}
+              onPress={gotoPostDetails(post, true)}
               style={styles.commentsContainer}
             >
               <Text style={styles.commentClass}>{post.numComments}</Text>

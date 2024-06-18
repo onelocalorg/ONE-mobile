@@ -17,11 +17,13 @@ export function useNavigations() {
     });
   };
 
-  const gotoPostDetails = (post: string | Post) => () => {
-    navigation.navigate(Screens.POST_DETAIL, {
-      id: asId(post),
-    });
-  };
+  const gotoPostDetails =
+    (post: string | Post, isCommentFocus?: boolean) => () => {
+      navigation.navigate(Screens.POST_DETAIL, {
+        id: asId(post),
+        isCommentFocus,
+      });
+    };
 
   const gotoEventDetails = (event: string | LocalEvent) => () => {
     navigation.navigate(Screens.EVENT_DETAIL, {
@@ -29,16 +31,32 @@ export function useNavigations() {
     });
   };
 
-  const gotoPostContextMenu = (post: string | Post) => () => {
+  const showPostContextMenu = (post: string | Post) => () => {
     navigation.navigate(Screens.POST_CONTEXT_MENU_MODAL, {
       id: asId(post),
     });
   };
 
+  interface GiveGratsProps {
+    post: string | Post;
+    commentId?: string;
+    replyId?: string;
+  }
+  const showGiveGratsModal =
+    ({ post, commentId, replyId }: GiveGratsProps) =>
+    () => {
+      navigation.navigate(Screens.GIVE_GRATS_MODAL, {
+        postId: asId(post),
+        commentId,
+        replyId,
+      });
+    };
+
   return {
     gotoUserProfile,
     gotoPostDetails,
     gotoEventDetails,
-    gotoPostContextMenu,
+    showPostContextMenu,
+    showGiveGratsModal,
   };
 }

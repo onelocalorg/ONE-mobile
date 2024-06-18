@@ -290,9 +290,7 @@ export const MyProfileScreen = ({
                   resizeMode="cover"
                   style={styles.gratiesImage}
                 ></Image>
-                <Text style={styles.gratiesNumber}>
-                  {myProfile.pointsBalance}
-                </Text>
+                <Text style={styles.gratiesNumber}>{myProfile.gratis}</Text>
               </View>
 
               {/* {onCheckReleaseHideShow() ? (

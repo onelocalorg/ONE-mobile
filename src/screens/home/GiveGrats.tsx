@@ -18,7 +18,7 @@ export const GiveGrats = ({
   const { theme } = useAppTheme();
   const styles = createStyleSheet(theme);
   const { strings } = useStringsAndLabels();
-  const [numGrats, setNumGrats] = useState(10);
+  const [gratis, setNumGrats] = useState(10);
 
   const {
     mutations: { giveGrats },
@@ -26,20 +26,18 @@ export const GiveGrats = ({
   const mutateGiveGrats = useMutation(giveGrats);
 
   const gratisPlusClick = () => {
-    setNumGrats((numGrats: number) => numGrats + 1);
+    setNumGrats((gratis: number) => gratis + 1);
   };
 
   const gratisMinusClick = () => {
-    setNumGrats((numGrats: number) =>
-      numGrats > 10 ? numGrats - 1 : numGrats
-    );
+    setNumGrats((gratis: number) => (gratis > 10 ? gratis - 1 : gratis));
   };
 
   const handlePress = () => {
     mutateGiveGrats.mutate(
       {
         postId: postId,
-        points: numGrats,
+        points: gratis,
       },
       {
         onSuccess: () => {
@@ -68,7 +66,7 @@ export const GiveGrats = ({
           style={styles.gratisimg}
           source={Gratis}
         ></ImageComponent>
-        <Text style={styles.gratistext}>{numGrats}</Text>
+        <Text style={styles.gratistext}>{gratis}</Text>
         <TouchableOpacity onPress={gratisPlusClick}>
           <ImageComponent
             source={plus}

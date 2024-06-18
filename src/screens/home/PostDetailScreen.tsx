@@ -1,19 +1,16 @@
 import React, { useState } from "react";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
 
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import _ from "lodash/fp";
 import {
   FlatList,
   Image,
-  Keyboard,
   ListRenderItem,
   Text,
   TextInput,
   TouchableOpacity,
   View,
 } from "react-native";
-import Toast from "react-native-simple-toast";
 import {
   Vector,
   gratisGreen,
@@ -25,7 +22,7 @@ import {
 import { ImageComponent } from "~/components/image-component";
 import { RootStackScreenProps, Screens } from "~/navigation/types";
 
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { useNavigations } from "~/app-hooks/useNavigations";
 import { usePostService } from "~/network/api/services/usePostService";
 import { Comment } from "~/types/comment";
@@ -34,35 +31,39 @@ import { Reply } from "~/types/reply";
 import { formatTimeFromNow, handleApiError } from "~/utils/common";
 import { createStyleSheet } from "./style";
 
+interface ReplyContext {
+  commentId: string;
+  parentId?: string;
+}
+
 export const PostDetailScreen = ({
   route,
 }: RootStackScreenProps<Screens.POST_DETAIL>) => {
   const postId = route.params.id;
+  const isCommentFocus = route.params.isCommentFocus ?? false;
   const { theme } = useAppTheme();
   const styles = createStyleSheet(theme);
-  const [offerModal, CreateOfferModal] = useState(false);
   const [replyofferModal, openReplyOfferModal] = useState(false);
   const [gratisNo, totalGratisData] = useState(10);
   const [gratisNoComment, totalGratisCommentData] = useState(10);
   const [addnewCmtReply, onAddCommentReply] = useState<string>();
-  const [gratisIndex, gratisIndexData]: any = useState();
   const [isLoading, setLoading] = useState(false);
   const [commentContent, setCommentContent] = useState("");
-  const [gratisCmtID, setreplyGratisId] = useState();
-  const [gratisCmtKey, setreplyGratisKey] = useState();
-  const [commentIndex, setCommentIndex]: any = useState();
   const [gratistype, setGratisSelectType] = useState();
-  const [childjIndex, setChildIndexForGratis]: any = useState();
   const [commentId, setCommentId] = useState<string>();
   const flatListRef: any = React.useRef();
   const { gotoUserProfile, showGiveGratsModal } = useNavigations();
+  const [replyContext, setReplyContext] = useState<ReplyContext>();
 
   const {
     queries: { detail: postDetail, commentsOnPost },
+    mutations: { createComment, createReply },
   } = usePostService();
-
   const postQuery = useQuery(postDetail(postId));
   const commentQuery = useQuery(commentsOnPost(postId));
+
+  const mutateCreateComment = useMutation(createComment);
+  const mutateCreateReply = useMutation(createReply);
 
   if (postQuery.isPending && commentQuery.isPending !== isLoading) {
     setLoading(postQuery.isPending && commentQuery.isPending);
@@ -73,268 +74,78 @@ export const PostDetailScreen = ({
   const post = postQuery.data;
   const comments = commentQuery.data;
 
-  async function commentOnPost() {
-    if (post) {
-      setLoading(true);
-      try {
-        const newComment = await createComment(post.id, commentContent);
-        setCommentList([newComment, ...commentList]);
-        setCommentContent("");
-
-        flatListRef.current.scrollToOffset({ animated: true, offset: 0 });
-      } catch (e) {
-        handleApiError("Error creating comment", e);
-      } finally {
-        setLoading(false);
+  function postComment() {
+    mutateCreateComment.mutate(
+      {
+        postId,
+        content: commentContent,
+      },
+      {
+        onSuccess: () => {
+          flatListRef.current.scrollToOffset({ animated: true, offset: 0 });
+          setCommentContent("");
+        },
       }
-    }
+    );
   }
 
-  async function addReplyGratisAPI() {
-    setLoading(true);
-    const token = await AsyncStorage.getItem("token");
-    const data: any = {
-      postId: postId,
-      points: gratisNoComment,
-      commentId: gratisCmtID,
-      commentKey: gratisCmtKey,
-    };
-    try {
-      const response = await fetch(
-        process.env.API_URL + "/v3/posts/gratis-sharing",
-        {
-          method: "post",
-          headers: new Headers({
-            Authorization: "Bearer " + token,
-            "Content-Type": "application/json",
-          }),
-          body: JSON.stringify(data),
-        }
-      );
-      const dataItem = await response.json();
-      if (dataItem?.success === true) {
-        const markers = [...commentList];
-
-        markers[commentIndex]["gratis"] =
-          dataItem?.data?.data?.numCommentssGratis;
-
-        setNumGrats(dataItem?.data?.data?.postGratis);
-        const markersTwo = { ...post };
-        // markersTwo["gratis"] = dataItem?.data?.data?.postGratis;
-        // setPostData(markersTwo);
+  function postReply({ commentId, parentId }: ReplyContext) {
+    mutateCreateReply.mutate(
+      {
+        postId,
+        commentId,
+        parentId,
+        content: commentContent,
+      },
+      {
+        onSuccess: () => {
+          flatListRef.current.scrollToOffset({ animated: true, offset: 0 });
+          setCommentContent("");
+        },
       }
-
-      if (dataItem?.success === false) {
-        Toast.show(dataItem?.message, Toast.LONG, {
-          backgroundColor: "black",
-        });
-      }
-    } catch (error) {
-      handleApiError("Error sharing", error);
-    } finally {
-      setLoading(false);
-    }
+    );
   }
 
-  async function addChildReplyGratisAPI() {
-    setLoading(true);
-    const token = await AsyncStorage.getItem("token");
-    const data: any = {
-      postId: postId,
-      points: gratisNoComment,
-      commentId: gratisCmtID,
-      commentKey: gratisCmtKey,
-    };
-    try {
-      const response = await fetch(
-        process.env.API_URL + "/v3/posts/gratis-sharing",
-        {
-          method: "post",
-          headers: new Headers({
-            Authorization: "Bearer " + token,
-            "Content-Type": "application/json",
-          }),
-          body: JSON.stringify(data),
-        }
-      );
-      const dataItem = await response.json();
-      if (dataItem?.success === true) {
-        const markers = [...commentList];
-
-        markers[commentIndex]["replies"][childjIndex]["gratis"] =
-          dataItem?.data?.data?.replayGratis;
-
-        setNumGrats(dataItem?.data?.data?.postGratis);
-      }
-
-      if (dataItem?.success === false) {
-        Toast.show(dataItem?.message, Toast.LONG, {
-          backgroundColor: "black",
-        });
-      }
-      setLoading(false);
-    } catch (error) {
-      setLoading(false);
-      console.error(error);
+  const postCommentOrReply = () => {
+    if (replyContext) {
+      postReply(replyContext);
+    } else {
+      postComment();
     }
-  }
-
-  async function replyCommentOnPostAPI() {
-    setLoading(true);
-    if (!post) {
-      return;
-    }
-
-    try {
-      const updatedComment = await createReplyToComment(
-        post.id,
-        commentId!,
-        addnewCmtReply!
-      );
-      setCommentList(
-        commentList.map((c) => (c.id === commentId ? updatedComment : c))
-      );
-      setNumComments(numComments ?? 0 + 1);
-    } catch (e) {
-      handleApiError("Error creating reply", e);
-    } finally {
-      setLoading(false);
-    }
-  }
+  };
 
   const handleReplyToComment = (commentId: string) => {
-    setCommentId(commentId);
-    setCommentModalVisible(true);
-  };
-
-  const openReplyGratis = (
-    postIds: any,
-    replyId: any,
-    replyKey: any,
-    // index: any,
-    cindex: any,
-    setGratis: any,
-    childIndex: any
-  ) => {
-    console.log("childIndex1111", childIndex);
-    setChildIndexForGratis(childIndex);
-    setGratisSelectType(setGratis);
-    openReplyOfferModal(true);
-    totalGratisCommentData(10);
-    setreplyGratisId(replyId);
-    setreplyGratisKey(replyKey);
-    1;
-    // gratisIndexData(index);
-    setCommentIndex(cindex);
-    console.log("----------cindex----------", cindex);
-  };
-
-  async function addGratisAPI() {
-    setLoading(true);
-    const token = await AsyncStorage.getItem("token");
-    const data: any = {
-      postId: postId,
-      points: gratisNo,
-    };
-    try {
-      const response = await fetch(
-        process.env.API_URL + "/v3/posts/gratis-sharing",
-        {
-          method: "post",
-          headers: new Headers({
-            Authorization: "Bearer " + token,
-            "Content-Type": "application/x-www-form-urlencoded",
-          }),
-          body: Object.keys(data)
-            .map((key) => key + "=" + data[key])
-            .join("&"),
-        }
-      );
-      const dataItem = await response.json();
-      if (dataItem?.success === true) {
-        const markers = { ...post };
-        // markers["gratis"] = dataItem?.data?.data?.postGratis;
-        // setPostData(markers);
-        setNumGrats(dataItem?.data?.data?.postGratis);
-      }
-      if (dataItem?.success === false) {
-        Toast.show(dataItem?.message, Toast.LONG, {
-          backgroundColor: "black",
-        });
-      }
-
-      setLoading(false);
-    } catch (error) {
-      setLoading(false);
-      console.error(error);
-    }
-  }
-
-  const OfferModalClose = () => {
-    CreateOfferModal(false);
-  };
-
-  const OfferModalHide = () => {
-    CreateOfferModal(false);
-
-    addGratisAPI();
-  };
-
-  const replyOfferModalHide = () => {
-    openReplyOfferModal(false);
-    if (gratistype === 1) {
-      addReplyGratisAPI();
-    } else {
-      addChildReplyGratisAPI();
-    }
-  };
-
-  const keyboardDismiss = () => {
-    Keyboard.dismiss();
-  };
-
-  const onReplyAdd = () => {
-    if (addnewCmtReply === "") {
-      Toast.show("Add Comment", Toast.LONG, {
-        backgroundColor: "black",
+    const author = comments?.find((c) => c.id === commentId)?.author;
+    if (author) {
+      const name = `${author.firstName} ${author.lastName} `;
+      setCommentContent(name);
+      setReplyContext({
+        commentId,
       });
-    } else {
-      setLoading(true);
-      replyCommentOnPostAPI();
-      setCommentModalVisible(false);
     }
-  };
 
-  const addCommentHide = () => {
-    if (commentContent === "") {
-      Toast.show("Add Comment", Toast.LONG, {
-        backgroundColor: "black",
-      });
-    } else {
-      setLoading(true);
-      commentOnPost();
-    }
+    flatListRef.current.scrollToOffset({ animated: true, offset: 0 });
   };
 
   const renderComment: ListRenderItem<Comment> = ({ item: comment, index }) => {
     return (
-      <View>
+      <View style={styles.container}>
         <View style={styles.commentImgProfile}>
           <TouchableOpacity
             activeOpacity={0.8}
-            onPress={gotoUserProfile(comment.commenter.id)}
+            onPress={gotoUserProfile(comment.author)}
           >
             <ImageComponent
               resizeMode="cover"
               style={styles.postProfile}
               source={{
-                uri: comment.commenter.pic,
+                uri: comment.author.pic,
               }}
             ></ImageComponent>
           </TouchableOpacity>
           <View style={styles.commentDisplayCont}>
             <Text style={{ fontSize: 12, color: "#110101" }}>
-              {comment.commenter.firstName} {comment.commenter.lastName}
+              {comment.author.firstName} {comment.author.lastName}
             </Text>
             <Text style={styles.replyMsgCont}>{comment.content}</Text>
           </View>
@@ -354,17 +165,10 @@ export const PostDetailScreen = ({
           </Text>
           <Text style={styles.minuteCont}>{comment.gratis}</Text>
           <TouchableOpacity
-            onPress={() =>
-              openReplyGratis(
-                comment.post_id,
-                comment.id,
-                "",
-                // indexParent,
-                index,
-                1,
-                ""
-              )
-            }
+            onPress={showGiveGratsModal({
+              post: postId,
+              commentId: comment.id,
+            })}
           >
             <ImageComponent
               resizeMode="cover"
@@ -381,13 +185,13 @@ export const PostDetailScreen = ({
                 <View style={styles.commentImgProfileTwo}>
                   <TouchableOpacity
                     activeOpacity={0.8}
-                    onPress={gotoUserProfile(reply.commenter.id)}
+                    onPress={gotoUserProfile(reply.author.id)}
                   >
                     <ImageComponent
                       resizeMode="cover"
                       style={styles.postProfile}
                       source={{
-                        uri: reply.commenter.pic,
+                        uri: reply.author.pic,
                       }}
                     ></ImageComponent>
                   </TouchableOpacity>
@@ -398,7 +202,7 @@ export const PostDetailScreen = ({
                         color: "#110101",
                       }}
                     >
-                      {reply.commenter.firstName} {reply.commenter.lastName}
+                      {reply.author.firstName} {reply.author.lastName}
                     </Text>
                     <Text style={styles.replyMsgCont}>{reply.content}</Text>
                   </View>
@@ -420,17 +224,11 @@ export const PostDetailScreen = ({
                   </Text>
                   <Text style={styles.minuteCont}>{reply.gratis}</Text>
                   <TouchableOpacity
-                    onPress={() =>
-                      openReplyGratis(
-                        comment.post_id,
-                        comment.id,
-                        reply.key,
-                        // indexParent,
-                        index,
-                        2,
-                        jindex
-                      )
-                    }
+                    onPress={showGiveGratsModal({
+                      post: postId,
+                      commentId: comment.id,
+                      replyId: reply.id,
+                    })}
                   >
                     <ImageComponent
                       style={styles.replyImg}
@@ -447,7 +245,7 @@ export const PostDetailScreen = ({
   };
 
   return post ? (
-    <View style={{ flex: 1, paddingBottom: 300 }}>
+    <View style={{ flex: 1 }}>
       <View style={styles.commentModalContainer}>
         <View style={{ flex: 1 }}>
           <View style={styles.scrollViewComment}>
@@ -533,9 +331,9 @@ export const PostDetailScreen = ({
                   <TouchableOpacity
                     activeOpacity={0.8}
                     style={styles.gratisContainer}
-                    onPress={showGiveGratsModal(post)}
+                    onPress={showGiveGratsModal({ post })}
                   >
-                    <Text style={styles.gratisClass}>+{post?.numGrats}</Text>
+                    <Text style={styles.gratisClass}>+{post?.gratis}</Text>
                     <ImageComponent
                       source={gratitudeBlack}
                       style={styles.commentImgTwo}
@@ -543,47 +341,29 @@ export const PostDetailScreen = ({
                   </TouchableOpacity>
                 </View>
               }
-              ListFooterComponent={
-                <View>
-                  {comments?.length !== 0 && !isLoading ? (
-                    <View>
-                      {comments ? (
-                        <Text style={styles.getMoreDataCont}>
-                          Get More Comments
-                        </Text>
-                      ) : (
-                        <></>
-                      )}
-                    </View>
-                  ) : (
-                    <View style={{ alignSelf: "center" }}>
-                      <Text>No comments found</Text>
-                    </View>
-                  )}
-                </View>
-              }
             ></FlatList>
-            <View style={styles.bottomButton}>
-              <View style={{ flexDirection: "row" }}>
-                <TextInput
-                  style={styles.commentInput}
-                  placeholder="Make a Comment"
-                  placeholderTextColor="gray"
-                  value={commentContent}
-                  onChangeText={(text) => setCommentContent(text)}
-                ></TextInput>
-                <TouchableOpacity
-                  style={{ alignSelf: "center" }}
-                  onPress={() => addCommentHide()}
-                >
-                  <ImageComponent
-                    style={{ height: 40, width: 40 }}
-                    source={send}
-                  ></ImageComponent>
-                </TouchableOpacity>
-              </View>
-            </View>
           </View>
+        </View>
+      </View>
+      <View style={styles.bottomButton}>
+        <View style={{ flexDirection: "row" }}>
+          <TextInput
+            style={styles.commentInput}
+            placeholder="Make a Comment"
+            placeholderTextColor="gray"
+            value={commentContent}
+            autoFocus={isCommentFocus}
+            onChangeText={setCommentContent}
+          ></TextInput>
+          <TouchableOpacity
+            style={{ alignSelf: "center" }}
+            onPress={postCommentOrReply}
+          >
+            <ImageComponent
+              style={{ height: 40, width: 40 }}
+              source={send}
+            ></ImageComponent>
+          </TouchableOpacity>
         </View>
       </View>
     </View>

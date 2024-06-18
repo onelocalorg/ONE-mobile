@@ -2,7 +2,7 @@ export interface UserProfile extends UserProfileData {
   id: string;
   firstName: string;
   lastName: string;
-  pointsBalance: number;
+  gratis: number;
   isMe: boolean;
 }
 

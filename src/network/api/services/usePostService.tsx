@@ -6,6 +6,7 @@ import { Comment } from "~/types/comment";
 import { Post } from "~/types/post";
 import { PostData } from "~/types/post-data";
 import { PostUpdateData } from "~/types/post-update-data";
+import { Reply } from "~/types/reply";
 import { SendGrats } from "~/types/send-grats";
 import { handleApiError } from "~/utils/common";
 import { useApiService } from "./ApiService";
@@ -44,17 +45,42 @@ export function usePostService() {
         return createPost(eventData);
       },
       onSuccess: () => {
-        void queryClient.invalidateQueries({ queryKey: queries.details() });
+        void queryClient.invalidateQueries({ queryKey: queries.lists() });
+      },
+    },
+    createComment: {
+      mutationFn: (params: CreateCommentProps) => {
+        return createComment(params);
+      },
+      onSuccess: (resp: Comment) => {
+        void queryClient.invalidateQueries({
+          queryKey: queries.commentsOnPost(resp.post).queryKey,
+        });
+      },
+      onError: (err: ApiError) => {
+        handleApiError("creating comment", err);
+      },
+    },
+    createReply: {
+      mutationFn: (params: CreateReplyProps) => {
+        return createReply(params);
+      },
+      onSuccess: (resp: Reply) => {
+        void queryClient.invalidateQueries({
+          queryKey: queries.commentsOnPost(resp.post).queryKey,
+        });
+      },
+      onError: (err: ApiError) => {
+        handleApiError("creating comment", err);
       },
     },
     giveGrats: {
       mutationFn: (props: SendGratsProps) => {
         return sendGratis(props);
       },
-      onSuccess: (data: SendGrats) => {
-        void queryClient.invalidateQueries({ queryKey: queries.lists() });
+      onSuccess: (resp: SendGrats) => {
         void queryClient.invalidateQueries({
-          queryKey: queries.detail(data.post).queryKey,
+          queryKey: queries.detail(resp.post).queryKey,
         });
       },
       onError: (err: ApiError) => {
@@ -63,14 +89,14 @@ export function usePostService() {
     },
   };
 
-  const { doPost, doPatch, doGet } = useApiService();
+  const { doPost, doPatch, doGet, doDelete } = useApiService();
 
   async function createPost(data: PostData) {
-    return doPost<Post>("/v3/posts", postToBody(data));
+    return doPost<Post>("/v3/posts", data);
   }
 
   async function updatePost(id: string, data: PostUpdateData) {
-    return doPatch<Post>(`/v3/posts/${id}`, postToBody(data));
+    return doPatch<Post>(`/v3/posts/${id}`, data);
   }
 
   const getPost = (id: string) => doGet<Post>(`/v3/posts/${id}`);
@@ -99,54 +125,67 @@ export function usePostService() {
     return doGet<Post[]>(`/v3/posts?${urlSearchParams.toString()}`);
   };
 
-  const postToBody = (data: PostUpdateData) => ({
-    ...data,
-    startDate: data.startDate?.toISO(),
-    timezone: data.startDate ? data.startDate.zoneName : undefined,
-  });
-
   interface SendGratsProps {
     postId: string;
+    commentId?: string;
+    replyId?: string;
     points: number;
   }
-  const sendGratis = ({ postId, points }: SendGratsProps) =>
-    doPost<SendGrats>(`/v3/posts/${postId}/grats`, { points });
+  const sendGratis = ({ postId, commentId, replyId, points }: SendGratsProps) =>
+    doPost<SendGrats>(
+      `/v3/posts/${postId}/${commentId ? `comments/${commentId}` : ""}${
+        replyId ? `replies/${replyId}` : ""
+      }gratis`,
+      { points }
+    );
 
-  const createComment = (postId: string, content: string) =>
-    doPost<Comment>(`/v3/posts/${postId}/comments/create`, { content });
+  interface CreateCommentProps {
+    postId: string;
+    content: string;
+  }
+  const createComment = ({ postId, content }: CreateCommentProps) =>
+    doPost<Comment>(`/v3/posts/${postId}/comments`, { content });
 
-  const createReplyToComment = (
-    postId: string,
-    commentId: string,
-    content: string
-  ) =>
-    doPost<Comment>(`/v3/posts/${postId}/comments/create`, {
-      content,
-      comment_id: commentId,
-    });
+  interface CreateReplyProps {
+    postId: string;
+    commentId: string;
+    parentId?: string;
+    content: string;
+  }
+  const createReply = ({
+    postId,
+    commentId,
+    parentId,
+    content,
+  }: CreateReplyProps) =>
+    doPost<Reply>(
+      `/v3/posts/${postId}/comments/${commentId}/replies${
+        parentId ? `/${parentId}/replies` : ""
+      }`,
+      {
+        content,
+      }
+    );
 
   const getComments = (postId: string) =>
-    doPost<Comment[]>(`/v3/comments?post_id=${postId}`, undefined);
+    doGet<Comment[]>(`/v3/posts/${postId}/comments`);
 
   const reportPost = (postId: string, reason: string) =>
-    doPost(`/v3/posts/${postId}/report`, { reason });
+    doPost(`/v3/posts/${postId}/reports`, { reason });
 
   return {
     queries,
     mutations,
     createPost,
     updatePost,
-    listPosts: getPosts,
+    getPosts,
     getPost,
     deletePost,
     reportPost,
     createComment,
-    listComments: getComments,
+    getComments,
     sendGratis,
     blockUser,
-    createReplyToComment,
+    createReply,
   };
-}
-function doDelete<T>(arg0: string) {
-  throw new Error("Function not implemented.");
 }

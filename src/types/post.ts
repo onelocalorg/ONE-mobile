@@ -6,7 +6,7 @@ import { PostData } from "./post-data";
 export interface Post extends PostData {
   id: string;
   numComments: number;
-  numGrats: number;
+  gratis: number;
   author: OneUser;
   postDate: DateTime;
   images: string[];

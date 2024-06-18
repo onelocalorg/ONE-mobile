@@ -46,10 +46,14 @@ export type RootStackParamList = {
   [Screens.EVENT_DETAIL]: { id: string };
   [Screens.CREATE_EDIT_EVENT]: { id: string } | undefined;
   [Screens.CREATE_EDIT_POST]: { id: string } | undefined;
-  [Screens.POST_DETAIL]: { id: string };
+  [Screens.POST_DETAIL]: { id: string; isCommentFocus?: boolean };
   [Screens.EDIT_POST]: { id: string };
   [Screens.POST_CONTEXT_MENU_MODAL]: { id: string; isMine?: boolean };
-  [Screens.GIVE_GRATS_MODAL]: { postId: string };
+  [Screens.GIVE_GRATS_MODAL]: {
+    postId: string;
+    commentId?: string;
+    replyId?: string;
+  };
   [Screens.REPORT_CONTENT_MODAL]: { postId: string };
 };
 

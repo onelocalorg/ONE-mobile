@@ -9,7 +9,7 @@ export interface PostResource {
   author: OneUser;
   coordinates?: number[];
   address?: string;
-  numGrats: number;
+  gratis: number;
   startDate?: string;
   postDate: string;
   timeOffset: string;
