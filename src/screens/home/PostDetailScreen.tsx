@@ -58,19 +58,17 @@ export const PostDetailScreen = ({
 
   const getParents = () => post?.replies.filter((r) => !r.parent) ?? [];
   const getChildren = (parentId: string) => {
-    console.log("all children", post!.replies);
-
-    console.log("looking for chidlren of" + parentId);
+    // Since eact reply only marked its direct parent reply, we recursively
+    // go through the reply list
+    // TODO Make more efficient by looking only at the children later in the
+    // list, because parents always come before children
     const recurse = (acc: Reply[], parentId: string): Reply[] =>
       post!.replies.reduce(
         (a, r) => (r.parent === parentId ? [...a, r, ...recurse(a, r.id)] : a),
         acc
       );
 
-    const children = recurse([], parentId);
-    console.log("children", children);
-
-    return children;
+    return recurse([], parentId);
   };
 
   const mutateCreateReply = useMutation(createReply);
