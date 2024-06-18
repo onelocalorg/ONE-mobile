@@ -6,10 +6,12 @@ import { ThemeProps } from "~/theme/theme";
 export const createStyleSheet = (theme: ThemeProps) => {
   return StyleSheet.create({
     container: {
-      justifyContent: "center",
       backgroundColor: theme.colors.white,
-      alignItems: "center",
       flex: 1,
+      paddingBottom: 70,
+    },
+    viewport: {
+      justifyContent: "space-between",
     },
     text: {
       fontSize: theme.fontSize.font14,
@@ -21,7 +23,7 @@ export const createStyleSheet = (theme: ThemeProps) => {
       height: 150,
     },
     row2: {
-      position: "absolute",
+      // position: "absolute",
       top: 45,
       left: 10,
       height: normalScale(30),
@@ -605,10 +607,15 @@ export const createStyleSheet = (theme: ThemeProps) => {
       marginVertical: 6,
       // overflow:'hidden'
     },
-    bottomButton: {
-      position: "absolute",
-      bottom: 0,
-      // justifyContent: "flex-end",
+    sticky: {
+      justifyContent: "flex-end",
+      paddingHorizontal: normalScale(16),
+      backgroundColor: theme.colors.white,
+      paddingBottom: verticalScale(25),
+      paddingTop: verticalScale(5),
+    },
+    reply: {
+      flexDirection: "row",
       paddingHorizontal: normalScale(16),
       backgroundColor: theme.colors.white,
       paddingBottom: verticalScale(25),

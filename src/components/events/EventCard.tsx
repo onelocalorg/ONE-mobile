@@ -2,6 +2,7 @@ import { DateTime } from "luxon";
 import React from "react";
 import { Text, TouchableOpacity, View } from "react-native";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
+import { useNavigations } from "~/app-hooks/useNavigations";
 import { dummy, event as eventIcon, pin } from "~/assets/images";
 import { ImageComponent } from "~/components/image-component";
 import { LocalEvent } from "~/types/local-event";
@@ -9,22 +10,18 @@ import { createStyleSheet } from "./style";
 
 interface EventCardProps {
   event: LocalEvent;
-  onPress?: () => void;
   disabled?: boolean;
 }
 
-export const EventCard = ({
-  event,
-  onPress,
-  disabled = false,
-}: EventCardProps) => {
+export const EventCard = ({ event, disabled = false }: EventCardProps) => {
   const { theme } = useAppTheme();
   const styles = createStyleSheet(theme);
+  const { gotoEventDetails } = useNavigations();
 
   return (
     <TouchableOpacity
       style={styles.listContainer}
-      onPress={onPress}
+      onPress={gotoEventDetails(event)}
       activeOpacity={0.8}
       disabled={disabled}
     >

@@ -9,16 +9,13 @@ import {
   greenImage as threeVerticalDots,
 } from "~/assets/images";
 import { ImageComponent } from "~/components/image-component";
-import { OneUser } from "~/types/one-user";
 import { Post } from "~/types/post";
 import { PostType } from "~/types/post-data";
 import { createStyleSheet } from "./style";
 
 type PostCardProps = {
   post: Post;
-  onPress?: () => void;
   onContextMenuPress?: () => void;
-  onAvatarPress?: (author: OneUser) => void;
 };
 export const PostCard = ({ post }: PostCardProps) => {
   const { theme } = useAppTheme();

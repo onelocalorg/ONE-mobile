@@ -10,7 +10,6 @@ import { ButtonComponent } from "~/components/button-component";
 import { ImageComponent } from "~/components/image-component";
 import { Loader } from "~/components/loader";
 import { SizedBox } from "~/components/sized-box";
-import { useMyUserId } from "~/navigation/AuthContext";
 import { RootStackScreenProps, Screens } from "~/navigation/types";
 import { useEventService } from "~/network/api/services/useEventService";
 import { verticalScale } from "~/theme/device/normalize";
@@ -29,7 +28,6 @@ export const EventDetailScreen = ({
   const { strings } = useStringsAndLabels();
   const styles = createStyleSheet(theme);
   const [isLoading, setLoading] = useState(false);
-  const myUserId = useMyUserId();
   const { gotoUserProfile } = useNavigations();
 
   const {
@@ -116,7 +114,7 @@ export const EventDetailScreen = ({
             <View style={[styles.row, styles.marginTop]}>
               <TouchableOpacity
                 activeOpacity={0.8}
-                onPress={() => gotoUserProfile(event.host)}
+                onPress={gotoUserProfile(event.host)}
               >
                 <ImageComponent
                   resizeMode="cover"

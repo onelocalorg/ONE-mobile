@@ -1,6 +1,7 @@
 import { DateTime } from "luxon";
 import { Image, Pressable, Text, View } from "react-native";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
+import { useNavigations } from "~/app-hooks/useNavigations";
 import { pin } from "~/assets/images";
 import { LOG } from "~/config";
 import { LocalEvent } from "~/types/local-event";
@@ -8,20 +9,20 @@ import { createStyleSheet } from "./style";
 
 interface EventItemProps {
   event: LocalEvent;
-  onPress?: (event: LocalEvent) => void;
   style?: any;
 }
 
-export const EventItem = ({ event, onPress, style }: EventItemProps) => {
+export const EventItem = ({ event, style }: EventItemProps) => {
   const { theme } = useAppTheme();
   const styles = createStyleSheet(theme);
+  const { gotoEventDetails } = useNavigations();
 
   LOG.debug(": EventItem:", event);
 
   return (
     <Pressable
       style={style ?? styles.listContainer}
-      onPress={() => onPress?.(event)}
+      onPress={gotoEventDetails(event)}
     >
       <Image
         resizeMode="stretch"

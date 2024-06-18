@@ -1,23 +1,21 @@
 import { DateTime } from "luxon";
 import { Image, Pressable, Text, View } from "react-native";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
-import { LocalEventData } from "~/types/local-event-data";
+import { useNavigations } from "~/app-hooks/useNavigations";
+import { LocalEvent } from "~/types/local-event";
 import { createStyleSheet } from "./style";
 
 interface EventProps {
-  event: LocalEventData;
+  event: LocalEvent;
 }
 
 export const EventInfo = ({ event }: EventProps) => {
   const { theme } = useAppTheme();
   const styles = createStyleSheet(theme);
+  const { gotoEventDetails } = useNavigations();
 
   return (
-    <Pressable
-      style={styles.listContainer}
-      // FIXME
-      //   onPress={() => onNavigateEventDetail(eventData)}
-    >
+    <Pressable style={styles.listContainer} onPress={gotoEventDetails(event)}>
       <Image
         resizeMode="stretch"
         source={
