@@ -63,7 +63,7 @@ export const PostDetailScreen = ({
   } = useQuery(postDetail(postId));
   if (isError) handleApiError("Post", error);
 
-  const getParents = () => post?.replies.filter((r) => !r.parent) ?? [];
+  const getParents = () => post?.replies?.filter((r) => !r.parent) ?? [];
   const getChildren = (parentId: string) => {
     // Since eact reply only marked its direct parent reply, we recursively
     // go through the reply list

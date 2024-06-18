@@ -2,12 +2,12 @@ import { queryOptions, useQueryClient } from "@tanstack/react-query";
 import _ from "lodash/fp";
 import { LOG } from "~/config";
 import { ApiError } from "~/types";
+import { Gratis } from "~/types/gratis";
 import { Post } from "~/types/post";
 import { PostData } from "~/types/post-data";
 import { PostDetail } from "~/types/post-detail";
 import { PostUpdateData } from "~/types/post-update-data";
 import { Reply } from "~/types/reply";
-import { SendGrats } from "~/types/send-grats";
 import { handleApiError } from "~/utils/common";
 import { useApiService } from "./ApiService";
 
@@ -55,13 +55,17 @@ export function usePostService() {
       },
     },
     giveGrats: {
-      mutationFn: (props: SendGratsProps) => {
+      mutationFn: (props: SendGratisProps) => {
         return sendGratis(props);
       },
-      onSuccess: (resp: SendGrats) => {
+      onSuccess: (resp: Gratis) => {
         void queryClient.invalidateQueries({
           queryKey: queries.detail(resp.post).queryKey,
         });
+
+        // FIXME Need to invalidate everything because we get the gratis
+        // when pulling the whole list
+        void queryClient.invalidateQueries({ queryKey: queries.lists() });
       },
       onError: (err: ApiError) => {
         handleApiError("sending grats", err);
@@ -105,14 +109,19 @@ export function usePostService() {
     return doGet<Post[]>(`/v3/posts?${urlSearchParams.toString()}`);
   };
 
-  interface SendGratsProps {
+  interface SendGratisProps {
     postId: string;
     commentId?: string;
     replyId?: string;
     points: number;
   }
-  const sendGratis = ({ postId, commentId, replyId, points }: SendGratsProps) =>
-    doPost<SendGrats>(
+  const sendGratis = ({
+    postId,
+    commentId,
+    replyId,
+    points,
+  }: SendGratisProps) =>
+    doPost<Gratis>(
       `/v3/posts/${postId}/${commentId ? `comments/${commentId}` : ""}${
         replyId ? `replies/${replyId}` : ""
       }gratis`,

@@ -1,7 +1,6 @@
-export interface SendGrats {
+export interface Gratis {
   sender: string;
   post: string;
-  comment?: string;
   reply?: string;
   points: number;
 }
