@@ -7,7 +7,7 @@ import { createStyleSheet } from "./style";
 
 interface ReplyProps {
   postId: string;
-  commentId: string;
+  replyId: string;
   author: OneUser;
   content: string;
   // postDate: DateTime;
@@ -18,7 +18,7 @@ export const ReplyView = ({
   postId,
   author,
   content,
-  commentId,
+  replyId,
   // postDate,
   gratis,
   onReplyPress,
@@ -30,7 +30,7 @@ export const ReplyView = ({
 
   return (
     <>
-      <View style={styles.commentImgProfile}>
+      <View style={styles.replyImgProfile}>
         <TouchableOpacity activeOpacity={0.8} onPress={gotoUserProfile(author)}>
           <ImageComponent
             resizeMode="cover"
@@ -40,7 +40,7 @@ export const ReplyView = ({
             }}
           ></ImageComponent>
         </TouchableOpacity>
-        <View style={styles.commentDisplayCont}>
+        <View style={styles.replyDisplayCont}>
           <Text style={{ fontSize: 12, color: "#110101" }}>
             {author.firstName} {author.lastName}
           </Text>
@@ -53,7 +53,7 @@ export const ReplyView = ({
           source={Vector}
           style={styles.vectorImg}
         ></ImageComponent>
-        <TouchableOpacity onPress={() => onReplyPress?.(commentId)}>
+        <TouchableOpacity onPress={() => onReplyPress?.(replyId)}>
           <Text style={styles.replyLbl}>reply</Text>
         </TouchableOpacity>
 
@@ -62,7 +62,7 @@ export const ReplyView = ({
         <TouchableOpacity
           onPress={showGiveGratsModal({
             post: postId,
-            commentId,
+            replyId,
           })}
         >
           <ImageComponent

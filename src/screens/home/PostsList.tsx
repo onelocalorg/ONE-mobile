@@ -59,7 +59,7 @@ export const PostsList = ({
             onPress={() => onContextMenuPress?.(post)}
             onAvatarPress={onAvatarPress}
           />
-          <View style={styles.gratisAndCommentContainer}>
+          <View style={styles.gratisAndReplyContainer}>
             <TouchableOpacity
               activeOpacity={0.8}
               style={styles.gratisContainer}
@@ -68,18 +68,18 @@ export const PostsList = ({
               <Text style={styles.gratisClass}>+{post.gratis}</Text>
               <ImageComponent
                 source={gratitudeBlack}
-                style={styles.commentImgTwo}
+                style={styles.replyImgTwo}
               ></ImageComponent>
             </TouchableOpacity>
             <TouchableOpacity
               activeOpacity={0.8}
               onPress={gotoPostDetails(post, true)}
-              style={styles.commentsContainer}
+              style={styles.repliesContainer}
             >
-              <Text style={styles.commentClass}>{post.numComments}</Text>
+              <Text style={styles.replyClass}>{post.numReplies}</Text>
               <ImageComponent
                 source={comment}
-                style={styles.commentImageThree}
+                style={styles.replyImageThree}
               ></ImageComponent>
             </TouchableOpacity>
           </View>

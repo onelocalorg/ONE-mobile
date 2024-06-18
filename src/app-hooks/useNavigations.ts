@@ -18,10 +18,10 @@ export function useNavigations() {
   };
 
   const gotoPostDetails =
-    (post: string | Post, isCommentFocus?: boolean) => () => {
+    (post: string | Post, isReplyFocus?: boolean) => () => {
       navigation.navigate(Screens.POST_DETAIL, {
         id: asId(post),
-        isCommentFocus,
+        isReplyFocus,
       });
     };
 

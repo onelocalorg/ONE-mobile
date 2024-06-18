@@ -46,7 +46,7 @@ export type RootStackParamList = {
   [Screens.EVENT_DETAIL]: { id: string };
   [Screens.CREATE_EDIT_EVENT]: { id: string } | undefined;
   [Screens.CREATE_EDIT_POST]: { id: string } | undefined;
-  [Screens.POST_DETAIL]: { id: string; isCommentFocus?: boolean };
+  [Screens.POST_DETAIL]: { id: string; isReplyFocus?: boolean };
   [Screens.EDIT_POST]: { id: string };
   [Screens.POST_CONTEXT_MENU_MODAL]: { id: string; isMine?: boolean };
   [Screens.GIVE_GRATS_MODAL]: {

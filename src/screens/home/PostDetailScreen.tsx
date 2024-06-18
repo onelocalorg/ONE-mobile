@@ -24,130 +24,105 @@ import { RootStackScreenProps, Screens } from "~/navigation/types";
 
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useNavigations } from "~/app-hooks/useNavigations";
+import { Loader } from "~/components/loader";
 import { usePostService } from "~/network/api/services/usePostService";
-import { Comment } from "~/types/comment";
 import { PostType } from "~/types/post-data";
 import { Reply } from "~/types/reply";
 import { formatTimeFromNow, handleApiError } from "~/utils/common";
 import { createStyleSheet } from "./style";
 
-interface ReplyContext {
-  commentId: string;
-  parentId?: string;
-}
-
 export const PostDetailScreen = ({
   route,
 }: RootStackScreenProps<Screens.POST_DETAIL>) => {
   const postId = route.params.id;
-  const isCommentFocus = route.params.isCommentFocus ?? false;
+  const isReplyFocus = route.params.isReplyFocus ?? false;
   const { theme } = useAppTheme();
   const styles = createStyleSheet(theme);
-  const [replyofferModal, openReplyOfferModal] = useState(false);
-  const [gratisNo, totalGratisData] = useState(10);
-  const [gratisNoComment, totalGratisCommentData] = useState(10);
-  const [addnewCmtReply, onAddCommentReply] = useState<string>();
-  const [isLoading, setLoading] = useState(false);
-  const [commentContent, setCommentContent] = useState("");
-  const [gratistype, setGratisSelectType] = useState();
-  const [commentId, setCommentId] = useState<string>();
+  const [replyContent, setReplyContent] = useState("");
   const flatListRef: any = React.useRef();
   const { gotoUserProfile, showGiveGratsModal } = useNavigations();
-  const [replyContext, setReplyContext] = useState<ReplyContext>();
+  const [parent, setParent] = useState<string>();
 
   const {
-    queries: { detail: postDetail, commentsOnPost },
-    mutations: { createComment, createReply },
+    queries: { detail: postDetail },
+    mutations: { createReply },
   } = usePostService();
-  const postQuery = useQuery(postDetail(postId));
-  const commentQuery = useQuery(commentsOnPost(postId));
 
-  const mutateCreateComment = useMutation(createComment);
+  const {
+    isPending,
+    data: post,
+    isError,
+    error,
+  } = useQuery(postDetail(postId));
+  if (isError) handleApiError("Post", error);
+
+  const getParents = () => post?.replies.filter((r) => !r.parent) ?? [];
+  const getChildren = (parentId: string) => {
+    console.log("all children", post!.replies);
+
+    console.log("looking for chidlren of" + parentId);
+    const recurse = (acc: Reply[], parentId: string): Reply[] =>
+      post!.replies.reduce(
+        (a, r) => (r.parent === parentId ? [...a, r, ...recurse(a, r.id)] : a),
+        acc
+      );
+
+    const children = recurse([], parentId);
+    console.log("children", children);
+
+    return children;
+  };
+
   const mutateCreateReply = useMutation(createReply);
 
-  if (postQuery.isPending && commentQuery.isPending !== isLoading) {
-    setLoading(postQuery.isPending && commentQuery.isPending);
-  }
-  if (postQuery.isError) handleApiError("Post", postQuery.error);
-  if (commentQuery.isError) handleApiError("Comments", commentQuery.error);
-
-  const post = postQuery.data;
-  const comments = commentQuery.data;
-
-  function postComment() {
-    mutateCreateComment.mutate(
-      {
-        postId,
-        content: commentContent,
-      },
-      {
-        onSuccess: () => {
-          flatListRef.current.scrollToOffset({ animated: true, offset: 0 });
-          setCommentContent("");
-        },
-      }
-    );
-  }
-
-  function postReply({ commentId, parentId }: ReplyContext) {
+  function sendReply() {
     mutateCreateReply.mutate(
       {
         postId,
-        commentId,
-        parentId,
-        content: commentContent,
+        parentId: parent,
+        content: replyContent,
       },
       {
         onSuccess: () => {
           flatListRef.current.scrollToOffset({ animated: true, offset: 0 });
-          setCommentContent("");
+          setReplyContent("");
         },
       }
     );
   }
 
-  const postCommentOrReply = () => {
-    if (replyContext) {
-      postReply(replyContext);
-    } else {
-      postComment();
-    }
-  };
-
-  const handleReplyToComment = (commentId: string) => {
-    const author = comments?.find((c) => c.id === commentId)?.author;
+  const handlePressReply = (parentId?: string) => {
+    setParent(parentId);
+    const author = post!.replies.find((c) => c.id === parentId)?.author;
     if (author) {
       const name = `${author.firstName} ${author.lastName} `;
-      setCommentContent(name);
-      setReplyContext({
-        commentId,
-      });
+      setReplyContent(name);
     }
 
     flatListRef.current.scrollToOffset({ animated: true, offset: 0 });
   };
 
-  const renderComment: ListRenderItem<Comment> = ({ item: comment, index }) => {
+  const renderReply: ListRenderItem<Reply> = ({ item: reply, index }) => {
     return (
-      <View style={styles.container}>
-        <View style={styles.commentImgProfile}>
+      <View key={reply.id} style={styles.container}>
+        <View style={styles.replyImgProfile}>
           <TouchableOpacity
             activeOpacity={0.8}
-            onPress={gotoUserProfile(comment.author)}
+            onPress={gotoUserProfile(reply.author)}
           >
             <ImageComponent
               resizeMode="cover"
               style={styles.postProfile}
               source={{
-                uri: comment.author.pic,
+                uri: reply.author.pic,
               }}
             ></ImageComponent>
           </TouchableOpacity>
-          <View style={styles.commentDisplayCont}>
+          <View style={styles.replyDisplayCont}>
             <Text style={{ fontSize: 12, color: "#110101" }}>
-              {comment.author.firstName} {comment.author.lastName}
+              {reply.author.firstName} {reply.author.lastName}
             </Text>
-            <Text style={styles.replyMsgCont}>{comment.content}</Text>
+            <Text style={styles.replyMsgCont}>{reply.content}</Text>
           </View>
         </View>
 
@@ -156,18 +131,18 @@ export const PostDetailScreen = ({
             source={Vector}
             style={styles.vectorImg}
           ></ImageComponent>
-          <TouchableOpacity onPress={() => handleReplyToComment(comment.id)}>
+          <TouchableOpacity onPress={() => handlePressReply(reply.id)}>
             <Text style={styles.replyLbl}>reply</Text>
           </TouchableOpacity>
 
           <Text style={styles.minuteCont}>
-            {formatTimeFromNow(comment.postDate)}
+            {formatTimeFromNow(reply.postDate)}
           </Text>
-          <Text style={styles.minuteCont}>{comment.gratis}</Text>
+          <Text style={styles.minuteCont}>{reply.gratis}</Text>
           <TouchableOpacity
             onPress={showGiveGratsModal({
               post: postId,
-              commentId: comment.id,
+              replyId: reply.id,
             })}
           >
             <ImageComponent
@@ -178,11 +153,11 @@ export const PostDetailScreen = ({
           </TouchableOpacity>
         </View>
 
-        {comment.replies.map((reply: Reply, jindex: number) => {
+        {getChildren(reply.id).map((reply: Reply, jindex: number) => {
           return (
             <>
               <View>
-                <View style={styles.commentImgProfileTwo}>
+                <View style={styles.replyImgProfileTwo}>
                   <TouchableOpacity
                     activeOpacity={0.8}
                     onPress={gotoUserProfile(reply.author.id)}
@@ -195,7 +170,7 @@ export const PostDetailScreen = ({
                       }}
                     ></ImageComponent>
                   </TouchableOpacity>
-                  <View style={[styles.commentDisplayCont, { width: 210 }]}>
+                  <View style={[styles.replyDisplayCont, { width: 210 }]}>
                     <Text
                       style={{
                         fontSize: 12,
@@ -213,9 +188,7 @@ export const PostDetailScreen = ({
                     source={Vector}
                     style={styles.vectorImgTwo}
                   ></ImageComponent>
-                  <TouchableOpacity
-                    onPress={() => handleReplyToComment(comment.id)}
-                  >
+                  <TouchableOpacity onPress={() => handlePressReply(reply.id)}>
                     <Text style={styles.replyLbl}>reply</Text>
                   </TouchableOpacity>
 
@@ -226,7 +199,6 @@ export const PostDetailScreen = ({
                   <TouchableOpacity
                     onPress={showGiveGratsModal({
                       post: postId,
-                      commentId: comment.id,
                       replyId: reply.id,
                     })}
                   >
@@ -245,128 +217,132 @@ export const PostDetailScreen = ({
   };
 
   return post ? (
-    <View style={{ flex: 1 }}>
-      <View style={styles.commentModalContainer}>
-        <View style={{ flex: 1 }}>
-          <View style={styles.scrollViewComment}>
-            <FlatList
-              data={comments}
-              ref={flatListRef}
-              onEndReachedThreshold={0.005}
-              keyExtractor={(item, index) => index.toString()}
-              renderItem={renderComment}
-              ListHeaderComponent={
-                <View style={styles.feedPostContainer}>
-                  <Text style={styles.posttitle}>{post.type}</Text>
-                  <TouchableOpacity
-                    style={{
-                      position: "absolute",
-                      right: 14,
-                      top: 10,
-                      zIndex: 111122,
-                    }}
-                  ></TouchableOpacity>
-                  <View style={styles.userDetailcont}>
-                    <TouchableOpacity onPress={gotoUserProfile(post.author.id)}>
-                      <ImageComponent
-                        resizeMode="cover"
-                        style={styles.postProfile}
-                        source={{ uri: post.author.pic }}
-                      ></ImageComponent>
-                    </TouchableOpacity>
-                    <View>
+    <>
+      <Loader visible={isPending} />
+      <View style={{ flex: 1 }}>
+        <View style={styles.replyModalContainer}>
+          <View style={{ flex: 1 }}>
+            <View style={styles.scrollViewReply}>
+              <FlatList
+                data={getParents()}
+                ref={flatListRef}
+                onEndReachedThreshold={0.005}
+                keyExtractor={(item, index) => index.toString()}
+                renderItem={renderReply}
+                ListHeaderComponent={
+                  <View style={styles.feedPostContainer}>
+                    <Text style={styles.posttitle}>{post.type}</Text>
+                    <TouchableOpacity
+                      style={{
+                        position: "absolute",
+                        right: 14,
+                        top: 10,
+                        zIndex: 111122,
+                      }}
+                    ></TouchableOpacity>
+                    <View style={styles.userDetailcont}>
+                      <TouchableOpacity
+                        onPress={gotoUserProfile(post.author.id)}
+                      >
+                        <ImageComponent
+                          resizeMode="cover"
+                          style={styles.postProfile}
+                          source={{ uri: post.author.pic }}
+                        ></ImageComponent>
+                      </TouchableOpacity>
                       <View>
-                        {post.type === PostType.GRATIS ? (
-                          <View>
+                        <View>
+                          {post.type === PostType.GRATIS ? (
+                            <View>
+                              <Text numberOfLines={1} style={styles.userName}>
+                                {post.author.firstName} {post.author.lastName}{" "}
+                              </Text>
+                            </View>
+                          ) : (
                             <Text numberOfLines={1} style={styles.userName}>
-                              {post.author.firstName} {post.author.lastName}{" "}
+                              {post.author.firstName} {post.author.lastName}
                             </Text>
-                          </View>
-                        ) : (
-                          <Text numberOfLines={1} style={styles.userName}>
-                            {post.author.firstName} {post.author.lastName}
-                          </Text>
-                        )}
-                        {post.postDate ? (
-                          <Text style={styles.postTime}>
-                            {formatTimeFromNow(post.postDate)}
-                          </Text>
-                        ) : null}
+                          )}
+                          {post.postDate ? (
+                            <Text style={styles.postTime}>
+                              {formatTimeFromNow(post.postDate)}
+                            </Text>
+                          ) : null}
+                        </View>
                       </View>
                     </View>
-                  </View>
-                  <Text style={styles.postDes}>{post?.details}</Text>
-                  {!_.isEmpty(post?.images) ? (
-                    <ImageComponent
-                      resizeMode="cover"
-                      source={{ uri: post?.images[0] }}
-                      style={styles.userPost}
-                    ></ImageComponent>
-                  ) : null}
-                  <View style={styles.postDetailCont}>
-                    <Text style={styles.postDetailTitle}>What:</Text>
-                    <Text style={styles.postDetail}>{post.name}</Text>
-                  </View>
-
-                  {post.address ? (
+                    <Text style={styles.postDes}>{post.details}</Text>
+                    {!_.isEmpty(post.images) ? (
+                      <ImageComponent
+                        resizeMode="cover"
+                        source={{ uri: post.images[0] }}
+                        style={styles.userPost}
+                      ></ImageComponent>
+                    ) : null}
                     <View style={styles.postDetailCont}>
-                      <Text style={styles.postDetailTitle}>Where:</Text>
-                      <Image source={pin} style={styles.detailImage}></Image>
-                      <Text style={styles.postDetail}>{post.address}</Text>
+                      <Text style={styles.postDetailTitle}>What:</Text>
+                      <Text style={styles.postDetail}>{post.name}</Text>
                     </View>
-                  ) : null}
 
-                  {post.startDate ? (
-                    <View style={styles.postDetailCont}>
-                      <Text style={styles.postDetailTitle}>When:</Text>
-                      <Image
-                        source={postCalender}
-                        style={styles.detailImage}
-                      ></Image>
-                      <Text style={styles.postDetail}>
-                        {post.startDate?.toLocaleString()}
-                      </Text>
-                    </View>
-                  ) : null}
-                  <TouchableOpacity
-                    activeOpacity={0.8}
-                    style={styles.gratisContainer}
-                    onPress={showGiveGratsModal({ post })}
-                  >
-                    <Text style={styles.gratisClass}>+{post?.gratis}</Text>
-                    <ImageComponent
-                      source={gratitudeBlack}
-                      style={styles.commentImgTwo}
-                    ></ImageComponent>
-                  </TouchableOpacity>
-                </View>
-              }
-            ></FlatList>
+                    {post.address ? (
+                      <View style={styles.postDetailCont}>
+                        <Text style={styles.postDetailTitle}>Where:</Text>
+                        <Image source={pin} style={styles.detailImage}></Image>
+                        <Text style={styles.postDetail}>{post.address}</Text>
+                      </View>
+                    ) : null}
+
+                    {post.startDate ? (
+                      <View style={styles.postDetailCont}>
+                        <Text style={styles.postDetailTitle}>When:</Text>
+                        <Image
+                          source={postCalender}
+                          style={styles.detailImage}
+                        ></Image>
+                        <Text style={styles.postDetail}>
+                          {post.startDate?.toLocaleString()}
+                        </Text>
+                      </View>
+                    ) : null}
+                    <TouchableOpacity
+                      activeOpacity={0.8}
+                      style={styles.gratisContainer}
+                      onPress={showGiveGratsModal({ post })}
+                    >
+                      <Text style={styles.gratisClass}>+{post?.gratis}</Text>
+                      <ImageComponent
+                        source={gratitudeBlack}
+                        style={styles.replyImgTwo}
+                      ></ImageComponent>
+                    </TouchableOpacity>
+                  </View>
+                }
+              ></FlatList>
+            </View>
+          </View>
+        </View>
+        <View style={styles.bottomButton}>
+          <View style={{ flexDirection: "row" }}>
+            <TextInput
+              style={styles.replyInput}
+              placeholder="Make a Reply"
+              placeholderTextColor="gray"
+              value={replyContent}
+              autoFocus={isReplyFocus}
+              onChangeText={setReplyContent}
+            ></TextInput>
+            <TouchableOpacity
+              style={{ alignSelf: "center" }}
+              onPress={sendReply}
+            >
+              <ImageComponent
+                style={{ height: 40, width: 40 }}
+                source={send}
+              ></ImageComponent>
+            </TouchableOpacity>
           </View>
         </View>
       </View>
-      <View style={styles.bottomButton}>
-        <View style={{ flexDirection: "row" }}>
-          <TextInput
-            style={styles.commentInput}
-            placeholder="Make a Comment"
-            placeholderTextColor="gray"
-            value={commentContent}
-            autoFocus={isCommentFocus}
-            onChangeText={setCommentContent}
-          ></TextInput>
-          <TouchableOpacity
-            style={{ alignSelf: "center" }}
-            onPress={postCommentOrReply}
-          >
-            <ImageComponent
-              style={{ height: 40, width: 40 }}
-              source={send}
-            ></ImageComponent>
-          </TouchableOpacity>
-        </View>
-      </View>
-    </View>
-  ) : // </SafeAreaView>
-  null;
+    </>
+  ) : null;
 };

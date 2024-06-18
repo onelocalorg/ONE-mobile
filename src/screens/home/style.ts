@@ -173,7 +173,7 @@ export const createStyleSheet = (theme: ThemeProps) => {
       marginRight: 11,
       marginLeft: 2,
     },
-    gratisAndCommentContainer: {
+    gratisAndReplyContainer: {
       flexDirection: "row",
       justifyContent: "space-evenly",
       marginVertical: 10,
@@ -193,7 +193,7 @@ export const createStyleSheet = (theme: ThemeProps) => {
       color: theme.colors.black,
       fontSize: theme.fontSize.font14,
     },
-    commentsContainer: {
+    repliesContainer: {
       flexDirection: "row",
       borderWidth: theme.borderWidth.borderWidth1,
       borderColor: theme.colors.black,
@@ -202,11 +202,11 @@ export const createStyleSheet = (theme: ThemeProps) => {
       paddingVertical: 6,
       alignSelf: "center",
     },
-    commentImageThree: {
+    replyImageThree: {
       height: 20,
       width: 20,
     },
-    commentClass: {
+    replyClass: {
       marginRight: 5,
       color: theme.colors.black,
       fontSize: theme.fontSize.font14,
@@ -562,7 +562,7 @@ export const createStyleSheet = (theme: ThemeProps) => {
       fontSize: 12,
       fontFamily: theme.fontType.regular,
     },
-    commentImage: {
+    replyImage: {
       height: 14,
       width: 14,
       marginLeft: 5,
@@ -572,32 +572,32 @@ export const createStyleSheet = (theme: ThemeProps) => {
       fontSize: 12,
       fontFamily: theme.fontType.regular,
     },
-    commentTitle: {
+    replyTitle: {
       flexDirection: "row",
       justifyContent: "space-between",
       marginHorizontal: 13,
     },
-    commentCont: {
+    replyCont: {
       flexDirection: "row",
     },
-    commentContTwo: {
+    replyContTwo: {
       flexDirection: "row",
       justifyContent: "space-evenly",
       alignItems: "center",
       paddingTop: 2,
       paddingBottom: 2,
     },
-    commentImgTwo: {
+    replyImgTwo: {
       height: 23,
       width: 23,
     },
-    commentContShow: {
+    replyContShow: {
       fontSize: 12,
       color: "#000000",
       marginHorizontal: 13,
       marginTop: 2,
     },
-    commentImgProfile: {
+    replyImgProfile: {
       marginLeft: 16,
       marginRight: 30,
       flexDirection: "row",
@@ -614,7 +614,7 @@ export const createStyleSheet = (theme: ThemeProps) => {
       paddingBottom: verticalScale(25),
       paddingTop: verticalScale(5),
     },
-    commentDisplayCont: {
+    replyDisplayCont: {
       backgroundColor: "#E6E6E6",
       borderWidth: 2,
       borderColor: "#C2DBC6",
@@ -636,7 +636,7 @@ export const createStyleSheet = (theme: ThemeProps) => {
       width: 24,
       marginLeft: 20,
     },
-    scrollViewComment: {
+    scrollViewReply: {
       flex: 1,
     },
     replyContainer: {
@@ -667,7 +667,7 @@ export const createStyleSheet = (theme: ThemeProps) => {
       marginTop: 4,
       color: theme.colors.black,
     },
-    commentImgProfileTwo: {
+    replyImgProfileTwo: {
       flexDirection: "row",
       marginLeft: 20,
       justifyContent: "center",
@@ -866,7 +866,7 @@ export const createStyleSheet = (theme: ThemeProps) => {
       alignItems: "center",
       marginVertical: 10,
     },
-    commentInput: {
+    replyInput: {
       height: 40,
       width: width - 90,
       backgroundColor: "lightgray",
@@ -877,16 +877,16 @@ export const createStyleSheet = (theme: ThemeProps) => {
       padding: 10,
       color: theme.colors.black,
     },
-    commentContainer: {
-      height: 200,
-      borderColor: "green",
-      borderWidth: 2,
-      borderRadius: 10,
-      backgroundColor: "rgba(255, 255, 255, 10)",
-      margin: 20,
-      padding: 10,
-      // justifyContent:'center'
-    },
+    // replyContainer: {
+    //   height: 200,
+    //   borderColor: "green",
+    //   borderWidth: 2,
+    //   borderRadius: 10,
+    //   backgroundColor: "rgba(255, 255, 255, 10)",
+    //   margin: 20,
+    //   padding: 10,
+    //   // justifyContent:'center'
+    // },
     createPostContTwo: {
       flexDirection: "row",
       alignItems: "flex-start",
@@ -992,7 +992,7 @@ export const createStyleSheet = (theme: ThemeProps) => {
       backgroundColor: theme.colors.darkenBlack,
       flex: 1,
     },
-    commentModalContainer: {
+    replyModalContainer: {
       height: "100%",
       // marginTop:80,
       backgroundColor: theme.colors.white,

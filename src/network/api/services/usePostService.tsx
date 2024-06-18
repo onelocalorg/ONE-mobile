@@ -2,9 +2,9 @@ import { queryOptions, useQueryClient } from "@tanstack/react-query";
 import _ from "lodash/fp";
 import { LOG } from "~/config";
 import { ApiError } from "~/types";
-import { Comment } from "~/types/comment";
 import { Post } from "~/types/post";
 import { PostData } from "~/types/post-data";
+import { PostDetail } from "~/types/post-detail";
 import { PostUpdateData } from "~/types/post-update-data";
 import { Reply } from "~/types/reply";
 import { SendGrats } from "~/types/send-grats";
@@ -30,13 +30,6 @@ export function usePostService() {
         enabled: !!id,
         staleTime: 5000,
       }),
-    comments: () => [...queries.all(), "comments"],
-    commentsOnPost: (postId: string) =>
-      queryOptions({
-        queryKey: [...queries.comments(), postId],
-        queryFn: () => getComments(postId),
-        staleTime: 5000,
-      }),
   };
 
   const mutations = {
@@ -48,30 +41,17 @@ export function usePostService() {
         void queryClient.invalidateQueries({ queryKey: queries.lists() });
       },
     },
-    createComment: {
-      mutationFn: (params: CreateCommentProps) => {
-        return createComment(params);
-      },
-      onSuccess: (resp: Comment) => {
-        void queryClient.invalidateQueries({
-          queryKey: queries.commentsOnPost(resp.post).queryKey,
-        });
-      },
-      onError: (err: ApiError) => {
-        handleApiError("creating comment", err);
-      },
-    },
     createReply: {
       mutationFn: (params: CreateReplyProps) => {
         return createReply(params);
       },
       onSuccess: (resp: Reply) => {
         void queryClient.invalidateQueries({
-          queryKey: queries.commentsOnPost(resp.post).queryKey,
+          queryKey: queries.detail(resp.post).queryKey,
         });
       },
       onError: (err: ApiError) => {
-        handleApiError("creating comment", err);
+        handleApiError("creating Reply", err);
       },
     },
     giveGrats: {
@@ -99,7 +79,7 @@ export function usePostService() {
     return doPatch<Post>(`/v3/posts/${id}`, data);
   }
 
-  const getPost = (id: string) => doGet<Post>(`/v3/posts/${id}`);
+  const getPost = (id: string) => doGet<PostDetail>(`/v3/posts/${id}`);
 
   const deletePost = (id: string) => doDelete<never>(`/v3/posts/${id}`);
 
@@ -139,36 +119,19 @@ export function usePostService() {
       { points }
     );
 
-  interface CreateCommentProps {
-    postId: string;
-    content: string;
-  }
-  const createComment = ({ postId, content }: CreateCommentProps) =>
-    doPost<Comment>(`/v3/posts/${postId}/comments`, { content });
-
   interface CreateReplyProps {
     postId: string;
-    commentId: string;
     parentId?: string;
     content: string;
   }
-  const createReply = ({
-    postId,
-    commentId,
-    parentId,
-    content,
-  }: CreateReplyProps) =>
-    doPost<Reply>(
-      `/v3/posts/${postId}/comments/${commentId}/replies${
-        parentId ? `/${parentId}/replies` : ""
-      }`,
-      {
-        content,
-      }
-    );
+  const createReply = ({ postId, parentId, content }: CreateReplyProps) =>
+    doPost<Reply>(`/v3/posts/${postId}/replies`, {
+      parent: parentId,
+      content,
+    });
 
-  const getComments = (postId: string) =>
-    doGet<Comment[]>(`/v3/posts/${postId}/comments`);
+  const getReplies = (postId: string) =>
+    doGet<Reply[]>(`/v3/posts/${postId}/replies`);
 
   const reportPost = (postId: string, reason: string) =>
     doPost(`/v3/posts/${postId}/reports`, { reason });
@@ -182,10 +145,9 @@ export function usePostService() {
     getPost,
     deletePost,
     reportPost,
-    createComment,
-    getComments,
+    createReply,
+    getReplies,
     sendGratis,
     blockUser,
-    createReply,
   };
 }
