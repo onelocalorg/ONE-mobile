@@ -11,7 +11,6 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
-  TouchableWithoutFeedback,
   View,
 } from "react-native";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
@@ -323,77 +322,60 @@ export const PostDetailScreen = ({
   // };
 
   const Footer = () => (
-    // <View style={styles.sticky}>
-    <Controller
-      control={control}
-      rules={{
-        required: true,
-      }}
-      render={({ field: { onChange, onBlur, value } }) => (
-        <View style={styles.reply}>
-          <TextInput
-            ref={replyRef}
-            style={styles.replyInput}
-            placeholder="Make a Reply"
-            placeholderTextColor="gray"
-            value={value}
-            autoFocus={isReplyFocus}
-            onBlur={onBlur}
-            onChangeText={onChange}
-          ></TextInput>
-          <TouchableOpacity
-            style={{ alignSelf: "center" }}
-            onPress={handleSubmit(onSubmit)}
-          >
-            <ImageComponent
-              style={{ height: 40, width: 40 }}
-              source={send}
-            ></ImageComponent>
-          </TouchableOpacity>
-        </View>
-      )}
-      name="content"
-    />
-    // </View>
+    <View style={{ height: 100 }}>
+      <Controller
+        control={control}
+        rules={{
+          required: true,
+        }}
+        render={({ field: { onChange, onBlur, value } }) => (
+          <View style={styles.reply}>
+            <TextInput
+              ref={replyRef}
+              style={styles.replyInput}
+              placeholder="Make a Reply"
+              placeholderTextColor="gray"
+              value={value}
+              autoFocus={isReplyFocus}
+              onBlur={onBlur}
+              onChangeText={onChange}
+            ></TextInput>
+            <TouchableOpacity
+              style={{ alignSelf: "center" }}
+              onPress={handleSubmit(onSubmit)}
+            >
+              <ImageComponent
+                style={{ height: 40, width: 40 }}
+                source={send}
+              ></ImageComponent>
+            </TouchableOpacity>
+          </View>
+        )}
+        name="content"
+      />
+    </View>
   );
 
-  return post ? (
-    <View style={styles.container}>
-      <Loader visible={isPending} />
-      <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
-      >
-        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-          <View style={styles.viewport}>
-            <ScrollView ref={scrollRef}>
-              <View style={{ flex: 0.9 }}>
-                {/* <View style={styles.replyModalContainer}>
-            <View style={{ flex: 1 }}>
-              <View style={styles.scrollViewReply}> */}
-                {/* <FlatList
-                    data={getParents()}
-                    ref={flatListRef}
-                    onEndReachedThreshold={0.005}
-                    keyExtractor={(item, index) => index.toString()}
-                    renderItem={renderReply}
-                    ListHeaderComponent={ */}
-
-                <Post post={post} />
-
-                {getParents().map((reply) => (
-                  <Reply key={reply.id} reply={reply} />
-                ))}
-              </View>
-              {/* </View>
-          </View>
-        </View> */}
-            </ScrollView>
-            <View style={{ flex: 0.1 }}>
-              <Footer />
+  return (
+    <KeyboardAvoidingView
+      style={{ flex: 1 }}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      keyboardVerticalOffset={100}
+    >
+      <View style={styles.container}>
+        <Loader visible={isPending} />
+        <ScrollView ref={scrollRef}>
+          {post ? (
+            <View style={{ flex: 0.9 }}>
+              <Post post={post} />
+              {getParents().map((reply) => (
+                <Reply key={reply.id} reply={reply} />
+              ))}
             </View>
-          </View>
-        </TouchableWithoutFeedback>
-      </KeyboardAvoidingView>
-    </View>
-  ) : null;
+          ) : null}
+        </ScrollView>
+        <Footer />
+      </View>
+    </KeyboardAvoidingView>
+  );
 };

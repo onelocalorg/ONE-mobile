@@ -60,83 +60,81 @@ export const EventDetailScreen = ({
   };
 
   return (
-    <View>
+    <ScrollView>
       <Loader visible={isPending} showOverlay />
       {event ? (
         <>
-          <ScrollView>
-            <View style={styles.container}>
-              <Text style={styles.title}>{event.name}</Text>
-              <SizedBox height={verticalScale(16)} />
-              <Image
-                resizeMode="cover"
-                source={
-                  event.image
-                    ? { uri: event.image }
-                    : require("~/assets/images/defaultEvent.png")
-                }
-                style={styles.eventImage}
-              />
-              <SizedBox height={verticalScale(35)} />
-              <View style={styles.row}>
-                <View style={styles.circularView}>
-                  <ImageComponent
-                    source={calendarTime}
-                    style={styles.calendarTime}
-                  />
-                </View>
-                <View style={styles.margin}>
-                  <Text style={styles.date}>
-                    {event.startDate.toLocaleString(DateTime.DATE_MED)}
-                  </Text>
-                  <Text style={styles.time}>
-                    {event.startDate.toLocaleString(DateTime.TIME_SIMPLE)}
-                  </Text>
-                </View>
+          <View style={styles.container}>
+            <Text style={styles.title}>{event.name}</Text>
+            <SizedBox height={verticalScale(16)} />
+            <Image
+              resizeMode="cover"
+              source={
+                event.image
+                  ? { uri: event.image }
+                  : require("~/assets/images/defaultEvent.png")
+              }
+              style={styles.eventImage}
+            />
+            <SizedBox height={verticalScale(35)} />
+            <View style={styles.row}>
+              <View style={styles.circularView}>
+                <ImageComponent
+                  source={calendarTime}
+                  style={styles.calendarTime}
+                />
               </View>
-              <View style={[styles.row, styles.marginTop]}>
-                <View style={[styles.circularView, styles.yellow]}>
-                  <ImageComponent source={pinWhite} style={styles.pinWhite} />
-                </View>
-                <View style={styles.margin}>
-                  <Text style={styles.date}>{event.venue}</Text>
-                  <Text style={styles.time}>{event.address}</Text>
-                </View>
+              <View style={styles.margin}>
+                <Text style={styles.date}>
+                  {event.startDate.toLocaleString(DateTime.DATE_MED)}
+                </Text>
+                <Text style={styles.time}>
+                  {event.startDate.toLocaleString(DateTime.TIME_SIMPLE)}
+                </Text>
               </View>
-              <View style={[styles.row, styles.marginTop]}>
-                <TouchableOpacity
-                  activeOpacity={0.8}
-                  onPress={gotoUserProfile(event.host)}
-                >
-                  <ImageComponent
-                    resizeMode="cover"
-                    source={{ uri: event.host.pic }}
-                    style={styles.dummy}
-                  />
-                </TouchableOpacity>
-                <View style={styles.margin}>
-                  <Text
-                    style={styles.date}
-                  >{`${event.host.firstName} ${event.host.lastName}`}</Text>
-                </View>
-              </View>
-              <SizedBox height={verticalScale(30)} />
-              <Text style={styles.event}>{strings.aboutEvent}</Text>
-              <Text style={styles.desc}>{event.about}</Text>
             </View>
-            <Tickets event={event} onTicketPurchased={navigation.goBack} />
-            <RsvpView event={event} />
-            {event.host.id === myUserId ? (
-              <ButtonComponent
-                title={strings.editEvent}
-                onPress={handleEditEvent}
-              />
-            ) : (
-              <></>
-            )}
-          </ScrollView>
+            <View style={[styles.row, styles.marginTop]}>
+              <View style={[styles.circularView, styles.yellow]}>
+                <ImageComponent source={pinWhite} style={styles.pinWhite} />
+              </View>
+              <View style={styles.margin}>
+                <Text style={styles.date}>{event.venue}</Text>
+                <Text style={styles.time}>{event.address}</Text>
+              </View>
+            </View>
+            <View style={[styles.row, styles.marginTop]}>
+              <TouchableOpacity
+                activeOpacity={0.8}
+                onPress={gotoUserProfile(event.host)}
+              >
+                <ImageComponent
+                  resizeMode="cover"
+                  source={{ uri: event.host.pic }}
+                  style={styles.dummy}
+                />
+              </TouchableOpacity>
+              <View style={styles.margin}>
+                <Text
+                  style={styles.date}
+                >{`${event.host.firstName} ${event.host.lastName}`}</Text>
+              </View>
+            </View>
+            <SizedBox height={verticalScale(30)} />
+            <Text style={styles.event}>{strings.aboutEvent}</Text>
+            <Text style={styles.desc}>{event.about}</Text>
+          </View>
+          <Tickets event={event} onTicketPurchased={navigation.goBack} />
+          <RsvpView event={event} />
+          {event.host.id === myUserId ? (
+            <ButtonComponent
+              title={strings.editEvent}
+              onPress={handleEditEvent}
+            />
+          ) : (
+            <></>
+          )}
         </>
       ) : null}
-    </View>
+    </ScrollView>
   );
 };

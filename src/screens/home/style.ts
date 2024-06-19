@@ -606,7 +606,7 @@ export const createStyleSheet = (theme: ThemeProps) => {
       marginVertical: 6,
       // overflow:'hidden'
     },
-    sticky: {
+    footer: {
       justifyContent: "flex-end",
       paddingHorizontal: normalScale(16),
       backgroundColor: theme.colors.white,
