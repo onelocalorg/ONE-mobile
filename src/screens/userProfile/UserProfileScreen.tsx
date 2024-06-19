@@ -10,7 +10,6 @@ import { Loader } from "~/components/loader";
 import { TabComponent } from "~/components/tab-component";
 import { RootStackScreenProps, Screens } from "~/navigation/types";
 import { useUserService } from "~/network/api/services/useUserService";
-import { handleApiError } from "~/utils/common";
 import { MyEvents } from "../myprofile/MyEvents";
 import { About } from "./About";
 import { createStyleSheet } from "./style";
@@ -29,13 +28,7 @@ export const UserProfileScreen = ({
     queries: { detail: getUser },
   } = useUserService();
 
-  const {
-    isPending,
-    isError,
-    data: userProfile,
-    error,
-  } = useQuery(getUser(userId));
-  if (isError) handleApiError("User profile", error);
+  const { isPending, data: userProfile } = useQuery(getUser(userId));
 
   return (
     <>

@@ -1,5 +1,5 @@
 import React from "react";
-import { ListRenderItem, Text, TouchableOpacity, View } from "react-native";
+import { ListRenderItem, Text, View } from "react-native";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
 import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
 import { FlatListComponent } from "~/components/flatlist-component";
@@ -20,13 +20,8 @@ export const About = ({ user }: RecentaboutDataProps) => {
   );
 
   return (
-    <>
-      <View style={styles.container}>
-        <View style={styles.aboutView}>
-          <Text style={styles.input}>{user.catchPhrase}</Text>
-        </View>
-        <View style={styles.line} />
-      </View>
+    <View style={styles.container}>
+      <Text style={styles.input}>{user.catchPhrase}</Text>
       <View style={styles.innerConatiner}>
         <Text style={styles.membership}>About</Text>
         <Text style={styles.input}>{user.about}</Text>
@@ -42,19 +37,7 @@ export const About = ({ user }: RecentaboutDataProps) => {
             columnWrapperStyle={styles.flexWrap}
           />
         </View>
-
-        {/* ==========================Question Answer========================  */}
-
-        <View>
-          <View>
-            <TouchableOpacity activeOpacity={1}>
-              <Text style={styles.ProfileUpdateCont}>
-                Question & Answer List
-              </Text>
-            </TouchableOpacity>
-          </View>
-        </View>
       </View>
-    </>
+    </View>
   );
 };
