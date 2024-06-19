@@ -120,26 +120,6 @@ export const EventEditor = ({
     );
   };
 
-  // const onCancel = () => {
-  //   setIsEdit(false);
-  // };
-
-  // const openCreateTicketModal = () => {
-  //   // setIsEdit(false);
-  //   modalRef.current?.onOpenModal();
-  // };
-
-  // // const openAddBreakDownModal = () => {
-  // //   setIsEdit(false);
-  // //   addItemRef.current?.onOpenModal();
-  // // };
-
-  // const openEditTicketModal = (index: number) => {
-  //   setSelectedTicketIndex(index);
-  //   setIsEdit(true);
-  //   modalRef.current?.onOpenModal();
-  // };
-
   const onUploadImage = async () => {
     const { assets } = await launchImageLibrary({
       mediaType: "photo",
@@ -187,16 +167,6 @@ export const EventEditor = ({
       console.log(error);
     }
   };
-
-  // const toggleSwitch = (value: any) => {
-  //   if (isEnabled === false) {
-  //     setIsEnabled(true);
-  //     SetToggleFilter("AO");
-  //   } else {
-  //     setIsEnabled(false);
-  //     SetToggleFilter("VF");
-  //   }
-  // };
 
   const keyboardDismiss = () => {
     Keyboard.dismiss();
@@ -420,7 +390,7 @@ export const EventEditor = ({
             <View style={[styles.row, styles.marginTop]}>
               <Text style={styles.tickets}>{strings.tickets}:</Text>
               <Pressable
-                onPress={() => setCurTicket(eventData.ticketTypes.length)}
+                onPress={() => setCurTicket(event?.ticketTypes.length)}
               >
                 <ImageComponent source={addGreen} style={styles.addGreen} />
               </Pressable>
