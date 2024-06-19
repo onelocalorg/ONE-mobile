@@ -2,8 +2,8 @@ import { createContext, useContext } from "react";
 import { CurrentUser } from "~/types/current-user";
 
 type AuthContextType = {
-  accessToken: string | null;
-  myUserId: string | null;
+  accessToken?: string;
+  myUserId?: string;
 };
 
 export const AuthContext = createContext<AuthContextType | null>(null);

@@ -44,7 +44,7 @@ export const stringsAndLabels = {
   attendees: "Attendees",
   enterTitle: "Enter Title",
   enterAddress: "Enter Address",
-  enterVenue: "Enter Venue",
+  enterVenue: "Venue name (optional)",
   enterEmail: "Enter Email",
   ticketEdit: "Ticket Edit",
   ticketAdd: "Ticket Create",

@@ -20,10 +20,10 @@ export function useUserService() {
         queryFn: () => getUsers(filters),
       }),
     details: () => [...queries.all(), "detail"],
-    detail: (id: string) =>
+    detail: (id?: string) =>
       queryOptions({
         queryKey: [...queries.details(), id],
-        queryFn: () => getUser(id),
+        queryFn: () => getUser(id!),
         enabled: !!id,
         staleTime: 5000,
       }),

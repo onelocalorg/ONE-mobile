@@ -7,11 +7,11 @@ import { Text, TextInput, TouchableOpacity, View } from "react-native";
 import DateTimePicker from "react-native-modal-datetime-picker";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
 import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
-import { buttonArrowGreen, pin, postCalender } from "~/assets/images";
+import { buttonArrowGreen, postCalender } from "~/assets/images";
 import { ButtonComponent } from "~/components/button-component";
 import { ImageComponent } from "~/components/image-component";
 import { Loader } from "~/components/loader";
-import { LocationAutocomplete } from "~/components/location-autocomplete/LocationAutocomplete";
+import { LocationChooser } from "~/components/location-autocomplete/LocationChooser";
 import { SizedBox } from "~/components/sized-box";
 import { verticalScale } from "~/theme/device/normalize";
 import { PostData, PostType } from "~/types/post-data";
@@ -147,33 +147,21 @@ export const PostEditor = ({
         ></ImageComponent>
       </TouchableOpacity>
       <SizedBox height={verticalScale(8)}></SizedBox>
-      <View style={styles.createPostContTwo}>
-        <Controller
-          control={control}
-          render={({ field: { onChange, value } }) => (
-            <LocationAutocomplete
-              placeholder="Location"
-              address={value}
-              onPress={(data, details) => {
-                onChange(data.description);
-                if (details) {
-                  setValue("coordinates", [
-                    details.geometry.location.lng,
-                    details.geometry.location.lat,
-                  ]);
-                }
-              }}
-            />
-          )}
-          name="address"
-        />
-
-        <ImageComponent
-          resizeMode="cover"
-          source={pin}
-          style={styles.createImgTwo}
-        ></ImageComponent>
-      </View>
+      <Controller
+        control={control}
+        rules={{
+          required: true,
+        }}
+        render={({ field: { onChange, value } }) => (
+          <LocationChooser
+            value={value}
+            onChange={onChange}
+            setValue={setValue}
+          />
+        )}
+        name="address"
+      />
+      {errors.address && <Text>This is required.</Text>}
 
       {/* <ImageUploader
           onLoading={setLoading}

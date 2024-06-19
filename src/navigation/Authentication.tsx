@@ -13,16 +13,16 @@ export default function Authentication() {
   type AppState = {
     isLoading: boolean;
     isSignout: boolean;
-    accessToken: string | null;
-    refreshToken: string | null;
-    myUserId: string | null;
+    accessToken?: string;
+    refreshToken?: string;
+    myUserId?: string;
   };
 
   type SignIn = { type: "SIGN_IN"; user: MyUser };
   type RestoreToken = {
     type: "RESTORE_TOKENS";
     accessToken: string;
-    refreshToken: string | null;
+    refreshToken?: string;
     userId: string;
   };
   type SignOut = { type: "SIGN_OUT" };
@@ -64,8 +64,8 @@ export default function Authentication() {
     {
       isLoading: true,
       isSignout: false,
-      accessToken: null,
-      refreshToken: null,
+      accessToken: undefined,
+      refreshToken: undefined,
       myUserId: null,
     }
   );
@@ -83,9 +83,9 @@ export default function Authentication() {
         if (accessToken && userId) {
           dispatch({
             type: "RESTORE_TOKENS",
-            accessToken,
-            refreshToken,
-            userId,
+            accessToken: accessToken || undefined,
+            refreshToken: refreshToken || undefined,
+            userId: userId || undefined,
           });
         }
 

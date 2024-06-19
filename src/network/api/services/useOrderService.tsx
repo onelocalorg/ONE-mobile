@@ -1,23 +1,29 @@
+import { useQueryClient } from "@tanstack/react-query";
 import { LineItem, LineItemTypes } from "~/types/line-item";
 import { Order, OrderData } from "~/types/order";
 import { PriceBreakdown } from "~/types/price-breakdown";
 import { useApiService } from "./ApiService";
 
-export default function OrderService() {
-  const { doPost } = useApiService();
+export function useOrderService() {
+  const queryClient = useQueryClient();
+
+  const queries = {
+    all: () => ["events"],
+    lists: () => [...queries.all(), "list"],
+  };
 
   const mutations = {
-    createOrder: {
+    create: {
       mutationFn: (data: OrderData) => {
         return createOrder(data);
       },
-      // onSuccess: (data: RsvpData) => {
-      //   void queryClient.invalidateQueries({
-      //     queryKey: queries.rsvps(),
-      //   });
-      // },
+      onSuccess: () => {
+        void queryClient.invalidateQueries({ queryKey: queries.all() });
+      },
     },
   };
+
+  const { doPost } = useApiService();
 
   interface CreateOrderProps {
     lineItems: LineItem[];

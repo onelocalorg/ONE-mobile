@@ -46,6 +46,11 @@ export const createStyleSheet = (theme: ThemeProps) => {
     row: {
       flexDirection: "row",
       marginTop: verticalScale(10),
+      alignItems: "flex-start",
+    },
+    column: {
+      flexDirection: "column",
+      alignItems: "stretch",
     },
     center: {
       // alignItems: 'center',

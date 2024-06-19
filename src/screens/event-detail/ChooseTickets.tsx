@@ -7,7 +7,7 @@ import { ButtonComponent } from "~/components/button-component";
 import { EventCard } from "~/components/events/EventCard";
 import { Loader } from "~/components/loader";
 import { OneModal } from "~/components/modal-component/OneModal";
-import useOrderService from "~/network/api/services/useOrderService";
+import { useOrderService } from "~/network/api/services/useOrderService";
 import { LineItemTypes } from "~/types/line-item";
 import { LocalEvent } from "~/types/local-event";
 import { Order } from "~/types/order";
@@ -39,10 +39,10 @@ export const ChooseTickets = ({
     );
 
   const {
-    mutations: { createOrder },
+    mutations: { create },
   } = useOrderService();
 
-  const { isPending, mutate } = useMutation(createOrder);
+  const { isPending, mutate } = useMutation(create);
 
   const createTicketOrder = () => {
     mutate({

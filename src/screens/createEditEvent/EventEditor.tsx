@@ -27,7 +27,6 @@ import { SizedBox } from "~/components/sized-box";
 import { LOG } from "~/config";
 import { useMyUserId } from "~/navigation/AuthContext";
 import { useEventService } from "~/network/api/services/useEventService";
-import { width } from "~/theme/device/device";
 import { normalScale, verticalScale } from "~/theme/device/normalize";
 import { LocalEvent, isLocalEvent } from "~/types/local-event";
 import { LocalEventData } from "~/types/local-event-data";
@@ -89,6 +88,8 @@ export const EventEditor = ({
           timezone: DateTime.local().zoneName,
         },
   });
+
+  console.log("errors", errors);
 
   const {
     mutations: { cancelEvent },
@@ -346,54 +347,55 @@ export const EventEditor = ({
 
             <ChooseStartAndEndDates />
 
-            <View style={[styles.row, styles.center]}>
+            <View style={[styles.row]}>
               <View style={[styles.circularView, styles.yellow]}>
                 <ImageComponent source={pinWhite} style={styles.pinWhite} />
               </View>
               <SizedBox width={normalScale(8)} />
 
-              {/*<View>
-                  <Input
-                    placeholder={strings.enterVenue}
-                    inputStyle={styles.textStyle}
-                    value={address}
-                    onChangeText={(text) => handleText(text, "address")}
-                    height={verticalScale(40)}
-                  />
-                  <SizedBox height={verticalScale(8)} /> */}
-              {/* <Input
-                placeholder={strings.enterAddress}
-                inputStyle={styles.textStyle}
-                value={full_address}
-                onChangeText={text => handleText(text, 'full_address')}
-                height={verticalScale(40)}
-              /> */}
-              <View style={{ width: width - 100 }}>
-                <Controller
-                  control={control}
-                  rules={{
-                    required: true,
-                  }}
-                  render={({ field: { onChange, value } }) => (
-                    <LocationAutocomplete
-                      address={value}
-                      placeholder="Where will the event be held?"
-                      onPress={(data, details) => {
-                        onChange(data.description);
-                        if (details) {
-                          setValue("coordinates", [
-                            details.geometry.location.lng,
-                            details.geometry.location.lat,
-                          ]);
-                        }
-                      }}
-                    ></LocationAutocomplete>
-                  )}
-                  name="address"
-                />
-                {/* {errors.address && <Text>This is required.</Text>} */}
-              </View>
+              <Controller
+                control={control}
+                rules={{
+                  required: true,
+                }}
+                render={({ field: { onChange, value } }) => (
+                  <LocationAutocomplete
+                    address={value}
+                    placeholder="Where will the event be held?"
+                    onPress={(data, details) => {
+                      onChange(data.description);
+                      if (details) {
+                        setValue("coordinates", [
+                          details.geometry.location.lng,
+                          details.geometry.location.lat,
+                        ]);
+                      }
+                    }}
+                  ></LocationAutocomplete>
+                )}
+                name="address"
+              />
+              {errors.address && <Text>This is required.</Text>}
             </View>
+            <SizedBox height={verticalScale(8)} />
+
+            <Controller
+              control={control}
+              rules={{
+                required: true,
+              }}
+              render={({ field: { onChange, value } }) => (
+                <Input
+                  placeholder={strings.enterVenue}
+                  inputStyle={styles.textStyle}
+                  value={value}
+                  onChangeText={onChange}
+                  height={verticalScale(40)}
+                />
+              )}
+              name="venue"
+            />
+            <SizedBox height={verticalScale(8)} />
 
             <Text style={styles.event}>{strings.aboutEvent}</Text>
             <SizedBox height={verticalScale(4)} />
@@ -417,11 +419,11 @@ export const EventEditor = ({
 
             <View style={[styles.row, styles.marginTop]}>
               <Text style={styles.tickets}>{strings.tickets}:</Text>
-              {/* <Pressable
+              <Pressable
                 onPress={() => setCurTicket(eventData.ticketTypes.length)}
               >
                 <ImageComponent source={addGreen} style={styles.addGreen} />
-              </Pressable> */}
+              </Pressable>
             </View>
             <AddTicketModal
               isVisible={curTicket !== undefined}
@@ -432,12 +434,6 @@ export const EventEditor = ({
                   ? undefined
                   : getValues("ticketTypes")[curTicket]
               }
-              // eventId={id}
-              // eventDetails={eventDetails}
-              // value={eventDetails.tickets?.[selectedTicketIndex]}
-              // ref={modalRef}
-              // isEdit={isEdit}
-              // onCancel={onCancel}
             />
             <View>
               {getValues("ticketTypes").map((t, index) => {

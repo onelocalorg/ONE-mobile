@@ -35,7 +35,7 @@ export const CreateEditPostScreen = ({
 
   return (
     <>
-      <Loader visible={isPending} />
+      <Loader visible={!!post && isPending} />
       <View style={styles.postFilter}>
         <TouchableOpacity
           style={styles.container3}

@@ -22,7 +22,7 @@ export const CreateEditEventScreen = ({
 
   return (
     <>
-      <Loader visible={isPending} />
+      <Loader visible={!!eventId && isPending} />
       {!eventId || event ? (
         <EventEditor
           event={event}
