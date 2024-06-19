@@ -109,6 +109,8 @@ export const createStyleSheet = (theme: ThemeProps) => {
     },
     modalContainer: {
       paddingHorizontal: normalScale(16),
+      backgroundColor: theme.colors.white,
+      paddingBottom: 70,
     },
     amount: {
       marginTop: verticalScale(12),

@@ -7,9 +7,12 @@ import { useNavigations } from "~/app-hooks/useNavigations";
 import { startImg } from "~/assets/images";
 import Going from "~/assets/images/going.png";
 import { useMyUserId } from "~/navigation/AuthContext";
-import { useEventService } from "~/network/api/services/useEventService";
+import {
+  EventMutations,
+  useEventService,
+} from "~/network/api/services/useEventService";
 import { LocalEvent } from "~/types/local-event";
-import { RsvpType } from "~/types/rsvp";
+import { Rsvp, RsvpData, RsvpType } from "~/types/rsvp";
 import { handleApiError } from "~/utils/common";
 import { createStyleSheet as createRsvpStyleSheet } from "./rsvp-style";
 import { createStyleSheet as createBaseStyleSheet } from "./style";
@@ -27,13 +30,14 @@ export const RsvpView = ({ event }: RsvpViewProps) => {
 
   const {
     queries: { rsvpsForEvent },
-    mutations: { createRsvp },
   } = useEventService();
 
   const { isError, data: rsvpList, error } = useQuery(rsvpsForEvent(event.id));
   if (isError) handleApiError("RSVP", error);
 
-  const mutateCreateRsvp = useMutation(createRsvp);
+  const mutateCreateRsvp = useMutation<Rsvp, Error, RsvpData>({
+    mutationKey: [EventMutations.createRsvp],
+  });
 
   const myRsvp = () =>
     rsvpList?.rsvps.find((rsvp) => rsvp.guest.id === myUserId);

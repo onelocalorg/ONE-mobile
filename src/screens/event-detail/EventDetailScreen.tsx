@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { DateTime } from "luxon";
 import React from "react";
 import { Image, Text, TouchableOpacity, View } from "react-native";
@@ -15,7 +15,6 @@ import { useMyUserId } from "~/navigation/AuthContext";
 import { RootStackScreenProps, Screens } from "~/navigation/types";
 import { useEventService } from "~/network/api/services/useEventService";
 import { verticalScale } from "~/theme/device/normalize";
-import { RsvpType } from "~/types/rsvp";
 import { handleApiError } from "~/utils/common";
 import { RsvpView } from "./RsvpView";
 import { Tickets } from "./Tickets";
@@ -34,7 +33,6 @@ export const EventDetailScreen = ({
 
   const {
     queries: { detail: eventDetail },
-    mutations: { createRsvp },
   } = useEventService();
 
   const {
@@ -44,8 +42,6 @@ export const EventDetailScreen = ({
     error,
   } = useQuery(eventDetail(eventId));
   if (isError) handleApiError("loading event", error);
-
-  const mutateCreateRsvp = useMutation(createRsvp);
 
   // const { isPending, isLoading, event, rsvpList } = useQueries({
   //   queries: [eventDetail(eventId), rsvpsForEvent(eventId)],
@@ -61,13 +57,6 @@ export const EventDetailScreen = ({
 
   const handleEditEvent = () => {
     navigation.push(Screens.CREATE_EDIT_EVENT, { id: eventId });
-  };
-
-  const addGoingRsvp = () => {
-    mutateCreateRsvp.mutate({
-      type: RsvpType.GOING,
-      eventId: eventId,
-    });
   };
 
   return (
@@ -135,7 +124,7 @@ export const EventDetailScreen = ({
               <Text style={styles.event}>{strings.aboutEvent}</Text>
               <Text style={styles.desc}>{event.about}</Text>
             </View>
-            <Tickets event={event} onTicketPurchased={addGoingRsvp} />
+            <Tickets event={event} onTicketPurchased={navigation.goBack} />
             <RsvpView event={event} />
             {event.host.id === myUserId ? (
               <ButtonComponent

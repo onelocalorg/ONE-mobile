@@ -1,15 +1,21 @@
 import { queryOptions, useQueryClient } from "@tanstack/react-query";
 import _ from "lodash/fp";
 import { LOG } from "~/config";
-import { ApiError } from "~/types";
 import { LocalEvent } from "~/types/local-event";
 import { LocalEventData } from "~/types/local-event-data";
 import { LocalEventUpdateData } from "~/types/local-event-update-data";
 import { PriceBreakdown } from "~/types/price-breakdown";
 import { Rsvp, RsvpData, RsvpList } from "~/types/rsvp";
 import { TicketSelection } from "~/types/ticket-selection";
-import { handleApiError } from "~/utils/common";
 import { useApiService } from "./ApiService";
+
+export enum EventMutations {
+  createEvent = "createEvent",
+  editEvent = "editEvent",
+  cancelEvent = "cancelEvent",
+  createRsvp = "createRsvp",
+  deleteRsvp = "deleteRsvp",
+}
 
 export function useEventService() {
   const queryClient = useQueryClient();
@@ -39,66 +45,60 @@ export function useEventService() {
       }),
   };
 
-  const mutations = {
-    createEvent: {
-      mutationFn: (eventData: LocalEventData) => {
-        return createEvent(eventData);
-      },
-      onSuccess: () => {
-        void queryClient.invalidateQueries({ queryKey: queries.all() });
-      },
+  queryClient.setMutationDefaults([EventMutations.createEvent], {
+    mutationFn: (eventData: LocalEventData) => {
+      return createEvent(eventData);
     },
-    editEvent: {
-      mutationFn: (params: LocalEventUpdateData) => {
-        return updateEvent(params);
-      },
-      onSuccess: (resp: LocalEvent) => {
-        void queryClient.invalidateQueries({
-          queryKey: queries.detail(resp.id).queryKey,
-        });
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: queries.all() });
+    },
+  });
 
-        // TODO Change cache to invalidate less
-        void queryClient.invalidateQueries({ queryKey: queries.lists() });
-      },
-      onError: (err: ApiError) => {
-        handleApiError("reporting post", err);
-      },
+  queryClient.setMutationDefaults([EventMutations.editEvent], {
+    mutationFn: (params: LocalEventUpdateData) => {
+      return updateEvent(params);
     },
-    cancelEvent: {
-      mutationFn: (postId: string) => {
-        return cancelEvent(postId);
-      },
-      onSuccess: (resp: LocalEvent) => {
-        void queryClient.invalidateQueries({
-          queryKey: queries.lists(),
-        });
-      },
-      onError: (err: ApiError) => {
-        handleApiError("deleting post", err);
-      },
+    onSuccess: (resp: LocalEvent) => {
+      void queryClient.invalidateQueries({
+        queryKey: queries.detail(resp.id).queryKey,
+      });
+
+      // TODO Change cache to invalidate less
+      void queryClient.invalidateQueries({ queryKey: queries.lists() });
     },
-    createRsvp: {
-      mutationFn: (data: RsvpData) => {
-        return createRsvp(data);
-      },
-      onSuccess: (data: RsvpData) => {
-        console.log("success created rsvp", data);
-        void queryClient.invalidateQueries({
-          queryKey: queries.rsvps(),
-        });
-      },
+  });
+
+  queryClient.setMutationDefaults([EventMutations.cancelEvent], {
+    mutationFn: (postId: string) => {
+      return cancelEvent(postId);
     },
-    deleteRsvp: {
-      mutationFn: (data: DeleteRsvpProps) => {
-        return deleteRsvp(data);
-      },
-      onSuccess: (data: DeleteRsvpProps) => {
-        void queryClient.invalidateQueries({
-          queryKey: queries.rsvps(),
-        });
-      },
+    onSuccess: (resp: LocalEvent) => {
+      void queryClient.invalidateQueries({
+        queryKey: queries.lists(),
+      });
     },
-  };
+  });
+  queryClient.setMutationDefaults(["createRsvp"], {
+    mutationFn: (data: RsvpData) => {
+      return createRsvp(data);
+    },
+    onSuccess: (data: RsvpData) => {
+      console.log("success created rsvp", data);
+      void queryClient.invalidateQueries({
+        queryKey: queries.rsvps(),
+      });
+    },
+  });
+  queryClient.setMutationDefaults(["deleteRsvp"], {
+    mutationFn: (data: DeleteRsvpProps) => {
+      return deleteRsvp(data);
+    },
+    onSuccess: (data: DeleteRsvpProps) => {
+      void queryClient.invalidateQueries({
+        queryKey: queries.rsvps(),
+      });
+    },
+  });
 
   const { doGet, doPatch, doPost, doDelete } = useApiService();
 
@@ -232,7 +232,6 @@ export function useEventService() {
 
   return {
     queries,
-    mutations,
     getEvent,
     createEvent,
     updateEvent,

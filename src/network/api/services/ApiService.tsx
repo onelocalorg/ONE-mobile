@@ -1,6 +1,8 @@
+import { useQueryClient } from "@tanstack/react-query";
 import _ from "lodash/fp";
 import { DateTime } from "luxon";
 import { ReactNode, createContext, useContext } from "react";
+import { Alert } from "react-native";
 import { LOG } from "~/config";
 import { useAccessToken } from "~/navigation/AuthContext";
 import { ApiError } from "~/types/api-error";
@@ -34,6 +36,20 @@ interface ApiServiceProviderProps {
 
 export function ApiService({ children }: ApiServiceProviderProps) {
   const token = useAccessToken();
+  const queryClient = useQueryClient();
+
+  // queryClient.setDefaultOptions({
+  //   queries: {
+  //     o
+  //   }
+  // })
+  // })
+
+  queryClient.setMutationDefaults([], {
+    onError: (err: Error) => {
+      Alert.alert(`API failure: `, err.message);
+    },
+  });
 
   const DATETIME_KEYS = ["startDate", "endDate", "postDate", "joinDate"];
   const NO_LOG_KEYS = ["password", "access_token", "refresh_token"];

@@ -1,14 +1,14 @@
-import { useFocusEffect } from "@react-navigation/native";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import _ from "lodash/fp";
 import React, { useCallback, useState } from "react";
 import { Text, View } from "react-native";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
 import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
 import { ButtonComponent } from "~/components/button-component";
-import { OneModal } from "~/components/modal-component/OneModal";
+import { useMyUserId } from "~/navigation/AuthContext";
+import { Screens } from "~/navigation/types";
 import { LocalEvent } from "~/types/local-event";
 import { toCurrency } from "~/utils/common";
-import { ChooseTickets } from "./ChooseTickets";
 import { createStyleSheet as createBaseStyleSheet } from "./style";
 
 interface TicketsProps {
@@ -23,6 +23,9 @@ export const Tickets = ({ event, onTicketPurchased }: TicketsProps) => {
   const [isTicketAvailable, setIsTicketAvailable] = useState(false);
   const [isChooseTicketsModalVisible, setChooseTicketsModalVisible] =
     useState(false);
+  const navigation = useNavigation();
+  const myUserId = useMyUserId();
+  const isMyEvent = myUserId === event.id;
 
   useFocusEffect(
     useCallback(() => {
@@ -34,6 +37,10 @@ export const Tickets = ({ event, onTicketPurchased }: TicketsProps) => {
 
   const ticketQuantityToString = (quantity?: number) =>
     !quantity || quantity === 0 ? "Unlimited" : quantity.toString();
+
+  const showTicketsModal = () => {
+    navigation.navigate(Screens.CHOOSE_TICKETS, { eventId: event.id });
+  };
 
   return (
     <View style={styles.container}>
@@ -52,27 +59,12 @@ export const Tickets = ({ event, onTicketPurchased }: TicketsProps) => {
         ))}
       </View>
 
-      {!event.isMyEvent && event.ticketTypes?.length ? (
+      {!isMyEvent && event.ticketTypes?.length ? (
         <ButtonComponent
           disabled={event.isCanceled}
           title={strings.chooseTickets}
-          onPress={() => setChooseTicketsModalVisible(true)}
+          onPress={showTicketsModal}
         />
-      ) : null}
-      {event ? (
-        <OneModal
-          title={strings.chooseTickets}
-          isVisible={isChooseTicketsModalVisible}
-          onDismiss={() => setChooseTicketsModalVisible(false)}
-        >
-          <ChooseTickets
-            event={event}
-            onCheckoutComplete={() => {
-              setChooseTicketsModalVisible(false);
-              onTicketPurchased?.();
-            }}
-          />
-        </OneModal>
       ) : null}
     </View>
   );

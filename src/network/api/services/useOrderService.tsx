@@ -1,8 +1,15 @@
-import { useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { LineItem, LineItemTypes } from "~/types/line-item";
 import { Order, OrderData } from "~/types/order";
 import { PriceBreakdown } from "~/types/price-breakdown";
+import { Rsvp, RsvpData, RsvpType } from "~/types/rsvp";
+import { handleApiError } from "~/utils/common";
 import { useApiService } from "./ApiService";
+import { EventMutations } from "./useEventService";
+
+export enum OrderMutations {
+  createOrder = "createOrder",
+}
 
 export function useOrderService() {
   const queryClient = useQueryClient();
@@ -12,16 +19,29 @@ export function useOrderService() {
     lists: () => [...queries.all(), "list"],
   };
 
-  const mutations = {
-    create: {
-      mutationFn: (data: OrderData) => {
-        return createOrder(data);
-      },
-      onSuccess: () => {
-        void queryClient.invalidateQueries({ queryKey: queries.all() });
-      },
+  const { mutate: createRsvp } = useMutation<Rsvp, Error, RsvpData>({
+    mutationKey: [EventMutations.createRsvp],
+  });
+
+  queryClient.setMutationDefaults([OrderMutations.createOrder], {
+    mutationFn: (data: OrderData) => {
+      return createOrder(data);
     },
-  };
+    onSuccess: (order: Order) => {
+      console.log("onSucccess", order);
+      void queryClient.invalidateQueries({ queryKey: queries.all() });
+
+      order.lineItems.forEach((li) => {
+        void createRsvp({
+          eventId: li.event.id,
+          type: RsvpType.GOING,
+        });
+      });
+    },
+    onError(error: Error) {
+      handleApiError("creating Order", error);
+    },
+  });
 
   const { doPost } = useApiService();
 
@@ -73,9 +93,4 @@ export function useOrderService() {
       })),
       // timestamp: DateTime.fromISO(data.timestamp),
     } as Order);
-
-  return {
-    mutations,
-    createOrder,
-  };
 }

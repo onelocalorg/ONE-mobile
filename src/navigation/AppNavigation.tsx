@@ -12,6 +12,7 @@ import { MyAvatar } from "~/components/navbar/MyAvatar";
 import { OneLogo } from "~/components/navbar/OneLogo";
 import { CreateEditEventScreen } from "~/screens/createEditEvent/CreateEditEventScreen";
 import { CreateEditPostScreen } from "~/screens/createEditPost/CreateEditPostScreen";
+import { ChooseTicketsModal } from "~/screens/event-detail/ChooseTicketsModal";
 import { EventDetailScreen } from "~/screens/event-detail/EventDetailScreen";
 import { EventListScreen } from "~/screens/event/EventListScreen";
 import { GiveGratis } from "~/screens/home/GiveGratis";
@@ -199,6 +200,13 @@ export const AppNavigation = ({ token }: AppNavigationProps) => {
           <RootStack.Screen
             name={Screens.CREATE_EDIT_POST}
             component={CreateEditPostScreen}
+          />
+          <RootStack.Screen
+            name={Screens.CHOOSE_TICKETS}
+            component={ChooseTicketsModal}
+            options={{
+              ...ShortModalScreenOptions,
+            }}
           />
         </RootStack.Group>
       </RootStack.Navigator>
