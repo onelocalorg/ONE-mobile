@@ -47,7 +47,7 @@ export const PostDetailScreen = ({
 
   // const scroll = useRef<KeyboardAwareScrollView>(null);
 
-  const { gotoUserProfile, showGiveGratsModal } = useNavigations();
+  const { gotoUserProfile, showGiveGratisModal } = useNavigations();
   const [parent, setParent] = useState<string>();
 
   const {
@@ -191,9 +191,9 @@ export const PostDetailScreen = ({
       <TouchableOpacity
         activeOpacity={0.8}
         style={styles.gratisContainer}
-        onPress={showGiveGratsModal({ post })}
+        onPress={showGiveGratisModal({ post })}
       >
-        <Text style={styles.gratisClass}>+{post?.gratis}</Text>
+        <Text style={styles.gratisClass}>+{post.gratis}</Text>
         <ImageComponent
           source={gratitudeBlack}
           style={styles.replyImgTwo}
@@ -244,7 +244,7 @@ export const PostDetailScreen = ({
         </Text>
         <Text style={styles.minuteCont}>{reply.gratis}</Text>
         <TouchableOpacity
-          onPress={showGiveGratsModal({
+          onPress={showGiveGratisModal({
             post: postId,
             replyId: reply.id,
           })}
@@ -301,7 +301,7 @@ export const PostDetailScreen = ({
                 </Text>
                 <Text style={styles.minuteCont}>{subReply.gratis}</Text>
                 <TouchableOpacity
-                  onPress={showGiveGratsModal({
+                  onPress={showGiveGratisModal({
                     post: postId,
                     replyId: subReply.id,
                   })}

@@ -41,8 +41,8 @@ export const HomeScreen = ({
     u.pic?.includes("defaultUser.jpg")
   );
 
-  const showGiveGratsModal = (post: Post) => {
-    navigation.push(Screens.GIVE_GRATS_MODAL, { postId: post.id });
+  const showGiveGratisModal = (post: Post) => {
+    navigation.push(Screens.GIVE_GRATIS_MODAL, { postId: post.id });
   };
 
   const navigateToCreatePost = () => {
@@ -83,7 +83,7 @@ export const HomeScreen = ({
             </>
           }
           onContextMenuPress={showContextMenu}
-          onGiveGratsPress={showGiveGratsModal}
+          onGiveGratisPress={showGiveGratisModal}
           onPostPress={handlePostPress}
           onAvatarPress={navigateToProfile}
         />

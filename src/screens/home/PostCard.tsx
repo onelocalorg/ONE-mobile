@@ -15,7 +15,6 @@ import { createStyleSheet } from "./style";
 
 type PostCardProps = {
   post: Post;
-  onContextMenuPress?: () => void;
 };
 export const PostCard = ({ post }: PostCardProps) => {
   const { theme } = useAppTheme();
@@ -28,7 +27,7 @@ export const PostCard = ({ post }: PostCardProps) => {
       <Pressable onPress={gotoPostDetails(post)}>
         <Text style={styles.posttitle}>{_.capitalize(post?.type)}</Text>
         <Pressable
-          onPress={showPostContextMenu(post)}
+          onPress={showPostContextMenu(post, post.author.id)}
           style={{
             position: "absolute",
             right: 14,

@@ -3,6 +3,7 @@ import { PostType } from "./post-data";
 
 // The data for updateing an existing post
 export interface PostUpdateData {
+  id: string;
   type: PostType;
   name?: string;
   details?: string;

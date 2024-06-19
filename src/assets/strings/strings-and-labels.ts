@@ -134,6 +134,9 @@ export const stringsAndLabels = {
   blockUserConfirm:
     "If you continue, you will not be able to see any posts from this user.",
   deletePost: "Delete Post",
+  reportPost: "Report Post",
+  reportPostConfirm:
+    "An email will be sent to ONE|Local with the information you provide",
   hidePost: "Hide Content",
   areyouHide: "Are you sure you want to hide this Post?",
   reportUser: "Report User",

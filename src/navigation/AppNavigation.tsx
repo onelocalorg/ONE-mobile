@@ -12,10 +12,9 @@ import { MyAvatar } from "~/components/navbar/MyAvatar";
 import { OneLogo } from "~/components/navbar/OneLogo";
 import { CreateEventModal } from "~/screens/createEditEvent/CreateEventModal";
 import { CreateEditPostScreen } from "~/screens/createEditPost/CreateEditPostScreen";
-import { EditPostScreen } from "~/screens/createEditPost/EditPostScreen";
 import { EventDetailScreen } from "~/screens/event-detail/EventDetailScreen";
 import { EventListScreen } from "~/screens/event/EventListScreen";
-import { GiveGrats } from "~/screens/home/GiveGrats";
+import { GiveGratis } from "~/screens/home/GiveGratis";
 import { HomeScreen } from "~/screens/home/HomeScreen";
 import { PostContextMenu } from "~/screens/home/PostContextMenu";
 import { PostDetailScreen } from "~/screens/home/PostDetailScreen";
@@ -152,10 +151,6 @@ export const AppNavigation = ({ token }: AppNavigationProps) => {
               component={PostDetailScreen}
             />
             <RootStack.Screen
-              name={Screens.EDIT_POST}
-              component={EditPostScreen}
-            />
-            <RootStack.Screen
               name={Screens.EVENT_DETAIL}
               component={EventDetailScreen}
             />
@@ -184,8 +179,8 @@ export const AppNavigation = ({ token }: AppNavigationProps) => {
             }}
           />
           <RootStack.Screen
-            name={Screens.GIVE_GRATS_MODAL}
-            component={GiveGrats}
+            name={Screens.GIVE_GRATIS_MODAL}
+            component={GiveGratis}
             options={{
               ...ShortModalScreenOptions,
             }}

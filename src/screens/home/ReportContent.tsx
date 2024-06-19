@@ -1,3 +1,4 @@
+import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
 import { Text, TextInput, TouchableOpacity, View } from "react-native";
 import Toast from "react-native-simple-toast";
@@ -6,8 +7,7 @@ import { buttonArrowGreen } from "~/assets/images";
 import { ShortModal } from "~/components/ShortModal";
 import { ImageComponent } from "~/components/image-component";
 import { RootStackScreenProps, Screens } from "~/navigation/types";
-import { reportPost } from "~/network/api/services/usePostService";
-import { handleApiError } from "~/utils/common";
+import { usePostService } from "~/network/api/services/usePostService";
 import { createStyleSheet } from "./style";
 
 export const ReportContent = ({
@@ -18,28 +18,34 @@ export const ReportContent = ({
   const { theme } = useAppTheme();
   const styles = createStyleSheet(theme);
 
-  const [isLoading, setLoading] = useState(false);
   const [reportReason, setReportReason] = useState<string>();
 
-  const submitReportReason = async () => {
+  const {
+    mutations: { reportPost },
+  } = usePostService();
+
+  const { mutate } = useMutation(reportPost);
+
+  const submitReportReason = () => {
     if (!reportReason) {
       Toast.show("Add Reason", Toast.LONG, {
         backgroundColor: "black",
       });
     } else {
-      setLoading(true);
-
-      try {
-        await reportPost(postId, reportReason);
-        navigation.goBack();
-        Toast.show("Report Submit successfully", Toast.LONG, {
-          backgroundColor: "black",
-        });
-      } catch (e) {
-        handleApiError("Error reporting post", e);
-      } finally {
-        setLoading(false);
-      }
+      mutate(
+        {
+          postId,
+          reason: reportReason,
+        },
+        {
+          onSuccess: () => {
+            navigation.goBack();
+            Toast.show("Report Submit successfully", Toast.LONG, {
+              backgroundColor: "black",
+            });
+          },
+        }
+      );
     }
   };
 
@@ -49,7 +55,7 @@ export const ReportContent = ({
       <View>
         <TextInput
           onChangeText={(text) => setReportReason(text)}
-          style={styles.commentInput}
+          style={styles.replyInput}
           placeholder="Add Reason"
         ></TextInput>
       </View>

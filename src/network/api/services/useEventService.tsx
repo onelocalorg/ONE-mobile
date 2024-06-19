@@ -76,8 +76,8 @@ export function useEventService() {
   const createEvent = (eventData: LocalEventData) =>
     doPost(`/v3/events`, eventData);
 
-  const updateEvent = (eventId: string, event: LocalEventUpdateData) =>
-    doPatch(`/v3/events/${eventId}`, event);
+  const updateEvent = (data: LocalEventUpdateData) =>
+    doPatch(`/v3/events/${data.id}`, _.omit(["id"], data));
 
   type GetEventsParams = {
     isPast?: boolean;

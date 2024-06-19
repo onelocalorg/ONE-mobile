@@ -3,6 +3,7 @@ import { TicketTypeData } from "./ticket-type-data";
 
 // The data for creating an event.
 export interface LocalEventUpdateData {
+  id: string;
   name?: string;
   type?: string;
   startDate?: DateTime;

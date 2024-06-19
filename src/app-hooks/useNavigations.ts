@@ -31,21 +31,22 @@ export function useNavigations() {
     });
   };
 
-  const showPostContextMenu = (post: string | Post) => () => {
+  const showPostContextMenu = (post: string | Post, author: string) => () => {
     navigation.navigate(Screens.POST_CONTEXT_MENU_MODAL, {
-      id: asId(post),
+      postId: asId(post),
+      authorId: author,
     });
   };
 
-  interface GiveGratsProps {
+  interface GiveGratisProps {
     post: string | Post;
     commentId?: string;
     replyId?: string;
   }
-  const showGiveGratsModal =
-    ({ post, commentId, replyId }: GiveGratsProps) =>
+  const showGiveGratisModal =
+    ({ post, commentId, replyId }: GiveGratisProps) =>
     () => {
-      navigation.navigate(Screens.GIVE_GRATS_MODAL, {
+      navigation.navigate(Screens.GIVE_GRATIS_MODAL, {
         postId: asId(post),
         commentId,
         replyId,
@@ -57,6 +58,6 @@ export function useNavigations() {
     gotoPostDetails,
     gotoEventDetails,
     showPostContextMenu,
-    showGiveGratsModal,
+    showGiveGratisModal,
   };
 }

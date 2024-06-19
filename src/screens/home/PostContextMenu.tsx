@@ -1,23 +1,29 @@
-import { useState } from "react";
+import { useMutation } from "@tanstack/react-query";
 import { Alert, Text, TouchableOpacity, View } from "react-native";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
 import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
 import { ShortModal } from "~/components/ShortModal";
+import { useMyUserId } from "~/navigation/AuthContext";
 import { RootStackScreenProps, Screens } from "~/navigation/types";
-import { handleApiError } from "~/utils/common";
+import { usePostService } from "~/network/api/services/usePostService";
 import { createStyleSheet } from "./style";
 
 export const PostContextMenu = ({
   navigation,
   route,
 }: RootStackScreenProps<Screens.POST_CONTEXT_MENU_MODAL>) => {
-  const postId = route.params.id;
-  const isMine = route.params.isMine ?? false;
+  const postId = route.params.postId;
+  const authorId = route.params.authorId;
   const { theme } = useAppTheme();
   const styles = createStyleSheet(theme);
   const { strings } = useStringsAndLabels();
+  const myId = useMyUserId();
 
-  const [isLoading, setLoading] = useState(false);
+  const {
+    mutations: { blockUser, deletePost },
+  } = usePostService();
+  const mutateBlockUser = useMutation(blockUser);
+  const mutateDeletePost = useMutation(deletePost);
 
   const confirmBlockUser = () => {
     Alert.alert(strings.blockUser, strings.blockUserConfirm, [
@@ -25,21 +31,12 @@ export const PostContextMenu = ({
       {
         text: strings.yes,
 
-        onPress: async () => {
-          if (isLoading) {
-            // Ignore multiple clicks
-            return;
-          }
-
-          setLoading(true);
-          try {
-            await blockUser(postId);
-            navigation.popToTop();
-          } catch (e) {
-            handleApiError("Error blocking user", e);
-          } finally {
-            setLoading(false);
-          }
+        onPress: () => {
+          mutateBlockUser.mutate(authorId, {
+            onSuccess: () => {
+              navigation.popToTop();
+            },
+          });
         },
       },
     ]);
@@ -51,44 +48,31 @@ export const PostContextMenu = ({
       {
         text: strings.yes,
 
-        onPress: async () => {
-          if (isLoading) {
-            // Ignore multiple clicks
-            return;
-          }
-
-          setLoading(true);
-          try {
-            await deletePost(postId);
-            navigation.popToTop();
-          } catch (e) {
-            handleApiError("Error deleting post", e);
-          } finally {
-            setLoading(false);
-          }
+        onPress: () => {
+          mutateDeletePost.mutate(postId, {
+            onSuccess: () => {
+              navigation.popToTop();
+            },
+          });
         },
       },
     ]);
   };
 
   const handleReportContent = () => {
-    navigation.push(Screens.REPORT_CONTENT_MODAL, { postId: postId });
+    navigation.popToTop();
+    navigation.navigate(Screens.REPORT_CONTENT_MODAL, { postId });
   };
 
   const navigateToEditPost = () => {
-    navigation.push(Screens.MAIN_TABS, {
-      screen: Screens.HOME_STACK,
-      params: {
-        screen: Screens.EDIT_POST,
-        params: { id: postId },
-      },
-    });
+    navigation.popToTop();
+    navigation.navigate(Screens.CREATE_EDIT_POST, { id: postId });
   };
 
   return (
     <ShortModal height={200}>
       <View style={styles.postActionSheet}>
-        {isMine ? (
+        {myId === authorId ? (
           <>
             <TouchableOpacity onPress={navigateToEditPost}>
               <Text style={[styles.postText, { color: "white" }]}>

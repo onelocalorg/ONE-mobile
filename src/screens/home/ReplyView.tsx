@@ -26,7 +26,7 @@ export const ReplyView = ({
   const { theme } = useAppTheme();
   const styles = createStyleSheet(theme);
 
-  const { gotoUserProfile, showGiveGratsModal } = useNavigations();
+  const { gotoUserProfile, showGiveGratisModal } = useNavigations();
 
   return (
     <>
@@ -60,7 +60,7 @@ export const ReplyView = ({
         {/* <Text style={styles.minuteCont}>{formatTimeFromNow(postDate)}</Text> */}
         <Text style={styles.minuteCont}>{gratis}</Text>
         <TouchableOpacity
-          onPress={showGiveGratsModal({
+          onPress={showGiveGratisModal({
             post: postId,
             replyId,
           })}

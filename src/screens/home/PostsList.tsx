@@ -26,14 +26,14 @@ type PostsListProps = {
   onContextMenuPress?: (post: Post) => void;
   onPostPress?: (post: Post) => void;
   onAvatarPress?: (user: OneUser) => void;
-  onGiveGratsPress?: (post: Post) => void;
+  onGiveGratisPress?: (post: Post) => void;
 };
 export const PostsList = ({
   header,
   onContextMenuPress,
   onPostPress,
   onAvatarPress,
-  onGiveGratsPress,
+  onGiveGratisPress,
 }: PostsListProps) => {
   const { theme } = useAppTheme();
   const styles = createStyleSheet(theme);
@@ -63,7 +63,7 @@ export const PostsList = ({
             <TouchableOpacity
               activeOpacity={0.8}
               style={styles.gratisContainer}
-              onPress={() => onGiveGratsPress?.(post)}
+              onPress={() => onGiveGratisPress?.(post)}
             >
               <Text style={styles.gratisClass}>+{post.gratis}</Text>
               <ImageComponent

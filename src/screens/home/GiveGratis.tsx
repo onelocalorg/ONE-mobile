@@ -10,11 +10,11 @@ import { RootStackScreenProps, Screens } from "~/navigation/types";
 import { usePostService } from "~/network/api/services/usePostService";
 import { createStyleSheet } from "./style";
 
-export const GiveGrats = ({
+export const GiveGratis = ({
   navigation,
   route,
-}: RootStackScreenProps<Screens.GIVE_GRATS_MODAL>) => {
-  const postId = route.params.postId;
+}: RootStackScreenProps<Screens.GIVE_GRATIS_MODAL>) => {
+  const { postId, replyId } = route.params;
   const { theme } = useAppTheme();
   const styles = createStyleSheet(theme);
   const { strings } = useStringsAndLabels();
@@ -23,7 +23,7 @@ export const GiveGrats = ({
   const {
     mutations: { giveGrats },
   } = usePostService();
-  const mutateGiveGrats = useMutation(giveGrats);
+  const mutateGiveGratis = useMutation(giveGrats);
 
   const gratisPlusClick = () => {
     setNumGrats((gratis: number) => gratis + 1);
@@ -34,9 +34,10 @@ export const GiveGrats = ({
   };
 
   const handlePress = () => {
-    mutateGiveGrats.mutate(
+    mutateGiveGratis.mutate(
       {
-        postId: postId,
+        postId,
+        replyId,
         points: gratis,
       },
       {
