@@ -1,10 +1,9 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import _ from "lodash/fp";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import {
   Image,
-  Keyboard,
   KeyboardAvoidingView,
   Platform,
   ScrollView,
@@ -97,18 +96,11 @@ export const PostDetailScreen = ({
     return recurse([], parentId);
   };
 
-  useEffect(() => {
-    Keyboard.addListener("keyboardWillShow", () =>
-      scrollRef.current?.scrollTo({ x: 0, y: 0, animated: true })
-    );
-    // Keyboard.addListener("keyboardWillHide", => )
-  });
-
   const handlePressReply = (parentId?: string) => {
     setParent(parentId);
     const author = post!.replies.find((c) => c.id === parentId)?.author;
     if (author) {
-      const name = `${author.firstName} ${author.lastName} `;
+      const name = `${author.firstName} `;
       setValue("content", name);
       setValue("parentId", parentId);
     }
