@@ -1,15 +1,13 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import React, { useState } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
-import Toast from "react-native-simple-toast";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
 import { blackOffer, greenOffer, request, requestGreen } from "~/assets/images";
 import { ImageComponent } from "~/components/image-component";
 import { Loader } from "~/components/loader";
 import { RootStackScreenProps, Screens } from "~/navigation/types";
 import { usePostService } from "~/network/api/services/usePostService";
-import { PostData, PostType } from "~/types/post-data";
-import { handleApiError } from "~/utils/common";
+import { PostType } from "~/types/post-data";
 import { PostEditor } from "./PostEditor";
 import { createStyleSheet } from "./style";
 
@@ -28,29 +26,16 @@ export const CreateEditPostScreen = ({
     mutations: { createPost, editPost },
   } = usePostService();
 
-  const { data: post, isLoading } = useQuery(getPost(postId));
+  const { data: post, isPending, isLoading } = useQuery(getPost(postId));
 
   const getType = () => post?.type ?? type;
 
   const mutateCreatePost = useMutation(createPost);
   const mutateEditPost = useMutation(editPost);
 
-  const sendToApi = (data: PostData) => {
-    console.log("createPost", data);
-    mutateCreatePost.mutate(data, {
-      onSuccess: () => {
-        Toast.show("New post created", 5);
-        navigation.goBack();
-      },
-      onError: (error) => {
-        handleApiError("Create post", error);
-      },
-    });
-  };
-
   return (
     <>
-      <Loader visible={isLoading} />
+      <Loader visible={isPending} />
       <View style={styles.postFilter}>
         <TouchableOpacity
           style={styles.container3}

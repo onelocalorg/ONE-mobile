@@ -52,7 +52,7 @@ export const PostEditor = ({
           type,
           name: "",
           details: "",
-          timezone: "America/Denver",
+          timezone: DateTime.local().zoneName,
         },
   });
 

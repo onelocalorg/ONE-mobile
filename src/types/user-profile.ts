@@ -3,7 +3,6 @@ export interface UserProfile extends UserProfileData {
   firstName: string;
   lastName: string;
   gratis: number;
-  isMe: boolean;
 }
 
 export interface UserProfileData extends UserProfileUpdateData {

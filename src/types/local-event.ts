@@ -7,7 +7,6 @@ export interface LocalEvent extends LocalEventData {
   id: string;
   host: OneUser;
   ticketTypes: TicketType[];
-  isMyEvent: boolean;
   isCanceled: boolean;
   viewCount: number;
   timezone: string;

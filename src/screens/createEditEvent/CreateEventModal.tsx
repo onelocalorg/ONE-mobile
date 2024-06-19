@@ -1,6 +1,6 @@
 import React from "react";
-import { CreateEditEvent } from "./CreateEditEvent";
+import { EventEditor } from "./EventEditor";
 
 export const CreateEventModal = () => {
-  return <CreateEditEvent />;
+  return <EventEditor />;
 };

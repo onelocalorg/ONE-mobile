@@ -184,11 +184,6 @@ export function usePostService() {
       { points }
     );
 
-  interface CreateReplyProps {
-    postId: string;
-    parentId?: string;
-    content: string;
-  }
   const createReply = ({ postId, parentId, content }: CreateReplyProps) =>
     doPost<Reply>(`/v3/posts/${postId}/replies`, {
       parent: parentId,
@@ -206,4 +201,10 @@ export function usePostService() {
     queries,
     mutations,
   };
+}
+
+export interface CreateReplyProps {
+  postId: string;
+  parentId?: string;
+  content: string;
 }

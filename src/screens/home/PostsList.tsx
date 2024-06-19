@@ -15,7 +15,6 @@ import { comment, gratitudeBlack } from "~/assets/images";
 import { ImageComponent } from "~/components/image-component";
 import { Loader } from "~/components/loader";
 import { usePostService } from "~/network/api/services/usePostService";
-import { OneUser } from "~/types/one-user";
 import { Post } from "~/types/post";
 import { handleApiError } from "~/utils/common";
 import { PostCard } from "./PostCard";
@@ -23,23 +22,13 @@ import { createStyleSheet } from "./style";
 
 type PostsListProps = {
   header?: ReactElement;
-  onContextMenuPress?: (post: Post) => void;
-  onPostPress?: (post: Post) => void;
-  onAvatarPress?: (user: OneUser) => void;
-  onGiveGratisPress?: (post: Post) => void;
 };
-export const PostsList = ({
-  header,
-  onContextMenuPress,
-  onPostPress,
-  onAvatarPress,
-  onGiveGratisPress,
-}: PostsListProps) => {
+export const PostsList = ({ header }: PostsListProps) => {
   const { theme } = useAppTheme();
   const styles = createStyleSheet(theme);
   const { strings } = useStringsAndLabels();
   const [isLoading, setLoading] = useState(false);
-  const { gotoPostDetails } = useNavigations();
+  const { gotoPostDetails, showGiveGratisModal } = useNavigations();
 
   const {
     queries: { list: listPosts },
@@ -54,16 +43,12 @@ export const PostsList = ({
     return (
       <View style={styles.feedContainer}>
         <Pressable onPress={() => gotoPostDetails(post)}>
-          <PostCard
-            post={post}
-            onPress={() => onContextMenuPress?.(post)}
-            onAvatarPress={onAvatarPress}
-          />
+          <PostCard post={post} />
           <View style={styles.gratisAndReplyContainer}>
             <TouchableOpacity
               activeOpacity={0.8}
               style={styles.gratisContainer}
-              onPress={() => onGiveGratisPress?.(post)}
+              onPress={showGiveGratisModal({ post: post })}
             >
               <Text style={styles.gratisClass}>+{post.gratis}</Text>
               <ImageComponent

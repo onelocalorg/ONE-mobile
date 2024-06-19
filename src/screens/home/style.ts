@@ -8,7 +8,6 @@ export const createStyleSheet = (theme: ThemeProps) => {
     container: {
       backgroundColor: theme.colors.white,
       flex: 1,
-      paddingBottom: 70,
     },
     viewport: {
       justifyContent: "space-between",

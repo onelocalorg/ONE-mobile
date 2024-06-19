@@ -1,12 +1,14 @@
 import { queryOptions, useQueryClient } from "@tanstack/react-query";
 import _ from "lodash/fp";
 import { LOG } from "~/config";
+import { ApiError } from "~/types";
 import { LocalEvent } from "~/types/local-event";
 import { LocalEventData } from "~/types/local-event-data";
 import { LocalEventUpdateData } from "~/types/local-event-update-data";
 import { PriceBreakdown } from "~/types/price-breakdown";
 import { Rsvp, RsvpData, RsvpList } from "~/types/rsvp";
 import { TicketSelection } from "~/types/ticket-selection";
+import { handleApiError } from "~/utils/common";
 import { useApiService } from "./ApiService";
 
 export function useEventService() {
@@ -21,10 +23,10 @@ export function useEventService() {
         queryFn: () => getEvents(filters),
       }),
     details: () => [...queries.all(), "detail"],
-    detail: (id: string) =>
+    detail: (id?: string) =>
       queryOptions({
         queryKey: [...queries.details(), id],
-        queryFn: () => getEvent(id),
+        queryFn: () => getEvent(id!),
         enabled: !!id,
         staleTime: 5000,
       }),
@@ -44,6 +46,35 @@ export function useEventService() {
       },
       onSuccess: () => {
         void queryClient.invalidateQueries({ queryKey: queries.all() });
+      },
+    },
+    editEvent: {
+      mutationFn: (params: LocalEventUpdateData) => {
+        return updateEvent(params);
+      },
+      onSuccess: (resp: LocalEvent) => {
+        void queryClient.invalidateQueries({
+          queryKey: queries.detail(resp.id).queryKey,
+        });
+
+        // TODO Change cache to invalidate less
+        void queryClient.invalidateQueries({ queryKey: queries.lists() });
+      },
+      onError: (err: ApiError) => {
+        handleApiError("reporting post", err);
+      },
+    },
+    cancelEvent: {
+      mutationFn: (postId: string) => {
+        return cancelEvent(postId);
+      },
+      onSuccess: (resp: LocalEvent) => {
+        void queryClient.invalidateQueries({
+          queryKey: queries.lists(),
+        });
+      },
+      onError: (err: ApiError) => {
+        handleApiError("deleting post", err);
       },
     },
     createRsvp: {
@@ -77,7 +108,10 @@ export function useEventService() {
     doPost(`/v3/events`, eventData);
 
   const updateEvent = (data: LocalEventUpdateData) =>
-    doPatch(`/v3/events/${data.id}`, _.omit(["id"], data));
+    doPatch<LocalEvent>(`/v3/events/${data.id}`, _.omit(["id"], data));
+
+  const cancelEvent = (id: string) =>
+    doPost<LocalEvent>(`/v3/events/${id}/cancel`);
 
   type GetEventsParams = {
     isPast?: boolean;
@@ -202,6 +236,7 @@ export function useEventService() {
     getEvent,
     createEvent,
     updateEvent,
+    cancelEvent,
     getEvents,
     getRsvps,
     deleteRsvp,

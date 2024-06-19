@@ -9,6 +9,7 @@ import { ImageComponent } from "~/components/image-component";
 import { Input } from "~/components/input";
 import { Loader } from "~/components/loader";
 import { Pill } from "~/components/pill";
+import { useMyUserId } from "~/navigation/AuthContext";
 import { UserProfile } from "~/types/user-profile";
 import { createStyleSheet } from "./style";
 
@@ -16,7 +17,6 @@ interface AboutDataProps {
   user: UserProfile;
   onEditProfile?: (data: { about?: string; skills?: string[] }) => void;
 }
-
 export const MyAbout = ({ user, onEditProfile }: AboutDataProps) => {
   const { theme } = useAppTheme();
   const { strings } = useStringsAndLabels();
@@ -25,11 +25,9 @@ export const MyAbout = ({ user, onEditProfile }: AboutDataProps) => {
   const [updatedAbout, setAbout] = useState(about);
   const [allSkills, setSkills] = useState(skills);
   const [skillValue, setSkillValue]: any = useState("");
-  const [modalVisible, setModalVisible] = useState(false);
-  const [memberModal, setMemberModal] = useState(false);
-  const [openQues, quesAnsModal] = useState(false);
-  // const [ansQueData, submitAnsState] = useState(user.profile_answers);
-  const [isLoading, setLoading] = useState(false);
+  const myUserId = useMyUserId();
+
+  const isMe = myUserId === user.id;
 
   const handleRemoveSkill = (id: any) => {
     const newPeople = allSkills.filter((person) => person !== id);
@@ -279,9 +277,9 @@ export const MyAbout = ({ user, onEditProfile }: AboutDataProps) => {
               )} */}
 
         <Text style={styles.membership}>
-          {user.isMe ? strings.aboutMe : `About ${user.firstName}`}
+          {isMe ? strings.aboutMe : `About ${user.firstName}`}
         </Text>
-        {user.isMe ? (
+        {isMe ? (
           <Input
             inputStyle={styles.input}
             value={updatedAbout}
@@ -295,7 +293,7 @@ export const MyAbout = ({ user, onEditProfile }: AboutDataProps) => {
         )}
 
         <Text style={styles.membership}>{strings.skills}</Text>
-        {user.isMe ? (
+        {isMe ? (
           <>
             {skillValue !== "" ? (
               <TouchableOpacity

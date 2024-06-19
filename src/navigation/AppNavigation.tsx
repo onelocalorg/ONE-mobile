@@ -10,7 +10,7 @@ import { ShortModalScreenOptions } from "~/components/ShortModal";
 import { GenericWebView } from "~/components/generic-webview";
 import { MyAvatar } from "~/components/navbar/MyAvatar";
 import { OneLogo } from "~/components/navbar/OneLogo";
-import { CreateEventModal } from "~/screens/createEditEvent/CreateEventModal";
+import { CreateEditEventScreen } from "~/screens/createEditEvent/CreateEditEventScreen";
 import { CreateEditPostScreen } from "~/screens/createEditPost/CreateEditPostScreen";
 import { EventDetailScreen } from "~/screens/event-detail/EventDetailScreen";
 import { EventListScreen } from "~/screens/event/EventListScreen";
@@ -194,7 +194,7 @@ export const AppNavigation = ({ token }: AppNavigationProps) => {
           />
           <RootStack.Screen
             name={Screens.CREATE_EDIT_EVENT}
-            component={CreateEventModal}
+            component={CreateEditEventScreen}
           />
           <RootStack.Screen
             name={Screens.CREATE_EDIT_POST}

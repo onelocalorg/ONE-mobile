@@ -1,6 +1,7 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import _ from "lodash/fp";
 import React, { useEffect, useRef, useState } from "react";
+import { Controller, useForm } from "react-hook-form";
 import {
   Image,
   Keyboard,
@@ -26,7 +27,10 @@ import {
 import { ImageComponent } from "~/components/image-component";
 import { Loader } from "~/components/loader";
 import { RootStackScreenProps, Screens } from "~/navigation/types";
-import { usePostService } from "~/network/api/services/usePostService";
+import {
+  CreateReplyProps,
+  usePostService,
+} from "~/network/api/services/usePostService";
 import { PostType } from "~/types/post-data";
 import { PostDetail } from "~/types/post-detail";
 import { Reply } from "~/types/reply";
@@ -40,10 +44,24 @@ export const PostDetailScreen = ({
   const isReplyFocus = route.params.isReplyFocus ?? false;
   const { theme } = useAppTheme();
   const styles = createStyleSheet(theme);
-  const [replyContent, setReplyContent] = useState("");
   const flatListRef: any = React.useRef();
   const replyRef = useRef<TextInput>(null);
   const scrollRef = useRef<ScrollView>(null);
+
+  const {
+    control,
+    handleSubmit,
+    resetField,
+    setValue,
+    formState: { errors },
+  } = useForm<CreateReplyProps>({
+    defaultValues: {
+      postId,
+      content: "",
+    },
+  });
+  const onSubmit = (data: CreateReplyProps) =>
+    mutateCreateReply.mutate(data, { onSuccess: () => resetField("content") });
 
   // const scroll = useRef<KeyboardAwareScrollView>(null);
 
@@ -54,6 +72,7 @@ export const PostDetailScreen = ({
     queries: { detail: postDetail },
     mutations: { createReply },
   } = usePostService();
+  const mutateCreateReply = useMutation(createReply);
 
   const {
     isPending,
@@ -78,24 +97,6 @@ export const PostDetailScreen = ({
     return recurse([], parentId);
   };
 
-  const mutateCreateReply = useMutation(createReply);
-
-  function sendReply() {
-    mutateCreateReply.mutate(
-      {
-        postId,
-        parentId: parent,
-        content: replyContent,
-      },
-      {
-        onSuccess: () => {
-          flatListRef.current.scrollToOffset({ animated: true, offset: 0 });
-          setReplyContent("");
-        },
-      }
-    );
-  }
-
   useEffect(() => {
     Keyboard.addListener("keyboardWillShow", () =>
       scrollRef.current?.scrollTo({ x: 0, y: 0, animated: true })
@@ -108,7 +109,8 @@ export const PostDetailScreen = ({
     const author = post!.replies.find((c) => c.id === parentId)?.author;
     if (author) {
       const name = `${author.firstName} ${author.lastName} `;
-      setReplyContent(name);
+      setValue("content", name);
+      setValue("parentId", parentId);
     }
 
     // flatListRef.current.scrollToOffset({ animated: true, offset: 0 });
@@ -321,25 +323,38 @@ export const PostDetailScreen = ({
   // };
 
   const Footer = () => (
-    <View style={styles.sticky}>
-      <View style={styles.reply}>
-        <TextInput
-          ref={replyRef}
-          style={styles.replyInput}
-          placeholder="Make a Reply"
-          placeholderTextColor="gray"
-          value={replyContent}
-          autoFocus={isReplyFocus}
-          onChangeText={setReplyContent}
-        ></TextInput>
-        <TouchableOpacity style={{ alignSelf: "center" }} onPress={sendReply}>
-          <ImageComponent
-            style={{ height: 40, width: 40 }}
-            source={send}
-          ></ImageComponent>
-        </TouchableOpacity>
-      </View>
-    </View>
+    // <View style={styles.sticky}>
+    <Controller
+      control={control}
+      rules={{
+        required: true,
+      }}
+      render={({ field: { onChange, onBlur, value } }) => (
+        <View style={styles.reply}>
+          <TextInput
+            ref={replyRef}
+            style={styles.replyInput}
+            placeholder="Make a Reply"
+            placeholderTextColor="gray"
+            value={value}
+            autoFocus={isReplyFocus}
+            onBlur={onBlur}
+            onChangeText={onChange}
+          ></TextInput>
+          <TouchableOpacity
+            style={{ alignSelf: "center" }}
+            onPress={handleSubmit(onSubmit)}
+          >
+            <ImageComponent
+              style={{ height: 40, width: 40 }}
+              source={send}
+            ></ImageComponent>
+          </TouchableOpacity>
+        </View>
+      )}
+      name="content"
+    />
+    // </View>
   );
 
   return post ? (

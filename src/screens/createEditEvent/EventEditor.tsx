@@ -1,7 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation } from "@react-navigation/native";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import _ from "lodash/fp";
 import { DateTime } from "luxon";
 import React, { useState } from "react";
@@ -15,10 +14,9 @@ import {
   View,
 } from "react-native";
 import { launchImageLibrary } from "react-native-image-picker";
-import Toast from "react-native-simple-toast";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
 import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
-import { addGreen, dummy, edit, pinWhite, save } from "~/assets/images";
+import { addGreen, dummy, edit, pinWhite } from "~/assets/images";
 import { ButtonComponent } from "~/components/button-component";
 import { ChooseDate } from "~/components/choose-date/ChooseDate";
 import { ImageComponent } from "~/components/image-component";
@@ -35,29 +33,31 @@ import { LocalEvent, isLocalEvent } from "~/types/local-event";
 import { LocalEventData } from "~/types/local-event-data";
 import { LocalEventUpdateData } from "~/types/local-event-update-data";
 import { TicketTypeData } from "~/types/ticket-type-data";
-import { handleApiError } from "~/utils/common";
 import { AddTicketModal } from "./AddTicketModal";
 import { createStyleSheet } from "./style";
 
-interface CreateEditEventProps {
+interface EventEditorProps {
   event?: LocalEvent;
+  isLoading: boolean;
+  onSubmitCreate?: (data: LocalEventData, { onSuccess }) => void;
+  onSubmitUpdate?: (data: LocalEventUpdateData, { onSuccess }) => void;
 }
-export const CreateEditEvent = ({ event }: CreateEditEventProps) => {
+export const EventEditor = ({
+  event,
+  isLoading,
+  onSubmitCreate,
+  onSubmitUpdate,
+}: EventEditorProps) => {
   const { theme } = useAppTheme();
   const { strings } = useStringsAndLabels();
-  const isCreateEvent = !event;
   const viewCount = isLocalEvent(event) ? event.viewCount : undefined;
   const styles = createStyleSheet(theme);
   const navigation = useNavigation();
   const [isEndDateActive, setEndDateActive] = useState(false);
-  const [isLoading, setLoading] = useState(false);
   const [curTicket, setCurTicket] = useState<number | undefined>();
-  const queryClient = useQueryClient();
   const myUserId = useMyUserId();
 
-  const {
-    mutations: { createEvent },
-  } = useEventService();
+  const isMyEvent = myUserId === event?.id;
 
   const {
     control,
@@ -66,147 +66,50 @@ export const CreateEditEvent = ({ event }: CreateEditEventProps) => {
     handleSubmit,
     formState: { errors },
   } = useForm<LocalEventData>({
-    defaultValues: {
-      name: "",
-      startDate: DateTime.now().startOf("hour").plus({ hour: 1 }),
-      coordinates: [],
-      ticketTypes: [],
-      timezone: "America/Denver",
-    },
+    defaultValues: event
+      ? {
+          ..._.omit(
+            [
+              "gratis",
+              "replies",
+              "postDate",
+              "author",
+              "host",
+              "isCanceled",
+              "viewCount",
+            ],
+            event
+          ),
+        }
+      : {
+          name: "",
+          startDate: DateTime.now().startOf("hour").plus({ hour: 1 }),
+          coordinates: [],
+          ticketTypes: [],
+          timezone: DateTime.local().zoneName,
+        },
   });
 
-  const mutateCreateEvent = useMutation(createEvent);
+  const {
+    mutations: { cancelEvent },
+  } = useEventService();
 
-  async function onCancelEvent(eventID: any) {
-    setLoading(true);
-    const token = await AsyncStorage.getItem("token");
+  const mutateCancelEvent = useMutation(cancelEvent);
 
-    console.log("=========== Cancle Event API Request ==============");
-    console.log(process.env.API_URL + "/v3/events/cancel-event/" + eventID);
-    try {
-      const response = await fetch(
-        process.env.API_URL + "/v3/events/cancel-event/" + eventID,
-        {
-          method: "post",
-          headers: new Headers({
-            Authorization: "Bearer " + token,
-            "Content-Type": "application/json",
-            Accept: "application/json",
-          }),
-        }
-      );
-      const dataItem = await response.json();
-      console.log("=========== Cancle Event API Response ==============");
-      console.log(dataItem);
-
-      Toast.show(dataItem?.message, Toast.LONG, {
-        backgroundColor: "black",
-      });
-      if (dataItem?.success === true) {
-        setLoading(false);
-        navigation?.goBack();
-      } else {
-        setLoading(false);
-      }
-
-      // postListAPI();
-    } catch (error) {
-      setLoading(false);
-      console.error(error);
-    }
-  }
-
-  // const onNavigate = () => {
-  //   navigation?.navigate(navigations.CHECK_IN, { eventId: id });
-  // };
-
-  // const isValid = () => {
-  //   return !(
-  //     (eventData.name && eventData.startDate && eventData.coordinates)
-  //     // tickets?.length &&
-  //     // address &&
-  //     // full_address &&
-  //     // about &&
-  //     // !!eventImageDisplay
-  //   );
-  // };
-
-  const handleCreateEvent = (data: LocalEventData) => {
-    if (data.name && data.coordinates) {
-      mutateCreateEvent.mutate(data, {
-        onSuccess: () => {
-          Toast.show("New event created", 5);
-          navigation.goBack();
-        },
-        onError: (error) => {
-          handleApiError("Create event", error);
-        },
-      });
-    }
-  };
-
-  const handleUpdateEvent = async () => {
-    // var getTicket: any = ticketTypes?.map((ele) => ele?.id ?? "");
-    setLoading(true);
-    Keyboard.dismiss();
-    const data: LocalEventUpdateData = {
-      name: name !== event?.name ? name : undefined,
-      fullAddress: fullAddress !== event?.fullAddress ? fullAddress : undefined,
-      startDate: startDate !== event?.startDate ? startDate : undefined,
-      endDate: endDate !== event?.endDate ? endDate : undefined,
-      eventImage: eventImage !== event?.eventImage ? eventImage : undefined,
-      // emailConfirmationBody: emailConfirmationBody !== event?.emailConfirmationBody ? emailConfirmationBody : undefined,
-      about: about !== event?.about ? about : undefined,
-      latitude: latitude !== event?.latitude ? latitude : undefined,
-      longitude: longitude !== event?.longitude ? longitude : undefined,
-      ticketTypes: isTicketTypesDirty
-        ? ticketTypes.map(
-            (tt) => _.omit(["sold", "isAvailable"], tt) as TicketTypeData
-          )
-        : undefined,
+  const onSubmit = (data: LocalEventData | LocalEventUpdateData) => {
+    const onSuccess = () => {
+      navigation.goBack();
     };
 
-    if (_.isEmpty(data)) {
-      Alert.alert("", strings.pleaseEdit);
-      return;
-    }
-
-    try {
-      await updateEvent(eventId, data);
-      navigation?.goBack();
-    } catch (e: any) {
-      handleApiError("Failed to update event", e);
-    } finally {
-      setLoading(false);
-    }
+    event
+      ? onSubmitUpdate!(data as LocalEventUpdateData, { onSuccess })
+      : onSubmitCreate!(data as LocalEventData, { onSuccess });
   };
-
-  // FIXME flip between create and edit
-  const onSubmit = handleSubmit((data) => handleCreateEvent(data));
-
-  // const handleText = (text: string, key: string) => {
-  //   setEventDetails({ ...eventDetails, [key]: text });
-  // };
 
   const onTicketAdded = (ticket: TicketTypeData) => {
     LOG.debug("> onTicketAdded", ticket);
     setValue("ticketTypes", [...getValues("ticketTypes"), ticket]);
     setCurTicket(undefined);
-
-    // const eventDetailsCopy = { ...eventDetails };
-    // if (isEdit) {
-    //   const allTickets = [...(eventDetailsCopy?.tickets || [])];
-    //   const index = allTickets.findIndex(
-    //     (ele) => ele?.id === ticket?.id
-    //   );
-    //   allTickets.splice(index, 1, ticket);
-    //   eventDetailsCopy.tickets = allTickets;
-    // } else {
-    //   const allTickets = [...(eventDetailsCopy?.tickets || [])];
-    //   allTickets.push(ticket);
-    //   eventDetailsCopy.tickets = allTickets;
-    // }
-    // setEventDetails(eventDetailsCopy);
   };
 
   const handleTicketRemoved = (index: number) => {
@@ -353,7 +256,9 @@ export const CreateEditEvent = ({ event }: CreateEditEventProps) => {
         {
           text: strings.yes,
           onPress: () => {
-            onCancelEvent(id);
+            mutateCancelEvent.mutate(id, {
+              onSuccess: () => navigation.goBack(),
+            });
           },
         },
       ],
@@ -438,7 +343,9 @@ export const CreateEditEvent = ({ event }: CreateEditEventProps) => {
               name="name"
             />
             {errors.name && <Text>This is required.</Text>}
+
             <ChooseStartAndEndDates />
+
             <View style={[styles.row, styles.center]}>
               <View style={[styles.circularView, styles.yellow]}>
                 <ImageComponent source={pinWhite} style={styles.pinWhite} />
@@ -492,6 +399,9 @@ export const CreateEditEvent = ({ event }: CreateEditEventProps) => {
             <SizedBox height={verticalScale(4)} />
             <Controller
               control={control}
+              rules={{
+                required: true,
+              }}
               render={({ field: { onChange, value } }) => (
                 <Input
                   placeholder={strings.enterAboutEvent}
@@ -503,6 +413,8 @@ export const CreateEditEvent = ({ event }: CreateEditEventProps) => {
               )}
               name="about"
             />
+            {errors.about && <Text>This is required.</Text>}
+
             <View style={[styles.row, styles.marginTop]}>
               <Text style={styles.tickets}>{strings.tickets}:</Text>
               {/* <Pressable
@@ -552,7 +464,7 @@ export const CreateEditEvent = ({ event }: CreateEditEventProps) => {
 
           {event ? (
             <View>
-              {event.isMyEvent ? (
+              {isMyEvent ? (
                 <View>
                   <View style={styles.uniqueViewCont}>
                     <Text style={styles.uniqueViewLbl}>Unique Views</Text>
@@ -579,10 +491,9 @@ export const CreateEditEvent = ({ event }: CreateEditEventProps) => {
 
       <View style={styles.bottomButton}>
         <ButtonComponent
-          onPress={onSubmit}
-          icon={save}
-          title={strings.save}
-          // disabled={isValid() || isLoading}
+          onPress={handleSubmit(onSubmit)}
+          title={event ? strings.updateEvent : strings.createEvent}
+          disabled={isLoading}
         />
       </View>
 

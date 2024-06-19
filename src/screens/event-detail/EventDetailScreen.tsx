@@ -1,7 +1,8 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { DateTime } from "luxon";
-import React, { useState } from "react";
+import React from "react";
 import { Image, Text, TouchableOpacity, View } from "react-native";
+import { ScrollView } from "react-native-gesture-handler";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
 import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
 import { useNavigations } from "~/app-hooks/useNavigations";
@@ -10,6 +11,7 @@ import { ButtonComponent } from "~/components/button-component";
 import { ImageComponent } from "~/components/image-component";
 import { Loader } from "~/components/loader";
 import { SizedBox } from "~/components/sized-box";
+import { useMyUserId } from "~/navigation/AuthContext";
 import { RootStackScreenProps, Screens } from "~/navigation/types";
 import { useEventService } from "~/network/api/services/useEventService";
 import { verticalScale } from "~/theme/device/normalize";
@@ -27,15 +29,13 @@ export const EventDetailScreen = ({
   const { theme } = useAppTheme();
   const { strings } = useStringsAndLabels();
   const styles = createStyleSheet(theme);
-  const [isLoading, setLoading] = useState(false);
   const { gotoUserProfile } = useNavigations();
+  const myUserId = useMyUserId();
 
   const {
-    queries: { detail: eventDetail, rsvpsForEvent },
+    queries: { detail: eventDetail },
     mutations: { createRsvp },
   } = useEventService();
-
-  const mutateCreateRsvp = useMutation(createRsvp);
 
   const {
     isPending,
@@ -43,14 +43,24 @@ export const EventDetailScreen = ({
     data: event,
     error,
   } = useQuery(eventDetail(eventId));
+  if (isError) handleApiError("loading event", error);
 
-  if (isPending !== isLoading) {
-    setLoading(isPending);
-  }
-  if (isError) handleApiError("Event", error);
+  const mutateCreateRsvp = useMutation(createRsvp);
+
+  // const { isPending, isLoading, event, rsvpList } = useQueries({
+  //   queries: [eventDetail(eventId), rsvpsForEvent(eventId)],
+  //   combine: (results) => {
+  //     return {
+  //       event: results[0].data,
+  //       rsvpList: results[1].data,
+  //       isLoading: results.some((result) => result.isLoading),
+  //       isPending: results.some((result) => result.isPending),
+  //     };
+  //   },
+  // });
 
   const handleEditEvent = () => {
-    navigation.push(Screens.CREATE_EDIT_EVENT, { id: event!.id });
+    navigation.push(Screens.CREATE_EDIT_EVENT, { id: eventId });
   };
 
   const addGoingRsvp = () => {
@@ -62,13 +72,13 @@ export const EventDetailScreen = ({
 
   return (
     <View>
-      <Loader visible={isLoading} showOverlay />
+      <Loader visible={isPending} showOverlay />
       {event ? (
         <>
-          <View style={styles.container}>
-            <Text style={styles.title}>{event.name}</Text>
-            <SizedBox height={verticalScale(16)} />
-            <View style={{ position: "relative" }}>
+          <ScrollView>
+            <View style={styles.container}>
+              <Text style={styles.title}>{event.name}</Text>
+              <SizedBox height={verticalScale(16)} />
               <Image
                 resizeMode="cover"
                 source={
@@ -78,70 +88,66 @@ export const EventDetailScreen = ({
                 }
                 style={styles.eventImage}
               />
-
-              {/* <View style={{position:'absolute',bottom:-10,width:165,height:34,backgroundColor:'#DA9791',alignSelf:'center',borderRadius:7,justifyContent:'center'}}>
-              <TouchableOpacity style={{width:46,height:15,backgroundColor:'black',justifyContent:'center',alignItems:'center'}}>
-                <Text style={{color:'white',textAlign:'center',justifyContent:'center',alignItems:'center',alignSelf:'center'}}>hello</Text>
-              </TouchableOpacity>
-            </View> */}
+              <SizedBox height={verticalScale(35)} />
+              <View style={styles.row}>
+                <View style={styles.circularView}>
+                  <ImageComponent
+                    source={calendarTime}
+                    style={styles.calendarTime}
+                  />
+                </View>
+                <View style={styles.margin}>
+                  <Text style={styles.date}>
+                    {event.startDate.toLocaleString(DateTime.DATE_MED)}
+                  </Text>
+                  <Text style={styles.time}>
+                    {event.startDate.toLocaleString(DateTime.TIME_SIMPLE)}
+                  </Text>
+                </View>
+              </View>
+              <View style={[styles.row, styles.marginTop]}>
+                <View style={[styles.circularView, styles.yellow]}>
+                  <ImageComponent source={pinWhite} style={styles.pinWhite} />
+                </View>
+                <View style={styles.margin}>
+                  <Text style={styles.date}>{event.venue}</Text>
+                  <Text style={styles.time}>{event.address}</Text>
+                </View>
+              </View>
+              <View style={[styles.row, styles.marginTop]}>
+                <TouchableOpacity
+                  activeOpacity={0.8}
+                  onPress={gotoUserProfile(event.host)}
+                >
+                  <ImageComponent
+                    resizeMode="cover"
+                    source={{ uri: event.host.pic }}
+                    style={styles.dummy}
+                  />
+                </TouchableOpacity>
+                <View style={styles.margin}>
+                  <Text
+                    style={styles.date}
+                  >{`${event.host.firstName} ${event.host.lastName}`}</Text>
+                </View>
+              </View>
+              <SizedBox height={verticalScale(30)} />
+              <Text style={styles.event}>{strings.aboutEvent}</Text>
+              <Text style={styles.desc}>{event.about}</Text>
             </View>
-            <SizedBox height={verticalScale(35)} />
-            <View style={styles.row}>
-              <View style={styles.circularView}>
-                <ImageComponent
-                  source={calendarTime}
-                  style={styles.calendarTime}
-                />
-              </View>
-              <View style={styles.margin}>
-                <Text style={styles.date}>
-                  {event.startDate.toLocaleString(DateTime.DATE_MED)}
-                </Text>
-                <Text style={styles.time}>
-                  {event.startDate.toLocaleString(DateTime.TIME_SIMPLE)}
-                </Text>
-              </View>
-            </View>
-            <View style={[styles.row, styles.marginTop]}>
-              <View style={[styles.circularView, styles.yellow]}>
-                <ImageComponent source={pinWhite} style={styles.pinWhite} />
-              </View>
-              <View style={styles.margin}>
-                <Text style={styles.date}>{event.venue}</Text>
-                <Text style={styles.time}>{event.address}</Text>
-              </View>
-            </View>
-            <View style={[styles.row, styles.marginTop]}>
-              <TouchableOpacity
-                activeOpacity={0.8}
-                onPress={gotoUserProfile(event.host)}
-              >
-                <ImageComponent
-                  resizeMode="cover"
-                  source={{ uri: event.host.pic }}
-                  style={styles.dummy}
-                />
-              </TouchableOpacity>
-              <View style={styles.margin}>
-                <Text
-                  style={styles.date}
-                >{`${event.host.firstName} ${event.host.lastName}`}</Text>
-              </View>
-            </View>
-            <SizedBox height={verticalScale(30)} />
-            <Text style={styles.event}>{strings.aboutEvent}</Text>
-            <Text style={styles.desc}>{event.about}</Text>
-          </View>
-          <Tickets event={event} onTicketPurchased={addGoingRsvp} />
-          <RsvpView event={event} />
+            <Tickets event={event} onTicketPurchased={addGoingRsvp} />
+            <RsvpView event={event} />
+            {event.host.id === myUserId ? (
+              <ButtonComponent
+                title={strings.editEvent}
+                onPress={handleEditEvent}
+              />
+            ) : (
+              <></>
+            )}
+          </ScrollView>
         </>
       ) : null}
-
-      {event?.isMyEvent ? (
-        <ButtonComponent title={strings.adminTools} onPress={handleEditEvent} />
-      ) : (
-        <></>
-      )}
     </View>
   );
 };
