@@ -4,26 +4,21 @@ import React, { useState } from "react";
 import { FlatList, ListRenderItem, Text, View } from "react-native";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
 import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
-import { useNavigations } from "~/app-hooks/useNavigations";
 import { EventItem } from "~/components/events/EventItem";
 import { Loader } from "~/components/loader";
-import { EventsStackScreenProps, Screens } from "~/navigation/types";
 import { useEventService } from "~/network/api/services/useEventService";
 import { LocalEvent } from "~/types/local-event";
 import { handleApiError } from "~/utils/common";
 import { AddEventView } from "./AddEventView";
 import { createStyleSheet } from "./style";
 
-export const EventListScreen = ({
-  navigation,
-}: EventsStackScreenProps<Screens.EVENTS_LIST>) => {
+export const EventListScreen = () => {
   const { theme } = useAppTheme();
   const styles = createStyleSheet(theme);
   const { strings } = useStringsAndLabels();
   const makeDate = new Date();
   makeDate.setMonth(makeDate.getMonth() + 1);
   const [isLoading, setLoading] = useState(false);
-  const { gotoEventDetails } = useNavigations();
 
   const {
     queries: { list: listEvents },
@@ -41,11 +36,7 @@ export const EventListScreen = ({
   const renderLocalEvent: ListRenderItem<LocalEvent> = ({ item }) => {
     return (
       <View>
-        <EventItem
-          style={styles.listContainer}
-          event={item}
-          onPress={gotoEventDetails}
-        />
+        <EventItem style={styles.listContainer} event={item} />
       </View>
     );
   };

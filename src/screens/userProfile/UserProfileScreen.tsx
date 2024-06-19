@@ -12,7 +12,7 @@ import { RootStackScreenProps, Screens } from "~/navigation/types";
 import { useUserService } from "~/network/api/services/useUserService";
 import { handleApiError } from "~/utils/common";
 import { MyEvents } from "../myprofile/MyEvents";
-import { About } from "./About.tsx";
+import { About } from "./About";
 import { createStyleSheet } from "./style";
 
 export const UserProfileScreen = ({

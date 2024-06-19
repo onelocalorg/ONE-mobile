@@ -1,5 +1,4 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useNavigation } from "@react-navigation/native";
 import { useQuery } from "@tanstack/react-query";
 import React, { useState } from "react";
 import { FlatList, ListRenderItem, Text, View } from "react-native";
@@ -7,7 +6,6 @@ import { useAppTheme } from "~/app-hooks/use-app-theme";
 import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
 import { EventCard } from "~/components/events/EventCard";
 import { Loader } from "~/components/loader";
-import { Screens } from "~/navigation/types";
 import { useEventService } from "~/network/api/services/useEventService";
 import { LocalEvent } from "~/types/local-event";
 import { UserProfile } from "~/types/user-profile";
@@ -24,7 +22,6 @@ export const MyEvents = ({ user }: MyEventsProps) => {
   const styles = createStyleSheet(theme);
   const { strings } = useStringsAndLabels();
   const [isLoading, setLoading] = useState(false);
-  const navigation = useNavigation();
 
   const {
     queries: { list: listEvents },
@@ -39,18 +36,8 @@ export const MyEvents = ({ user }: MyEventsProps) => {
   if (isPending !== isLoading) setLoading(isPending);
   if (isError) handleApiError("My events", error);
 
-  const navigateToEventDetail = (event: LocalEvent) => {
-    navigation.navigate(Screens.EVENT_DETAIL, { id: event.id });
-  };
-
   const renderItem: ListRenderItem<LocalEvent> = ({ item }) => {
-    return (
-      <EventCard
-        key={item.id}
-        onPress={() => navigateToEventDetail(item)}
-        event={item}
-      />
-    );
+    return <EventCard key={item.id} event={item} />;
   };
 
   return (

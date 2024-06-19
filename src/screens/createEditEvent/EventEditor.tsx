@@ -26,7 +26,7 @@ import { LocationAutocomplete } from "~/components/location-autocomplete/Locatio
 import { SizedBox } from "~/components/sized-box";
 import { LOG } from "~/config";
 import { useMyUserId } from "~/navigation/AuthContext";
-import { useEventService } from "~/network/api/services/useEventService";
+import { EventMutations } from "~/network/api/services/useEventService";
 import { normalScale, verticalScale } from "~/theme/device/normalize";
 import { LocalEvent, isLocalEvent } from "~/types/local-event";
 import { LocalEventData } from "~/types/local-event-data";
@@ -91,11 +91,9 @@ export const EventEditor = ({
 
   console.log("errors", errors);
 
-  const {
-    mutations: { cancelEvent },
-  } = useEventService();
-
-  const mutateCancelEvent = useMutation(cancelEvent);
+  const mutateCancelEvent = useMutation<LocalEvent, Error, string>({
+    mutationKey: [EventMutations.cancelEvent],
+  });
 
   const onSubmit = (data: LocalEventData | LocalEventUpdateData) => {
     const onSuccess = () => {

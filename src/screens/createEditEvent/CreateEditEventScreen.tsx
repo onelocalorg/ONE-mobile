@@ -2,7 +2,13 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import React from "react";
 import { Loader } from "~/components/loader";
 import { RootStackScreenProps, Screens } from "~/navigation/types";
-import { useEventService } from "~/network/api/services/useEventService";
+import {
+  EventMutations,
+  useEventService,
+} from "~/network/api/services/useEventService";
+import { LocalEvent } from "~/types/local-event";
+import { LocalEventData } from "~/types/local-event-data";
+import { LocalEventUpdateData } from "~/types/local-event-update-data";
 import { EventEditor } from "./EventEditor";
 
 export const CreateEditEventScreen = ({
@@ -12,13 +18,16 @@ export const CreateEditEventScreen = ({
 
   const {
     queries: { detail: getEvent },
-    mutations: { createEvent, editEvent },
   } = useEventService();
 
   const { data: event, isPending, isLoading } = useQuery(getEvent(eventId));
 
-  const mutateCreateEvent = useMutation(createEvent);
-  const mutateEditEvent = useMutation(editEvent);
+  const mutateCreateEvent = useMutation<LocalEvent, Error, LocalEventData>({
+    mutationKey: [EventMutations.createEvent],
+  });
+  const mutateEditEvent = useMutation<LocalEvent, Error, LocalEventUpdateData>({
+    mutationKey: [EventMutations.editEvent],
+  });
 
   return (
     <>
