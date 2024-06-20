@@ -19,6 +19,7 @@ import { ImageComponent } from "~/components/image-component";
 import { Input } from "~/components/input";
 import { Pill } from "~/components/pill";
 import { UserProfile, UserProfileUpdateData } from "~/types/user-profile";
+import { removeEmptyFields } from "~/utils/common";
 import { createStyleSheet } from "./style";
 
 interface Callback {
@@ -45,21 +46,24 @@ export const ProfileEditor = ({
     formState: { errors },
   } = useForm<UserProfileUpdateData>({
     defaultValues: {
-      catchphrase: "",
+      firstName: "",
+      lastName: "",
       nickname: "",
+      catchphrase: "",
       about: "",
+      skills: [],
       ..._.omit(["gratis", "joinDate"], userProfile),
     },
   });
 
-  const handleRemoveSkill = (id: any) => {
+  const handleRemoveSkill = (id: string) => {
     const newPeople = allSkills.filter((person) => person !== id);
 
     setSkills(newPeople);
   };
 
-  const onAddSkill = (text: any) => {
-    const foundSkill = allSkills.find((data: any) => data == text);
+  const onAddSkill = (text: string) => {
+    const foundSkill = allSkills.find((data: string) => data == text);
     if (!foundSkill) {
       if (text !== "" && text !== undefined) {
         setSkills([...allSkills, text]);
@@ -73,7 +77,7 @@ export const ProfileEditor = ({
     }
   };
 
-  const renderItem: ListRenderItem<string> = ({ item }) => (
+  const renderSkill: ListRenderItem<string> = ({ item }) => (
     <Pill
       onPressPill={() => handleRemoveSkill(item)}
       pillStyle={styles.marginBottom}
@@ -83,7 +87,7 @@ export const ProfileEditor = ({
   );
 
   const onSubmit = (data: UserProfileUpdateData) => {
-    saveProfile(data, {
+    saveProfile(removeEmptyFields(data) as UserProfileUpdateData, {
       onSuccess: () => {
         Toast.show("Profile saved", Toast.SHORT, {
           backgroundColor: "black",
@@ -162,27 +166,6 @@ export const ProfileEditor = ({
           ></Image>
           <Text style={styles.gratiesNumber}>{userProfile.gratis}</Text>
         </View>
-
-        {/* {onCheckReleaseHideShow() ? (
-            <TouchableOpacity
-              onPress={getPayoutConnectListAPI}
-              activeOpacity={0.8}
-              style={styles.payView}
-            >
-              <ImageComponent
-                style={styles.payoutIcon}
-                source={sendPayoutImg}
-              ></ImageComponent>
-              <Text style={styles.pay}>
-                {" "}
-                {myProfile.isConnectedLinked
-                  ? "Payout Connected"
-                  : "link payout method"}
-              </Text>
-            </TouchableOpacity>
-          ) : (
-            <></>
-          )} */}
       </View>
 
       <View style={styles.aboutView}>
@@ -252,7 +235,7 @@ export const ProfileEditor = ({
           <FlatListComponent
             data={allSkills}
             keyExtractor={(item) => item.toString()}
-            renderItem={renderItem}
+            renderItem={renderSkill}
             numColumns={100}
             showsHorizontalScrollIndicator={false}
             columnWrapperStyle={styles.flexWrap}

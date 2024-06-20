@@ -52,3 +52,7 @@ export const handleApiError = _.curry((resource: string, e: Error | null) => {
   }
   // }
 });
+
+export const removeEmptyFields = (data: any) =>
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+  _.mapValues((v) => (v === "" ? undefined : v), data);

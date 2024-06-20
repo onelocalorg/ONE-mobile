@@ -82,7 +82,6 @@ export const MyProfileScreen = () => {
       cropperCircleOverlay: true,
       showsSelectedCount: false,
     });
-    console.log(mime, fileName, base64);
     if (!base64) {
       Alert.alert("Image picker did not return data");
     } else {
