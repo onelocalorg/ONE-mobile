@@ -68,40 +68,46 @@ export const MyProfileScreen = () => {
   };
 
   const chooseImage = async () => {
-    const {
-      mime,
-      data: base64,
-      filename: fileName,
-    } = await ImagePicker.openPicker({
-      width: 300,
-      height: 300,
-      cropping: true,
-      mediaType: "photo",
-      includeBase64: true,
-      multiple: false,
-      cropperCircleOverlay: true,
-      showsSelectedCount: false,
-    });
-    if (!base64) {
-      Alert.alert("Image picker did not return data");
-    } else {
-      uploadFile(
-        {
-          uploadKey: FileKeys.signupPic,
-          imageName: fileName || "profile_pic",
-          mimeType: mime || "image/jpg",
-          userId: myUserId,
-          base64,
-        },
-        {
-          onSuccess(data) {
-            updateUserProfile({
-              id: myUserId!,
-              pic: data.key,
-            });
+    try {
+      const {
+        mime,
+        data: base64,
+        filename: fileName,
+      } = await ImagePicker.openPicker({
+        width: 300,
+        height: 300,
+        cropping: true,
+        mediaType: "photo",
+        includeBase64: true,
+        multiple: false,
+        cropperCircleOverlay: true,
+        showsSelectedCount: false,
+      });
+      if (!base64) {
+        Alert.alert("Image picker did not return data");
+      } else {
+        uploadFile(
+          {
+            uploadKey: FileKeys.signupPic,
+            imageName: fileName || "profile_pic",
+            mimeType: mime || "image/jpg",
+            userId: myUserId,
+            base64,
           },
-        }
-      );
+          {
+            onSuccess(data) {
+              updateUserProfile({
+                id: myUserId!,
+                pic: data.key,
+              });
+            },
+          }
+        );
+      }
+    } catch (e) {
+      if ((e as Error).message !== "User cancelled image selection") {
+        console.error("Error choosing image", e);
+      }
     }
   };
 

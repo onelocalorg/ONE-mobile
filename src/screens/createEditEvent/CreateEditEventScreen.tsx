@@ -6,9 +6,11 @@ import {
   EventMutations,
   useEventService,
 } from "~/network/api/services/useEventService";
-import { LocalEvent } from "~/types/local-event";
-import { LocalEventData } from "~/types/local-event-data";
-import { LocalEventUpdateData } from "~/types/local-event-update-data";
+import {
+  LocalEvent,
+  LocalEventData,
+  LocalEventUpdateData,
+} from "~/types/local-event";
 import { EventEditor } from "./EventEditor";
 
 export const CreateEditEventScreen = ({

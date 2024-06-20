@@ -30,8 +30,7 @@ import {
   PostMutations,
   usePostService,
 } from "~/network/api/services/usePostService";
-import { PostType } from "~/types/post-data";
-import { PostDetail } from "~/types/post-detail";
+import { PostDetail, PostType } from "~/types/post";
 import { Reply } from "~/types/reply";
 import { formatTimeFromNow, handleApiError } from "~/utils/common";
 import { createStyleSheet } from "./style";
@@ -149,10 +148,10 @@ export const PostDetailScreen = ({
         </View>
       </View>
       <Text style={styles.postDes}>{post.details}</Text>
-      {!_.isEmpty(post.images) ? (
+      {!_.isEmpty(post.images?.length > 0) ? (
         <ImageComponent
           resizeMode="cover"
-          source={{ uri: post.images[0] }}
+          source={{ uri: post.images[0].url }}
           style={styles.userPost}
         ></ImageComponent>
       ) : null}

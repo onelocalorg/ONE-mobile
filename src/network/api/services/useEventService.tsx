@@ -1,9 +1,11 @@
 import { queryOptions, useQueryClient } from "@tanstack/react-query";
 import _ from "lodash/fp";
 import { LOG } from "~/config";
-import { LocalEvent } from "~/types/local-event";
-import { LocalEventData } from "~/types/local-event-data";
-import { LocalEventUpdateData } from "~/types/local-event-update-data";
+import {
+  LocalEvent,
+  LocalEventData,
+  LocalEventUpdateData,
+} from "~/types/local-event";
 import { PriceBreakdown } from "~/types/price-breakdown";
 import { Rsvp, RsvpData, RsvpList } from "~/types/rsvp";
 import { TicketSelection } from "~/types/ticket-selection";

@@ -9,8 +9,7 @@ import {
   greenImage as threeVerticalDots,
 } from "~/assets/images";
 import { ImageComponent } from "~/components/image-component";
-import { Post } from "~/types/post";
-import { PostType } from "~/types/post-data";
+import { Post, PostType } from "~/types/post";
 import { createStyleSheet } from "./style";
 
 type PostCardProps = {
@@ -63,9 +62,9 @@ export const PostCard = ({ post }: PostCardProps) => {
         <Text style={styles.postDes}>{post.details}</Text>
         {post.images.map((image) => (
           <ImageComponent
-            key={image}
+            key={image.key}
             resizeMode="cover"
-            source={{ uri: image }}
+            source={{ uri: image.url }}
             style={styles.userPost}
           ></ImageComponent>
         ))}

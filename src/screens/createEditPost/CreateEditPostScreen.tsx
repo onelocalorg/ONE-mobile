@@ -10,9 +10,7 @@ import {
   PostMutations,
   usePostService,
 } from "~/network/api/services/usePostService";
-import { Post } from "~/types/post";
-import { PostData, PostType } from "~/types/post-data";
-import { PostUpdateData } from "~/types/post-update-data";
+import { Post, PostData, PostType, PostUpdateData } from "~/types/post";
 import { PostEditor } from "./PostEditor";
 import { createStyleSheet } from "./style";
 
@@ -23,7 +21,7 @@ export const CreateEditPostScreen = ({
   const { theme } = useAppTheme();
   const styles = createStyleSheet(theme);
 
-  const [type, setType] = useState<PostType>(PostType.OFFER);
+  const [type, setType] = useState(PostType.OFFER);
 
   const {
     queries: { detail: getPost },

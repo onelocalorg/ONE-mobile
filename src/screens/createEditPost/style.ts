@@ -723,7 +723,6 @@ export const createStyleSheet = (theme: ThemeProps) => {
       fontWeight: "600",
     },
     multipleImagecont: {
-      flex: 1,
       flexDirection: "row",
       // width : '100%',
       flexWrap: "wrap",

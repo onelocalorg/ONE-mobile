@@ -29,9 +29,12 @@ import { useMyUserId } from "~/navigation/AuthContext";
 import { EventMutations } from "~/network/api/services/useEventService";
 import { UserMutations } from "~/network/api/services/useUserService";
 import { normalScale, verticalScale } from "~/theme/device/normalize";
-import { LocalEvent, isLocalEvent } from "~/types/local-event";
-import { LocalEventData } from "~/types/local-event-data";
-import { LocalEventUpdateData } from "~/types/local-event-update-data";
+import {
+  LocalEvent,
+  LocalEventData,
+  LocalEventUpdateData,
+  isLocalEvent,
+} from "~/types/local-event";
 import { RemoteImage } from "~/types/remote-image";
 import { TicketTypeData } from "~/types/ticket-type-data";
 import { FileKeys, UploadFileData } from "~/types/upload-file-data";
@@ -154,7 +157,7 @@ export const EventEditor = ({
           {
             uploadKey: FileKeys.createEventImage,
             imageName:
-              filename || "event_" + (event?.id ?? Math.random() * 100000),
+              filename || (event?.id ?? (Math.random() * 100000).toString()),
             mimeType: mime || "image/jpg",
             base64,
           },
@@ -167,7 +170,9 @@ export const EventEditor = ({
         );
       }
     } catch (e) {
-      console.error("Error choosing image", e);
+      if ((e as Error).message !== "User cancelled image selection") {
+        console.error("Error choosing image", e);
+      }
     }
   };
 
