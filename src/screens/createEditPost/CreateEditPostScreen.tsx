@@ -70,9 +70,7 @@ export const CreateEditPostScreen = ({
           />
           <Text
             style={[
-              post?.type ?? type === PostType.REQUEST
-                ? styles.label3
-                : styles.label4,
+              post?.type === PostType.REQUEST ? styles.label3 : styles.label4,
             ]}
           >
             Request
