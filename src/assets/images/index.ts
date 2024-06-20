@@ -1,4 +1,4 @@
-export { default as Gratis } from "./Gratis.png";
+export { default as gratis } from "./Gratis.png";
 export { default as Search } from "./Search.png";
 export { default as Vector } from "./Vector.png";
 export { default as activeRadio } from "./activeRadio.png";

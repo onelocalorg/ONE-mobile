@@ -94,13 +94,14 @@ export const PostDetailScreen = ({
   };
 
   const handlePressReply = (parentId?: string) => {
-    const author = post!.replies.find((c) => c.id === parentId)?.author;
-    if (author) {
-      const name = `${author.firstName} `;
-      setValue("content", name);
-      setValue("parentId", parentId);
-    }
+    // TODO When we have tagging, add the reply peron's name
+    // const author = post!.replies.find((c) => c.id === parentId)?.author;
+    // if (author) {
+    //   const name = `${author.firstName} `;
+    //   setValue("content", name);
+    // }
 
+    setValue("parentId", parentId);
     replyRef.current?.focus();
   };
 
