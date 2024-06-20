@@ -53,11 +53,16 @@ export function useNavigations() {
       });
     };
 
+  const gotoCreatePost = () => {
+    navigation.navigate(Screens.CREATE_EDIT_POST);
+  };
+
   return {
     gotoUserProfile,
     gotoPostDetails,
     gotoEventDetails,
     showPostContextMenu,
     showGiveGratisModal,
+    gotoCreatePost,
   };
 }

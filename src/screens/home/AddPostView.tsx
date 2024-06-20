@@ -11,7 +11,7 @@ import { createStyleSheet } from "./style";
 export const AddPostView = () => {
   const { theme } = useAppTheme();
   const styles = createStyleSheet(theme);
-  const { gotoUserProfile } = useNavigations();
+  const { gotoCreatePost } = useNavigations();
 
   const myUserId = useMyUserId();
 
@@ -26,7 +26,7 @@ export const AddPostView = () => {
       <TouchableOpacity
         activeOpacity={0.8}
         style={styles.mainPostCont}
-        onPress={() => (myUserId ? gotoUserProfile(myUserId)() : {})}
+        onPress={gotoCreatePost}
       >
         <View style={styles.postContainer}>
           <ImageComponent
