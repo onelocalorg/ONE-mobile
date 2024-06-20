@@ -1,18 +1,17 @@
 import { useQuery } from "@tanstack/react-query";
 import { Text, TouchableOpacity, View } from "react-native";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
+import { useNavigations } from "~/app-hooks/useNavigations";
 import { defaultUser } from "~/assets/images";
 import { ImageComponent } from "~/components/image-component";
 import { useMyUserId } from "~/navigation/AuthContext";
 import { useUserService } from "~/network/api/services/useUserService";
 import { createStyleSheet } from "./style";
 
-type AddPostView = {
-  onPress?: () => void;
-};
-export const AddPostView = ({ onPress }: AddPostView) => {
+export const AddPostView = () => {
   const { theme } = useAppTheme();
   const styles = createStyleSheet(theme);
+  const { gotoUserProfile } = useNavigations();
 
   const myUserId = useMyUserId();
 
@@ -27,7 +26,7 @@ export const AddPostView = ({ onPress }: AddPostView) => {
       <TouchableOpacity
         activeOpacity={0.8}
         style={styles.mainPostCont}
-        onPress={onPress}
+        onPress={() => (myUserId ? gotoUserProfile(myUserId)() : {})}
       >
         <View style={styles.postContainer}>
           <ImageComponent

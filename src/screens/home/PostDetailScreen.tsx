@@ -1,6 +1,6 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import _ from "lodash/fp";
-import React, { useRef, useState } from "react";
+import React, { useRef } from "react";
 import { Controller, useForm } from "react-hook-form";
 import {
   Image,
@@ -42,38 +42,31 @@ export const PostDetailScreen = ({
   const isReplyFocus = route.params.isReplyFocus ?? false;
   const { theme } = useAppTheme();
   const styles = createStyleSheet(theme);
-  const flatListRef: any = React.useRef();
   const replyRef = useRef<TextInput>(null);
   const scrollRef = useRef<ScrollView>(null);
 
-  const {
-    control,
-    handleSubmit,
-    resetField,
-    setValue,
-    formState: { errors },
-  } = useForm<CreateReplyProps>({
-    defaultValues: {
-      postId,
-      content: "",
-    },
-  });
+  const { control, handleSubmit, resetField, setValue } =
+    useForm<CreateReplyProps>({
+      defaultValues: {
+        postId,
+        content: "",
+      },
+    });
   const onSubmit = (data: CreateReplyProps) =>
-    mutateCreateReply.mutate(data, { onSuccess: () => resetField("content") });
+    mutate(data, { onSuccess: () => resetField("content") });
 
   // const scroll = useRef<KeyboardAwareScrollView>(null);
 
   const { gotoUserProfile, showGiveGratisModal } = useNavigations();
-  const [parent, setParent] = useState<string>();
 
   const {
     queries: { detail: postDetail },
     mutations: { createReply },
   } = usePostService();
-  const mutateCreateReply = useMutation(createReply);
+  const { mutate, isPending: isMutationPending } = useMutation(createReply);
 
   const {
-    isPending,
+    isLoading,
     data: post,
     isError,
     error,
@@ -97,7 +90,6 @@ export const PostDetailScreen = ({
   };
 
   const handlePressReply = (parentId?: string) => {
-    setParent(parentId);
     const author = post!.replies.find((c) => c.id === parentId)?.author;
     if (author) {
       const name = `${author.firstName} `;
@@ -105,7 +97,6 @@ export const PostDetailScreen = ({
       setValue("parentId", parentId);
     }
 
-    // flatListRef.current.scrollToOffset({ animated: true, offset: 0 });
     replyRef.current?.focus();
   };
 
@@ -336,6 +327,7 @@ export const PostDetailScreen = ({
             <TouchableOpacity
               style={{ alignSelf: "center" }}
               onPress={handleSubmit(onSubmit)}
+              disabled={isMutationPending}
             >
               <ImageComponent
                 style={{ height: 40, width: 40 }}
@@ -356,7 +348,7 @@ export const PostDetailScreen = ({
       keyboardVerticalOffset={100}
     >
       <View style={styles.container}>
-        <Loader visible={isPending} />
+        <Loader visible={isLoading} />
         <ScrollView ref={scrollRef}>
           {post ? (
             <View style={{ flex: 0.9 }}>
