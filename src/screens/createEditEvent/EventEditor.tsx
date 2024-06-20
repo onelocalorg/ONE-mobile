@@ -115,6 +115,8 @@ export const EventEditor = ({
       navigation.goBack();
     };
 
+    console.log("click", data);
+
     event
       ? onSubmitUpdate!(data as LocalEventUpdateData, { onSuccess })
       : onSubmitCreate!(data as LocalEventData, { onSuccess });
@@ -353,9 +355,6 @@ export const EventEditor = ({
 
             <Controller
               control={control}
-              rules={{
-                required: true,
-              }}
               render={({ field: { onChange, value } }) => (
                 <Input
                   placeholder={strings.enterVenue}
@@ -464,21 +463,6 @@ export const EventEditor = ({
           disabled={isLoading}
         />
       </View>
-
-      {/* <BreakDownModal ref={addItemRef} id={''} revenue={0} expense={0} profilt={0} payout={0} remainingAmt={0} userId={''}></BreakDownModal> */}
-
-      {/* <DatePickerModal
-          locale="en"
-          mode="range"
-          visible={open}
-          onDismiss={onDismiss}
-          startDate={range.startDate}
-          endDate={range.endDate}
-          onConfirm={onConfirm}
-          validRange={{ startDate: new Date() }}
-          editIcon="none"
-          // closeIcon='none'
-        /> */}
     </Pressable>
   );
 };
