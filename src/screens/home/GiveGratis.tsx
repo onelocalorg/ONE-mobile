@@ -22,18 +22,18 @@ export const GiveGratis = ({
   const { theme } = useAppTheme();
   const styles = createStyleSheet(theme);
   const { strings } = useStringsAndLabels();
-  const [numGratis, setNumGrats] = useState(10);
+  const [points, setPoints] = useState(10);
 
   const mutateGiveGratis = useMutation<Gratis, Error, SendGratisProps>({
     mutationKey: [PostMutations.giveGrats],
   });
 
   const gratisPlusClick = () => {
-    setNumGrats((gratis: number) => gratis + 1);
+    setPoints((gratis: number) => gratis + 1);
   };
 
   const gratisMinusClick = () => {
-    setNumGrats((gratis: number) => (gratis > 10 ? gratis - 1 : gratis));
+    setPoints((gratis: number) => (gratis > 10 ? gratis - 1 : gratis));
   };
 
   const handlePress = () => {
@@ -41,7 +41,7 @@ export const GiveGratis = ({
       {
         postId,
         replyId,
-        points: gratis,
+        points,
       },
       {
         onSuccess: () => {
@@ -70,7 +70,7 @@ export const GiveGratis = ({
           style={styles.gratisimg}
           source={gratis}
         ></ImageComponent>
-        <Text style={styles.gratistext}>{numGratis}</Text>
+        <Text style={styles.gratistext}>{points}</Text>
         <TouchableOpacity onPress={gratisPlusClick}>
           <ImageComponent
             source={plus}
