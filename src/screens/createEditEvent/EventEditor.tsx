@@ -13,7 +13,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { launchImageLibrary } from "react-native-image-picker";
+import ImagePicker from "react-native-image-crop-picker";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
 import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
 import { addGreen, dummy, edit, pinWhite } from "~/assets/images";
@@ -27,11 +27,14 @@ import { SizedBox } from "~/components/sized-box";
 import { LOG } from "~/config";
 import { useMyUserId } from "~/navigation/AuthContext";
 import { EventMutations } from "~/network/api/services/useEventService";
+import { UserMutations } from "~/network/api/services/useUserService";
 import { normalScale, verticalScale } from "~/theme/device/normalize";
 import { LocalEvent, isLocalEvent } from "~/types/local-event";
 import { LocalEventData } from "~/types/local-event-data";
 import { LocalEventUpdateData } from "~/types/local-event-update-data";
+import { RemoteImage } from "~/types/remote-image";
 import { TicketTypeData } from "~/types/ticket-type-data";
+import { FileKeys, UploadFileData } from "~/types/upload-file-data";
 import { AddTicketModal } from "./AddTicketModal";
 import { createStyleSheet } from "./style";
 
@@ -57,9 +60,17 @@ export const EventEditor = ({
   const navigation = useNavigation();
   const [isEndDateActive, setEndDateActive] = useState(false);
   const [curTicket, setCurTicket] = useState<number | undefined>();
+  const [imageUrl, setImageUrl] = useState(event?.image);
   const myUserId = useMyUserId();
-
   const isMyEvent = myUserId === event?.id;
+
+  const { isPending: isUploadingImage, mutate: uploadFile } = useMutation<
+    RemoteImage,
+    Error,
+    UploadFileData
+  >({
+    mutationKey: [UserMutations.uploadFile],
+  });
 
   const {
     control,
@@ -92,8 +103,6 @@ export const EventEditor = ({
         },
   });
 
-  console.log("errors", errors);
-
   const mutateCancelEvent = useMutation<LocalEvent, Error, string>({
     mutationKey: [EventMutations.cancelEvent],
   });
@@ -121,51 +130,44 @@ export const EventEditor = ({
     );
   };
 
-  const onUploadImage = async () => {
-    const { assets } = await launchImageLibrary({
-      mediaType: "photo",
-      includeBase64: true,
-      maxWidth: 800,
-      maxHeight: 800,
-    });
-    if (assets) {
-      const img = assets?.[0];
-      const fileNameTwo = img?.fileName ?? "";
-      setLoading(true);
-      const output =
-        fileNameTwo.substr(0, fileNameTwo.lastIndexOf(".")) || fileNameTwo;
-      const base64Two = img?.base64 ?? "";
-      ProfileImageUploadAPI(output, base64Two);
-    }
-  };
-
-  const ProfileImageUploadAPI = async (fileItem: any, base64Item: any) => {
-    const pic: any = {
-      uploadKey: "create_event_image",
-      imageName: fileItem,
-      base64String: "data:image/jpeg;base64," + base64Item,
-    };
-
-    console.log(process.env.API_URL + "/v3/users/upload/file");
+  const chooseImage = async () => {
     try {
-      const response = await fetch(
-        process.env.API_URL + "/v3/users/upload/file",
-        {
-          method: "post",
-          headers: new Headers({
-            "Content-Type": "application/json",
-          }),
-          body: JSON.stringify(pic),
-        }
-      );
-      const dataItem = await response.json();
-      setLoading(false);
-      setValue("image", dataItem?.data?.key);
-      setEventImageDisplay(dataItem?.data?.imageUrl);
-      console.log(dataItem);
-    } catch (error) {
-      setLoading(false);
-      console.log(error);
+      const {
+        mime,
+        data: base64,
+        filename,
+        path,
+      } = await ImagePicker.openPicker({
+        width: 800,
+        height: 400,
+        cropping: true,
+        mediaType: "photo",
+        includeBase64: true,
+        multiple: false,
+        showsSelectedCount: false,
+      });
+      if (!base64) {
+        Alert.alert("Image picker did not return data");
+      } else {
+        console.log("path", path);
+        uploadFile(
+          {
+            uploadKey: FileKeys.createEventImage,
+            imageName:
+              filename || "event_" + (event?.id ?? Math.random() * 100000),
+            mimeType: mime || "image/jpg",
+            base64,
+          },
+          {
+            onSuccess(uploadedFile) {
+              setValue("image", uploadedFile.key);
+              setImageUrl(uploadedFile.imageUrl);
+            },
+          }
+        );
+      }
+    } catch (e) {
+      console.error("Error choosing image", e);
     }
   };
 
@@ -240,7 +242,7 @@ export const EventEditor = ({
 
   return (
     <Pressable style={styles.container} onPress={keyboardDismiss}>
-      <Loader visible={isLoading} showOverlay />
+      <Loader visible={isLoading || isUploadingImage} showOverlay />
       <TouchableOpacity
         activeOpacity={1}
         onPress={() => {
@@ -248,21 +250,15 @@ export const EventEditor = ({
         }}
       >
         <View>
-          <TouchableOpacity activeOpacity={0.8} onPress={onUploadImage}>
+          <TouchableOpacity activeOpacity={0.8} onPress={chooseImage}>
             <ImageComponent
-              isUrl={!!getValues("image")}
+              isUrl={!!imageUrl}
               resizeMode="cover"
-              uri={getValues("image")}
+              uri={imageUrl}
               source={dummy}
               style={styles.profile}
             />
-            <TouchableOpacity
-              activeOpacity={0.8}
-              onPress={onUploadImage}
-              style={styles.add}
-            >
-              <ImageComponent source={addGreen} style={styles.addGreen} />
-            </TouchableOpacity>
+            <ImageComponent source={addGreen} style={styles.addGreen} />
           </TouchableOpacity>
 
           <SizedBox height={verticalScale(26)} />

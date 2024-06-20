@@ -7,7 +7,6 @@ import { ButtonComponent } from "~/components/button-component";
 import { Input } from "~/components/input";
 import { OneModal } from "~/components/modal-component/OneModal";
 import { SizedBox } from "~/components/sized-box";
-import { LOG } from "~/config";
 import { verticalScale } from "~/theme/device/normalize";
 import { TicketTypeData } from "~/types/ticket-type-data";
 import { createStyleSheet } from "./style";
@@ -41,8 +40,6 @@ export const AddTicketModal = ({
   const [quantity, setQuantity] = useState(value?.quantity || undefined);
 
   useEffect(() => {
-    LOG.debug("AddTicketModal", value);
-
     if (value) {
       setName(value.name);
       setPrice(value.price);

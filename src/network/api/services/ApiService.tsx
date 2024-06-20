@@ -52,7 +52,12 @@ export function ApiService({ children }: ApiServiceProviderProps) {
   });
 
   const DATETIME_KEYS = ["startDate", "endDate", "postDate", "joinDate"];
-  const NO_LOG_KEYS = ["password", "access_token", "refresh_token"];
+  const NO_LOG_KEYS = [
+    "password",
+    "access_token",
+    "refresh_token",
+    "base64String",
+  ];
 
   const client = {
     doGet,
