@@ -35,11 +35,14 @@ import { TicketTypeData } from "~/types/ticket-type-data";
 import { AddTicketModal } from "./AddTicketModal";
 import { createStyleSheet } from "./style";
 
+interface Callback {
+  onSuccess: () => void;
+}
 interface EventEditorProps {
   event?: LocalEvent;
   isLoading: boolean;
-  onSubmitCreate?: (data: LocalEventData, { onSuccess }) => void;
-  onSubmitUpdate?: (data: LocalEventUpdateData, { onSuccess }) => void;
+  onSubmitCreate?: (data: LocalEventData, callback: Callback) => void;
+  onSubmitUpdate?: (data: LocalEventUpdateData, callback: Callback) => void;
 }
 export const EventEditor = ({
   event,

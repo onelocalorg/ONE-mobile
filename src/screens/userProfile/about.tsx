@@ -21,7 +21,7 @@ export const About = ({ user }: RecentaboutDataProps) => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.input}>{user.catchPhrase}</Text>
+      <Text style={styles.input}>{user.catchphrase}</Text>
       <View style={styles.innerConatiner}>
         <Text style={styles.membership}>About</Text>
         <Text style={styles.input}>{user.about}</Text>

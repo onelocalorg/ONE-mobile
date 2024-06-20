@@ -8,6 +8,7 @@ export interface UserProfile extends UserProfileData {
 export interface UserProfileData extends UserProfileUpdateData {
   firstName: string;
   lastName: string;
+  skills: string[];
 }
 
 export interface UserProfileUpdateData {
@@ -15,8 +16,8 @@ export interface UserProfileUpdateData {
   firstName?: string;
   lastName?: string;
   nickname?: string;
-  catchPhrase?: string;
+  catchphrase?: string;
   pic?: string;
   about?: string;
-  skills: string[];
+  skills?: string[];
 }

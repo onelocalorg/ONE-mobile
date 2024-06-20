@@ -50,20 +50,6 @@ export const MyAbout = ({ user, onEditProfile }: AboutDataProps) => {
     }
   };
 
-  const onSaveProfile = () => {
-    console.log("===========onSaveProfile===========");
-
-    let request = {};
-
-    if (about !== updatedAbout) {
-      request = { ...request, about: updatedAbout };
-    }
-    if (allSkills?.length) {
-      request = { ...request, skills: allSkills };
-    }
-    onEditProfile?.(request);
-  };
-
   const renderItem: ListRenderItem<string> = ({ item }) => (
     <Pill
       onPressPill={() => handleRemoveSkill(item)}

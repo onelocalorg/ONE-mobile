@@ -18,12 +18,15 @@ import { PostData, PostType } from "~/types/post-data";
 import { PostUpdateData } from "~/types/post-update-data";
 import { createStyleSheet } from "./style";
 
+interface Callback {
+  onSuccess: () => void;
+}
 interface PostEditorProps {
   type: PostType;
   post?: PostData;
   isLoading: boolean;
-  onSubmitCreate?: (data: PostData, { onSuccess }) => void;
-  onSubmitUpdate?: (data: PostUpdateData, { onSuccess }) => void;
+  onSubmitCreate?: (data: PostData, callback: Callback) => void;
+  onSubmitUpdate?: (data: PostUpdateData, callback: Callback) => void;
 }
 export const PostEditor = ({
   type,

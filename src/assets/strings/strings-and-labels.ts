@@ -132,7 +132,7 @@ export const stringsAndLabels = {
   editOffer: "Update Offer",
   editRequest: "Update Request",
   deleteAccount: "Delete Account",
-  areYouDeleteAccount: "Are you sure you want to Delete Account?",
+  areYouDeleteAccount: "Are you sure?",
   blockUser: "Block User",
   blockUserConfirm:
     "If you continue, you will not be able to see any posts from this user.",
