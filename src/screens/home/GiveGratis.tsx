@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
 import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
-import { buttonArrowGreen, minus, plus } from "~/assets/images";
+import { buttonArrowGreen, gratis, minus, plus } from "~/assets/images";
 import { ShortModal } from "~/components/ShortModal";
 import { ImageComponent } from "~/components/image-component";
 import { RootStackScreenProps, Screens } from "~/navigation/types";
@@ -22,7 +22,7 @@ export const GiveGratis = ({
   const { theme } = useAppTheme();
   const styles = createStyleSheet(theme);
   const { strings } = useStringsAndLabels();
-  const [gratis, setNumGrats] = useState(10);
+  const [numGratis, setNumGrats] = useState(10);
 
   const mutateGiveGratis = useMutation<Gratis, Error, SendGratisProps>({
     mutationKey: [PostMutations.giveGrats],
@@ -70,7 +70,7 @@ export const GiveGratis = ({
           style={styles.gratisimg}
           source={gratis}
         ></ImageComponent>
-        <Text style={styles.gratistext}>{gratis}</Text>
+        <Text style={styles.gratistext}>{numGratis}</Text>
         <TouchableOpacity onPress={gratisPlusClick}>
           <ImageComponent
             source={plus}
