@@ -122,6 +122,11 @@ export const AppNavigation = ({ token }: AppNavigationProps) => {
             paddingRight: 20,
             marginBottom: 20,
           },
+          headerLeftLabelVisible: false,
+          headerLeftContainerStyle: {
+            paddingLeft: 10,
+          },
+          headerTintColor: theme.colors.white,
           headerRight: () =>
             route.name === Screens.MY_PROFILE ? (
               <LogoutPressable />
