@@ -6,13 +6,17 @@ import { blackOffer, greenOffer, request, requestGreen } from "~/assets/images";
 import { ImageComponent } from "~/components/image-component";
 import { Loader } from "~/components/loader";
 import { RootStackScreenProps, Screens } from "~/navigation/types";
-import { usePostService } from "~/network/api/services/usePostService";
-import { PostType } from "~/types/post-data";
+import {
+  PostMutations,
+  usePostService,
+} from "~/network/api/services/usePostService";
+import { Post } from "~/types/post";
+import { PostData, PostType } from "~/types/post-data";
+import { PostUpdateData } from "~/types/post-update-data";
 import { PostEditor } from "./PostEditor";
 import { createStyleSheet } from "./style";
 
 export const CreateEditPostScreen = ({
-  navigation,
   route,
 }: RootStackScreenProps<Screens.CREATE_EDIT_POST>) => {
   const postId = route.params?.id;
@@ -23,15 +27,18 @@ export const CreateEditPostScreen = ({
 
   const {
     queries: { detail: getPost },
-    mutations: { createPost, editPost },
   } = usePostService();
 
   const { data: post, isPending, isLoading } = useQuery(getPost(postId));
 
   const getType = () => post?.type ?? type;
 
-  const mutateCreatePost = useMutation(createPost);
-  const mutateEditPost = useMutation(editPost);
+  const mutateCreatePost = useMutation<Post, Error, PostData>({
+    mutationKey: [PostMutations.createPost],
+  });
+  const mutateEditPost = useMutation<Post, Error, PostUpdateData>({
+    mutationKey: [PostMutations.editPost],
+  });
 
   return (
     <>

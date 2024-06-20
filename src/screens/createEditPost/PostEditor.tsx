@@ -66,6 +66,14 @@ export const PostEditor = ({
       : onSubmitCreate!(data as PostData, { onSuccess });
   };
 
+  const getButtonName = () => {
+    if (type === PostType.OFFER) {
+      return post ? strings.editOffer : strings.createOffer;
+    } else {
+      return post ? strings.editRequest : strings.createRequest;
+    }
+  };
+
   return (
     <View>
       <Loader visible={isLoading} />
@@ -149,9 +157,6 @@ export const PostEditor = ({
       <SizedBox height={verticalScale(8)}></SizedBox>
       <Controller
         control={control}
-        rules={{
-          required: true,
-        }}
         render={({ field: { onChange, value } }) => (
           <LocationChooser
             value={value}
@@ -161,7 +166,6 @@ export const PostEditor = ({
         )}
         name="address"
       />
-      {errors.address && <Text>This is required.</Text>}
 
       {/* <ImageUploader
           onLoading={setLoading}
@@ -175,7 +179,7 @@ export const PostEditor = ({
         <ButtonComponent
           onPress={handleSubmit(onSubmit)}
           icon={buttonArrowGreen}
-          title={post ? strings.editOffer : strings.postOffer}
+          title={getButtonName()}
           style={styles.postButton}
           disabled={isLoading}
         />

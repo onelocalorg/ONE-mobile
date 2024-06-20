@@ -15,6 +15,16 @@ import { useApiService } from "./ApiService";
 import { useEventService } from "./useEventService";
 import { useUserService } from "./useUserService";
 
+export enum PostMutations {
+  createPost = "createPost",
+  editPost = "editPost",
+  deletePost = "deletePost",
+  createReply = "createReply",
+  giveGrats = "giveGrats",
+  reportPost = "reportPost",
+  blockUser = "blockUser",
+}
+
 export function usePostService() {
   const queryClient = useQueryClient();
   const { queries: userQueries } = useUserService();
@@ -38,104 +48,90 @@ export function usePostService() {
       }),
   };
 
-  const mutations = {
-    createPost: {
-      mutationFn: (eventData: PostData) => {
-        return createPost(eventData);
-      },
-      onSuccess: () => {
-        void queryClient.invalidateQueries({ queryKey: queries.lists() });
-      },
-      onError: (err: ApiError) => {
-        handleApiError("create post", err);
-      },
+  queryClient.setMutationDefaults([PostMutations.createPost], {
+    mutationFn: (eventData: PostData) => {
+      return createPost(eventData);
     },
-    editPost: {
-      mutationFn: (params: PostUpdateData) => {
-        return updatePost(params);
-      },
-      onSuccess: () => {
-        // TODO Change cache to invalidate less
-        void queryClient.invalidateQueries({ queryKey: queries.lists() });
-      },
-      onError: (err: ApiError) => {
-        handleApiError("reporting post", err);
-      },
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: queries.lists() });
     },
-    deletePost: {
-      mutationFn: (postId: string) => {
-        return deletePost(postId);
-      },
-      onSuccess: (resp: Report) => {
-        void queryClient.invalidateQueries({
-          queryKey: queries.lists(),
-        });
-      },
-      onError: (err: ApiError) => {
-        handleApiError("deleting post", err);
-      },
-    },
-    createReply: {
-      mutationFn: (params: CreateReplyProps) => {
-        return createReply(params);
-      },
-      onSuccess: (resp: Reply) => {
-        void queryClient.invalidateQueries({
-          queryKey: queries.detail(resp.post).queryKey,
-        });
-      },
-      onError: (err: ApiError) => {
-        handleApiError("creating Reply", err);
-      },
-    },
-    giveGrats: {
-      mutationFn: (props: SendGratisProps) => {
-        return sendGratis(props);
-      },
-      onSuccess: (resp: Gratis) => {
-        void queryClient.invalidateQueries({
-          queryKey: queries.detail(resp.post).queryKey,
-        });
-        void queryClient.invalidateQueries({
-          queryKey: userQueries.detail(resp.sender).queryKey,
-        });
+  });
 
-        // FIXME Need to invalidate everything because we get the gratis
-        // when pulling the whole list
-        if (!resp.reply) {
-          void queryClient.invalidateQueries({ queryKey: queries.lists() });
-        }
-      },
-      onError: (err: ApiError) => {
-        handleApiError("sending grats", err);
-      },
+  queryClient.setMutationDefaults([PostMutations.editPost], {
+    mutationFn: (params: PostUpdateData) => {
+      return updatePost(params);
     },
-    blockUser: {
-      mutationFn: (userId: string) => {
-        return blockUser(userId);
-      },
-      onSuccess: (resp: Block) => {
-        void queryClient.invalidateQueries({
-          queryKey: queries.lists(),
-        });
-        void queryClient.invalidateQueries({
-          queryKey: eventQueries.lists(),
-        });
-      },
-      onError: (err: ApiError) => {
-        handleApiError("blocking user", err);
-      },
+    onSuccess: () => {
+      // TODO Change cache to invalidate less
+      void queryClient.invalidateQueries({ queryKey: queries.lists() });
     },
-    reportPost: {
-      mutationFn: (params: ReportPostParams) => {
-        return reportPost(params);
-      },
-      onSuccess: () => {},
-      onError: (err: ApiError) => {
-        handleApiError("reporting post", err);
-      },
+  });
+
+  queryClient.setMutationDefaults([PostMutations.deletePost], {
+    mutationFn: (postId: string) => {
+      return deletePost(postId);
     },
-  };
+    onSuccess: (resp: Report) => {
+      void queryClient.invalidateQueries({
+        queryKey: queries.lists(),
+      });
+    },
+  });
+
+  queryClient.setMutationDefaults([PostMutations.createReply], {
+    mutationFn: (params: CreateReplyProps) => {
+      return createReply(params);
+    },
+    onSuccess: (resp: Reply) => {
+      void queryClient.invalidateQueries({
+        queryKey: queries.detail(resp.post).queryKey,
+      });
+    },
+  });
+
+  queryClient.setMutationDefaults([PostMutations.giveGrats], {
+    mutationFn: (props: SendGratisProps) => {
+      return sendGratis(props);
+    },
+    onSuccess: (resp: Gratis) => {
+      void queryClient.invalidateQueries({
+        queryKey: queries.detail(resp.post).queryKey,
+      });
+      void queryClient.invalidateQueries({
+        queryKey: userQueries.detail(resp.sender).queryKey,
+      });
+
+      // FIXME Need to invalidate everything because we get the gratis
+      // when pulling the whole list
+      if (!resp.reply) {
+        void queryClient.invalidateQueries({ queryKey: queries.lists() });
+      }
+    },
+  });
+
+  queryClient.setMutationDefaults([PostMutations.blockUser], {
+    mutationFn: (userId: string) => {
+      return blockUser(userId);
+    },
+    onSuccess: (resp: Block) => {
+      void queryClient.invalidateQueries({
+        queryKey: queries.lists(),
+      });
+      void queryClient.invalidateQueries({
+        queryKey: eventQueries.lists(),
+      });
+    },
+  });
+
+  queryClient.setMutationDefaults([PostMutations.reportPost], {
+    mutationFn: (params: ReportPostParams) => {
+      return reportPost(params);
+    },
+    onSuccess: () => {},
+    onError: (err: ApiError) => {
+      handleApiError("reporting post", err);
+    },
+  });
 
   const { doPost, doPatch, doGet, doDelete } = useApiService();
 
@@ -199,7 +195,6 @@ export function usePostService() {
 
   return {
     queries,
-    mutations,
   };
 }
 
