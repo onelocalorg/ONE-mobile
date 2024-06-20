@@ -27,6 +27,7 @@ import { Loader } from "~/components/loader";
 import { RootStackScreenProps, Screens } from "~/navigation/types";
 import {
   CreateReplyProps,
+  PostMutations,
   usePostService,
 } from "~/network/api/services/usePostService";
 import { PostType } from "~/types/post-data";
@@ -52,7 +53,7 @@ export const PostDetailScreen = ({
         content: "",
       },
     });
-  const onSubmit = (data: CreateReplyProps) =>
+  const onSubmitReply = (data: CreateReplyProps) =>
     mutate(data, { onSuccess: () => resetField("content") });
 
   // const scroll = useRef<KeyboardAwareScrollView>(null);
@@ -61,9 +62,12 @@ export const PostDetailScreen = ({
 
   const {
     queries: { detail: postDetail },
-    mutations: { createReply },
   } = usePostService();
-  const { mutate, isPending: isMutationPending } = useMutation(createReply);
+  const { mutate, isPending: isMutationPending } = useMutation<
+    Reply,
+    Error,
+    CreateReplyProps
+  >({ mutationKey: [PostMutations.createReply] });
 
   const {
     isLoading,
@@ -100,10 +104,10 @@ export const PostDetailScreen = ({
     replyRef.current?.focus();
   };
 
-  interface PostProps {
+  interface PostViewProps {
     post: PostDetail;
   }
-  const Post = ({ post }: PostProps) => (
+  const PostView = ({ post }: PostViewProps) => (
     <View style={styles.feedPostContainer}>
       <Text style={styles.posttitle}>{post.type}</Text>
       <TouchableOpacity
@@ -326,7 +330,7 @@ export const PostDetailScreen = ({
             ></TextInput>
             <TouchableOpacity
               style={{ alignSelf: "center" }}
-              onPress={handleSubmit(onSubmit)}
+              onPress={handleSubmit(onSubmitReply)}
               disabled={isMutationPending}
             >
               <ImageComponent
@@ -352,7 +356,7 @@ export const PostDetailScreen = ({
         <ScrollView ref={scrollRef}>
           {post ? (
             <View style={{ flex: 0.9 }}>
-              <Post post={post} />
+              <PostView post={post} />
               {getParents().map((reply) => (
                 <Reply key={reply.id} reply={reply} />
               ))}

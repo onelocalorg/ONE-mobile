@@ -18,7 +18,7 @@ import ImagePicker from "react-native-image-crop-picker";
 import Toast from "react-native-simple-toast";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
 import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
-import { Gratis, dummy } from "~/assets/images";
+import { dummy, gratis } from "~/assets/images";
 import { ImageComponent } from "~/components/image-component";
 import { Input } from "~/components/input";
 import { Loader } from "~/components/loader";
@@ -286,7 +286,7 @@ export const MyProfileScreen = ({
             <View style={styles.gratiesCont}>
               <View style={styles.payoutAndGratisCont}>
                 <Image
-                  source={Gratis}
+                  source={gratis}
                   resizeMode="cover"
                   style={styles.gratiesImage}
                 ></Image>

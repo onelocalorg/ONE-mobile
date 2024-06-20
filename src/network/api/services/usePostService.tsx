@@ -169,11 +169,6 @@ export function usePostService() {
     return doGet<Post[]>(`/v3/posts?${urlSearchParams.toString()}`);
   };
 
-  interface SendGratisProps {
-    postId: string;
-    replyId?: string;
-    points: number;
-  }
   const sendGratis = ({ postId, replyId, points }: SendGratisProps) =>
     doPost<Gratis>(
       `/v3/posts/${postId}/${replyId ? `replies/${replyId}/` : ""}gratis`,
@@ -186,10 +181,6 @@ export function usePostService() {
       content,
     });
 
-  interface ReportPostParams {
-    postId: string;
-    reason: string;
-  }
   const reportPost = ({ postId, reason }: ReportPostParams) =>
     doPost<Report>(`/v3/posts/${postId}/reports`, { reason });
 
@@ -198,8 +189,19 @@ export function usePostService() {
   };
 }
 
+export interface SendGratisProps {
+  postId: string;
+  replyId?: string;
+  points: number;
+}
+
 export interface CreateReplyProps {
   postId: string;
   parentId?: string;
   content: string;
+}
+
+export interface ReportPostParams {
+  postId: string;
+  reason: string;
 }

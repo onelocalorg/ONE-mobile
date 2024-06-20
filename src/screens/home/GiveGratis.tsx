@@ -3,11 +3,15 @@ import { useState } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
 import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
-import { Gratis, buttonArrowGreen, minus, plus } from "~/assets/images";
+import { buttonArrowGreen, minus, plus } from "~/assets/images";
 import { ShortModal } from "~/components/ShortModal";
 import { ImageComponent } from "~/components/image-component";
 import { RootStackScreenProps, Screens } from "~/navigation/types";
-import { usePostService } from "~/network/api/services/usePostService";
+import {
+  PostMutations,
+  SendGratisProps,
+} from "~/network/api/services/usePostService";
+import { Gratis } from "~/types/gratis";
 import { createStyleSheet } from "./style";
 
 export const GiveGratis = ({
@@ -20,10 +24,9 @@ export const GiveGratis = ({
   const { strings } = useStringsAndLabels();
   const [gratis, setNumGrats] = useState(10);
 
-  const {
-    mutations: { giveGrats },
-  } = usePostService();
-  const mutateGiveGratis = useMutation(giveGrats);
+  const mutateGiveGratis = useMutation<Gratis, Error, SendGratisProps>({
+    mutationKey: [PostMutations.giveGrats],
+  });
 
   const gratisPlusClick = () => {
     setNumGrats((gratis: number) => gratis + 1);
@@ -65,7 +68,7 @@ export const GiveGratis = ({
         <ImageComponent
           resizeMode="cover"
           style={styles.gratisimg}
-          source={Gratis}
+          source={gratis}
         ></ImageComponent>
         <Text style={styles.gratistext}>{gratis}</Text>
         <TouchableOpacity onPress={gratisPlusClick}>

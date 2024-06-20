@@ -7,7 +7,11 @@ import { buttonArrowGreen } from "~/assets/images";
 import { ShortModal } from "~/components/ShortModal";
 import { ImageComponent } from "~/components/image-component";
 import { RootStackScreenProps, Screens } from "~/navigation/types";
-import { usePostService } from "~/network/api/services/usePostService";
+import {
+  PostMutations,
+  ReportPostParams,
+} from "~/network/api/services/usePostService";
+import { Report } from "~/types/report";
 import { createStyleSheet } from "./style";
 
 export const ReportContent = ({
@@ -20,11 +24,9 @@ export const ReportContent = ({
 
   const [reportReason, setReportReason] = useState<string>();
 
-  const {
-    mutations: { reportPost },
-  } = usePostService();
-
-  const { mutate } = useMutation(reportPost);
+  const { mutate } = useMutation<Report, Error, ReportPostParams>({
+    mutationKey: [PostMutations.reportPost],
+  });
 
   const submitReportReason = () => {
     if (!reportReason) {

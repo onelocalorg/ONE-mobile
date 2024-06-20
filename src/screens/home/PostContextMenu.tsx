@@ -5,7 +5,8 @@ import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
 import { ShortModal } from "~/components/ShortModal";
 import { useMyUserId } from "~/navigation/AuthContext";
 import { RootStackScreenProps, Screens } from "~/navigation/types";
-import { usePostService } from "~/network/api/services/usePostService";
+import { PostMutations } from "~/network/api/services/usePostService";
+import { Block } from "~/types/block";
 import { createStyleSheet } from "./style";
 
 export const PostContextMenu = ({
@@ -19,11 +20,12 @@ export const PostContextMenu = ({
   const { strings } = useStringsAndLabels();
   const myId = useMyUserId();
 
-  const {
-    mutations: { blockUser, deletePost },
-  } = usePostService();
-  const mutateBlockUser = useMutation(blockUser);
-  const mutateDeletePost = useMutation(deletePost);
+  const mutateBlockUser = useMutation<Block, Error, string>({
+    mutationKey: [PostMutations.blockUser],
+  });
+  const mutateDeletePost = useMutation<never, Error, string>({
+    mutationKey: [PostMutations.deletePost],
+  });
 
   const confirmBlockUser = () => {
     Alert.alert(strings.blockUser, strings.blockUserConfirm, [
