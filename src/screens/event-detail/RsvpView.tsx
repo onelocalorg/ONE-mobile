@@ -156,7 +156,7 @@ export const RsvpView = ({ event }: RsvpViewProps) => {
             {_.reject((r) => r.type === RsvpType.CANT_GO, rsvpList.rsvps).map(
               (rsvp, index) => (
                 <View key={index} style={styles1.rsvpContainer}>
-                  <Pressable onPress={() => gotoUserProfile(rsvp.guest)}>
+                  <Pressable onPress={gotoUserProfile(rsvp.guest)}>
                     <View style={styles1.profilePicContainer}>
                       <Image
                         source={{ uri: rsvp.guest.pic }}
