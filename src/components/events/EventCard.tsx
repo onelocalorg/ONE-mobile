@@ -29,7 +29,7 @@ export const EventCard = ({ event, disabled = false }: EventCardProps) => {
         resizeMode="stretch"
         uri={event.image?.url}
         source={dummy}
-        isUrl={!!event.image}
+        isUrl={!!event.image?.url}
         style={styles.dummy}
       />
       <View style={styles.flex}>

@@ -71,7 +71,7 @@ export const EventDetailScreen = ({
               resizeMode="cover"
               source={
                 event.image
-                  ? { uri: event.image }
+                  ? { uri: event.image.url }
                   : require("~/assets/images/defaultEvent.png")
               }
               style={styles.eventImage}
