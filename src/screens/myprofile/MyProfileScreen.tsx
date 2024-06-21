@@ -98,7 +98,7 @@ export const MyProfileScreen = () => {
             onSuccess(data) {
               updateUserProfile({
                 id: myUserId!,
-                pic: data.key,
+                pic: { key: data.key },
               });
             },
           }
@@ -137,10 +137,10 @@ export const MyProfileScreen = () => {
             <View style={styles.profileContainer}>
               <Pressable onPress={chooseImage}>
                 <ImageComponent
-                  isUrl={!!myProfile.pic}
+                  isUrl={!!myProfile.pic.url}
                   resizeMode="cover"
                   style={styles.profile}
-                  uri={myProfile.pic}
+                  uri={myProfile.pic.url}
                   source={dummy}
                 />
                 <Button title="Update" onPress={chooseImage} />

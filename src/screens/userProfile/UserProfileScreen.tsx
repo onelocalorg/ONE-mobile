@@ -38,9 +38,9 @@ export const UserProfileScreen = ({
           <>
             <View style={styles.rowOnly}>
               <ImageComponent
-                isUrl={!!userProfile.pic}
+                isUrl={!!userProfile.pic.url}
                 resizeMode="cover"
-                uri={userProfile.pic}
+                uri={userProfile.pic.url}
                 source={dummy}
                 style={styles.profile}
               />

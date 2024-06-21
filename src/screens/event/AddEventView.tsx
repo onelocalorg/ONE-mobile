@@ -38,9 +38,9 @@ export const AddEventView = () => {
           <ImageComponent
             style={styles.avatar}
             resizeMode="cover"
-            isUrl={!!myProfile?.pic}
+            isUrl={!!myProfile?.pic.url}
             source={defaultUser}
-            uri={myProfile?.pic}
+            uri={myProfile?.pic.url}
           ></ImageComponent>
           <View style={styles.postInput}>
             <Text style={{ textAlign: "left", color: "gray" }}>

@@ -1,8 +1,11 @@
+import { ImageKey, ImageUrl } from "./image-info";
+
 export interface UserProfile extends UserProfileData {
   id: string;
   firstName: string;
   lastName: string;
   gratis: number;
+  pic: ImageUrl;
 }
 
 export interface UserProfileData extends UserProfileUpdateData {
@@ -17,7 +20,7 @@ export interface UserProfileUpdateData {
   lastName?: string;
   nickname?: string;
   catchphrase?: string;
-  pic?: string;
+  pic?: ImageKey;
   about?: string;
   skills?: string[];
 }

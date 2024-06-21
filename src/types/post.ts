@@ -1,4 +1,5 @@
 import { DateTime } from "luxon";
+import { ImageKey, ImageUrl } from "./image-info";
 import { OneUser } from "./one-user";
 import { Reply } from "./reply";
 
@@ -6,11 +7,6 @@ export enum PostType {
   REQUEST = "request",
   OFFER = "offer",
   GRATIS = "gratis",
-}
-
-export interface ImageInfo {
-  key: string;
-  url?: string;
 }
 
 export interface PostDetail extends Post {
@@ -23,7 +19,7 @@ export interface Post extends PostData {
   gratis: number;
   author: OneUser;
   postDate: DateTime;
-  images: [ImageInfo];
+  images: [ImageUrl];
   numReplies: number;
 }
 
@@ -41,5 +37,5 @@ export interface PostUpdateData {
   coordinates?: number[];
   startDate?: DateTime;
   timezone?: string;
-  images?: [ImageInfo];
+  images?: [ImageKey];
 }

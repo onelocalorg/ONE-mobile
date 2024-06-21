@@ -63,7 +63,6 @@ export const EventEditor = ({
   const navigation = useNavigation();
   const [isEndDateActive, setEndDateActive] = useState(false);
   const [curTicket, setCurTicket] = useState<number | undefined>();
-  const [imageUrl, setImageUrl] = useState(event?.image);
   const myUserId = useMyUserId();
   const isMyEvent = myUserId === event?.id;
 
@@ -165,8 +164,7 @@ export const EventEditor = ({
           },
           {
             onSuccess(uploadedFile) {
-              setValue("image", uploadedFile.key);
-              setImageUrl(uploadedFile.imageUrl);
+              setValue("image", { key: uploadedFile.key });
             },
           }
         );
@@ -259,9 +257,9 @@ export const EventEditor = ({
         <View>
           <TouchableOpacity activeOpacity={0.8} onPress={chooseImage}>
             <ImageComponent
-              isUrl={!!imageUrl}
+              isUrl={!!getValues("image")?.url}
               resizeMode="cover"
-              uri={imageUrl}
+              uri={getValues("image")?.url}
               source={dummy}
               style={styles.profile}
             />

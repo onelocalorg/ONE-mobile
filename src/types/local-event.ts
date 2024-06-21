@@ -1,4 +1,5 @@
 import { DateTime } from "luxon";
+import { ImageKey, ImageUrl } from "./image-info";
 import { OneUser } from "./one-user";
 import { TicketType } from "./ticket-type";
 import { TicketTypeData } from "./ticket-type-data";
@@ -10,6 +11,7 @@ export interface LocalEvent extends LocalEventData {
   isCanceled: boolean;
   viewCount: number;
   timezone: string;
+  image?: ImageUrl;
 }
 
 export interface LocalEventData extends LocalEventUpdateData {
@@ -31,7 +33,7 @@ export interface LocalEventUpdateData {
   venue?: string;
   address?: string;
   coordinates?: number[];
-  image?: string;
+  image?: ImageKey;
   ticketTypes?: TicketTypeData[];
   isCanceled?: boolean;
 }

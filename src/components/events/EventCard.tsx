@@ -27,7 +27,7 @@ export const EventCard = ({ event, disabled = false }: EventCardProps) => {
     >
       <ImageComponent
         resizeMode="stretch"
-        uri={event.image}
+        uri={event.image?.url}
         source={dummy}
         isUrl={!!event.image}
         style={styles.dummy}
