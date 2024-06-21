@@ -207,10 +207,6 @@ export const createStyleSheet = (theme: ThemeProps) => {
       marginLeft: normalScale(3),
     },
     bottomButton: {
-      position: "absolute",
-      bottom: 0,
-      left: 0,
-      right: 0,
       paddingHorizontal: normalScale(16),
       backgroundColor: theme.colors.white,
       paddingBottom: verticalScale(20),

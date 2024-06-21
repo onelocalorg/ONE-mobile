@@ -1,6 +1,6 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import React from "react";
-import { KeyboardAvoidingView, Platform } from "react-native";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { Loader } from "~/components/loader";
 import { RootStackScreenProps, Screens } from "~/navigation/types";
 import {
@@ -33,10 +33,7 @@ export const CreateEditEventScreen = ({
   });
 
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-      style={{ flex: 1 }}
-    >
+    <KeyboardAwareScrollView>
       <Loader visible={!!eventId && isPending} />
       {!eventId || event ? (
         <EventEditor
@@ -46,6 +43,6 @@ export const CreateEditEventScreen = ({
           isLoading={isLoading}
         />
       ) : null}
-    </KeyboardAvoidingView>
+    </KeyboardAwareScrollView>
   );
 };

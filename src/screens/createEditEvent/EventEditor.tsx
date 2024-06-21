@@ -21,7 +21,6 @@ import { ButtonComponent } from "~/components/button-component";
 import { ChooseDate } from "~/components/choose-date/ChooseDate";
 import { ImageComponent } from "~/components/image-component";
 import { Input } from "~/components/input";
-import { Loader } from "~/components/loader";
 import { LocationAutocomplete } from "~/components/location-autocomplete/LocationAutocomplete";
 import { SizedBox } from "~/components/sized-box";
 import { LOG } from "~/config";
@@ -164,7 +163,10 @@ export const EventEditor = ({
           },
           {
             onSuccess(uploadedFile) {
-              setValue("image", { key: uploadedFile.key });
+              setValue("image", {
+                key: uploadedFile.key,
+                url: uploadedFile.imageUrl,
+              });
             },
           }
         );
@@ -246,16 +248,10 @@ export const EventEditor = ({
   };
 
   return (
-    <Pressable style={styles.container} onPress={keyboardDismiss}>
-      <Loader visible={isLoading || isUploadingImage} showOverlay />
-      <TouchableOpacity
-        activeOpacity={1}
-        onPress={() => {
-          keyboardDismiss();
-        }}
-      >
-        <View>
-          <TouchableOpacity activeOpacity={0.8} onPress={chooseImage}>
+    <View style={styles.container}>
+      <View>
+        <TouchableOpacity activeOpacity={0.8} onPress={chooseImage}>
+          <View style={{ flex: 1, alignItems: "center" }}>
             <ImageComponent
               isUrl={!!getValues("image")?.url}
               resizeMode="cover"
@@ -263,11 +259,17 @@ export const EventEditor = ({
               source={dummy}
               style={styles.profile}
             />
-            <ImageComponent source={addGreen} style={styles.addGreen} />
-          </TouchableOpacity>
+            {!getValues("image")?.url ? (
+              <ImageComponent
+                source={addGreen}
+                style={[styles.addGreen, { position: "absolute", top: 60 }]}
+              />
+            ) : null}
+          </View>
+        </TouchableOpacity>
 
-          <SizedBox height={verticalScale(26)} />
-          {/* {!isCreateEvent && (
+        <SizedBox height={verticalScale(26)} />
+        {/* {!isCreateEvent && (
               <Pill
                 label={strings.checkIns}
                 backgroundColor={theme.colors.lightRed}
@@ -275,7 +277,7 @@ export const EventEditor = ({
                 onPressPill={onNavigate}
               />
             )} */}
-          {/* <View style={styles.toggleContainer}>
+        {/* <View style={styles.toggleContainer}>
               <Text style={styles.villageLblTwo}>Village Friendly </Text>
               <View style={styles.switchToggle}>
                 {Platform.OS === "ios" ? (
@@ -299,160 +301,157 @@ export const EventEditor = ({
               </View>
               <Text style={styles.villageLblTwo}> Adult Oriented</Text>
             </View> */}
-          <View style={styles.innerContainer}>
-            <Controller
-              control={control}
-              rules={{
-                required: true,
-              }}
-              render={({ field: { onChange, onBlur, value } }) => (
-                <Input
-                  onChangeText={onChange}
-                  onBlur={onBlur}
-                  placeholder={strings.enterTitle}
-                  value={value}
-                />
-              )}
-              name="name"
-            />
-            {errors.name && <Text>This is required.</Text>}
-
-            <ChooseStartAndEndDates />
-
-            <View style={[styles.row]}>
-              <View style={[styles.circularView, styles.yellow]}>
-                <ImageComponent source={pinWhite} style={styles.pinWhite} />
-              </View>
-              <SizedBox width={normalScale(8)} />
-
-              <Controller
-                control={control}
-                rules={{
-                  required: true,
-                }}
-                render={({ field: { onChange, value } }) => (
-                  <LocationAutocomplete
-                    address={value}
-                    placeholder="Where will the event be held?"
-                    onPress={(data, details) => {
-                      onChange(data.description);
-                      if (details) {
-                        setValue("coordinates", [
-                          details.geometry.location.lng,
-                          details.geometry.location.lat,
-                        ]);
-                      }
-                    }}
-                  ></LocationAutocomplete>
-                )}
-                name="address"
+        <View style={styles.innerContainer}>
+          <Controller
+            control={control}
+            rules={{
+              required: true,
+            }}
+            render={({ field: { onChange, onBlur, value } }) => (
+              <Input
+                onChangeText={onChange}
+                onBlur={onBlur}
+                placeholder={strings.enterTitle}
+                value={value}
               />
-              {errors.address && <Text>This is required.</Text>}
+            )}
+            name="name"
+          />
+          {errors.name && <Text>This is required.</Text>}
+
+          <ChooseStartAndEndDates />
+
+          <View style={[styles.row]}>
+            <View style={[styles.circularView, styles.yellow]}>
+              <ImageComponent source={pinWhite} style={styles.pinWhite} />
             </View>
-            <SizedBox height={verticalScale(8)} />
+            <SizedBox width={normalScale(8)} />
 
-            <Controller
-              control={control}
-              render={({ field: { onChange, value } }) => (
-                <Input
-                  placeholder={strings.enterVenue}
-                  inputStyle={styles.textStyle}
-                  value={value}
-                  onChangeText={onChange}
-                  height={verticalScale(40)}
-                />
-              )}
-              name="venue"
-            />
-            <SizedBox height={verticalScale(8)} />
-
-            <Text style={styles.event}>{strings.aboutEvent}</Text>
-            <SizedBox height={verticalScale(4)} />
             <Controller
               control={control}
               rules={{
                 required: true,
               }}
               render={({ field: { onChange, value } }) => (
-                <Input
-                  placeholder={strings.enterAboutEvent}
-                  height={verticalScale(60)}
-                  multiline
-                  value={value}
-                  onChangeText={onChange}
-                />
+                <LocationAutocomplete
+                  address={value}
+                  placeholder="Where will the event be held?"
+                  onPress={(data, details) => {
+                    onChange(data.description);
+                    if (details) {
+                      setValue("coordinates", [
+                        details.geometry.location.lng,
+                        details.geometry.location.lat,
+                      ]);
+                    }
+                  }}
+                ></LocationAutocomplete>
               )}
-              name="about"
+              name="address"
             />
-            {errors.about && <Text>This is required.</Text>}
-
-            <View style={[styles.row, styles.marginTop]}>
-              <Text style={styles.tickets}>{strings.tickets}:</Text>
-              <Pressable
-                onPress={() => setCurTicket(event?.ticketTypes.length)}
-              >
-                <ImageComponent source={addGreen} style={styles.addGreen} />
-              </Pressable>
-            </View>
-            <AddTicketModal
-              isVisible={curTicket !== undefined}
-              onSuccess={onTicketAdded}
-              onDismiss={() => setCurTicket(undefined)}
-              value={
-                curTicket === undefined
-                  ? undefined
-                  : getValues("ticketTypes")[curTicket]
-              }
-            />
-            <View>
-              {getValues("ticketTypes").map((t, index) => {
-                return (
-                  <View key={t.name} style={styles.rowOnly}>
-                    <Text style={styles.ticket}>{`${t?.name} - ${
-                      t.quantity ? t.quantity : "Unlimited"
-                    } ${
-                      t.price > 0 ? "@ $" + t.price.toFixed(2) : "Free"
-                    }`}</Text>
-                    <View style={styles.rowOnly}>
-                      <Pressable onPress={() => setCurTicket(index)}>
-                        <ImageComponent source={edit} style={styles.edit} />
-                      </Pressable>
-                      <Pressable onPress={() => handleTicketRemoved(index)}>
-                        <Text style={styles.delete}>X</Text>
-                      </Pressable>
-                    </View>
-                  </View>
-                );
-              })}
-            </View>
+            {errors.address && <Text>This is required.</Text>}
           </View>
+          <SizedBox height={verticalScale(8)} />
 
-          {event ? (
-            <View>
-              {isMyEvent ? (
-                <View>
-                  <View style={styles.uniqueViewCont}>
-                    <Text style={styles.uniqueViewLbl}>Unique Views</Text>
-                    <Text style={styles.uniqueCount}>{viewCount}</Text>
-                  </View>
-                  <View>
-                    /{" "}
-                    <TouchableOpacity
-                      activeOpacity={0.8}
-                      onPress={() => verifyCancelEvent(event.id)}
-                      style={styles.cancleEventBtn}
-                    >
-                      <Text style={styles.cancleEventText}>
-                        {strings.cancleEvent}
-                      </Text>
-                    </TouchableOpacity>
+          <Controller
+            control={control}
+            render={({ field: { onChange, value } }) => (
+              <Input
+                placeholder={strings.enterVenue}
+                inputStyle={styles.textStyle}
+                value={value}
+                onChangeText={onChange}
+                height={verticalScale(40)}
+              />
+            )}
+            name="venue"
+          />
+          <SizedBox height={verticalScale(8)} />
+
+          <Text style={styles.event}>{strings.aboutEvent}</Text>
+          <SizedBox height={verticalScale(4)} />
+          <Controller
+            control={control}
+            rules={{
+              required: true,
+            }}
+            render={({ field: { onChange, value } }) => (
+              <Input
+                placeholder={strings.enterAboutEvent}
+                height={verticalScale(60)}
+                multiline
+                value={value}
+                onChangeText={onChange}
+              />
+            )}
+            name="about"
+          />
+          {errors.about && <Text>This is required.</Text>}
+
+          <View style={[styles.row, styles.marginTop]}>
+            <Text style={styles.tickets}>{strings.tickets}:</Text>
+            <Pressable onPress={() => setCurTicket(event?.ticketTypes.length)}>
+              <ImageComponent source={addGreen} style={styles.addGreen} />
+            </Pressable>
+          </View>
+          <AddTicketModal
+            isVisible={curTicket !== undefined}
+            onSuccess={onTicketAdded}
+            onDismiss={() => setCurTicket(undefined)}
+            value={
+              curTicket === undefined
+                ? undefined
+                : getValues("ticketTypes")[curTicket]
+            }
+          />
+          <View>
+            {getValues("ticketTypes").map((t, index) => {
+              return (
+                <View key={t.name} style={styles.rowOnly}>
+                  <Text style={styles.ticket}>{`${t?.name} - ${
+                    t.quantity ? t.quantity : "Unlimited"
+                  } ${
+                    t.price > 0 ? "@ $" + t.price.toFixed(2) : "Free"
+                  }`}</Text>
+                  <View style={styles.rowOnly}>
+                    <Pressable onPress={() => setCurTicket(index)}>
+                      <ImageComponent source={edit} style={styles.edit} />
+                    </Pressable>
+                    <Pressable onPress={() => handleTicketRemoved(index)}>
+                      <Text style={styles.delete}>X</Text>
+                    </Pressable>
                   </View>
                 </View>
-              ) : null}
-            </View>
-          ) : null}
+              );
+            })}
+          </View>
         </View>
-      </TouchableOpacity>
+
+        {event ? (
+          <View>
+            {isMyEvent ? (
+              <View>
+                <View style={styles.uniqueViewCont}>
+                  <Text style={styles.uniqueViewLbl}>Unique Views</Text>
+                  <Text style={styles.uniqueCount}>{viewCount}</Text>
+                </View>
+                <View>
+                  /{" "}
+                  <TouchableOpacity
+                    activeOpacity={0.8}
+                    onPress={() => verifyCancelEvent(event.id)}
+                    style={styles.cancleEventBtn}
+                  >
+                    <Text style={styles.cancleEventText}>
+                      {strings.cancleEvent}
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            ) : null}
+          </View>
+        ) : null}
+      </View>
 
       <View style={styles.bottomButton}>
         <ButtonComponent
@@ -461,6 +460,6 @@ export const EventEditor = ({
           disabled={isLoading}
         />
       </View>
-    </Pressable>
+    </View>
   );
 };
