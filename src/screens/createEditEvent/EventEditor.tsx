@@ -8,9 +8,12 @@ import { Controller, useFieldArray, useForm } from "react-hook-form";
 import {
   Alert,
   Keyboard,
+  KeyboardAvoidingView,
+  Platform,
   Pressable,
   Text,
   TouchableOpacity,
+  TouchableWithoutFeedback,
   View,
 } from "react-native";
 import ImagePicker from "react-native-image-crop-picker";
@@ -254,189 +257,198 @@ export const EventEditor = ({
 
   return (
     <View style={styles.container}>
-      <View>
-        <TouchableOpacity activeOpacity={0.8} onPress={chooseImage}>
-          <View style={{ flex: 1, alignItems: "center" }}>
-            <ImageComponent
-              isUrl={!!getValues("image")?.url}
-              resizeMode="cover"
-              uri={getValues("image")?.url}
-              source={dummy}
-              style={styles.profile}
-            />
-            {!getValues("image")?.url ? (
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        style={styles.container}
+      >
+        <View style={{ flex: 1, justifyContent: "space-between" }}>
+          <TouchableOpacity activeOpacity={0.8} onPress={chooseImage}>
+            <View style={{ flex: 1, alignItems: "center" }}>
               <ImageComponent
-                source={addGreen}
-                style={[styles.addGreen, { position: "absolute", top: 60 }]}
+                isUrl={!!getValues("image")?.url}
+                resizeMode="cover"
+                uri={getValues("image")?.url}
+                source={dummy}
+                style={styles.profile}
               />
-            ) : null}
-          </View>
-        </TouchableOpacity>
-        <View>
-          <SizedBox height={verticalScale(26)} />
-          <View style={styles.innerContainer}>
-            <Controller
-              control={control}
-              rules={{
-                required: true,
-              }}
-              render={({ field: { onChange, onBlur, value } }) => (
-                <Input
-                  onChangeText={onChange}
-                  onBlur={onBlur}
-                  placeholder={strings.enterTitle}
-                  value={value}
+              {!getValues("image")?.url ? (
+                <ImageComponent
+                  source={addGreen}
+                  style={[styles.addGreen, { position: "absolute", top: 60 }]}
                 />
-              )}
-              name="name"
-            />
-            {errors.name && <Text>This is required.</Text>}
+              ) : null}
+            </View>
+          </TouchableOpacity>
+          <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+            <View>
+              <SizedBox height={verticalScale(50)} />
+              <View style={styles.innerContainer}>
+                <Controller
+                  control={control}
+                  rules={{
+                    required: true,
+                  }}
+                  render={({ field: { onChange, onBlur, value } }) => (
+                    <Input
+                      onChangeText={onChange}
+                      onBlur={onBlur}
+                      placeholder={strings.enterTitle}
+                      value={value}
+                    />
+                  )}
+                  name="name"
+                />
+                {errors.name && <Text>This is required.</Text>}
 
-            <ChooseStartAndEndDates />
+                <ChooseStartAndEndDates />
 
-            <View style={[styles.row]}>
-              <View style={[styles.circularView, styles.yellow]}>
-                <ImageComponent source={pinWhite} style={styles.pinWhite} />
-              </View>
-              <SizedBox width={normalScale(8)} />
+                <View style={[styles.row]}>
+                  <View style={[styles.circularView, styles.yellow]}>
+                    <ImageComponent source={pinWhite} style={styles.pinWhite} />
+                  </View>
+                  <SizedBox width={normalScale(8)} />
 
-              <Controller
-                control={control}
-                rules={{
-                  required: true,
-                }}
-                render={({ field: { onChange, value } }) => (
-                  <LocationAutocomplete
-                    address={value}
-                    placeholder="Where will the event be held?"
-                    onPress={(data, details) => {
-                      onChange(data.description);
-                      if (details) {
-                        setValue("coordinates", [
-                          details.geometry.location.lng,
-                          details.geometry.location.lat,
-                        ]);
-                      }
+                  <Controller
+                    control={control}
+                    rules={{
+                      required: true,
                     }}
-                  ></LocationAutocomplete>
-                )}
-                name="address"
-              />
-              {errors.address && <Text>This is required.</Text>}
-            </View>
-            <SizedBox height={verticalScale(8)} />
+                    render={({ field: { onChange, value } }) => (
+                      <LocationAutocomplete
+                        address={value}
+                        placeholder="Where will the event be held?"
+                        onPress={(data, details) => {
+                          onChange(data.description);
+                          if (details) {
+                            setValue("coordinates", [
+                              details.geometry.location.lng,
+                              details.geometry.location.lat,
+                            ]);
+                          }
+                        }}
+                      ></LocationAutocomplete>
+                    )}
+                    name="address"
+                  />
+                  {errors.address && <Text>This is required.</Text>}
+                </View>
+                <SizedBox height={verticalScale(8)} />
 
-            <Controller
-              control={control}
-              render={({ field: { onChange, value } }) => (
-                <Input
-                  placeholder={strings.enterVenue}
-                  inputStyle={styles.textStyle}
-                  value={value}
-                  onChangeText={onChange}
-                  height={verticalScale(40)}
+                <Controller
+                  control={control}
+                  render={({ field: { onChange, value } }) => (
+                    <Input
+                      placeholder={strings.enterVenue}
+                      inputStyle={styles.textStyle}
+                      value={value}
+                      onChangeText={onChange}
+                      height={verticalScale(40)}
+                    />
+                  )}
+                  name="venue"
                 />
-              )}
-              name="venue"
-            />
-            <SizedBox height={verticalScale(8)} />
+                <SizedBox height={verticalScale(8)} />
 
-            <Text style={styles.event}>{strings.aboutEvent}</Text>
-            <SizedBox height={verticalScale(4)} />
-            <Controller
-              control={control}
-              rules={{
-                required: true,
-              }}
-              render={({ field: { onChange, value } }) => (
-                <Input
-                  placeholder={strings.enterAboutEvent}
-                  height={verticalScale(60)}
-                  multiline
-                  value={value}
-                  onChangeText={onChange}
+                <Text style={styles.event}>{strings.aboutEvent}</Text>
+                <SizedBox height={verticalScale(4)} />
+                <Controller
+                  control={control}
+                  rules={{
+                    required: true,
+                  }}
+                  render={({ field: { onChange, value } }) => (
+                    <Input
+                      placeholder={strings.enterAboutEvent}
+                      height={verticalScale(60)}
+                      multiline
+                      value={value}
+                      onChangeText={onChange}
+                    />
+                  )}
+                  name="about"
                 />
-              )}
-              name="about"
-            />
-            {errors.about && <Text>This is required.</Text>}
+                {errors.about && <Text>This is required.</Text>}
 
-            <View style={[styles.row, styles.marginTop]}>
-              <Text style={styles.tickets}>{strings.tickets}:</Text>
-              <Pressable onPress={() => setTicketModalVisible(true)}>
-                <ImageComponent source={addGreen} style={styles.addGreen} />
-              </Pressable>
-            </View>
-            <AddTicketModal
-              isVisible={isTicketModalVisible}
-              onSuccess={onTicketAdded}
-              onDismiss={() => setTicketModalVisible(false)}
-              value={
-                curTicket === undefined
-                  ? undefined
-                  : getValues("ticketTypes")[curTicket]
-              }
-            />
-            <View>
-              {getValues("ticketTypes").map((t, index) => {
-                return (
-                  <View
-                    key={`${t.quantity}${t.name}${t.price}`}
-                    style={styles.rowOnly}
-                  >
-                    <Text style={styles.ticket}>{`${t?.name} - ${
-                      t.quantity ? t.quantity : "Unlimited"
-                    } ${
-                      t.price > 0 ? "@ $" + t.price.toFixed(2) : "Free"
-                    }`}</Text>
-                    <View style={styles.rowOnly}>
-                      <Pressable onPress={() => handleTicketSelected(index)}>
-                        <ImageComponent source={edit} style={styles.edit} />
-                      </Pressable>
-                      <Pressable onPress={() => handleTicketRemoved(index)}>
-                        <Text style={styles.delete}>X</Text>
-                      </Pressable>
-                    </View>
-                  </View>
-                );
-              })}
-            </View>
-          </View>
-
-          {event ? (
-            <View>
-              {isMyEvent ? (
+                <View style={[styles.row, styles.marginTop]}>
+                  <Text style={styles.tickets}>{strings.tickets}:</Text>
+                  <Pressable onPress={() => setTicketModalVisible(true)}>
+                    <ImageComponent source={addGreen} style={styles.addGreen} />
+                  </Pressable>
+                </View>
+                <AddTicketModal
+                  isVisible={isTicketModalVisible}
+                  onSuccess={onTicketAdded}
+                  onDismiss={() => setTicketModalVisible(false)}
+                  value={
+                    curTicket === undefined
+                      ? undefined
+                      : getValues("ticketTypes")[curTicket]
+                  }
+                />
                 <View>
-                  <View style={styles.uniqueViewCont}>
-                    <Text style={styles.uniqueViewLbl}>Unique Views</Text>
-                    <Text style={styles.uniqueCount}>{viewCount}</Text>
-                  </View>
-                  <View>
-                    /{" "}
-                    <TouchableOpacity
-                      activeOpacity={0.8}
-                      onPress={() => verifyCancelEvent(event.id)}
-                      style={styles.cancleEventBtn}
-                    >
-                      <Text style={styles.cancleEventText}>
-                        {strings.cancleEvent}
-                      </Text>
-                    </TouchableOpacity>
-                  </View>
+                  {getValues("ticketTypes").map((t, index) => {
+                    return (
+                      <View
+                        key={`${t.quantity}${t.name}${t.price}`}
+                        style={styles.rowOnly}
+                      >
+                        <Text style={styles.ticket}>{`${t?.name} - ${
+                          t.quantity ? t.quantity : "Unlimited"
+                        } ${
+                          t.price > 0 ? "@ $" + t.price.toFixed(2) : "Free"
+                        }`}</Text>
+                        <View style={styles.rowOnly}>
+                          <Pressable
+                            onPress={() => handleTicketSelected(index)}
+                          >
+                            <ImageComponent source={edit} style={styles.edit} />
+                          </Pressable>
+                          <Pressable onPress={() => handleTicketRemoved(index)}>
+                            <Text style={styles.delete}>X</Text>
+                          </Pressable>
+                        </View>
+                      </View>
+                    );
+                  })}
+                </View>
+              </View>
+
+              {event ? (
+                <View>
+                  {isMyEvent ? (
+                    <View>
+                      <View style={styles.uniqueViewCont}>
+                        <Text style={styles.uniqueViewLbl}>Unique Views</Text>
+                        <Text style={styles.uniqueCount}>{viewCount}</Text>
+                      </View>
+                      <View>
+                        /{" "}
+                        <TouchableOpacity
+                          activeOpacity={0.8}
+                          onPress={() => verifyCancelEvent(event.id)}
+                          style={styles.cancleEventBtn}
+                        >
+                          <Text style={styles.cancleEventText}>
+                            {strings.cancleEvent}
+                          </Text>
+                        </TouchableOpacity>
+                      </View>
+                    </View>
+                  ) : null}
                 </View>
               ) : null}
             </View>
-          ) : null}
-        </View>
+          </TouchableWithoutFeedback>
 
-        <View style={styles.bottomButton}>
-          <ButtonComponent
-            onPress={handleSubmit(onSubmit)}
-            title={event ? strings.updateEvent : strings.createEvent}
-            disabled={isLoading}
-          />
+          <View style={styles.bottomButton}>
+            <ButtonComponent
+              onPress={handleSubmit(onSubmit)}
+              title={event ? strings.updateEvent : strings.createEvent}
+              disabled={isLoading}
+            />
+          </View>
         </View>
-      </View>
+      </KeyboardAvoidingView>
     </View>
   );
 };
