@@ -3,13 +3,21 @@ import { useMutation } from "@tanstack/react-query";
 import _ from "lodash/fp";
 import { DateTime } from "luxon";
 import React, { useState } from "react";
-import { Controller, useFieldArray, useForm } from "react-hook-form";
+import { Controller, useFieldArray, useForm, useWatch } from "react-hook-form";
 import { Alert, Text, TextInput, TouchableOpacity, View } from "react-native";
 import ImagePicker from "react-native-image-crop-picker";
 import DateTimePicker from "react-native-modal-datetime-picker";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
 import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
-import { buttonArrowGreen, pin, postCalender } from "~/assets/images";
+import {
+  blackOffer,
+  buttonArrowGreen,
+  greenOffer,
+  pin,
+  postCalender,
+  request,
+  requestGreen,
+} from "~/assets/images";
 import { ButtonComponent } from "~/components/button-component";
 import { ImageComponent } from "~/components/image-component";
 import { Loader } from "~/components/loader";
@@ -26,14 +34,12 @@ interface Callback {
   onSuccess: () => void;
 }
 interface PostEditorProps {
-  type: PostType;
   post?: Post;
   isLoading: boolean;
   onSubmitCreate?: (data: PostData, callback: Callback) => void;
   onSubmitUpdate?: (data: PostUpdateData, callback: Callback) => void;
 }
 export const PostEditor = ({
-  type,
   post,
   isLoading,
   onSubmitCreate,
@@ -47,13 +53,14 @@ export const PostEditor = ({
 
   const {
     control,
+    watch,
     setValue,
     getValues,
     handleSubmit,
     formState: { errors },
   } = useForm<PostUpdateData>({
     defaultValues: {
-      type,
+      type: PostType.OFFER,
       name: "",
       details: "",
       images: [],
@@ -67,6 +74,11 @@ export const PostEditor = ({
   const { append: appendImage, remove: removeImage } = useFieldArray({
     control,
     name: "images",
+  });
+
+  const type = useWatch({
+    control,
+    name: "type",
   });
 
   const { isPending: isUploadingImage, mutate: uploadFile } = useMutation<
@@ -150,9 +162,47 @@ export const PostEditor = ({
     removeImage(index);
   };
 
+  const PostTypeChooser = () => (
+    <View style={styles.postFilter}>
+      <TouchableOpacity
+        style={styles.container3}
+        activeOpacity={1}
+        onPress={() => setValue("type", PostType.OFFER)}
+      >
+        <ImageComponent
+          source={type === PostType.OFFER ? greenOffer : blackOffer}
+          style={styles.icon1}
+        />
+        <Text
+          style={[type === PostType.OFFER ? styles.emphasized : styles.regular]}
+        >
+          Offer
+        </Text>
+      </TouchableOpacity>
+      <TouchableOpacity
+        style={styles.container3}
+        activeOpacity={0.8}
+        onPress={() => setValue("type", PostType.REQUEST)}
+      >
+        <ImageComponent
+          source={type === PostType.REQUEST ? requestGreen : request}
+          style={styles.icon1}
+        />
+        <Text
+          style={[
+            type === PostType.REQUEST ? styles.emphasized : styles.regular,
+          ]}
+        >
+          Request
+        </Text>
+      </TouchableOpacity>
+    </View>
+  );
+
   return (
     <View>
       <Loader visible={isLoading || isUploadingImage} />
+      <PostTypeChooser />
       <View style={styles.createPostCont}>
         <Controller
           control={control}

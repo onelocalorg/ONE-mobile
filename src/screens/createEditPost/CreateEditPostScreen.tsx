@@ -1,9 +1,7 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import React, { useState } from "react";
-import { Text, TouchableOpacity, View } from "react-native";
+import { View } from "react-native";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
-import { blackOffer, greenOffer, request, requestGreen } from "~/assets/images";
-import { ImageComponent } from "~/components/image-component";
 import { Loader } from "~/components/loader";
 import { RootStackScreenProps, Screens } from "~/navigation/types";
 import {
@@ -41,49 +39,10 @@ export const CreateEditPostScreen = ({
   return (
     <>
       <Loader visible={!!post && isPending} />
-      <View style={styles.postFilter}>
-        <TouchableOpacity
-          style={styles.container3}
-          activeOpacity={1}
-          onPress={() => (!post ? setType(PostType.OFFER) : {})}
-        >
-          <ImageComponent
-            source={getType() === PostType.OFFER ? greenOffer : blackOffer}
-            style={styles.icon1}
-          />
-          <Text
-            style={[
-              getType() === PostType.OFFER ? styles.emphasized : styles.regular,
-            ]}
-          >
-            Offer
-          </Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.container3}
-          activeOpacity={0.8}
-          onPress={() => (!postId ? setType(PostType.REQUEST) : {})}
-        >
-          <ImageComponent
-            source={getType() === PostType.REQUEST ? requestGreen : request}
-            style={styles.icon1}
-          />
-          <Text
-            style={[
-              getType() === PostType.REQUEST
-                ? styles.emphasized
-                : styles.regular,
-            ]}
-          >
-            Request
-          </Text>
-        </TouchableOpacity>
-      </View>
       <View>
         <View style={styles.postClass}>
           {!postId || post ? (
             <PostEditor
-              type={getType()}
               post={post}
               onSubmitCreate={mutateCreatePost.mutate}
               onSubmitUpdate={mutateEditPost.mutate}
