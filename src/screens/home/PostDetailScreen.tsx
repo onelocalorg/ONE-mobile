@@ -302,7 +302,7 @@ export const PostDetailScreen = ({
                     >
                       {subReply.author.firstName} {subReply.author.lastName}
                     </Text>
-                    {reply.author.id === myUserId && (
+                    {subReply.author.id === myUserId && (
                       <Pressable onPress={handleDeleteReply(subReply.id)}>
                         <Text style={styles.delete}>X</Text>
                       </Pressable>
