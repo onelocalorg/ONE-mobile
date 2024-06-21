@@ -12,7 +12,7 @@ import {
   TextInput,
   TouchableOpacity,
 } from "react-native";
-import { getDeviceName, getUniqueId } from "react-native-device-info";
+import DeviceInfo from "react-native-device-info";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { Modal, Portal } from "react-native-paper";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
@@ -136,16 +136,12 @@ export const LoginScreen = ({
 
   const onSubmit = async () => {
     LodingData(true);
-    const deviceToken = await getUniqueId();
-    const deviceInfo = `${Platform.OS === "ios"} ${await getDeviceName()}`;
     const body = {
       emailOrMobile: user?.emailOrMobile,
       password: user?.password,
       loginType: "password",
-      deviceToken,
-      version: "1.0.0",
-      deviceInfo,
-      googleToken: "fasdfasdfdsasdfad",
+      version: DeviceInfo.getReadableVersion(),
+      deviceInfo: DeviceInfo.getDeviceId(),
     };
     try {
       const currentUser = await logIn(body);
