@@ -73,8 +73,11 @@ export function usePostService() {
     mutationFn: (params: PostUpdateData) => {
       return updatePost(params);
     },
-    onSuccess: () => {
+    onSuccess: (data: PostDetail) => {
       void queryClient.invalidateQueries({ queryKey: queries.lists() });
+      void queryClient.invalidateQueries({
+        queryKey: queries.detail(data.id).queryKey,
+      });
     },
   });
 
@@ -91,8 +94,11 @@ export function usePostService() {
     mutationFn: (params: CreateReplyProps) => {
       return createReply(params);
     },
-    onSuccess: () => {
+    onSuccess: (data: Reply) => {
       void queryClient.invalidateQueries({ queryKey: queries.lists() });
+      void queryClient.invalidateQueries({
+        queryKey: queries.detail(data.post).queryKey,
+      });
     },
   });
 
@@ -100,8 +106,11 @@ export function usePostService() {
     mutationFn: (params: DeleteReplyProps) => {
       return deleteReply(params);
     },
-    onSuccess: () => {
+    onSuccess: (_, vars: DeleteReplyProps) => {
       void queryClient.invalidateQueries({ queryKey: queries.lists() });
+      void queryClient.invalidateQueries({
+        queryKey: queries.detail(vars.postId).queryKey,
+      });
     },
   });
 
@@ -128,7 +137,7 @@ export function usePostService() {
     mutationFn: (userId: string) => {
       return blockUser(userId);
     },
-    onSuccess: (resp: Block) => {
+    onSuccess: () => {
       void queryClient.invalidateQueries({
         queryKey: queries.lists(),
       });
