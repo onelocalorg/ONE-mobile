@@ -76,7 +76,6 @@ export function usePostService() {
       return updatePost(params);
     },
     onSuccess: () => {
-      // TODO Change cache to invalidate less
       void queryClient.invalidateQueries({ queryKey: queries.lists() });
     },
   });
@@ -85,10 +84,8 @@ export function usePostService() {
     mutationFn: (postId: string) => {
       return deletePost(postId);
     },
-    onSuccess: (resp: Report) => {
-      void queryClient.invalidateQueries({
-        queryKey: queries.lists(),
-      });
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: queries.lists() });
     },
   });
 
@@ -96,10 +93,8 @@ export function usePostService() {
     mutationFn: (params: CreateReplyProps) => {
       return createReply(params);
     },
-    onSuccess: (resp: Reply) => {
-      void queryClient.invalidateQueries({
-        queryKey: queries.detail(resp.post).queryKey,
-      });
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: queries.lists() });
     },
   });
 
@@ -107,10 +102,8 @@ export function usePostService() {
     mutationFn: (params: DeleteReplyProps) => {
       return deleteReply(params);
     },
-    onSuccess: (_, vars: DeleteReplyProps) => {
-      void queryClient.invalidateQueries({
-        queryKey: queries.detail(vars.postId).queryKey,
-      });
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: queries.lists() });
     },
   });
 
@@ -119,18 +112,17 @@ export function usePostService() {
       return sendGratis(props);
     },
     onSuccess: (resp: Gratis) => {
-      void queryClient.invalidateQueries({
-        queryKey: queries.detail(resp.post).queryKey,
-      });
+      if (resp.reply) {
+        void queryClient.invalidateQueries({
+          queryKey: queries.detail(resp.post).queryKey,
+        });
+      } else {
+        void queryClient.invalidateQueries({ queryKey: queries.lists() });
+      }
+
       void queryClient.invalidateQueries({
         queryKey: userQueries.detail(resp.sender).queryKey,
       });
-
-      // FIXME Need to invalidate everything because we get the gratis
-      // when pulling the whole list
-      if (!resp.reply) {
-        void queryClient.invalidateQueries({ queryKey: queries.lists() });
-      }
     },
   });
 
