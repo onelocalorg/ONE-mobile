@@ -21,6 +21,7 @@ export enum PostMutations {
   editPost = "editPost",
   deletePost = "deletePost",
   createReply = "createReply",
+  deleteReply = "deleteReply",
   giveGrats = "giveGrats",
   reportPost = "reportPost",
   blockUser = "blockUser",
@@ -98,6 +99,17 @@ export function usePostService() {
     onSuccess: (resp: Reply) => {
       void queryClient.invalidateQueries({
         queryKey: queries.detail(resp.post).queryKey,
+      });
+    },
+  });
+
+  queryClient.setMutationDefaults([PostMutations.deleteReply], {
+    mutationFn: (params: DeleteReplyProps) => {
+      return deleteReply(params);
+    },
+    onSuccess: (_, vars: DeleteReplyProps) => {
+      void queryClient.invalidateQueries({
+        queryKey: queries.detail(vars.postId).queryKey,
       });
     },
   });
@@ -196,6 +208,9 @@ export function usePostService() {
       content,
     });
 
+  const deleteReply = ({ postId, replyId }: DeleteReplyProps) =>
+    doDelete<never>(`/v3/posts/${postId}/replies/${replyId}`);
+
   const reportPost = ({ postId, reason }: ReportPostParams) =>
     doPost<Report>(`/v3/posts/${postId}/reports`, { reason });
 
@@ -214,6 +229,11 @@ export interface CreateReplyProps {
   postId: string;
   parentId?: string;
   content: string;
+}
+
+export interface DeleteReplyProps {
+  postId: string;
+  replyId: string;
 }
 
 export interface ReportPostParams {

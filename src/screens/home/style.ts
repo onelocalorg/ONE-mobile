@@ -1032,6 +1032,12 @@ export const createStyleSheet = (theme: ThemeProps) => {
       justifyContent: "center",
       alignItems: "center",
     },
+    delete: {
+      height: normalScale(20),
+      width: normalScale(20),
+      paddingLeft: 10,
+      color: theme.colors.red,
+    },
     contentContainerStyle: {
       marginTop: 10,
       padding: 10,

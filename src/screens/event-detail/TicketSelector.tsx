@@ -4,7 +4,6 @@ import { Text, TouchableOpacity, View } from "react-native";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
 import { minus, plus } from "~/assets/images";
 import { ImageComponent } from "~/components/image-component";
-import { LOG } from "~/config";
 import { TicketSelection } from "~/types/ticket-selection";
 import { TicketType } from "~/types/ticket-type";
 import { toCurrency } from "~/utils/common";
@@ -19,7 +18,6 @@ export const TicketSelector = ({
   ticketTypes,
   onSelectedChanged,
 }: TicketSelectorProps) => {
-  LOG.debug("TicketSelector", ticketTypes);
   const { theme } = useAppTheme();
   const styles = createStyleSheet(theme);
 

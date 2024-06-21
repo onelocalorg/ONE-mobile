@@ -123,7 +123,7 @@ export const EventDetailScreen = ({
             <Text style={styles.event}>{strings.aboutEvent}</Text>
             <Text style={styles.desc}>{event.about}</Text>
           </View>
-          <Tickets event={event} onTicketPurchased={navigation.goBack} />
+          <Tickets event={event} />
           <RsvpView event={event} />
           {event.host.id === myUserId ? (
             <ButtonComponent

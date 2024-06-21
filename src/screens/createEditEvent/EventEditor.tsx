@@ -24,6 +24,7 @@ import { ButtonComponent } from "~/components/button-component";
 import { ChooseDate } from "~/components/choose-date/ChooseDate";
 import { ImageComponent } from "~/components/image-component";
 import { Input } from "~/components/input";
+import { Loader } from "~/components/loader";
 import { LocationAutocomplete } from "~/components/location-autocomplete/LocationAutocomplete";
 import { SizedBox } from "~/components/sized-box";
 import { useMyUserId } from "~/navigation/AuthContext";
@@ -186,10 +187,6 @@ export const EventEditor = ({
     }
   };
 
-  const keyboardDismiss = () => {
-    Keyboard.dismiss();
-  };
-
   const ChooseStartAndEndDates = () => (
     <View>
       <Controller
@@ -257,6 +254,7 @@ export const EventEditor = ({
 
   return (
     <View style={styles.container}>
+      <Loader visible={isUploadingImage} />
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         style={styles.container}

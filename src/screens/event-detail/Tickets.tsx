@@ -1,6 +1,5 @@
-import { useFocusEffect, useNavigation } from "@react-navigation/native";
-import _ from "lodash/fp";
-import React, { useCallback, useState } from "react";
+import { useNavigation } from "@react-navigation/native";
+import React from "react";
 import { Text, View } from "react-native";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
 import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
@@ -13,27 +12,15 @@ import { createStyleSheet as createBaseStyleSheet } from "./style";
 
 interface TicketsProps {
   event: LocalEvent;
-  onTicketPurchased?: () => void;
 }
 
-export const Tickets = ({ event, onTicketPurchased }: TicketsProps) => {
+export const Tickets = ({ event }: TicketsProps) => {
   const { theme } = useAppTheme();
   const { strings } = useStringsAndLabels();
   const styles = createBaseStyleSheet(theme);
-  const [isTicketAvailable, setIsTicketAvailable] = useState(false);
-  const [isChooseTicketsModalVisible, setChooseTicketsModalVisible] =
-    useState(false);
   const navigation = useNavigation();
   const myUserId = useMyUserId();
   const isMyEvent = myUserId === event.id;
-
-  useFocusEffect(
-    useCallback(() => {
-      setIsTicketAvailable(
-        !_.isEmpty(event?.ticketTypes.filter((t) => t.isAvailable))
-      );
-    }, [event])
-  );
 
   const ticketQuantityToString = (quantity?: number) =>
     !quantity || quantity === 0 ? "Unlimited" : quantity.toString();

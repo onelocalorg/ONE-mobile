@@ -6,6 +6,7 @@ import {
   Image,
   KeyboardAvoidingView,
   Platform,
+  Pressable,
   ScrollView,
   Text,
   TextInput,
@@ -24,9 +25,11 @@ import {
 } from "~/assets/images";
 import { ImageComponent } from "~/components/image-component";
 import { Loader } from "~/components/loader";
+import { useMyUserId } from "~/navigation/AuthContext";
 import { RootStackScreenProps, Screens } from "~/navigation/types";
 import {
   CreateReplyProps,
+  DeleteReplyProps,
   PostMutations,
   usePostService,
 } from "~/network/api/services/usePostService";
@@ -44,6 +47,7 @@ export const PostDetailScreen = ({
   const styles = createStyleSheet(theme);
   const replyRef = useRef<TextInput>(null);
   const scrollRef = useRef<ScrollView>(null);
+  const myUserId = useMyUserId();
 
   const { control, handleSubmit, resetField, setValue } =
     useForm<CreateReplyProps>({
@@ -62,11 +66,18 @@ export const PostDetailScreen = ({
   const {
     queries: { detail: postDetail },
   } = usePostService();
-  const { mutate, isPending: isMutationPending } = useMutation<
+  const { mutate, isPending: isQueryPending } = useMutation<
     Reply,
     Error,
     CreateReplyProps
   >({ mutationKey: [PostMutations.createReply] });
+  const { mutate: deleteReply, isPending: isDeletePending } = useMutation<
+    never,
+    Error,
+    DeleteReplyProps
+  >({
+    mutationKey: [PostMutations.deleteReply],
+  });
 
   const {
     isLoading,
@@ -102,6 +113,10 @@ export const PostDetailScreen = ({
 
     setValue("parentId", parentId);
     replyRef.current?.focus();
+  };
+
+  const handleDeleteReply = (replyId: string) => () => {
+    deleteReply({ postId, replyId });
   };
 
   interface PostViewProps {
@@ -212,9 +227,18 @@ export const PostDetailScreen = ({
           ></ImageComponent>
         </TouchableOpacity>
         <View style={styles.replyDisplayCont}>
-          <Text style={{ fontSize: 12, color: "#110101" }}>
-            {reply.author.firstName} {reply.author.lastName}
-          </Text>
+          <View
+            style={{ flexDirection: "row", justifyContent: "space-between" }}
+          >
+            <Text style={{ fontSize: 12, color: "#110101" }}>
+              {reply.author.firstName} {reply.author.lastName}
+            </Text>
+            {reply.author.id === myUserId && (
+              <Pressable onPress={handleDeleteReply(reply.id)}>
+                <Text style={styles.delete}>X</Text>
+              </Pressable>
+            )}
+          </View>
           <Text style={styles.replyMsgCont}>{reply.content}</Text>
         </View>
       </View>
@@ -264,14 +288,26 @@ export const PostDetailScreen = ({
                   ></ImageComponent>
                 </TouchableOpacity>
                 <View style={[styles.replyDisplayCont, { width: 210 }]}>
-                  <Text
+                  <View
                     style={{
-                      fontSize: 12,
-                      color: "#110101",
+                      flexDirection: "row",
+                      justifyContent: "space-between",
                     }}
                   >
-                    {subReply.author.firstName} {subReply.author.lastName}
-                  </Text>
+                    <Text
+                      style={{
+                        fontSize: 12,
+                        color: "#110101",
+                      }}
+                    >
+                      {subReply.author.firstName} {subReply.author.lastName}
+                    </Text>
+                    {reply.author.id === myUserId && (
+                      <Pressable onPress={handleDeleteReply(subReply.id)}>
+                        <Text style={styles.delete}>X</Text>
+                      </Pressable>
+                    )}
+                  </View>
                   <Text style={styles.replyMsgCont}>{subReply.content}</Text>
                 </View>
               </View>
@@ -331,7 +367,7 @@ export const PostDetailScreen = ({
             <TouchableOpacity
               style={{ alignSelf: "center" }}
               onPress={handleSubmit(onSubmitReply)}
-              disabled={isMutationPending}
+              disabled={isQueryPending}
             >
               <ImageComponent
                 style={{ height: 40, width: 40 }}
@@ -352,7 +388,7 @@ export const PostDetailScreen = ({
       keyboardVerticalOffset={100}
     >
       <View style={styles.container}>
-        <Loader visible={isLoading} />
+        <Loader visible={isLoading || isDeletePending} />
         <ScrollView ref={scrollRef}>
           {post ? (
             <View style={{ flex: 0.9 }}>
