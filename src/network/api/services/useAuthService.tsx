@@ -10,10 +10,8 @@ export function useAuthService() {
     emailOrMobile: string;
     password: string;
     loginType: string;
-    deviceToken: string;
     version: string;
     deviceInfo: string;
-    googleToken: string;
   }
 
   const logIn = async (props: LoginProps) =>
