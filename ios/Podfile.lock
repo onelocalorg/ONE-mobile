@@ -1246,6 +1246,11 @@ PODS:
     - React
     - React-Core
     - Turf
+  - RNNotifee (7.8.2):
+    - React-Core
+    - RNNotifee/NotifeeCore (= 7.8.2)
+  - RNNotifee/NotifeeCore (7.8.2):
+    - React-Core
   - RNPermissions (4.0.4):
     - React-Core
   - RNReanimated (3.6.2):
@@ -1259,7 +1264,7 @@ PODS:
     - React-Core
   - RNSVG (15.2.0):
     - React-Core
-  - RNVectorIcons (10.1.0):
+  - RNVectorIcons (10.0.3):
     - glog
     - RCT-Folly (= 2022.05.16.00)
     - React-Core
@@ -1406,6 +1411,7 @@ DEPENDENCIES:
   - "RNGoogleSignin (from `../node_modules/@react-native-google-signin/google-signin`)"
   - RNImageCropPicker (from `../node_modules/react-native-image-crop-picker`)
   - "rnmapbox-maps (from `../node_modules/@rnmapbox/maps`)"
+  - "RNNotifee (from `../node_modules/@notifee/react-native`)"
   - RNPermissions (from `../node_modules/react-native-permissions`)
   - RNReanimated (from `../node_modules/react-native-reanimated`)
   - RNScreens (from `../node_modules/react-native-screens`)
@@ -1593,6 +1599,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-image-crop-picker"
   rnmapbox-maps:
     :path: "../node_modules/@rnmapbox/maps"
+  RNNotifee:
+    :path: "../node_modules/@notifee/react-native"
   RNPermissions:
     :path: "../node_modules/react-native-permissions"
   RNReanimated:
@@ -1700,11 +1708,12 @@ SPEC CHECKSUMS:
   RNGoogleSignin: fc408799f1990a12497a32f64280c0fe353ffcc1
   RNImageCropPicker: d9616a0cb9b72e8551ff94a7a5021fbd29050aa5
   rnmapbox-maps: 79e80130bed4e3934cfc21bc0d6c309beea4e499
+  RNNotifee: 8e2d3df3f0e9ce8f5d1fe4c967431138190b6175
   RNPermissions: 9610ef04ff03bdfe3156722c5c8f8910b628abf0
   RNReanimated: 4f0931c29b1535a3a40a6c06797b1d9d39f50754
   RNScreens: 17e2f657f1b09a71ec3c821368a04acbb7ebcb46
   RNSVG: 43b64ed39c14ce830d840903774154ca0c1f27ec
-  RNVectorIcons: 96e8c5c45609932bb2f8347e1c709bcca0e95654
+  RNVectorIcons: 73ab573085f65a572d3b6233e68996d4707fd505
   SDWebImage: a7f831e1a65eb5e285e3fb046a23fcfbf08e696d
   SDWebImageWebPCoder: 908b83b6adda48effe7667cd2b7f78c897e5111d
   SocketRocket: f32cd54efbe0f095c4d7594881e52619cfe80b17
