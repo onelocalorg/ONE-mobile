@@ -1,5 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { Alert, Text, TextInput, View } from "react-native";
+import {
+  Alert,
+  Keyboard,
+  Text,
+  TextInput,
+  TouchableWithoutFeedback,
+  View,
+} from "react-native";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
 import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
 import { save } from "~/assets/images";
@@ -127,11 +134,12 @@ export const AddTicketModal = ({
         )} */}
 
         {/* <TouchableOpacity activeOpacity={1} onPress={keyboardDismiss}> */}
-        <View style={styles.modalContainer}>
-          {/* <EventList data={eventDetails} /> */}
-          <Text style={styles.label}>{strings.ticketName}</Text>
-          <Input value={name} onChangeText={setName} />
-          {/* <Text style={styles.label}>{strings.ticketTimeframe}</Text>
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+          <View style={styles.modalContainer}>
+            {/* <EventList data={eventDetails} /> */}
+            <Text style={styles.label}>{strings.ticketName}</Text>
+            <Input value={name} onChangeText={setName} />
+            {/* <Text style={styles.label}>{strings.ticketTimeframe}</Text>
             <View style={styles.dateView}>
               <ImageComponent source={calendar} style={styles.calendar} />
               <TouchableOpacity
@@ -158,45 +166,46 @@ export const AddTicketModal = ({
                 <ImageComponent source={arrowDown} style={styles.arrowDown} />
               </TouchableOpacity>
             </View> */}
-          <Text style={styles.label}>{strings.ticketPrice}</Text>
-          <TextInput
-            value={price ? price.toString() : "Free"}
-            onChangeText={(v) => setPrice(Number.parseFloat(v))}
-            placeholder={strings.ticketPriceFree}
-            editable={false}
-            onPressIn={() => {
-              Alert.alert("Only free tickets allowed in this release");
-            }}
-          />
-          <Text style={styles.label}>{strings.ticketQuantity}</Text>
-          <Input
-            keyboardType="numeric"
-            value={quantity?.toString()}
-            onChangeText={(v) => setQuantity(parseInt(v))}
-            placeholder={strings.ticketsUnlimited}
-          />
-          <SizedBox height={verticalScale(25)} />
-          <View
-            style={{ flexDirection: "row", justifyContent: "space-evenly" }}
-          >
-            <ButtonComponent
-              onPress={() => {
-                resetState();
-                onDismiss?.();
+            <Text style={styles.label}>{strings.ticketPrice}</Text>
+            <TextInput
+              value={price ? price.toString() : "Free"}
+              onChangeText={(v) => setPrice(Number.parseFloat(v))}
+              placeholder={strings.ticketPriceFree}
+              editable={false}
+              onPressIn={() => {
+                Alert.alert("Only free tickets allowed in this release");
               }}
-              title={strings.cancle}
             />
-            <ButtonComponent
-              onPress={() => {
-                resetState();
-                onSuccess(createTicketType());
-              }}
-              icon={save}
-              title={strings.ok}
-              disabled={!isValid()}
+            <Text style={styles.label}>{strings.ticketQuantity}</Text>
+            <Input
+              keyboardType="numeric"
+              value={quantity?.toString()}
+              onChangeText={(v) => setQuantity(parseInt(v))}
+              placeholder={strings.ticketsUnlimited}
             />
+            <SizedBox height={verticalScale(25)} />
+            <View
+              style={{ flexDirection: "row", justifyContent: "space-evenly" }}
+            >
+              <ButtonComponent
+                onPress={() => {
+                  resetState();
+                  onDismiss?.();
+                }}
+                title={strings.cancle}
+              />
+              <ButtonComponent
+                onPress={() => {
+                  resetState();
+                  onSuccess(createTicketType());
+                }}
+                icon={save}
+                title={strings.ok}
+                disabled={!isValid()}
+              />
+            </View>
           </View>
-        </View>
+        </TouchableWithoutFeedback>
         {/* </TouchableOpacity> */}
         {/* <DateRangePicker
           selectStartDate={setStartDate}
