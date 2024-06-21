@@ -1,9 +1,11 @@
-import { useQuery } from "@tanstack/react-query";
-import React, { ReactElement, useState } from "react";
+import { useInfiniteQuery } from "@tanstack/react-query";
+import React, { ReactElement, useCallback } from "react";
 import {
+  ActivityIndicator,
   FlatList,
   ListRenderItem,
   Pressable,
+  RefreshControl,
   Text,
   TouchableOpacity,
   View,
@@ -16,7 +18,6 @@ import { ImageComponent } from "~/components/image-component";
 import { Loader } from "~/components/loader";
 import { usePostService } from "~/network/api/services/usePostService";
 import { Post } from "~/types/post";
-import { handleApiError } from "~/utils/common";
 import { PostCard } from "./PostCard";
 import { createStyleSheet } from "./style";
 
@@ -27,17 +28,30 @@ export const PostsList = ({ header }: PostsListProps) => {
   const { theme } = useAppTheme();
   const styles = createStyleSheet(theme);
   const { strings } = useStringsAndLabels();
-  const [isLoading, setLoading] = useState(false);
   const { gotoPostDetails, showGiveGratisModal } = useNavigations();
 
   const {
-    queries: { list: listPosts },
+    queries: { infiniteList },
   } = usePostService();
 
-  const { isPending, isError, data: posts, error } = useQuery(listPosts());
+  const {
+    data: posts,
+    fetchNextPage,
+    refetch,
+    hasNextPage,
+    isRefetching,
+    isFetching,
+    isFetchingNextPage,
+  } = useInfiniteQuery(infiniteList());
 
-  if (isPending !== isLoading) setLoading(isPending);
-  if (isError) handleApiError("Posts", error);
+  const loadNext = useCallback(() => {
+    console.log("load next");
+    hasNextPage && !isFetching && fetchNextPage().catch(console.error);
+  }, [fetchNextPage, hasNextPage]);
+
+  const onRefresh = useCallback(() => {
+    !isRefetching && refetch().catch(console.error);
+  }, [isRefetching, refetch]);
 
   const postRenderer: ListRenderItem<Post> = ({ item: post }) => {
     return (
@@ -75,26 +89,38 @@ export const PostsList = ({ header }: PostsListProps) => {
 
   return (
     <>
-      <Loader visible={isLoading} />
-      {posts ? (
-        <FlatList
-          data={posts}
-          keyExtractor={(item) => item.id}
-          renderItem={postRenderer}
-          contentContainerStyle={styles.scrollView}
-          ListHeaderComponent={header}
-          // ListFooterComponent={renderLoader}
-        ></FlatList>
-      ) : null}
-      {!posts && !isPending ? (
-        <View
-          style={{ flex: 1, justifyContent: "center", alignSelf: "center" }}
-        >
-          <Text style={{ color: "white", fontSize: 18 }}>
-            {strings.noPostFound}
-          </Text>
-        </View>
-      ) : null}
+      <Loader visible={isFetching} />
+      <FlatList
+        data={(posts?.pages.flat() as Post[]) || []}
+        // keyExtractor={(item) => item.id}
+        renderItem={postRenderer}
+        onEndReached={loadNext}
+        refreshControl={
+          <RefreshControl
+            refreshing={isRefetching}
+            tintColor={theme.colors.white}
+            colors={[theme.colors.white]}
+            onRefresh={onRefresh}
+          />
+        }
+        contentContainerStyle={styles.scrollView}
+        ListEmptyComponent={
+          <View style={styles.listEmptyComponent}>
+            <Text>{strings.noPostFound}</Text>
+          </View>
+        }
+        ListHeaderComponent={header}
+        ListFooterComponent={
+          <View style={styles.listFooterComponent}>
+            {isFetchingNextPage && <ActivityIndicator />}
+            {!hasNextPage && (
+              <Text style={{ color: "white" }}>
+                You have reached the end. Congratulations!
+              </Text>
+            )}
+          </View>
+        }
+      ></FlatList>
     </>
   );
 };

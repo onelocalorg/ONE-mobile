@@ -1,4 +1,8 @@
-import { queryOptions, useQueryClient } from "@tanstack/react-query";
+import {
+  infiniteQueryOptions,
+  queryOptions,
+  useQueryClient,
+} from "@tanstack/react-query";
 import _ from "lodash/fp";
 import { LOG } from "~/config";
 import { ApiError } from "~/types";
@@ -34,6 +38,18 @@ export function usePostService() {
       queryOptions({
         queryKey: [...queries.lists(), filters],
         queryFn: () => getPosts(filters),
+      }),
+    infiniteList: (filters?: GetPostsParams) =>
+      infiniteQueryOptions({
+        queryKey: [...queries.lists(), filters],
+        queryFn: ({ pageParam }) =>
+          getPosts({
+            ...filters,
+            from: pageParam !== "" ? pageParam : undefined,
+          }),
+        initialPageParam: "",
+        getNextPageParam: (lastPage) =>
+          lastPage.length > 0 ? lastPage[lastPage.length - 1].id : undefined,
       }),
     details: () => [...queries.all(), "detail"],
     detail: (id?: string) =>
@@ -149,16 +165,18 @@ export function usePostService() {
 
   type GetPostsParams = {
     numPosts?: number;
-    start?: string;
     isPast?: boolean;
+    from?: string;
   };
   const getPosts = ({
     numPosts = 20,
     isPast,
+    from,
   }: GetPostsParams | undefined = {}) => {
     const urlParams: string[] = [];
     if (!_.isNil(isPast)) urlParams.push(`past=${isPast.toString()}`);
     if (!_.isNil(numPosts)) urlParams.push(`limit=${numPosts.toString()}`);
+    if (!_.isNil(from)) urlParams.push(`from=${from}`);
 
     const urlSearchParams = urlParams.join("&");
     LOG.debug("search", urlSearchParams);

@@ -1023,5 +1023,18 @@ export const createStyleSheet = (theme: ThemeProps) => {
       borderRadius: 20,
       borderWidth: theme.borderWidth.borderWidth1,
     },
+    listEmptyComponent: {
+      flexDirection: "row",
+    },
+    listFooterComponent: {
+      flexDirection: "row",
+      height: 100,
+      justifyContent: "center",
+      alignItems: "center",
+    },
+    contentContainerStyle: {
+      marginTop: 10,
+      padding: 10,
+    },
   });
 };
