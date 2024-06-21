@@ -5,13 +5,11 @@ import {
 } from "@tanstack/react-query";
 import _ from "lodash/fp";
 import { LOG } from "~/config";
-import { ApiError } from "~/types";
 import { Block } from "~/types/block";
 import { Gratis } from "~/types/gratis";
 import { Post, PostData, PostDetail, PostUpdateData } from "~/types/post";
 import { Reply } from "~/types/reply";
 import { Report } from "~/types/report";
-import { handleApiError } from "~/utils/common";
 import { useApiService } from "./ApiService";
 import { useEventService } from "./useEventService";
 import { useUserService } from "./useUserService";
@@ -143,10 +141,6 @@ export function usePostService() {
   queryClient.setMutationDefaults([PostMutations.reportPost], {
     mutationFn: (params: ReportPostParams) => {
       return reportPost(params);
-    },
-    onSuccess: () => {},
-    onError: (err: ApiError) => {
-      handleApiError("reporting post", err);
     },
   });
 
