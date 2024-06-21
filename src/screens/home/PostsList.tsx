@@ -45,7 +45,6 @@ export const PostsList = ({ header }: PostsListProps) => {
   } = useInfiniteQuery(infiniteList());
 
   const loadNext = useCallback(() => {
-    console.log("load next");
     hasNextPage && !isFetching && fetchNextPage().catch(console.error);
   }, [fetchNextPage, hasNextPage]);
 
