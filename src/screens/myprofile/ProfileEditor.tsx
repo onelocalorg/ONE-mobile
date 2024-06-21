@@ -52,7 +52,7 @@ export const ProfileEditor = ({
       catchphrase: "",
       about: "",
       skills: [],
-      ..._.omit(["gratis", "joinDate"], userProfile),
+      ..._.omit(["gratis", "joinDate", "pic"], userProfile),
     },
   });
 
