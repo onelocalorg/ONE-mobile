@@ -167,6 +167,7 @@ export const PostEditor = ({
               value={value}
               onChangeText={onChange}
               style={styles.postInputTwo}
+              autoFocus={!post}
             ></TextInput>
           )}
           name="name"

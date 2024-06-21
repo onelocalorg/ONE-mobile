@@ -223,20 +223,15 @@ export const createStyleSheet = (theme: ThemeProps) => {
       fontSize: theme.fontSize.font12,
       color: theme.colors.black,
     },
-    label2: {
+    regular: {
       fontFamily: theme.fontType.regular,
       fontSize: theme.fontSize.font14,
       color: theme.colors.black,
     },
-    label3: {
-      fontFamily: theme.fontType.regular,
-      fontSize: theme.fontSize.font14,
+    emphasized: {
+      fontFamily: theme.fontType.extraBold,
+      fontSize: theme.fontSize.font20,
       color: theme.colors.green,
-    },
-    label4: {
-      fontFamily: theme.fontType.regular,
-      fontSize: theme.fontSize.font14,
-      color: theme.colors.black,
     },
     mainPostCont: {
       backgroundColor: theme.colors.white,

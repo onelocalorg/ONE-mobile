@@ -53,7 +53,7 @@ export const CreateEditPostScreen = ({
           />
           <Text
             style={[
-              getType() === PostType.OFFER ? styles.label3 : styles.label4,
+              getType() === PostType.OFFER ? styles.emphasized : styles.regular,
             ]}
           >
             Offer
@@ -70,7 +70,9 @@ export const CreateEditPostScreen = ({
           />
           <Text
             style={[
-              post?.type === PostType.REQUEST ? styles.label3 : styles.label4,
+              getType() === PostType.REQUEST
+                ? styles.emphasized
+                : styles.regular,
             ]}
           >
             Request
