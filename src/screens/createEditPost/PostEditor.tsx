@@ -223,8 +223,34 @@ export const PostEditor = ({
           name="name"
         />
       </View>
+      <SizedBox height={verticalScale(10)}></SizedBox>
       {errors.name && <Text>This is required.</Text>}
-
+      <View style={styles.createPostContTwo}>
+        <Controller
+          control={control}
+          render={({ field: { onChange, value } }) => (
+            <LocationAutocomplete
+              placeholder="Location"
+              address={value}
+              onPress={(data, details) => {
+                onChange(data.description);
+                if (details) {
+                  setValue("coordinates", [
+                    details.geometry.location.lng,
+                    details.geometry.location.lat,
+                  ]);
+                }
+              }}
+            />
+          )}
+          name="address"
+        />
+        <ImageComponent
+          resizeMode="cover"
+          source={pin}
+          style={styles.createImgTwo}
+        ></ImageComponent>
+      </View>
       <View style={styles.postCont}>
         <Controller
           control={control}
@@ -282,32 +308,6 @@ export const PostEditor = ({
         ></ImageComponent>
       </TouchableOpacity>
       <SizedBox height={verticalScale(8)}></SizedBox>
-      <View style={styles.createPostContTwo}>
-        <Controller
-          control={control}
-          render={({ field: { onChange, value } }) => (
-            <LocationAutocomplete
-              placeholder="Location"
-              address={value}
-              onPress={(data, details) => {
-                onChange(data.description);
-                if (details) {
-                  setValue("coordinates", [
-                    details.geometry.location.lng,
-                    details.geometry.location.lat,
-                  ]);
-                }
-              }}
-            />
-          )}
-          name="address"
-        />
-        <ImageComponent
-          resizeMode="cover"
-          source={pin}
-          style={styles.createImgTwo}
-        ></ImageComponent>
-      </View>
 
       <TouchableOpacity onPress={chooseImages} style={styles.imagesCont}>
         <Text style={styles.textTwo}>Image</Text>
