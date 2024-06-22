@@ -39,14 +39,18 @@ export function NotificationService({
 
   // Note that an async function or a function that returns a Promise
   // is required for both subscribers.
-  async function onMessageReceived(
-    message: FirebaseMessagingTypes.RemoteMessage
-  ) {
-    // Alert.alert(message.title
-    // return notifee.displayNotification({
-    //   title: "Notification received",
-    //   body: JSON.stringify(message),
-    // });
+  async function onMessageReceived({
+    notification,
+  }: FirebaseMessagingTypes.RemoteMessage) {
+    console.log("onMessageReceived", notification);
+    if (notification) {
+      await notifee
+        .displayNotification({
+          title: notification.title ?? "No title",
+          body: notification.body ?? "No body",
+        })
+        .catch((e) => handleApiError("Displaying notification", e as Error));
+    }
   }
 
   useEffect(() => {
@@ -56,6 +60,7 @@ export function NotificationService({
       // TODO Handle various conditions
       if (settings.authorizationStatus >= AuthorizationStatus.AUTHORIZED) {
         const messagingToken = await messaging().getToken();
+        console.log("MESSAGING", messagingToken);
         updateUser({ id: myUserId!, messagingToken });
       } else {
         console.log("User declined permissions");
@@ -75,12 +80,14 @@ export function NotificationService({
   // Subscribe to events
   useEffect(() => {
     return notifee.onForegroundEvent(({ type, detail }) => {
+      console.log("onForegroundEvent", type);
+      const { notification } = detail;
       switch (type) {
         case EventType.DISMISSED:
-          console.log("User dismissed notification", detail.notification);
+          console.log("User dismissed notification", notification);
           break;
         case EventType.PRESS:
-          console.log("User pressed notification", detail.notification);
+          console.log("User pressed notification", notification);
           break;
       }
     });
