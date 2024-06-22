@@ -6,6 +6,7 @@ buildscript {
         targetSdkVersion = 34
         ndkVersion = "25.1.8937393"
         kotlinVersion = "1.8.0"
+        RNMapboxMapsVersion = '11.0.0'
     }
     repositories {
         google()
@@ -23,7 +24,7 @@ apply plugin: "com.facebook.react.rootproject"
 allprojects {
     repositories {
         maven {
-            url 'https://api.mapbox.com/downloads/v3/releases/maven'
+            url 'https://api.mapbox.com/downloads/v2/releases/maven'
             authentication {
                 basic(BasicAuthentication)
             }
