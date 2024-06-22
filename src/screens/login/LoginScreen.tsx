@@ -3,6 +3,7 @@ import {
   GoogleSignin,
   statusCodes,
 } from "@react-native-google-signin/google-signin";
+import { useMutation } from "@tanstack/react-query";
 import React, { useContext, useState } from "react";
 import {
   Keyboard,
@@ -23,10 +24,15 @@ import { SizedBox } from "~/components/sized-box";
 import { LOG } from "~/config";
 import { AuthDispatchContext } from "~/navigation/AuthContext";
 import { GuestStackScreenProps, Screens } from "~/navigation/types";
-import { useAuthService } from "~/network/api/services/useAuthService";
+import {
+  AuthMutations,
+  LoginProps,
+  useAuthService,
+} from "~/network/api/services/useAuthService";
 import { getData } from "~/network/constant";
 import { verticalScale } from "~/theme/device/normalize";
 import { CurrentUser } from "~/types/current-user";
+import { UserProfile } from "~/types/user-profile";
 import { handleApiError } from "~/utils/common";
 import { ForgotPassword } from "./ForgotPassword";
 import { createStyleSheet } from "./style";
@@ -43,27 +49,24 @@ export const LoginScreen = ({
   const { theme } = useAppTheme();
   const styles = createStyleSheet(theme);
   const { strings } = useStringsAndLabels();
-  const [isChecked, setIsChecked] = useState(false);
-  const [isLoading, LodingData] = useState(false);
   const [user, setUser] = useState({ emailOrMobile: "", password: "" });
-  const [searchQuery, setSearchQuery] = useState("");
-  const [googleUserGmail, setGoogleEmail]: any = useState();
-  const [googleAuth, setGoogleAuth]: any = useState();
-  const [userToken, setUserToken] = useState();
-  const [appleAuthAvailable, setAppleAuthAvailable] = useState(false);
   const [isForgotPasswordVisible, setForgotPasswordVisible] = useState(false);
 
-  const { appleLogin, googleLogin, logIn } = useAuthService();
+  // FIXME This is needed to register the keys, need a better way to do this
+  const _authService = useAuthService();
 
-  // const onHandleCheckBox = () => {
-  //   setIsChecked(!isChecked);
-  // };
+  const {
+    data: loginData,
+    mutate: logIn,
+    isPending: isLoginPending,
+  } = useMutation<LoginProps, Error, UserProfile>({
+    mutationKey: [AuthMutations.logIn],
+  });
 
   const { handleSignIn } = useContext(AuthDispatchContext);
 
   const handleLoginResponse = (currentUser?: CurrentUser) => {
     if (currentUser) {
-      LodingData(false);
       handleSignIn(currentUser);
     }
   };

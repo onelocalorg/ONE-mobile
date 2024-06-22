@@ -1,3 +1,4 @@
+import { useMutation } from "@tanstack/react-query";
 import React, { useContext, useRef, useState } from "react";
 import {
   Alert,
@@ -27,10 +28,12 @@ import { ImageComponent } from "~/components/image-component";
 import { SizedBox } from "~/components/sized-box";
 import { AuthDispatchContext } from "~/navigation/AuthContext";
 import { GuestStackScreenProps, Screens } from "~/navigation/types";
+import { AuthMutations } from "~/network/api/services/useAuthService";
 import { normalScale, verticalScale } from "~/theme/device/normalize";
-import { handleApiError } from "~/utils/common";
+import { CurrentUser } from "~/types/current-user";
+import { NewUser } from "~/types/new-user";
 
-export const SignUp = ({
+export const SignUpScreen = ({
   navigation,
 }: GuestStackScreenProps<Screens.SIGNUP>) => {
   const [isChecked, setIsChecked] = useState(false);
@@ -56,28 +59,13 @@ export const SignUp = ({
   const calenderShowRef: React.Ref<CalenderRefProps> = useRef(null);
   const { handleSignUp } = useContext(AuthDispatchContext);
 
-  async function onSignUpAPI() {
-    LodingData(true);
-    const userData = {
-      first_name: firstName!,
-      last_name: lastName!,
-      email: email!,
-      password: password!,
-      pic: profileUri?.key,
-    };
-    try {
-      const currentUser = await signUp(userData);
-      LodingData(false);
-      handleSignUp(currentUser);
-
-      // navigation?.reset({
-      //   index: 0,
-      //   routes: [{ name: navigations.BOTTOM_NAVIGATION }],
-      // });
-    } catch (error) {
-      handleApiError("Error signing up", error);
-    }
-  }
+  const {
+    data,
+    mutate: signUp,
+    isPending,
+  } = useMutation<CurrentUser, Error, NewUser>({
+    mutationKey: [AuthMutations.signUp],
+  });
 
   const onSignUp = () => {
     if (!email) {
@@ -109,7 +97,16 @@ export const SignUp = ({
       //     backgroundColor: "black",
       //   });
     } else {
-      onSignUpAPI();
+      const userData = {
+        firstName,
+        lastName,
+        email: email,
+        password: password,
+        pic: profileUri?.key,
+      };
+      signUp(userData, {
+        onSuccess: handleSignUp,
+      });
     }
   };
 

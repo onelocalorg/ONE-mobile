@@ -21,7 +21,7 @@ import { PostContextMenu } from "~/screens/home/PostContextMenu";
 import { PostDetailScreen } from "~/screens/home/PostDetailScreen";
 import { ReportContent } from "~/screens/home/ReportContent";
 import { LoginScreen } from "~/screens/login/LoginScreen";
-import { SignUp } from "~/screens/login/SignupScreen";
+import { SignUpScreen } from "~/screens/login/SignupScreen";
 import { MapScreen } from "~/screens/map/MapScreen";
 import { LogoutPressable } from "~/screens/myprofile/LogoutPressable";
 import { MyProfileScreen } from "~/screens/myprofile/MyProfileScreen";
@@ -38,7 +38,7 @@ import {
 } from "./types";
 
 type AppNavigationProps = {
-  token: string | null;
+  token?: string;
 };
 export const AppNavigation = ({ token }: AppNavigationProps) => {
   const { theme } = useAppTheme();
@@ -164,7 +164,7 @@ export const AppNavigation = ({ token }: AppNavigationProps) => {
         ) : (
           <GuestStack.Group>
             <GuestStack.Screen name={Screens.LOGIN} component={LoginScreen} />
-            <GuestStack.Screen name={Screens.SIGNUP} component={SignUp} />
+            <GuestStack.Screen name={Screens.SIGNUP} component={SignUpScreen} />
             <GuestStack.Screen
               name={Screens.WEBVIEW}
               component={GenericWebView}

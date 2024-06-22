@@ -15,6 +15,7 @@ export enum UserMutations {
 export enum GetUsersSort {
   joinDate = "joinDate",
 }
+
 export function useUserService() {
   const queryClient = useQueryClient();
 

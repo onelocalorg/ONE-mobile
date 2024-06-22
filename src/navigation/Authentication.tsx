@@ -1,5 +1,4 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import _ from "lodash/fp";
 import React, { useEffect, useMemo, useReducer } from "react";
 import { LOG } from "~/config";
 import { ApiService } from "~/network/api/services/ApiService";
@@ -31,7 +30,7 @@ export default function Authentication() {
   type AppActions = SignIn | RestoreToken | SignOut;
 
   const [state, dispatch] = useReducer(
-    (prevState: AppState, action: AppActions) => {
+    (prevState: AppState, action: AppActions): AppState => {
       LOG.debug("handling action", action.type);
       switch (action.type) {
         case "RESTORE_TOKENS":
@@ -46,18 +45,14 @@ export default function Authentication() {
           return {
             ...prevState,
             isSignout: false,
-            myProfile: _.omit(["access_token", "refresh_token"], action.user),
-            accessToken: action.user.access_token,
-            refreshToken: action.user.refresh_token,
+            accessToken: action.user.accessToken,
+            refreshToken: action.user.refreshToken,
             myUserId: action.user.id,
           };
         case "SIGN_OUT":
           return {
             ...prevState,
             isSignout: true,
-            accessToken: null,
-            refreshToken: null,
-            myUserId: null,
             isLoading: false,
           };
       }
@@ -65,9 +60,6 @@ export default function Authentication() {
     {
       isLoading: true,
       isSignout: false,
-      accessToken: undefined,
-      refreshToken: undefined,
-      myUserId: null,
     }
   );
 
@@ -84,9 +76,9 @@ export default function Authentication() {
         if (accessToken && userId) {
           dispatch({
             type: "RESTORE_TOKENS",
-            accessToken: accessToken || undefined,
+            accessToken,
             refreshToken: refreshToken || undefined,
-            userId: userId || undefined,
+            userId,
           });
         }
 
@@ -108,8 +100,8 @@ export default function Authentication() {
       handleSignIn: async (user: MyUser) => {
         await Promise.all([
           AsyncStorage.setItem(persistKeys.myId, user.id),
-          AsyncStorage.setItem(persistKeys.token, user.access_token),
-          AsyncStorage.setItem(persistKeys.refreshToken, user.refresh_token),
+          AsyncStorage.setItem(persistKeys.token, user.accessToken),
+          AsyncStorage.setItem(persistKeys.refreshToken, user.refreshToken),
         ]);
         dispatch({ type: "SIGN_IN", user });
       },
@@ -124,8 +116,8 @@ export default function Authentication() {
       handleSignUp: async (user: MyUser) => {
         await Promise.all([
           AsyncStorage.setItem(persistKeys.myId, user.id),
-          AsyncStorage.setItem(persistKeys.token, user.access_token),
-          AsyncStorage.setItem(persistKeys.refreshToken, user.refresh_token),
+          AsyncStorage.setItem(persistKeys.token, user.accessToken),
+          AsyncStorage.setItem(persistKeys.refreshToken, user.refreshToken),
         ]);
         dispatch({ type: "SIGN_IN", user });
       },
