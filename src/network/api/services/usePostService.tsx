@@ -118,11 +118,10 @@ export function usePostService() {
       return sendGratis(props);
     },
     onSuccess: (resp: Gratis) => {
-      if (resp.reply) {
-        void queryClient.invalidateQueries({
-          queryKey: queries.detail(resp.post).queryKey,
-        });
-      } else {
+      void queryClient.invalidateQueries({
+        queryKey: queries.detail(resp.post).queryKey,
+      });
+      if (!resp.reply) {
         void queryClient.invalidateQueries({ queryKey: queries.lists() });
       }
 
