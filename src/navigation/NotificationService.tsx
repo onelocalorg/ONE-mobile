@@ -4,7 +4,6 @@ import messaging, {
 } from "@react-native-firebase/messaging";
 import { useMutation } from "@tanstack/react-query";
 import { ReactNode, createContext, useContext, useEffect } from "react";
-import { Alert } from "react-native";
 import { UserMutations } from "~/network/api/services/useUserService";
 import { UserProfile, UserProfileUpdateData } from "~/types/user-profile";
 import { handleApiError } from "~/utils/common";
@@ -43,16 +42,12 @@ export function NotificationService({
   async function onMessageReceived(
     message: FirebaseMessagingTypes.RemoteMessage
   ) {
-    Alert.alert("Notification received.", JSON.stringify(message));
-
-    return notifee.displayNotification({
-      title: "Notification received",
-      body: JSON.stringify(message),
-    });
+    // Alert.alert(message.title
+    // return notifee.displayNotification({
+    //   title: "Notification received",
+    //   body: JSON.stringify(message),
+    // });
   }
-
-  messaging().onMessage(onMessageReceived);
-  messaging().setBackgroundMessageHandler(onMessageReceived);
 
   useEffect(() => {
     async function registerMessagingToken() {
@@ -71,6 +66,9 @@ export function NotificationService({
       registerMessagingToken().catch((e) =>
         handleApiError("registering messaging", e as Error)
       );
+
+      messaging().onMessage(onMessageReceived);
+      messaging().setBackgroundMessageHandler(onMessageReceived);
     }
   }, [myUserId, updateUser]);
 

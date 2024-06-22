@@ -1,6 +1,5 @@
 import { queryOptions, useQueryClient } from "@tanstack/react-query";
 import _ from "lodash/fp";
-import { LOG } from "~/config";
 import {
   LocalEvent,
   LocalEventData,
@@ -132,7 +131,6 @@ export function useEventService() {
     if (!_.isNil(host)) urlParams.push(`host=${host}`);
 
     const urlSearchParams = urlParams.join("&");
-    LOG.debug("search", urlSearchParams);
 
     return doGet<LocalEvent[]>(`/v3/events?${urlSearchParams.toString()}`);
   };

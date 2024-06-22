@@ -4,7 +4,6 @@ import {
   useQueryClient,
 } from "@tanstack/react-query";
 import _ from "lodash/fp";
-import { LOG } from "~/config";
 import { Block } from "~/types/block";
 import { Gratis } from "~/types/gratis";
 import { Post, PostData, PostDetail, PostUpdateData } from "~/types/post";
@@ -186,7 +185,6 @@ export function usePostService() {
     if (!_.isNil(from)) urlParams.push(`from=${from}`);
 
     const urlSearchParams = urlParams.join("&");
-    LOG.debug("search", urlSearchParams);
 
     return doGet<Post[]>(`/v3/posts?${urlSearchParams.toString()}`);
   };

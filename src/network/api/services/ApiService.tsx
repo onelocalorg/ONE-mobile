@@ -57,6 +57,7 @@ export function ApiService({ children }: ApiServiceProviderProps) {
     "access_token",
     "refresh_token",
     "base64String",
+    "messagingToken",
   ];
 
   const client = {
