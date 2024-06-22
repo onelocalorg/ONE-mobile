@@ -25,6 +25,7 @@ import {
 } from "~/assets/images";
 import { ImageComponent } from "~/components/image-component";
 import { Loader } from "~/components/loader";
+import { LOG } from "~/config";
 import { useMyUserId } from "~/navigation/AuthContext";
 import { RootStackScreenProps, Screens } from "~/navigation/types";
 import {
@@ -35,7 +36,7 @@ import {
 } from "~/network/api/services/usePostService";
 import { PostDetail, PostType } from "~/types/post";
 import { Reply } from "~/types/reply";
-import { formatTimeFromNow, handleApiError } from "~/utils/common";
+import { formatTimeFromNow } from "~/utils/common";
 import { createStyleSheet } from "./style";
 
 export const PostDetailScreen = ({
@@ -48,25 +49,12 @@ export const PostDetailScreen = ({
   const replyRef = useRef<TextInput>(null);
   const scrollRef = useRef<ScrollView>(null);
   const myUserId = useMyUserId();
-
-  const { control, handleSubmit, resetField, setValue } =
-    useForm<CreateReplyProps>({
-      defaultValues: {
-        postId,
-        content: "",
-      },
-    });
-  const onSubmitReply = (data: CreateReplyProps) =>
-    mutate(data, { onSuccess: () => resetField("content") });
-
-  // const scroll = useRef<KeyboardAwareScrollView>(null);
-
   const { gotoUserProfile, showGiveGratisModal } = useNavigations();
 
   const {
     queries: { detail: postDetail },
   } = usePostService();
-  const { mutate, isPending: isQueryPending } = useMutation<
+  const { mutate: createReply, isPending: isQueryPending } = useMutation<
     Reply,
     Error,
     CreateReplyProps
@@ -79,28 +67,39 @@ export const PostDetailScreen = ({
     mutationKey: [PostMutations.deleteReply],
   });
 
-  const {
-    isLoading,
-    data: post,
-    isError,
-    error,
-  } = useQuery(postDetail(postId));
-  if (isError) handleApiError("Post", error);
+  const { isLoading, data: post } = useQuery(postDetail(postId));
+
+  const { control, handleSubmit, resetField, setValue } =
+    useForm<CreateReplyProps>({
+      defaultValues: {
+        postId,
+        content: "",
+      },
+    });
+
+  const onSubmitReply = (data: CreateReplyProps) =>
+    createReply(data, { onSuccess: () => resetField("content") });
 
   const getParents = () =>
     post?.replies?.filter((r) => !r.parent).reverse() ?? [];
+
   const getChildren = (parentId: string) => {
     // Since eact reply only marked its direct parent reply, we recursively
     // go through the reply list
     // TODO Make more efficient by looking only at the children later in the
     // list, because parents always come before children
-    const recurse = (acc: Reply[], parentId: string): Reply[] =>
-      post!.replies.reduce(
-        (a, r) => (r.parent === parentId ? [...a, r, ...recurse(a, r.id)] : a),
-        acc
-      );
 
-    return recurse([], parentId);
+    const children = post!.replies.filter((r) => r.parent === parentId);
+
+    // const recurse = (acc: Reply[], parentId: string): Reply[] =>
+    //   post!.replies.reduce(
+    //     (a, r) => (r.parent === parentId ? [...a, r, ...recurse(a, r.id)] : a),
+    //     acc
+    //   );
+
+    // const children = recurse([], parentId);
+    LOG.debug("CHILDREN", children);
+    return children;
   };
 
   const handlePressReply = (parentId?: string) => {
@@ -206,12 +205,11 @@ export const PostDetailScreen = ({
     </View>
   );
 
-  // const renderReply: ListRenderItem<Reply> = ({ item: reply, index }) => {
-  // return (
   interface ReplyProps {
     reply: Reply;
+    indent?: boolean;
   }
-  const Reply = ({ reply }: ReplyProps) => (
+  const Reply = ({ reply, indent = true }: ReplyProps) => (
     <View key={reply.id} style={styles.container}>
       <View style={styles.replyImgProfile}>
         <TouchableOpacity
@@ -270,80 +268,13 @@ export const PostDetailScreen = ({
         </TouchableOpacity>
       </View>
 
-      {getChildren(reply.id).map((subReply: Reply, jindex: number) => {
-        return (
-          <View key={subReply.id}>
-            <View>
-              <View style={styles.replyImgProfileTwo}>
-                <TouchableOpacity
-                  activeOpacity={0.8}
-                  onPress={gotoUserProfile(subReply.author.id)}
-                >
-                  <ImageComponent
-                    resizeMode="cover"
-                    style={styles.postProfile}
-                    source={{
-                      uri: subReply.author.pic,
-                    }}
-                  ></ImageComponent>
-                </TouchableOpacity>
-                <View style={[styles.replyDisplayCont, { width: 210 }]}>
-                  <View
-                    style={{
-                      flexDirection: "row",
-                      justifyContent: "space-between",
-                    }}
-                  >
-                    <Text
-                      style={{
-                        fontSize: 12,
-                        color: "#110101",
-                      }}
-                    >
-                      {subReply.author.firstName} {subReply.author.lastName}
-                    </Text>
-                    {subReply.author.id === myUserId && (
-                      <Pressable onPress={handleDeleteReply(subReply.id)}>
-                        <Text style={styles.delete}>X</Text>
-                      </Pressable>
-                    )}
-                  </View>
-                  <Text style={styles.replyMsgCont}>{subReply.content}</Text>
-                </View>
-              </View>
-
-              <View style={styles.replyContainerTwo}>
-                <ImageComponent
-                  source={Vector}
-                  style={styles.vectorImgTwo}
-                ></ImageComponent>
-                <TouchableOpacity onPress={() => handlePressReply(subReply.id)}>
-                  <Text style={styles.replyLbl}>reply</Text>
-                </TouchableOpacity>
-
-                <Text style={styles.minuteCont}>
-                  {formatTimeFromNow(subReply.postDate)}
-                </Text>
-                <Text style={styles.minuteCont}>{subReply.gratis}</Text>
-                <TouchableOpacity
-                  onPress={showGiveGratisModal({
-                    post: postId,
-                    replyId: subReply.id,
-                  })}
-                >
-                  <ImageComponent
-                    style={styles.replyImg}
-                    source={gratisGreen}
-                  ></ImageComponent>
-                </TouchableOpacity>
-              </View>
-            </View>
-          </View>
-        );
-      })}
+      {getChildren(reply.id).map((subReply: Reply) => (
+        <View style={indent && styles.replyImgProfileTwo}>
+          <Reply reply={subReply} indent={false} />
+        </View>
+      ))}
     </View>
   );
-  // };
 
   const Footer = () => (
     <View style={{ height: 100 }}>
