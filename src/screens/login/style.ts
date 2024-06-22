@@ -187,6 +187,12 @@ export const createStyleSheet = (theme: ThemeProps) => {
       fontWeight: "400",
       color: theme.colors.white,
     },
+
+    errorText: {
+      fontSize: 16,
+      fontWeight: "bold",
+      color: theme.colors.red,
+    },
     oneContainerImage: {
       height: normalScale(100),
       width: normalScale(100),

@@ -54,6 +54,9 @@ export default function Authentication() {
             ...prevState,
             isSignout: true,
             isLoading: false,
+            accessToken: undefined,
+            refreshToken: undefined,
+            myUserId: undefined,
           };
       }
     },

@@ -1,3 +1,5 @@
+import { AppleRequestResponse } from "@invertase/react-native-apple-authentication";
+import { GoogleSignin, User } from "@react-native-google-signin/google-signin";
 import { useQueryClient } from "@tanstack/react-query";
 import { CurrentUser } from "~/types/current-user";
 import { ForgotPassword } from "~/types/forgot-password";
@@ -20,6 +22,12 @@ export function useAuthService() {
   const { doPost } = useApiService();
   const { queries: userQueries } = useUserService();
 
+  GoogleSignin.configure({
+    iosClientId: process.env.GOOGLE_SIGNIN_IOS_CLIENT_ID,
+    webClientId: process.env.GOOGLE_SIGNIN_WEB_CLIENT_ID,
+    offlineAccess: true,
+  });
+
   queryClient.setMutationDefaults([AuthMutations.logIn], {
     mutationFn: (data: LoginProps) => {
       return logIn(data);
@@ -27,13 +35,13 @@ export function useAuthService() {
   });
 
   queryClient.setMutationDefaults([AuthMutations.appleLogin], {
-    mutationFn: (data: AppleLoginProps) => {
+    mutationFn: (data: AppleRequestResponse) => {
       return appleLogin(data);
     },
   });
 
   queryClient.setMutationDefaults([AuthMutations.googleLogin], {
-    mutationFn: (data: GoogleLoginProps) => {
+    mutationFn: (data: User) => {
       return googleLogin(data);
     },
   });
@@ -73,11 +81,11 @@ export function useAuthService() {
   const signUp = async (props: NewUser) =>
     doPost<CurrentUser>("/v3/auth/signup", props);
 
-  const googleLogin = async (props: GoogleLoginProps) =>
-    doPost<CurrentUser>("/v3/auth/googleSignupLogin", props);
+  const googleLogin = async (props: User) =>
+    doPost<CurrentUser>("/v3/auth/google-login", props);
 
-  const appleLogin = async (props: AppleLoginProps) =>
-    doPost<CurrentUser>("/v3/auth/appleSignupLogin", props);
+  const appleLogin = async (props: AppleRequestResponse) =>
+    doPost<CurrentUser>("/v3/auth/apple-login", props);
 
   const forgotPassword = (email: string) =>
     doPost<ForgotPassword>(`/v3/auth/forgot-password`, { email });
@@ -105,29 +113,6 @@ export function useAuthService() {
 }
 
 export interface LoginProps {
-  emailOrMobile: string;
-  password: string;
-  loginType: string;
-  version: string;
-  deviceInfo: string;
-}
-
-export interface AppleLoginProps {
-  nonce: string;
-  user: string;
-  identityToken?: string;
-  email?: string;
-  authorizationCode: string;
-  givenName?: string;
-  familyName?: string;
-  nickName?: string;
-}
-
-export interface GoogleLoginProps {
-  id: string;
   email: string;
-  googleAuth?: string;
-  first_name?: string;
-  last_name?: string;
-  pic?: string;
+  password: string;
 }

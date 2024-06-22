@@ -1,25 +1,29 @@
-import { appleAuth } from "@invertase/react-native-apple-authentication";
+import {
+  AppleRequestResponse,
+  appleAuth,
+} from "@invertase/react-native-apple-authentication";
 import {
   GoogleSignin,
+  User,
   statusCodes,
 } from "@react-native-google-signin/google-signin";
 import { useMutation } from "@tanstack/react-query";
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
+import { Controller, useForm } from "react-hook-form";
 import {
   Keyboard,
   Linking,
-  Platform,
   Text,
   TextInput,
   TouchableOpacity,
 } from "react-native";
-import DeviceInfo from "react-native-device-info";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { Modal, Portal } from "react-native-paper";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
 import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
 import { apple, google } from "~/assets/images";
 import { ImageComponent } from "~/components/image-component";
+import { Loader } from "~/components/loader";
 import { SizedBox } from "~/components/sized-box";
 import { LOG } from "~/config";
 import { AuthDispatchContext } from "~/navigation/AuthContext";
@@ -29,19 +33,11 @@ import {
   LoginProps,
   useAuthService,
 } from "~/network/api/services/useAuthService";
-import { getData } from "~/network/constant";
 import { verticalScale } from "~/theme/device/normalize";
 import { CurrentUser } from "~/types/current-user";
-import { UserProfile } from "~/types/user-profile";
 import { handleApiError } from "~/utils/common";
 import { ForgotPassword } from "./ForgotPassword";
 import { createStyleSheet } from "./style";
-
-GoogleSignin.configure({
-  iosClientId: process.env.GOOGLE_SIGNIN_IOS_CLIENT_ID,
-  webClientId: process.env.GOOGLE_SIGNIN_WEB_CLIENT_ID,
-  offlineAccess: true,
-});
 
 export const LoginScreen = ({
   navigation,
@@ -49,26 +45,58 @@ export const LoginScreen = ({
   const { theme } = useAppTheme();
   const styles = createStyleSheet(theme);
   const { strings } = useStringsAndLabels();
-  const [user, setUser] = useState({ emailOrMobile: "", password: "" });
   const [isForgotPasswordVisible, setForgotPasswordVisible] = useState(false);
 
   // FIXME This is needed to register the keys, need a better way to do this
   const _authService = useAuthService();
+  const { handleSignIn } = useContext(AuthDispatchContext);
 
   const {
     data: loginData,
     mutate: logIn,
-    isPending: isLoginPending,
-  } = useMutation<LoginProps, Error, UserProfile>({
+    isPending: isPasswordLoginPending,
+  } = useMutation<CurrentUser, Error, LoginProps>({
     mutationKey: [AuthMutations.logIn],
   });
 
-  const { handleSignIn } = useContext(AuthDispatchContext);
+  const {
+    data: appleLoginData,
+    mutate: appleLogin,
+    isPending: isAppleLoginPending,
+  } = useMutation<CurrentUser, Error, AppleRequestResponse>({
+    mutationKey: [AuthMutations.googleLogin],
+  });
 
-  const handleLoginResponse = (currentUser?: CurrentUser) => {
-    if (currentUser) {
-      handleSignIn(currentUser);
+  const {
+    data: googleLoginData,
+    mutate: googleLogin,
+    isPending: isGoogleLoginPending,
+  } = useMutation<CurrentUser, Error, User>({
+    mutationKey: [AuthMutations.googleLogin],
+  });
+
+  const isLoginPending =
+    isPasswordLoginPending || isAppleLoginPending || isGoogleLoginPending;
+
+  useEffect(() => {
+    if (loginData || appleLoginData || googleLoginData) {
+      handleSignIn((loginData || appleLoginData || googleLoginData)!);
     }
+  }, [loginData, appleLoginData, googleLoginData, handleSignIn]);
+
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<LoginProps>({
+    defaultValues: {
+      email: "",
+      password: "",
+    },
+  });
+
+  const signInWithPassword = (data: LoginProps) => {
+    logIn(data);
   };
 
   const signInWithGoogle = async () => {
@@ -77,89 +105,38 @@ export const LoginScreen = ({
       LOG.debug("hasPlayServices", hasPlayServices);
       const googleUser = await GoogleSignin.signIn();
       LOG.debug("GoogleSignIn user info", googleUser);
-
-      const userData = {
-        id: googleUser.user.id,
-        email: googleUser.user.email,
-        first_name: googleUser.user.givenName ?? undefined,
-        last_name: googleUser.user.familyName ?? undefined,
-        pic: googleUser.user.photo ?? undefined,
-        googleAuth: googleUser.serverAuthCode ?? undefined,
-      };
-      const loggedInUser = await googleLogin(userData);
-
-      handleLoginResponse(loggedInUser);
-    } catch (error: any) {
-      if (error.code === statusCodes.SIGN_IN_CANCELLED) {
-        // user cancelled the login flow
-        // ignore
-      } else if (error.code === statusCodes.IN_PROGRESS) {
-        // operation (e.g. sign in) is in progress already
-        // ignore
-      } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
-        // play services not available or outdated
-        // TODO Display error
-        LOG.error("signInWithGoogle:", error);
+      googleLogin(googleUser);
+    } catch (error) {
+      if (error instanceof Error && "code" in error) {
+        if (error.code === statusCodes.SIGN_IN_CANCELLED) {
+          // user cancelled the login flow
+          // ignore
+        } else if (error.code === statusCodes.IN_PROGRESS) {
+          // operation (e.g. sign in) is in progress already
+          // ignore
+        } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
+          // play services not available or outdated
+          // TODO Display error
+          LOG.error("signInWithGoogle:", error);
+        }
       } else {
-        handleApiError("Could not sign in with Google", error);
+        handleApiError("Could not sign in with Google", error as Error);
       }
     }
   };
 
   const signInWithApple = async () => {
-    try {
-      const resp = await appleAuth.performRequest({
-        requestedOperation: appleAuth.Operation.LOGIN,
-        // Note: it appears putting FULL_NAME first is important, see issue #293
-        requestedScopes: [appleAuth.Scope.FULL_NAME, appleAuth.Scope.EMAIL],
-      });
+    const resp = await appleAuth.performRequest({
+      requestedOperation: appleAuth.Operation.LOGIN,
+      // Note: it appears putting FULL_NAME first is important, see issue #293
+      requestedScopes: [appleAuth.Scope.FULL_NAME, appleAuth.Scope.EMAIL],
+    });
 
-      LOG.debug("signInWithApple:", resp);
-      if (!resp.authorizationCode) {
-        throw new Error("Apple login did not return authorization code");
-      }
-
-      const userData = {
-        nonce: resp.nonce,
-        user: resp.user,
-        email: resp.email ?? undefined,
-        identityToken: resp.identityToken ?? undefined,
-        authorizationCode: resp.authorizationCode,
-        givenName: resp.fullName?.givenName ?? undefined,
-        familyName: resp.fullName?.familyName ?? undefined,
-        nickname: resp.fullName?.nickname ?? undefined,
-      };
-
-      const loggedInUser = await appleLogin(userData);
-      handleLoginResponse(loggedInUser);
-    } catch (error) {
-      handleApiError("Could not sign in with Apple", error);
-    }
-  };
-
-  const onSubmit = async () => {
-    LodingData(true);
-    const body = {
-      emailOrMobile: user?.emailOrMobile,
-      password: user?.password,
-      loginType: "password",
-      version: DeviceInfo.getReadableVersion(),
-      deviceInfo: DeviceInfo.getDeviceId(),
-    };
-    try {
-      const currentUser = await logIn(body);
-      handleLoginResponse(currentUser);
-    } catch (e: any) {
-      handleApiError("Error signing in", e);
-    }
+    appleLogin(resp);
   };
 
   const onSignUp = () => {
     navigation.push(Screens.SIGNUP);
-  };
-
-  const handleUserData = (value: string, key: string) => {
-    setUser({ ...user, [key]: value });
   };
 
   const loadInBrowser = () => {
@@ -174,43 +151,59 @@ export const LoginScreen = ({
     Keyboard.dismiss();
   };
 
-  const onCheckReleaseHideShow = () => {
-    if (Platform.OS === "ios") {
-      const isShowPaymentCheck = getData("isShowPaymentFlow");
-      return isShowPaymentCheck;
-    } else {
-      const isShowPaymentCheckAndroid = getData("isShowPaymentFlowAndroid");
-      return isShowPaymentCheckAndroid;
-    }
-  };
-
   return (
     <TouchableOpacity
       activeOpacity={1}
       onPress={keyboardDismiss}
       style={styles.container}
     >
+      <Loader visible={isLoginPending} />
       <KeyboardAwareScrollView showsVerticalScrollIndicator={false}>
         <Text style={styles.texClass}>{strings.email}</Text>
-        <TextInput
-          placeholderTextColor="#8B8888"
-          style={styles.textInput}
-          autoCapitalize="none"
-          onChangeText={(text) => handleUserData(text, "emailOrMobile")}
+        <Controller
+          control={control}
+          rules={{
+            required: true,
+          }}
+          render={({ field: { onChange, onBlur, value } }) => (
+            <TextInput
+              placeholderTextColor="#8B8888"
+              style={styles.textInput}
+              autoCapitalize="none"
+              value={value}
+              onBlur={onBlur}
+              onChangeText={onChange}
+            />
+          )}
+          name="email"
         />
+        {errors.email && (
+          <Text style={styles.errorText}>This is required.</Text>
+        )}
+
         <SizedBox height={verticalScale(10)} />
         <Text style={styles.texClass}>{strings.password}</Text>
-        <TextInput
-          secureTextEntry
-          placeholderTextColor="#8B8888"
-          style={styles.textInput}
-          onChangeText={(text) => handleUserData(text, "password")}
+        <Controller
+          control={control}
+          rules={{
+            required: true,
+          }}
+          render={({ field: { onChange, onBlur, value } }) => (
+            <TextInput
+              secureTextEntry
+              placeholderTextColor="#8B8888"
+              style={styles.textInput}
+              value={value}
+              onBlur={onBlur}
+              onChangeText={onChange}
+            />
+          )}
+          name="password"
         />
-        {/* <Input
-        placeholder={strings.password}
-        secureTextEntry
-        
-      /> */}
+        {errors.password && (
+          <Text style={styles.errorText}>This is required.</Text>
+        )}
+
         <SizedBox height={verticalScale(10)} />
         {/* <ButtonComponent
           disabled={onCheckValidation()}
@@ -220,7 +213,7 @@ export const LoginScreen = ({
         <TouchableOpacity
           // disabled={onCheckValidation()}
           activeOpacity={0.8}
-          onPress={onSubmit}
+          onPress={handleSubmit(signInWithPassword)}
           style={styles.loginBtn}
         >
           <Text style={styles.signUpText}>{strings.login}</Text>
@@ -246,36 +239,24 @@ export const LoginScreen = ({
             <ForgotPassword onDismiss={() => setForgotPasswordVisible(false)} />
           </Modal>
         </Portal>
-        {onCheckReleaseHideShow() ? (
-          <>
-            <SizedBox height={verticalScale(18)} />
-            <TouchableOpacity
-              activeOpacity={0.8}
-              style={styles.googleButton}
-              onPress={() => signInWithGoogle()}
-            >
-              <ImageComponent source={google} style={styles.google} />
-              <Text style={styles.loginGoogle}>{strings.loginGoogle}</Text>
-            </TouchableOpacity>
-          </>
-        ) : (
-          <></>
-        )}
-        {onCheckReleaseHideShow() && Platform.OS === "ios" ? (
-          <>
-            <SizedBox height={verticalScale(10)} />
-            <TouchableOpacity
-              activeOpacity={0.8}
-              style={styles.appleButton}
-              onPress={() => signInWithApple()}
-            >
-              <ImageComponent source={apple} style={styles.apple} />
-              <Text style={styles.loginApple}>{strings.loginApple}</Text>
-            </TouchableOpacity>
-          </>
-        ) : (
-          <></>
-        )}
+        <SizedBox height={verticalScale(18)} />
+        <TouchableOpacity
+          activeOpacity={0.8}
+          style={styles.googleButton}
+          onPress={signInWithGoogle}
+        >
+          <ImageComponent source={google} style={styles.google} />
+          <Text style={styles.loginGoogle}>{strings.loginGoogle}</Text>
+        </TouchableOpacity>
+        <SizedBox height={verticalScale(10)} />
+        <TouchableOpacity
+          activeOpacity={0.8}
+          style={styles.appleButton}
+          onPress={signInWithApple}
+        >
+          <ImageComponent source={apple} style={styles.apple} />
+          <Text style={styles.loginApple}>{strings.loginApple}</Text>
+        </TouchableOpacity>
         <SizedBox height={verticalScale(12)} />
         <Text style={styles.orText}>or</Text>
         {/* <SizedBox height={verticalScale(20)} /> */}
