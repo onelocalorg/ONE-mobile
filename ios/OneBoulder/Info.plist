@@ -30,7 +30,7 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>2</string>
+	<string>3</string>
 	<key>GIDClientID</key>
 	<string>724751305903-pp1sekl71seh0dhmm0c5i5ekj06sjg45.apps.googleusercontent.com</string>
 	<key>INIntentsSupported</key>
@@ -68,6 +68,11 @@
 	<string>Get access for upload user profile picture</string>
 	<key>NSUserNotificationUsageDescription</key>
 	<string>ONE|Local would like to send you notifications about upcoming events, project updates, and community news, keeping you informed and engaged with local happenings.</string>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>fetch</string>
+		<string>remote-notification</string>
+	</array>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIRequiredDeviceCapabilities</key>

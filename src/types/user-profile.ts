@@ -23,4 +23,5 @@ export interface UserProfileUpdateData {
   pic?: ImageKey;
   about?: string;
   skills?: string[];
+  messagingToken?: string;
 }

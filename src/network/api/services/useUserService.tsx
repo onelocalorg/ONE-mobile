@@ -1,10 +1,9 @@
-import { OneUser } from "~/types/one-user";
-import { UserProfile, UserProfileUpdateData } from "~/types/user-profile";
-
 import { queryOptions, useQueryClient } from "@tanstack/react-query";
 import _ from "lodash/fp";
+import { OneUser } from "~/types/one-user";
 import { RemoteImage } from "~/types/remote-image";
 import { UploadFileData } from "~/types/upload-file-data";
+import { UserProfile, UserProfileUpdateData } from "~/types/user-profile";
 import { useApiService } from "./ApiService";
 
 export enum UserMutations {

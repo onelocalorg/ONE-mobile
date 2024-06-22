@@ -8,6 +8,7 @@ import { CurrentUser as MyUser } from "~/types/current-user";
 import { handleApiError } from "~/utils/common";
 import { AppNavigation } from "./AppNavigation";
 import { AuthContext, AuthDispatchContext } from "./AuthContext";
+import { NotificationService } from "./NotificationService";
 
 export default function Authentication() {
   type AppState = {
@@ -136,7 +137,9 @@ export default function Authentication() {
     <AuthContext.Provider value={state}>
       <ApiService>
         <AuthDispatchContext.Provider value={authDispatchContext}>
-          <AppNavigation token={state.accessToken} />
+          <NotificationService>
+            <AppNavigation token={state.accessToken} />
+          </NotificationService>
         </AuthDispatchContext.Provider>
       </ApiService>
     </AuthContext.Provider>
