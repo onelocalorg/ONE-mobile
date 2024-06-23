@@ -46,10 +46,15 @@ or
 npm run start
 ```
 
-### For Staging
+### For Beta
+
+Run this to set your environment:
+`export API_URL=https://beta.onelocal.one/api`
+
+and then as normal
 
 ```bash
-npm start:staging
+npm run start
 ```
 
 _Note that you can't use this method (Metro) to launch a production build._
