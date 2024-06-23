@@ -15,7 +15,7 @@ export enum UserMutations {
 }
 
 export enum GetUsersSort {
-  joinDate = "joinDate",
+  Join = "join",
 }
 
 export function useUserService() {
