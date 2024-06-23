@@ -63,7 +63,7 @@ export const LoginScreen = ({
     mutate: appleLogin,
     isPending: isAppleLoginPending,
   } = useMutation<CurrentUser, Error, AppleRequestResponse>({
-    mutationKey: [AuthMutations.googleLogin],
+    mutationKey: [AuthMutations.appleLogin],
   });
 
   const {
