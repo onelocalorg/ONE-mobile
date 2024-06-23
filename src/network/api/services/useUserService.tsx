@@ -81,11 +81,24 @@ export function useUserService() {
 
   interface GetUsersParams {
     sort?: GetUsersSort;
+    limit?: number;
+    picsOnly?: boolean;
   }
-  const getUsers = ({ sort }: GetUsersParams | undefined = {}) =>
-    doGet<OneUser[]>(`/v3/users?${sort ? `sort=${sort}` : ""}`);
+  const getUsers = ({
+    sort,
+    limit,
+    picsOnly,
+  }: GetUsersParams | undefined = {}) => {
+    // TODO make this more generic
+    const urlParams: string[] = [];
+    if (!_.isNil(sort)) urlParams.push(`sort=${sort.toString()}`);
+    if (!_.isNil(limit)) urlParams.push(`limit=${limit.toString()}`);
+    if (!_.isNil(picsOnly)) urlParams.push(`pics=${picsOnly.toString()}`);
+    const urlSearchParams = urlParams.join("&");
 
-  // eslint-disable-next-line no-empty-pattern
+    return doGet<OneUser[]>(`/v3/users?${urlSearchParams}`);
+  };
+
   const uploadFile = (props: UploadFileData) =>
     doPost<RemoteImage>("/v3/users/upload/file", {
       ..._.omit(["base64", "mimeType"], props),

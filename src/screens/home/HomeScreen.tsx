@@ -26,7 +26,9 @@ export const HomeScreen = () => {
     isError,
     data: userList,
     error,
-  } = useQuery(listUsers({ sort: GetUsersSort.joinDate }));
+  } = useQuery(
+    listUsers({ sort: GetUsersSort.joinDate, limit: 50, picsOnly: true })
+  );
   if (isError) handleApiError("Recent users", error);
 
   const withoutProfilePic = _.reject((u: OneUser) =>
