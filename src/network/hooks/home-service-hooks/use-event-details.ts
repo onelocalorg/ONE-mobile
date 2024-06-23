@@ -1,9 +1,11 @@
-import {
-  EventDetailsProps,
-  onFetchEventDetails,
-} from "~/network/api/services/home-service";
-import { apiKeys } from "~/network/constant";
 import { useQuery } from "@tanstack/react-query";
+import _ from "lodash/fp";
+import { DateTime } from "luxon";
+import { LOG } from "~/config";
+import { onFetchEventDetails } from "~/network/api/services/useEventService";
+import { apiKeys } from "~/network/constant";
+import { LocalEvent } from "~/types/local-event";
+import { TicketType } from "~/types/ticket-type";
 
 export interface EventDetails {
   name: string;
@@ -16,15 +18,14 @@ export interface EventDetails {
   email_confirmation_body: string;
   event_image: string;
   eventProducer: EventProducer;
-  tickets: Ticket[];
+  ticketTypes: TicketType[];
   id: string;
   is_event_owner: boolean;
   quantity: string;
   max_quantity_to_show: string;
   available_quantity: string;
-  cancelled: boolean;
-  date_title: string;
-  day_title: string;
+  cancelled: any;
+  isCanceled: boolean;
   isPayout: boolean;
   viewCount: number;
   start_date_label: string;
@@ -52,29 +53,21 @@ interface EventProducer {
   id: string;
 }
 
-export interface Ticket {
-  name: string;
-  start_date: string;
-  end_date: string;
-  about: string;
-  price: string;
-  location: string[];
-  id: string;
-  is_ticket_purchased?: string;
-  ticket_purchase_link?: string;
-  quantity: string;
-  max_quantity_to_show: string;
-  available_quantity: any;
-}
-
 const parsedEventDetails = (data: EventDetails) => {
-  return data;
+  LOG.debug("parsedEventDetails", data);
+  return {
+    ..._.omit(["lat", "long"], data),
+    start_date: DateTime.fromISO(data.start_date),
+    end_date: DateTime.fromISO(data.end_date),
+    latitude: data.lat,
+    longitude: data.long,
+  } as LocalEvent;
 };
 
-export const useEventDetails = (props: EventDetailsProps) => {
+export const useEventDetails = (eventId: string) => {
   const query = useQuery(
     [apiKeys.fetchEventDetails],
-    () => onFetchEventDetails(props),
+    () => onFetchEventDetails(eventId),
     {
       staleTime: 0,
       refetchOnWindowFocus: false,

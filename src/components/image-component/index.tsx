@@ -1,8 +1,8 @@
-import { contain, cover, stretch } from "~/assets/constants";
 import React, { FC } from "react";
 import { StyleProp } from "react-native";
 import FastImage, { FastImageProps, ImageStyle } from "react-native-fast-image";
 import { SvgUri } from "react-native-svg";
+import { contain, cover, stretch } from "~/assets/constants";
 
 export interface ImageProps extends FastImageProps {
   style?: StyleProp<ImageStyle>;

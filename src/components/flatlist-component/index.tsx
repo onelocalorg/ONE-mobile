@@ -1,6 +1,3 @@
-import { useAppTheme } from "~/app-hooks/use-app-theme";
-import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
-import { Loader } from "~/components/loader";
 import React, { useState } from "react";
 import {
   FlatList,
@@ -10,6 +7,9 @@ import {
   View,
   ViewStyle,
 } from "react-native";
+import { useAppTheme } from "~/app-hooks/use-app-theme";
+import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
+import { Loader } from "~/components/loader";
 
 import { createStyleSheet } from "./style";
 

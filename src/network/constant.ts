@@ -13,23 +13,20 @@ export const setData = (key: any, value: any) => {
 };
 
 export const apiConstants = {
-  login: "/v1/auth/login",
-  userProfile: "/v1/users",
-  eventLists: "/v1/events/list",
-  createTicket: "/v1/tickets",
-  editProfile: "/v1/users/",
-  refreshTokens: "/v1/auth/refresh-tokens",
-  ticketHolderCheckins: "/v1/events/getTicketHolders",
-  checkedInUser: "/v1/tickets/checkedInEvent",
-  createEvent: "/v2/events",
-  createEventDetail: "/v1/events",
-  createStripeCustomer: "/v1/customers",
-  createPayoutIntent: "/v1/payment_intents",
-  saveCustomerId: "/v1/users/save-customer-id",
-  appConfig: "/v1/auth/appConfig",
-  purchaseTicket: "/v1/tickets/store-purchase-response",
-  createSubscription: "/v1/checkout/sessions",
-  subscriptionPlans: "/v1/subscriptions/plans",
+  login: "/v3/auth/login",
+  userProfile: "/v3/users",
+  eventLists: "/v3/events/list",
+  createTicket: "/v3/tickets",
+  editProfile: "/v3/users/",
+  refreshTokens: "/v3/auth/refresh-tokens",
+  ticketHolderCheckins: "/v3/events/getTicketHolders",
+  checkedInUser: "/v3/tickets/checkedInEvent",
+  createEvent: "/v3/events",
+  createEventDetail: "/v3/events",
+  appConfig: "/v3/auth/appConfig",
+  purchaseTicket: "/v3/tickets/store-purchase-response",
+  createSubscription: "/v3/checkout/sessions",
+  subscriptionPlans: "/v3/subscriptions/plans",
   package: "v1/subscriptions/packages",
   packageDetails: "v1/subscriptions/packages/",
 };
@@ -41,6 +38,8 @@ export const methods = {
 
 export const persistKeys = {
   token: "token",
+  refreshToken: "refreshToken",
+  myId: "myId",
   fcmToken: "@fcmToken",
 };
 
@@ -53,5 +52,5 @@ export const apiKeys = {
   packageDetail: "packageDetails",
 };
 
-export const IOS_VERSION = "7.9.1";
-export const ANDROID_VERSION = "1.0.3";
+export const IOS_VERSION = "8.0.0";
+export const ANDROID_VERSION = "2.0.0";

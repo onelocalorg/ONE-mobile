@@ -1,16 +1,16 @@
-import { useAppTheme } from "~/app-hooks/use-app-theme";
-import { Header } from "~/components/header";
 import {
   NavigationContainerRef,
   ParamListBase,
 } from "@react-navigation/native";
-import { getTheme } from "~/theme/index";
 import React, { useState } from "react";
 import { ActivityIndicator, View } from "react-native";
 import WebView, {
   WebViewMessageEvent,
   WebViewNavigation,
 } from "react-native-webview";
+import { useAppTheme } from "~/app-hooks/use-app-theme";
+import { Header } from "~/components/header";
+import { getTheme } from "~/theme/index";
 import { createStyleSheet } from "./style";
 
 interface Params {

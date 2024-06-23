@@ -1,10 +1,5 @@
-import {
-  onGetPackage,
-  onGetPackageDetail,
-} from "~/network/api/services/home-service";
-import { apiConstants, apiKeys } from "~/network/constant";
-import { About } from "~/screens/profile/about";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
+import { onGetPackageDetail } from "~/network/api/services/useEventService";
 
 export type Root = PlanData[];
 

@@ -34,4 +34,4 @@ const userProfileReducer = userProfileSlice.reducer;
 
 const { onSetUser, onSetCoverImage } = userProfileSlice.actions;
 
-export { onSetUser, onSetCoverImage, userProfileReducer };
+export { onSetCoverImage, onSetUser, userProfileReducer };

@@ -1,4 +1,3 @@
-import { useAppTheme } from "~/app-hooks/use-app-theme";
 import React from "react";
 import {
   StyleProp,
@@ -8,9 +7,10 @@ import {
   View,
   ViewStyle,
 } from "react-native";
-import { createStyleSheet } from "./style";
-import { ImageComponent } from "~/components/image-component";
+import { useAppTheme } from "~/app-hooks/use-app-theme";
 import { buttonArrow } from "~/assets/images";
+import { ImageComponent } from "~/components/image-component";
+import { createStyleSheet } from "./style";
 
 interface ButtonComponentProps extends TouchableOpacityProps {
   buttonStyle?: StyleProp<ViewStyle>;

@@ -1,6 +1,7 @@
+import { StyleSheet } from "react-native";
+import { colors } from "~/theme/colors";
 import { normalScale, verticalScale } from "~/theme/device/normalize";
 import { ThemeProps } from "~/theme/theme";
-import { StyleSheet } from "react-native";
 
 export const createStyleSheet = (theme: ThemeProps) => {
   return StyleSheet.create({
@@ -186,6 +187,12 @@ export const createStyleSheet = (theme: ThemeProps) => {
       fontWeight: "400",
       color: theme.colors.white,
     },
+
+    errorText: {
+      fontSize: 16,
+      fontWeight: "bold",
+      color: theme.colors.red,
+    },
     oneContainerImage: {
       height: normalScale(100),
       width: normalScale(100),
@@ -223,6 +230,10 @@ export const createStyleSheet = (theme: ThemeProps) => {
       fontFamily: theme.fontType.medium,
       height: verticalScale(38),
       color: "black",
+    },
+    modal: {
+      backgroundColor: colors.lightGrey,
+      padding: 20,
     },
   });
 };

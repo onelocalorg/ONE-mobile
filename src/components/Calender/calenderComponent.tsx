@@ -1,5 +1,5 @@
 import { forwardRef, useImperativeHandle, useState } from "react";
-import { Calendar, LocaleConfig } from "react-native-calendars";
+import { Calendar } from "react-native-calendars";
 
 interface CalenderComponentProps {}
 

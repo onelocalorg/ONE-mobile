@@ -1,6 +1,6 @@
-import { useAppTheme } from "~/app-hooks/use-app-theme";
 import React from "react";
 import { ActivityIndicator, StyleProp, View, ViewStyle } from "react-native";
+import { useAppTheme } from "~/app-hooks/use-app-theme";
 import { createStyleSheet } from "./style";
 
 export interface LoaderProps {

@@ -1,7 +1,6 @@
-import React from "react";
-import { useInternetConnectionHandle } from "~/app-hooks/use-internet-connection-handle";
 import NetInfo from "@react-native-community/netinfo";
-import { useEffect } from "react";
+import React, { useEffect } from "react";
+import { useInternetConnectionHandle } from "~/app-hooks/use-internet-connection-handle";
 
 export const InternetConnectionHandle = () => {
   const { checkConnectivity } = useInternetConnectionHandle();

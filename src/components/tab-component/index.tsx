@@ -1,7 +1,7 @@
-import { useAppTheme } from "~/app-hooks/use-app-theme";
 import React, { useState } from "react";
-import { createStyleSheet } from "./style";
 import { FlatList, Text, TouchableOpacity, View } from "react-native";
+import { useAppTheme } from "~/app-hooks/use-app-theme";
+import { createStyleSheet } from "./style";
 
 interface TabComponentProps {
   tabs: string[];

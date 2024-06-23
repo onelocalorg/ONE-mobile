@@ -1,7 +1,7 @@
+import { StyleSheet } from "react-native";
 import { width } from "~/theme/device/device";
 import { normalScale, verticalScale } from "~/theme/device/normalize";
 import { ThemeProps } from "~/theme/theme";
-import { StyleSheet } from "react-native";
 
 export const createStyleSheet = (theme: ThemeProps) => {
   return StyleSheet.create({
@@ -109,6 +109,8 @@ export const createStyleSheet = (theme: ThemeProps) => {
     },
     modalContainer: {
       paddingHorizontal: normalScale(16),
+      backgroundColor: theme.colors.white,
+      paddingBottom: 70,
     },
     amount: {
       marginTop: verticalScale(12),

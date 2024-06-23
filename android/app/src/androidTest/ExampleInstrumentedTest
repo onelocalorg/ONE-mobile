@@ -1,4 +1,4 @@
-package one.oneboulder.one
+package one.onelocal.app
 
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.action.ViewActions
@@ -56,6 +56,6 @@ class ExampleInstrumentedTest {
    fun useAppContext() {
        // Context of the app under test.
        val appContext = InstrumentationRegistry.getInstrumentation().targetContext
-       assertEquals("one.oneboulder.one", appContext.packageName)
+       assertEquals("one.onelocal.app", appContext.packageName)
    }
 }

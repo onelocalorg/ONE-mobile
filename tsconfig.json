@@ -25,9 +25,13 @@
     "noEmit": true,
     "target": "esnext"
   },
+  "include": [
+    "src/**/*.tsx",
+    "src/**/*.ts",
+    "index.js",
+    ".eslintrc.cjs"
+  ],
   "exclude": [
-    "node_modules",
-    "babel.config.js",
-    "metro.config.js"
+    "**/*.spec.ts"
   ]
 }

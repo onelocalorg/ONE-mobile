@@ -1,10 +1,9 @@
-import { LOG } from "~/config";
+import { useQuery } from "@tanstack/react-query";
 import {
   UserProfileProps,
   onGetUserProfile,
-} from "~/network/api/services/user-service";
+} from "~/network/api/services/useUserService";
 import { apiKeys } from "~/network/constant";
-import { useQuery } from "@tanstack/react-query";
 
 interface Root {
   bio: string;
