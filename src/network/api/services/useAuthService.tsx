@@ -1,6 +1,7 @@
 import { AppleRequestResponse } from "@invertase/react-native-apple-authentication";
 import { GoogleSignin, User } from "@react-native-google-signin/google-signin";
 import { useQueryClient } from "@tanstack/react-query";
+import { Alert } from "react-native";
 import { CurrentUser } from "~/types/current-user";
 import { ForgotPassword } from "~/types/forgot-password";
 import { NewUser } from "~/types/new-user";
@@ -61,6 +62,9 @@ export function useAuthService() {
     mutationFn: (email: string) => {
       return forgotPassword(email);
     },
+    onError: () => {
+      Alert.alert("Email not found", "Please check your email and try again.");
+    },
   });
 
   queryClient.setMutationDefaults([AuthMutations.verifyOtp], {
@@ -90,24 +94,11 @@ export function useAuthService() {
   const forgotPassword = (email: string) =>
     doPost<ForgotPassword>(`/v3/auth/forgot-password`, { email });
 
-  interface VerifyOtpProps {
-    otp: string;
-    otpUniqueKey: string;
-  }
-  const verifyOtp = ({ otp, otpUniqueKey }: VerifyOtpProps) =>
-    doPost<boolean>(`/v3/auth/verify-otp`, { otp, otpUniqueKey });
+  const verifyOtp = (props: VerifyOtpProps) =>
+    doPost<boolean>(`/v3/auth/verify-otp`, props);
 
-  interface ResetPasswordProps {
-    password: string;
-    otp: string;
-    otpUniqueKey: string;
-  }
-  const resetPassword = ({ password, otp, otpUniqueKey }: ResetPasswordProps) =>
-    doPost<never>(`/v3/auth/reset-password`, {
-      password,
-      otp,
-      otpUniqueKey,
-    });
+  const resetPassword = (props: ResetPasswordProps) =>
+    doPost<never>(`/v3/auth/reset-password`, props);
 
   return {};
 }
@@ -115,4 +106,15 @@ export function useAuthService() {
 export interface LoginProps {
   email: string;
   password: string;
+}
+
+export interface VerifyOtpProps {
+  otp: string;
+  otpKey: string;
+}
+
+export interface ResetPasswordProps {
+  password: string;
+  otp: string;
+  otpKey: string;
 }

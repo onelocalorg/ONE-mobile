@@ -17,7 +17,6 @@ import {
   TextInput,
   TouchableOpacity,
 } from "react-native";
-import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { Modal, Portal } from "react-native-paper";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
 import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
@@ -36,7 +35,7 @@ import {
 import { verticalScale } from "~/theme/device/normalize";
 import { CurrentUser } from "~/types/current-user";
 import { handleApiError } from "~/utils/common";
-import { ForgotPassword } from "./ForgotPassword";
+import { ForgotPasswordScreen } from "./ForgotPasswordScreen";
 import { createStyleSheet } from "./style";
 
 export const LoginScreen = ({
@@ -158,133 +157,132 @@ export const LoginScreen = ({
       style={styles.container}
     >
       <Loader visible={isLoginPending} />
-      <KeyboardAwareScrollView showsVerticalScrollIndicator={false}>
-        <Text style={styles.texClass}>{strings.email}</Text>
-        <Controller
-          control={control}
-          rules={{
-            required: true,
-          }}
-          render={({ field: { onChange, onBlur, value } }) => (
-            <TextInput
-              placeholderTextColor="#8B8888"
-              style={styles.textInput}
-              autoCapitalize="none"
-              value={value}
-              onBlur={onBlur}
-              onChangeText={onChange}
-            />
-          )}
-          name="email"
-        />
-        {errors.email && (
-          <Text style={styles.errorText}>This is required.</Text>
+      <SizedBox height={verticalScale(12)} />
+      <Text style={styles.texClass}>{strings.email}</Text>
+      <Controller
+        control={control}
+        rules={{
+          required: true,
+        }}
+        render={({ field: { onChange, onBlur, value } }) => (
+          <TextInput
+            placeholderTextColor="#8B8888"
+            style={styles.textInput}
+            autoCapitalize="none"
+            value={value}
+            onBlur={onBlur}
+            onChangeText={onChange}
+          />
         )}
+        name="email"
+      />
+      {errors.email && <Text style={styles.errorText}>This is required.</Text>}
 
-        <SizedBox height={verticalScale(10)} />
-        <Text style={styles.texClass}>{strings.password}</Text>
-        <Controller
-          control={control}
-          rules={{
-            required: true,
-          }}
-          render={({ field: { onChange, onBlur, value } }) => (
-            <TextInput
-              secureTextEntry
-              placeholderTextColor="#8B8888"
-              style={styles.textInput}
-              value={value}
-              onBlur={onBlur}
-              onChangeText={onChange}
-            />
-          )}
-          name="password"
-        />
-        {errors.password && (
-          <Text style={styles.errorText}>This is required.</Text>
+      <SizedBox height={verticalScale(10)} />
+      <Text style={styles.texClass}>{strings.password}</Text>
+      <Controller
+        control={control}
+        rules={{
+          required: true,
+        }}
+        render={({ field: { onChange, onBlur, value } }) => (
+          <TextInput
+            secureTextEntry
+            placeholderTextColor="#8B8888"
+            style={styles.textInput}
+            value={value}
+            onBlur={onBlur}
+            onChangeText={onChange}
+          />
         )}
+        name="password"
+      />
+      {errors.password && (
+        <Text style={styles.errorText}>This is required.</Text>
+      )}
 
-        <SizedBox height={verticalScale(10)} />
-        {/* <ButtonComponent
+      <SizedBox height={verticalScale(10)} />
+      {/* <ButtonComponent
           disabled={onCheckValidation()}
           onPress={onSubmit}
           title={strings.login}
         /> */}
-        <TouchableOpacity
-          // disabled={onCheckValidation()}
-          activeOpacity={0.8}
-          onPress={handleSubmit(signInWithPassword)}
-          style={styles.loginBtn}
-        >
-          <Text style={styles.signUpText}>{strings.login}</Text>
-        </TouchableOpacity>
-        {/* <ButtonComponent
+      <TouchableOpacity
+        // disabled={onCheckValidation()}
+        activeOpacity={0.8}
+        onPress={handleSubmit(signInWithPassword)}
+        style={styles.loginBtn}
+      >
+        <Text style={styles.signUpText}>{strings.login}</Text>
+      </TouchableOpacity>
+      {/* <ButtonComponent
           style={styles.signUpBtn}
           onPress={onSignUp}
           title={strings.signUp}
         /> */}
-        <SizedBox height={verticalScale(8)} />
-        <TouchableOpacity
-          activeOpacity={0.8}
-          onPress={() => setForgotPasswordVisible(true)}
+      <SizedBox height={verticalScale(8)} />
+      <TouchableOpacity
+        activeOpacity={0.8}
+        onPress={() => setForgotPasswordVisible(true)}
+      >
+        <Text style={styles.forgot}>{`${strings.forgotPassword}?`}</Text>
+      </TouchableOpacity>
+      <Portal>
+        <Modal
+          visible={isForgotPasswordVisible}
+          onDismiss={() => setForgotPasswordVisible(false)}
+          contentContainerStyle={styles.modal}
         >
-          <Text style={styles.forgot}>{`${strings.forgotPassword}?`}</Text>
-        </TouchableOpacity>
-        <Portal>
-          <Modal
-            visible={isForgotPasswordVisible}
+          <ForgotPasswordScreen
             onDismiss={() => setForgotPasswordVisible(false)}
-            contentContainerStyle={styles.modal}
-          >
-            <ForgotPassword onDismiss={() => setForgotPasswordVisible(false)} />
-          </Modal>
-        </Portal>
-        <SizedBox height={verticalScale(18)} />
-        <TouchableOpacity
-          activeOpacity={0.8}
-          style={styles.googleButton}
-          onPress={signInWithGoogle}
-        >
-          <ImageComponent source={google} style={styles.google} />
-          <Text style={styles.loginGoogle}>{strings.loginGoogle}</Text>
-        </TouchableOpacity>
-        <SizedBox height={verticalScale(10)} />
-        <TouchableOpacity
-          activeOpacity={0.8}
-          style={styles.appleButton}
-          onPress={signInWithApple}
-        >
-          <ImageComponent source={apple} style={styles.apple} />
-          <Text style={styles.loginApple}>{strings.loginApple}</Text>
-        </TouchableOpacity>
-        <SizedBox height={verticalScale(12)} />
-        <Text style={styles.orText}>or</Text>
-        {/* <SizedBox height={verticalScale(20)} /> */}
-        <TouchableOpacity
-          activeOpacity={0.8}
-          onPress={onSignUp}
-          style={styles.signUpBtn}
-        >
-          <Text style={styles.signUpText}>{strings.signUp}</Text>
-        </TouchableOpacity>
-        <SizedBox height={verticalScale(12)} />
-        <TouchableOpacity style={styles.tncStyle} activeOpacity={0.8}>
-          {/* <TouchableOpacity onPress={onHandleCheckBox}>
+          />
+        </Modal>
+      </Portal>
+      <SizedBox height={verticalScale(18)} />
+      <TouchableOpacity
+        activeOpacity={0.8}
+        style={styles.googleButton}
+        onPress={signInWithGoogle}
+      >
+        <ImageComponent source={google} style={styles.google} />
+        <Text style={styles.loginGoogle}>{strings.loginGoogle}</Text>
+      </TouchableOpacity>
+      <SizedBox height={verticalScale(10)} />
+      <TouchableOpacity
+        activeOpacity={0.8}
+        style={styles.appleButton}
+        onPress={signInWithApple}
+      >
+        <ImageComponent source={apple} style={styles.apple} />
+        <Text style={styles.loginApple}>{strings.loginApple}</Text>
+      </TouchableOpacity>
+      <SizedBox height={verticalScale(12)} />
+      <Text style={styles.orText}>or</Text>
+      {/* <SizedBox height={verticalScale(20)} /> */}
+      <TouchableOpacity
+        activeOpacity={0.8}
+        onPress={onSignUp}
+        style={styles.signUpBtn}
+      >
+        <Text style={styles.signUpText}>{strings.signUp}</Text>
+      </TouchableOpacity>
+      <SizedBox height={verticalScale(12)} />
+      <TouchableOpacity style={styles.tncStyle} activeOpacity={0.8}>
+        {/* <TouchableOpacity onPress={onHandleCheckBox}>
           <ImageComponent
             source={isChecked ? activeRadio : inactiveRadio}
             style={styles.radio}
           />
         </TouchableOpacity> */}
-          <TouchableOpacity activeOpacity={0.8} onPress={loadInBrowser}>
-            <Text style={styles.agreeText}>
-              {strings.iAgree}
+        <TouchableOpacity activeOpacity={0.8} onPress={loadInBrowser}>
+          <Text style={styles.agreeText}>
+            {strings.iAgree}
 
-              <Text style={styles.bold}>{` ${strings.tnc}`}</Text>
-            </Text>
-          </TouchableOpacity>
+            <Text style={styles.bold}>{` ${strings.tnc}`}</Text>
+          </Text>
         </TouchableOpacity>
-        <SizedBox height={verticalScale(10)} />
-      </KeyboardAwareScrollView>
+      </TouchableOpacity>
+      <SizedBox height={verticalScale(10)} />
     </TouchableOpacity>
   );
 };
