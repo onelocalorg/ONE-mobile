@@ -18,7 +18,7 @@ import { ImageComponent } from "~/components/image-component";
 import { Loader } from "~/components/loader";
 import { usePostService } from "~/network/api/services/usePostService";
 import { Post } from "~/types/post";
-import { PostCard } from "./PostCard";
+import { PostCard, PostCardSize } from "./PostCard";
 import { createStyleSheet } from "./style";
 
 type PostsListProps = {
@@ -56,7 +56,7 @@ export const PostsList = ({ header }: PostsListProps) => {
     return (
       <View style={styles.feedContainer}>
         <Pressable onPress={() => gotoPostDetails(post)}>
-          <PostCard post={post} />
+          <PostCard post={post} size={PostCardSize.Medium} />
           <View style={styles.gratisAndReplyContainer}>
             <TouchableOpacity
               activeOpacity={0.8}

@@ -1,3 +1,4 @@
+import ReadMore from "@fawazahmed/react-native-read-more";
 import _ from "lodash/fp";
 import React from "react";
 import { Image, Pressable, Text, TouchableOpacity, View } from "react-native";
@@ -12,14 +13,28 @@ import { ImageComponent } from "~/components/image-component";
 import { Post, PostType } from "~/types/post";
 import { createStyleSheet } from "./style";
 
-type PostCardProps = {
+export enum PostCardSize {
+  Small,
+  Medium,
+}
+
+interface PostCardProps {
   post: Post;
-};
-export const PostCard = ({ post }: PostCardProps) => {
+  size?: PostCardSize;
+  onSeeMore?: () => void;
+}
+export const PostCard = ({ post, size, onSeeMore }: PostCardProps) => {
   const { theme } = useAppTheme();
   const styles = createStyleSheet(theme);
   const { showPostContextMenu, gotoPostDetails, gotoUserProfile } =
     useNavigations();
+
+  const numberOfLines =
+    size === PostCardSize.Small
+      ? 4
+      : size === PostCardSize.Medium
+      ? 7
+      : undefined;
 
   return (
     <View>
@@ -59,7 +74,13 @@ export const PostCard = ({ post }: PostCardProps) => {
             ) : null}
           </View>
         </View>
-        <Text style={styles.postDes}>{post.details}</Text>
+        <ReadMore
+          numberOfLines={numberOfLines}
+          style={styles.postDes}
+          onSeeMore={onSeeMore}
+        >
+          {post.details}
+        </ReadMore>
         {post.images.map((image) => (
           <ImageComponent
             key={image.key}

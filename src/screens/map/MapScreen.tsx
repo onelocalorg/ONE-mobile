@@ -20,7 +20,7 @@ import { LOG } from "~/config";
 import { MapStackScreenProps, Screens } from "~/navigation/types";
 import { useEventService } from "~/network/api/services/useEventService";
 import { usePostService } from "~/network/api/services/usePostService";
-import { PostCard } from "~/screens/home/PostCard";
+import { PostCard, PostCardSize } from "~/screens/home/PostCard";
 import { LocalEvent } from "~/types/local-event";
 import { Post } from "~/types/post";
 import { handleApiError } from "~/utils/common";
@@ -162,7 +162,11 @@ export const MapScreen = ({ navigation }: MapStackScreenProps<Screens.MAP>) => {
           ))}
           {selectedPosts.map((sp) => (
             <View key={sp.id} style={styles.listContainer}>
-              <PostCard post={sp} />
+              <PostCard
+                post={sp}
+                size={PostCardSize.Small}
+                onSeeMore={gotoPostDetails(sp.id)}
+              />
             </View>
           ))}
         </>
