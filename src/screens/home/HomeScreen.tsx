@@ -31,8 +31,8 @@ export const HomeScreen = () => {
   );
   if (isError) handleApiError("Recent users", error);
 
-  const withoutProfilePic = _.reject((u: OneUser) =>
-    u.pic?.includes("defaultUser.jpg")
+  const withoutProfilePic = _.reject(
+    (u: OneUser) => !u.pic || u.pic.includes("defaultUser.jpg")
   );
 
   return (
