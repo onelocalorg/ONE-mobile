@@ -4,8 +4,9 @@ import messaging, {
 } from "@react-native-firebase/messaging";
 import { useMutation } from "@tanstack/react-query";
 import { ReactNode, createContext, useContext, useEffect } from "react";
+import { getDeviceId } from "react-native-device-info";
 import { UserMutations } from "~/network/api/services/useUserService";
-import { UserProfile, UserProfileUpdateData } from "~/types/user-profile";
+import { RegisterTokenData, Token, TokenType } from "~/types/token";
 import { handleApiError } from "~/utils/common";
 import { useMyUserId } from "./AuthContext";
 
@@ -29,12 +30,12 @@ export function NotificationService({
 }: NotificationServiceProviderProps) {
   const myUserId = useMyUserId();
 
-  const { mutate: updateUser } = useMutation<
-    UserProfile,
+  const { mutate: registerToken } = useMutation<
+    Token,
     Error,
-    UserProfileUpdateData
+    RegisterTokenData
   >({
-    mutationKey: [UserMutations.updateUser],
+    mutationKey: [UserMutations.registerToken],
   });
 
   // Note that an async function or a function that returns a Promise
@@ -60,8 +61,12 @@ export function NotificationService({
       // TODO Handle various conditions
       if (settings.authorizationStatus >= AuthorizationStatus.AUTHORIZED) {
         const messagingToken = await messaging().getToken();
-        console.log("MESSAGING", messagingToken);
-        updateUser({ id: myUserId!, messagingToken });
+        registerToken({
+          userId: myUserId!,
+          type: TokenType.fcm,
+          token: messagingToken,
+          deviceId: getDeviceId(),
+        });
       } else {
         console.log("User declined permissions");
       }
@@ -75,7 +80,7 @@ export function NotificationService({
       messaging().onMessage(onMessageReceived);
       messaging().setBackgroundMessageHandler(onMessageReceived);
     }
-  }, [myUserId, updateUser]);
+  }, [myUserId, registerToken]);
 
   // Subscribe to events
   useEffect(() => {

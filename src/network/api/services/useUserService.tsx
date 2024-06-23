@@ -2,6 +2,7 @@ import { queryOptions, useQueryClient } from "@tanstack/react-query";
 import _ from "lodash/fp";
 import { OneUser } from "~/types/one-user";
 import { RemoteImage } from "~/types/remote-image";
+import { RegisterTokenData } from "~/types/token";
 import { UploadFileData } from "~/types/upload-file-data";
 import { UserProfile, UserProfileUpdateData } from "~/types/user-profile";
 import { useApiService } from "./ApiService";
@@ -10,6 +11,7 @@ export enum UserMutations {
   updateUser = "updateUser",
   deleteUser = "deleteUser",
   uploadFile = "uploadFile",
+  registerToken = "registerToken",
 }
 
 export enum GetUsersSort {
@@ -59,6 +61,12 @@ export function useUserService() {
     },
   });
 
+  queryClient.setMutationDefaults([UserMutations.registerToken], {
+    mutationFn: (data: RegisterTokenData) => {
+      return registerToken(data);
+    },
+  });
+
   queryClient.setMutationDefaults([UserMutations.deleteUser], {
     mutationFn: (data: string) => {
       return deleteUser(data);
@@ -88,6 +96,10 @@ export function useUserService() {
     doPatch<UserProfile>(`/v3/users/${data.id}`, {
       ..._.omit(["id"], data),
       skills: !_.isEmpty(data.skills) ? data.skills?.join(",") : undefined,
+    });
+  const registerToken = (data: RegisterTokenData) =>
+    doPost<UserProfile>(`/v3/users/${data.userId}/tokens`, {
+      ..._.omit(["userId"], data),
     });
 
   return {
