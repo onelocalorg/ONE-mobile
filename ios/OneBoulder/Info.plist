@@ -30,7 +30,7 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>4</string>
+	<string>10</string>
 	<key>GIDClientID</key>
 	<string>724751305903-pp1sekl71seh0dhmm0c5i5ekj06sjg45.apps.googleusercontent.com</string>
 	<key>INIntentsSupported</key>
@@ -52,18 +52,8 @@
 		<key>NSAllowsLocalNetworking</key>
 		<true/>
 	</dict>
-	<key>NSCalendarsUsageDescription</key>
-	<string>ONE|Local requests access to your calendar to add community events you are interested in, ensuring you never miss out on opportunities to connect and participate.</string>
 	<key>NSCameraUsageDescription</key>
 	<string>Get access for upload user profile picture</string>
-	<key>NSContactsUsageDescription</key>
-	<string>ONE|Local requests access to your contacts to help you easily invite friends and connections to join community events or projects, enhancing your collaborative efforts.</string>
-	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>Access user location for showing event list near your location</string>
-	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>Access user location for showing event list near your location</string>
-	<key>NSMicrophoneUsageDescription</key>
-	<string>ONE|Local requires microphone access for voice messages or video recordings within the app, facilitating smoother communication and collaboration on community projects and events.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Get access for upload user profile picture</string>
 	<key>NSUserNotificationUsageDescription</key>
