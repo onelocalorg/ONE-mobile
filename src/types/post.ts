@@ -1,5 +1,6 @@
 import { DateTime } from "luxon";
 import { ImageKey, ImageUrl } from "./image-info";
+import { Mappable } from "./mappable";
 import { OneUser } from "./one-user";
 import { Reply } from "./reply";
 
@@ -13,6 +14,10 @@ export interface PostDetail extends Post {
   replies: Reply[];
 }
 
+export interface MappablePost extends Post, Mappable {
+  coordinates: number[];
+}
+
 // The data returned from the server for a post
 export interface Post extends PostData {
   id: string;
@@ -21,9 +26,10 @@ export interface Post extends PostData {
   postDate: DateTime;
   images: [ImageUrl];
   numReplies: number;
+  timezone: string;
 }
 
-export interface PostData extends PostUpdateData {
+export interface PostData extends Omit<PostUpdateData, "id"> {
   name: string;
   details: string;
 }

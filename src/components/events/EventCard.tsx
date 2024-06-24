@@ -11,16 +11,21 @@ import { createStyleSheet } from "./style";
 interface EventCardProps {
   event: LocalEvent;
   disabled?: boolean;
+  style?: any;
 }
 
-export const EventCard = ({ event, disabled = false }: EventCardProps) => {
+export const EventCard = ({
+  event,
+  disabled = false,
+  style,
+}: EventCardProps) => {
   const { theme } = useAppTheme();
   const styles = createStyleSheet(theme);
   const { gotoEventDetails } = useNavigations();
 
   return (
     <TouchableOpacity
-      style={styles.listContainer}
+      style={style ?? styles.listContainer}
       onPress={gotoEventDetails(event)}
       activeOpacity={0.8}
       disabled={disabled}
@@ -55,7 +60,7 @@ export const EventCard = ({ event, disabled = false }: EventCardProps) => {
           {/* <ImageComponent style={styles.addressDot} source={activeRadio}></ImageComponent> */}
           {/* <Text style={styles.fullAddress}>{full_address}</Text> */}
         </View>
-        {event.isCanceled ? (
+        {event.cancelDate ? (
           <Text style={styles.cancleText}>CANCELED</Text>
         ) : null}
       </View>

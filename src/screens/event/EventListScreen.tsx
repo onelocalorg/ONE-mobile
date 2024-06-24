@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import { FlatList, ListRenderItem, Text, View } from "react-native";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
 import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
-import { EventItem } from "~/components/events/EventItem";
+import { EventCard } from "~/components/events/EventCard";
 import { Loader } from "~/components/loader";
 import { useEventService } from "~/network/api/services/useEventService";
 import { LocalEvent } from "~/types/local-event";
@@ -36,7 +36,7 @@ export const EventListScreen = () => {
   const renderLocalEvent: ListRenderItem<LocalEvent> = ({ item }) => {
     return (
       <View>
-        <EventItem style={styles.listContainer} event={item} />
+        <EventCard style={styles.listContainer} event={item} />
       </View>
     );
   };

@@ -4,31 +4,39 @@ import { ThemeProps } from "~/theme/theme";
 
 export const createStyleSheet = (theme: ThemeProps) => {
   return StyleSheet.create({
-    listContainer: {
-      borderRadius: theme.borderRadius.radius16,
-      borderWidth: theme.borderWidth.borderWidth1,
-      borderColor: theme.colors.red,
-      paddingVertical: verticalScale(8),
-      paddingHorizontal: normalScale(8),
-      backgroundColor: theme.colors.white,
-      flexDirection: "row",
-      margin: verticalScale(13),
-      marginLeft: 30,
-      shadowColor: theme.colors.darkGrey,
-      shadowOffset: { width: 1, height: 2 },
-      shadowOpacity: 0.9,
-      shadowRadius: 4,
+    container: {
+      flex: 1,
     },
-    dummy: {
+    mapcard: {
+      width: "80%",
+      height: 100,
+      // flex: 1,
+      flexDirection: "row",
+      // borderRadius: theme.borderRadius.radius16,
+      // borderWidth: theme.borderWidth.borderWidth1,
+      // borderColor: theme.colors.red,
+      // paddingVertical: verticalScale(8),
+      // paddingHorizontal: normalScale(8),
+      // backgroundColor: theme.colors.white,
+      // flexDirection: "row",
+      // margin: verticalScale(13),
+      // shadowColor: theme.colors.darkGrey,
+      // shadowOffset: { width: 1, height: 2 },
+      // shadowOpacity: 0.9,
+      // shadowRadius: 4,
+    },
+    image: {
       width: normalScale(80),
       height: verticalScale(92),
       marginRight: normalScale(18),
       // borderRadius: theme.borderRadius.radius10,
     },
-    flex: {
+    content: {
       flex: 1,
-      overflow: "hidden",
+      flexDirection: "column",
+      justifyContent: "flex-end",
     },
+
     dateText: {
       fontFamily: theme.fontType.light,
       fontSize: theme.fontSize.font12,

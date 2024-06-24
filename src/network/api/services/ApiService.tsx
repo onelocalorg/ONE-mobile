@@ -6,7 +6,7 @@ import { Alert } from "react-native";
 import { LOG } from "~/config";
 import { useAccessToken } from "~/navigation/AuthContext";
 import { ApiError } from "~/types/api-error";
-import { mapValuesWithKey } from "~/utils/common";
+import { mapValues } from "~/utils/common";
 
 interface IApiService {
   doGet: <R>(url: string, transform?: (data: any) => R) => Promise<R>;
@@ -15,7 +15,7 @@ interface IApiService {
     body?: any,
     transform?: (data: any) => R
   ) => Promise<R>;
-  doPostList: <R>(url: string, transform?: (data: any) => R) => Promise<R[]>;
+  // doPostList: <R>(url: string, transform?: (data: any) => R) => Promise<R[]>;
   doDelete: <R>(url: string, transform?: (data: any) => R) => Promise<R>;
   doPatch: <R>(
     url: string,
@@ -62,7 +62,6 @@ export function ApiService({ children }: ApiServiceProviderProps) {
 
   const client = {
     doGet,
-    doPostList,
     doPost,
     doDelete,
     doPatch,
@@ -104,13 +103,13 @@ export function ApiService({ children }: ApiServiceProviderProps) {
 
   // Perform a GET against the given url and return a list of resources generated via
   // the given transform fundtion
-  function doPostList<Resource>(
-    url: string,
-    body?: any,
-    transform?: (data: any) => Resource
-  ) {
-    return callApiAndMap<Resource>("POST", url, body, transform);
-  }
+  // function doPostList<Resource>(
+  //   url: string,
+  //   body?: any,
+  //   transform?: (data: any) => Resource
+  // ) {
+  //   return callApiAndMap<Resource>("POST", url, body, transform);
+  // }
 
   // Perform a PATCH against the given url and return the resource generated via
   // the given transform fundction
@@ -146,7 +145,7 @@ export function ApiService({ children }: ApiServiceProviderProps) {
       LOG.debug(
         "=>",
         // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-        mapValuesWithKey(
+        mapValues(
           (v: string, k: string) => (NO_LOG_KEYS.includes(k) ? "<hidden>" : v),
           body
         )
@@ -182,37 +181,69 @@ export function ApiService({ children }: ApiServiceProviderProps) {
     return resource as Resource;
   }
 
-  function callApiAndMap<Resource>(
-    method: string,
-    url: string,
-    body?: any,
-    transform?: (data: any) => Resource
-  ) {
-    return callApi<Resource[]>(method, url, body, (data) =>
-      transform ? data.map(transform) : data
-    );
-  }
+  // function callApiAndMap<Resource>(
+  //   method: string,
+  //   url: string,
+  //   body?: any,
+  //   transform?: (data: any) => Resource
+  // ) {
+  //   return callApi<Resource[]>(method, url, body, (data) =>
+  //     // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-call
+  //     transform ? data.map(transform) : data
+  //   );
+  // }
 
   function convertDateTimes<T>(from: T): T {
-    return _.isArray(from)
-      ? from.map(convertDateTimes)
-      : !_.isObject(from)
-      ? from
-      : mapValuesWithKey(
-          (v: string, k: string) =>
-            _.isArray(v)
-              ? v.map(convertDateTimes)
-              : DATETIME_KEYS.includes(k)
-              ? DateTime.fromISO(v)
-              : v,
-          from
-        );
+    function recurse(v: unknown): unknown {
+      if (_.isNumber(v) || _.isString(v)) {
+        return v;
+      } else if (_.isArray(v)) {
+        return (v as Array<unknown>).map(recurse);
+      } else {
+        // it is an object
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+        return mapValues((v: unknown, k: string) => {
+          if (_.isArray(v)) {
+            return (v as Array<unknown>).map(recurse);
+          } else if (_.isNumber(v)) {
+            return v;
+          } else if (_.isString(v)) {
+            if (DATETIME_KEYS.includes(k)) {
+              return DateTime.fromISO(v);
+            } else {
+              return v;
+            }
+          } else {
+            return recurse(v);
+          }
+        }, v);
+      }
+    }
+
+    return recurse(from) as T;
   }
 
+  // return _.isArray(from)
+  //   ? from.map(convertDateTimes)
+  //   : !_.isObject(from)
+  //   ? from
+  //   : mapValuesWithKey(
+  //       (v: string, k: string) =>
+  //         _.isArray(v)
+  //           ? v.map(convertDateTimes)
+  //           : DATETIME_KEYS.includes(k)
+  //           ? DateTime.fromISO(v)
+  //           : v,
+  //       from
+  //     );
+  // }
+
   function hideFields(from: unknown) {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
     return _.isArray(from)
       ? from.map(convertDateTimes)
-      : mapValuesWithKey(
+      : // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+        mapValues(
           (v: string, k: string) => (NO_LOG_KEYS.includes(k) ? "<hidden>" : v),
           from
         );

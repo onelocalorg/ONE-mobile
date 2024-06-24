@@ -7,41 +7,38 @@ import MapboxGL, {
   UserLocation,
 } from "@rnmapbox/maps";
 import { OnPressEvent } from "@rnmapbox/maps/lib/typescript/src/types/OnPressEvent";
-import { useQuery } from "@tanstack/react-query";
+import { useQueries } from "@tanstack/react-query";
 import { FeatureCollection } from "geojson";
 import _ from "lodash/fp";
 import React, { useState } from "react";
-import { View } from "react-native";
+import { TouchableWithoutFeedback, View } from "react-native";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
 import { useNavigations } from "~/app-hooks/useNavigations";
 import eventIcon from "~/assets/map/event.png";
-import giftIcon from "~/assets/map/gift.png";
-import { LOG } from "~/config";
+import postIcon from "~/assets/map/post.png";
 import { MapStackScreenProps, Screens } from "~/navigation/types";
 import { useEventService } from "~/network/api/services/useEventService";
 import { usePostService } from "~/network/api/services/usePostService";
-import { PostCard, PostCardSize } from "~/screens/home/PostCard";
 import { LocalEvent } from "~/types/local-event";
-import { Post } from "~/types/post";
-import { handleApiError } from "~/utils/common";
-import { EventItem } from "../../components/events/EventItem";
+import { MappablePost, Post } from "~/types/post";
 import { Loader } from "../../components/loader";
 import { createStyleSheet } from "../../components/map/style";
+import { MapCard } from "./MapCard";
 
 void MapboxGL.setAccessToken(process.env.MAP_ACCESS_TOKEN!);
 
 const BOULDER_LON = -105.2705;
 const BOULDER_LAT = 40.015;
-const DEFAULT_ZOOM = 11.5;
+const DEFAULT_ZOOM = 8; //11.5;
 
 export const MapScreen = ({ navigation }: MapStackScreenProps<Screens.MAP>) => {
   const { theme } = useAppTheme();
   const styles = createStyleSheet(theme);
-  const [isLoading, setLoading] = useState(false);
-  const { gotoEventDetails, gotoUserProfile, gotoPostDetails } =
-    useNavigations();
+  const [selectedEvents, setSelectedEvents] = useState<LocalEvent[]>([]);
+  const [selectedPosts, setSelectedPosts] = useState<MappablePost[]>([]);
+  const { gotoEventDetails, gotoPostDetails } = useNavigations();
 
-  // TODO Use the center of the current locale
+  // TODO Use the center of the current community
   const centerCoordinate = [BOULDER_LON, BOULDER_LAT];
 
   const {
@@ -51,58 +48,40 @@ export const MapScreen = ({ navigation }: MapStackScreenProps<Screens.MAP>) => {
     queries: { list: listPosts },
   } = usePostService();
 
-  const [selectedEvents, setSelectedEvents] = useState<LocalEvent[]>([]);
-  const [selectedPosts, setSelectedPosts] = useState<Post[]>([]);
-
-  // FIXME DateTime.now() should not be embedded in the query
-  const eventsQuery = useQuery(
-    listEvents({
-      isPast: false,
-      isCanceled: false,
-    })
-  );
-
-  const postsQuery = useQuery(
-    listPosts({
-      isPast: false,
-    })
-  );
-
-  if ((eventsQuery.isPending && postsQuery.isPending) !== isLoading) {
-    setLoading(eventsQuery.isPending && postsQuery.isPending);
-  }
-  if (eventsQuery.isError) handleApiError("Events", eventsQuery.error);
-  if (postsQuery.isError) handleApiError("Posts", postsQuery.error);
-
-  const events = eventsQuery.data;
-  const posts = _.reject((p: Post) => !p.coordinates, postsQuery.data);
+  const { isLoading, events, posts } = useQueries({
+    queries: [
+      listEvents({
+        isPast: false,
+        isCanceled: false,
+      }),
+      listPosts({
+        isPast: false,
+      }),
+    ],
+    combine: (results) => {
+      return {
+        // FIXME transform data here rather than caching it
+        events: results[0].data,
+        posts: results[1].data?.filter((p) => p.coordinates),
+        isLoading: results.some((result) => result.isLoading),
+        isPending: results.some((result) => result.isPending),
+      };
+    },
+  });
 
   const imageMarkers = {
     event: eventIcon,
-    post: giftIcon,
+    post: postIcon,
   };
 
-  const findEvent = (id: string) => events?.find((e) => e.id === id);
-  const findPost = (id: string) => posts?.find((p) => p.id === id);
-
   const handleMapEventPress = (ope: OnPressEvent) => {
-    LOG.debug("Event clicked", ope);
-    const localEvents = ope.features.map((f) =>
-      f.properties ? findEvent(f.properties.id) : null
-    );
     setSelectedPosts([]);
-    setSelectedEvents(localEvents);
-    // selectedEvent?.id === localEvent.id ? undefined : localEvent;
+    setSelectedEvents(ope.features.map((f) => f.properties as LocalEvent));
   };
 
   const handleMapPostPress = (ope: OnPressEvent) => {
-    LOG.debug("Post clicked", ope);
-    const localPosts = ope.features.map((f) =>
-      f.properties ? findPost(f.properties.id) : null
-    );
     setSelectedEvents([]);
-    setSelectedPosts(localPosts);
-    // selectedEvent?.id === localEvent.id ? undefined : localEvent;
+    setSelectedPosts(ope.features.map((f) => f.properties as MappablePost));
   };
 
   const clearSelected = () => {
@@ -111,72 +90,66 @@ export const MapScreen = ({ navigation }: MapStackScreenProps<Screens.MAP>) => {
   };
 
   return (
-    <View style={{ flex: 1 }}>
-      <Loader visible={isLoading} />
-      <MapView
-        style={styles.map}
-        zoomEnabled={true}
-        compassEnabled={true}
-        onPress={clearSelected}
-        gestureSettings={{
-          pinchPanEnabled: false,
-        }}
-        // onRegionDidChange={handleRegionChange}
-        // onDidFinishLoadingMap={() => setMapLoaded(true)}
-        // ref={mapRef}
-        // attributionEnabled={false}
-        // onCameraChanged={handleCameraChanged}
-      >
-        <UserLocation />
-        <Camera
-          // ref={camera}
-          centerCoordinate={centerCoordinate}
-          zoomLevel={DEFAULT_ZOOM}
-          animationDuration={20}
-          // zoomLevel={zoomLevel}
-          // maxZoomLevel={14}
-          // minZoomLevel={5}
-          // followUserLocation={false}
-          // centerCoordinate={[
-          //   parseFloat(tempdata?.longitude),
-          //   parseFloat(tempdata?.latitude),
-          // ]}
-        />
-        {events
-          ? buildLayer(
-              "event",
-              eventsToFeatureCollection(events),
-              handleMapEventPress
-            )
-          : null}
-        {posts
-          ? buildLayer(
-              "post",
-              postsToFeatureCollection(posts),
-              handleMapPostPress
-            )
-          : null}
-        <>
-          {selectedEvents.map((se) => (
-            <EventItem key={se.id} event={se} />
-          ))}
-          {selectedPosts.map((sp) => (
-            <View key={sp.id} style={styles.listContainer}>
-              <PostCard
-                post={sp}
-                size={PostCardSize.Small}
-                onSeeMore={gotoPostDetails(sp.id)}
+    <TouchableWithoutFeedback onPress={clearSelected}>
+      <View style={{ flex: 1 }}>
+        <Loader visible={isLoading} />
+        <MapView
+          style={styles.map}
+          zoomEnabled={true}
+          compassEnabled={true}
+          onPress={clearSelected}
+          gestureSettings={{
+            pinchPanEnabled: false,
+          }}
+        >
+          <UserLocation />
+          <Camera
+            centerCoordinate={centerCoordinate}
+            zoomLevel={DEFAULT_ZOOM}
+            animationDuration={20}
+          />
+          {events
+            ? buildLayer(
+                "event",
+                eventsToFeatureCollection(events),
+                handleMapEventPress
+              )
+            : null}
+          {posts
+            ? buildLayer(
+                "post",
+                postsToFeatureCollection(posts),
+                handleMapPostPress
+              )
+            : null}
+          <>
+            {selectedEvents.map((se) => (
+              <MapCard
+                key={se.id}
+                item={se}
+                onPress={gotoEventDetails(se.id)}
               />
-            </View>
-          ))}
-        </>
-      </MapView>
-    </View>
+            ))}
+            {selectedPosts.map((sp) => (
+              <MapCard
+                key={sp.id}
+                item={{
+                  ...sp,
+                  image: sp.images?.[0] ?? undefined,
+                  about: sp.details,
+                }}
+                onPress={gotoPostDetails(sp.id)}
+              />
+            ))}
+          </>
+        </MapView>
+      </View>
+    </TouchableWithoutFeedback>
   );
 
   function buildLayer(
     type: string,
-    data: FeatureCollection<Point>,
+    data: FeatureCollection<GeoJSON.Point>,
     onPress: (e: OnPressEvent) => void
   ) {
     return (
@@ -214,27 +187,9 @@ export const MapScreen = ({ navigation }: MapStackScreenProps<Screens.MAP>) => {
           coordinates: post.coordinates,
         },
       })),
-    };
-    // console.log("post", JSON.stringify(fc));
+    } as FeatureCollection<GeoJSON.Point>;
     return fc;
   }
-
-  //   _.flow([
-  //     _.map((post: PostResource) =>
-  //       post.coordinates
-  //         ? {
-  //             type: "Feature",
-  //             properties: { ..._.omit(["location"], post) },
-  //             geometry: {
-  //               type: "Point",
-  //               coordinates: post.coordinates,
-  //             },
-  //           }
-  //         : null
-  //     ),
-  //     _.reject(_.isNull),
-  //   ])(posts),
-  // } as GeoJSON.FeatureCollection;
 
   function eventsToFeatureCollection(events: LocalEvent[]) {
     const fc = {
@@ -247,8 +202,7 @@ export const MapScreen = ({ navigation }: MapStackScreenProps<Screens.MAP>) => {
           coordinates: event.coordinates,
         },
       })),
-    };
-    // console.log("Fc", JSON.stringify(fc));
+    } as FeatureCollection<GeoJSON.Point>;
     return fc;
   }
 };
