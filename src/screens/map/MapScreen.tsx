@@ -29,7 +29,7 @@ void MapboxGL.setAccessToken(process.env.MAP_ACCESS_TOKEN!);
 
 const BOULDER_LON = -105.2705;
 const BOULDER_LAT = 40.015;
-const DEFAULT_ZOOM = 8; //11.5;
+const DEFAULT_ZOOM = 11.5;
 
 export const MapScreen = ({ navigation }: MapStackScreenProps<Screens.MAP>) => {
   const { theme } = useAppTheme();
