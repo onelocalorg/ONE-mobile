@@ -4,7 +4,6 @@ import MapboxGL, {
   MapView,
   ShapeSource,
   SymbolLayer,
-  UserLocation,
 } from "@rnmapbox/maps";
 import { OnPressEvent } from "@rnmapbox/maps/lib/typescript/src/types/OnPressEvent";
 import { useQueries } from "@tanstack/react-query";
@@ -102,7 +101,6 @@ export const MapScreen = ({ navigation }: MapStackScreenProps<Screens.MAP>) => {
             pinchPanEnabled: false,
           }}
         >
-          <UserLocation />
           <Camera
             centerCoordinate={centerCoordinate}
             zoomLevel={DEFAULT_ZOOM}

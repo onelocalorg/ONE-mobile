@@ -30,7 +30,7 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>14</string>
+	<string>16</string>
 	<key>GIDClientID</key>
 	<string>724751305903-pp1sekl71seh0dhmm0c5i5ekj06sjg45.apps.googleusercontent.com</string>
 	<key>INIntentsSupported</key>
@@ -54,8 +54,6 @@
 	</dict>
 	<key>NSCameraUsageDescription</key>
 	<string>Get access for upload user profile picture</string>
-	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>This allows us to show you events happening nearby.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Get access for upload user profile picture</string>
 	<key>NSUserNotificationUsageDescription</key>
