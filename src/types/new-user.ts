@@ -3,5 +3,6 @@ export interface NewUser {
   lastName: string;
   email: string;
   password: string;
+  confirmPassword?: string;
   pic?: string;
 }
