@@ -4,7 +4,7 @@ import { DateTime } from "luxon";
 import { ReactNode, createContext, useContext } from "react";
 import { Alert } from "react-native";
 import { LOG } from "~/config";
-import { useAccessToken } from "~/navigation/AuthContext";
+import { AuthDispatchContext, useAccessToken } from "~/navigation/AuthContext";
 import { ApiError } from "~/types/api-error";
 import { mapValues } from "~/utils/common";
 
@@ -37,6 +37,7 @@ interface ApiServiceProviderProps {
 export function ApiService({ children }: ApiServiceProviderProps) {
   const token = useAccessToken();
   const queryClient = useQueryClient();
+  const dispatch = useContext(AuthDispatchContext);
 
   // queryClient.setDefaultOptions({
   //   queries: {
@@ -47,7 +48,13 @@ export function ApiService({ children }: ApiServiceProviderProps) {
 
   queryClient.setMutationDefaults([], {
     onError: (err: Error) => {
-      Alert.alert(`API failure: `, err.message);
+      if (err instanceof ApiError && err.code === 401) {
+        // The token is bad. Force signout
+        // TODO Try to refresh token first
+        dispatch.handleSignOut();
+      } else {
+        Alert.alert(`API failure: `, err.message);
+      }
     },
   });
 
