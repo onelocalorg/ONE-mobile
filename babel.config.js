@@ -4,7 +4,6 @@ module.exports = function (api) {
     presets: ["module:metro-react-native-babel-preset"],
     plugins: [
       "jest-hoist",
-      "react-native-reanimated/plugin",
       [
         "babel-plugin-root-import",
         {
@@ -13,6 +12,7 @@ module.exports = function (api) {
         },
       ],
       ["module:react-native-dotenv"],
+      "react-native-reanimated/plugin",
     ],
   };
 };

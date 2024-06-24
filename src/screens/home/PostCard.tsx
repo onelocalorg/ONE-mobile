@@ -1,7 +1,8 @@
 import ReadMore from "@fawazahmed/react-native-read-more";
 import _ from "lodash/fp";
-import React from "react";
+import React, { useState } from "react";
 import { Image, Pressable, Text, TouchableOpacity, View } from "react-native";
+import Carousel from "react-native-reanimated-carousel";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
 import { useNavigations } from "~/app-hooks/useNavigations";
 import {
@@ -26,6 +27,7 @@ interface PostCardProps {
 export const PostCard = ({ post, size, onSeeMore }: PostCardProps) => {
   const { theme } = useAppTheme();
   const styles = createStyleSheet(theme);
+  const [layoutWidth, setLayoutWidth] = useState<number>();
   const { showPostContextMenu, gotoPostDetails, gotoUserProfile } =
     useNavigations();
 
@@ -37,7 +39,12 @@ export const PostCard = ({ post, size, onSeeMore }: PostCardProps) => {
       : undefined;
 
   return (
-    <View>
+    <View
+      onLayout={(event) => {
+        const { width } = event.nativeEvent.layout;
+        setLayoutWidth(width);
+      }}
+    >
       <Pressable onPress={gotoPostDetails(post)}>
         <Text style={styles.posttitle}>{_.capitalize(post?.type)}</Text>
         <Pressable
@@ -81,14 +88,33 @@ export const PostCard = ({ post, size, onSeeMore }: PostCardProps) => {
         >
           {post.details}
         </ReadMore>
-        {post.images.map((image) => (
-          <ImageComponent
-            key={image.key}
-            resizeMode="cover"
-            source={{ uri: image.url }}
-            style={styles.userPost}
-          ></ImageComponent>
-        ))}
+        {post.images.length > 1
+          ? layoutWidth && (
+              <Carousel
+                loop
+                width={layoutWidth}
+                height={layoutWidth}
+                autoPlay={true}
+                data={post.images}
+                scrollAnimationDuration={1000}
+                renderItem={({ item: image }) => (
+                  <ImageComponent
+                    key={image.key}
+                    resizeMode="cover"
+                    source={{ uri: image.url }}
+                    style={styles.userPost}
+                  />
+                )}
+              />
+            )
+          : post.images.map((image) => (
+              <ImageComponent
+                key={image.key}
+                resizeMode="cover"
+                source={{ uri: image.url }}
+                style={styles.userPost}
+              />
+            ))}
         <View style={styles.postDetailCont}>
           <Text style={styles.postDetailTitle}>What:</Text>
           {/* <ImageComponent
