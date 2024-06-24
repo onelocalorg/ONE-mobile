@@ -130,13 +130,13 @@ export default function Authentication() {
 
   return (
     <AuthContext.Provider value={state}>
-      <ApiService>
-        <AuthDispatchContext.Provider value={authDispatchContext}>
+      <AuthDispatchContext.Provider value={authDispatchContext}>
+        <ApiService>
           <NotificationService>
             <AppNavigation token={state.accessToken} />
           </NotificationService>
-        </AuthDispatchContext.Provider>
-      </ApiService>
+        </ApiService>
+      </AuthDispatchContext.Provider>
     </AuthContext.Provider>
   );
 }

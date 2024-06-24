@@ -43,9 +43,6 @@ type AppNavigationProps = {
 export const AppNavigation = ({ token }: AppNavigationProps) => {
   const { theme } = useAppTheme();
 
-  const isLoggedIn = !!token;
-  console.log("isLoggedIn", isLoggedIn);
-
   const MainTabs = createBottomTabNavigator<MainTabsParamList>();
   const MainTabsScreen = () => (
     <MainTabs.Navigator
@@ -130,7 +127,7 @@ export const AppNavigation = ({ token }: AppNavigationProps) => {
           headerRight: () =>
             route.name === Screens.MY_PROFILE ? (
               <LogoutPressable />
-            ) : isLoggedIn ? (
+            ) : token ? (
               <MyAvatar
                 // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-member-access
                 onPress={() => navigation.navigate(Screens.MY_PROFILE)}
@@ -138,7 +135,7 @@ export const AppNavigation = ({ token }: AppNavigationProps) => {
             ) : null,
         })}
       >
-        {isLoggedIn ? (
+        {token ? (
           <RootStack.Group>
             <RootStack.Screen
               name={Screens.MAIN_TABS}
