@@ -8,7 +8,6 @@ import {
   useUserService,
 } from "~/network/api/services/useUserService";
 import { OneUser } from "~/types/one-user";
-import { handleApiError } from "~/utils/common";
 import { AddPostView } from "./AddPostView";
 import { RecentUsers } from "./HorizontalAvatarView";
 import { PostsList } from "./PostsList";
@@ -29,7 +28,6 @@ export const HomeScreen = () => {
   } = useQuery(
     listUsers({ sort: GetUsersSort.Join, limit: 50, picsOnly: true })
   );
-  if (isError) handleApiError("Recent users", error);
 
   const withoutProfilePic = _.reject(
     (u: OneUser) => !u.pic || u.pic.includes("defaultUser.jpg")
