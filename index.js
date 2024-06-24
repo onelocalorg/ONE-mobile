@@ -17,7 +17,6 @@ const queryClient = new QueryClient(queryConfig);
 
 notifee.onBackgroundEvent(async ({ type, detail }) => {
   const { notification, pressAction } = detail;
-  console.log("onBackgroundEvent", type);
 
   // Display a notification
   try {

@@ -40,7 +40,6 @@ export const MyAbout = ({ user, onEditProfile }: AboutDataProps) => {
     if (!foundSkill) {
       if (text !== "" && text !== undefined) {
         setSkills([...allSkills, text]);
-        console.log("onSubmitEditing onSubmitEditing", allSkills, text);
         setSkillValue("");
       }
     } else {

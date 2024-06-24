@@ -161,7 +161,6 @@ export const EventEditor = ({
       if (!base64) {
         Alert.alert("Image picker did not return data");
       } else {
-        console.log("path", path);
         uploadFile(
           {
             uploadKey: FileKeys.createEventImage,

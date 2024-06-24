@@ -31,8 +31,6 @@ export const PostCard = ({ post, size, onSeeMore }: PostCardProps) => {
   const { showPostContextMenu, gotoPostDetails, gotoUserProfile } =
     useNavigations();
 
-  console.log("POST", post);
-
   const numberOfLines =
     size === PostCardSize.Small
       ? 4

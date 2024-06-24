@@ -84,7 +84,6 @@ export function useEventService() {
       return createRsvp(data);
     },
     onSuccess: (data: RsvpData) => {
-      console.log("success created rsvp", data);
       void queryClient.invalidateQueries({
         queryKey: queries.rsvps(),
       });
