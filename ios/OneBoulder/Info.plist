@@ -54,6 +54,8 @@
 	</dict>
 	<key>NSCameraUsageDescription</key>
 	<string>Get access for upload user profile picture</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>This allows us to show you events happening nearby.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Get access for upload user profile picture</string>
 	<key>NSUserNotificationUsageDescription</key>
