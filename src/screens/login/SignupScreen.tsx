@@ -171,7 +171,6 @@ export const SignUpScreen = ({
       setProfileUri(dataItem?.data);
     } catch (error) {
       LodingData(false);
-      console.log(error);
     }
   };
 
