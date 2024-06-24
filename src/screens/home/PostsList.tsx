@@ -41,6 +41,7 @@ export const PostsList = ({ header }: PostsListProps) => {
     hasNextPage,
     isRefetching,
     isFetching,
+    isLoading,
     isFetchingNextPage,
   } = useInfiniteQuery(infiniteList());
 
@@ -88,7 +89,7 @@ export const PostsList = ({ header }: PostsListProps) => {
 
   return (
     <>
-      <Loader visible={isFetching} />
+      <Loader visible={isLoading} />
       <FlatList
         data={(posts?.pages.flat() as Post[]) || []}
         // keyExtractor={(item) => item.id}
