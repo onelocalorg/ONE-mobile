@@ -6,6 +6,7 @@ import { ShortModal } from "~/components/ShortModal";
 import { useMyUserId } from "~/navigation/AuthContext";
 import { RootStackScreenProps, Screens } from "~/navigation/types";
 import { PostMutations } from "~/network/api/services/usePostService";
+import { UserMutations } from "~/network/api/services/useUserService";
 import { Block } from "~/types/block";
 import { createStyleSheet } from "./style";
 
@@ -21,7 +22,7 @@ export const PostContextMenu = ({
   const myId = useMyUserId();
 
   const mutateBlockUser = useMutation<Block, Error, string>({
-    mutationKey: [PostMutations.blockUser],
+    mutationKey: [UserMutations.blockUser],
   });
   const mutateDeletePost = useMutation<never, Error, string>({
     mutationKey: [PostMutations.deletePost],

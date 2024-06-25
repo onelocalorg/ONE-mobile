@@ -1,17 +1,20 @@
 import { queryOptions, useQueryClient } from "@tanstack/react-query";
 import _ from "lodash/fp";
+import { Block } from "~/types/block";
 import { OneUser } from "~/types/one-user";
 import { RemoteImage } from "~/types/remote-image";
 import { RegisterTokenData } from "~/types/token";
 import { UploadFileData } from "~/types/upload-file-data";
 import { UserProfile, UserProfileUpdateData } from "~/types/user-profile";
 import { useApiService } from "./ApiService";
+import { useEventService } from "./useEventService";
 
 export enum UserMutations {
   updateUser = "updateUser",
   deleteUser = "deleteUser",
   uploadFile = "uploadFile",
   registerToken = "registerToken",
+  blockUser = "blockUser",
 }
 
 export enum GetUsersSort {
@@ -20,6 +23,7 @@ export enum GetUsersSort {
 
 export function useUserService() {
   const queryClient = useQueryClient();
+  const { queries: eventQueries } = useEventService();
 
   const queries = {
     all: () => ["users"],
@@ -77,6 +81,20 @@ export function useUserService() {
 
   const getUser = (userId: string) => doGet<UserProfile>(`/v3/users/${userId}`);
 
+  queryClient.setMutationDefaults([UserMutations.blockUser], {
+    mutationFn: (userId: string) => {
+      return blockUser(userId);
+    },
+    onSuccess: () => {
+      void queryClient.invalidateQueries({
+        queryKey: queries.lists(),
+      });
+      void queryClient.invalidateQueries({
+        queryKey: eventQueries.lists(),
+      });
+    },
+  });
+
   const deleteUser = (userId: string) => doDelete<never>(`/v3/users/${userId}`);
 
   interface GetUsersParams {
@@ -110,6 +128,10 @@ export function useUserService() {
       ..._.omit(["id"], data),
       skills: !_.isEmpty(data.skills) ? data.skills?.join(",") : undefined,
     });
+
+  const blockUser = (userId: string) =>
+    doPost<Block>(`/v3/users/${userId}/blocks`);
+
   const registerToken = (data: RegisterTokenData) =>
     doPost<UserProfile>(`/v3/users/${data.userId}/tokens`, {
       ..._.omit(["userId"], data),
