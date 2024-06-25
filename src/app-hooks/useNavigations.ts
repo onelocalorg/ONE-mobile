@@ -18,18 +18,21 @@ export function useNavigations() {
   };
 
   const gotoPostDetails =
-    (post: string | Post, isReplyFocus?: boolean) => () => {
+    (post: string | Post, reply?: string, isReplyFocus?: boolean) => () => {
       navigation.navigate(Screens.POST_DETAIL, {
         id: asId(post),
+        reply: reply,
         isReplyFocus,
       });
     };
 
-  const gotoEventDetails = (event: string | LocalEvent) => () => {
-    navigation.navigate(Screens.EVENT_DETAIL, {
-      id: asId(event),
-    });
-  };
+  const gotoEventDetails =
+    (event: string | LocalEvent, reply?: string) => () => {
+      navigation.navigate(Screens.EVENT_DETAIL, {
+        id: asId(event),
+        reply: reply,
+      });
+    };
 
   const showPostContextMenu = (post: string | Post, author: string) => () => {
     navigation.navigate(Screens.POST_CONTEXT_MENU_MODAL, {

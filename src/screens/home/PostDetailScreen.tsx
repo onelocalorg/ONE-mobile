@@ -41,7 +41,7 @@ import { createStyleSheet } from "./style";
 export const PostDetailScreen = ({
   route,
 }: RootStackScreenProps<Screens.POST_DETAIL>) => {
-  const postId = route.params.id;
+  const { id: postId, reply: replyId } = route.params;
   const isReplyFocus = route.params.isReplyFocus ?? false;
   const { theme } = useAppTheme();
   const styles = createStyleSheet(theme);

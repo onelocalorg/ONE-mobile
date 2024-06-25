@@ -40,8 +40,23 @@ import {
 type AppNavigationProps = {
   token?: string;
 };
+
 export const AppNavigation = ({ token }: AppNavigationProps) => {
   const { theme } = useAppTheme();
+
+  const linking = {
+    prefixes: ["onelocal://", "https://app.onelocal.one"],
+    config: {
+      screens: {
+        [Screens.POST_DETAIL]: {
+          path: "posts/:id/:reply?",
+        },
+        [Screens.EVENT_DETAIL]: {
+          path: "events/:id/:reply",
+        },
+      },
+    },
+  };
 
   const MainTabs = createBottomTabNavigator<MainTabsParamList>();
   const MainTabsScreen = () => (
@@ -107,7 +122,7 @@ export const AppNavigation = ({ token }: AppNavigationProps) => {
   const GuestStack = createStackNavigator<GuestStackParamList>();
 
   return (
-    <NavigationContainer>
+    <NavigationContainer linking={linking}>
       <RootStack.Navigator
         screenOptions={({ navigation, route }): StackNavigationOptions => ({
           headerTitle: () => <OneLogo localText="B o u l d e r" />,

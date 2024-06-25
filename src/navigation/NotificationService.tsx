@@ -1,4 +1,4 @@
-import notifee, { AuthorizationStatus, EventType } from "@notifee/react-native";
+import notifee, { AuthorizationStatus } from "@notifee/react-native";
 import messaging, {
   FirebaseMessagingTypes,
 } from "@react-native-firebase/messaging";
@@ -43,7 +43,6 @@ export function NotificationService({
   async function onMessageReceived({
     notification,
   }: FirebaseMessagingTypes.RemoteMessage) {
-    console.log("onMessageReceived", notification);
     if (notification) {
       await notifee
         .displayNotification({
@@ -81,22 +80,6 @@ export function NotificationService({
       messaging().setBackgroundMessageHandler(onMessageReceived);
     }
   }, [myUserId, registerToken]);
-
-  // Subscribe to events
-  useEffect(() => {
-    return notifee.onForegroundEvent(({ type, detail }) => {
-      console.log("onForegroundEvent", type);
-      const { notification } = detail;
-      switch (type) {
-        case EventType.DISMISSED:
-          console.log("User dismissed notification", notification);
-          break;
-        case EventType.PRESS:
-          console.log("User pressed notification", notification);
-          break;
-      }
-    });
-  }, []);
 
   const client = {};
 

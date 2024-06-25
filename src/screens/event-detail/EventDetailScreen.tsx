@@ -24,7 +24,7 @@ export const EventDetailScreen = ({
   navigation,
   route,
 }: RootStackScreenProps<Screens.EVENT_DETAIL>) => {
-  const eventId = route.params.id;
+  const { id: eventId, reply: replyId } = route.params;
   const { theme } = useAppTheme();
   const { strings } = useStringsAndLabels();
   const styles = createStyleSheet(theme);
