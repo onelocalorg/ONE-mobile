@@ -3,14 +3,14 @@ import { ImageKey, ImageUrl } from "./image-info";
 export interface UserProfile extends UserProfileData {
   id: string;
   firstName: string;
-  lastName: string;
+  lastName?: string;
   gratis: number;
   pic: ImageUrl;
 }
 
 export interface UserProfileData extends UserProfileUpdateData {
   firstName: string;
-  lastName: string;
+  lastName?: string;
   skills: string[];
 }
 
