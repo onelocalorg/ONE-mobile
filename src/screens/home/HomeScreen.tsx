@@ -22,6 +22,7 @@ export const HomeScreen = () => {
   } = useUserService();
 
   const {
+    isLoading,
     isError,
     data: userList,
     error,
@@ -36,16 +37,18 @@ export const HomeScreen = () => {
   return (
     <>
       <View style={styles.MainPostContainer}>
-        <PostsList
-          header={
-            <>
-              {userList ? (
-                <RecentUsers users={withoutProfilePic(userList)} />
-              ) : null}
-              <AddPostView />
-            </>
-          }
-        />
+        {!isLoading && (
+          <PostsList
+            header={
+              <>
+                {userList ? (
+                  <RecentUsers users={withoutProfilePic(userList)} />
+                ) : null}
+                <AddPostView />
+              </>
+            }
+          />
+        )}
       </View>
     </>
   );
