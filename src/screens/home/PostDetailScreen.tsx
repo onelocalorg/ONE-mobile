@@ -25,7 +25,6 @@ import {
 } from "~/assets/images";
 import { ImageComponent } from "~/components/image-component";
 import { Loader } from "~/components/loader";
-import { LOG } from "~/config";
 import { useMyUserId } from "~/navigation/AuthContext";
 import { RootStackScreenProps, Screens } from "~/navigation/types";
 import {
@@ -34,7 +33,7 @@ import {
   PostMutations,
   usePostService,
 } from "~/network/api/services/usePostService";
-import { PostDetail, PostType } from "~/types/post";
+import { PostDetail } from "~/types/post";
 import { Reply } from "~/types/reply";
 import { formatTimeFromNow } from "~/utils/common";
 import { createStyleSheet } from "./style";
@@ -68,6 +67,7 @@ export const PostDetailScreen = ({
   });
 
   const { isLoading, data: post } = useQuery(postDetail(postId));
+  console.log("MYPOST", JSON.stringify(post, undefined, "  "));
 
   const { control, handleSubmit, resetField, setValue } =
     useForm<CreateReplyProps>({
@@ -84,21 +84,8 @@ export const PostDetailScreen = ({
     post?.replies?.filter((r) => !r.parent).reverse() ?? [];
 
   const getChildren = (parentId: string) => {
-    // Since eact reply only marked its direct parent reply, we recursively
-    // go through the reply list
-    // TODO Make more efficient by looking only at the children later in the
-    // list, because parents always come before children
-
     const children = post!.replies.filter((r) => r.parent === parentId);
 
-    // const recurse = (acc: Reply[], parentId: string): Reply[] =>
-    //   post!.replies.reduce(
-    //     (a, r) => (r.parent === parentId ? [...a, r, ...recurse(a, r.id)] : a),
-    //     acc
-    //   );
-
-    // const children = recurse([], parentId);
-    LOG.debug("CHILDREN", children);
     return children;
   };
 
@@ -142,17 +129,9 @@ export const PostDetailScreen = ({
         </TouchableOpacity>
         <View>
           <View>
-            {post.type === PostType.GRATIS ? (
-              <View>
-                <Text numberOfLines={1} style={styles.userName}>
-                  {post.author.firstName} {post.author.lastName}{" "}
-                </Text>
-              </View>
-            ) : (
-              <Text numberOfLines={1} style={styles.userName}>
-                {post.author.firstName} {post.author.lastName}
-              </Text>
-            )}
+            <Text numberOfLines={1} style={styles.userName}>
+              {post.author.firstName} {post.author.lastName}
+            </Text>
             {post.postDate ? (
               <Text style={styles.postTime}>
                 {formatTimeFromNow(post.postDate)}
@@ -269,7 +248,7 @@ export const PostDetailScreen = ({
       </View>
 
       {getChildren(reply.id).map((subReply: Reply) => (
-        <View style={indent && styles.replyImgProfileTwo}>
+        <View key={subReply.id} style={indent && styles.replyImgProfileTwo}>
           <Reply reply={subReply} indent={false} />
         </View>
       ))}
