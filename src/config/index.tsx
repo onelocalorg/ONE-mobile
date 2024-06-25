@@ -12,6 +12,6 @@ const config = {
   stringifyFunc: (msg: any) => JSON.stringify(msg, null, "  "),
 };
 
-var LOG = logger.createLogger(config);
+const LOG = logger.createLogger(config);
 
 export { LOG };
