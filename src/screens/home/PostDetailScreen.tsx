@@ -67,7 +67,6 @@ export const PostDetailScreen = ({
   });
 
   const { isLoading, data: post } = useQuery(postDetail(postId));
-  console.log("MYPOST", JSON.stringify(post, undefined, "  "));
 
   const { control, handleSubmit, resetField, setValue } =
     useForm<CreateReplyProps>({

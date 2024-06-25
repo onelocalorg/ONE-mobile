@@ -92,7 +92,7 @@ export const PostsList = ({ header }: PostsListProps) => {
       <Loader visible={isLoading} />
       <FlatList
         data={(posts?.pages.flat() as Post[]) || []}
-        // keyExtractor={(item) => item.id}
+        keyExtractor={(item) => item.id}
         renderItem={postRenderer}
         onEndReached={loadNext}
         refreshControl={
@@ -113,7 +113,7 @@ export const PostsList = ({ header }: PostsListProps) => {
         ListFooterComponent={
           <View style={styles.listFooterComponent}>
             {isFetchingNextPage && <ActivityIndicator />}
-            {!hasNextPage && (
+            {!hasNextPage && !isLoading && (
               <Text style={{ color: "white" }}>
                 You have reached the end. Congratulations!
               </Text>
