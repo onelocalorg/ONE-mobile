@@ -11,6 +11,7 @@ import { useMutation } from "@tanstack/react-query";
 import React, { useContext, useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import {
+  Alert,
   Keyboard,
   Linking,
   Text,
@@ -95,7 +96,11 @@ export const LoginScreen = ({
   });
 
   const signInWithPassword = (data: LoginProps) => {
-    logIn(data);
+    logIn(data, {
+      onError: (error) => {
+        Alert.alert("Login error", error.message);
+      },
+    });
   };
 
   const signInWithGoogle = async () => {
@@ -155,7 +160,7 @@ export const LoginScreen = ({
       onPress={keyboardDismiss}
       style={styles.container}
     >
-      <Loader visible={isLoginPending} />
+      <Loader visible={isLoginPending} showOverlay={true} />
       <SizedBox height={verticalScale(12)} />
       <Text style={styles.texClass}>{strings.email}</Text>
       <Controller
