@@ -1,11 +1,9 @@
-import notifee, { EventType } from "@notifee/react-native";
 import { useQuery } from "@tanstack/react-query";
 import _ from "lodash/fp";
-import React, { useEffect } from "react";
+import React from "react";
 import { View } from "react-native";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
 
-import { Notification } from "@notifee/react-native";
 import { useNavigations } from "~/app-hooks/useNavigations";
 import {
   GetUsersSort,
@@ -20,37 +18,7 @@ import { createStyleSheet } from "./style";
 export const HomeScreen = () => {
   const { theme } = useAppTheme();
   const styles = createStyleSheet(theme);
-  const { gotoPostDetails } = useNavigations();
-
-  // Subscribe to events
-  useEffect(() => {
-    const handleNotificationPress = (notification: Notification) => {
-      const data = notification?.data;
-      if (data) {
-        const post = data["post"] as string;
-        const parent = data["parent"] as string;
-        console.log("post", post);
-        console.log("parent", parent);
-        gotoPostDetails(post)();
-      }
-    };
-
-    return notifee.onForegroundEvent(({ type, detail }) => {
-      const { notification } = detail;
-
-      switch (type) {
-        case EventType.DISMISSED:
-          console.log("User dismissed notification", notification);
-          break;
-        case EventType.PRESS:
-          console.log("User pressed notification", notification);
-          if (notification) {
-            handleNotificationPress(notification);
-          }
-          break;
-      }
-    });
-  }, [gotoPostDetails]);
+  const navigations = useNavigations();
 
   const {
     queries: { list: listUsers },

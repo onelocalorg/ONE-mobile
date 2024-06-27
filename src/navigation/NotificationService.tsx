@@ -1,18 +1,35 @@
-import notifee, { AuthorizationStatus } from "@notifee/react-native";
+import notifee, {
+  AndroidImportance,
+  AuthorizationStatus,
+} from "@notifee/react-native";
 import messaging, {
   FirebaseMessagingTypes,
 } from "@react-native-firebase/messaging";
 import { useMutation } from "@tanstack/react-query";
-import { ReactNode, createContext, useContext, useEffect } from "react";
+import {
+  ReactNode,
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 import { getDeviceId } from "react-native-device-info";
+import { error } from "~/config";
 import { UserMutations } from "~/network/api/services/useUserService";
 import { RegisterTokenData, Token, TokenType } from "~/types/token";
 import { handleApiError } from "~/utils/common";
 import { useMyUserId } from "./AuthContext";
 
-// import RemoteMessage from "@react-native-firebase/messaging"
+interface OneNotification {
+  // image?: string;
+  post: string;
+  parent?: string;
+  reply: string;
+}
 
-interface INotificationService {}
+interface INotificationService {
+  pullNotifications: () => OneNotification[];
+}
 
 const NotificationServiceContext = createContext<INotificationService | null>(
   null
@@ -28,7 +45,11 @@ interface NotificationServiceProviderProps {
 export function NotificationService({
   children,
 }: NotificationServiceProviderProps) {
+  enum Channel {
+    Replies = "replies",
+  }
   const myUserId = useMyUserId();
+  const [notifications, setNotifications] = useState<OneNotification[]>([]);
 
   const { mutate: registerToken } = useMutation<
     Token,
@@ -38,19 +59,38 @@ export function NotificationService({
     mutationKey: [UserMutations.registerToken],
   });
 
-  // Note that an async function or a function that returns a Promise
-  // is required for both subscribers.
+  useEffect(() => {
+    notifee
+      .createChannel({
+        id: Channel.Replies,
+        name: "Post replies",
+        lights: false,
+        vibration: false,
+        importance: AndroidImportance.DEFAULT,
+      })
+      .catch(error("notifee.createChannel"));
+  }, [Channel]);
+
   async function onMessageReceived({
+    data,
     notification,
-  }: FirebaseMessagingTypes.RemoteMessage) {
-    if (notification) {
-      await notifee
-        .displayNotification({
-          title: notification.title ?? "No title",
-          body: notification.body ?? "No body",
-        })
-        .catch((e) => handleApiError("Displaying notification", e as Error));
-    }
+  }: // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  FirebaseMessagingTypes.RemoteMessage): Promise<any> {
+    console.log("1. onMessageReceived", notification, data);
+
+    return Promise.resolve(() => {
+      if (data) {
+        // This doesn't do anything yet
+        setNotifications((notifications) => [
+          ...notifications,
+          {
+            post: data["post"] as string,
+            parent: data["parent"] as string | undefined,
+            reply: data["reply"] as string,
+          },
+        ]);
+      }
+    });
   }
 
   useEffect(() => {
@@ -81,7 +121,13 @@ export function NotificationService({
     }
   }, [myUserId, registerToken]);
 
-  const client = {};
+  const pullNotifications = () => {
+    const currentNotifications = notifications;
+    setNotifications([]);
+    return currentNotifications;
+  };
+
+  const client = { pullNotifications };
 
   return (
     <NotificationServiceContext.Provider value={client}>

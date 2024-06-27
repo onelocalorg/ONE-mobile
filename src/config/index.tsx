@@ -14,4 +14,6 @@ const config = {
 
 const LOG = logger.createLogger(config);
 
-export { LOG };
+const error = (functionNume: string) => (e: any) => LOG.error(functionNume, e);
+
+export { LOG, error };
