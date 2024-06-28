@@ -202,7 +202,7 @@ export function ApiService({ children }: ApiServiceProviderProps) {
 
   function convertDateTimes<T>(from: T): T {
     function recurse(v: unknown): unknown {
-      if (_.isNumber(v) || _.isString(v)) {
+      if (_.isNumber(v) || _.isString(v) || _.isBoolean(v)) {
         return v;
       } else if (_.isArray(v)) {
         return (v as Array<unknown>).map(recurse);
@@ -212,7 +212,7 @@ export function ApiService({ children }: ApiServiceProviderProps) {
         return mapValues((v: unknown, k: string) => {
           if (_.isArray(v)) {
             return (v as Array<unknown>).map(recurse);
-          } else if (_.isNumber(v)) {
+          } else if (_.isNumber(v) || _.isBoolean(v)) {
             return v;
           } else if (_.isString(v)) {
             if (DATETIME_KEYS.includes(k)) {

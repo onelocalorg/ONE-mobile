@@ -104,6 +104,10 @@ export const PostDetailScreen = ({
     deleteReply({ postId, replyId });
   };
 
+  if (post?.replies) {
+    console.log(JSON.stringify(post.replies, undefined, "  "));
+  }
+
   interface PostViewProps {
     post: PostDetail;
   }
@@ -215,7 +219,9 @@ export const PostDetailScreen = ({
               </Pressable>
             )}
           </View>
-          <Text style={styles.replyMsgCont}>{reply.content}</Text>
+          <Text style={styles.replyMsgCont}>
+            {reply.isDeleted ? "Deleted" : reply.content}
+          </Text>
         </View>
       </View>
 
