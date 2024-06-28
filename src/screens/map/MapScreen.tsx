@@ -13,9 +13,6 @@ import React, { useState } from "react";
 import { TouchableWithoutFeedback, View } from "react-native";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
 import { useNavigations } from "~/app-hooks/useNavigations";
-import eventIcon from "~/assets/map/event.png";
-import postIcon from "~/assets/map/post.png";
-import { MapStackScreenProps, Screens } from "~/navigation/types";
 import { useEventService } from "~/network/api/services/useEventService";
 import { usePostService } from "~/network/api/services/usePostService";
 import { LocalEvent } from "~/types/local-event";
@@ -30,7 +27,18 @@ const BOULDER_LON = -105.2705;
 const BOULDER_LAT = 40.015;
 const DEFAULT_ZOOM = 11.5;
 
-export const MapScreen = ({ navigation }: MapStackScreenProps<Screens.MAP>) => {
+const mapStyles = {
+  postIcon: {
+    iconImage: "posting",
+    iconAllowOverlap: true,
+  },
+  eventIcon: {
+    iconImage: "event",
+    iconAllowOverlap: true,
+  },
+};
+
+export const MapScreen = () => {
   const { theme } = useAppTheme();
   const styles = createStyleSheet(theme);
   const [selectedEvents, setSelectedEvents] = useState<LocalEvent[]>([]);
@@ -68,11 +76,6 @@ export const MapScreen = ({ navigation }: MapStackScreenProps<Screens.MAP>) => {
     },
   });
 
-  const imageMarkers = {
-    event: eventIcon,
-    post: postIcon,
-  };
-
   const handleMapEventPress = (ope: OnPressEvent) => {
     setSelectedPosts([]);
     setSelectedEvents(ope.features.map((f) => f.properties as LocalEvent));
@@ -106,20 +109,40 @@ export const MapScreen = ({ navigation }: MapStackScreenProps<Screens.MAP>) => {
             zoomLevel={DEFAULT_ZOOM}
             animationDuration={20}
           />
-          {events
-            ? buildLayer(
-                "event",
-                eventsToFeatureCollection(events),
-                handleMapEventPress
-              )
-            : null}
-          {posts
-            ? buildLayer(
-                "post",
-                postsToFeatureCollection(posts),
-                handleMapPostPress
-              )
-            : null}
+          <Images
+            images={{
+              event: require("~/assets/map/event.png"),
+              posting: require("~/assets/map/post.png"),
+            }}
+          />
+          {posts && (
+            <ShapeSource
+              id="posts"
+              shape={postsToFeatureCollection(posts)}
+              hitbox={{ width: 20, height: 20 }}
+              onPress={handleMapPostPress}
+            >
+              <SymbolLayer
+                id={"PostSymbols"}
+                minZoomLevel={0}
+                style={mapStyles.postIcon}
+              />
+            </ShapeSource>
+          )}
+          {events && (
+            <ShapeSource
+              id="events"
+              shape={eventsToFeatureCollection(events)}
+              hitbox={{ width: 20, height: 20 }}
+              onPress={handleMapEventPress}
+            >
+              <SymbolLayer
+                id={"EventSymbols"}
+                minZoomLevel={0}
+                style={mapStyles.eventIcon}
+              />
+            </ShapeSource>
+          )}
           <>
             {selectedEvents.map((se) => (
               <MapCard
@@ -144,35 +167,6 @@ export const MapScreen = ({ navigation }: MapStackScreenProps<Screens.MAP>) => {
       </View>
     </TouchableWithoutFeedback>
   );
-
-  function buildLayer(
-    type: string,
-    data: FeatureCollection<GeoJSON.Point>,
-    onPress: (e: OnPressEvent) => void
-  ) {
-    return (
-      <ShapeSource
-        id={type}
-        shape={data}
-        hitbox={{ width: 20, height: 20 }}
-        onPress={onPress}
-      >
-        <SymbolLayer
-          id={`${type}Symbol`}
-          minZoomLevel={1}
-          style={{
-            iconImage: type,
-          }}
-        />
-        <Images
-          images={imageMarkers}
-          onImageMissing={(imageKey: string) =>
-            console.log("=> on image missing", imageKey)
-          }
-        />
-      </ShapeSource>
-    );
-  }
 
   function postsToFeatureCollection(posts: Post[]) {
     const fc = {
