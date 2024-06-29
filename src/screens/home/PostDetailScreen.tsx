@@ -17,6 +17,7 @@ import { useAppTheme } from "~/app-hooks/use-app-theme";
 import { useNavigations } from "~/app-hooks/useNavigations";
 import {
   Vector,
+  defaultUser,
   gratisGreen,
   gratitudeBlack,
   pin,
@@ -207,10 +208,17 @@ export const PostDetailScreen = ({
           ></ImageComponent>
         </TouchableOpacity>
         <View style={styles.replyDisplayCont}>
-          <View
-            style={{ flexDirection: "row", justifyContent: "space-between" }}
-          >
-            <Text style={{ fontSize: 12, color: "#110101" }}>
+          <View style={{ flexDirection: "row" }}>
+            <Pressable onPress={gotoUserProfile(reply.author)}>
+              <ImageComponent
+                style={styles.replyAvatar}
+                resizeMode="cover"
+                isUrl={!!reply.author.pic}
+                source={defaultUser}
+                uri={reply.author.pic}
+              ></ImageComponent>
+            </Pressable>
+            <Text style={{ paddingLeft: 10, fontSize: 12, color: "#110101" }}>
               {reply.author.firstName} {reply.author.lastName}
             </Text>
             {reply.author.id === myUserId && (

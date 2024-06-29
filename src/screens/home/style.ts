@@ -223,6 +223,12 @@ export const createStyleSheet = (theme: ThemeProps) => {
       borderRadius: 100,
       marginLeft: 10,
     },
+    replyAvatar: {
+      height: 20,
+      width: 20,
+      borderRadius: 100,
+      // marginLeft: 10,
+    },
     postInput: {
       backgroundColor: "lightgray",
       borderRadius: 22,
@@ -635,7 +641,7 @@ export const createStyleSheet = (theme: ThemeProps) => {
       fontSize: 12,
       color: "#110101",
       paddingTop: 2,
-      paddingLeft: 14,
+      paddingLeft: 30,
     },
     replyImg: {
       height: 24,
