@@ -9,6 +9,7 @@ import { OnPressEvent } from "@rnmapbox/maps/lib/typescript/src/types/OnPressEve
 import { useQueries } from "@tanstack/react-query";
 import { FeatureCollection } from "geojson";
 import _ from "lodash/fp";
+import { Duration } from "luxon";
 import React, { useState } from "react";
 import { TouchableWithoutFeedback, View } from "react-native";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
@@ -63,6 +64,7 @@ export const MapScreen = () => {
       }),
       listPosts({
         isPast: false,
+        age: Duration.fromObject({ days: 14 }),
       }),
     ],
     combine: (results) => {
@@ -111,7 +113,9 @@ export const MapScreen = () => {
           />
           <Images
             images={{
+              // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
               event: require("~/assets/map/event.png"),
+              // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
               posting: require("~/assets/map/post.png"),
             }}
           />

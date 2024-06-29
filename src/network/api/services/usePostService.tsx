@@ -4,6 +4,7 @@ import {
   useQueryClient,
 } from "@tanstack/react-query";
 import _ from "lodash/fp";
+import { Duration } from "luxon";
 import { Gratis } from "~/types/gratis";
 import { Post, PostData, PostDetail, PostUpdateData } from "~/types/post";
 import { Reply } from "~/types/reply";
@@ -151,16 +152,19 @@ export function usePostService() {
     numPosts?: number;
     isPast?: boolean;
     from?: string;
+    age?: Duration; //max age of posts returned
   };
   const getPosts = ({
     numPosts = 20,
     isPast,
     from,
+    age,
   }: GetPostsParams | undefined = {}) => {
     const urlParams: string[] = [];
     if (!_.isNil(isPast)) urlParams.push(`past=${isPast.toString()}`);
     if (!_.isNil(numPosts)) urlParams.push(`limit=${numPosts.toString()}`);
     if (!_.isNil(from)) urlParams.push(`from=${from}`);
+    if (!_.isNil(age)) urlParams.push(`age=${age.toISO()}`);
 
     const urlSearchParams = urlParams.join("&");
 
