@@ -1,16 +1,9 @@
 import { DateTime } from "luxon";
 import { ImageKey, ImageUrl } from "./image-info";
-import { Mappable } from "./mappable";
 import { OneUser } from "./one-user";
 import { Post } from "./post";
 import { TicketType } from "./ticket-type";
 import { TicketTypeData } from "./ticket-type-data";
-
-export interface MappableLocalEvent
-  extends Omit<LocalEvent, "startDate">,
-    Mappable {
-  coordinates: number[];
-}
 
 export interface LocalEvent extends LocalEventData {
   id: string;

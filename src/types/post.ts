@@ -1,7 +1,6 @@
 import { DateTime } from "luxon";
 import { ImageKey, ImageUrl } from "./image-info";
 import { LocalEvent } from "./local-event";
-import { Mappable } from "./mappable";
 import { OneUser } from "./one-user";
 import { Reply } from "./reply";
 
@@ -13,10 +12,6 @@ export enum PostType {
 
 export interface PostDetail extends Post {
   replies: Reply[];
-}
-
-export interface MappablePost extends Post, Mappable {
-  coordinates: number[];
 }
 
 // The data returned from the server for a post
