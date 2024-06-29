@@ -66,7 +66,7 @@ export const EventEditor = ({
   const [isEndDateActive, setEndDateActive] = useState(false);
   const [curTicket, setCurTicket] = useState<number | undefined>();
   const myUserId = useMyUserId();
-  const isMyEvent = myUserId === event?.id;
+  const isMyEvent = myUserId === event?.host.id;
   const [isTicketModalVisible, setTicketModalVisible] = useState(false);
 
   const { isPending: isUploadingImage, mutate: uploadFile } = useMutation<
@@ -419,7 +419,6 @@ export const EventEditor = ({
                         <Text style={styles.uniqueCount}>{viewCount}</Text>
                       </View>
                       <View>
-                        /{" "}
                         <TouchableOpacity
                           activeOpacity={0.8}
                           onPress={() => verifyCancelEvent(event.id)}
