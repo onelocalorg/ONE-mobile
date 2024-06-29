@@ -148,7 +148,9 @@ export const MapScreen = () => {
         },
         geometry: {
           type: "Point",
-          coordinates: item.coordinates,
+          coordinates: isEvent(item)
+            ? item.coordinates
+            : item.coordinates!.map((c) => c + 0.00005),
         },
       })),
     } as FeatureCollection<GeoJSON.Point>;
