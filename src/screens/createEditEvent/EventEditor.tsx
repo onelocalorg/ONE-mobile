@@ -148,9 +148,8 @@ export const EventEditor = ({
         mime,
         data: base64,
         filename,
-        path,
       } = await ImagePicker.openPicker({
-        width: 800,
+        width: 400,
         height: 400,
         cropping: true,
         mediaType: "photo",
