@@ -2,11 +2,12 @@ import { DateTime } from "luxon";
 import { Image, Pressable, Text, View } from "react-native";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
 import { pin } from "~/assets/images";
-import { Mappable } from "~/types/mappable";
+import { LocalEvent } from "~/types/local-event";
+import { Post } from "~/types/post";
 import { createStyleSheet } from "../../components/events/style";
 
 interface MapCardProps {
-  item: Mappable;
+  item: LocalEvent | Post;
   onPress?: () => void;
 }
 
@@ -19,12 +20,12 @@ export const MapCard = ({ item, onPress }: MapCardProps) => {
 
   return (
     <Pressable style={styles.listContainer} onPress={onPress}>
-      {item.image && (
+      {item.images?.[0] && (
         <Image
           resizeMode="stretch"
           source={
-            item.image
-              ? { uri: item?.image.url }
+            item.images[0]
+              ? { uri: item?.images[0].url }
               : require("~/assets/images/defaultEvent.png")
           }
           style={styles.dummy}

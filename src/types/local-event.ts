@@ -2,6 +2,7 @@ import { DateTime } from "luxon";
 import { ImageKey, ImageUrl } from "./image-info";
 import { Mappable } from "./mappable";
 import { OneUser } from "./one-user";
+import { Post } from "./post";
 import { TicketType } from "./ticket-type";
 import { TicketTypeData } from "./ticket-type-data";
 
@@ -44,6 +45,4 @@ export interface LocalEventUpdateData {
   ticketTypes?: TicketTypeData[];
 }
 
-export function isLocalEvent(object?: any): object is LocalEvent {
-  return !!object && "viewCount" in object;
-}
+export const isEvent = (item: LocalEvent | Post) => "host" in item;

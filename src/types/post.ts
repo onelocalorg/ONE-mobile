@@ -1,5 +1,6 @@
 import { DateTime } from "luxon";
 import { ImageKey, ImageUrl } from "./image-info";
+import { LocalEvent } from "./local-event";
 import { Mappable } from "./mappable";
 import { OneUser } from "./one-user";
 import { Reply } from "./reply";
@@ -40,8 +41,11 @@ export interface PostUpdateData {
   name?: string;
   details?: string;
   address?: string;
+  venue?: string;
   coordinates?: number[];
   startDate?: DateTime;
   timezone?: string;
   images?: [ImageKey];
 }
+
+export const isPost = (item: LocalEvent | Post) => "author" in item;

@@ -35,7 +35,6 @@ import {
   LocalEvent,
   LocalEventData,
   LocalEventUpdateData,
-  isLocalEvent,
 } from "~/types/local-event";
 import { RemoteImage } from "~/types/remote-image";
 import { TicketTypeData } from "~/types/ticket-type-data";
@@ -60,7 +59,7 @@ export const EventEditor = ({
 }: EventEditorProps) => {
   const { theme } = useAppTheme();
   const { strings } = useStringsAndLabels();
-  const viewCount = isLocalEvent(event) ? event.viewCount : undefined;
+  const viewCount = event?.viewCount;
   const styles = createStyleSheet(theme);
   const navigation = useNavigation();
   const [isEndDateActive, setEndDateActive] = useState(false);

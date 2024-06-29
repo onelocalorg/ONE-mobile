@@ -16,8 +16,8 @@ import { useAppTheme } from "~/app-hooks/use-app-theme";
 import { useNavigations } from "~/app-hooks/useNavigations";
 import { useEventService } from "~/network/api/services/useEventService";
 import { usePostService } from "~/network/api/services/usePostService";
-import { LocalEvent } from "~/types/local-event";
-import { MappablePost, Post } from "~/types/post";
+import { LocalEvent, isEvent } from "~/types/local-event";
+import { Post } from "~/types/post";
 import { Loader } from "../../components/loader";
 import { createStyleSheet } from "../../components/map/style";
 import { MapCard } from "./MapCard";
@@ -29,12 +29,8 @@ const BOULDER_LAT = 40.015;
 const DEFAULT_ZOOM = 11.5;
 
 const mapStyles = {
-  postIcon: {
-    iconImage: "posting",
-    iconAllowOverlap: true,
-  },
-  eventIcon: {
-    iconImage: "event",
+  icon: {
+    iconImage: ["get", "icon"],
     iconAllowOverlap: true,
   },
 };
@@ -55,7 +51,7 @@ export const MapScreen = () => {
     queries: { list: listPosts },
   } = usePostService();
 
-  const { isLoading, events, posts } = useQueries({
+  const { isLoading, features } = useQueries({
     queries: [
       listEvents({
         isPast: false,
@@ -68,29 +64,28 @@ export const MapScreen = () => {
     ],
     combine: (results) => {
       return {
-        // FIXME transform data here rather than caching it
-        events: results[0].data,
-        posts: results[1].data?.filter((p) => p.coordinates),
+        features: toFeatureCollection(
+          results[0].data ?? [],
+          results[1].data?.filter((p) => p.coordinates) ?? []
+        ),
         isLoading: results.some((result) => result.isLoading),
         isPending: results.some((result) => result.isPending),
       };
     },
   });
 
-  const handleMapEventPress = (ope: OnPressEvent) => {
+  console.log("features", JSON.stringify(features, undefined, " "));
+
+  const handleMapPress = (ope: OnPressEvent) => {
     console.log("event", JSON.stringify(ope.features, undefined, "  "));
     setSelected(ope.features.map((f) => f.properties as LocalEvent));
   };
 
-  const handleMapPostPress = (ope: OnPressEvent) => {
-    console.log("post", JSON.stringify(ope.features, undefined, "  "));
-    setSelectedEvents([]);
-    setSelectedPosts(ope.features.map((f) => f.properties as MappablePost));
-  };
+  const gotoDetails = (item: LocalEvent | Post) =>
+    isEvent(item) ? gotoEventDetails(item.id) : gotoPostDetails(item.id);
 
   const clearSelected = () => {
-    setSelectedEvents([]);
-    setSelectedPosts([]);
+    setSelected([]);
   };
 
   return (
@@ -119,53 +114,22 @@ export const MapScreen = () => {
               posting: require("~/assets/map/post.png"),
             }}
           />
-          {events && (
-            <ShapeSource
-              id="events"
-              shape={eventsToFeatureCollection(events)}
-              hitbox={{ width: 15, height: 15 }}
-              onPress={handleMapEventPress}
-            >
-              <SymbolLayer
-                id={"EventSymbols"}
-                minZoomLevel={0}
-                style={mapStyles.eventIcon}
-              />
-            </ShapeSource>
-          )}
-          {posts && (
-            <ShapeSource
-              id="posts"
-              shape={postsToFeatureCollection(posts)}
-              hitbox={{ width: 15, height: 15 }}
-              onPress={handleMapPostPress}
-            >
-              <SymbolLayer
-                id={"PostSymbols"}
-                minZoomLevel={0}
-                style={mapStyles.postIcon}
-              />
-            </ShapeSource>
-          )}
+          <ShapeSource
+            id="features"
+            shape={features}
+            hitbox={{ width: 15, height: 15 }}
+            onPress={handleMapPress}
+          >
+            <SymbolLayer
+              id={"symbols"}
+              minZoomLevel={0}
+              style={mapStyles.icon}
+            />
+          </ShapeSource>
 
           <>
-            {selectedEvents.map((se) => (
-              <MapCard
-                key={se.id}
-                item={se}
-                onPress={gotoEventDetails(se.id)}
-              />
-            ))}
-            {selectedPosts.map((sp) => (
-              <MapCard
-                key={sp.id}
-                item={{
-                  ...sp,
-                  image: sp.images?.[0] ?? undefined,
-                  about: sp.details,
-                }}
-                onPress={gotoPostDetails(sp.id)}
-              />
+            {selected.map((se) => (
+              <MapCard key={se.id} item={se} onPress={gotoDetails(se)} />
             ))}
           </>
         </MapView>
@@ -173,30 +137,18 @@ export const MapScreen = () => {
     </TouchableWithoutFeedback>
   );
 
-  function postsToFeatureCollection(posts: Post[]) {
+  function toFeatureCollection(events: LocalEvent[], posts: Post[]) {
     const fc = {
       type: "FeatureCollection",
-      features: posts.map((post) => ({
+      features: [...posts, ...events].map((item) => ({
         type: "Feature",
-        properties: { ..._.omit(["coordinates"], post) },
-        geometry: {
-          type: "Point",
-          coordinates: post.coordinates,
+        properties: {
+          ..._.omit(["coordinates"], item),
+          icon: isEvent(item) ? "event" : "posting",
         },
-      })),
-    } as FeatureCollection<GeoJSON.Point>;
-    return fc;
-  }
-
-  function eventsToFeatureCollection(events: LocalEvent[]) {
-    const fc = {
-      type: "FeatureCollection",
-      features: events.map((event) => ({
-        type: "Feature",
-        properties: { ..._.omit(["coordinates"], event) },
         geometry: {
           type: "Point",
-          coordinates: event.coordinates,
+          coordinates: item.coordinates,
         },
       })),
     } as FeatureCollection<GeoJSON.Point>;
