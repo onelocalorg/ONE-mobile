@@ -342,7 +342,15 @@ export const PostEditor = ({
             ))}
           </View>
 
-          <View style={styles.bottomButton}>
+          <View
+            style={{ flexDirection: "row", justifyContent: "space-around" }}
+          >
+            <ButtonComponent
+              onPress={navigation.goBack}
+              hasIcon={false}
+              title="Cancel"
+              style={styles.cancelButton}
+            />
             <ButtonComponent
               onPress={handleSubmit(onSubmit)}
               icon={buttonArrowGreen}

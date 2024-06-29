@@ -436,11 +436,25 @@ export const EventEditor = ({
             </View>
           </TouchableWithoutFeedback>
 
-          <View style={styles.bottomButton}>
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-around",
+              marginBottom: 12,
+            }}
+          >
+            <ButtonComponent
+              onPress={navigation.goBack}
+              hasIcon={false}
+              title="Cancel"
+              style={styles.cancelButton}
+            />
+
             <ButtonComponent
               onPress={handleSubmit(onSubmit)}
               title={event ? strings.updateEvent : strings.createEvent}
               disabled={isLoading}
+              style={styles.postButton}
             />
           </View>
         </View>
