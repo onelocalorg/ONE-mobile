@@ -1,6 +1,5 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
-import _ from "lodash/fp";
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import {
   Image,
@@ -13,6 +12,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import Carousel from "react-native-reanimated-carousel";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
 import { useNavigations } from "~/app-hooks/useNavigations";
 import {
@@ -49,6 +49,7 @@ export const PostDetailScreen = ({
   const scrollRef = useRef<ScrollView>(null);
   const myUserId = useMyUserId();
   const { gotoUserProfile, showGiveGratisModal } = useNavigations();
+  const [layoutWidth, setLayoutWidth] = useState<number>();
 
   const {
     queries: { detail: postDetail },
@@ -112,7 +113,13 @@ export const PostDetailScreen = ({
     post: PostDetail;
   }
   const PostView = ({ post }: PostViewProps) => (
-    <View style={styles.feedPostContainer}>
+    <View
+      style={styles.feedPostContainer}
+      onLayout={(event) => {
+        const { width } = event.nativeEvent.layout;
+        setLayoutWidth(width);
+      }}
+    >
       <Text style={styles.posttitle}>{post.type}</Text>
       <TouchableOpacity
         style={{
@@ -144,13 +151,33 @@ export const PostDetailScreen = ({
         </View>
       </View>
       <Text style={styles.postDes}>{post.details}</Text>
-      {!_.isEmpty(post.images?.length > 0) ? (
-        <ImageComponent
-          resizeMode="cover"
-          source={{ uri: post.images[0].url }}
-          style={styles.userPost}
-        ></ImageComponent>
-      ) : null}
+      {post.images.length > 1
+        ? layoutWidth && (
+            <Carousel
+              loop
+              width={layoutWidth}
+              height={layoutWidth}
+              autoPlay={true}
+              data={post.images}
+              scrollAnimationDuration={1000}
+              renderItem={({ item: image }) => (
+                <ImageComponent
+                  key={image.key}
+                  resizeMode="cover"
+                  source={{ uri: image.url }}
+                  style={styles.userPost}
+                />
+              )}
+            />
+          )
+        : post.images.map((image) => (
+            <ImageComponent
+              key={image.key}
+              resizeMode="cover"
+              source={{ uri: image.url }}
+              style={styles.userPost}
+            />
+          ))}
       <View style={styles.postDetailCont}>
         <Text style={styles.postDetailTitle}>What:</Text>
         <Text style={styles.postDetail}>{post.name}</Text>
