@@ -32,9 +32,9 @@ export const EventCard = ({
     >
       <ImageComponent
         resizeMode="stretch"
-        uri={event.image?.url}
+        uri={event.images?.[0].url}
         source={dummy}
-        isUrl={!!event.image?.url}
+        isUrl={!!event.images?.[0].url}
         style={styles.dummy}
       />
       <View style={styles.flex}>

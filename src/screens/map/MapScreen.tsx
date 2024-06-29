@@ -42,8 +42,7 @@ const mapStyles = {
 export const MapScreen = () => {
   const { theme } = useAppTheme();
   const styles = createStyleSheet(theme);
-  const [selectedEvents, setSelectedEvents] = useState<LocalEvent[]>([]);
-  const [selectedPosts, setSelectedPosts] = useState<MappablePost[]>([]);
+  const [selected, setSelected] = useState<LocalEvent[] | Post[]>([]);
   const { gotoEventDetails, gotoPostDetails } = useNavigations();
 
   // TODO Use the center of the current community
@@ -79,11 +78,12 @@ export const MapScreen = () => {
   });
 
   const handleMapEventPress = (ope: OnPressEvent) => {
-    setSelectedPosts([]);
-    setSelectedEvents(ope.features.map((f) => f.properties as LocalEvent));
+    console.log("event", JSON.stringify(ope.features, undefined, "  "));
+    setSelected(ope.features.map((f) => f.properties as LocalEvent));
   };
 
   const handleMapPostPress = (ope: OnPressEvent) => {
+    console.log("post", JSON.stringify(ope.features, undefined, "  "));
     setSelectedEvents([]);
     setSelectedPosts(ope.features.map((f) => f.properties as MappablePost));
   };
@@ -119,25 +119,11 @@ export const MapScreen = () => {
               posting: require("~/assets/map/post.png"),
             }}
           />
-          {posts && (
-            <ShapeSource
-              id="posts"
-              shape={postsToFeatureCollection(posts)}
-              hitbox={{ width: 20, height: 20 }}
-              onPress={handleMapPostPress}
-            >
-              <SymbolLayer
-                id={"PostSymbols"}
-                minZoomLevel={0}
-                style={mapStyles.postIcon}
-              />
-            </ShapeSource>
-          )}
           {events && (
             <ShapeSource
               id="events"
               shape={eventsToFeatureCollection(events)}
-              hitbox={{ width: 20, height: 20 }}
+              hitbox={{ width: 15, height: 15 }}
               onPress={handleMapEventPress}
             >
               <SymbolLayer
@@ -147,6 +133,21 @@ export const MapScreen = () => {
               />
             </ShapeSource>
           )}
+          {posts && (
+            <ShapeSource
+              id="posts"
+              shape={postsToFeatureCollection(posts)}
+              hitbox={{ width: 15, height: 15 }}
+              onPress={handleMapPostPress}
+            >
+              <SymbolLayer
+                id={"PostSymbols"}
+                minZoomLevel={0}
+                style={mapStyles.postIcon}
+              />
+            </ShapeSource>
+          )}
+
           <>
             {selectedEvents.map((se) => (
               <MapCard

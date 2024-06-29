@@ -93,7 +93,7 @@ export const EventEditor = ({
               "postDate",
               "author",
               "host",
-              "isCanceled",
+              "cancelDate",
               "viewCount",
             ],
             event
@@ -170,10 +170,12 @@ export const EventEditor = ({
           },
           {
             onSuccess(uploadedFile) {
-              setValue("image", {
-                key: uploadedFile.key,
-                url: uploadedFile.imageUrl,
-              });
+              setValue("images", [
+                {
+                  key: uploadedFile.key,
+                  url: uploadedFile.imageUrl,
+                },
+              ]);
             },
           }
         );
@@ -261,13 +263,13 @@ export const EventEditor = ({
           <TouchableOpacity activeOpacity={0.8} onPress={chooseImage}>
             <View style={{ flex: 1, alignItems: "center" }}>
               <ImageComponent
-                isUrl={!!getValues("image")?.url}
+                isUrl={!!getValues("images")?.[0].url}
                 resizeMode="cover"
-                uri={getValues("image")?.url}
+                uri={getValues("images")?.[0].url}
                 source={dummy}
                 style={styles.profile}
               />
-              {!getValues("image")?.url ? (
+              {!getValues("images")?.[0].url ? (
                 <ImageComponent
                   source={addGreen}
                   style={[styles.addGreen, { position: "absolute", top: 60 }]}
@@ -361,9 +363,9 @@ export const EventEditor = ({
                       onChangeText={onChange}
                     />
                   )}
-                  name="about"
+                  name="details"
                 />
-                {errors.about && <Text>This is required.</Text>}
+                {errors.details && <Text>This is required.</Text>}
 
                 <View style={[styles.row, styles.marginTop]}>
                   <Text style={styles.tickets}>{strings.tickets}:</Text>

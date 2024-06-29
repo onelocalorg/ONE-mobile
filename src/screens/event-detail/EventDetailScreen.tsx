@@ -70,8 +70,8 @@ export const EventDetailScreen = ({
             <Image
               resizeMode="cover"
               source={
-                event.image
-                  ? { uri: event.image.url }
+                event.images?.[0]
+                  ? { uri: event.images?.[0].url }
                   : require("~/assets/images/defaultEvent.png")
               }
               style={styles.eventImage}
@@ -121,7 +121,7 @@ export const EventDetailScreen = ({
             </View>
             <SizedBox height={verticalScale(30)} />
             <Text style={styles.event}>{strings.aboutEvent}</Text>
-            <Text style={styles.desc}>{event.about}</Text>
+            <Text style={styles.desc}>{event.details}</Text>
           </View>
           <Tickets event={event} />
           <RsvpView event={event} />
