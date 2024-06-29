@@ -2,8 +2,8 @@ import React, { useEffect, useState } from "react";
 import {
   Alert,
   Keyboard,
+  Pressable,
   Text,
-  TextInput,
   TouchableWithoutFeedback,
   View,
 } from "react-native";
@@ -167,15 +167,23 @@ export const AddTicketModal = ({
               </TouchableOpacity>
             </View> */}
             <Text style={styles.label}>{strings.ticketPrice}</Text>
-            <TextInput
-              value={price ? price.toString() : "Free"}
-              onChangeText={(v) => setPrice(Number.parseFloat(v))}
-              placeholder={strings.ticketPriceFree}
-              editable={false}
-              onPressIn={() => {
+            <Pressable
+              onPress={() => {
                 Alert.alert("Only free tickets allowed in this release");
               }}
-            />
+            >
+              <Text
+                // onChangeText={(v) => setPrice(Number.parseFloat(v))}
+                // placeholder={strings.ticketPriceFree}
+                // editable={false}
+                style={[
+                  styles.label,
+                  { paddingLeft: 16, marginTop: 0, fontWeight: "bold" },
+                ]}
+              >
+                {price ? price.toString() : "Free"}
+              </Text>
+            </Pressable>
             <Text style={styles.label}>{strings.ticketQuantity}</Text>
             <Input
               keyboardType="numeric"

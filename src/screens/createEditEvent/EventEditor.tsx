@@ -226,7 +226,7 @@ export const EventEditor = ({
             paddingVertical: verticalScale(4),
           }}
         >
-          <Text>+ Add end date and time</Text>
+          <Text style={styles.label}>+ Add end date and time</Text>
         </TouchableOpacity>
       )}
     </View>
@@ -346,7 +346,7 @@ export const EventEditor = ({
                 />
                 <SizedBox height={verticalScale(8)} />
 
-                <Text style={styles.event}>{strings.aboutEvent}</Text>
+                <Text style={styles.label}>{strings.aboutEvent}</Text>
                 <SizedBox height={verticalScale(4)} />
                 <Controller
                   control={control}

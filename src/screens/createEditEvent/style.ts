@@ -120,12 +120,6 @@ export const createStyleSheet = (theme: ThemeProps) => {
       top: verticalScale(20),
       left: normalScale(10),
     },
-    event: {
-      fontFamily: theme.fontType.regular,
-      fontSize: theme.fontSize.font14,
-      color: theme.colors.black,
-      marginTop: verticalScale(6),
-    },
     marginTop: {
       marginTop: verticalScale(10),
       alignItems: "center",
