@@ -74,10 +74,7 @@ export const MapScreen = () => {
     },
   });
 
-  console.log("features", JSON.stringify(features, undefined, " "));
-
   const handleMapPress = (ope: OnPressEvent) => {
-    console.log("event", JSON.stringify(ope.features, undefined, "  "));
     setSelected(ope.features.map((f) => f.properties as LocalEvent));
   };
 
