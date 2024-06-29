@@ -4,7 +4,15 @@ import _ from "lodash/fp";
 import { DateTime } from "luxon";
 import React, { useState } from "react";
 import { Controller, useFieldArray, useForm, useWatch } from "react-hook-form";
-import { Alert, Text, TextInput, TouchableOpacity, View } from "react-native";
+import {
+  Alert,
+  Keyboard,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
+  View,
+} from "react-native";
 import ImagePicker from "react-native-image-crop-picker";
 import DateTimePicker from "react-native-modal-datetime-picker";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
@@ -53,7 +61,6 @@ export const PostEditor = ({
 
   const {
     control,
-    watch,
     setValue,
     getValues,
     handleSubmit,
@@ -109,15 +116,14 @@ export const PostEditor = ({
   const chooseImages = async () => {
     try {
       const images = await ImagePicker.openPicker({
-        width: 800,
+        width: 400,
         height: 400,
-        cropping: true,
+        cropping: false,
         mediaType: "photo",
         includeBase64: true,
         multiple: false,
         showsSelectedCount: false,
       });
-      // for (const image of images) {
       const { filename, mime, data: base64 } = images;
 
       if (!base64) {
@@ -140,7 +146,6 @@ export const PostEditor = ({
             },
           }
         );
-        // }
       }
     } catch (e) {
       if ((e as Error).message !== "User cancelled image selection") {
@@ -203,141 +208,151 @@ export const PostEditor = ({
     <View>
       <Loader visible={isLoading || isUploadingImage} />
       <PostTypeChooser />
-      <View style={styles.createPostCont}>
-        <Controller
-          control={control}
-          rules={{
-            required: true,
-          }}
-          render={({ field: { onChange, onBlur, value } }) => (
-            <TextInput
-              placeholder="Title"
-              placeholderTextColor="#8B8888"
-              onBlur={onBlur}
-              value={value}
-              onChangeText={onChange}
-              style={styles.postInputTwo}
-              autoFocus={!post}
-            ></TextInput>
-          )}
-          name="name"
-        />
-      </View>
-      <SizedBox height={verticalScale(10)}></SizedBox>
-      {errors.name && <Text>This is required.</Text>}
-      <View style={styles.createPostContTwo}>
-        <Controller
-          control={control}
-          render={({ field: { onChange, value } }) => (
-            <LocationAutocomplete
-              placeholder="Location"
-              address={value}
-              onPress={(data, details) => {
-                onChange(data.description);
-                if (details) {
-                  setValue("coordinates", [
-                    details.geometry.location.lng,
-                    details.geometry.location.lat,
-                  ]);
-                }
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+        <View>
+          <View style={styles.createPostCont}>
+            <Controller
+              control={control}
+              rules={{
+                required: true,
               }}
+              render={({ field: { onChange, onBlur, value } }) => (
+                <TextInput
+                  placeholder="Title"
+                  placeholderTextColor="#8B8888"
+                  onBlur={onBlur}
+                  value={value}
+                  onChangeText={onChange}
+                  style={styles.postInputTwo}
+                  autoFocus={!post}
+                ></TextInput>
+              )}
+              name="name"
             />
-          )}
-          name="address"
-        />
-        <ImageComponent
-          resizeMode="cover"
-          source={pin}
-          style={styles.createImgTwo}
-        ></ImageComponent>
-      </View>
-      <View style={styles.postCont}>
-        <Controller
-          control={control}
-          rules={{
-            required: true,
-          }}
-          render={({ field: { onChange, onBlur, value } }) => (
-            <TextInput
-              multiline
-              placeholder="Body"
-              placeholderTextColor="darkgray"
-              textAlignVertical={"top"}
-              value={value}
-              onBlur={onBlur}
-              onChangeText={onChange}
-              style={styles.postInput}
-            ></TextInput>
-          )}
-          name="details"
-        />
-      </View>
-      {errors.details && <Text>This is required.</Text>}
-
-      <SizedBox height={verticalScale(10)}></SizedBox>
-      <TouchableOpacity
-        activeOpacity={0.8}
-        onPress={() => setDatePickerVisible(true)}
-        style={styles.postContainer}
-      >
-        <Text style={styles.postInputIconRight}>
-          {getValues("startDate")?.toLocaleString(DateTime.DATE_MED)}
-        </Text>
-        <Controller
-          control={control}
-          render={({ field: { onChange, value } }) => (
-            <DateTimePicker
-              isVisible={isDatePickerVisible}
-              date={value?.toJSDate()}
-              mode="date"
-              minimumDate={new Date()}
-              onConfirm={(d) => {
-                onChange(DateTime.fromJSDate(d));
-                setDatePickerVisible(false);
-              }}
-              onCancel={() => setDatePickerVisible(false)}
+          </View>
+          <SizedBox height={verticalScale(10)}></SizedBox>
+          {errors.name && <Text>This is required.</Text>}
+          <View style={styles.createPostContTwo}>
+            <Controller
+              control={control}
+              render={({ field: { onChange, value } }) => (
+                <LocationAutocomplete
+                  placeholder="Location"
+                  address={value}
+                  onPress={(data, details) => {
+                    onChange(data.description);
+                    if (details) {
+                      setValue("coordinates", [
+                        details.geometry.location.lng,
+                        details.geometry.location.lat,
+                      ]);
+                    }
+                  }}
+                />
+              )}
+              name="address"
             />
-          )}
-          name="startDate"
-        />
-
-        <ImageComponent
-          resizeMode="cover"
-          source={postCalender}
-          style={styles.createImgTwo}
-        ></ImageComponent>
-      </TouchableOpacity>
-      <SizedBox height={verticalScale(8)}></SizedBox>
-
-      <TouchableOpacity onPress={chooseImages} style={styles.imagesCont}>
-        <Text style={styles.textTwo}>Image</Text>
-        <Text style={styles.textTwo}>+</Text>
-        <Text style={styles.textThree}>add images</Text>
-      </TouchableOpacity>
-
-      <View style={styles.multipleImagecont}>
-        {getValues("images")?.map((ie) => (
-          <TouchableOpacity
-            key={ie.key}
-            onPress={() => handlePressImage(ie.key)}
-          >
             <ImageComponent
-              source={{ uri: ie.url }}
-              style={styles.selectImage}
+              resizeMode="cover"
+              source={pin}
+              style={styles.createImgTwo}
             ></ImageComponent>
-          </TouchableOpacity>
-        ))}
-      </View>
+          </View>
+          <View style={styles.postCont}>
+            <Controller
+              control={control}
+              rules={{
+                required: true,
+              }}
+              render={({ field: { onChange, onBlur, value } }) => (
+                <TextInput
+                  multiline
+                  placeholder="Body"
+                  placeholderTextColor="darkgray"
+                  textAlignVertical={"top"}
+                  value={value}
+                  onBlur={onBlur}
+                  onChangeText={onChange}
+                  style={styles.postInput}
+                ></TextInput>
+              )}
+              name="details"
+            />
+          </View>
+          {errors.details && <Text>This is required.</Text>}
 
-      <View style={styles.bottomButton}>
-        <ButtonComponent
-          onPress={handleSubmit(onSubmit)}
-          icon={buttonArrowGreen}
-          title={getButtonName()}
-          style={styles.postButton}
-          disabled={isLoading}
-        />
-      </View>
+          <SizedBox height={verticalScale(10)}></SizedBox>
+          <View style={{ flexDirection: "row" }}>
+            <TouchableOpacity
+              activeOpacity={0.8}
+              onPress={() => setDatePickerVisible(true)}
+              style={styles.postContainer}
+            >
+              <Text style={styles.postInputIconRight}>
+                {getValues("startDate")?.toLocaleString(DateTime.DATE_MED)}
+              </Text>
+              <Controller
+                control={control}
+                render={({ field: { onChange, value } }) => (
+                  <DateTimePicker
+                    isVisible={isDatePickerVisible}
+                    date={value?.toJSDate()}
+                    mode="date"
+                    minimumDate={new Date()}
+                    onConfirm={(d) => {
+                      onChange(DateTime.fromJSDate(d));
+                      setDatePickerVisible(false);
+                    }}
+                    onCancel={() => setDatePickerVisible(false)}
+                  />
+                )}
+                name="startDate"
+              />
+
+              <ImageComponent
+                resizeMode="cover"
+                source={postCalender}
+                style={styles.createImgTwo}
+              ></ImageComponent>
+            </TouchableOpacity>
+            <View style={{ flexGrow: 1 }} />
+          </View>
+          <SizedBox height={verticalScale(8)}></SizedBox>
+
+          <View style={styles.imagesCont}>
+            <TouchableOpacity onPress={chooseImages} style={styles.imagesCont}>
+              <Text style={styles.textTwo}>Image</Text>
+              <Text style={styles.textTwo}>+</Text>
+              <Text style={styles.textThree}>add images</Text>
+            </TouchableOpacity>
+            <View style={{ flexGrow: 1 }}></View>
+          </View>
+
+          <View style={styles.multipleImagecont}>
+            {getValues("images")?.map((ie) => (
+              <TouchableOpacity
+                key={ie.key}
+                onPress={() => handlePressImage(ie.key)}
+              >
+                <ImageComponent
+                  source={{ uri: ie.url }}
+                  style={styles.selectImage}
+                ></ImageComponent>
+              </TouchableOpacity>
+            ))}
+          </View>
+
+          <View style={styles.bottomButton}>
+            <ButtonComponent
+              onPress={handleSubmit(onSubmit)}
+              icon={buttonArrowGreen}
+              title={getButtonName()}
+              style={styles.postButton}
+              disabled={isLoading}
+            />
+          </View>
+        </View>
+      </TouchableWithoutFeedback>
     </View>
   );
 };
