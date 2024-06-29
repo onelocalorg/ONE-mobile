@@ -150,7 +150,8 @@ export const MapScreen = () => {
           type: "Point",
           coordinates: isEvent(item)
             ? item.coordinates
-            : item.coordinates!.map((c) => c + 0.00005),
+            : // Only so that they're not completely overlapped.
+              item.coordinates!.map((c) => c + 0.00005),
         },
       })),
     } as FeatureCollection<GeoJSON.Point>;
