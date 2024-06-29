@@ -116,8 +116,8 @@ export const PostEditor = ({
   const chooseImages = async () => {
     try {
       const images = await ImagePicker.openPicker({
-        width: 400,
-        height: 400,
+        width: 1200,
+        height: 1200,
         cropping: true,
         mediaType: "photo",
         includeBase64: true,
