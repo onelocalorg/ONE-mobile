@@ -1,4 +1,5 @@
 import notifee from "@notifee/react-native";
+import * as Sentry from "@sentry/react-native";
 import { QueryClient } from "@tanstack/react-query";
 import React, { useEffect, useState } from "react";
 import { StatusBar } from "react-native";
@@ -7,6 +8,13 @@ import { InternetConnectionHandle } from "~/utils/internet-connection-handle";
 import { AppUpdate } from "./components/app-update";
 import { Loader } from "./components/loader";
 import Authentication from "./navigation/Authentication";
+
+Sentry.init({
+  dsn: process.env.SENTRY_DNS,
+
+  // uncomment the line below to enable Spotlight (https://spotlightjs.com)
+  enableSpotlight: __DEV__,
+});
 
 export const queryClient = new QueryClient(queryConfig);
 export const App = () => {

@@ -3,7 +3,6 @@ import _ from "lodash/fp";
 import React from "react";
 import { View } from "react-native";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
-
 import { useNavigations } from "~/app-hooks/useNavigations";
 import {
   GetUsersSort,
