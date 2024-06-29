@@ -514,9 +514,10 @@ const styles = StyleSheet.create({
     fontSize: 14,
     borderColor: "#8B8888",
     borderWidth: 1,
-    padding: normalScale(10),
-    fontFamily: "NotoSerif-Regular",
-    height: verticalScale(38),
+    paddingVertical: normalScale(4),
+    paddingHorizontal: normalScale(10),
+    // fontFamily: theme.fontType.medium,
+    lineHeight: 20,
     color: "black",
   },
   HeaderContainerTwo: {
