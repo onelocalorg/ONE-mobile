@@ -8,6 +8,7 @@ import { StackScreenProps } from "@react-navigation/stack";
 export enum Screens {
   LOGIN = "Login",
   SIGNUP = "Signup",
+  VERIFY = "Verify",
   WEBVIEW = "WebView",
   MAIN_TABS = "MainTabs",
   HOME_SCREEN = "HomeScreen",
@@ -34,6 +35,7 @@ export enum Screens {
 export type GuestStackParamList = {
   [Screens.LOGIN]: undefined;
   [Screens.SIGNUP]: undefined;
+  [Screens.VERIFY]: { email: string; token: string };
   [Screens.WEBVIEW]: { url: string };
 };
 

@@ -22,6 +22,7 @@ import { PostDetailScreen } from "~/screens/home/PostDetailScreen";
 import { ReportContent } from "~/screens/home/ReportContent";
 import { LoginScreen } from "~/screens/login/LoginScreen";
 import { SignUpScreen } from "~/screens/login/SignupScreen";
+import { VerifyScreen } from "~/screens/login/VerifyScreen";
 import { MapScreen } from "~/screens/map/MapScreen";
 import { LogoutPressable } from "~/screens/myprofile/LogoutPressable";
 import { MyProfileScreen } from "~/screens/myprofile/MyProfileScreen";
@@ -38,10 +39,11 @@ import {
 } from "./types";
 
 type AppNavigationProps = {
+  userId?: string;
   token?: string;
 };
 
-export const AppNavigation = ({ token }: AppNavigationProps) => {
+export const AppNavigation = ({ userId, token }: AppNavigationProps) => {
   const { theme } = useAppTheme();
 
   const linking = {
@@ -173,6 +175,8 @@ export const AppNavigation = ({ token }: AppNavigationProps) => {
               component={EventDetailScreen}
             />
           </RootStack.Group>
+        ) : userId ? (
+          <GuestStack.Screen name={Screens.VERIFY} component={VerifyScreen} />
         ) : (
           <GuestStack.Group>
             <GuestStack.Screen name={Screens.LOGIN} component={LoginScreen} />

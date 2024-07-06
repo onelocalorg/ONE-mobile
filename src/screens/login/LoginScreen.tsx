@@ -35,6 +35,7 @@ import {
 } from "~/network/api/services/useAuthService";
 import { verticalScale } from "~/theme/device/normalize";
 import { CurrentUser } from "~/types/current-user";
+import { UserProfile } from "~/types/user-profile";
 import { handleApiError } from "~/utils/common";
 import { ForgotPasswordScreen } from "./ForgotPasswordScreen";
 import { createStyleSheet } from "./style";
@@ -55,7 +56,7 @@ export const LoginScreen = ({
     data: loginData,
     mutate: logIn,
     isPending: isPasswordLoginPending,
-  } = useMutation<CurrentUser, Error, LoginProps>({
+  } = useMutation<CurrentUser | UserProfile, Error, LoginProps>({
     mutationKey: [AuthMutations.logIn],
   });
 
@@ -79,8 +80,20 @@ export const LoginScreen = ({
     isPasswordLoginPending || isAppleLoginPending || isGoogleLoginPending;
 
   useEffect(() => {
-    if (loginData || appleLoginData || googleLoginData) {
-      handleSignIn((loginData || appleLoginData || googleLoginData)!);
+    if (loginData && !loginData.isEmailVerified) {
+      Alert.alert(
+        "Not verified",
+        "You must verify your email before you can use ONE Local.",
+        [{ text: strings.ok, onPress: () => null, style: "destructive" }]
+      );
+    } else {
+      if (loginData || appleLoginData || googleLoginData) {
+        // Force to CurrentUser because the above check takes care of the case
+        // where loginData is just a UserProfile.
+        handleSignIn(
+          (loginData ?? appleLoginData ?? googleLoginData) as CurrentUser
+        );
+      }
     }
   }, [loginData, appleLoginData, googleLoginData, handleSignIn]);
 

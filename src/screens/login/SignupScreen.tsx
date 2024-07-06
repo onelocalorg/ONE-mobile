@@ -24,12 +24,15 @@ import { ButtonComponent } from "~/components/button-component";
 import { ImageComponent } from "~/components/image-component";
 import { SizedBox } from "~/components/sized-box";
 import { AuthDispatchContext } from "~/navigation/AuthContext";
+import { GuestStackScreenProps, Screens } from "~/navigation/types";
 import { AuthMutations } from "~/network/api/services/useAuthService";
 import { normalScale, verticalScale } from "~/theme/device/normalize";
 import { CurrentUser } from "~/types/current-user";
 import { NewUser } from "~/types/new-user";
 
-export const SignUpScreen = () => {
+export const SignUpScreen = ({
+  navigation,
+}: GuestStackScreenProps<Screens.SIGNUP>) => {
   const { strings } = useStringsAndLabels();
   const [imageOption, ImageOptionModal] = useState(false);
   const [filename, assetsData] = useState("");
@@ -67,7 +70,21 @@ export const SignUpScreen = () => {
         (v: string | undefined) => v && v.length > 0,
         data
       ) as unknown as NewUser,
-      { onSuccess: handleSignUp }
+      {
+        onSuccess: (user) => {
+          handleSignUp(user);
+          Alert.alert(
+            "Registration success!",
+            "Please check your email to verify your account.",
+            [
+              {
+                text: "OK",
+                onPress: () => navigation.goBack(),
+              },
+            ]
+          );
+        },
+      }
     );
   };
 
