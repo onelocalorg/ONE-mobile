@@ -35,6 +35,9 @@ export function useAuthService() {
     mutationFn: (data: LoginProps) => {
       return logIn(data);
     },
+    onError: () => {
+      // LoginScreen will handle the various error cases
+    },
   });
 
   queryClient.setMutationDefaults([AuthMutations.appleLogin], {
@@ -88,7 +91,7 @@ export function useAuthService() {
   });
 
   const logIn = async (props: LoginProps) =>
-    doPost<CurrentUser | UserProfile>("/v3/auth/login", props);
+    doPost<CurrentUser>("/v3/auth/login", props);
 
   const signUp = async (props: NewUser) =>
     doPost<UserProfile>("/v3/auth/signup", props);
@@ -101,7 +104,14 @@ export function useAuthService() {
 
   const verifyEmail = (props: VerifyEmailProps) =>
     doGet<CurrentUser>(
-      `/v3/auth/verify-email?email=${props.email}&token=${props.token}`
+      `/v3/auth/verify-email?email=${encodeURI(props.email)}&token=${
+        props.token
+      }`
+    );
+
+  const resendEmailVerification = (email: string) =>
+    doGet<never>(
+      `/v3/auth/resend-email-verification?email=${encodeURI(email)}`
     );
 
   const forgotPassword = (email: string) =>
@@ -113,7 +123,9 @@ export function useAuthService() {
   const resetPassword = (props: ResetPasswordProps) =>
     doPost<never>(`/v3/auth/reset-password`, props);
 
-  return {};
+  return {
+    resendEmailVerification,
+  };
 }
 
 export interface LoginProps {

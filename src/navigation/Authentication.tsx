@@ -16,6 +16,7 @@ export default function Authentication() {
     accessToken?: string;
     refreshToken?: string;
     myUserId?: string;
+    myEmail?: string;
   };
 
   type SignIn = { type: "SIGN_IN"; user: CurrentUser };
@@ -26,8 +27,9 @@ export default function Authentication() {
     userId: string;
   };
   type SignOut = { type: "SIGN_OUT" };
+  type SignInUnverified = { type: "SIGN_IN_UNVERIFIED"; email: string };
 
-  type AppActions = SignIn | RestoreToken | SignOut;
+  type AppActions = SignIn | RestoreToken | SignOut | SignInUnverified;
 
   const [state, dispatch] = useReducer(
     (prevState: AppState, action: AppActions): AppState => {
@@ -45,7 +47,7 @@ export default function Authentication() {
           return {
             ...prevState,
             isSignout: false,
-            accessToken: action.user.accessToken,
+            accessToken: action.user?.accessToken ?? undefined,
             refreshToken: action.user.refreshToken,
             myUserId: action.user.id,
           };
@@ -57,6 +59,12 @@ export default function Authentication() {
             accessToken: undefined,
             refreshToken: undefined,
             myUserId: undefined,
+          };
+        case "SIGN_IN_UNVERIFIED":
+          return {
+            ...prevState,
+            isSignout: false,
+            myEmail: action.email,
           };
       }
     },
@@ -101,15 +109,17 @@ export default function Authentication() {
       handleSignIn: async (user: CurrentUser) => {
         await Promise.all([
           AsyncStorage.setItem(persistKeys.myId, user.id),
-          user.accessToken
-            ? AsyncStorage.setItem(persistKeys.token, user.accessToken)
-            : {},
-          user.refreshToken
-            ? AsyncStorage.setItem(persistKeys.refreshToken, user.refreshToken)
-            : {},
+          AsyncStorage.setItem(persistKeys.myEmail, user.email),
+          AsyncStorage.setItem(persistKeys.token, user.accessToken),
+          AsyncStorage.setItem(persistKeys.refreshToken, user.refreshToken),
         ]);
         dispatch({ type: "SIGN_IN", user });
       },
+      handleSignInUnverified: async (email: string) => {
+        await Promise.all([AsyncStorage.setItem(persistKeys.myEmail, email)]);
+        dispatch({ type: "SIGN_IN_UNVERIFIED", email });
+      },
+
       handleSignOut: async () => {
         await Promise.all([
           AsyncStorage.removeItem(persistKeys.myId),
@@ -131,7 +141,7 @@ export default function Authentication() {
       <AuthDispatchContext.Provider value={authDispatchContext}>
         <ApiService>
           <NotificationService>
-            <AppNavigation userId={state.myUserId} token={state.accessToken} />
+            <AppNavigation email={state.myEmail} token={state.accessToken} />
           </NotificationService>
         </ApiService>
       </AuthDispatchContext.Provider>

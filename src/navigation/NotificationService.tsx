@@ -18,7 +18,7 @@ import { error } from "~/config";
 import { UserMutations } from "~/network/api/services/useUserService";
 import { RegisterTokenData, Token, TokenType } from "~/types/token";
 import { handleApiError } from "~/utils/common";
-import { useMyUserId } from "./AuthContext";
+import { useAccessToken, useMyUserId } from "./AuthContext";
 
 interface OneNotification {
   // image?: string;
@@ -49,6 +49,7 @@ export function NotificationService({
     Replies = "replies",
   }
   const myUserId = useMyUserId();
+  const accessToken = useAccessToken();
   const [notifications, setNotifications] = useState<OneNotification[]>([]);
 
   const { mutate: registerToken } = useMutation<
@@ -111,7 +112,7 @@ export function NotificationService({
       }
     }
 
-    if (myUserId) {
+    if (accessToken && myUserId) {
       registerMessagingToken().catch((e) =>
         handleApiError("registering messaging", e as Error)
       );
@@ -119,7 +120,7 @@ export function NotificationService({
       messaging().onMessage(onMessageReceived);
       messaging().setBackgroundMessageHandler(onMessageReceived);
     }
-  }, [myUserId, registerToken]);
+  }, [accessToken, myUserId, registerToken]);
 
   const pullNotifications = () => {
     const currentNotifications = notifications;

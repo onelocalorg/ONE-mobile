@@ -40,6 +40,7 @@ export const persistKeys = {
   token: "token",
   refreshToken: "refreshToken",
   myId: "myId",
+  myEmail: "myEmail",
   fcmToken: "@fcmToken",
 };
 

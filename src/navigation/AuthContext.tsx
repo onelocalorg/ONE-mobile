@@ -10,12 +10,14 @@ export const AuthContext = createContext<AuthContextType | null>(null);
 
 type AuthDispatchContextType = {
   handleSignIn: (user: CurrentUser) => void;
+  handleSignInUnverified: (email: string) => void;
   handleSignOut: () => void;
   handleSignUp: (user: CurrentUser) => void;
 };
 
 export const AuthDispatchContext = createContext<AuthDispatchContextType>({
   handleSignIn: () => {},
+  handleSignInUnverified: () => {},
   handleSignOut: () => {},
   handleSignUp: () => {},
 });

@@ -35,7 +35,7 @@ export enum Screens {
 export type GuestStackParamList = {
   [Screens.LOGIN]: undefined;
   [Screens.SIGNUP]: undefined;
-  [Screens.VERIFY]: { email: string; token: string };
+  [Screens.VERIFY]: { email: string; token?: string };
   [Screens.WEBVIEW]: { url: string };
 };
 

@@ -8,6 +8,7 @@ import {
   statusCodes,
 } from "@react-native-google-signin/google-signin";
 import { useMutation } from "@tanstack/react-query";
+import { HttpStatusCode } from "axios";
 import React, { useContext, useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import {
@@ -34,8 +35,8 @@ import {
   useAuthService,
 } from "~/network/api/services/useAuthService";
 import { verticalScale } from "~/theme/device/normalize";
+import { ApiError } from "~/types";
 import { CurrentUser } from "~/types/current-user";
-import { UserProfile } from "~/types/user-profile";
 import { handleApiError } from "~/utils/common";
 import { ForgotPasswordScreen } from "./ForgotPasswordScreen";
 import { createStyleSheet } from "./style";
@@ -50,13 +51,14 @@ export const LoginScreen = ({
 
   // FIXME This is needed to register the keys, need a better way to do this
   const _authService = useAuthService();
-  const { handleSignIn } = useContext(AuthDispatchContext);
+  const { handleSignIn, handleSignInUnverified } =
+    useContext(AuthDispatchContext);
 
   const {
     data: loginData,
     mutate: logIn,
     isPending: isPasswordLoginPending,
-  } = useMutation<CurrentUser | UserProfile, Error, LoginProps>({
+  } = useMutation<CurrentUser, Error, LoginProps>({
     mutationKey: [AuthMutations.logIn],
   });
 
@@ -80,26 +82,19 @@ export const LoginScreen = ({
     isPasswordLoginPending || isAppleLoginPending || isGoogleLoginPending;
 
   useEffect(() => {
-    if (loginData && !loginData.isEmailVerified) {
-      Alert.alert(
-        "Not verified",
-        "You must verify your email before you can use ONE Local.",
-        [{ text: strings.ok, onPress: () => null, style: "destructive" }]
+    if (loginData || appleLoginData || googleLoginData) {
+      // Force to CurrentUser because the above check takes care of the case
+      // where loginData is just a UserProfile.
+      handleSignIn(
+        (loginData ?? appleLoginData ?? googleLoginData) as CurrentUser
       );
-    } else {
-      if (loginData || appleLoginData || googleLoginData) {
-        // Force to CurrentUser because the above check takes care of the case
-        // where loginData is just a UserProfile.
-        handleSignIn(
-          (loginData ?? appleLoginData ?? googleLoginData) as CurrentUser
-        );
-      }
     }
-  }, [loginData, appleLoginData, googleLoginData, handleSignIn]);
+  }, [loginData, appleLoginData, googleLoginData, handleSignIn, strings.ok]);
 
   const {
     control,
     handleSubmit,
+    getValues,
     formState: { errors },
   } = useForm<LoginProps>({
     defaultValues: {
@@ -111,7 +106,11 @@ export const LoginScreen = ({
   const signInWithPassword = (data: LoginProps) => {
     logIn(data, {
       onError: (error) => {
-        Alert.alert("Login error", error.message);
+        if ((error as ApiError)?.code === HttpStatusCode.Forbidden.valueOf()) {
+          handleSignInUnverified(getValues("email"));
+        } else {
+          Alert.alert("Login error", error.message);
+        }
       },
     });
   };

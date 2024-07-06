@@ -39,11 +39,11 @@ import {
 } from "./types";
 
 type AppNavigationProps = {
-  userId?: string;
+  email?: string;
   token?: string;
 };
 
-export const AppNavigation = ({ userId, token }: AppNavigationProps) => {
+export const AppNavigation = ({ email, token }: AppNavigationProps) => {
   const { theme } = useAppTheme();
 
   const linking = {
@@ -175,8 +175,12 @@ export const AppNavigation = ({ userId, token }: AppNavigationProps) => {
               component={EventDetailScreen}
             />
           </RootStack.Group>
-        ) : userId ? (
-          <GuestStack.Screen name={Screens.VERIFY} component={VerifyScreen} />
+        ) : email ? (
+          <GuestStack.Screen
+            name={Screens.VERIFY}
+            component={VerifyScreen}
+            initialParams={{ email }}
+          />
         ) : (
           <GuestStack.Group>
             <GuestStack.Screen name={Screens.LOGIN} component={LoginScreen} />

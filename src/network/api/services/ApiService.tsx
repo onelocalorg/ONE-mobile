@@ -168,7 +168,7 @@ export function ApiService({ children }: ApiServiceProviderProps) {
       body: JSON.stringify(body),
     });
     LOG.info(response.status);
-    const json = (await response.json()) as ApiResponse<any>;
+    const json = (await response.json()) as ApiResponse<unknown>;
     if (!response.ok && _.isNull(json)) {
       LOG.error("<=", response.statusText);
       throw new ApiError(response.status, response.statusText);
@@ -176,7 +176,7 @@ export function ApiService({ children }: ApiServiceProviderProps) {
 
     if (!response.ok) {
       LOG.error("<=", url, json);
-      throw new ApiError(json.code, json.message);
+      throw new ApiError(json.code, json.message, json.data);
     }
 
     LOG.debug("<=", hideFields(json.data));
