@@ -39,19 +39,25 @@ export const SignUpScreen = ({
   const [base64string, setBase64Path] = useState("");
   const [profileUri, setProfileUri]: any = useState("");
   const [setimageType, selectImage] = useState();
-  const { handleSignUp } = useContext(AuthDispatchContext);
+  const { handleSignUp, handleSignInUnverified } =
+    useContext(AuthDispatchContext);
 
   const EMAIL_REGEX =
     /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/g;
   const PASSWORD_REGEX = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
 
-  const { mutate: signUp } = useMutation<CurrentUser, Error, NewUser>({
+  const { mutate: signUp, isPending } = useMutation<
+    CurrentUser,
+    Error,
+    NewUser
+  >({
     mutationKey: [AuthMutations.signUp],
   });
 
   const {
     control,
     handleSubmit,
+    getValues,
     formState: { errors },
   } = useForm<NewUser>({
     defaultValues: {
@@ -79,7 +85,11 @@ export const SignUpScreen = ({
             [
               {
                 text: "OK",
-                onPress: () => navigation.goBack(),
+                onPress: () =>
+                  handleSignInUnverified({
+                    email: getValues("email"),
+                    password: getValues("password"),
+                  }),
               },
             ]
           );
@@ -421,6 +431,7 @@ export const SignUpScreen = ({
             style={styles.signUpBtn}
             onPress={handleSubmit(onSignUp)}
             title={strings.signUpTwo}
+            disabled={isPending}
           />
         </View>
       </KeyboardAwareScrollView>

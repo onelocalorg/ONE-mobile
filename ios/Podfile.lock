@@ -1243,7 +1243,7 @@ PODS:
     - React-Core
     - React-hermes
     - Sentry/HybridSDK (= 8.29.1)
-  - RNSVG (15.2.0):
+  - RNSVG (15.3.0):
     - React-Core
   - RNVectorIcons (10.0.3):
     - glog
@@ -1661,7 +1661,7 @@ SPEC CHECKSUMS:
   RNReanimated: fc28cd7439c7ce5c91c760dbdc5735ee35aeae36
   RNScreens: a4d9ce8f68f833f4e42410140eafd88e38bba163
   RNSentry: e9aa15bb2f3e18c822c002eea13bbd3b222ab493
-  RNSVG: 43b64ed39c14ce830d840903774154ca0c1f27ec
+  RNSVG: a48668fd382115bc89761ce291a81c4ca5f2fd2e
   RNVectorIcons: 81e919c3a9e56e4916f9e74cfe9cd2e489146f08
   SDWebImage: a7f831e1a65eb5e285e3fb046a23fcfbf08e696d
   SDWebImageWebPCoder: 908b83b6adda48effe7667cd2b7f78c897e5111d

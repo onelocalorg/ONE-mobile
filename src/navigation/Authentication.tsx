@@ -6,7 +6,11 @@ import { persistKeys } from "~/network/constant";
 import { CurrentUser } from "~/types/current-user";
 import { handleApiError } from "~/utils/common";
 import { AppNavigation } from "./AppNavigation";
-import { AuthContext, AuthDispatchContext } from "./AuthContext";
+import {
+  AuthContext,
+  AuthDispatchContext,
+  HandleSignInUnverifiedProps,
+} from "./AuthContext";
 import { NotificationService } from "./NotificationService";
 
 export default function Authentication() {
@@ -17,6 +21,7 @@ export default function Authentication() {
     refreshToken?: string;
     myUserId?: string;
     myEmail?: string;
+    password?: string;
   };
 
   type SignIn = { type: "SIGN_IN"; user: CurrentUser };
@@ -27,7 +32,11 @@ export default function Authentication() {
     userId: string;
   };
   type SignOut = { type: "SIGN_OUT" };
-  type SignInUnverified = { type: "SIGN_IN_UNVERIFIED"; email: string };
+  type SignInUnverified = {
+    type: "SIGN_IN_UNVERIFIED";
+    email: string;
+    password: string;
+  };
 
   type AppActions = SignIn | RestoreToken | SignOut | SignInUnverified;
 
@@ -42,6 +51,7 @@ export default function Authentication() {
             refreshToken: action.refreshToken,
             myUserId: action.userId,
             isLoading: false,
+            password: undefined,
           };
         case "SIGN_IN":
           return {
@@ -50,6 +60,7 @@ export default function Authentication() {
             accessToken: action.user?.accessToken ?? undefined,
             refreshToken: action.user.refreshToken,
             myUserId: action.user.id,
+            password: undefined,
           };
         case "SIGN_OUT":
           return {
@@ -59,12 +70,14 @@ export default function Authentication() {
             accessToken: undefined,
             refreshToken: undefined,
             myUserId: undefined,
+            password: undefined,
           };
         case "SIGN_IN_UNVERIFIED":
           return {
             ...prevState,
             isSignout: false,
             myEmail: action.email,
+            password: action.password,
           };
       }
     },
@@ -115,9 +128,12 @@ export default function Authentication() {
         ]);
         dispatch({ type: "SIGN_IN", user });
       },
-      handleSignInUnverified: async (email: string) => {
-        await Promise.all([AsyncStorage.setItem(persistKeys.myEmail, email)]);
-        dispatch({ type: "SIGN_IN_UNVERIFIED", email });
+      handleSignInUnverified: async ({
+        email,
+        password,
+      }: HandleSignInUnverifiedProps) => {
+        await AsyncStorage.setItem(persistKeys.myEmail, email);
+        dispatch({ type: "SIGN_IN_UNVERIFIED", email, password });
       },
 
       handleSignOut: async () => {
@@ -141,7 +157,11 @@ export default function Authentication() {
       <AuthDispatchContext.Provider value={authDispatchContext}>
         <ApiService>
           <NotificationService>
-            <AppNavigation email={state.myEmail} token={state.accessToken} />
+            <AppNavigation
+              email={state.myEmail}
+              password={state.password}
+              token={state.accessToken}
+            />
           </NotificationService>
         </ApiService>
       </AuthDispatchContext.Provider>

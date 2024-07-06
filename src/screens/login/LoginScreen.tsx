@@ -107,7 +107,10 @@ export const LoginScreen = ({
     logIn(data, {
       onError: (error) => {
         if ((error as ApiError)?.code === HttpStatusCode.Forbidden.valueOf()) {
-          handleSignInUnverified(getValues("email"));
+          handleSignInUnverified({
+            email: getValues("email"),
+            password: getValues("password"),
+          });
         } else {
           Alert.alert("Login error", error.message);
         }

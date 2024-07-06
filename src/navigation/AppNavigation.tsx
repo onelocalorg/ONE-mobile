@@ -40,10 +40,15 @@ import {
 
 type AppNavigationProps = {
   email?: string;
+  password?: string;
   token?: string;
 };
 
-export const AppNavigation = ({ email, token }: AppNavigationProps) => {
+export const AppNavigation = ({
+  email,
+  password,
+  token,
+}: AppNavigationProps) => {
   const { theme } = useAppTheme();
 
   const linking = {
@@ -179,7 +184,7 @@ export const AppNavigation = ({ email, token }: AppNavigationProps) => {
           <GuestStack.Screen
             name={Screens.VERIFY}
             component={VerifyScreen}
-            initialParams={{ email }}
+            initialParams={{ email, password }}
           />
         ) : (
           <GuestStack.Group>

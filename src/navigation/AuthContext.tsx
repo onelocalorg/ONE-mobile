@@ -8,9 +8,17 @@ type AuthContextType = {
 
 export const AuthContext = createContext<AuthContextType | null>(null);
 
+export interface HandleSignInUnverifiedProps {
+  email: string;
+  password: string;
+}
+
 type AuthDispatchContextType = {
   handleSignIn: (user: CurrentUser) => void;
-  handleSignInUnverified: (email: string) => void;
+  handleSignInUnverified: ({
+    email,
+    password,
+  }: HandleSignInUnverifiedProps) => void;
   handleSignOut: () => void;
   handleSignUp: (user: CurrentUser) => void;
 };
