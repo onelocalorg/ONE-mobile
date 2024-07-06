@@ -39,6 +39,7 @@ import {
 import { RemoteImage } from "~/types/remote-image";
 import { TicketTypeData } from "~/types/ticket-type-data";
 import { FileKeys, UploadFileData } from "~/types/upload-file-data";
+import { isNotEmpty } from "~/utils/common";
 import { AddTicketModal } from "./AddTicketModal";
 import { createStyleSheet } from "./style";
 
@@ -103,6 +104,7 @@ export const EventEditor = ({
           startDate: DateTime.now().startOf("hour").plus({ hour: 1 }),
           coordinates: [],
           ticketTypes: [],
+          images: [],
           timezone: DateTime.local().zoneName,
         },
   });
@@ -122,8 +124,12 @@ export const EventEditor = ({
     };
 
     event
-      ? onSubmitUpdate!(data as LocalEventUpdateData, { onSuccess })
-      : onSubmitCreate!(data as LocalEventData, { onSuccess });
+      ? onSubmitUpdate!(_.pickBy(isNotEmpty, data) as LocalEventUpdateData, {
+          onSuccess,
+        })
+      : onSubmitCreate!(_.pickBy(isNotEmpty, data) as LocalEventData, {
+          onSuccess,
+        });
   };
 
   const handleTicketSelected = (index: number) => {
@@ -262,13 +268,13 @@ export const EventEditor = ({
           <TouchableOpacity activeOpacity={0.8} onPress={chooseImage}>
             <View style={{ flex: 1, alignItems: "center" }}>
               <ImageComponent
-                isUrl={!!getValues("images")?.[0].url}
+                isUrl={!!_.head(getValues("images"))?.url}
                 resizeMode="cover"
-                uri={getValues("images")?.[0].url}
+                uri={_.head(getValues("images"))?.url}
                 source={dummy}
                 style={styles.profile}
               />
-              {!getValues("images")?.[0].url ? (
+              {!_.head(getValues("images"))?.url ? (
                 <ImageComponent
                   source={addGreen}
                   style={[styles.addGreen, { position: "absolute", top: 60 }]}
