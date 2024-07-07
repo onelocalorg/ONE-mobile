@@ -23,6 +23,11 @@ export const App = () => {
   const [isLoading, setLoading] = useState(true);
   useEffect(() => {
     async function bootstrap() {
+      notifee
+        .setBadgeCount(0)
+        .then(() => console.log("Badge count removed"))
+        .catch((e) => console.error("Could not remove badge count", e));
+
       const initialNotification = await notifee.getInitialNotification();
 
       if (initialNotification) {
