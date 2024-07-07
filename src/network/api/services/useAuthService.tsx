@@ -104,14 +104,14 @@ export function useAuthService() {
 
   const verifyEmail = (props: VerifyEmailProps) =>
     doGet<CurrentUser>(
-      `/v3/auth/verify-email?email=${encodeURI(props.email)}&token=${
+      `/v3/auth/verify-email?email=${encodeURIComponent(props.email)}&token=${
         props.token
       }`
     );
 
   const resendEmailVerification = (email: string) =>
     doGet<never>(
-      `/v3/auth/resend-email-verification?email=${encodeURI(email)}`
+      `/v3/auth/resend-email-verification?email=${encodeURIComponent(email)}`
     );
 
   const forgotPassword = (email: string) =>
