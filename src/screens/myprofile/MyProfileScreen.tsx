@@ -1,21 +1,13 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useMutation, useQuery } from "@tanstack/react-query";
 import React from "react";
-import {
-  Alert,
-  Button,
-  Keyboard,
-  Pressable,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { Alert, Button, Text, TouchableOpacity, View } from "react-native";
 import { getReadableVersion } from "react-native-device-info";
 import { ScrollView } from "react-native-gesture-handler";
-import ImagePicker from "react-native-image-crop-picker";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
 import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
 import { dummy } from "~/assets/images";
+import { ImageChooser } from "~/components/ImageChooser";
 import { ImageComponent } from "~/components/image-component";
 import { Loader } from "~/components/loader";
 import { useMyUserId } from "~/navigation/AuthContext";
@@ -23,8 +15,9 @@ import {
   UserMutations,
   useUserService,
 } from "~/network/api/services/useUserService";
+import { ImageKey } from "~/types/image-info";
 import { RemoteImage } from "~/types/remote-image";
-import { FileKeys, UploadFileData } from "~/types/upload-file-data";
+import { UploadFileData } from "~/types/upload-file-data";
 import { UserProfile, UserProfileUpdateData } from "~/types/user-profile";
 import { LogoutPressable } from "./LogoutPressable";
 import { MyEvents } from "./MyEvents";
@@ -63,51 +56,12 @@ export const MyProfileScreen = () => {
     mutationKey: [UserMutations.deleteUser],
   });
 
-  const keyboardDismiss = () => {
-    Keyboard.dismiss();
-  };
-
-  const chooseImage = async () => {
-    try {
-      const {
-        mime,
-        data: base64,
-        filename: fileName,
-      } = await ImagePicker.openPicker({
-        width: 300,
-        height: 300,
-        cropping: true,
-        mediaType: "photo",
-        includeBase64: true,
-        multiple: false,
-        cropperCircleOverlay: true,
-        showsSelectedCount: false,
+  const handleImageAdded = (images: ImageKey[]) => {
+    if (images.length > 0) {
+      updateUserProfile({
+        id: myUserId!,
+        pic: { key: images[0].key },
       });
-      if (!base64) {
-        Alert.alert("Image picker did not return data");
-      } else {
-        uploadFile(
-          {
-            uploadKey: FileKeys.signupPic,
-            imageName: fileName || "profile_pic",
-            mimeType: mime || "image/jpg",
-            userId: myUserId,
-            base64,
-          },
-          {
-            onSuccess(data) {
-              updateUserProfile({
-                id: myUserId!,
-                pic: { key: data.key },
-              });
-            },
-          }
-        );
-      }
-    } catch (e) {
-      if ((e as Error).message !== "User cancelled image selection") {
-        console.error("Error choosing image", e);
-      }
     }
   };
 
@@ -135,7 +89,7 @@ export const MyProfileScreen = () => {
         {myProfile ? (
           <>
             <View style={styles.profileContainer}>
-              <Pressable onPress={chooseImage}>
+              <ImageChooser id={myProfile.id} onImageAdded={handleImageAdded}>
                 <ImageComponent
                   isUrl={!!myProfile.pic.url}
                   resizeMode="cover"
@@ -143,8 +97,8 @@ export const MyProfileScreen = () => {
                   uri={myProfile.pic.url}
                   source={dummy}
                 />
-                <Button title="Update" onPress={chooseImage} />
-              </Pressable>
+                <Button title="Update" />
+              </ImageChooser>
             </View>
 
             {myProfile && (

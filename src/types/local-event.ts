@@ -34,7 +34,7 @@ export interface LocalEventUpdateData {
   venue?: string;
   address?: string;
   coordinates?: number[];
-  images?: [ImageKey];
+  images?: ImageKey[];
   ticketTypes?: TicketTypeData[];
 }
 

@@ -5,21 +5,16 @@ import { Controller, useForm } from "react-hook-form";
 import {
   Alert,
   Keyboard,
-  KeyboardAvoidingView,
-  Modal,
-  PermissionsAndroid,
-  Platform,
   StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
   View,
 } from "react-native";
-import ImagePicker from "react-native-image-crop-picker";
-import { launchCamera } from "react-native-image-picker";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
 import { selectPic } from "~/assets/images";
+import { ImageChooser } from "~/components/ImageChooser";
 import { ButtonComponent } from "~/components/button-component";
 import { ImageComponent } from "~/components/image-component";
 import { SizedBox } from "~/components/sized-box";
@@ -28,7 +23,9 @@ import { GuestStackScreenProps, Screens } from "~/navigation/types";
 import { AuthMutations } from "~/network/api/services/useAuthService";
 import { normalScale, verticalScale } from "~/theme/device/normalize";
 import { CurrentUser } from "~/types/current-user";
+import { ImageKey } from "~/types/image-info";
 import { NewUser } from "~/types/new-user";
+import { isNotEmpty } from "~/utils/common";
 
 export const SignUpScreen = ({
   navigation,
@@ -58,6 +55,7 @@ export const SignUpScreen = ({
     control,
     handleSubmit,
     getValues,
+    setValue,
     formState: { errors },
   } = useForm<NewUser>({
     defaultValues: {
@@ -66,205 +64,41 @@ export const SignUpScreen = ({
       email: "",
       password: "",
       confirmPassword: "",
-      pic: "",
     },
   });
 
   const onSignUp = (data: NewUser) => {
-    signUp(
-      _.pickBy(
-        (v: string | undefined) => v && v.length > 0,
-        data
-      ) as unknown as NewUser,
-      {
-        onSuccess: (user) => {
-          handleSignUp(user);
-          Alert.alert(
-            "Registration success!",
-            "Please check your email to verify your account.",
-            [
-              {
-                text: "OK",
-                onPress: () =>
-                  handleSignInUnverified({
-                    email: getValues("email"),
-                    password: getValues("password"),
-                  }),
-              },
-            ]
-          );
-        },
-      }
-    );
-  };
-
-  const GallerySelect = () => {
-    ImagePicker.openPicker({
-      width: 300,
-      height: 400,
-      cropperRotateButtonsHidden: true,
-      mediaType: "photo",
-      includeBase64: true,
-      cropping: true,
-    }).then((image) => {
-      if (image) {
-        const fileNameTwo = image?.filename ?? "";
-        LodingData(true);
-        const output =
-          fileNameTwo.substr(0, fileNameTwo.lastIndexOf(".")) || fileNameTwo;
-        const base64Two = image?.data ?? "";
-
-        assetsData(output);
-        setBase64Path(base64Two);
-        if (setimageType === 1) {
-          ProfileImageUploadAPI(output, base64Two);
-        }
-        if (setimageType === 2) {
-          BackgroundImageUploadAPI(output, base64Two);
-        }
-      }
+    signUp(_.pickBy(isNotEmpty, data) as unknown as NewUser, {
+      onSuccess: (user) => {
+        handleSignUp(user);
+        Alert.alert(
+          "Registration success!",
+          "Please check your email to verify your account.",
+          [
+            {
+              text: "OK",
+              onPress: () =>
+                handleSignInUnverified({
+                  email: getValues("email"),
+                  password: getValues("password"),
+                }),
+            },
+          ]
+        );
+      },
     });
   };
 
-  const ProfileImageUploadAPI = async (fileItem: any, base64Item: any) => {
-    if (Platform.OS === "ios") {
-      var pic: any = {
-        uploadKey: "signup_pic",
-        imageName: fileItem,
-        base64String: "data:image/jpeg;base64," + base64Item,
-      };
-    } else {
-      const isImg: any = ".JPG";
-      var pic: any = {
-        uploadKey: "signup_pic",
-        imageName: Math.random().toString() + isImg,
-        base64String: "data:image/jpeg;base64," + base64Item,
-      };
-    }
-
-    ImageOptionModal(false);
-    try {
-      const response = await fetch(
-        process.env.API_URL + "/v3/users/upload/file",
-        {
-          method: "post",
-          headers: new Headers({
-            "Content-Type": "application/json",
-          }),
-          body: JSON.stringify(pic),
-        }
-      );
-      const dataItem = await response.json();
-      setProfileUri(dataItem?.data);
-    } catch (error) {}
-  };
-
-  const BackgroundImageUploadAPI = async (fileItem: any, base64Item: any) => {
-    const isImg: any = ".JPG";
-    const pic: any = {
-      uploadKey: "signup_cover_image",
-      imageName: Math.random().toString() + isImg,
-      // imageName: fileItem,
-      base64String: "data:image/jpeg;base64," + base64Item,
-    };
-    ImageOptionModal(false);
-    try {
-      const response = await fetch(
-        process.env.API_URL + "/v3/users/upload/file",
-        {
-          method: "post",
-          headers: new Headers({
-            "Content-Type": "application/json",
-          }),
-          body: JSON.stringify(pic),
-        }
-      );
-      const dataItem = await response.json();
-      setbackgroundUri(dataItem?.data);
-    } catch (error) {
-      console.log(error);
-    }
+  const handleImageAdded = (images: ImageKey[]) => {
+    setValue("pic", images[0]);
   };
 
   const keyboardDismiss = () => {
     Keyboard.dismiss();
   };
 
-  const imageOptionSelect = async (item: any) => {
-    if (item === 1) {
-      if (Platform.OS === "ios") {
-        GallerySelect();
-      } else if (Platform.OS === "android") {
-        try {
-          const granted = await PermissionsAndroid.request(
-            PermissionsAndroid.PERMISSIONS.CAMERA
-          );
-          if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-            console.log("You can use the camera");
-            GallerySelect();
-          } else {
-            Alert.alert("Camera permission denied");
-          }
-        } catch (err) {
-          console.warn(err);
-        }
-      }
-    } else if (item === 2) {
-      if (Platform.OS === "ios") {
-        onUploadImage();
-      } else if (Platform.OS === "android") {
-        try {
-          const granted = await PermissionsAndroid.request(
-            PermissionsAndroid.PERMISSIONS.CAMERA
-          );
-          if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-            console.log("You can use the camera");
-            onUploadImage();
-          } else {
-            Alert.alert("Camera permission denied");
-          }
-        } catch (err) {
-          console.warn(err);
-        }
-      }
-    } else {
-      ImageOptionModal(false);
-    }
-  };
-
-  const onUploadImage = async () => {
-    const { assets } = await launchCamera({
-      mediaType: "photo",
-      includeBase64: true,
-      maxWidth: 800,
-      maxHeight: 800,
-    });
-    ImageOptionModal(false);
-    if (assets) {
-      const img = assets?.[0];
-      const fileNameTwo = img?.fileName ?? "";
-      const output =
-        fileNameTwo.substr(0, fileNameTwo.lastIndexOf(".")) || fileNameTwo;
-      const base64Two = img?.base64 ?? "";
-
-      assetsData(output);
-      setBase64Path(base64Two);
-      if (setimageType === 1) {
-        ProfileImageUploadAPI(output, base64Two);
-      }
-      if (setimageType === 2) {
-        BackgroundImageUploadAPI(output, base64Two);
-      }
-    }
-  };
-
   const closeModal = () => {
     ImageOptionModal(false);
-  };
-
-  const imageSelection = async (no: any) => {
-    selectImage(no);
-    ImageOptionModal(true);
   };
 
   return (
@@ -403,29 +237,17 @@ export const SignUpScreen = ({
           <SizedBox height={verticalScale(14)} />
 
           <Text style={styles.texClass}>{strings.profilepic}</Text>
-          <TouchableOpacity
-            style={styles.profileUser}
-            activeOpacity={0.8}
-            onPress={() => imageSelection(1)}
-          >
-            <Controller
-              control={control}
-              render={({ field: { onChange, value } }) => (
-                <ImageComponent
-                  resizeMode="stretch"
-                  style={
-                    profileUri != ""
-                      ? styles.profilePicClassTwo
-                      : styles.profilePicClass
-                  }
-                  source={
-                    profileUri != "" ? { uri: profileUri.imageUrl } : selectPic
-                  }
-                />
-              )}
-              name="pic"
-            />
-          </TouchableOpacity>
+          <ImageChooser onImageAdded={handleImageAdded}>
+            <View style={styles.profileUser}>
+              <ImageComponent
+                isUrl={!!getValues("pic")?.url}
+                resizeMode="stretch"
+                style={styles.profilePicClass}
+                uri={getValues("pic")?.url}
+                source={selectPic}
+              />
+            </View>
+          </ImageChooser>
           <SizedBox height={verticalScale(20)} />
           <ButtonComponent
             style={styles.signUpBtn}
@@ -435,22 +257,6 @@ export const SignUpScreen = ({
           />
         </View>
       </KeyboardAwareScrollView>
-
-      <Modal transparent onDismiss={closeModal} visible={imageOption}>
-        <KeyboardAvoidingView
-          behavior={Platform.OS === "ios" ? "padding" : "height"}
-          style={styles.keyboardViewTwo}
-        >
-          <View style={styles.imageActionSheet}>
-            <TouchableOpacity onPress={() => imageOptionSelect(1)}>
-              <Text style={styles.galleryText}>Gallery</Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => imageOptionSelect(2)}>
-              <Text style={styles.cameraText}>Camera</Text>
-            </TouchableOpacity>
-          </View>
-        </KeyboardAvoidingView>
-      </Modal>
     </TouchableOpacity>
   );
 };

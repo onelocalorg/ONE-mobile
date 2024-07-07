@@ -16,10 +16,10 @@ import {
   TouchableWithoutFeedback,
   View,
 } from "react-native";
-import ImagePicker from "react-native-image-crop-picker";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
 import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
 import { addGreen, dummy, edit, pinWhite } from "~/assets/images";
+import { ImageChooser } from "~/components/ImageChooser";
 import { ButtonComponent } from "~/components/button-component";
 import { ChooseDate } from "~/components/choose-date/ChooseDate";
 import { ImageComponent } from "~/components/image-component";
@@ -31,6 +31,7 @@ import { useMyUserId } from "~/navigation/AuthContext";
 import { EventMutations } from "~/network/api/services/useEventService";
 import { UserMutations } from "~/network/api/services/useUserService";
 import { normalScale, verticalScale } from "~/theme/device/normalize";
+import { ImageKey } from "~/types/image-info";
 import {
   LocalEvent,
   LocalEventData,
@@ -38,7 +39,7 @@ import {
 } from "~/types/local-event";
 import { RemoteImage } from "~/types/remote-image";
 import { TicketTypeData } from "~/types/ticket-type-data";
-import { FileKeys, UploadFileData } from "~/types/upload-file-data";
+import { UploadFileData } from "~/types/upload-file-data";
 import { isNotEmpty } from "~/utils/common";
 import { AddTicketModal } from "./AddTicketModal";
 import { createStyleSheet } from "./style";
@@ -147,49 +148,8 @@ export const EventEditor = ({
     remove(index);
   };
 
-  const chooseImage = async () => {
-    try {
-      const {
-        mime,
-        data: base64,
-        filename,
-      } = await ImagePicker.openPicker({
-        width: 1200,
-        height: 1200,
-        cropping: true,
-        mediaType: "photo",
-        includeBase64: true,
-        multiple: false,
-        showsSelectedCount: false,
-      });
-      if (!base64) {
-        Alert.alert("Image picker did not return data");
-      } else {
-        uploadFile(
-          {
-            uploadKey: FileKeys.createEventImage,
-            imageName:
-              filename || (event?.id ?? (Math.random() * 100000).toString()),
-            mimeType: mime || "image/jpg",
-            base64,
-          },
-          {
-            onSuccess(uploadedFile) {
-              setValue("images", [
-                {
-                  key: uploadedFile.key,
-                  url: uploadedFile.imageUrl,
-                },
-              ]);
-            },
-          }
-        );
-      }
-    } catch (e) {
-      if ((e as Error).message !== "User cancelled image selection") {
-        console.error("Error choosing image", e);
-      }
-    }
+  const handleImageAdded = (images: ImageKey[]) => {
+    setValue("images", images);
   };
 
   const ChooseStartAndEndDates = () => (
@@ -265,23 +225,25 @@ export const EventEditor = ({
         style={styles.container}
       >
         <View style={{ flex: 1, justifyContent: "space-between" }}>
-          <TouchableOpacity activeOpacity={0.8} onPress={chooseImage}>
-            <View style={{ flex: 1, alignItems: "center" }}>
-              <ImageComponent
-                isUrl={!!_.head(getValues("images"))?.url}
-                resizeMode="cover"
-                uri={_.head(getValues("images"))?.url}
-                source={dummy}
-                style={styles.profile}
-              />
-              {!_.head(getValues("images"))?.url ? (
+          <ImageChooser id={event?.id} onImageAdded={handleImageAdded}>
+            <TouchableOpacity activeOpacity={0.8}>
+              <View style={{ flex: 1, alignItems: "center" }}>
                 <ImageComponent
-                  source={addGreen}
-                  style={[styles.addGreen, { position: "absolute", top: 60 }]}
+                  isUrl={!!_.head(getValues("images"))?.url}
+                  resizeMode="cover"
+                  uri={_.head(getValues("images"))?.url}
+                  source={dummy}
+                  style={styles.profile}
                 />
-              ) : null}
-            </View>
-          </TouchableOpacity>
+                {!_.head(getValues("images"))?.url ? (
+                  <ImageComponent
+                    source={addGreen}
+                    style={[styles.addGreen, { position: "absolute", top: 60 }]}
+                  />
+                ) : null}
+              </View>
+            </TouchableOpacity>
+          </ImageChooser>
           <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
             <View>
               <SizedBox height={verticalScale(50)} />

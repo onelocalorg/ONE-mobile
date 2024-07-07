@@ -26,6 +26,7 @@ import {
   request,
   requestGreen,
 } from "~/assets/images";
+import { ImageChooser } from "~/components/ImageChooser";
 import { ButtonComponent } from "~/components/button-component";
 import { ImageComponent } from "~/components/image-component";
 import { Loader } from "~/components/loader";
@@ -33,6 +34,7 @@ import { LocationAutocomplete } from "~/components/location-autocomplete/Locatio
 import { SizedBox } from "~/components/sized-box";
 import { UserMutations } from "~/network/api/services/useUserService";
 import { verticalScale } from "~/theme/device/normalize";
+import { ImageKey } from "~/types/image-info";
 import { Post, PostData, PostType, PostUpdateData } from "~/types/post";
 import { RemoteImage } from "~/types/remote-image";
 import { FileKeys, UploadFileData } from "~/types/upload-file-data";
@@ -111,6 +113,10 @@ export const PostEditor = ({
     post
       ? onSubmitUpdate!(clean as PostUpdateData, { onSuccess })
       : onSubmitCreate!(clean as PostData, { onSuccess });
+  };
+
+  const handleImageAdded = (images: ImageKey[]) => {
+    appendImage(images);
   };
 
   const chooseImages = async () => {
@@ -320,11 +326,11 @@ export const PostEditor = ({
           <SizedBox height={verticalScale(8)}></SizedBox>
 
           <View style={styles.imagesCont}>
-            <TouchableOpacity onPress={chooseImages} style={styles.imagesCont}>
+            <ImageChooser id={post?.id} onImageAdded={handleImageAdded}>
               <Text style={styles.textTwo}>Image</Text>
               <Text style={styles.textTwo}>+</Text>
               <Text style={styles.textThree}>add images</Text>
-            </TouchableOpacity>
+            </ImageChooser>
             <View style={{ flexGrow: 1 }}></View>
           </View>
 
