@@ -55,11 +55,20 @@ export const AppNavigation = ({
     prefixes: ["onelocal://", "https://app.onelocal.one"],
     config: {
       screens: {
+        [Screens.CREATE_EDIT_POST]: {
+          path: "posts/create",
+        },
         [Screens.POST_DETAIL]: {
           path: "posts/:id/:reply?",
         },
         [Screens.EVENT_DETAIL]: {
           path: "events/:id/:reply",
+        },
+        [Screens.MY_PROFILE]: {
+          path: "users/me",
+        },
+        [Screens.MAP]: {
+          path: "map",
         },
       },
     },
