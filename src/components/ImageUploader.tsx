@@ -4,16 +4,18 @@ import ImagePicker from "react-native-image-crop-picker";
 import { UserMutations } from "~/network/api/services/useUserService";
 import { ImageKey } from "~/types/image-info";
 import { RemoteImage } from "~/types/remote-image";
-import { FileKeys, UploadFileData } from "~/types/upload-file-data";
+import { FileKey, UploadFileData } from "~/types/upload-file-data";
 import { Loader } from "./loader";
 
 interface ImageChooserProps {
   id?: string;
+  uploadKey: FileKey;
   onImageAdded: (images: [ImageKey]) => void;
   children: React.ReactNode;
 }
-export const ImageChooser = ({
+export const ImageUploader = ({
   id,
+  uploadKey,
   onImageAdded,
   children,
 }: ImageChooserProps) => {
@@ -45,7 +47,7 @@ export const ImageChooser = ({
       } else {
         uploadFile(
           {
-            uploadKey: FileKeys.createEventImage,
+            uploadKey,
             imageName: filename || (id ?? (Math.random() * 100000).toString()),
             mimeType: mime || "image/jpg",
             base64,

@@ -7,7 +7,7 @@ import { ScrollView } from "react-native-gesture-handler";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
 import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
 import { dummy } from "~/assets/images";
-import { ImageChooser } from "~/components/ImageChooser";
+import { ImageUploader } from "~/components/ImageUploader";
 import { ImageComponent } from "~/components/image-component";
 import { Loader } from "~/components/loader";
 import { useMyUserId } from "~/navigation/AuthContext";
@@ -17,7 +17,7 @@ import {
 } from "~/network/api/services/useUserService";
 import { ImageKey } from "~/types/image-info";
 import { RemoteImage } from "~/types/remote-image";
-import { UploadFileData } from "~/types/upload-file-data";
+import { FileKey, UploadFileData } from "~/types/upload-file-data";
 import { UserProfile, UserProfileUpdateData } from "~/types/user-profile";
 import { LogoutPressable } from "./LogoutPressable";
 import { MyEvents } from "./MyEvents";
@@ -89,7 +89,11 @@ export const MyProfileScreen = () => {
         {myProfile ? (
           <>
             <View style={styles.profileContainer}>
-              <ImageChooser id={myProfile.id} onImageAdded={handleImageAdded}>
+              <ImageUploader
+                id={myProfile.id}
+                uploadKey={FileKey.pic}
+                onImageAdded={handleImageAdded}
+              >
                 <ImageComponent
                   isUrl={!!myProfile.pic.url}
                   resizeMode="cover"
@@ -98,7 +102,7 @@ export const MyProfileScreen = () => {
                   source={dummy}
                 />
                 <Button title="Update" />
-              </ImageChooser>
+              </ImageUploader>
             </View>
 
             {myProfile && (

@@ -5,7 +5,6 @@ import { DateTime } from "luxon";
 import React, { useState } from "react";
 import { Controller, useFieldArray, useForm, useWatch } from "react-hook-form";
 import {
-  Alert,
   Keyboard,
   Text,
   TextInput,
@@ -13,7 +12,6 @@ import {
   TouchableWithoutFeedback,
   View,
 } from "react-native";
-import ImagePicker from "react-native-image-crop-picker";
 import DateTimePicker from "react-native-modal-datetime-picker";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
 import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
@@ -26,7 +24,7 @@ import {
   request,
   requestGreen,
 } from "~/assets/images";
-import { ImageChooser } from "~/components/ImageChooser";
+import { ImageUploader } from "~/components/ImageUploader";
 import { ButtonComponent } from "~/components/button-component";
 import { ImageComponent } from "~/components/image-component";
 import { Loader } from "~/components/loader";
@@ -37,7 +35,7 @@ import { verticalScale } from "~/theme/device/normalize";
 import { ImageKey } from "~/types/image-info";
 import { Post, PostData, PostType, PostUpdateData } from "~/types/post";
 import { RemoteImage } from "~/types/remote-image";
-import { FileKeys, UploadFileData } from "~/types/upload-file-data";
+import { FileKey, UploadFileData } from "~/types/upload-file-data";
 import { createStyleSheet } from "./style";
 
 interface Callback {
@@ -117,47 +115,6 @@ export const PostEditor = ({
 
   const handleImageAdded = (images: ImageKey[]) => {
     appendImage(images);
-  };
-
-  const chooseImages = async () => {
-    try {
-      const images = await ImagePicker.openPicker({
-        width: 1200,
-        height: 1200,
-        cropping: true,
-        mediaType: "photo",
-        includeBase64: true,
-        multiple: false,
-        showsSelectedCount: false,
-      });
-      const { filename, mime, data: base64 } = images;
-
-      if (!base64) {
-        Alert.alert("Image picker did not return data");
-      } else {
-        uploadFile(
-          {
-            uploadKey: FileKeys.postImage,
-            imageName:
-              filename || (post?.id ?? (Math.random() * 100000).toString()),
-            mimeType: mime || "image/jpg",
-            base64,
-          },
-          {
-            onSuccess(uploadedFile) {
-              appendImage({
-                key: uploadedFile.key,
-                url: uploadedFile.imageUrl,
-              });
-            },
-          }
-        );
-      }
-    } catch (e) {
-      if ((e as Error).message !== "User cancelled image selection") {
-        console.error("Error choosing image", e);
-      }
-    }
   };
 
   const getButtonName = () => {
@@ -326,11 +283,15 @@ export const PostEditor = ({
           <SizedBox height={verticalScale(8)}></SizedBox>
 
           <View style={styles.imagesCont}>
-            <ImageChooser id={post?.id} onImageAdded={handleImageAdded}>
+            <ImageUploader
+              id={post?.id}
+              uploadKey={FileKey.postImage}
+              onImageAdded={handleImageAdded}
+            >
               <Text style={styles.textTwo}>Image</Text>
               <Text style={styles.textTwo}>+</Text>
               <Text style={styles.textThree}>add images</Text>
-            </ImageChooser>
+            </ImageUploader>
             <View style={{ flexGrow: 1 }}></View>
           </View>
 

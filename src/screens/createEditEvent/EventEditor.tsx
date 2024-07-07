@@ -19,7 +19,7 @@ import {
 import { useAppTheme } from "~/app-hooks/use-app-theme";
 import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
 import { addGreen, dummy, edit, pinWhite } from "~/assets/images";
-import { ImageChooser } from "~/components/ImageChooser";
+import { ImageUploader } from "~/components/ImageUploader";
 import { ButtonComponent } from "~/components/button-component";
 import { ChooseDate } from "~/components/choose-date/ChooseDate";
 import { ImageComponent } from "~/components/image-component";
@@ -39,7 +39,7 @@ import {
 } from "~/types/local-event";
 import { RemoteImage } from "~/types/remote-image";
 import { TicketTypeData } from "~/types/ticket-type-data";
-import { UploadFileData } from "~/types/upload-file-data";
+import { FileKey, UploadFileData } from "~/types/upload-file-data";
 import { isNotEmpty } from "~/utils/common";
 import { AddTicketModal } from "./AddTicketModal";
 import { createStyleSheet } from "./style";
@@ -225,7 +225,11 @@ export const EventEditor = ({
         style={styles.container}
       >
         <View style={{ flex: 1, justifyContent: "space-between" }}>
-          <ImageChooser id={event?.id} onImageAdded={handleImageAdded}>
+          <ImageUploader
+            id={event?.id}
+            uploadKey={FileKey.createEventImage}
+            onImageAdded={handleImageAdded}
+          >
             <TouchableOpacity activeOpacity={0.8}>
               <View style={{ flex: 1, alignItems: "center" }}>
                 <ImageComponent
@@ -243,7 +247,7 @@ export const EventEditor = ({
                 ) : null}
               </View>
             </TouchableOpacity>
-          </ImageChooser>
+          </ImageUploader>
           <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
             <View>
               <SizedBox height={verticalScale(50)} />

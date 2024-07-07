@@ -1,6 +1,6 @@
 import { useMutation } from "@tanstack/react-query";
 import _ from "lodash/fp";
-import React, { useContext, useState } from "react";
+import React, { useContext } from "react";
 import { Controller, useForm } from "react-hook-form";
 import {
   Alert,
@@ -13,29 +13,17 @@ import {
 } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
-import { selectPic } from "~/assets/images";
-import { ImageChooser } from "~/components/ImageChooser";
 import { ButtonComponent } from "~/components/button-component";
-import { ImageComponent } from "~/components/image-component";
 import { SizedBox } from "~/components/sized-box";
 import { AuthDispatchContext } from "~/navigation/AuthContext";
-import { GuestStackScreenProps, Screens } from "~/navigation/types";
 import { AuthMutations } from "~/network/api/services/useAuthService";
 import { normalScale, verticalScale } from "~/theme/device/normalize";
 import { CurrentUser } from "~/types/current-user";
-import { ImageKey } from "~/types/image-info";
 import { NewUser } from "~/types/new-user";
 import { isNotEmpty } from "~/utils/common";
 
-export const SignUpScreen = ({
-  navigation,
-}: GuestStackScreenProps<Screens.SIGNUP>) => {
+export const SignUpScreen = () => {
   const { strings } = useStringsAndLabels();
-  const [imageOption, ImageOptionModal] = useState(false);
-  const [filename, assetsData] = useState("");
-  const [base64string, setBase64Path] = useState("");
-  const [profileUri, setProfileUri]: any = useState("");
-  const [setimageType, selectImage] = useState();
   const { handleSignUp, handleSignInUnverified } =
     useContext(AuthDispatchContext);
 
@@ -89,16 +77,8 @@ export const SignUpScreen = ({
     });
   };
 
-  const handleImageAdded = (images: ImageKey[]) => {
-    setValue("pic", images[0]);
-  };
-
   const keyboardDismiss = () => {
     Keyboard.dismiss();
-  };
-
-  const closeModal = () => {
-    ImageOptionModal(false);
   };
 
   return (
@@ -236,19 +216,6 @@ export const SignUpScreen = ({
           />
           <SizedBox height={verticalScale(14)} />
 
-          <Text style={styles.texClass}>{strings.profilepic}</Text>
-          <ImageChooser onImageAdded={handleImageAdded}>
-            <View style={styles.profileUser}>
-              <ImageComponent
-                isUrl={!!getValues("pic")?.url}
-                resizeMode="stretch"
-                style={styles.profilePicClass}
-                uri={getValues("pic")?.url}
-                source={selectPic}
-              />
-            </View>
-          </ImageChooser>
-          <SizedBox height={verticalScale(20)} />
           <ButtonComponent
             style={styles.signUpBtn}
             onPress={handleSubmit(onSignUp)}
