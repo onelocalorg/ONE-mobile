@@ -1,3 +1,4 @@
+import _ from "lodash/fp";
 import { DateTime } from "luxon";
 import React from "react";
 import { Text, TouchableOpacity, View } from "react-native";
@@ -32,9 +33,9 @@ export const EventCard = ({
     >
       <ImageComponent
         resizeMode="stretch"
-        uri={event.images?.[0].url}
+        uri={_.head(event.images)?.url}
         source={dummy}
-        isUrl={!!event.images?.[0].url}
+        isUrl={!!_.head(event.images)?.url}
         style={styles.dummy}
       />
       <View style={styles.flex}>

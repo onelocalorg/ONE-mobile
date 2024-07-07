@@ -113,8 +113,8 @@ export const PostEditor = ({
       : onSubmitCreate!(clean as PostData, { onSuccess });
   };
 
-  const handleImageAdded = (images: ImageKey[]) => {
-    appendImage(images);
+  const handleImageAdded = (image: ImageKey) => {
+    appendImage(image);
   };
 
   const getButtonName = () => {

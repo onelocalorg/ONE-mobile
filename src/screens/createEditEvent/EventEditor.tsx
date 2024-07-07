@@ -24,12 +24,10 @@ import { ButtonComponent } from "~/components/button-component";
 import { ChooseDate } from "~/components/choose-date/ChooseDate";
 import { ImageComponent } from "~/components/image-component";
 import { Input } from "~/components/input";
-import { Loader } from "~/components/loader";
 import { LocationAutocomplete } from "~/components/location-autocomplete/LocationAutocomplete";
 import { SizedBox } from "~/components/sized-box";
 import { useMyUserId } from "~/navigation/AuthContext";
 import { EventMutations } from "~/network/api/services/useEventService";
-import { UserMutations } from "~/network/api/services/useUserService";
 import { normalScale, verticalScale } from "~/theme/device/normalize";
 import { ImageKey } from "~/types/image-info";
 import {
@@ -37,9 +35,8 @@ import {
   LocalEventData,
   LocalEventUpdateData,
 } from "~/types/local-event";
-import { RemoteImage } from "~/types/remote-image";
 import { TicketTypeData } from "~/types/ticket-type-data";
-import { FileKey, UploadFileData } from "~/types/upload-file-data";
+import { FileKey } from "~/types/upload-file-data";
 import { isNotEmpty } from "~/utils/common";
 import { AddTicketModal } from "./AddTicketModal";
 import { createStyleSheet } from "./style";
@@ -70,16 +67,9 @@ export const EventEditor = ({
   const isMyEvent = myUserId === event?.host.id;
   const [isTicketModalVisible, setTicketModalVisible] = useState(false);
 
-  const { isPending: isUploadingImage, mutate: uploadFile } = useMutation<
-    RemoteImage,
-    Error,
-    UploadFileData
-  >({
-    mutationKey: [UserMutations.uploadFile],
-  });
-
   const {
     control,
+    watch,
     getValues,
     setValue,
     handleSubmit,
@@ -109,6 +99,8 @@ export const EventEditor = ({
           timezone: DateTime.local().zoneName,
         },
   });
+
+  const images = watch("images");
 
   const { append, remove } = useFieldArray({
     control,
@@ -148,9 +140,11 @@ export const EventEditor = ({
     remove(index);
   };
 
-  const handleImageAdded = (images: ImageKey[]) => {
-    setValue("images", images);
+  const handleImageAdded = (image: ImageKey) => {
+    setValue("images", [image]);
   };
+
+  console.log("images", getValues("images"));
 
   const ChooseStartAndEndDates = () => (
     <View>
@@ -219,7 +213,6 @@ export const EventEditor = ({
 
   return (
     <View style={styles.container}>
-      <Loader visible={isUploadingImage} />
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         style={styles.container}
@@ -232,9 +225,9 @@ export const EventEditor = ({
           >
             <View style={{ flex: 1, alignItems: "center" }}>
               <ImageComponent
-                isUrl={!!_.head(getValues("images"))?.url}
+                isUrl={!!_.head(images)?.url}
                 resizeMode="cover"
-                uri={_.head(getValues("images"))?.url}
+                uri={_.head(images)?.url}
                 source={dummy}
                 style={styles.profile}
               />

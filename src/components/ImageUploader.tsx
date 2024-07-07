@@ -11,7 +11,7 @@ import { Loader } from "./loader";
 interface ImageChooserProps {
   id?: string;
   uploadKey: FileKey;
-  onImageAdded: (images: [ImageKey]) => void;
+  onImageAdded: (images: ImageKey) => void;
   children: React.ReactNode;
 }
 export const ImageUploader = ({
@@ -57,12 +57,10 @@ export const ImageUploader = ({
           },
           {
             onSuccess(uploadedFile) {
-              onImageAdded([
-                {
-                  key: uploadedFile.key,
-                  url: uploadedFile.imageUrl,
-                },
-              ]);
+              onImageAdded({
+                key: uploadedFile.key,
+                url: uploadedFile.imageUrl,
+              });
             },
           }
         );
@@ -76,7 +74,7 @@ export const ImageUploader = ({
 
   return (
     <View>
-      <Loader visible={isPending} />
+      <Loader visible={isPending} showOverlay={true} />
       <Pressable onPress={chooseImage}>{children}</Pressable>
     </View>
   );

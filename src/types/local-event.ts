@@ -11,7 +11,7 @@ export interface LocalEvent extends LocalEventData {
   ticketTypes: TicketType[];
   viewCount: number;
   timezone: string;
-  images?: [ImageUrl];
+  images: ImageUrl[];
 }
 
 export interface LocalEventData extends Omit<LocalEventUpdateData, "id"> {
@@ -19,6 +19,7 @@ export interface LocalEventData extends Omit<LocalEventUpdateData, "id"> {
   startDate: DateTime;
   coordinates: number[];
   ticketTypes: TicketTypeData[];
+  images: ImageKey[];
 }
 
 // The data for creating an event.

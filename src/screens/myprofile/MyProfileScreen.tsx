@@ -56,13 +56,11 @@ export const MyProfileScreen = () => {
     mutationKey: [UserMutations.deleteUser],
   });
 
-  const handleImageAdded = (images: ImageKey[]) => {
-    if (images.length > 0) {
-      updateUserProfile({
-        id: myUserId!,
-        pic: { key: images[0].key },
-      });
-    }
+  const handleImageAdded = (image: ImageKey) => {
+    updateUserProfile({
+      id: myUserId!,
+      pic: { key: image.key },
+    });
   };
 
   const deleteAccount = () => {
