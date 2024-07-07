@@ -230,23 +230,21 @@ export const EventEditor = ({
             uploadKey={FileKey.createEventImage}
             onImageAdded={handleImageAdded}
           >
-            <TouchableOpacity activeOpacity={0.8}>
-              <View style={{ flex: 1, alignItems: "center" }}>
+            <View style={{ flex: 1, alignItems: "center" }}>
+              <ImageComponent
+                isUrl={!!_.head(getValues("images"))?.url}
+                resizeMode="cover"
+                uri={_.head(getValues("images"))?.url}
+                source={dummy}
+                style={styles.profile}
+              />
+              {!_.head(getValues("images"))?.url ? (
                 <ImageComponent
-                  isUrl={!!_.head(getValues("images"))?.url}
-                  resizeMode="cover"
-                  uri={_.head(getValues("images"))?.url}
-                  source={dummy}
-                  style={styles.profile}
+                  source={addGreen}
+                  style={[styles.addGreen, { position: "absolute", top: 60 }]}
                 />
-                {!_.head(getValues("images"))?.url ? (
-                  <ImageComponent
-                    source={addGreen}
-                    style={[styles.addGreen, { position: "absolute", top: 60 }]}
-                  />
-                ) : null}
-              </View>
-            </TouchableOpacity>
+              ) : null}
+            </View>
           </ImageUploader>
           <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
             <View>
