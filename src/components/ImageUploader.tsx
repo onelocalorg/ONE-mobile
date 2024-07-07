@@ -1,6 +1,7 @@
 import { useMutation } from "@tanstack/react-query";
 import { Alert, Pressable, View } from "react-native";
 import ImagePicker from "react-native-image-crop-picker";
+import { useMyUserId } from "~/navigation/AuthContext";
 import { UserMutations } from "~/network/api/services/useUserService";
 import { ImageKey } from "~/types/image-info";
 import { RemoteImage } from "~/types/remote-image";
@@ -19,6 +20,7 @@ export const ImageUploader = ({
   onImageAdded,
   children,
 }: ImageChooserProps) => {
+  const myUserId = useMyUserId();
   const { isPending, mutate: uploadFile } = useMutation<
     RemoteImage,
     Error,
@@ -47,6 +49,7 @@ export const ImageUploader = ({
       } else {
         uploadFile(
           {
+            userId: myUserId,
             uploadKey,
             imageName: filename || (id ?? (Math.random() * 100000).toString()),
             mimeType: mime || "image/jpg",

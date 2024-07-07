@@ -90,7 +90,7 @@ export const MyProfileScreen = () => {
           <>
             <View style={styles.profileContainer}>
               <ImageUploader
-                id={myProfile.id}
+                id={myUserId}
                 uploadKey={FileKey.pic}
                 onImageAdded={handleImageAdded}
               >
