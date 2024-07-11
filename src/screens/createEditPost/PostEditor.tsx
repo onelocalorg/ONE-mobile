@@ -1,9 +1,12 @@
+import { faCalendar } from "@fortawesome/free-regular-svg-icons";
+import { faLocationDot } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { useNavigation } from "@react-navigation/native";
 import { useMutation } from "@tanstack/react-query";
 import _ from "lodash/fp";
 import { DateTime } from "luxon";
 import React, { useState } from "react";
-import { Controller, useFieldArray, useForm, useWatch } from "react-hook-form";
+import { Controller, useForm, useWatch } from "react-hook-form";
 import {
   Keyboard,
   Text,
@@ -19,19 +22,15 @@ import {
   blackOffer,
   buttonArrowGreen,
   greenOffer,
-  pin,
-  postCalender,
   request,
   requestGreen,
 } from "~/assets/images";
-import { ImageUploader } from "~/components/ImageUploader";
 import { ButtonComponent } from "~/components/button-component";
+import { ImageChooser } from "~/components/image-chooser/ImageChooser";
 import { ImageComponent } from "~/components/image-component";
 import { Loader } from "~/components/loader";
 import { LocationAutocomplete } from "~/components/location-autocomplete/LocationAutocomplete";
-import { SizedBox } from "~/components/sized-box";
 import { UserMutations } from "~/network/api/services/useUserService";
-import { verticalScale } from "~/theme/device/normalize";
 import { ImageKey } from "~/types/image-info";
 import { Post, PostData, PostType, PostUpdateData } from "~/types/post";
 import { RemoteImage } from "~/types/remote-image";
@@ -78,10 +77,6 @@ export const PostEditor = ({
       ),
     },
   });
-  const { append: appendImage, remove: removeImage } = useFieldArray({
-    control,
-    name: "images",
-  });
 
   const type = useWatch({
     control,
@@ -113,8 +108,8 @@ export const PostEditor = ({
       : onSubmitCreate!(clean as PostData, { onSuccess });
   };
 
-  const handleImageAdded = (image: ImageKey) => {
-    appendImage(image);
+  const handleChangeImages = (images: ImageKey[]) => {
+    setValue("images", images);
   };
 
   const getButtonName = () => {
@@ -123,11 +118,6 @@ export const PostEditor = ({
     } else {
       return post ? strings.editRequest : strings.createRequest;
     }
-  };
-
-  const handlePressImage = (keyToRemove: string) => {
-    const index = getValues("images")?.findIndex((i) => i.key === keyToRemove);
-    removeImage(index);
   };
 
   const PostTypeChooser = () => (
@@ -172,8 +162,8 @@ export const PostEditor = ({
       <Loader visible={isLoading || isUploadingImage} />
       <PostTypeChooser />
       <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-        <View>
-          <View style={styles.createPostCont}>
+        <View style={{ justifyContent: "space-between" }}>
+          <View style={{ rowGap: 8 }}>
             <Controller
               control={control}
               rules={{
@@ -186,42 +176,36 @@ export const PostEditor = ({
                   onBlur={onBlur}
                   value={value}
                   onChangeText={onChange}
-                  style={styles.postInputTwo}
+                  style={styles.postInput}
                   autoFocus={!post}
                 ></TextInput>
               )}
               name="name"
             />
-          </View>
-          <SizedBox height={verticalScale(10)}></SizedBox>
-          {errors.name && <Text>This is required.</Text>}
-          <View style={styles.createPostContTwo}>
-            <Controller
-              control={control}
-              render={({ field: { onChange, value } }) => (
-                <LocationAutocomplete
-                  placeholder="Location"
-                  address={value}
-                  onPress={(data, details) => {
-                    onChange(data.description);
-                    if (details) {
-                      setValue("coordinates", [
-                        details.geometry.location.lng,
-                        details.geometry.location.lat,
-                      ]);
-                    }
-                  }}
-                />
-              )}
-              name="address"
-            />
-            <ImageComponent
-              resizeMode="cover"
-              source={pin}
-              style={styles.createImgTwo}
-            ></ImageComponent>
-          </View>
-          <View style={styles.postCont}>
+            {errors.name && <Text>This is required.</Text>}
+            <View style={styles.rowContainer}>
+              <FontAwesomeIcon icon={faLocationDot} size={20} />
+              <Controller
+                control={control}
+                render={({ field: { onChange, value } }) => (
+                  <LocationAutocomplete
+                    placeholder="Location"
+                    address={value}
+                    onPress={(data, details) => {
+                      onChange(data.description);
+                      if (details) {
+                        setValue("coordinates", [
+                          details.geometry.location.lng,
+                          details.geometry.location.lat,
+                        ]);
+                      }
+                    }}
+                  />
+                )}
+                name="address"
+              />
+            </View>
+
             <Controller
               control={control}
               rules={{
@@ -230,87 +214,73 @@ export const PostEditor = ({
               render={({ field: { onChange, onBlur, value } }) => (
                 <TextInput
                   multiline
-                  placeholder="Body"
+                  placeholder="Details"
                   placeholderTextColor="darkgray"
                   textAlignVertical={"top"}
                   value={value}
                   onBlur={onBlur}
                   onChangeText={onChange}
-                  style={styles.postInput}
+                  style={styles.postInputBody}
                 ></TextInput>
               )}
               name="details"
             />
-          </View>
-          {errors.details && <Text>This is required.</Text>}
+            {errors.details && <Text>This is required.</Text>}
 
-          <SizedBox height={verticalScale(10)}></SizedBox>
-          <View style={{ flexDirection: "row" }}>
             <TouchableOpacity
               activeOpacity={0.8}
               onPress={() => setDatePickerVisible(true)}
-              style={styles.postContainer}
+              style={styles.rowContainer}
             >
-              <Text style={styles.postInputIconRight}>
-                {getValues("startDate")?.toLocaleString(DateTime.DATE_MED)}
-              </Text>
+              <FontAwesomeIcon icon={faCalendar} size={20} />
+
               <Controller
                 control={control}
                 render={({ field: { onChange, value } }) => (
-                  <DateTimePicker
-                    isVisible={isDatePickerVisible}
-                    date={value?.toJSDate()}
-                    mode="date"
-                    minimumDate={new Date()}
-                    onConfirm={(d) => {
-                      onChange(DateTime.fromJSDate(d));
-                      setDatePickerVisible(false);
-                    }}
-                    onCancel={() => setDatePickerVisible(false)}
-                  />
+                  <>
+                    <Text
+                      style={[
+                        styles.postInput,
+                        { color: getValues("startDate") ? "black" : "#8B8888" },
+                      ]}
+                    >
+                      {getValues("startDate")?.toLocaleString(
+                        DateTime.DATE_MED
+                      ) ?? "Date"}
+                    </Text>
+                    <DateTimePicker
+                      isVisible={isDatePickerVisible}
+                      date={value?.toJSDate()}
+                      mode="date"
+                      minimumDate={new Date()}
+                      onConfirm={(d) => {
+                        onChange(DateTime.fromJSDate(d));
+                        setDatePickerVisible(false);
+                      }}
+                      onCancel={() => setDatePickerVisible(false)}
+                    />
+                  </>
                 )}
                 name="startDate"
               />
-
-              <ImageComponent
-                resizeMode="cover"
-                source={postCalender}
-                style={styles.createImgTwo}
-              ></ImageComponent>
             </TouchableOpacity>
-            <View style={{ flexGrow: 1 }} />
-          </View>
-          <SizedBox height={verticalScale(8)}></SizedBox>
 
-          <View style={styles.imagesCont}>
-            <ImageUploader
+            <Text style={styles.label1}>Images</Text>
+            <ImageChooser
               id={post?.id}
               uploadKey={FileKey.postImage}
-              onImageAdded={handleImageAdded}
-            >
-              <Text style={styles.textTwo}>Image</Text>
-              <Text style={styles.textTwo}>+</Text>
-              <Text style={styles.textThree}>add images</Text>
-            </ImageUploader>
-            <View style={{ flexGrow: 1 }}></View>
+              defaultValue={getValues("images")}
+              onChangeImages={handleChangeImages}
+            />
           </View>
-
-          <View style={styles.multipleImagecont}>
-            {getValues("images")?.map((ie) => (
-              <TouchableOpacity
-                key={ie.key}
-                onPress={() => handlePressImage(ie.key)}
-              >
-                <ImageComponent
-                  source={{ uri: ie.url }}
-                  style={styles.selectImage}
-                ></ImageComponent>
-              </TouchableOpacity>
-            ))}
-          </View>
-
           <View
-            style={{ flexDirection: "row", justifyContent: "space-around" }}
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-around",
+              bottom: 0,
+              marginBottom: 0,
+              marginTop: 30,
+            }}
           >
             <ButtonComponent
               onPress={navigation.goBack}

@@ -11,13 +11,13 @@ import { Loader } from "./loader";
 interface ImageChooserProps {
   id?: string;
   uploadKey: FileKey;
-  onImageAdded: (images: ImageKey) => void;
+  onImageUpload: (image: ImageKey) => void;
   children: React.ReactNode;
 }
 export const ImageUploader = ({
   id,
   uploadKey,
-  onImageAdded,
+  onImageUpload,
   children,
 }: ImageChooserProps) => {
   const myUserId = useMyUserId();
@@ -57,7 +57,7 @@ export const ImageUploader = ({
           },
           {
             onSuccess(uploadedFile) {
-              onImageAdded({
+              onImageUpload({
                 key: uploadedFile.key,
                 url: uploadedFile.imageUrl,
               });

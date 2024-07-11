@@ -31,10 +31,10 @@ export const LocationAutocomplete = ({
       <GooglePlacesAutocomplete
         ref={ref}
         styles={{
-          // container: {
-          //   flex: 1,
-          //   flexDirection: "column",
-          // },
+          container: {
+            flex: 1,
+            flexDirection: "column",
+          },
           textInput: {
             backgroundColor: "#E8E8E8",
             height: 35,

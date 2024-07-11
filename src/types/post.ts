@@ -20,7 +20,7 @@ export interface Post extends PostData {
   gratis: number;
   author: OneUser;
   postDate: DateTime;
-  images: [ImageUrl];
+  images: ImageUrl[];
   numReplies: number;
   timezone: string;
 }
@@ -40,7 +40,7 @@ export interface PostUpdateData {
   coordinates?: number[];
   startDate?: DateTime;
   timezone?: string;
-  images?: [ImageKey];
+  images?: ImageKey[];
 }
 
 export const isPost = (item: LocalEvent | Post) => "author" in item;

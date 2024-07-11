@@ -46,6 +46,11 @@ export const createStyleSheet = (theme: ThemeProps) => {
     row: {
       flexDirection: "row",
       marginTop: verticalScale(10),
+      alignItems: "flex-start",
+    },
+    column: {
+      flexDirection: "column",
+      alignItems: "stretch",
     },
     center: {
       // alignItems: 'center',
@@ -69,10 +74,11 @@ export const createStyleSheet = (theme: ThemeProps) => {
       justifyContent: "center",
     },
     calendarTime: {
-      height: normalScale(40),
-      width: normalScale(40),
+      height: normalScale(20),
+      width: normalScale(20),
     },
     margin: {
+      marginLeft: normalScale(8),
       backgroundColor: theme.colors.grey,
       borderWidth: theme.borderWidth.borderWidth1,
       borderColor: theme.colors.lightBlack,
@@ -90,8 +96,6 @@ export const createStyleSheet = (theme: ThemeProps) => {
       fontFamily: theme.fontType.light,
       fontSize: theme.fontSize.font12,
       color: theme.colors.black,
-      lineHeight: normalScale(16),
-      paddingHorizontal: normalScale(8),
     },
     yellow: {
       backgroundColor: theme.colors.yellow,
@@ -116,12 +120,6 @@ export const createStyleSheet = (theme: ThemeProps) => {
       top: verticalScale(20),
       left: normalScale(10),
     },
-    event: {
-      fontFamily: theme.fontType.regular,
-      fontSize: theme.fontSize.font14,
-      color: theme.colors.black,
-      marginTop: verticalScale(6),
-    },
     marginTop: {
       marginTop: verticalScale(10),
       alignItems: "center",
@@ -142,9 +140,10 @@ export const createStyleSheet = (theme: ThemeProps) => {
     // },
     rowOnly: {
       flexDirection: "row",
-      justifyContent: "space-between",
+      justifyContent: "flex-start",
       marginBottom: verticalScale(8),
       alignItems: "center",
+      columnGap: normalScale(12),
     },
     ticket: {
       fontFamily: theme.fontType.regular,
@@ -155,6 +154,12 @@ export const createStyleSheet = (theme: ThemeProps) => {
     edit: {
       height: normalScale(20),
       width: normalScale(20),
+    },
+    delete: {
+      height: normalScale(20),
+      width: normalScale(20),
+      paddingLeft: 10,
+      color: theme.colors.red,
     },
     modalContainer: {
       marginTop: verticalScale(10),
@@ -196,15 +201,33 @@ export const createStyleSheet = (theme: ThemeProps) => {
       height: verticalScale(5),
       marginLeft: normalScale(3),
     },
-    bottomButton: {
-      position: "absolute",
-      bottom: 0,
-      left: 0,
-      right: 0,
+    postButton: {
+      marginTop: verticalScale(16),
+      backgroundColor: "#007112",
+      borderRadius: theme.borderRadius.radius14,
+      paddingVertical: verticalScale(14),
+      shadowColor: theme.colors.black,
+      shadowOpacity: theme.opacity.opacity15,
+      shadowRadius: theme.borderRadius.radius8,
+      flexDirection: "row",
+      alignItems: "center",
       paddingHorizontal: normalScale(16),
-      backgroundColor: theme.colors.white,
-      paddingBottom: verticalScale(20),
-      paddingTop: verticalScale(5),
+      marginHorizontal: normalScale(8),
+      flexGrow: 1,
+    },
+    cancelButton: {
+      marginTop: verticalScale(16),
+      backgroundColor: theme.colors.grey,
+      borderRadius: theme.borderRadius.radius14,
+      paddingVertical: verticalScale(14),
+      shadowColor: theme.colors.black,
+      shadowOpacity: theme.opacity.opacity15,
+      shadowRadius: theme.borderRadius.radius8,
+      flexDirection: "row",
+      alignItems: "center",
+      paddingHorizontal: normalScale(16),
+      marginHorizontal: normalScale(8),
+      flexGrow: 1,
     },
     profilePic: {
       height: 50,
@@ -834,11 +857,13 @@ export const createStyleSheet = (theme: ThemeProps) => {
     },
     selectImage: {
       height: 90,
-      // width: "90%",
       width: 90,
       borderRadius: 18,
       marginRight: 10,
       marginTop: 12,
+      backgroundColor: "lightgrey",
+      alignItems: "center",
+      justifyContent: "center",
     },
     submitButton: {
       flexDirection: "row",
@@ -1012,6 +1037,32 @@ export const createStyleSheet = (theme: ThemeProps) => {
       fontFamily: theme.fontType.medium,
       fontSize: theme.fontSize.font14,
       color: theme.colors.redTwo,
+    },
+    imagesCont: {
+      flexDirection: "row",
+      marginTop: 10,
+    },
+    textTwo: {
+      color: theme.colors.black,
+      fontSize: 15,
+      fontFamily: theme.fontType.regular,
+      marginRight: 5,
+      fontWeight: "600",
+    },
+    textThree: {
+      color: "lightgray",
+      fontSize: 14,
+      fontFamily: theme.fontType.regular,
+      marginRight: 5,
+      fontWeight: "600",
+    },
+    eventClass: {
+      borderColor: "green",
+      borderWidth: 2,
+      borderRadius: 10,
+      paddingVertical: 10,
+      paddingHorizontal: 5,
+      margin: 10,
     },
   });
 };
