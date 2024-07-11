@@ -879,7 +879,7 @@ export const createStyleSheet = (theme: ThemeProps) => {
       marginVertical: 10,
     },
     replyInput: {
-      height: 40,
+      height: 30,
       width: width - 90,
       backgroundColor: "lightgray",
       borderRadius: 12,
@@ -888,6 +888,7 @@ export const createStyleSheet = (theme: ThemeProps) => {
       marginHorizontal: 10,
       padding: 10,
       color: theme.colors.black,
+      textAlignVertical: "top",
     },
     // replyContainer: {
     //   height: 200,

@@ -297,6 +297,7 @@ export const PostDetailScreen = ({
             <TextInput
               ref={replyRef}
               style={styles.replyInput}
+              multiline={true}
               placeholder="Make a Reply"
               placeholderTextColor="gray"
               value={value}
