@@ -299,15 +299,12 @@ export const EventEditor = ({
               {errors.details && <Text>This is required.</Text>}
             </View>
 
-            <View>
-              <Text style={styles.label}>Images</Text>
-              <ImageChooser
-                id={event?.id}
-                uploadKey={FileKey.createEventImage}
-                defaultValue={getValues("images")}
-                onChangeImages={handleChangeImages}
-              />
-            </View>
+            <ImageChooser
+              id={event?.id}
+              uploadKey={FileKey.createEventImage}
+              defaultValue={getValues("images")}
+              onChangeImages={handleChangeImages}
+            />
 
             <View style={styles.rowContainer}>
               <Pressable onPress={() => setTicketModalVisible(true)}>

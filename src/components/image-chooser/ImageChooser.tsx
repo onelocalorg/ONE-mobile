@@ -4,9 +4,10 @@ import { Pressable, View } from "react-native";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
 import { ImageUploader } from "~/components/ImageUploader";
 // import { ImageKey } from "~/types/image-info";
-import { faPlus } from "@fortawesome/free-solid-svg-icons";
+import { faPlus, faSpinner } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { FileKey } from "~/types/upload-file-data";
+import FontAwesomeSpin from "../FontAwesomeSpin";
 import { ImageComponent } from "../image-component";
 import { createStyleSheet } from "./style";
 
@@ -30,6 +31,7 @@ export const ImageChooser = ({
   const { theme } = useAppTheme();
   const styles = createStyleSheet(theme);
   const [images, setImages] = useState(defaultValue ?? []);
+  const [isLoading, setLoading] = useState(false);
 
   const handleImageUpload = (newImage: ImageKey) => {
     const updated = [...images, newImage];
@@ -49,6 +51,7 @@ export const ImageChooser = ({
         id={id}
         uploadKey={uploadKey}
         onImageUpload={handleImageUpload}
+        onLoading={setLoading}
       >
         <View style={styles.multipleImagecont}>
           {images.map((ie) => (
@@ -60,7 +63,13 @@ export const ImageChooser = ({
             </Pressable>
           ))}
           <View key="new" style={styles.selectImage}>
-            <FontAwesomeIcon icon={faPlus} size={40} color="grey" />
+            {isLoading ? (
+              <FontAwesomeSpin>
+                <FontAwesomeIcon icon={faSpinner} size={32} />
+              </FontAwesomeSpin>
+            ) : (
+              <FontAwesomeIcon icon={faPlus} size={40} color="grey" />
+            )}
           </View>
         </View>
       </ImageUploader>

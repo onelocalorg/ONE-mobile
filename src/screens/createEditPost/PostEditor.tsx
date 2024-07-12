@@ -265,7 +265,6 @@ export const PostEditor = ({
               />
             </TouchableOpacity>
 
-            <Text style={styles.label1}>Images</Text>
             <ImageChooser
               id={post?.id}
               uploadKey={FileKey.postImage}

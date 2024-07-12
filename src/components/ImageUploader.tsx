@@ -1,23 +1,25 @@
 import { useMutation } from "@tanstack/react-query";
-import { Alert, Pressable, View } from "react-native";
+import { useEffect } from "react";
+import { Alert, Pressable } from "react-native";
 import ImagePicker from "react-native-image-crop-picker";
 import { useMyUserId } from "~/navigation/AuthContext";
 import { UserMutations } from "~/network/api/services/useUserService";
 import { ImageKey } from "~/types/image-info";
 import { RemoteImage } from "~/types/remote-image";
 import { FileKey, UploadFileData } from "~/types/upload-file-data";
-import { Loader } from "./loader";
 
 interface ImageChooserProps {
   id?: string;
   uploadKey: FileKey;
   onImageUpload: (image: ImageKey) => void;
+  onLoading?: (isLoading: boolean) => void;
   children: React.ReactNode;
 }
 export const ImageUploader = ({
   id,
   uploadKey,
   onImageUpload,
+  onLoading,
   children,
 }: ImageChooserProps) => {
   const myUserId = useMyUserId();
@@ -28,6 +30,10 @@ export const ImageUploader = ({
   >({
     mutationKey: [UserMutations.uploadFile],
   });
+
+  useEffect(() => {
+    onLoading?.(isPending);
+  }, [onLoading, isPending]);
 
   const chooseImage = async () => {
     try {
@@ -72,10 +78,5 @@ export const ImageUploader = ({
     }
   };
 
-  return (
-    <View>
-      <Loader visible={isPending} showOverlay={true} />
-      <Pressable onPress={chooseImage}>{children}</Pressable>
-    </View>
-  );
+  return <Pressable onPress={chooseImage}>{children}</Pressable>;
 };
