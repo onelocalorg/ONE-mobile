@@ -279,7 +279,6 @@ export const EventEditor = ({
             </View>
 
             <View>
-              <Text style={styles.label}>{strings.aboutEvent}</Text>
               <Controller
                 control={control}
                 rules={{
@@ -287,7 +286,7 @@ export const EventEditor = ({
                 }}
                 render={({ field: { onChange, value } }) => (
                   <TextInput
-                    placeholder={strings.enterAboutEvent}
+                    placeholder="Event details"
                     multiline
                     value={value}
                     style={[styles.postInput, { height: 100 }]}

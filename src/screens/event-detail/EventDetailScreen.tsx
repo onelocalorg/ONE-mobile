@@ -7,6 +7,7 @@ import { useAppTheme } from "~/app-hooks/use-app-theme";
 import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
 import { useNavigations } from "~/app-hooks/useNavigations";
 import { calendarTime, pinWhite } from "~/assets/images";
+import { MultiImageViewer } from "~/components/MultiImageViewer";
 import { ButtonComponent } from "~/components/button-component";
 import { ImageComponent } from "~/components/image-component";
 import { Loader } from "~/components/loader";
@@ -122,6 +123,7 @@ export const EventDetailScreen = ({
             <SizedBox height={verticalScale(30)} />
             <Text style={styles.event}>{strings.aboutEvent}</Text>
             <Text style={styles.desc}>{event.details}</Text>
+            <MultiImageViewer images={event.images} />
           </View>
           <Tickets event={event} />
           <RsvpView event={event} />
