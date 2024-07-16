@@ -30,7 +30,7 @@ export const StripeCheckout = ({
 
   const initializePaymentSheet = async () => {
     const { error } = await initPaymentSheet({
-      merchantDisplayName: "ONE|Local",
+      merchantDisplayName: "ONE Local",
       customerId: order.stripe.customer,
       customerEphemeralKeySecret: order.stripe.ephemeralKey,
       paymentIntentClientSecret: order.paymentIntent,
