@@ -131,7 +131,7 @@ export const MapScreen = () => {
           <SymbolLayer id={"symbols"} minZoomLevel={0} style={mapStyles.icon} />
         </ShapeSource>
       </MapView>
-      {layoutWidth && (
+      {layoutWidth && selected?.length > 0 && (
         <View
           style={{
             flex: 1,
