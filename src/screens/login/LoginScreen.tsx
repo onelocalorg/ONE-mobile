@@ -15,6 +15,7 @@ import {
   Alert,
   Keyboard,
   Linking,
+  Platform,
   Text,
   TextInput,
   TouchableOpacity,
@@ -266,15 +267,19 @@ export const LoginScreen = ({
         <ImageComponent source={google} style={styles.google} />
         <Text style={styles.loginGoogle}>{strings.loginGoogle}</Text>
       </TouchableOpacity>
-      <SizedBox height={verticalScale(10)} />
-      <TouchableOpacity
-        activeOpacity={0.8}
-        style={styles.appleButton}
-        onPress={signInWithApple}
-      >
-        <ImageComponent source={apple} style={styles.apple} />
-        <Text style={styles.loginApple}>{strings.loginApple}</Text>
-      </TouchableOpacity>
+      {Platform.OS === "ios" && (
+        <>
+          <SizedBox height={verticalScale(10)} />
+          <TouchableOpacity
+            activeOpacity={0.8}
+            style={styles.appleButton}
+            onPress={signInWithApple}
+          >
+            <ImageComponent source={apple} style={styles.apple} />
+            <Text style={styles.loginApple}>{strings.loginApple}</Text>
+          </TouchableOpacity>
+        </>
+      )}
       <SizedBox height={verticalScale(12)} />
       <Text style={styles.orText}>or</Text>
       {/* <SizedBox height={verticalScale(20)} /> */}
