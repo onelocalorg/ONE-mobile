@@ -138,6 +138,8 @@ export const LoginScreen = ({
           // play services not available or outdated
           // TODO Display error
           LOG.error("signInWithGoogle:", error);
+        } else {
+          LOG.error("Unknown error", JSON.stringify(error));
         }
       } else {
         handleApiError("Could not sign in with Google", error as Error);

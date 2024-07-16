@@ -11,7 +11,8 @@ import { FeatureCollection } from "geojson";
 import _ from "lodash/fp";
 import { Duration } from "luxon";
 import React, { useState } from "react";
-import { TouchableWithoutFeedback, View } from "react-native";
+import { View } from "react-native";
+import Carousel from "react-native-reanimated-carousel";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
 import { useNavigations } from "~/app-hooks/useNavigations";
 import { useEventService } from "~/network/api/services/useEventService";
@@ -40,6 +41,7 @@ export const MapScreen = () => {
   const styles = createStyleSheet(theme);
   const [selected, setSelected] = useState<LocalEvent[] | Post[]>([]);
   const { gotoEventDetails, gotoPostDetails } = useNavigations();
+  const [layoutWidth, setLayoutWidth] = useState<number>();
 
   // TODO Use the center of the current community
   const centerCoordinate = [BOULDER_LON, BOULDER_LAT];
@@ -86,52 +88,84 @@ export const MapScreen = () => {
   };
 
   return (
-    <TouchableWithoutFeedback onPress={clearSelected}>
-      <View style={{ flex: 1 }}>
-        <Loader visible={isLoading} />
-        <MapView
-          style={styles.map}
-          zoomEnabled={true}
-          compassEnabled={true}
-          onPress={clearSelected}
-          gestureSettings={{
-            pinchPanEnabled: false,
+    <View
+      style={{ flex: 1 }}
+      onLayout={(event) => {
+        const { width } = event.nativeEvent.layout;
+        setLayoutWidth(width);
+      }}
+    >
+      <Loader visible={isLoading} />
+      <MapView
+        style={styles.map}
+        zoomEnabled={true}
+        compassEnabled={true}
+        onPress={clearSelected}
+        gestureSettings={{
+          pinchPanEnabled: false,
+        }}
+      >
+        <Camera
+          centerCoordinate={centerCoordinate}
+          zoomLevel={DEFAULT_ZOOM}
+          animationDuration={20}
+        />
+        <Images
+          images={{
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+            event: require("~/assets/map/event.png"),
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+            posting: require("~/assets/map/post.png"),
+          }}
+        />
+        <ShapeSource
+          id="features"
+          shape={features}
+          hitbox={{ width: 15, height: 15 }}
+          onPress={handleMapPress}
+        >
+          <SymbolLayer id={"symbols"} minZoomLevel={0} style={mapStyles.icon} />
+        </ShapeSource>
+      </MapView>
+      {layoutWidth && (
+        <View
+          style={{
+            flex: 1,
+            position: "absolute",
+            bottom: 30,
+            width: "100%",
           }}
         >
-          <Camera
-            centerCoordinate={centerCoordinate}
-            zoomLevel={DEFAULT_ZOOM}
-            animationDuration={20}
-          />
-          <Images
-            images={{
-              // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-              event: require("~/assets/map/event.png"),
-              // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-              posting: require("~/assets/map/post.png"),
+          <Carousel<LocalEvent | Post>
+            width={layoutWidth}
+            mode="parallax"
+            modeConfig={{
+              parallaxScrollingOffset: 95,
+              parallaxScrollingScale: 0.85,
+              parallaxAdjacentItemScale: 0.6,
             }}
+            height={120}
+            loop={false}
+            data={selected}
+            renderItem={({ item }) => (
+              <View
+                style={{
+                  flex: 1,
+                  justifyContent: "center",
+                  marginLeft: "2.5%",
+                }}
+              >
+                <MapCard
+                  key={item.id}
+                  item={item}
+                  onPress={gotoDetails(item)}
+                />
+              </View>
+            )}
           />
-          <ShapeSource
-            id="features"
-            shape={features}
-            hitbox={{ width: 15, height: 15 }}
-            onPress={handleMapPress}
-          >
-            <SymbolLayer
-              id={"symbols"}
-              minZoomLevel={0}
-              style={mapStyles.icon}
-            />
-          </ShapeSource>
-
-          <>
-            {selected.map((se) => (
-              <MapCard key={se.id} item={se} onPress={gotoDetails(se)} />
-            ))}
-          </>
-        </MapView>
-      </View>
-    </TouchableWithoutFeedback>
+        </View>
+      )}
+    </View>
   );
 
   function toFeatureCollection(events: LocalEvent[], posts: Post[]) {

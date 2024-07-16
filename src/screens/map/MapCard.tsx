@@ -20,17 +20,16 @@ export const MapCard = ({ item, onPress }: MapCardProps) => {
 
   return (
     <Pressable style={styles.listContainer} onPress={onPress}>
-      {item.images?.[0] && (
-        <Image
-          resizeMode="stretch"
-          source={
-            item.images[0]
-              ? { uri: item?.images[0].url }
-              : require("~/assets/images/defaultEvent.png")
-          }
-          style={styles.dummy}
-        />
-      )}
+      <Image
+        resizeMode="stretch"
+        source={
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+          item.images?.[0]
+            ? { uri: item?.images[0].url }
+            : require("~/assets/images/defaultEvent.png")
+        }
+        style={styles.dummy}
+      />
       <View style={styles.flex}>
         <View style={styles.rowClass}>
           <View style={styles.flex}>
