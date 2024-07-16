@@ -10,9 +10,9 @@ import { useQueries } from "@tanstack/react-query";
 import { FeatureCollection } from "geojson";
 import _ from "lodash/fp";
 import { Duration } from "luxon";
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { View } from "react-native";
-import Carousel from "react-native-reanimated-carousel";
+import Carousel, { ICarouselInstance } from "react-native-reanimated-carousel";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
 import { useNavigations } from "~/app-hooks/useNavigations";
 import { useEventService } from "~/network/api/services/useEventService";
@@ -42,6 +42,7 @@ export const MapScreen = () => {
   const [selected, setSelected] = useState<LocalEvent[] | Post[]>([]);
   const { gotoEventDetails, gotoPostDetails } = useNavigations();
   const [layoutWidth, setLayoutWidth] = useState<number>();
+  const ref = useRef<ICarouselInstance>(null);
 
   // TODO Use the center of the current community
   const centerCoordinate = [BOULDER_LON, BOULDER_LAT];
@@ -77,6 +78,7 @@ export const MapScreen = () => {
   });
 
   const handleMapPress = (ope: OnPressEvent) => {
+    clearSelected();
     setSelected(ope.features.map((f) => f.properties as LocalEvent));
   };
 
@@ -85,6 +87,8 @@ export const MapScreen = () => {
 
   const clearSelected = () => {
     setSelected([]);
+    ref.current?.scrollTo({ index: 0 });
+    console.log("current", ref.current?.getCurrentIndex());
   };
 
   return (
@@ -137,10 +141,11 @@ export const MapScreen = () => {
           }}
         >
           <Carousel<LocalEvent | Post>
+            ref={ref}
             width={layoutWidth}
             mode="parallax"
             modeConfig={{
-              parallaxScrollingOffset: 95,
+              parallaxScrollingOffset: 105,
               parallaxScrollingScale: 0.85,
               parallaxAdjacentItemScale: 0.6,
             }}
