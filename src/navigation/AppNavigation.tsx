@@ -55,6 +55,9 @@ export const AppNavigation = ({
     prefixes: ["onelocal://", "https://app.onelocal.one"],
     config: {
       screens: {
+        [Screens.HOME_SCREEN]: {
+          path: "home",
+        },
         [Screens.CREATE_EDIT_POST]: {
           path: "posts/create",
         },
