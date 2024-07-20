@@ -3,6 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { useMutation } from "@tanstack/react-query";
 import React, { useContext, useEffect } from "react";
 import { Pressable, Text, View } from "react-native";
+import Toast from "react-native-simple-toast";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
 import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
 import { ButtonComponent } from "~/components/button-component";
@@ -58,9 +59,13 @@ export const VerifyScreen = ({
   }, [email, token, verifyEmail]);
 
   const handleResendVerification = () => {
-    resendEmailVerification(email).catch((e) =>
-      handleApiError("Resending verification", e as Error)
-    );
+    resendEmailVerification(email)
+      .then(() =>
+        Toast.show("Email sent", Toast.LONG, {
+          backgroundColor: "black",
+        })
+      )
+      .catch((e) => handleApiError("Resending verification", e as Error));
   };
 
   // const handleVerify = () => {
