@@ -16,8 +16,10 @@
     "testflight": "num run testflight:dev",
     "testflight:dev": "cd ios && bundle exec fastlane build_dev_upload_testflight && cd ..",
     "testflight:beta": "cd ios && bundle exec fastlane build_beta_upload_testflight && cd ..",
+    "testflight:prod": "cd ios && bundle exec fastlane build_prod_upload_testflight && cd ..",
     "playstore:dev": "cd android && bundle exec fastlane build_dev_upload_playstore && cd ..",
-    "playstore:beta": "cd android && bundle exec fastlane build_beta_upload_playstore && cd .."
+    "playstore:beta": "cd android && bundle exec fastlane build_beta_upload_playstore && cd ..",
+    "playstore:prod": "cd android && bundle exec fastlane build_prod_upload_playstore && cd .."
   },
   "dependencies": {
     "@fawazahmed/react-native-read-more": "^3.0.4",

@@ -90,7 +90,7 @@ export const MyProfileScreen = () => {
               <ImageUploader
                 id={myUserId}
                 uploadKey={FileKey.pic}
-                onImageAdded={handleImageAdded}
+                onImageUpload={handleImageAdded}
               >
                 <ImageComponent
                   isUrl={!!myProfile.pic.url}
@@ -122,7 +122,7 @@ export const MyProfileScreen = () => {
             </TouchableOpacity>
             <Text>
               Build: {getReadableVersion()} -{" "}
-              {process.env.API_URL?.includes("app.onelocal.one")
+              {process.env.API_URL?.includes("prod.onelocal.one")
                 ? "Production"
                 : process.env.API_URL?.includes("beta.onelocal.one")
                 ? "Beta"

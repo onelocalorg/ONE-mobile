@@ -158,4 +158,10 @@ platform :ios do
     ENV['API_URL'] = 'https://beta.onelocal.one/api'
     build_upload_testflight
   end
+
+  desc "Connect to PRODUCTION server, Build and upload to TestFlight"
+  lane :build_prod_upload_testflight do
+    ENV['API_URL'] = 'https://prod.onelocal.one/api'
+    build_upload_testflight
+  end  
 end

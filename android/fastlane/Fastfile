@@ -112,5 +112,11 @@ platform :android do
   lane :build_beta_upload_playstore do
     ENV['API_URL'] = 'https://beta.onelocal.one/api'
     build_upload_playstore
-  end  
+  end 
+  
+  desc "Connect to PRODUCTION server, Build and upload to Play Store"
+  lane :build_prod_upload_playstore do
+    ENV['API_URL'] = 'https://prod.onelocal.one/api'
+    build_upload_playstore
+  end    
 end
