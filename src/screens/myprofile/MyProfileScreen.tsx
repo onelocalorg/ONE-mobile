@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useMutation, useQuery } from "@tanstack/react-query";
 import React from "react";
-import { Alert, Button, Text, TouchableOpacity, View } from "react-native";
+import { Alert, Text, TouchableOpacity, View } from "react-native";
 import { getReadableVersion } from "react-native-device-info";
 import { ScrollView } from "react-native-gesture-handler";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
@@ -99,7 +99,6 @@ export const MyProfileScreen = () => {
                   uri={myProfile.pic.url}
                   source={dummy}
                 />
-                <Button title="Update" />
               </ImageUploader>
             </View>
 
