@@ -16,58 +16,26 @@ Follow the instructions to configure React Native Mapbox as described at
 https://rnmapbox.github.io/docs/install, both for iOS and Android. You will
 need a secret access token that will go in your home directory.
 
-### Get .env file
-
-Obtain a copy of the `.env.development.local` file from one of the lead devs.
-
 ## Step 2: Start the Metro Server
 
-First, you will need to start **Metro**, the JavaScript _bundler_ that ships _with_ React Native.
-
-To start Metro, run the following command from the _root_ of your React Native project:
+For development, run:
 
 ```bash
 npm start
 ```
 
-## Step 3: Start your Application
-
-Let Metro Bundler run in its _own_ terminal. Open a _new_ terminal from the _root_ of your React Native project. Run the following command to start your _Android_ or _iOS_ app:
-
-### For Development
-
-```bash
-npm run start:development
-```
-
-or
-
-```bash
-npm run start
-```
-
-### For Beta
-
-Run this to set your environment:
-`export API_URL=https://beta.onelocal.one/api`
-
-and then as normal
-
-```bash
-npm run start
-```
-
-_Note that you can't use this method (Metro) to launch a production build._
-
-If everything is set up _correctly_, you should see your new app running in your _Android Emulator_ or _iOS Simulator_ shortly provided you have set up your emulator/simulator correctly.
+If you want to connect to the staging (beta) server, instead run `npm run start:staging`.
 
 ## Step 4: Send build to TestFlight
 
 These commands run the entire iOS build and upload it to TestFlight. No other commands
 are needed in order to get a build to the testers.
 
-There are two test servers: dev.onelocal.one and beta.onelocal.one. You can choose which
-you want to connect to.
+There are two test servers: dev.onelocal.one and beta.onelocal.one and one production
+server. You can choose which you want to connect to.
+
+Please note: running a build on Android or iOS makes updates to certain files. I typically
+don't push the updates into github because I don't really see the point, but YMMV.
 
 #### For dev:
 
@@ -81,35 +49,23 @@ or
 npm run testflight:dev
 ```
 
-#### For beta:
+You can also generate builds which connect to the other servers with `npm run testflight:beta`,
+`npm run testflight:prod`.
 
-```bash
-npm run testflight:beta
+## Step 4: Send build to Google AppStore
+
+Because we changed to use a new App ID for Android, the one-button install doesn't work right
+now for Android.
+
+1. Manually update the version code in `android/app/build.gradle`
+
+```defaultConfig {
+    ...
+        versionCode 37
+    ...
+    }
 ```
 
-This is one way to run your app — you can also run it directly from within Android Studio and Xcode respectively.
-
-# Android Debug Build
-
-_Unclear if these instructions are accurate_
-
-1.  react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/app/src/main/assets/index.android.bundle --assets-dest android/app/src/main/res
-
-2.  cd android
-
-3.  ./gradlew assembleDebug
-
-=> For Release Build
-cd android
-./gradlew clean
-cd ..
-npx react-native run-android
-
-APP Icon Create For IOS And Android
-https://easyappicon.com/
-
-4.Find .netrc file in project
-Go to Project Directory => find . -name ".netrc"
-
-(1) npm install
-(2) go to IOS folder and run pod install
+2. Run the build as above, except use `playstore` instead of `testflight`.
+3. On the Google Developer Console, create a new release and copy this file into the page:
+   `android/app/build/outputs/bundle/release/app-release.abb`.
