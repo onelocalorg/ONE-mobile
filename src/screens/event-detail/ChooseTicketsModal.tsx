@@ -6,13 +6,9 @@ import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
 import { ShortModal } from "~/components/ShortModal";
 import { ButtonComponent } from "~/components/button-component";
 import { Loader } from "~/components/loader";
-import { OneModal } from "~/components/modal-component/OneModal";
 import { RootStackScreenProps, Screens } from "~/navigation/types";
 import { useEventService } from "~/network/api/services/useEventService";
-import {
-  OrderMutations,
-  useOrderService,
-} from "~/network/api/services/useOrderService";
+import { OrderMutations } from "~/network/api/services/useOrderService";
 import { LineItemTypes } from "~/types/line-item";
 import { Order, OrderData } from "~/types/order";
 import { TicketSelection } from "~/types/ticket-selection";
@@ -31,7 +27,6 @@ export const ChooseTicketsModal = ({
   const styles = createStyleSheet(theme);
   const [tickets, setTickets] = useState<TicketSelection[]>([]);
   const [isCheckoutVisible, setCheckoutVisible] = useState(false);
-  const orderService = useOrderService();
 
   const {
     queries: { detail: getEvent },
@@ -52,6 +47,9 @@ export const ChooseTicketsModal = ({
       (total, ticket) => total + ticket.type.price * ticket.quantity,
       0
     );
+
+  const numTickets = () =>
+    tickets.reduce((total, ticket) => total + ticket.quantity, 0);
 
   const createTicketOrder = () => {
     if (event) {
@@ -83,12 +81,11 @@ export const ChooseTicketsModal = ({
   };
 
   return (
-    <ShortModal height={220}>
+    <ShortModal height={500}>
       <View style={styles.modalContainer}>
         <Loader visible={isLoading || isPending} />
-        {event ? (
-          <>
-            {/* <EventCard event={event} /> */}
+        {event && (
+          <View>
             <Text style={styles.amount}>
               {toCurrency(selectedTicketPrice())}
             </Text>
@@ -98,15 +95,13 @@ export const ChooseTicketsModal = ({
             />
             <View style={styles.lineSpace} />
             <ButtonComponent
-              // disabled={buttonDisable}
               onPress={createTicketOrder}
-              title={strings.checkout}
+              title={strings.buyTicket}
+              disabled={numTickets() < 1}
             />
-            {order && order.paymentIntent ? (
-              <OneModal
-                isVisible={isCheckoutVisible}
-                onDismiss={() => setCheckoutVisible(false)}
-              >
+            {order?.paymentIntent ? (
+              <>
+                <View style={styles.lineSpace} />
                 <StripeCheckout
                   order={order}
                   onCheckoutComplete={() => {
@@ -114,10 +109,12 @@ export const ChooseTicketsModal = ({
                     navigation.popToTop();
                   }}
                 />
-              </OneModal>
-            ) : null}
-          </>
-        ) : null}
+              </>
+            ) : (
+              <View style={{ marginBottom: 200 }} />
+            )}
+          </View>
+        )}
       </View>
     </ShortModal>
   );

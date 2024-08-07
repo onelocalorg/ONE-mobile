@@ -42,7 +42,7 @@
     "@reduxjs/toolkit": "^1.9.5",
     "@rnmapbox/maps": "^10.1.28",
     "@sentry/react-native": "^5.24.1",
-    "@stripe/stripe-react-native": "^0.37.3",
+    "@stripe/stripe-react-native": "^0.38.4",
     "@tanstack/react-query": "^5.45.0",
     "axios": "^1.4.0",
     "big.js": "^6.2.1",

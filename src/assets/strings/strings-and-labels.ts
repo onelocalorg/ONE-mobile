@@ -12,7 +12,7 @@ export const stringsAndLabels = {
   aboutEvent: "About Event",
   checkout: "Checkout",
   chooseTickets: "Choose Tickets",
-  buyTicket: "Buy Ticket",
+  buyTicket: "Buy",
   ticketCheckout: "Ticket Checkout",
   purchase: "Purchase",
   comingSoon: "Coming Soon",
