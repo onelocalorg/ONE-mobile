@@ -1,6 +1,7 @@
 import { DateTime } from "luxon";
 import { ImageKey, ImageUrl } from "./image-info";
 import { OneUser } from "./one-user";
+import { Post } from "./post";
 import { TicketType } from "./ticket-type";
 import { TicketTypeData } from "./ticket-type-data";
 
@@ -8,17 +9,17 @@ export interface LocalEvent extends LocalEventData {
   id: string;
   host: OneUser;
   ticketTypes: TicketType[];
-  isCanceled: boolean;
   viewCount: number;
   timezone: string;
-  image?: ImageUrl;
+  images: ImageUrl[];
 }
 
-export interface LocalEventData extends LocalEventUpdateData {
+export interface LocalEventData extends Omit<LocalEventUpdateData, "id"> {
   name: string;
   startDate: DateTime;
   coordinates: number[];
   ticketTypes: TicketTypeData[];
+  images: ImageKey[];
 }
 
 // The data for creating an event.
@@ -28,16 +29,14 @@ export interface LocalEventUpdateData {
   type?: string;
   startDate?: DateTime;
   endDate?: DateTime;
+  cancelDate?: DateTime;
   timezone?: string;
-  about?: string;
+  details?: string;
   venue?: string;
   address?: string;
   coordinates?: number[];
-  image?: ImageKey;
+  images?: ImageKey[];
   ticketTypes?: TicketTypeData[];
-  isCanceled?: boolean;
 }
 
-export function isLocalEvent(object?: any): object is LocalEvent {
-  return !!object && "viewCount" in object;
-}
+export const isEvent = (item: LocalEvent | Post) => "host" in item;

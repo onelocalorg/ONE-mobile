@@ -1,23 +1,29 @@
 import { queryOptions, useQueryClient } from "@tanstack/react-query";
 import _ from "lodash/fp";
+import { Block } from "~/types/block";
 import { OneUser } from "~/types/one-user";
 import { RemoteImage } from "~/types/remote-image";
+import { RegisterTokenData } from "~/types/token";
 import { UploadFileData } from "~/types/upload-file-data";
 import { UserProfile, UserProfileUpdateData } from "~/types/user-profile";
 import { useApiService } from "./ApiService";
+import { useEventService } from "./useEventService";
 
 export enum UserMutations {
   updateUser = "updateUser",
   deleteUser = "deleteUser",
   uploadFile = "uploadFile",
+  registerToken = "registerToken",
+  blockUser = "blockUser",
 }
 
 export enum GetUsersSort {
-  joinDate = "joinDate",
+  Join = "join",
 }
 
 export function useUserService() {
   const queryClient = useQueryClient();
+  const { queries: eventQueries } = useEventService();
 
   const queries = {
     all: () => ["users"],
@@ -59,6 +65,12 @@ export function useUserService() {
     },
   });
 
+  queryClient.setMutationDefaults([UserMutations.registerToken], {
+    mutationFn: (data: RegisterTokenData) => {
+      return registerToken(data);
+    },
+  });
+
   queryClient.setMutationDefaults([UserMutations.deleteUser], {
     mutationFn: (data: string) => {
       return deleteUser(data);
@@ -69,15 +81,42 @@ export function useUserService() {
 
   const getUser = (userId: string) => doGet<UserProfile>(`/v3/users/${userId}`);
 
+  queryClient.setMutationDefaults([UserMutations.blockUser], {
+    mutationFn: (userId: string) => {
+      return blockUser(userId);
+    },
+    onSuccess: () => {
+      void queryClient.invalidateQueries({
+        queryKey: queries.lists(),
+      });
+      void queryClient.invalidateQueries({
+        queryKey: eventQueries.lists(),
+      });
+    },
+  });
+
   const deleteUser = (userId: string) => doDelete<never>(`/v3/users/${userId}`);
 
   interface GetUsersParams {
     sort?: GetUsersSort;
+    limit?: number;
+    picsOnly?: boolean;
   }
-  const getUsers = ({ sort }: GetUsersParams | undefined = {}) =>
-    doGet<OneUser[]>(`/v3/users?${sort ? `sort=${sort}` : ""}`);
+  const getUsers = ({
+    sort,
+    limit,
+    picsOnly,
+  }: GetUsersParams | undefined = {}) => {
+    // TODO make this more generic
+    const urlParams: string[] = [];
+    if (!_.isNil(sort)) urlParams.push(`sort=${sort.toString()}`);
+    if (!_.isNil(limit)) urlParams.push(`limit=${limit.toString()}`);
+    if (!_.isNil(picsOnly)) urlParams.push(`pics=${picsOnly.toString()}`);
+    const urlSearchParams = urlParams.join("&");
 
-  // eslint-disable-next-line no-empty-pattern
+    return doGet<OneUser[]>(`/v3/users?${urlSearchParams}`);
+  };
+
   const uploadFile = (props: UploadFileData) =>
     doPost<RemoteImage>("/v3/users/upload/file", {
       ..._.omit(["base64", "mimeType"], props),
@@ -86,8 +125,16 @@ export function useUserService() {
 
   const updateUser = (data: UserProfileUpdateData) =>
     doPatch<UserProfile>(`/v3/users/${data.id}`, {
-      ..._.omit(["id"], data),
+      ..._.omit(["id", "isEmailVerified"], data),
       skills: !_.isEmpty(data.skills) ? data.skills?.join(",") : undefined,
+    });
+
+  const blockUser = (userId: string) =>
+    doPost<Block>(`/v3/users/${userId}/blocks`);
+
+  const registerToken = (data: RegisterTokenData) =>
+    doPost<UserProfile>(`/v3/users/${data.userId}/tokens`, {
+      ..._.omit(["userId"], data),
     });
 
   return {

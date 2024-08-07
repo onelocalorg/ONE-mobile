@@ -1,17 +1,35 @@
-import notifee, { AuthorizationStatus, EventType } from "@notifee/react-native";
+import notifee, {
+  AndroidImportance,
+  AuthorizationStatus,
+} from "@notifee/react-native";
 import messaging, {
   FirebaseMessagingTypes,
 } from "@react-native-firebase/messaging";
 import { useMutation } from "@tanstack/react-query";
-import { ReactNode, createContext, useContext, useEffect } from "react";
+import {
+  ReactNode,
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
+import { getDeviceId } from "react-native-device-info";
+import { error } from "~/config";
 import { UserMutations } from "~/network/api/services/useUserService";
-import { UserProfile, UserProfileUpdateData } from "~/types/user-profile";
+import { RegisterTokenData, Token, TokenType } from "~/types/token";
 import { handleApiError } from "~/utils/common";
-import { useMyUserId } from "./AuthContext";
+import { useAccessToken, useMyUserId } from "./AuthContext";
 
-// import RemoteMessage from "@react-native-firebase/messaging"
+interface OneNotification {
+  // image?: string;
+  post: string;
+  parent?: string;
+  reply: string;
+}
 
-interface INotificationService {}
+interface INotificationService {
+  pullNotifications: () => OneNotification[];
+}
 
 const NotificationServiceContext = createContext<INotificationService | null>(
   null
@@ -27,30 +45,53 @@ interface NotificationServiceProviderProps {
 export function NotificationService({
   children,
 }: NotificationServiceProviderProps) {
+  enum Channel {
+    Replies = "replies",
+  }
   const myUserId = useMyUserId();
+  const accessToken = useAccessToken();
+  const [notifications, setNotifications] = useState<OneNotification[]>([]);
 
-  const { mutate: updateUser } = useMutation<
-    UserProfile,
+  const { mutate: registerToken } = useMutation<
+    Token,
     Error,
-    UserProfileUpdateData
+    RegisterTokenData
   >({
-    mutationKey: [UserMutations.updateUser],
+    mutationKey: [UserMutations.registerToken],
   });
 
-  // Note that an async function or a function that returns a Promise
-  // is required for both subscribers.
+  useEffect(() => {
+    notifee
+      .createChannel({
+        id: Channel.Replies,
+        name: "Post replies",
+        lights: false,
+        vibration: false,
+        importance: AndroidImportance.DEFAULT,
+      })
+      .catch(error("notifee.createChannel"));
+  }, [Channel]);
+
   async function onMessageReceived({
+    data,
     notification,
-  }: FirebaseMessagingTypes.RemoteMessage) {
-    console.log("onMessageReceived", notification);
-    if (notification) {
-      await notifee
-        .displayNotification({
-          title: notification.title ?? "No title",
-          body: notification.body ?? "No body",
-        })
-        .catch((e) => handleApiError("Displaying notification", e as Error));
-    }
+  }: // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  FirebaseMessagingTypes.RemoteMessage): Promise<any> {
+    console.log("1. onMessageReceived", notification, data);
+
+    return Promise.resolve(() => {
+      if (data) {
+        // This doesn't do anything yet
+        setNotifications((notifications) => [
+          ...notifications,
+          {
+            post: data["post"] as string,
+            parent: data["parent"] as string | undefined,
+            reply: data["reply"] as string,
+          },
+        ]);
+      }
+    });
   }
 
   useEffect(() => {
@@ -60,14 +101,18 @@ export function NotificationService({
       // TODO Handle various conditions
       if (settings.authorizationStatus >= AuthorizationStatus.AUTHORIZED) {
         const messagingToken = await messaging().getToken();
-        console.log("MESSAGING", messagingToken);
-        updateUser({ id: myUserId!, messagingToken });
+        registerToken({
+          userId: myUserId!,
+          type: TokenType.fcm,
+          token: messagingToken,
+          deviceId: getDeviceId(),
+        });
       } else {
         console.log("User declined permissions");
       }
     }
 
-    if (myUserId) {
+    if (accessToken && myUserId) {
       registerMessagingToken().catch((e) =>
         handleApiError("registering messaging", e as Error)
       );
@@ -75,25 +120,15 @@ export function NotificationService({
       messaging().onMessage(onMessageReceived);
       messaging().setBackgroundMessageHandler(onMessageReceived);
     }
-  }, [myUserId, updateUser]);
+  }, [accessToken, myUserId, registerToken]);
 
-  // Subscribe to events
-  useEffect(() => {
-    return notifee.onForegroundEvent(({ type, detail }) => {
-      console.log("onForegroundEvent", type);
-      const { notification } = detail;
-      switch (type) {
-        case EventType.DISMISSED:
-          console.log("User dismissed notification", notification);
-          break;
-        case EventType.PRESS:
-          console.log("User pressed notification", notification);
-          break;
-      }
-    });
-  }, []);
+  const pullNotifications = () => {
+    const currentNotifications = notifications;
+    setNotifications([]);
+    return currentNotifications;
+  };
 
-  const client = {};
+  const client = { pullNotifications };
 
   return (
     <NotificationServiceContext.Provider value={client}>

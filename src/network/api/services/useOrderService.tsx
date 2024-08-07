@@ -28,7 +28,6 @@ export function useOrderService() {
       return createOrder(data);
     },
     onSuccess: (order: Order) => {
-      console.log("onSucccess", order);
       void queryClient.invalidateQueries({ queryKey: queries.all() });
 
       order.lineItems.forEach((li) => {

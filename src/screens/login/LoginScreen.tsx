@@ -8,11 +8,14 @@ import {
   statusCodes,
 } from "@react-native-google-signin/google-signin";
 import { useMutation } from "@tanstack/react-query";
+import { HttpStatusCode } from "axios";
 import React, { useContext, useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import {
+  Alert,
   Keyboard,
   Linking,
+  Platform,
   Text,
   TextInput,
   TouchableOpacity,
@@ -33,6 +36,7 @@ import {
   useAuthService,
 } from "~/network/api/services/useAuthService";
 import { verticalScale } from "~/theme/device/normalize";
+import { ApiError } from "~/types";
 import { CurrentUser } from "~/types/current-user";
 import { handleApiError } from "~/utils/common";
 import { ForgotPasswordScreen } from "./ForgotPasswordScreen";
@@ -48,7 +52,8 @@ export const LoginScreen = ({
 
   // FIXME This is needed to register the keys, need a better way to do this
   const _authService = useAuthService();
-  const { handleSignIn } = useContext(AuthDispatchContext);
+  const { handleSignIn, handleSignInUnverified } =
+    useContext(AuthDispatchContext);
 
   const {
     data: loginData,
@@ -79,13 +84,18 @@ export const LoginScreen = ({
 
   useEffect(() => {
     if (loginData || appleLoginData || googleLoginData) {
-      handleSignIn((loginData || appleLoginData || googleLoginData)!);
+      // Force to CurrentUser because the above check takes care of the case
+      // where loginData is just a UserProfile.
+      handleSignIn(
+        (loginData ?? appleLoginData ?? googleLoginData) as CurrentUser
+      );
     }
-  }, [loginData, appleLoginData, googleLoginData, handleSignIn]);
+  }, [loginData, appleLoginData, googleLoginData, handleSignIn, strings.ok]);
 
   const {
     control,
     handleSubmit,
+    getValues,
     formState: { errors },
   } = useForm<LoginProps>({
     defaultValues: {
@@ -95,7 +105,18 @@ export const LoginScreen = ({
   });
 
   const signInWithPassword = (data: LoginProps) => {
-    logIn(data);
+    logIn(data, {
+      onError: (error) => {
+        if ((error as ApiError)?.code === HttpStatusCode.Forbidden.valueOf()) {
+          handleSignInUnverified({
+            email: getValues("email"),
+            password: getValues("password"),
+          });
+        } else {
+          Alert.alert("Login error", error.message);
+        }
+      },
+    });
   };
 
   const signInWithGoogle = async () => {
@@ -117,6 +138,8 @@ export const LoginScreen = ({
           // play services not available or outdated
           // TODO Display error
           LOG.error("signInWithGoogle:", error);
+        } else {
+          LOG.error("Unknown error", JSON.stringify(error));
         }
       } else {
         handleApiError("Could not sign in with Google", error as Error);
@@ -141,7 +164,6 @@ export const LoginScreen = ({
   const loadInBrowser = () => {
     const url = "https://onelocal.one/privacypolicy";
     if (url) {
-      console.log("11111111111");
       Linking.openURL(url);
     }
   };
@@ -156,7 +178,7 @@ export const LoginScreen = ({
       onPress={keyboardDismiss}
       style={styles.container}
     >
-      <Loader visible={isLoginPending} />
+      <Loader visible={isLoginPending} showOverlay={true} />
       <SizedBox height={verticalScale(12)} />
       <Text style={styles.texClass}>{strings.email}</Text>
       <Controller
@@ -247,15 +269,19 @@ export const LoginScreen = ({
         <ImageComponent source={google} style={styles.google} />
         <Text style={styles.loginGoogle}>{strings.loginGoogle}</Text>
       </TouchableOpacity>
-      <SizedBox height={verticalScale(10)} />
-      <TouchableOpacity
-        activeOpacity={0.8}
-        style={styles.appleButton}
-        onPress={signInWithApple}
-      >
-        <ImageComponent source={apple} style={styles.apple} />
-        <Text style={styles.loginApple}>{strings.loginApple}</Text>
-      </TouchableOpacity>
+      {Platform.OS === "ios" && (
+        <>
+          <SizedBox height={verticalScale(10)} />
+          <TouchableOpacity
+            activeOpacity={0.8}
+            style={styles.appleButton}
+            onPress={signInWithApple}
+          >
+            <ImageComponent source={apple} style={styles.apple} />
+            <Text style={styles.loginApple}>{strings.loginApple}</Text>
+          </TouchableOpacity>
+        </>
+      )}
       <SizedBox height={verticalScale(12)} />
       <Text style={styles.orText}>or</Text>
       {/* <SizedBox height={verticalScale(20)} /> */}

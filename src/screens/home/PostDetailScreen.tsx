@@ -1,5 +1,4 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
-import _ from "lodash/fp";
 import React, { useRef } from "react";
 import { Controller, useForm } from "react-hook-form";
 import {
@@ -23,9 +22,9 @@ import {
   postCalender,
   send,
 } from "~/assets/images";
+import { MultiImageViewer } from "~/components/MultiImageViewer";
 import { ImageComponent } from "~/components/image-component";
 import { Loader } from "~/components/loader";
-import { LOG } from "~/config";
 import { useMyUserId } from "~/navigation/AuthContext";
 import { RootStackScreenProps, Screens } from "~/navigation/types";
 import {
@@ -34,7 +33,7 @@ import {
   PostMutations,
   usePostService,
 } from "~/network/api/services/usePostService";
-import { PostDetail, PostType } from "~/types/post";
+import { PostDetail } from "~/types/post";
 import { Reply } from "~/types/reply";
 import { formatTimeFromNow } from "~/utils/common";
 import { createStyleSheet } from "./style";
@@ -42,7 +41,7 @@ import { createStyleSheet } from "./style";
 export const PostDetailScreen = ({
   route,
 }: RootStackScreenProps<Screens.POST_DETAIL>) => {
-  const postId = route.params.id;
+  const { id: postId, reply: replyId } = route.params;
   const isReplyFocus = route.params.isReplyFocus ?? false;
   const { theme } = useAppTheme();
   const styles = createStyleSheet(theme);
@@ -84,21 +83,8 @@ export const PostDetailScreen = ({
     post?.replies?.filter((r) => !r.parent).reverse() ?? [];
 
   const getChildren = (parentId: string) => {
-    // Since eact reply only marked its direct parent reply, we recursively
-    // go through the reply list
-    // TODO Make more efficient by looking only at the children later in the
-    // list, because parents always come before children
-
     const children = post!.replies.filter((r) => r.parent === parentId);
 
-    // const recurse = (acc: Reply[], parentId: string): Reply[] =>
-    //   post!.replies.reduce(
-    //     (a, r) => (r.parent === parentId ? [...a, r, ...recurse(a, r.id)] : a),
-    //     acc
-    //   );
-
-    // const children = recurse([], parentId);
-    LOG.debug("CHILDREN", children);
     return children;
   };
 
@@ -117,6 +103,10 @@ export const PostDetailScreen = ({
   const handleDeleteReply = (replyId: string) => () => {
     deleteReply({ postId, replyId });
   };
+
+  if (post?.replies) {
+    console.log(JSON.stringify(post.replies, undefined, "  "));
+  }
 
   interface PostViewProps {
     post: PostDetail;
@@ -142,17 +132,9 @@ export const PostDetailScreen = ({
         </TouchableOpacity>
         <View>
           <View>
-            {post.type === PostType.GRATIS ? (
-              <View>
-                <Text numberOfLines={1} style={styles.userName}>
-                  {post.author.firstName} {post.author.lastName}{" "}
-                </Text>
-              </View>
-            ) : (
-              <Text numberOfLines={1} style={styles.userName}>
-                {post.author.firstName} {post.author.lastName}
-              </Text>
-            )}
+            <Text numberOfLines={1} style={styles.userName}>
+              {post.author.firstName} {post.author.lastName}
+            </Text>
             {post.postDate ? (
               <Text style={styles.postTime}>
                 {formatTimeFromNow(post.postDate)}
@@ -162,13 +144,7 @@ export const PostDetailScreen = ({
         </View>
       </View>
       <Text style={styles.postDes}>{post.details}</Text>
-      {!_.isEmpty(post.images?.length > 0) ? (
-        <ImageComponent
-          resizeMode="cover"
-          source={{ uri: post.images[0].url }}
-          style={styles.userPost}
-        ></ImageComponent>
-      ) : null}
+      <MultiImageViewer images={post.images} />
       <View style={styles.postDetailCont}>
         <Text style={styles.postDetailTitle}>What:</Text>
         <Text style={styles.postDetail}>{post.name}</Text>
@@ -225,10 +201,8 @@ export const PostDetailScreen = ({
           ></ImageComponent>
         </TouchableOpacity>
         <View style={styles.replyDisplayCont}>
-          <View
-            style={{ flexDirection: "row", justifyContent: "space-between" }}
-          >
-            <Text style={{ fontSize: 12, color: "#110101" }}>
+          <View style={{ flexDirection: "row" }}>
+            <Text style={{ paddingLeft: 10, fontSize: 12, color: "#110101" }}>
               {reply.author.firstName} {reply.author.lastName}
             </Text>
             {reply.author.id === myUserId && (
@@ -237,7 +211,9 @@ export const PostDetailScreen = ({
               </Pressable>
             )}
           </View>
-          <Text style={styles.replyMsgCont}>{reply.content}</Text>
+          <Text style={styles.replyMsgCont}>
+            {reply.isDeleted ? "Deleted" : reply.content}
+          </Text>
         </View>
       </View>
 
@@ -269,7 +245,7 @@ export const PostDetailScreen = ({
       </View>
 
       {getChildren(reply.id).map((subReply: Reply) => (
-        <View style={indent && styles.replyImgProfileTwo}>
+        <View key={subReply.id} style={indent && styles.replyImgProfileTwo}>
           <Reply reply={subReply} indent={false} />
         </View>
       ))}
@@ -288,6 +264,7 @@ export const PostDetailScreen = ({
             <TextInput
               ref={replyRef}
               style={styles.replyInput}
+              multiline={true}
               placeholder="Make a Reply"
               placeholderTextColor="gray"
               value={value}

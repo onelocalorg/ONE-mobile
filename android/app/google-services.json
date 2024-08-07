@@ -1,0 +1,90 @@
+{
+  "project_info": {
+    "project_number": "724751305903",
+    "project_id": "onebouldermobile",
+    "storage_bucket": "onebouldermobile.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:724751305903:android:902d33adb088a6cbbe985a",
+        "android_client_info": {
+          "package_name": "one.onelocal.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "724751305903-ervdoe5k6v0bg6l3jteped51bo01ohkb.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "one.onelocal.app",
+            "certificate_hash": "aa5dbb5e696650425f27ea4fcdd946551a7d9c5b"
+          }
+        },
+        {
+          "client_id": "724751305903-5cjq9rosgsj7godmpg19kc84q726s8mg.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDaqDX8ZdyjWbcfUXa05C7NmWk4Ue8qhX4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "724751305903-5cjq9rosgsj7godmpg19kc84q726s8mg.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "724751305903-pp1sekl71seh0dhmm0c5i5ekj06sjg45.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "one.oneboulder.oneboulder"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:724751305903:android:bcb36678a8cb054fbe985a",
+        "android_client_info": {
+          "package_name": "one.onelocal.app.debug"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "724751305903-5cjq9rosgsj7godmpg19kc84q726s8mg.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDaqDX8ZdyjWbcfUXa05C7NmWk4Ue8qhX4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "724751305903-5cjq9rosgsj7godmpg19kc84q726s8mg.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "724751305903-pp1sekl71seh0dhmm0c5i5ekj06sjg45.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "one.oneboulder.oneboulder"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -4,29 +4,24 @@ import MapboxGL, {
   MapView,
   ShapeSource,
   SymbolLayer,
-  UserLocation,
 } from "@rnmapbox/maps";
 import { OnPressEvent } from "@rnmapbox/maps/lib/typescript/src/types/OnPressEvent";
-import { useQuery } from "@tanstack/react-query";
+import { useQueries } from "@tanstack/react-query";
 import { FeatureCollection } from "geojson";
 import _ from "lodash/fp";
-import React, { useState } from "react";
+import { Duration } from "luxon";
+import React, { useRef, useState } from "react";
 import { View } from "react-native";
+import Carousel, { ICarouselInstance } from "react-native-reanimated-carousel";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
 import { useNavigations } from "~/app-hooks/useNavigations";
-import eventIcon from "~/assets/map/event.png";
-import giftIcon from "~/assets/map/gift.png";
-import { LOG } from "~/config";
-import { MapStackScreenProps, Screens } from "~/navigation/types";
 import { useEventService } from "~/network/api/services/useEventService";
 import { usePostService } from "~/network/api/services/usePostService";
-import { PostCard } from "~/screens/home/PostCard";
-import { LocalEvent } from "~/types/local-event";
+import { LocalEvent, isEvent } from "~/types/local-event";
 import { Post } from "~/types/post";
-import { handleApiError } from "~/utils/common";
-import { EventItem } from "../../components/events/EventItem";
 import { Loader } from "../../components/loader";
 import { createStyleSheet } from "../../components/map/style";
+import { MapCard } from "./MapCard";
 
 void MapboxGL.setAccessToken(process.env.MAP_ACCESS_TOKEN!);
 
@@ -34,14 +29,22 @@ const BOULDER_LON = -105.2705;
 const BOULDER_LAT = 40.015;
 const DEFAULT_ZOOM = 11.5;
 
-export const MapScreen = ({ navigation }: MapStackScreenProps<Screens.MAP>) => {
+const mapStyles = {
+  icon: {
+    iconImage: ["get", "icon"],
+    iconAllowOverlap: true,
+  },
+};
+
+export const MapScreen = () => {
   const { theme } = useAppTheme();
   const styles = createStyleSheet(theme);
-  const [isLoading, setLoading] = useState(false);
-  const { gotoEventDetails, gotoUserProfile, gotoPostDetails } =
-    useNavigations();
+  const [selected, setSelected] = useState<LocalEvent[] | Post[]>([]);
+  const { gotoEventDetails, gotoPostDetails } = useNavigations();
+  const [layoutWidth, setLayoutWidth] = useState<number>();
+  const ref = useRef<ICarouselInstance>(null);
 
-  // TODO Use the center of the current locale
+  // TODO Use the center of the current community
   const centerCoordinate = [BOULDER_LON, BOULDER_LAT];
 
   const {
@@ -51,67 +54,51 @@ export const MapScreen = ({ navigation }: MapStackScreenProps<Screens.MAP>) => {
     queries: { list: listPosts },
   } = usePostService();
 
-  const [selectedEvents, setSelectedEvents] = useState<LocalEvent[]>([]);
-  const [selectedPosts, setSelectedPosts] = useState<Post[]>([]);
+  const { isLoading, features } = useQueries({
+    queries: [
+      listEvents({
+        isPast: false,
+        isCanceled: false,
+      }),
+      listPosts({
+        isPast: false,
+        age: Duration.fromObject({ days: 14 }),
+      }),
+    ],
+    combine: (results) => {
+      return {
+        features: toFeatureCollection(
+          results[0].data ?? [],
+          results[1].data?.filter((p) => p.coordinates) ?? []
+        ),
+        isLoading: results.some((result) => result.isLoading),
+        isPending: results.some((result) => result.isPending),
+      };
+    },
+  });
 
-  // FIXME DateTime.now() should not be embedded in the query
-  const eventsQuery = useQuery(
-    listEvents({
-      isPast: false,
-      isCanceled: false,
-    })
-  );
-
-  const postsQuery = useQuery(
-    listPosts({
-      isPast: false,
-    })
-  );
-
-  if ((eventsQuery.isPending && postsQuery.isPending) !== isLoading) {
-    setLoading(eventsQuery.isPending && postsQuery.isPending);
-  }
-  if (eventsQuery.isError) handleApiError("Events", eventsQuery.error);
-  if (postsQuery.isError) handleApiError("Posts", postsQuery.error);
-
-  const events = eventsQuery.data;
-  const posts = _.reject((p: Post) => !p.coordinates, postsQuery.data);
-
-  const imageMarkers = {
-    event: eventIcon,
-    post: giftIcon,
+  const handleMapPress = (ope: OnPressEvent) => {
+    clearSelected();
+    setSelected(ope.features.map((f) => f.properties as LocalEvent));
   };
 
-  const findEvent = (id: string) => events?.find((e) => e.id === id);
-  const findPost = (id: string) => posts?.find((p) => p.id === id);
-
-  const handleMapEventPress = (ope: OnPressEvent) => {
-    LOG.debug("Event clicked", ope);
-    const localEvents = ope.features.map((f) =>
-      f.properties ? findEvent(f.properties.id) : null
-    );
-    setSelectedPosts([]);
-    setSelectedEvents(localEvents);
-    // selectedEvent?.id === localEvent.id ? undefined : localEvent;
-  };
-
-  const handleMapPostPress = (ope: OnPressEvent) => {
-    LOG.debug("Post clicked", ope);
-    const localPosts = ope.features.map((f) =>
-      f.properties ? findPost(f.properties.id) : null
-    );
-    setSelectedEvents([]);
-    setSelectedPosts(localPosts);
-    // selectedEvent?.id === localEvent.id ? undefined : localEvent;
-  };
+  const gotoDetails = (item: LocalEvent | Post) =>
+    isEvent(item) ? gotoEventDetails(item.id) : gotoPostDetails(item.id);
 
   const clearSelected = () => {
-    setSelectedEvents([]);
-    setSelectedPosts([]);
+    setSelected([]);
+    ref.current?.scrollTo({ index: 0 });
+    console.log("current", ref.current?.getCurrentIndex());
   };
 
   return (
-    <View style={{ flex: 1 }}>
+    <View
+      style={{ flex: 1 }}
+      onLayout={(event) => {
+        const { width } = event.nativeEvent.layout;
+        setLayoutWidth(width);
+      }}
+    >
       <Loader visible={isLoading} />
       <MapView
         style={styles.map}
@@ -121,130 +108,89 @@ export const MapScreen = ({ navigation }: MapStackScreenProps<Screens.MAP>) => {
         gestureSettings={{
           pinchPanEnabled: false,
         }}
-        // onRegionDidChange={handleRegionChange}
-        // onDidFinishLoadingMap={() => setMapLoaded(true)}
-        // ref={mapRef}
-        // attributionEnabled={false}
-        // onCameraChanged={handleCameraChanged}
       >
-        <UserLocation />
         <Camera
-          // ref={camera}
           centerCoordinate={centerCoordinate}
           zoomLevel={DEFAULT_ZOOM}
           animationDuration={20}
-          // zoomLevel={zoomLevel}
-          // maxZoomLevel={14}
-          // minZoomLevel={5}
-          // followUserLocation={false}
-          // centerCoordinate={[
-          //   parseFloat(tempdata?.longitude),
-          //   parseFloat(tempdata?.latitude),
-          // ]}
         />
-        {events
-          ? buildLayer(
-              "event",
-              eventsToFeatureCollection(events),
-              handleMapEventPress
-            )
-          : null}
-        {posts
-          ? buildLayer(
-              "post",
-              postsToFeatureCollection(posts),
-              handleMapPostPress
-            )
-          : null}
-        <>
-          {selectedEvents.map((se) => (
-            <EventItem key={se.id} event={se} />
-          ))}
-          {selectedPosts.map((sp) => (
-            <View key={sp.id} style={styles.listContainer}>
-              <PostCard post={sp} />
-            </View>
-          ))}
-        </>
+        <Images
+          images={{
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+            event: require("~/assets/map/event.png"),
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+            posting: require("~/assets/map/post.png"),
+          }}
+        />
+        <ShapeSource
+          id="features"
+          shape={features}
+          hitbox={{ width: 15, height: 15 }}
+          onPress={handleMapPress}
+        >
+          <SymbolLayer id={"symbols"} minZoomLevel={0} style={mapStyles.icon} />
+        </ShapeSource>
       </MapView>
+      {layoutWidth && selected?.length > 0 && (
+        <View
+          style={{
+            flex: 1,
+            position: "absolute",
+            bottom: 30,
+            width: "100%",
+          }}
+        >
+          <Carousel<LocalEvent | Post>
+            ref={ref}
+            width={layoutWidth}
+            mode="parallax"
+            modeConfig={{
+              parallaxScrollingOffset: 105,
+              parallaxScrollingScale: 0.85,
+              parallaxAdjacentItemScale: 0.6,
+            }}
+            height={120}
+            loop={false}
+            data={selected}
+            renderItem={({ item }) => (
+              <View
+                style={{
+                  flex: 1,
+                  justifyContent: "center",
+                  marginLeft: "2.5%",
+                }}
+              >
+                <MapCard
+                  key={item.id}
+                  item={item}
+                  onPress={gotoDetails(item)}
+                />
+              </View>
+            )}
+          />
+        </View>
+      )}
     </View>
   );
 
-  function buildLayer(
-    type: string,
-    data: FeatureCollection<Point>,
-    onPress: (e: OnPressEvent) => void
-  ) {
-    return (
-      <ShapeSource
-        id={type}
-        shape={data}
-        hitbox={{ width: 20, height: 20 }}
-        onPress={onPress}
-      >
-        <SymbolLayer
-          id={`${type}Symbol`}
-          minZoomLevel={1}
-          style={{
-            iconImage: type,
-          }}
-        />
-        <Images
-          images={imageMarkers}
-          onImageMissing={(imageKey: string) =>
-            console.log("=> on image missing", imageKey)
-          }
-        />
-      </ShapeSource>
-    );
-  }
-
-  function postsToFeatureCollection(posts: Post[]) {
+  function toFeatureCollection(events: LocalEvent[], posts: Post[]) {
     const fc = {
       type: "FeatureCollection",
-      features: posts.map((post) => ({
+      features: [...posts, ...events].map((item) => ({
         type: "Feature",
-        properties: { ..._.omit(["coordinates"], post) },
+        properties: {
+          ..._.omit(["coordinates"], item),
+          icon: isEvent(item) ? "event" : "posting",
+        },
         geometry: {
           type: "Point",
-          coordinates: post.coordinates,
+          coordinates: isEvent(item)
+            ? item.coordinates
+            : // Only so that they're not completely overlapped.
+              item.coordinates!.map((c) => c + 0.00005),
         },
       })),
-    };
-    // console.log("post", JSON.stringify(fc));
-    return fc;
-  }
-
-  //   _.flow([
-  //     _.map((post: PostResource) =>
-  //       post.coordinates
-  //         ? {
-  //             type: "Feature",
-  //             properties: { ..._.omit(["location"], post) },
-  //             geometry: {
-  //               type: "Point",
-  //               coordinates: post.coordinates,
-  //             },
-  //           }
-  //         : null
-  //     ),
-  //     _.reject(_.isNull),
-  //   ])(posts),
-  // } as GeoJSON.FeatureCollection;
-
-  function eventsToFeatureCollection(events: LocalEvent[]) {
-    const fc = {
-      type: "FeatureCollection",
-      features: events.map((event) => ({
-        type: "Feature",
-        properties: { ..._.omit(["coordinates"], event) },
-        geometry: {
-          type: "Point",
-          coordinates: event.coordinates,
-        },
-      })),
-    };
-    // console.log("Fc", JSON.stringify(fc));
+    } as FeatureCollection<GeoJSON.Point>;
     return fc;
   }
 };

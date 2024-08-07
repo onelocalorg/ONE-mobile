@@ -3,7 +3,7 @@ export const stringsAndLabels = {
   password: "Password",
   confirmPassword: "Confirm password",
   iAgree:
-    "Your data is safe with ONE|Local. By clicking the “sign up” button above, you agree to the  ",
+    "Your data is safe with ONE Local. By clicking the “sign up” button above, you agree to the  ",
   tnc: "terms, policy, & EULA",
   login: "Log in",
   forgotPassword: "Forgot password",
@@ -139,7 +139,7 @@ export const stringsAndLabels = {
   deletePost: "Delete Post",
   reportPost: "Report Post",
   reportPostConfirm:
-    "An email will be sent to ONE|Local with the information you provide",
+    "An email will be sent to ONE Local with the information you provide",
   hidePost: "Hide Content",
   areyouHide: "Are you sure you want to hide this Post?",
   reportUser: "Report User",

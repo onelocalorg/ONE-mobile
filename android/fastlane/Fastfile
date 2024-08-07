@@ -8,21 +8,21 @@ Dotenv.load ".env.secret"
 platform :android do
 
   # Patched this because of bug https://github.com/fastlane/fastlane/issues/21500
-  lane :patched_google_play_track_version_codes do |options|
-    track_version_codes = [12]
-    begin
-      track_version_codes = google_play_track_version_codes(
-        package_name: options[:package_name],
-        track: options[:track],
-        json_key: options[:json_key],
-      )
-      puts "Found version code #{track_version_codes}"
-    rescue StandardError => e
-      puts "Ignoring expected error: #{e.message} while fetching the latest internal build number"
-      puts "Returning default version codes #{track_version_codes}"
-    end
-    track_version_codes
-  end
+  # lane :patched_google_play_track_version_codes do |options|
+  #   track_version_codes = [14]
+  #   begin
+  #     track_version_codes = google_play_track_version_codes(
+  #       package_name: options[:package_name],
+  #       track: options[:track],
+  #       json_key: options[:json_key],
+  #     )
+  #     puts "Found version code #{track_version_codes}"
+  #   rescue StandardError => e
+  #     puts "Ignoring expected error: #{e.message} while fetching the latest internal build number"
+  #     puts "Returning default version codes #{track_version_codes}"
+  #   end
+  #   track_version_codes
+  # end
 
   desc "Fetches the latest version code from the Play Console and increments it by 1"
   lane :fetch_and_increment_build_number do
@@ -60,6 +60,11 @@ platform :android do
         "android.injected.signing.key.password" => ENV["KEY_PASSWORD"],
       }  
     )    
+  end
+  
+  lane :screenshots do
+    capture_android_screenshots
+    upload_to_play_store
   end  
 
   desc "Runs all the tests"
@@ -92,7 +97,7 @@ platform :android do
   end
 
   private_lane :build_upload_playstore do
-    fetch_and_increment_build_number
+    #fetch_and_increment_build_number
     build
     upload_internal_track
   end
@@ -107,5 +112,11 @@ platform :android do
   lane :build_beta_upload_playstore do
     ENV['API_URL'] = 'https://beta.onelocal.one/api'
     build_upload_playstore
-  end  
+  end 
+  
+  desc "Connect to PRODUCTION server, Build and upload to Play Store"
+  lane :build_prod_upload_playstore do
+    ENV['API_URL'] = 'https://prod.onelocal.one/api'
+    build_upload_playstore
+  end    
 end

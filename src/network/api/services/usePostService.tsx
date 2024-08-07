@@ -4,13 +4,12 @@ import {
   useQueryClient,
 } from "@tanstack/react-query";
 import _ from "lodash/fp";
-import { Block } from "~/types/block";
+import { Duration } from "luxon";
 import { Gratis } from "~/types/gratis";
 import { Post, PostData, PostDetail, PostUpdateData } from "~/types/post";
 import { Reply } from "~/types/reply";
 import { Report } from "~/types/report";
 import { useApiService } from "./ApiService";
-import { useEventService } from "./useEventService";
 import { useUserService } from "./useUserService";
 
 export enum PostMutations {
@@ -21,13 +20,11 @@ export enum PostMutations {
   deleteReply = "deleteReply",
   giveGrats = "giveGrats",
   reportPost = "reportPost",
-  blockUser = "blockUser",
 }
 
 export function usePostService() {
   const queryClient = useQueryClient();
   const { queries: userQueries } = useUserService();
-  const { queries: eventQueries } = useEventService();
 
   const queries = {
     all: () => ["posts"],
@@ -131,20 +128,6 @@ export function usePostService() {
     },
   });
 
-  queryClient.setMutationDefaults([PostMutations.blockUser], {
-    mutationFn: (userId: string) => {
-      return blockUser(userId);
-    },
-    onSuccess: () => {
-      void queryClient.invalidateQueries({
-        queryKey: queries.lists(),
-      });
-      void queryClient.invalidateQueries({
-        queryKey: eventQueries.lists(),
-      });
-    },
-  });
-
   queryClient.setMutationDefaults([PostMutations.reportPost], {
     mutationFn: (params: ReportPostParams) => {
       return reportPost(params);
@@ -165,23 +148,23 @@ export function usePostService() {
 
   const deletePost = (id: string) => doDelete<never>(`/v3/posts/${id}`);
 
-  const blockUser = (postId: string) =>
-    doPost<Block>(`/v3/posts/block-user/${postId}`);
-
   type GetPostsParams = {
     numPosts?: number;
     isPast?: boolean;
     from?: string;
+    age?: Duration; //max age of posts returned
   };
   const getPosts = ({
     numPosts = 20,
     isPast,
     from,
+    age,
   }: GetPostsParams | undefined = {}) => {
     const urlParams: string[] = [];
     if (!_.isNil(isPast)) urlParams.push(`past=${isPast.toString()}`);
     if (!_.isNil(numPosts)) urlParams.push(`limit=${numPosts.toString()}`);
     if (!_.isNil(from)) urlParams.push(`from=${from}`);
+    if (!_.isNil(age)) urlParams.push(`age=${age.toISO()}`);
 
     const urlSearchParams = urlParams.join("&");
 

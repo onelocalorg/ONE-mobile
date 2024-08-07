@@ -199,9 +199,10 @@ export const createStyleSheet = (theme: ThemeProps) => {
     flexWrap: {
       flexWrap: "wrap",
     },
-    postContainer: {
-      marginVertical: 10,
+    rowContainer: {
       flexDirection: "row",
+      alignItems: "center",
+      columnGap: normalScale(6),
     },
     postFilter: {
       flexDirection: "row",
@@ -561,9 +562,9 @@ export const createStyleSheet = (theme: ThemeProps) => {
       flexDirection: "row",
       alignItems: "center",
     },
-    postInput: {
+    postInputBody: {
       height: 160,
-      marginTop: 5,
+      // marginTop: 5,
       textAlign: "left",
       verticalAlign: "top",
       borderRadius: 10,
@@ -573,28 +574,32 @@ export const createStyleSheet = (theme: ThemeProps) => {
       backgroundColor: theme.colors.lightgrayTwo,
       color: theme.colors.black,
     },
-    postInputTwo: {
+    postInput: {
       borderRadius: 10,
-      width: width - 70,
-      marginLeft: 3,
+      // TODO Fill to right side
+      width: "90%",
+      marginHorizontal: 3,
       paddingHorizontal: 10,
+      paddingVertical: 8,
       height: 35,
+      textAlign: "left",
       justifyContent: "center",
+      alignItems: "center",
       borderColor: theme.colors.black,
       borderWidth: theme.borderWidth.borderWidth1,
       backgroundColor: theme.colors.lightgrayTwo,
       color: theme.colors.black,
     },
     postInputIconRight: {
-      paddingTop: 0,
-      paddingBottom: 0,
+      // paddingTop: 0,
+      // paddingBottom: 0,
       borderRadius: 10,
-      width: width - 95,
-      marginLeft: 1,
+      // marginLeft: 1,
       // marginRight: 50,
       paddingHorizontal: 10,
+      width: "90%",
       height: 35,
-      justifyContent: "center",
+      // justifyContent: "center",
       borderColor: theme.colors.black,
       borderWidth: theme.borderWidth.borderWidth1,
       backgroundColor: theme.colors.lightgrayTwo,
@@ -679,9 +684,6 @@ export const createStyleSheet = (theme: ThemeProps) => {
       marginBottom: 10,
       alignItems: "center",
     },
-    postCont: {
-      // marginTop:10
-    },
     tagCont: {
       marginTop: 10,
       flexDirection: "row",
@@ -763,15 +765,24 @@ export const createStyleSheet = (theme: ThemeProps) => {
       shadowColor: theme.colors.black,
       shadowOpacity: theme.opacity.opacity15,
       shadowRadius: theme.borderRadius.radius8,
-      // shadowOffset: {
-      //   width: 0,
-      //   height: verticalScale(0),
-      // },
-      // elevation: 5,
-      // justifyContent: "space-between",
       flexDirection: "row",
       alignItems: "center",
       paddingHorizontal: normalScale(16),
+      marginHorizontal: normalScale(8),
+      flexGrow: 1,
+    },
+    cancelButton: {
+      marginTop: verticalScale(16),
+      backgroundColor: theme.colors.grey,
+      borderRadius: theme.borderRadius.radius14,
+      paddingVertical: verticalScale(14),
+      shadowColor: theme.colors.black,
+      shadowOpacity: theme.opacity.opacity15,
+      shadowRadius: theme.borderRadius.radius8,
+      flexDirection: "row",
+      alignItems: "center",
+      paddingHorizontal: normalScale(32),
+      marginHorizontal: normalScale(16),
     },
     titleTwo: {
       fontFamily: theme.fontType.medium,

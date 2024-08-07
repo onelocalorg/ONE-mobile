@@ -48,7 +48,7 @@ export const Tickets = ({ event }: TicketsProps) => {
 
       {!isMyEvent && event.ticketTypes?.length ? (
         <ButtonComponent
-          disabled={event.isCanceled}
+          disabled={!!event.cancelDate}
           title={strings.chooseTickets}
           onPress={showTicketsModal}
         />

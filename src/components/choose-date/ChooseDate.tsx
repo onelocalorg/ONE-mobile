@@ -2,15 +2,14 @@
 import React, { useState } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
-import { calendarTime } from "~/assets/images";
-import { ImageComponent } from "~/components/image-component";
 
 import { DateTime } from "luxon";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
+import { normalScale } from "~/theme/device/normalize";
 import { createStyleSheet } from "./style";
 
 interface ChooseDateProps {
-  children: string;
+  children: React.ReactNode;
   date: DateTime;
   setDate: (date: DateTime) => void;
 }
@@ -20,18 +19,16 @@ export const ChooseDate = ({ children, date, setDate }: ChooseDateProps) => {
 
   const [isPickerVisible, setPickerVisible] = useState(false);
   return (
-    <View style={styles.row}>
-      <View style={styles.circularView}>
-        <ImageComponent source={calendarTime} style={styles.calendarTime} />
-      </View>
+    <View>
+      <Text style={{ marginBottom: normalScale(4) }}>{children}</Text>
       <TouchableOpacity
         activeOpacity={0.8}
         onPress={() => setPickerVisible(true)}
         style={styles.margin}
       >
-        <Text style={styles.time}>{children}</Text>
         <Text style={styles.time}>
-          {date.toLocaleString(DateTime.DATETIME_MED)}
+          {date.toLocaleString(DateTime.DATE_MED) + "\n"}
+          {date.toLocaleString(DateTime.TIME_SIMPLE)}
         </Text>
       </TouchableOpacity>
       <DateTimePickerModal

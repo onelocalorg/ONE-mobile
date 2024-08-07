@@ -84,7 +84,6 @@ export function useEventService() {
       return createRsvp(data);
     },
     onSuccess: (data: RsvpData) => {
-      console.log("success created rsvp", data);
       void queryClient.invalidateQueries({
         queryKey: queries.rsvps(),
       });
@@ -132,7 +131,7 @@ export function useEventService() {
 
     const urlSearchParams = urlParams.join("&");
 
-    return doGet<LocalEvent[]>(`/v3/events?${urlSearchParams.toString()}`);
+    return doGet<LocalEvent[]>(`/v3/events?${urlSearchParams}`);
   };
 
   const getRsvps = (eventId: string) => {

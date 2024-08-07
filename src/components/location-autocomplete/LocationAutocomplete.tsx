@@ -44,12 +44,12 @@ export const LocationAutocomplete = ({
             borderColor: theme.colors.black,
             borderWidth: theme.borderWidth.borderWidth1,
           },
-          listView: {
-            color: "black", //To see where exactly the list is
-            zIndex: 10000000, //To popover the component outwards
-            // position: 'absolute',
-            // top: 45
-          },
+          // listView: {
+          //   color: "black", //To see where exactly the list is
+          //   zIndex: 10000000, //To popover the component outwards
+          //   // position: 'absolute',
+          //   // top: 45
+          // },
           predefinedPlacesDescription: {
             color: "black",
           },

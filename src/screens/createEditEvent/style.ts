@@ -74,8 +74,8 @@ export const createStyleSheet = (theme: ThemeProps) => {
       justifyContent: "center",
     },
     calendarTime: {
-      height: normalScale(40),
-      width: normalScale(40),
+      height: normalScale(20),
+      width: normalScale(20),
     },
     margin: {
       marginLeft: normalScale(8),
@@ -110,6 +110,22 @@ export const createStyleSheet = (theme: ThemeProps) => {
     textStyle: {
       width: normalScale(278),
     },
+    postInput: {
+      borderRadius: 10,
+      // TODO Fill to right side
+      width: "100%",
+      marginHorizontal: 3,
+      paddingHorizontal: 10,
+      paddingVertical: 8,
+      height: 35,
+      textAlign: "left",
+      justifyContent: "center",
+      alignItems: "center",
+      borderColor: theme.colors.black,
+      borderWidth: theme.borderWidth.borderWidth1,
+      backgroundColor: theme.colors.lightgrayTwo,
+      color: theme.colors.black,
+    },
     profile: {
       height: normalScale(144),
       width: "100%",
@@ -119,12 +135,6 @@ export const createStyleSheet = (theme: ThemeProps) => {
       position: "absolute",
       top: verticalScale(20),
       left: normalScale(10),
-    },
-    event: {
-      fontFamily: theme.fontType.regular,
-      fontSize: theme.fontSize.font14,
-      color: theme.colors.black,
-      marginTop: verticalScale(6),
     },
     marginTop: {
       marginTop: verticalScale(10),
@@ -140,15 +150,16 @@ export const createStyleSheet = (theme: ThemeProps) => {
       height: normalScale(28),
       width: normalScale(28),
       marginLeft: normalScale(3),
+      alignSelf: "center",
     },
     // ticketTitle:{
     //   fontFamily: theme.fontType.regular, fontSize: theme.fontSize.font24,color: theme.colors.black,paddingHorizontal: normalScale(16),alignSelf: 'center'
     // },
-    rowOnly: {
+    rowContainer: {
       flexDirection: "row",
-      justifyContent: "space-between",
-      marginBottom: verticalScale(8),
       alignItems: "center",
+      columnGap: normalScale(6),
+      width: "100%",
     },
     ticket: {
       fontFamily: theme.fontType.regular,
@@ -163,16 +174,15 @@ export const createStyleSheet = (theme: ThemeProps) => {
     delete: {
       height: normalScale(20),
       width: normalScale(20),
-      paddingLeft: 10,
+      fontWeight: "bold",
       color: theme.colors.red,
+      textAlign: "right",
     },
     modalContainer: {
       marginTop: verticalScale(10),
       marginHorizontal: normalScale(16),
     },
     label: {
-      marginTop: verticalScale(20),
-      marginBottom: verticalScale(4),
       fontFamily: theme.fontType.medium,
       fontSize: theme.fontSize.font16,
       color: theme.colors.black,
@@ -206,11 +216,33 @@ export const createStyleSheet = (theme: ThemeProps) => {
       height: verticalScale(5),
       marginLeft: normalScale(3),
     },
-    bottomButton: {
+    postButton: {
+      marginTop: verticalScale(16),
+      backgroundColor: "#007112",
+      borderRadius: theme.borderRadius.radius14,
+      paddingVertical: verticalScale(14),
+      shadowColor: theme.colors.black,
+      shadowOpacity: theme.opacity.opacity15,
+      shadowRadius: theme.borderRadius.radius8,
+      flexDirection: "row",
+      alignItems: "center",
       paddingHorizontal: normalScale(16),
-      backgroundColor: theme.colors.white,
-      paddingBottom: verticalScale(20),
-      paddingTop: verticalScale(5),
+      marginHorizontal: normalScale(8),
+      flexGrow: 1,
+    },
+    cancelButton: {
+      marginTop: verticalScale(16),
+      backgroundColor: theme.colors.grey,
+      borderRadius: theme.borderRadius.radius14,
+      paddingVertical: verticalScale(14),
+      shadowColor: theme.colors.black,
+      shadowOpacity: theme.opacity.opacity15,
+      shadowRadius: theme.borderRadius.radius8,
+      flexDirection: "row",
+      alignItems: "center",
+      paddingHorizontal: normalScale(16),
+      marginHorizontal: normalScale(8),
+      flexGrow: 1,
     },
     profilePic: {
       height: 50,
@@ -1018,6 +1050,32 @@ export const createStyleSheet = (theme: ThemeProps) => {
       fontFamily: theme.fontType.medium,
       fontSize: theme.fontSize.font14,
       color: theme.colors.redTwo,
+    },
+    imagesCont: {
+      flexDirection: "row",
+      marginTop: 10,
+    },
+    textTwo: {
+      color: theme.colors.black,
+      fontSize: 15,
+      fontFamily: theme.fontType.regular,
+      marginRight: 5,
+      fontWeight: "600",
+    },
+    textThree: {
+      color: "lightgray",
+      fontSize: 14,
+      fontFamily: theme.fontType.regular,
+      marginRight: 5,
+      fontWeight: "600",
+    },
+    eventClass: {
+      borderColor: "green",
+      borderWidth: 2,
+      borderRadius: 10,
+      paddingVertical: 10,
+      paddingHorizontal: 5,
+      margin: 10,
     },
   });
 };

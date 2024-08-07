@@ -10,4 +10,5 @@ export interface Reply {
   author: OneUser;
   content: string;
   gratis: number;
+  isDeleted: boolean;
 }

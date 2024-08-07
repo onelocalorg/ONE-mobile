@@ -38,7 +38,11 @@ export const toCurrency = (val?: number) =>
 
 // @ts-expect-error Property 'convert' does not exist on type 'LodashMapValues'.
 // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-assignment
-export const mapValuesWithKey = _.mapValues.convert({ cap: false });
+export const mapValues = _.mapValues.convert({ cap: false });
+
+// @ts-expect-error Property 'convert' does not exist on type 'LodashMapValues'.
+// eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-assignment
+export const forIn = _.forIn.convert({ cap: false });
 
 export const handleApiError = _.curry((resource: string, e: Error | null) => {
   LOG.error(`Failure with ${resource}`, e?.message ?? e);
@@ -56,3 +60,8 @@ export const handleApiError = _.curry((resource: string, e: Error | null) => {
 export const removeEmptyFields = (data: any) =>
   // eslint-disable-next-line @typescript-eslint/no-unsafe-return
   _.mapValues((v) => (v === "" ? undefined : v), data);
+
+export const isNotEmpty = _.overEvery([
+  _.negate(_.isUndefined),
+  _.negate(_.isEmpty),
+]);

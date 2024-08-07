@@ -71,3 +71,4 @@ yarn-error.log
 # Secret files
 *.secret
 *.local
+sentry.properties

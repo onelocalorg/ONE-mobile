@@ -1,3 +1,4 @@
+import _ from "lodash/fp";
 import { DateTime } from "luxon";
 import React from "react";
 import { Text, TouchableOpacity, View } from "react-native";
@@ -11,25 +12,30 @@ import { createStyleSheet } from "./style";
 interface EventCardProps {
   event: LocalEvent;
   disabled?: boolean;
+  style?: any;
 }
 
-export const EventCard = ({ event, disabled = false }: EventCardProps) => {
+export const EventCard = ({
+  event,
+  disabled = false,
+  style,
+}: EventCardProps) => {
   const { theme } = useAppTheme();
   const styles = createStyleSheet(theme);
   const { gotoEventDetails } = useNavigations();
 
   return (
     <TouchableOpacity
-      style={styles.listContainer}
+      style={style ?? styles.listContainer}
       onPress={gotoEventDetails(event)}
       activeOpacity={0.8}
       disabled={disabled}
     >
       <ImageComponent
         resizeMode="stretch"
-        uri={event.image?.url}
+        uri={_.head(event.images)?.url}
         source={dummy}
-        isUrl={!!event.image?.url}
+        isUrl={!!_.head(event.images)?.url}
         style={styles.dummy}
       />
       <View style={styles.flex}>
@@ -55,7 +61,7 @@ export const EventCard = ({ event, disabled = false }: EventCardProps) => {
           {/* <ImageComponent style={styles.addressDot} source={activeRadio}></ImageComponent> */}
           {/* <Text style={styles.fullAddress}>{full_address}</Text> */}
         </View>
-        {event.isCanceled ? (
+        {event.cancelDate ? (
           <Text style={styles.cancleText}>CANCELED</Text>
         ) : null}
       </View>

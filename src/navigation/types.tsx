@@ -8,6 +8,7 @@ import { StackScreenProps } from "@react-navigation/stack";
 export enum Screens {
   LOGIN = "Login",
   SIGNUP = "Signup",
+  VERIFY = "Verify",
   WEBVIEW = "WebView",
   MAIN_TABS = "MainTabs",
   HOME_SCREEN = "HomeScreen",
@@ -34,6 +35,7 @@ export enum Screens {
 export type GuestStackParamList = {
   [Screens.LOGIN]: undefined;
   [Screens.SIGNUP]: undefined;
+  [Screens.VERIFY]: { email: string; password?: string; token?: string };
   [Screens.WEBVIEW]: { url: string };
 };
 
@@ -44,10 +46,10 @@ export type RootStackParamList = {
   [Screens.MAIN_TABS]: NavigatorScreenParams<MainTabsParamList>;
   [Screens.USER_PROFILE]: { id: string };
   [Screens.MY_PROFILE]: undefined;
-  [Screens.EVENT_DETAIL]: { id: string };
+  [Screens.EVENT_DETAIL]: { id: string; reply?: string };
   [Screens.CREATE_EDIT_EVENT]: { id: string } | undefined;
   [Screens.CREATE_EDIT_POST]: { id: string } | undefined;
-  [Screens.POST_DETAIL]: { id: string; isReplyFocus?: boolean };
+  [Screens.POST_DETAIL]: { id: string; reply?: string; isReplyFocus?: boolean };
   [Screens.POST_CONTEXT_MENU_MODAL]: {
     postId: string;
     authorId: string;

@@ -18,7 +18,7 @@ import { ImageComponent } from "~/components/image-component";
 import { Loader } from "~/components/loader";
 import { usePostService } from "~/network/api/services/usePostService";
 import { Post } from "~/types/post";
-import { PostCard } from "./PostCard";
+import { PostCard, PostCardSize } from "./PostCard";
 import { createStyleSheet } from "./style";
 
 type PostsListProps = {
@@ -41,6 +41,7 @@ export const PostsList = ({ header }: PostsListProps) => {
     hasNextPage,
     isRefetching,
     isFetching,
+    isLoading,
     isFetchingNextPage,
   } = useInfiniteQuery(infiniteList());
 
@@ -56,7 +57,7 @@ export const PostsList = ({ header }: PostsListProps) => {
     return (
       <View style={styles.feedContainer}>
         <Pressable onPress={() => gotoPostDetails(post)}>
-          <PostCard post={post} />
+          <PostCard post={post} size={PostCardSize.Medium} />
           <View style={styles.gratisAndReplyContainer}>
             <TouchableOpacity
               activeOpacity={0.8}
@@ -88,10 +89,10 @@ export const PostsList = ({ header }: PostsListProps) => {
 
   return (
     <>
-      <Loader visible={isFetching} />
+      <Loader visible={isLoading} />
       <FlatList
         data={(posts?.pages.flat() as Post[]) || []}
-        // keyExtractor={(item) => item.id}
+        keyExtractor={(item) => item.id}
         renderItem={postRenderer}
         onEndReached={loadNext}
         refreshControl={
@@ -112,7 +113,7 @@ export const PostsList = ({ header }: PostsListProps) => {
         ListFooterComponent={
           <View style={styles.listFooterComponent}>
             {isFetchingNextPage && <ActivityIndicator />}
-            {!hasNextPage && (
+            {!hasNextPage && !isLoading && (
               <Text style={{ color: "white" }}>
                 You have reached the end. Congratulations!
               </Text>

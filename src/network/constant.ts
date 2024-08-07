@@ -40,6 +40,7 @@ export const persistKeys = {
   token: "token",
   refreshToken: "refreshToken",
   myId: "myId",
+  myEmail: "myEmail",
   fcmToken: "@fcmToken",
 };
 
@@ -52,5 +53,5 @@ export const apiKeys = {
   packageDetail: "packageDetails",
 };
 
-export const IOS_VERSION = "8.0.0";
-export const ANDROID_VERSION = "2.0.0";
+export const IOS_VERSION = "8.0.1";
+export const ANDROID_VERSION = "2.0.1";

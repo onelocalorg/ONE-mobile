@@ -30,7 +30,12 @@
 		</dict>
 	</array>
 	<key>NSPrivacyCollectedDataTypes</key>
-	<array/>
+	<array>
+		<string>NSPrivacyCollectedDataTypeName</string>
+		<string>NSPrivacyCollectedDataTypeEmailAddress</string>
+		<string>NSPrivacyCollectedDataTypePhotosorVideos</string>
+		<string>NSPrivacyCollectedDataTypeOtherUserContent</string>
+	</array>
 	<key>NSPrivacyTracking</key>
 	<false/>
 </dict>

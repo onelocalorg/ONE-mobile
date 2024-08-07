@@ -1,4 +1,4 @@
-export enum FileKeys {
+export enum FileKey {
   pic = "pic",
   coverImage = "cover_image",
   signupPic = "signup_pic",
@@ -11,7 +11,7 @@ export enum FileKeys {
 }
 
 export interface UploadFileData {
-  uploadKey: FileKeys;
+  uploadKey: FileKey;
   eventId?: string;
   userId?: string;
   imageName: string;

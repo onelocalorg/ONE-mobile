@@ -22,6 +22,7 @@ import { PostDetailScreen } from "~/screens/home/PostDetailScreen";
 import { ReportContent } from "~/screens/home/ReportContent";
 import { LoginScreen } from "~/screens/login/LoginScreen";
 import { SignUpScreen } from "~/screens/login/SignupScreen";
+import { VerifyScreen } from "~/screens/login/VerifyScreen";
 import { MapScreen } from "~/screens/map/MapScreen";
 import { LogoutPressable } from "~/screens/myprofile/LogoutPressable";
 import { MyProfileScreen } from "~/screens/myprofile/MyProfileScreen";
@@ -38,13 +39,43 @@ import {
 } from "./types";
 
 type AppNavigationProps = {
+  email?: string;
+  password?: string;
   token?: string;
 };
-export const AppNavigation = ({ token }: AppNavigationProps) => {
+
+export const AppNavigation = ({
+  email,
+  password,
+  token,
+}: AppNavigationProps) => {
   const { theme } = useAppTheme();
 
-  const isLoggedIn = !!token;
-  console.log("isLoggedIn", isLoggedIn);
+  const linking = {
+    prefixes: ["onelocal://", "https://app.onelocal.one"],
+    config: {
+      screens: {
+        [Screens.HOME_SCREEN]: {
+          path: "home",
+        },
+        [Screens.CREATE_EDIT_POST]: {
+          path: "posts/create",
+        },
+        [Screens.POST_DETAIL]: {
+          path: "posts/:id/:reply?",
+        },
+        [Screens.EVENT_DETAIL]: {
+          path: "events/:id/:reply",
+        },
+        [Screens.MY_PROFILE]: {
+          path: "users/me",
+        },
+        [Screens.MAP]: {
+          path: "map",
+        },
+      },
+    },
+  };
 
   const MainTabs = createBottomTabNavigator<MainTabsParamList>();
   const MainTabsScreen = () => (
@@ -110,7 +141,7 @@ export const AppNavigation = ({ token }: AppNavigationProps) => {
   const GuestStack = createStackNavigator<GuestStackParamList>();
 
   return (
-    <NavigationContainer>
+    <NavigationContainer linking={linking}>
       <RootStack.Navigator
         screenOptions={({ navigation, route }): StackNavigationOptions => ({
           headerTitle: () => <OneLogo localText="B o u l d e r" />,
@@ -130,7 +161,7 @@ export const AppNavigation = ({ token }: AppNavigationProps) => {
           headerRight: () =>
             route.name === Screens.MY_PROFILE ? (
               <LogoutPressable />
-            ) : isLoggedIn ? (
+            ) : token ? (
               <MyAvatar
                 // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-member-access
                 onPress={() => navigation.navigate(Screens.MY_PROFILE)}
@@ -138,7 +169,7 @@ export const AppNavigation = ({ token }: AppNavigationProps) => {
             ) : null,
         })}
       >
-        {isLoggedIn ? (
+        {token ? (
           <RootStack.Group>
             <RootStack.Screen
               name={Screens.MAIN_TABS}
@@ -161,6 +192,12 @@ export const AppNavigation = ({ token }: AppNavigationProps) => {
               component={EventDetailScreen}
             />
           </RootStack.Group>
+        ) : email ? (
+          <GuestStack.Screen
+            name={Screens.VERIFY}
+            component={VerifyScreen}
+            initialParams={{ email, password }}
+          />
         ) : (
           <GuestStack.Group>
             <GuestStack.Screen name={Screens.LOGIN} component={LoginScreen} />

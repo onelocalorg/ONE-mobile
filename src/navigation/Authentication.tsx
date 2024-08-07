@@ -3,10 +3,14 @@ import React, { useEffect, useMemo, useReducer } from "react";
 import { LOG } from "~/config";
 import { ApiService } from "~/network/api/services/ApiService";
 import { persistKeys } from "~/network/constant";
-import { CurrentUser as MyUser } from "~/types/current-user";
+import { CurrentUser } from "~/types/current-user";
 import { handleApiError } from "~/utils/common";
 import { AppNavigation } from "./AppNavigation";
-import { AuthContext, AuthDispatchContext } from "./AuthContext";
+import {
+  AuthContext,
+  AuthDispatchContext,
+  HandleSignInUnverifiedProps,
+} from "./AuthContext";
 import { NotificationService } from "./NotificationService";
 
 export default function Authentication() {
@@ -16,9 +20,11 @@ export default function Authentication() {
     accessToken?: string;
     refreshToken?: string;
     myUserId?: string;
+    myEmail?: string;
+    password?: string;
   };
 
-  type SignIn = { type: "SIGN_IN"; user: MyUser };
+  type SignIn = { type: "SIGN_IN"; user: CurrentUser };
   type RestoreToken = {
     type: "RESTORE_TOKENS";
     accessToken: string;
@@ -26,8 +32,13 @@ export default function Authentication() {
     userId: string;
   };
   type SignOut = { type: "SIGN_OUT" };
+  type SignInUnverified = {
+    type: "SIGN_IN_UNVERIFIED";
+    email: string;
+    password: string;
+  };
 
-  type AppActions = SignIn | RestoreToken | SignOut;
+  type AppActions = SignIn | RestoreToken | SignOut | SignInUnverified;
 
   const [state, dispatch] = useReducer(
     (prevState: AppState, action: AppActions): AppState => {
@@ -40,14 +51,16 @@ export default function Authentication() {
             refreshToken: action.refreshToken,
             myUserId: action.userId,
             isLoading: false,
+            password: undefined,
           };
         case "SIGN_IN":
           return {
             ...prevState,
             isSignout: false,
-            accessToken: action.user.accessToken,
+            accessToken: action.user?.accessToken ?? undefined,
             refreshToken: action.user.refreshToken,
             myUserId: action.user.id,
+            password: undefined,
           };
         case "SIGN_OUT":
           return {
@@ -57,6 +70,14 @@ export default function Authentication() {
             accessToken: undefined,
             refreshToken: undefined,
             myUserId: undefined,
+            password: undefined,
+          };
+        case "SIGN_IN_UNVERIFIED":
+          return {
+            ...prevState,
+            isSignout: false,
+            myEmail: action.email,
+            password: action.password,
           };
       }
     },
@@ -76,16 +97,14 @@ export default function Authentication() {
           AsyncStorage.getItem(persistKeys.refreshToken),
         ]);
 
-        if (accessToken && userId) {
+        if (userId && accessToken) {
           dispatch({
             type: "RESTORE_TOKENS",
             accessToken,
             refreshToken: refreshToken || undefined,
             userId,
           });
-        }
-
-        if (!(userId && accessToken)) {
+        } else {
           dispatch({
             type: "SIGN_OUT",
           });
@@ -100,14 +119,23 @@ export default function Authentication() {
 
   const authDispatchContext = useMemo(
     () => ({
-      handleSignIn: async (user: MyUser) => {
+      handleSignIn: async (user: CurrentUser) => {
         await Promise.all([
           AsyncStorage.setItem(persistKeys.myId, user.id),
+          AsyncStorage.setItem(persistKeys.myEmail, user.email),
           AsyncStorage.setItem(persistKeys.token, user.accessToken),
           AsyncStorage.setItem(persistKeys.refreshToken, user.refreshToken),
         ]);
         dispatch({ type: "SIGN_IN", user });
       },
+      handleSignInUnverified: async ({
+        email,
+        password,
+      }: HandleSignInUnverifiedProps) => {
+        await AsyncStorage.setItem(persistKeys.myEmail, email);
+        dispatch({ type: "SIGN_IN_UNVERIFIED", email, password });
+      },
+
       handleSignOut: async () => {
         await Promise.all([
           AsyncStorage.removeItem(persistKeys.myId),
@@ -116,12 +144,8 @@ export default function Authentication() {
         ]);
         dispatch({ type: "SIGN_OUT" });
       },
-      handleSignUp: async (user: MyUser) => {
-        await Promise.all([
-          AsyncStorage.setItem(persistKeys.myId, user.id),
-          AsyncStorage.setItem(persistKeys.token, user.accessToken),
-          AsyncStorage.setItem(persistKeys.refreshToken, user.refreshToken),
-        ]);
+      handleSignUp: async (user: CurrentUser) => {
+        await Promise.all([AsyncStorage.setItem(persistKeys.myId, user.id)]);
         dispatch({ type: "SIGN_IN", user });
       },
     }),
@@ -130,13 +154,17 @@ export default function Authentication() {
 
   return (
     <AuthContext.Provider value={state}>
-      <ApiService>
-        <AuthDispatchContext.Provider value={authDispatchContext}>
+      <AuthDispatchContext.Provider value={authDispatchContext}>
+        <ApiService>
           <NotificationService>
-            <AppNavigation token={state.accessToken} />
+            <AppNavigation
+              email={state.myEmail}
+              password={state.password}
+              token={state.accessToken}
+            />
           </NotificationService>
-        </AuthDispatchContext.Provider>
-      </ApiService>
+        </ApiService>
+      </AuthDispatchContext.Provider>
     </AuthContext.Provider>
   );
 }

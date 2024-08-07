@@ -1,7 +1,7 @@
 export interface NewUser {
   firstName: string;
-  lastName: string;
+  lastName?: string;
   email: string;
   password: string;
-  pic?: string;
+  confirmPassword?: string;
 }
