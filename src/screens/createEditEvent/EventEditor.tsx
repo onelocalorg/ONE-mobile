@@ -99,7 +99,7 @@ export const EventEditor = ({
         },
   });
 
-  const { append, remove } = useFieldArray({
+  const { append, remove, update } = useFieldArray({
     control,
     name: "ticketTypes",
   });
@@ -127,8 +127,8 @@ export const EventEditor = ({
     setTicketModalVisible(true);
   };
 
-  const onTicketAdded = (ticket: TicketTypeData) => {
-    append(ticket);
+  const onTicketUpdate = (ticket: TicketTypeData) => {
+    curTicket !== undefined ? update(curTicket, ticket) : append(ticket);
     setCurTicket(undefined);
     setTicketModalVisible(false);
   };
@@ -312,7 +312,7 @@ export const EventEditor = ({
               </Pressable>
               <AddTicketModal
                 isVisible={isTicketModalVisible}
-                onSuccess={onTicketAdded}
+                onSuccess={onTicketUpdate}
                 onDismiss={() => setTicketModalVisible(false)}
                 value={
                   curTicket === undefined
