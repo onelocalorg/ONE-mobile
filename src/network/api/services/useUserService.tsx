@@ -98,17 +98,20 @@ export function useUserService() {
   const deleteUser = (userId: string) => doDelete<never>(`/v3/users/${userId}`);
 
   interface GetUsersParams {
+    search?: string;
     sort?: GetUsersSort;
     limit?: number;
     picsOnly?: boolean;
   }
   const getUsers = ({
+    search,
     sort,
     limit,
     picsOnly,
   }: GetUsersParams | undefined = {}) => {
     // TODO make this more generic
     const urlParams: string[] = [];
+    if (!_.isNil(search)) urlParams.push(`search=${search.toString()}`);
     if (!_.isNil(sort)) urlParams.push(`sort=${sort.toString()}`);
     if (!_.isNil(limit)) urlParams.push(`limit=${limit.toString()}`);
     if (!_.isNil(picsOnly)) urlParams.push(`pics=${picsOnly.toString()}`);

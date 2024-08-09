@@ -10,6 +10,7 @@ import { ShortModalScreenOptions } from "~/components/ShortModal";
 import { GenericWebView } from "~/components/generic-webview";
 import { MyAvatar } from "~/components/navbar/MyAvatar";
 import { OneLogo } from "~/components/navbar/OneLogo";
+import { AddEditPaymentScreen } from "~/screens/createEditEvent/AddEditPaymentScreen";
 import { CreateEditEventScreen } from "~/screens/createEditEvent/CreateEditEventScreen";
 import { CreateEditPostScreen } from "~/screens/createEditPost/CreateEditPostScreen";
 import { ChooseTicketsModal } from "~/screens/event-detail/ChooseTicketsModal";
@@ -246,6 +247,13 @@ export const AppNavigation = ({
           <RootStack.Screen
             name={Screens.CHOOSE_TICKETS}
             component={ChooseTicketsModal}
+            options={{
+              ...ShortModalScreenOptions,
+            }}
+          />
+          <RootStack.Screen
+            name={Screens.ADD_EDIT_PAYMENT}
+            component={AddEditPaymentScreen}
             options={{
               ...ShortModalScreenOptions,
             }}

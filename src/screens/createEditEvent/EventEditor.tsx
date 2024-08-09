@@ -141,8 +141,6 @@ export const EventEditor = ({
     setValue("images", images);
   };
 
-  console.log("images", getValues("images"));
-
   const ChooseStartAndEndDates = () => (
     <View style={styles.rowContainer}>
       <FontAwesomeIcon icon={faCalendar} size={20} />

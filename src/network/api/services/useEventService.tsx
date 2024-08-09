@@ -1,10 +1,12 @@
 import { queryOptions, useQueryClient } from "@tanstack/react-query";
 import _ from "lodash/fp";
+import { EventFinancials } from "~/types/event-financials";
 import {
   LocalEvent,
   LocalEventData,
   LocalEventUpdateData,
 } from "~/types/local-event";
+import { Payment, PaymentData } from "~/types/payment";
 import { PriceBreakdown } from "~/types/price-breakdown";
 import { Rsvp, RsvpData, RsvpList } from "~/types/rsvp";
 import { TicketSelection } from "~/types/ticket-selection";
@@ -16,6 +18,8 @@ export enum EventMutations {
   cancelEvent = "cancelEvent",
   createRsvp = "createRsvp",
   deleteRsvp = "deleteRsvp",
+  createPayment = "createPayment",
+  deletePayment = "deletePayment",
 }
 
 export function useEventService() {
@@ -42,6 +46,25 @@ export function useEventService() {
       queryOptions({
         queryKey: [...queries.rsvps(), eventId],
         queryFn: () => getRsvps(eventId),
+        staleTime: 5000,
+      }),
+    financialsForEvent: (eventId: string) =>
+      queryOptions({
+        queryKey: [...queries.detail(eventId).queryKey, "financials"],
+        queryFn: () => getFinancials(eventId),
+        staleTime: 5000,
+      }),
+    payments: () => ["payments"],
+    paymentsForEvent: (eventId: string) =>
+      queryOptions({
+        queryKey: [...queries.payments(), eventId],
+        queryFn: () => getPayments(eventId),
+        staleTime: 5000,
+      }),
+    paymentDetail: (eventId: string, paymentId: string) =>
+      queryOptions({
+        queryKey: [...queries.paymentsForEvent(eventId).queryKey, paymentId],
+        queryFn: () => getPayments(eventId),
         staleTime: 5000,
       }),
   };
@@ -79,7 +102,7 @@ export function useEventService() {
       });
     },
   });
-  queryClient.setMutationDefaults(["createRsvp"], {
+  queryClient.setMutationDefaults([EventMutations.createRsvp], {
     mutationFn: (data: RsvpData) => {
       return createRsvp(data);
     },
@@ -89,13 +112,33 @@ export function useEventService() {
       });
     },
   });
-  queryClient.setMutationDefaults(["deleteRsvp"], {
+  queryClient.setMutationDefaults([EventMutations.deleteRsvp], {
     mutationFn: (data: DeleteRsvpProps) => {
       return deleteRsvp(data);
     },
     onSuccess: (data: DeleteRsvpProps) => {
       void queryClient.invalidateQueries({
         queryKey: queries.rsvps(),
+      });
+    },
+  });
+  queryClient.setMutationDefaults([EventMutations.createPayment], {
+    mutationFn: (data: PaymentData) => {
+      return createPayment(data);
+    },
+    onSuccess: (data: PaymentData) => {
+      void queryClient.invalidateQueries({
+        queryKey: queries.rsvps(),
+      });
+    },
+  });
+  queryClient.setMutationDefaults([EventMutations.deletePayment], {
+    mutationFn: (data: DeletePaymentProps) => {
+      return deletePayment(data);
+    },
+    onSuccess: (data: DeletePaymentProps) => {
+      void queryClient.invalidateQueries({
+        queryKey: queries.payments(),
       });
     },
   });
@@ -151,6 +194,29 @@ export function useEventService() {
   }
   const deleteRsvp = ({ id, eventId }: DeleteRsvpProps) => {
     return doDelete<Rsvp>(`/v3/events/${eventId}/rsvps/${id}`);
+  };
+
+  const getFinancials = (eventId: string) => {
+    return doGet<EventFinancials>(`/v3/events/${eventId}/financials`);
+  };
+
+  const getPayments = (eventId: string) => {
+    return doGet<Payment[]>(`/v3/events/${eventId}/payments`);
+  };
+
+  const createPayment = (data: PaymentData) => {
+    return doPost<Payment>(
+      `/v3/events/${data.eventId}/payments`,
+      _.omit("eventId", data)
+    );
+  };
+
+  interface DeletePaymentProps {
+    id: string;
+    eventId: string;
+  }
+  const deletePayment = ({ id, eventId }: DeletePaymentProps) => {
+    return doDelete<Payment>(`/v3/events/${eventId}/payments/${id}`);
   };
 
   async function getTicketPriceBreakdown(
