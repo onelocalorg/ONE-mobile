@@ -6,22 +6,18 @@ import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
 import { ShortModal } from "~/components/ShortModal";
 import { ButtonComponent } from "~/components/button-component";
 import { Loader } from "~/components/loader";
+import { OneModal } from "~/components/modal-component/OneModal";
 import { RootStackScreenProps, Screens } from "~/navigation/types";
-import {
-  EventMutations,
-  useEventService,
-} from "~/network/api/services/useEventService";
+import { useEventService } from "~/network/api/services/useEventService";
 import {
   OrderMutations,
   useOrderService,
 } from "~/network/api/services/useOrderService";
 import { LineItemTypes } from "~/types/line-item";
 import { Order, OrderData } from "~/types/order";
-import { Rsvp, RsvpData } from "~/types/rsvp";
 import { TicketSelection } from "~/types/ticket-selection";
 import { toCurrency } from "~/utils/common";
 import { StripeCheckout } from "./StripeCheckout";
-import { SubtotalView } from "./SubtotalView";
 import { TicketSelector } from "./TicketSelector";
 import { createStyleSheet } from "./style";
 
@@ -34,22 +30,18 @@ export const ChooseTicketsModal = ({
   const { strings } = useStringsAndLabels();
   const styles = createStyleSheet(theme);
   const [tickets, setTickets] = useState<TicketSelection[]>([]);
-
-  useOrderService();
+  const [isCheckoutVisible, setCheckoutVisible] = useState(false);
+  const orderService = useOrderService();
 
   const {
     queries: { detail: getEvent },
   } = useEventService();
 
-  const { mutate: createRsvp } = useMutation<Rsvp, Error, RsvpData>({
-    mutationKey: [EventMutations.createRsvp],
-  });
-
   const { data: event, isLoading } = useQuery(getEvent(eventId));
 
   const {
     isPending,
-    mutate: createOrder,
+    mutate,
     data: order,
   } = useMutation<Order, Error, OrderData>({
     mutationKey: [OrderMutations.createOrder],
@@ -61,12 +53,9 @@ export const ChooseTicketsModal = ({
       0
     );
 
-  const numTickets = () =>
-    tickets.reduce((total, ticket) => total + ticket.quantity, 0);
-
   const createTicketOrder = () => {
     if (event) {
-      createOrder(
+      mutate(
         {
           lineItems: tickets
             .filter((ts) => ts.quantity > 0)
@@ -79,12 +68,7 @@ export const ChooseTicketsModal = ({
         },
         {
           onSuccess(order) {
-            console.log("success createOrder");
-
             if (!order.paymentIntent) {
-              // TODO Create RSVP here
-              console.log("creating rsvp ...");
-
               Alert.alert(
                 "Tickets issued",
                 "Check your email to find your order confirmation.",
@@ -99,11 +83,12 @@ export const ChooseTicketsModal = ({
   };
 
   return (
-    <ShortModal height={500}>
+    <ShortModal height={220}>
       <View style={styles.modalContainer}>
         <Loader visible={isLoading || isPending} />
-        {event && (
-          <View>
+        {event ? (
+          <>
+            {/* <EventCard event={event} /> */}
             <Text style={styles.amount}>
               {toCurrency(selectedTicketPrice())}
             </Text>
@@ -113,41 +98,26 @@ export const ChooseTicketsModal = ({
             />
             <View style={styles.lineSpace} />
             <ButtonComponent
+              // disabled={buttonDisable}
               onPress={createTicketOrder}
-              title={strings.addToCart}
-              disabled={numTickets() < 1}
+              title={strings.checkout}
             />
-            {order?.paymentIntent && order?.stripe ? (
-              <>
-                <View style={styles.lineSpace} />
+            {order && order.paymentIntent ? (
+              <OneModal
+                isVisible={isCheckoutVisible}
+                onDismiss={() => setCheckoutVisible(false)}
+              >
                 <StripeCheckout
-                  stripe={order.stripe}
-                  paymentIntent={order.paymentIntent}
+                  order={order}
                   onCheckoutComplete={() => {
+                    setCheckoutVisible(false);
                     navigation.popToTop();
                   }}
-                >
-                  <>
-                    {order.lineItems.map((li) => (
-                      <View key={li.ticketType.id} style={styles.rowOnly}>
-                        <Text style={styles.ticket}>{`${toCurrency(
-                          li.ticketType.price
-                        )} - ${li.ticketType.name}`}</Text>
-                        <Text>
-                          × {li.quantity} ={" "}
-                          {toCurrency(li.ticketType.price * li.quantity)}
-                        </Text>
-                      </View>
-                    ))}
-                    <SubtotalView order={order} />
-                  </>
-                </StripeCheckout>
-              </>
-            ) : (
-              <View style={{ marginBottom: 200 }} />
-            )}
-          </View>
-        )}
+                />
+              </OneModal>
+            ) : null}
+          </>
+        ) : null}
       </View>
     </ShortModal>
   );
