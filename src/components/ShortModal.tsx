@@ -1,5 +1,5 @@
 import { useNavigation } from "@react-navigation/native";
-import { Pressable, View } from "react-native";
+import { View } from "react-native";
 
 type ShortModalProps = {
   height: number;
@@ -21,17 +21,15 @@ export const ShortModal = ({ height, children }: ShortModalProps) => {
           justifyContent: "flex-end",
         }}
       >
-        <Pressable onPress={dismissModal}>
-          <View
-            style={{
-              height,
-              backgroundColor: "#fff",
-              justifyContent: "center",
-            }}
-          >
-            {children}
-          </View>
-        </Pressable>
+        <View
+          style={{
+            height,
+            backgroundColor: "#fff",
+            justifyContent: "center",
+          }}
+        >
+          {children}
+        </View>
       </View>
     </>
   );
