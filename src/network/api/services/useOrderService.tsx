@@ -1,11 +1,9 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import { LineItem, LineItemTypes } from "~/types/line-item";
-import { Order, OrderData } from "~/types/order";
+import { Order, OrderData, StripeData } from "~/types/order";
 import { PriceBreakdown } from "~/types/price-breakdown";
-import { Rsvp, RsvpData, RsvpType } from "~/types/rsvp";
 import { handleApiError } from "~/utils/common";
 import { useApiService } from "./ApiService";
-import { EventMutations } from "./useEventService";
 
 export enum OrderMutations {
   createOrder = "createOrder",
@@ -19,23 +17,12 @@ export function useOrderService() {
     lists: () => [...queries.all(), "list"],
   };
 
-  const { mutate: createRsvp } = useMutation<Rsvp, Error, RsvpData>({
-    mutationKey: [EventMutations.createRsvp],
-  });
-
   queryClient.setMutationDefaults([OrderMutations.createOrder], {
     mutationFn: (data: OrderData) => {
       return createOrder(data);
     },
-    onSuccess: (order: Order) => {
+    onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: queries.all() });
-
-      order.lineItems.forEach((li) => {
-        void createRsvp({
-          eventId: li.event.id,
-          type: RsvpType.GOING,
-        });
-      });
     },
     onError(error: Error) {
       handleApiError("creating Order", error);
@@ -72,11 +59,7 @@ export function useOrderService() {
     paymentIntent?: string;
     lineItems: LineItemResource[];
     costs: PriceBreakdown;
-    stripe?: {
-      customer: string;
-      publishableKey: string;
-      ephemeralKey: string;
-    };
+    stripe?: StripeData;
   }
 
   const apiToOrder = (lineItems: LineItem[]) => (data: OrderResource) =>
