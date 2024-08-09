@@ -1077,17 +1077,5 @@ export const createStyleSheet = (theme: ThemeProps) => {
       paddingHorizontal: 5,
       margin: 10,
     },
-    inputStyle: {
-      backgroundColor: "white",
-      borderRadius: 8,
-      fontSize: 14,
-      borderColor: "#8B8888",
-      borderWidth: 1,
-      paddingVertical: normalScale(4),
-      paddingHorizontal: normalScale(10),
-      lineHeight: 20,
-      color: "black",
-      height: verticalScale(52),
-    },
   });
 };

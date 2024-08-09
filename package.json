@@ -1,6 +1,6 @@
 {
   "name": "one-local",
-  "version": "8.1.0",
+  "version": "8.0.1",
   "private": true,
   "scripts": {
     "start": "npm run start:development",
@@ -42,7 +42,7 @@
     "@reduxjs/toolkit": "^1.9.5",
     "@rnmapbox/maps": "^10.1.28",
     "@sentry/react-native": "^5.24.1",
-    "@stripe/stripe-react-native": "^0.38.4",
+    "@stripe/stripe-react-native": "^0.37.3",
     "@tanstack/react-query": "^5.45.0",
     "axios": "^1.4.0",
     "big.js": "^6.2.1",
@@ -54,7 +54,6 @@
     "react-hook-form": "^7.52.0",
     "react-native": "0.73.7",
     "react-native-camera": "^4.2.1",
-    "react-native-currency-input": "^1.1.1",
     "react-native-device-info": "^10.7.0",
     "react-native-eject": "^0.2.0",
     "react-native-elements": "^3.4.3",

@@ -1,13 +1,12 @@
-import { useQuery } from "@tanstack/react-query";
 import React, { useEffect, useState } from "react";
 import {
-  Button,
+  Alert,
   Keyboard,
+  Pressable,
   Text,
   TouchableWithoutFeedback,
   View,
 } from "react-native";
-import CurrencyInput from "react-native-currency-input";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
 import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
 import { save } from "~/assets/images";
@@ -15,11 +14,8 @@ import { ButtonComponent } from "~/components/button-component";
 import { Input } from "~/components/input";
 import { OneModal } from "~/components/modal-component/OneModal";
 import { SizedBox } from "~/components/sized-box";
-import { useMyUserId } from "~/navigation/AuthContext";
-import { useUserService } from "~/network/api/services/useUserService";
 import { verticalScale } from "~/theme/device/normalize";
 import { TicketTypeData } from "~/types/ticket-type-data";
-import { UserType } from "~/types/user-profile";
 import { createStyleSheet } from "./style";
 
 interface AddTicketModalProps {
@@ -43,18 +39,11 @@ export const AddTicketModal = ({
   const { theme } = useAppTheme();
   const { strings } = useStringsAndLabels();
   const styles = createStyleSheet(theme);
-
-  const myUserId = useMyUserId();
-  const {
-    queries: { detail: getUser },
-  } = useUserService();
-  const { data: myUser } = useQuery(getUser(myUserId));
-
   // const datePickerRef: React.Ref<DatePickerRefProps> = useRef(null);
   // const [startDate, setStartDate] = useState(new Date());
   // const [endDate, setEndDate] = useState(new Date());
   const [name, setName] = useState(value ? value.name : "");
-  const [price, setPrice] = useState<number | null>(value?.quantity ?? null);
+  const [price, setPrice] = useState(value?.price ?? 0);
   const [quantity, setQuantity] = useState(value?.quantity || undefined);
 
   useEffect(() => {
@@ -125,7 +114,7 @@ export const AddTicketModal = ({
 
   const createTicketType = (): TicketTypeData => ({
     name,
-    price: price || 0,
+    price,
     quantity: quantity ? quantity : undefined,
   });
 
@@ -178,29 +167,23 @@ export const AddTicketModal = ({
               </TouchableOpacity>
             </View> */}
             <Text style={styles.label}>{strings.ticketPrice}</Text>
-            {myUser?.type === UserType.EventProducer ? (
-              <CurrencyInput
-                style={styles.inputStyle}
-                value={price}
-                onChangeValue={setPrice}
-                placeholder={strings.ticketPriceFree}
-                prefix="$"
-                separator="."
-                delimiter=","
-              ></CurrencyInput>
-            ) : (
-              <>
-                <Text
-                  style={[
-                    styles.label,
-                    { paddingLeft: 16, marginTop: 0, fontWeight: "bold" },
-                  ]}
-                >
-                  {price ? price.toString() : "Free"}
-                </Text>
-                <Button title="Upgrade to sell tickets" />
-              </>
-            )}
+            <Pressable
+              onPress={() => {
+                Alert.alert("Only free tickets allowed in this release");
+              }}
+            >
+              <Text
+                // onChangeText={(v) => setPrice(Number.parseFloat(v))}
+                // placeholder={strings.ticketPriceFree}
+                // editable={false}
+                style={[
+                  styles.label,
+                  { paddingLeft: 16, marginTop: 0, fontWeight: "bold" },
+                ]}
+              >
+                {price ? price.toString() : "Free"}
+              </Text>
+            </Pressable>
             <Text style={styles.label}>{strings.ticketQuantity}</Text>
             <Input
               keyboardType="numeric"
