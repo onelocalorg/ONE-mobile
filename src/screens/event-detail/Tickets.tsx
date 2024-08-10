@@ -8,7 +8,6 @@ import { ButtonComponent } from "~/components/button-component";
 import { useMyUserId } from "~/navigation/AuthContext";
 import { Screens } from "~/navigation/types";
 import { LocalEvent } from "~/types/local-event";
-import { TicketType } from "~/types/ticket-type";
 import { toCurrency } from "~/utils/common";
 import { createStyleSheet as createBaseStyleSheet } from "./style";
 
@@ -39,7 +38,7 @@ export const Tickets = ({ event }: TicketsProps) => {
         <></>
       )}
       <View>
-        {_.sortBy((tt: TicketType) => tt.price)(event.ticketTypes).map((tt) => (
+        {_.sortBy(_.get("price"), event.ticketTypes).map((tt) => (
           <View key={tt.id} style={styles.rowOnly}>
             <Text style={styles.ticket}>{`${ticketQuantityToString(
               tt.quantity
