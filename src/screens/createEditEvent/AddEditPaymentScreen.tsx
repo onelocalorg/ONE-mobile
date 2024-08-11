@@ -2,17 +2,20 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import React, { useState } from "react";
 import { Controller, useForm, useWatch } from "react-hook-form";
 import { Alert, Text, TextInput, TouchableOpacity, View } from "react-native";
-import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import CurrencyInput from "react-native-currency-input";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
 import { redDeleteIcon, saveIcon } from "~/assets/images";
 import { ImageComponent } from "~/components/image-component";
-import { useMyUserId } from "~/navigation/AuthContext";
+import { MultiImageViewer } from "~/components/MultiImageViewer";
+import { ShortModal } from "~/components/ShortModal";
+import { UserChooser } from "~/components/user-chooser/UserChooser";
 import { RootStackScreenProps, Screens } from "~/navigation/types";
 import {
   EventMutations,
+  PaymentId,
   useEventService,
 } from "~/network/api/services/useEventService";
-import { useUserService } from "~/network/api/services/useUserService";
+import { OneUser } from "~/types/one-user";
 import {
   Payment,
   PaymentData,
@@ -25,31 +28,12 @@ export const AddEditPaymentScreen = ({
   navigation,
   route,
 }: RootStackScreenProps<Screens.ADD_EDIT_PAYMENT>) => {
-  const { eventId, paymentId } = route.params;
+  const { eventId, type, paymentId } = route.params;
 
   const { theme } = useAppTheme();
   const styles = createStyleSheet(theme);
-  const [isExpenseorPayout, setIsExpenseorPayout] = useState("Expense");
-  const [priceData, setPriceData] = useState(1);
-  const [amount, setAmount]: any = useState(0);
-  const [descriptions, setDescriptions] = useState("");
-  const [usertext, onUserSearch] = useState("");
-  const [userList, recentlyJoinUser]: any = useState([]);
-  const [usergratisList, userGratiesListData]: any = useState([]);
-  const [userListArray, getUsetList]: any = useState();
-  const [user_id, SetuserData] = useState({});
-  const [imageSelectArray, setImageSelectArray]: any = useState([]);
-  const [imageSelectArrayKey, setImageSelectArrayKey]: any = useState([]);
-  const [newUserId, setNewUserIdData]: any = useState("");
-  const [payoutListData, setPayoutListData]: any = useState([]);
-  const [expensePayoutID, setExpensePayoutID]: any = useState();
-
-  // TODO Stop copying this around and put it as its own hook
-  const myUserId = useMyUserId();
-  const {
-    queries: { detail: getUser },
-  } = useUserService();
-  const { data: myUser } = useQuery(getUser(myUserId));
+  const [isUserChooserVisible, setUserChooserVisible] = useState(false);
+  const [userSearch, setUserSearch] = useState("");
 
   const {
     queries: { paymentDetail },
@@ -59,202 +43,45 @@ export const AddEditPaymentScreen = ({
     data: payment,
     isPending,
     isLoading,
-  } = useQuery({ ...paymentDetail(eventId, paymentId!), enabled: !!paymentId });
+  } = useQuery({
+    ...paymentDetail({ eventId, id: paymentId! }),
+    enabled: !!paymentId,
+  });
 
   const {
     control,
-    getValues,
     setValue,
     handleSubmit,
-    reset,
+    resetField,
     formState: { errors },
   } = useForm<PaymentData>({
     defaultValues: {
+      id: paymentId,
       eventId,
-      user: myUser,
-      paymentType: PaymentType.Expense,
+      paymentType: type ?? payment?.paymentType ?? PaymentType.Expense,
       paymentSplit: PaymentSplit.Fixed,
-      amount: 0,
-      description: "",
+      amount: payment?.amount ?? 0,
+      description: payment?.description ?? "",
+      images: [],
     },
   });
 
   const paymentType = useWatch({ control, name: "paymentType" });
   const paymentSplit = useWatch({ control, name: "paymentSplit" });
 
-  const mutateDeletePayment = useMutation<Payment, Error, string>({
+  const mutateCreatePayment = useMutation<Payment, Error, PaymentData>({
+    mutationKey: [EventMutations.createPayment],
+  });
+
+  const mutateUpdatePayment = useMutation<Payment, Error, PaymentData>({
+    mutationKey: [EventMutations.editPayment],
+  });
+
+  const mutateDeletePayment = useMutation<void, Error, PaymentId>({
     mutationKey: [EventMutations.deletePayment],
   });
 
-  // useFocusEffect(
-  //   useCallback(() => {
-  //     if (payoutExpenseObject != undefined) {
-  //       recentlyJoinUser([payoutExpenseObject?.userSelectedData]);
-  //       setNewUserIdData(payoutExpenseObject?.userSelectedData.id);
-  //       setIsExpenseorPayout(payoutExpenseObject?.isPayoutorExpense);
-  //       setDescriptions(payoutExpenseObject?.description);
-  //       setExpensePayoutID(payoutExpenseObject?.expensePayoutID);
-
-  //       if (payoutExpenseObject?.images.length > 0) {
-  //         setImageSelectArray(payoutExpenseObject?.images);
-
-  //         const imageKeyArry = [];
-  //         for (
-  //           let index = 0;
-  //           index < payoutExpenseObject?.images.length;
-  //           index++
-  //         ) {
-  //           imageKeyArry.push(payoutExpenseObject?.images[index]["key"]);
-  //         }
-  //         setImageSelectArrayKey(imageKeyArry);
-  //       }
-  //       if (payoutExpenseObject?.percentageAmount > 0) {
-  //         setAmount(payoutExpenseObject.percentageAmount.toString());
-  //         setPriceData(2);
-  //       } else {
-  //         setAmount(payoutExpenseObject.amount.toString());
-  //         setPriceData(1);
-  //       }
-  //     }
-  //   }, [payoutExpenseObject])
-  // );
-
-  // const expenseContClick = (item: any) => {
-  //   setIsExpenseorPayout(item);
-  // };
-
-  // const priceClick = (item: any) => {
-  //   setPriceData(item);
-  // };
-
-  // </---------------EditPayoutAPI--------------------/>
-
-  // async function editExpenseAPI() {
-  //   // LodingData(true);
-  //   const token = await AsyncStorage.getItem("token");
-  //   const url =
-  //     process.env.API_URL +
-  //     "/v3/events/event-financial/" +
-  //     id +
-  //     "/edit/expense";
-  //   const item: any = {
-  //     user_id: newUserId,
-  //     amount: amount,
-  //     description: descriptions,
-  //     type: "price",
-  //     images: imageSelectArrayKey,
-  //     key: expensePayoutID,
-  //   };
-  //   try {
-  //     const response = await fetch(url, {
-  //       method: "post",
-  //       headers: new Headers({
-  //         Authorization: "Bearer " + token,
-  //         "Content-Type": "application/json",
-  //       }),
-  //       body: JSON.stringify(item),
-  //     });
-
-  //     const dataItem = await response.json();
-  //     console.log("------------editExpenseAPI response-------------", dataItem);
-  //     LodingData(false);
-  //     if (dataItem.success) {
-  //       // onSuccessFulData(dataItem.data);
-  //       navigation?.goBack();
-  //       resetState();
-  //     } else {
-  //       Toast.show(dataItem?.message, Toast.LONG, {
-  //         backgroundColor: "black",
-  //       });
-  //     }
-  //   } catch (error) {
-  //     console.error(error);
-  //     LodingData(false);
-  //   }
-  // }
-
-  // async function editPayoutAPI() {
-  //   LodingData(true);
-  //   const token = await AsyncStorage.getItem("token");
-  //   const url =
-  //     process.env.API_URL + "/v3/events/event-financial/" + id + "/edit/payout";
-
-  //   const getAmount = (payoutExpenseObject?.profitAmt * amount) / 100;
-  //   if (priceData === 1) {
-  //     var item: any = {
-  //       user_id: newUserId,
-  //       amount: amount,
-  //       description: descriptions,
-  //       type: "price",
-  //       images: imageSelectArrayKey,
-  //       amount_percent: 0,
-  //       key: expensePayoutID,
-  //     };
-  //   } else {
-  //     var item: any = {
-  //       user_id: newUserId,
-  //       amount: getAmount,
-  //       description: descriptions,
-  //       type: "percentage",
-  //       images: imageSelectArrayKey,
-  //       amount_percent: amount,
-  //       key: expensePayoutID,
-  //     };
-  //   }
-
-  //   console.log("------------editPayoutAPI url-------------", url);
-  //   console.log("------------editPayoutAPI request-------------", item);
-
-  //   try {
-  //     const response = await fetch(url, {
-  //       method: "post",
-  //       headers: new Headers({
-  //         Authorization: "Bearer " + token,
-  //         "Content-Type": "application/json",
-  //       }),
-  //       body: JSON.stringify(item),
-  //     });
-  //     const dataItem = await response.json();
-  //     console.log("------------editPayoutAPI response-------------", dataItem);
-  //     LodingData(false);
-  //     if (dataItem.success) {
-  //       // onSuccessFulData(dataItem.data);
-  //       navigation?.goBack();
-  //       resetState();
-  //     } else {
-  //       Toast.show(dataItem?.message, Toast.LONG, {
-  //         backgroundColor: "black",
-  //       });
-  //     }
-  //   } catch (error) {
-  //     console.error(error);
-  //     LodingData(false);
-  //   }
-  // }
-
   // </---------------Delete Expense and Payout--------------------/>
-
-  const deleteClick = () => {
-    Alert.alert(
-      "Delete",
-      "Are you sure you want to delete it?",
-      [
-        {
-          text: "Yes",
-          onPress: () => {
-            mutateDeletePayment.mutate(paymentId!);
-          },
-          style: "destructive",
-        },
-        {
-          text: "No",
-          onPress: () => {},
-        },
-      ],
-      { cancelable: false }
-    );
-    // postContentModal(false);
-  };
 
   // const openGallary = async () => {
   //   const { assets } = await launchImageLibrary({
@@ -324,187 +151,201 @@ export const AddEditPaymentScreen = ({
   //   setImageSelectArrayKey(newImageKey);
   // };
 
-  const handleSave = () => {
-    const onSuccess = () => {
-      navigation.goBack();
-    };
+  const showUserChooser = () => {
+    setUserChooserVisible(true);
+    resetField("user");
+  };
 
-    handleSubmit;
+  const handleChangeUser = (user: OneUser) => {
+    setValue("user", user);
+    setUserChooserVisible(false);
+  };
+
+  const onSavePayment = (payment: PaymentData) => {
+    if (paymentId) {
+      mutateUpdatePayment.mutate(payment, {
+        onSuccess: navigation.goBack,
+      });
+    } else {
+      mutateCreatePayment.mutate(payment, {
+        onSuccess: navigation.goBack,
+      });
+    }
+  };
+
+  const onDeletePayment = () => {
+    Alert.alert(
+      "Delete",
+      "Are you sure you want to delete it?",
+      [
+        {
+          text: "Yes",
+          onPress: () => {
+            mutateDeletePayment.mutate(
+              { id: paymentId!, eventId },
+              { onSuccess: navigation.goBack }
+            );
+          },
+          style: "destructive",
+        },
+        {
+          text: "No",
+          onPress: () => {},
+        },
+      ],
+      { cancelable: false }
+    );
+    // postContentModal(false);
   };
 
   return (
-    <>
+    <ShortModal height={400}>
       <View style={{ flex: 1 }}>
         <View style={styles.breakDownCont}>
           <View style={styles.subBreakdowncont}>
-            {/* <ScrollView showsVerticalScrollIndicator={false}> */}
-            <KeyboardAwareScrollView
-              showsVerticalScrollIndicator={false}
-              horizontal={false}
+            <View
+              style={{
+                marginTop: 5,
+                marginLeft: 0,
+                paddingTop: 5,
+                flexDirection: "row",
+                alignItems: "center",
+              }}
             >
-              <View
-                style={{
-                  marginTop: 5,
-                  marginLeft: 0,
-                  paddingTop: 5,
-                  flexDirection: "row",
-                  alignItems: "center",
-                }}
-              >
-                <Text style={styles.breakdownHeader}>Add Breakdown</Text>
-              </View>
+              <Text style={styles.breakdownHeader}>Add {type}</Text>
+            </View>
 
-              <View style={styles.payModalContainer}>
-                <Text style={styles.whoCont}>Who:</Text>
-                <View>
-                  <Controller
-                    control={control}
-                    // rules={{
-                    //   required: true,
-                    // }}
-                    render={({ field: { onChange, onBlur, value } }) => (
-                      <TextInput
-                        placeholder="select who to pay"
-                        placeholderTextColor="darkgray"
-                        // value={value}
-                        // onChangeText={(text) => gratisUserList(text)}
-                        style={styles.payInput}
-                        onBlur={onBlur}
-                      ></TextInput>
-                    )}
-                    name="user"
-                  />
-                  {errors.user && <Text>This is required.</Text>}
-                </View>
-              </View>
-
-              {/* <UserChooser /> */}
-
-              <View style={styles.TypeModalContainer}>
-                <Text style={styles.typeCont}>Type:</Text>
-                <View style={styles.typeDisplayCont}>
-                  {paymentType === PaymentType.Expense ? (
-                    <TouchableOpacity
-                      activeOpacity={0.8}
-                      onPress={() =>
-                        setValue("paymentType", PaymentType.Expense)
-                      }
-                    >
-                      <Text
-                        style={[
-                          paymentType === PaymentType.Expense
-                            ? styles.typeLbl
-                            : styles.typeLblTwo,
-                        ]}
-                      >
-                        Expense
-                      </Text>
-                    </TouchableOpacity>
-                  ) : (
-                    <TouchableOpacity
-                      activeOpacity={0.8}
-                      onPress={() =>
-                        setValue("paymentType", PaymentType.Payout)
-                      }
-                    >
-                      <Text
-                        style={[
-                          paymentType === PaymentType.Payout
-                            ? styles.typeLbl
-                            : styles.typeLblTwo,
-                        ]}
-                      >
-                        Payout
-                      </Text>
-                    </TouchableOpacity>
-                  )}
-                </View>
-              </View>
-
-              <View style={styles.amountCont}>
-                <Text style={styles.amountLbl}>Amount</Text>
-                <TouchableOpacity
-                  activeOpacity={0.8}
-                  onPress={() => setValue("paymentSplit", PaymentSplit.Fixed)}
-                >
-                  <View
-                    style={[
-                      paymentSplit === PaymentSplit.Fixed
-                        ? styles.priceContainer
-                        : styles.priceContainerTwo,
-                    ]}
-                  >
-                    <Text style={styles.percentageSign}>$</Text>
-                  </View>
-                </TouchableOpacity>
-                {paymentType !== PaymentType.Expense ? (
-                  <TouchableOpacity
-                    activeOpacity={0.8}
-                    onPress={() =>
-                      setValue("paymentSplit", PaymentSplit.Percent)
-                    }
-                  >
-                    <View
-                      style={[
-                        paymentSplit === PaymentSplit.Percent
-                          ? styles.priceContainer
-                          : styles.priceContainerTwo,
-                      ]}
-                    >
-                      <Text style={styles.percentageSign}>%</Text>
-                    </View>
-                  </TouchableOpacity>
-                ) : (
-                  <View></View>
-                )}
-                <View style={{ flexDirection: "row", width: 150 }}>
-                  <Text style={styles.dollarIcon}>
-                    {paymentSplit === PaymentSplit.Fixed ? "$ " : "% "}
-                  </Text>
-                  <Controller
-                    control={control}
-                    rules={{
-                      required: true,
-                    }}
-                    render={({ field: { onChange, onBlur, value } }) => (
-                      <TextInput
-                        value={value.toFixed(2)}
-                        onChangeText={onChange}
-                        onBlur={onBlur}
-                        keyboardType="number-pad"
-                        style={styles.dollarRupees}
-                      ></TextInput>
-                    )}
-                    name="amount"
-                  />
-                  {errors.amount && <Text>This is required.</Text>}
-                </View>
-              </View>
-
-              <View style={styles.descriptionCont}>
-                <Text style={styles.descpLbl}>Description</Text>
-              </View>
+            <View style={styles.payModalContainer}>
+              <Text style={styles.whoCont}>Who:</Text>
               <View>
                 <Controller
                   control={control}
                   rules={{
                     required: true,
                   }}
-                  render={({ field: { onChange, onBlur, value } }) => (
+                  render={({ field: { value } }) => (
                     <TextInput
-                      value={value}
-                      onBlur={onBlur}
-                      multiline
-                      onChangeText={onChange}
-                      style={styles.payoutDescLbl}
+                      onPressIn={showUserChooser}
+                      placeholder="select who to pay"
+                      placeholderTextColor="darkgray"
+                      value={
+                        value
+                          ? `${value.firstName} ${value.lastName}`
+                          : userSearch
+                      }
+                      onChangeText={setUserSearch}
+                      style={styles.payInput}
                     ></TextInput>
                   )}
-                  name="description"
+                  name="user"
                 />
-                {errors.description && <Text>This is required.</Text>}
+                {errors.user && <Text>This is required.</Text>}
               </View>
+            </View>
 
-              {/* 
+            {isUserChooserVisible && (
+              <UserChooser
+                search={userSearch}
+                onChangeUser={handleChangeUser}
+              />
+            )}
+
+            <View style={styles.amountCont}>
+              <Text style={styles.amountLbl}>Amount</Text>
+              <TouchableOpacity
+                activeOpacity={0.8}
+                onPress={() => setValue("paymentSplit", PaymentSplit.Fixed)}
+              >
+                <View
+                  style={[
+                    paymentSplit === PaymentSplit.Fixed
+                      ? styles.priceContainer
+                      : styles.priceContainerTwo,
+                  ]}
+                >
+                  <Text style={styles.percentageSign}>$</Text>
+                </View>
+              </TouchableOpacity>
+              {paymentType !== PaymentType.Expense ? (
+                <TouchableOpacity
+                  activeOpacity={0.8}
+                  onPress={() => setValue("paymentSplit", PaymentSplit.Percent)}
+                >
+                  <View
+                    style={[
+                      paymentSplit === PaymentSplit.Percent
+                        ? styles.priceContainer
+                        : styles.priceContainerTwo,
+                    ]}
+                  >
+                    <Text style={styles.percentageSign}>%</Text>
+                  </View>
+                </TouchableOpacity>
+              ) : (
+                <View></View>
+              )}
+              <View style={{ flexDirection: "row", width: 150 }}>
+                <Controller
+                  control={control}
+                  rules={{
+                    required: true,
+                    min: 0.01,
+                  }}
+                  render={({ field: { onChange, onBlur, value } }) =>
+                    paymentSplit === PaymentSplit.Fixed ? (
+                      <CurrencyInput
+                        // style={styles.inputStyle}
+                        value={value}
+                        onChangeValue={onChange}
+                        onBlur={onBlur}
+                        // placeholder={strings.ticketPriceFree}
+                        separator="."
+                        delimiter=","
+                      />
+                    ) : (
+                      <>
+                        <TextInput
+                          keyboardType="numeric"
+                          inputMode="numeric"
+                          value={value.toString()}
+                          onChangeText={onChange}
+                          onBlur={onBlur}
+                        />
+                      </>
+                    )
+                  }
+                  name="amount"
+                />
+              </View>
+            </View>
+            {errors.amount && <Text>This is required.</Text>}
+
+            <View style={styles.descriptionCont}>
+              <Text style={styles.descpLbl}>Description</Text>
+            </View>
+            <View>
+              <Controller
+                control={control}
+                rules={{
+                  required: true,
+                }}
+                render={({ field: { onChange, onBlur, value } }) => (
+                  <TextInput
+                    value={value}
+                    onBlur={onBlur}
+                    multiline
+                    onChangeText={onChange}
+                    style={styles.payoutDescLbl}
+                  ></TextInput>
+                )}
+                name="description"
+              />
+              {errors.description && <Text>This is required.</Text>}
+            </View>
+
+            {payment?.images && <MultiImageViewer images={payment.images} />}
+
+            {/* 
               TODO Add images
               <View
                 style={{
@@ -533,25 +374,28 @@ export const AddEditPaymentScreen = ({
                 })}
               </View> */}
 
-              <View style={styles.submitButton}>
-                <TouchableOpacity activeOpacity={0.8} onPress={handleSave}>
-                  <ImageComponent
-                    source={saveIcon}
-                    style={styles.saveIcon}
-                  ></ImageComponent>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={deleteClick}>
+            <View style={styles.submitButton}>
+              <TouchableOpacity
+                activeOpacity={0.8}
+                onPress={handleSubmit(onSavePayment)}
+              >
+                <ImageComponent
+                  source={saveIcon}
+                  style={styles.saveIcon}
+                ></ImageComponent>
+              </TouchableOpacity>
+              {paymentId && (
+                <TouchableOpacity onPress={onDeletePayment}>
                   <ImageComponent
                     source={redDeleteIcon}
                     style={styles.deleteIcon}
                   ></ImageComponent>
                 </TouchableOpacity>
-              </View>
-              {/* </ScrollView> */}
-            </KeyboardAwareScrollView>
+              )}
+            </View>
           </View>
         </View>
       </View>
-    </>
+    </ShortModal>
   );
 };

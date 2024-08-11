@@ -4,6 +4,7 @@ import type {
   NavigatorScreenParams,
 } from "@react-navigation/native";
 import { StackScreenProps } from "@react-navigation/stack";
+import { PaymentType } from "~/types/payment";
 
 export enum Screens {
   LOGIN = "Login",
@@ -30,6 +31,7 @@ export enum Screens {
   CREATE_EDIT_EVENT = "CreateEditEvent",
   CREATE_EDIT_POST = "CreateEditPost",
   CHOOSE_TICKETS = "ChooseTickets",
+  EVENT_ADMINISTRATION = "EventAdministration",
   ADD_EDIT_PAYMENT = "AddEditPayment",
 }
 
@@ -62,7 +64,12 @@ export type RootStackParamList = {
   };
   [Screens.REPORT_CONTENT_MODAL]: { postId: string };
   [Screens.CHOOSE_TICKETS]: { eventId: string };
-  [Screens.ADD_EDIT_PAYMENT]: { eventId: string; paymentId?: string };
+  [Screens.EVENT_ADMINISTRATION]: { eventId: string };
+  [Screens.ADD_EDIT_PAYMENT]: {
+    eventId: string;
+    paymentId?: string;
+    type?: PaymentType;
+  };
 };
 
 export type RootStackScreenProps<T extends keyof RootStackParamList> =

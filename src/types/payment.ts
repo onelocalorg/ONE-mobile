@@ -1,4 +1,4 @@
-import { CurrentUser } from "./current-user";
+import { ImageUrl } from "./image-info";
 import { OneUser } from "./one-user";
 
 export interface Payment extends PaymentData {
@@ -18,9 +18,10 @@ export enum PaymentSplit {
 export interface PaymentData {
   id?: string;
   eventId: string;
-  user: OneUser | CurrentUser;
+  user: OneUser;
   paymentType: PaymentType;
   paymentSplit: PaymentSplit;
   amount: number;
   description: string;
+  images: ImageUrl[];
 }

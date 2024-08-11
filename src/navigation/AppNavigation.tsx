@@ -12,6 +12,7 @@ import { MyAvatar } from "~/components/navbar/MyAvatar";
 import { OneLogo } from "~/components/navbar/OneLogo";
 import { AddEditPaymentScreen } from "~/screens/createEditEvent/AddEditPaymentScreen";
 import { CreateEditEventScreen } from "~/screens/createEditEvent/CreateEditEventScreen";
+import { EventAdministrationScreen } from "~/screens/createEditEvent/EventAdministrationScreen";
 import { CreateEditPostScreen } from "~/screens/createEditPost/CreateEditPostScreen";
 import { ChooseTicketsModal } from "~/screens/event-detail/ChooseTicketsModal";
 import { EventDetailScreen } from "~/screens/event-detail/EventDetailScreen";
@@ -191,6 +192,10 @@ export const AppNavigation = ({
             <RootStack.Screen
               name={Screens.EVENT_DETAIL}
               component={EventDetailScreen}
+            />
+            <RootStack.Screen
+              name={Screens.EVENT_ADMINISTRATION}
+              component={EventAdministrationScreen}
             />
           </RootStack.Group>
         ) : email ? (

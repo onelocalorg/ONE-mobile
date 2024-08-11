@@ -19,6 +19,7 @@ export enum EventMutations {
   createRsvp = "createRsvp",
   deleteRsvp = "deleteRsvp",
   createPayment = "createPayment",
+  editPayment = "editPayment",
   deletePayment = "deletePayment",
 }
 
@@ -61,10 +62,13 @@ export function useEventService() {
         queryFn: () => getPayments(eventId),
         staleTime: 5000,
       }),
-    paymentDetail: (eventId: string, paymentId: string) =>
+    paymentDetail: (paymentId: PaymentId) =>
       queryOptions({
-        queryKey: [...queries.paymentsForEvent(eventId).queryKey, paymentId],
-        queryFn: () => getPayments(eventId),
+        queryKey: [
+          ...queries.paymentsForEvent(paymentId.eventId).queryKey,
+          paymentId.id,
+        ],
+        queryFn: () => getPayment(paymentId),
         staleTime: 5000,
       }),
   };
@@ -132,11 +136,21 @@ export function useEventService() {
       });
     },
   });
+  queryClient.setMutationDefaults([EventMutations.editPayment], {
+    mutationFn: (data: PaymentId) => {
+      return updatePayment(data);
+    },
+    onSuccess: (data: PaymentId) => {
+      void queryClient.invalidateQueries({
+        queryKey: queries.payments(),
+      });
+    },
+  });
   queryClient.setMutationDefaults([EventMutations.deletePayment], {
-    mutationFn: (data: DeletePaymentProps) => {
+    mutationFn: (data: PaymentId) => {
       return deletePayment(data);
     },
-    onSuccess: (data: DeletePaymentProps) => {
+    onSuccess: (data: PaymentId) => {
       void queryClient.invalidateQueries({
         queryKey: queries.payments(),
       });
@@ -200,22 +214,39 @@ export function useEventService() {
     return doGet<EventFinancials>(`/v3/events/${eventId}/financials`);
   };
 
-  const getPayments = (eventId: string) => {
+  const getPayments = async (eventId: string) => {
     return doGet<Payment[]>(`/v3/events/${eventId}/payments`);
+  };
+
+  const getPayment = async ({
+    id,
+    eventId,
+  }: {
+    id: string;
+    eventId: string;
+  }) => {
+    return doGet<Payment>(
+      `/v3/events/${eventId}/payments/${id}`,
+      (p: Payment) => ({ ...p, amount: p.amount / 100 })
+    );
   };
 
   const createPayment = (data: PaymentData) => {
     return doPost<Payment>(
       `/v3/events/${data.eventId}/payments`,
-      _.omit("eventId", data)
+      _.omit(["eventId", "images", "user"], {
+        ...data,
+        userId: data.user.id,
+        amount: data.amount * 100,
+      })
     );
   };
 
-  interface DeletePaymentProps {
-    id: string;
-    eventId: string;
-  }
-  const deletePayment = ({ id, eventId }: DeletePaymentProps) => {
+  const updatePayment = ({ id, eventId }: PaymentId) => {
+    return doPatch<Payment>(`/v3/events/${eventId}/payments/${id}`);
+  };
+
+  const deletePayment = ({ id, eventId }: PaymentId) => {
     return doDelete<Payment>(`/v3/events/${eventId}/payments/${id}`);
   };
 
@@ -320,4 +351,9 @@ export function useEventService() {
   //   }
   //   return response;
   // };
+}
+
+export interface PaymentId {
+  id: string;
+  eventId: string;
 }

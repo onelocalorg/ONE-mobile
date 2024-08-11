@@ -9,15 +9,17 @@ import {
   sendPayoutImg,
 } from "~/assets/images";
 import { ImageComponent } from "~/components/image-component";
+import { RootStackScreenProps, Screens } from "~/navigation/types";
 import { useEventService } from "~/network/api/services/useEventService";
-import { PaymentType } from "~/types/payment";
+import { Payment, PaymentType } from "~/types/payment";
+import { toCurrency } from "~/utils/common";
 import { createStyleSheet } from "./style";
 
-interface PaymentViewProps {
-  eventId: string;
-}
-
-export const PaymentView = ({ eventId }: PaymentViewProps) => {
+export const EventAdministrationScreen = ({
+  navigation,
+  route,
+}: RootStackScreenProps<Screens.EVENT_ADMINISTRATION>) => {
+  const { eventId } = route.params;
   const { theme } = useAppTheme();
   const styles = createStyleSheet(theme);
   // const [userId, setUserId]: any = useState("");
@@ -160,6 +162,17 @@ export const PaymentView = ({ eventId }: PaymentViewProps) => {
   //   });
   // };
 
+  const handleAddPayment = (type: PaymentType) => {
+    navigation.push(Screens.ADD_EDIT_PAYMENT, { eventId, type });
+  };
+
+  const handleEditPayment = (payment: Payment) => {
+    navigation.push(Screens.ADD_EDIT_PAYMENT, {
+      eventId,
+      paymentId: payment.id,
+    });
+  };
+
   const sendPayoutModal = () => {
     setModalVisible(true);
   };
@@ -174,39 +187,39 @@ export const PaymentView = ({ eventId }: PaymentViewProps) => {
     // mutateCreatePayout.mutate()
   };
 
-  nav;
-
   return (
     <>
       {financials && (
         <View style={styles.eventContainerTwo}>
-          {financials.revenueAmt > 0 ? (
+          {financials.revenueTotal > 0 ? (
             <View style={styles.eventListCont}>
               <Text style={styles.financialCont}>Financials</Text>
 
               <View style={styles.revenueCont}>
                 <Text style={styles.revenueLbl}>Revenue</Text>
                 <Text style={styles.revenueRuppes}>
-                  ${financials.revenueAmt}
+                  {toCurrency(financials.revenueTotal)}
                 </Text>
               </View>
               <View style={styles.revenueCont}>
                 <Text style={styles.revenueLbl}>Expenses</Text>
                 <Text style={styles.revenueRuppes}>
-                  ${financials.expensesAmt}
+                  {toCurrency(financials.expensesTotal)}
                 </Text>
               </View>
               <View style={styles.revenueCont}>
                 <Text style={styles.revenueLbl}>Profit</Text>
                 <Text style={styles.revenueRuppes}>
-                  ${financials.totalProfile}
+                  {toCurrency(
+                    financials.revenueTotal - financials.expensesTotal
+                  )}
                 </Text>
               </View>
               <View style={styles.payoutCont}>
                 <Text style={styles.revenueLbl}>Payouts</Text>
-                {financials.payoutAmt !== undefined ? (
+                {financials.payoutsTotal !== undefined ? (
                   <Text style={styles.revenueRuppes}>
-                    {`$${Number(financials.payoutAmt.toFixed(2))}`}
+                    {toCurrency(financials.payoutsTotal)}
                   </Text>
                 ) : (
                   <Text>$0</Text>
@@ -214,9 +227,12 @@ export const PaymentView = ({ eventId }: PaymentViewProps) => {
               </View>
               <View style={styles.revenueCont}>
                 <Text style={styles.revenueLbl}>Remaining</Text>
-                {financials.remainingAmt !== undefined ? (
+                {financials.remainingTotal !== undefined ? (
                   <Text style={styles.revenueRuppes}>
-                    {`$${Number(financials.remainingAmt.toFixed(2))}`}
+                    {toCurrency(
+                      financials.revenueTotal -
+                        (financials.expensesTotal + financials.payoutsTotal)
+                    )}
                   </Text>
                 ) : (
                   <Text>$0</Text>
@@ -252,71 +268,71 @@ export const PaymentView = ({ eventId }: PaymentViewProps) => {
                     <Text style={styles.expenensLbl}>Expenses</Text>
                   </View>
                 </View>
-                <FlatList
-                  data={expenses}
-                  renderItem={({ item }) => (
-                    <View>
-                      <View style={styles.userDetailsCont}>
-                        <View
-                          style={{
-                            flexDirection: "row",
-                            justifyContent: "space-between",
-                          }}
-                        >
-                          <View style={styles.detailsSubCont}>
-                            {isAddEditPayout ? (
-                              <TouchableOpacity
-                                onPress={() => editClick(item, "Expense")}
-                              >
-                                <ImageComponent
-                                  source={edit2}
-                                  style={styles.editIcon}
-                                />
-                              </TouchableOpacity>
-                            ) : (
-                              <></>
-                            )}
+                {expenses ? (
+                  <FlatList
+                    data={expenses}
+                    renderItem={({ item }) => (
+                      <View>
+                        <View style={styles.userDetailsCont}>
+                          <View
+                            style={{
+                              flexDirection: "row",
+                              justifyContent: "space-between",
+                            }}
+                          >
+                            <View style={styles.detailsSubCont}>
+                              {isAddEditPayout ? (
+                                <TouchableOpacity
+                                  onPress={() => handleEditPayment(item)}
+                                >
+                                  <ImageComponent
+                                    source={edit2}
+                                    style={styles.editIcon}
+                                  />
+                                </TouchableOpacity>
+                              ) : (
+                                <></>
+                              )}
 
-                            <ImageComponent
-                              source={{ uri: item.user.pic }}
-                              resizeMode="cover"
-                              style={styles.userImage}
-                            />
-                            <View style={styles.userNameCont}>
-                              <Text style={styles.usernameLbl}>
-                                {item.user.firstName} {item.user.lastName}
-                              </Text>
-                              <Text style={styles.payoutForLbl}>
-                                Expense for: {item?.description}
-                              </Text>
+                              <ImageComponent
+                                source={{ uri: item.user.pic }}
+                                resizeMode="cover"
+                                style={styles.userImage}
+                              />
+                              <View style={styles.userNameCont}>
+                                <Text style={styles.usernameLbl}>
+                                  {item.user.firstName} {item.user.lastName}
+                                </Text>
+                                <Text style={styles.payoutForLbl}>
+                                  Expense for: {item?.description}
+                                </Text>
+                              </View>
                             </View>
+                            <Text style={styles.totalRupeesLbl}>
+                              ${item?.amount}
+                            </Text>
                           </View>
-                          <Text style={styles.totalRupeesLbl}>
-                            ${item?.amount}
-                          </Text>
                         </View>
                       </View>
-                    </View>
-                  )}
-                ></FlatList>
-                {isAddEditPayout ? (
-                  <TouchableOpacity
-                    activeOpacity={1}
-                    onPress={() => openAddBreakDownModal(userId)}
-                    style={styles.addItemCont}
-                  >
-                    <View style={styles.subAddItemCont}>
-                      <Text style={styles.plusIcon}>+</Text>
-                      <Text style={styles.addItemLbl}>add item</Text>
-                    </View>
-                  </TouchableOpacity>
+                    )}
+                  ></FlatList>
                 ) : (
-                  <></>
+                  <Text>No expenses yet</Text>
                 )}
+                <TouchableOpacity
+                  activeOpacity={1}
+                  onPress={() => handleAddPayment(PaymentType.Expense)}
+                  style={styles.addItemCont}
+                >
+                  <View style={styles.subAddItemCont}>
+                    <Text style={styles.plusIcon}>+</Text>
+                    <Text style={styles.addItemLbl}>add item</Text>
+                  </View>
+                </TouchableOpacity>
                 <View style={styles.borderBottom}></View>
                 <View style={styles.rupeesCont}>
                   <Text style={styles.rupeesLbl}>
-                    ${financials.expensesAmt}
+                    {toCurrency(financials.expensesTotal)}
                   </Text>
                 </View>
               </View>
@@ -341,7 +357,7 @@ export const PaymentView = ({ eventId }: PaymentViewProps) => {
                         <View style={styles.detailsSubCont}>
                           {isAddEditPayout ? (
                             <TouchableOpacity
-                              onPress={() => editClick(item, "Payout")}
+                              onPress={() => handleEditPayment(item)}
                             >
                               <ImageComponent
                                 source={edit2}
@@ -377,30 +393,22 @@ export const PaymentView = ({ eventId }: PaymentViewProps) => {
                     </View>
                   )}
                 ></FlatList>
-                {isAddEditPayout ? (
-                  <TouchableOpacity
-                    activeOpacity={1}
-                    onPress={() => openAddBreakDownModal(userId)}
-                    style={styles.addItemCont}
-                  >
-                    <View style={styles.subAddItemCont}>
-                      <Text style={styles.plusIcon}>+</Text>
-                      <Text style={styles.addItemLbl}>add item</Text>
-                    </View>
-                  </TouchableOpacity>
-                ) : (
-                  <></>
-                )}
+                <TouchableOpacity
+                  activeOpacity={1}
+                  onPress={() => handleAddPayment(PaymentType.Payout)}
+                  style={styles.addItemCont}
+                >
+                  <View style={styles.subAddItemCont}>
+                    <Text style={styles.plusIcon}>+</Text>
+                    <Text style={styles.addItemLbl}>add item</Text>
+                  </View>
+                </TouchableOpacity>
 
                 <View style={styles.borderBottom}></View>
                 <View style={styles.rupeesCont}>
-                  {financials.payoutAmt !== undefined ? (
-                    <Text style={styles.rupeesLbl}>{`$${Number(
-                      financials.payoutAmt.toFixed(2)
-                    )}`}</Text>
-                  ) : (
-                    <Text>$0</Text>
-                  )}
+                  <Text style={styles.rupeesLbl}>
+                    {toCurrency(financials.payoutsTotal)}
+                  </Text>
                 </View>
               </View>
             </View>
