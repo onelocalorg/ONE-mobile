@@ -21,8 +21,11 @@ export function useOrderService() {
     mutationFn: (data: OrderData) => {
       return createOrder(data);
     },
-    onSuccess: () => {
+    onSuccess: (result: Order) => {
       void queryClient.invalidateQueries({ queryKey: queries.all() });
+      void queryClient.invalidateQueries({
+        queryKey: ["events", "details", result.lineItems[0].event.id],
+      });
     },
     onError(error: Error) {
       handleApiError("creating Order", error);

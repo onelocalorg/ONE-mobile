@@ -1,6 +1,7 @@
 import { useQueries } from "@tanstack/react-query";
 import React, { useState } from "react";
-import { FlatList, Modal, Text, TouchableOpacity, View } from "react-native";
+import { Modal, Text, TouchableOpacity, View } from "react-native";
+import { ScrollView } from "react-native-gesture-handler";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
 import {
   buttonArrowGreen,
@@ -11,7 +12,7 @@ import {
 import { ImageComponent } from "~/components/image-component";
 import { RootStackScreenProps, Screens } from "~/navigation/types";
 import { useEventService } from "~/network/api/services/useEventService";
-import { Payment, PaymentType } from "~/types/payment";
+import { Payment, PaymentSplit, PaymentType } from "~/types/payment";
 import { toCurrency } from "~/utils/common";
 import { createStyleSheet } from "./style";
 
@@ -53,10 +54,16 @@ export const EventAdministrationScreen = ({
     },
   });
 
-  const payouts =
-    payments?.filter((p) => p.paymentType === PaymentType.Payout) ?? [];
   const expenses =
     payments?.filter((p) => p.paymentType === PaymentType.Expense) ?? [];
+
+  const payouts =
+    payments?.filter((p) => p.paymentType === PaymentType.Payout) ?? [];
+
+  const fixedPayouts =
+    payouts?.filter((p) => p.paymentSplit === PaymentSplit.Fixed) ?? [];
+  const percentPayouts =
+    payouts?.filter((p) => p.paymentSplit === PaymentSplit.Percent) ?? [];
 
   // const openAddBreakDownModal = (id: any) => {
   //   setUserId(userId);
@@ -188,7 +195,7 @@ export const EventAdministrationScreen = ({
   };
 
   return (
-    <>
+    <ScrollView>
       {financials && (
         <View style={styles.eventContainerTwo}>
           {financials.revenueTotal > 0 ? (
@@ -239,7 +246,6 @@ export const EventAdministrationScreen = ({
                 )}
               </View>
 
-              {/* {payout.isPayout ? ( */}
               <TouchableOpacity onPress={sendPayoutModal}>
                 <View style={styles.payoutContainer}>
                   <View style={styles.payoutsubContainer}>
@@ -258,9 +264,7 @@ export const EventAdministrationScreen = ({
                   </Text>
                 </View>
               </TouchableOpacity>
-              {/* ) : (
-                <View></View>
-              )} */}
+
               {/* {/ { <\-------------------Expenses----------------------> /} */}
               <View>
                 <View style={styles.userPayoutsStatementCont}>
@@ -269,53 +273,48 @@ export const EventAdministrationScreen = ({
                   </View>
                 </View>
                 {expenses ? (
-                  <FlatList
-                    data={expenses}
-                    renderItem={({ item }) => (
-                      <View>
-                        <View style={styles.userDetailsCont}>
-                          <View
-                            style={{
-                              flexDirection: "row",
-                              justifyContent: "space-between",
-                            }}
-                          >
-                            <View style={styles.detailsSubCont}>
-                              {isAddEditPayout ? (
-                                <TouchableOpacity
-                                  onPress={() => handleEditPayment(item)}
-                                >
-                                  <ImageComponent
-                                    source={edit2}
-                                    style={styles.editIcon}
-                                  />
-                                </TouchableOpacity>
-                              ) : (
-                                <></>
-                              )}
-
+                  expenses.map((item) => (
+                    <View>
+                      <View style={styles.userDetailsCont}>
+                        <View
+                          style={{
+                            flexDirection: "row",
+                            justifyContent: "space-between",
+                          }}
+                        >
+                          <View style={styles.detailsSubCont}>
+                            <TouchableOpacity
+                              onPress={() => handleEditPayment(item)}
+                            >
                               <ImageComponent
-                                source={{ uri: item.user.pic }}
-                                resizeMode="cover"
-                                style={styles.userImage}
+                                source={edit2}
+                                style={styles.editIcon}
                               />
-                              <View style={styles.userNameCont}>
-                                <Text style={styles.usernameLbl}>
-                                  {item.user.firstName} {item.user.lastName}
-                                </Text>
-                                <Text style={styles.payoutForLbl}>
-                                  Expense for: {item?.description}
-                                </Text>
-                              </View>
+                            </TouchableOpacity>
+
+                            <ImageComponent
+                              source={{ uri: item.user.pic }}
+                              resizeMode="cover"
+                              style={styles.userImage}
+                            />
+                            <View style={styles.userNameCont}>
+                              <Text style={styles.usernameLbl}>
+                                {item.user.firstName} {item.user.lastName}
+                              </Text>
+                              <Text style={styles.payoutForLbl}>
+                                Expense for: {item?.description}
+                              </Text>
                             </View>
-                            <Text style={styles.totalRupeesLbl}>
-                              ${item?.amount}
-                            </Text>
                           </View>
+                          <Text style={styles.totalRupeesLbl}>
+                            {item.paymentSplit === PaymentSplit.Fixed
+                              ? toCurrency(item.amount)
+                              : `%${item.amount}`}
+                          </Text>
                         </View>
                       </View>
-                    )}
-                  ></FlatList>
+                    </View>
+                  ))
                 ) : (
                   <Text>No expenses yet</Text>
                 )}
@@ -344,10 +343,9 @@ export const EventAdministrationScreen = ({
                     <Text style={styles.expenensLbl}>Payouts</Text>
                   </View>
                 </View>
-                <FlatList
-                  data={payouts}
-                  renderItem={({ item }) => (
-                    <View style={styles.userDetailsCont}>
+                {payouts ? (
+                  [...fixedPayouts, ...percentPayouts].map((item) => (
+                    <View key={item.id} style={styles.userDetailsCont}>
                       <View
                         style={{
                           flexDirection: "row",
@@ -355,18 +353,14 @@ export const EventAdministrationScreen = ({
                         }}
                       >
                         <View style={styles.detailsSubCont}>
-                          {isAddEditPayout ? (
-                            <TouchableOpacity
-                              onPress={() => handleEditPayment(item)}
-                            >
-                              <ImageComponent
-                                source={edit2}
-                                style={styles.editIcon}
-                              />
-                            </TouchableOpacity>
-                          ) : (
-                            <></>
-                          )}
+                          <TouchableOpacity
+                            onPress={() => handleEditPayment(item)}
+                          >
+                            <ImageComponent
+                              source={edit2}
+                              style={styles.editIcon}
+                            />
+                          </TouchableOpacity>
 
                           <ImageComponent
                             source={{ uri: item.user.pic }}
@@ -382,17 +376,17 @@ export const EventAdministrationScreen = ({
                             </Text>
                           </View>
                         </View>
-                        {item?.amount !== undefined ? (
-                          <Text style={styles.revenueRuppes}>{`$${Number(
-                            item?.amount.toFixed(2)
-                          )}`}</Text>
-                        ) : (
-                          <Text>$0</Text>
-                        )}
+                        <Text style={styles.revenueRuppes}>
+                          {item.paymentSplit === PaymentSplit.Fixed
+                            ? toCurrency(item.amount)
+                            : `${item.amount}%`}
+                        </Text>
                       </View>
                     </View>
-                  )}
-                ></FlatList>
+                  ))
+                ) : (
+                  <Text>No payouts] yet</Text>
+                )}
                 <TouchableOpacity
                   activeOpacity={1}
                   onPress={() => handleAddPayment(PaymentType.Payout)}
@@ -457,6 +451,6 @@ export const EventAdministrationScreen = ({
           </Modal>
         </View>
       )}
-    </>
+    </ScrollView>
   );
 };

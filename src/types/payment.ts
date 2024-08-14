@@ -1,3 +1,4 @@
+import { DateTime } from "luxon";
 import { ImageUrl } from "./image-info";
 import { OneUser } from "./one-user";
 
@@ -21,6 +22,7 @@ export interface PaymentData {
   user: OneUser;
   paymentType: PaymentType;
   paymentSplit: PaymentSplit;
+  paidAt: DateTime | null;
   amount: number;
   description: string;
   images: ImageUrl[];

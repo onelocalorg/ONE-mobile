@@ -58,11 +58,12 @@ export const AddEditPaymentScreen = ({
     defaultValues: {
       id: paymentId,
       eventId,
-      paymentType: type ?? payment?.paymentType ?? PaymentType.Expense,
-      paymentSplit: PaymentSplit.Fixed,
+      user: payment?.user,
+      paymentType: payment?.paymentType ?? type ?? PaymentType.Expense,
+      paymentSplit: payment?.paymentSplit ?? PaymentSplit.Fixed,
       amount: payment?.amount ?? 0,
       description: payment?.description ?? "",
-      images: [],
+      images: payment?.images ?? [],
     },
   });
 
@@ -295,8 +296,10 @@ export const AddEditPaymentScreen = ({
                     paymentSplit === PaymentSplit.Fixed ? (
                       <CurrencyInput
                         // style={styles.inputStyle}
-                        value={value}
-                        onChangeValue={onChange}
+                        value={value / 100}
+                        onChangeValue={(v) =>
+                          v ? onChange(v * 100) : onChange(v)
+                        }
                         onBlur={onBlur}
                         // placeholder={strings.ticketPriceFree}
                         separator="."

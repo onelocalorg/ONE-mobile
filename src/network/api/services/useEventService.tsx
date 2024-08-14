@@ -42,7 +42,7 @@ export function useEventService() {
         enabled: !!id,
         staleTime: 5000,
       }),
-    rsvps: () => ["rsvps"],
+    rsvps: () => [...queries.details(), "rsvps"],
     rsvpsForEvent: (eventId: string) =>
       queryOptions({
         queryKey: [...queries.rsvps(), eventId],
@@ -58,7 +58,7 @@ export function useEventService() {
     payments: () => ["payments"],
     paymentsForEvent: (eventId: string) =>
       queryOptions({
-        queryKey: [...queries.payments(), eventId],
+        queryKey: [...queries.financialsForEvent(eventId).queryKey, "payments"],
         queryFn: () => getPayments(eventId),
         staleTime: 5000,
       }),
@@ -110,7 +110,7 @@ export function useEventService() {
     mutationFn: (data: RsvpData) => {
       return createRsvp(data);
     },
-    onSuccess: (data: RsvpData) => {
+    onSuccess: () => {
       void queryClient.invalidateQueries({
         queryKey: queries.rsvps(),
       });
@@ -120,7 +120,7 @@ export function useEventService() {
     mutationFn: (data: DeleteRsvpProps) => {
       return deleteRsvp(data);
     },
-    onSuccess: (data: DeleteRsvpProps) => {
+    onSuccess: () => {
       void queryClient.invalidateQueries({
         queryKey: queries.rsvps(),
       });
@@ -130,19 +130,23 @@ export function useEventService() {
     mutationFn: (data: PaymentData) => {
       return createPayment(data);
     },
-    onSuccess: (data: PaymentData) => {
+    onSuccess: (result: Payment) => {
+      console.log(
+        "invalidating query",
+        queries.financialsForEvent(result.eventId).queryKey
+      );
       void queryClient.invalidateQueries({
-        queryKey: queries.rsvps(),
+        queryKey: queries.financialsForEvent(result.eventId).queryKey,
       });
     },
   });
   queryClient.setMutationDefaults([EventMutations.editPayment], {
-    mutationFn: (data: PaymentId) => {
+    mutationFn: (data: PaymentData) => {
       return updatePayment(data);
     },
-    onSuccess: (data: PaymentId) => {
+    onSuccess: (result: Payment) => {
       void queryClient.invalidateQueries({
-        queryKey: queries.payments(),
+        queryKey: queries.financialsForEvent(result.eventId).queryKey,
       });
     },
   });
@@ -150,9 +154,9 @@ export function useEventService() {
     mutationFn: (data: PaymentId) => {
       return deletePayment(data);
     },
-    onSuccess: (data: PaymentId) => {
+    onSuccess: (result: PaymentId) => {
       void queryClient.invalidateQueries({
-        queryKey: queries.payments(),
+        queryKey: queries.financialsForEvent(result.eventId).queryKey,
       });
     },
   });
@@ -225,25 +229,27 @@ export function useEventService() {
     id: string;
     eventId: string;
   }) => {
-    return doGet<Payment>(
-      `/v3/events/${eventId}/payments/${id}`,
-      (p: Payment) => ({ ...p, amount: p.amount / 100 })
-    );
+    return doGet<Payment>(`/v3/events/${eventId}/payments/${id}`);
   };
 
   const createPayment = (data: PaymentData) => {
     return doPost<Payment>(
       `/v3/events/${data.eventId}/payments`,
-      _.omit(["eventId", "images", "user"], {
+      _.omit(["eventId", "user"], {
         ...data,
         userId: data.user.id,
-        amount: data.amount * 100,
       })
     );
   };
 
-  const updatePayment = ({ id, eventId }: PaymentId) => {
-    return doPatch<Payment>(`/v3/events/${eventId}/payments/${id}`);
+  const updatePayment = (data: PaymentData) => {
+    return doPatch<Payment>(
+      `/v3/events/${data.eventId}/payments/${data.id}`,
+      _.omit(["id", "eventId", "user"], {
+        ...data,
+        userId: data.user.id,
+      })
+    );
   };
 
   const deletePayment = ({ id, eventId }: PaymentId) => {
