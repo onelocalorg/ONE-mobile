@@ -13,8 +13,8 @@ export function useOrderService() {
   const queryClient = useQueryClient();
 
   const queries = {
-    all: () => ["events"],
-    lists: () => [...queries.all(), "list"],
+    all: () => ["orders"],
+    lists: () => [...queries.all(), "lists"],
   };
 
   queryClient.setMutationDefaults([OrderMutations.createOrder], {

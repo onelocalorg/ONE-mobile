@@ -28,7 +28,7 @@ export function usePostService() {
 
   const queries = {
     all: () => ["posts"],
-    lists: () => [...queries.all(), "list"],
+    lists: () => [...queries.all(), "lists"],
     list: (filters?: GetPostsParams) =>
       queryOptions({
         queryKey: [...queries.lists(), filters],
@@ -46,7 +46,7 @@ export function usePostService() {
         getNextPageParam: (lastPage) =>
           lastPage.length > 0 ? lastPage[lastPage.length - 1].id : undefined,
       }),
-    details: () => [...queries.all(), "detail"],
+    details: () => [...queries.all(), "details"],
     detail: (id?: string) =>
       queryOptions({
         queryKey: [...queries.details(), id],

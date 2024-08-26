@@ -1,4 +1,4 @@
-import { useQueries } from "@tanstack/react-query";
+import { useMutation, useQueries } from "@tanstack/react-query";
 import React, { useState } from "react";
 import { Modal, Text, TouchableOpacity, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
@@ -11,7 +11,10 @@ import {
 } from "~/assets/images";
 import { ImageComponent } from "~/components/image-component";
 import { RootStackScreenProps, Screens } from "~/navigation/types";
-import { useEventService } from "~/network/api/services/useEventService";
+import {
+  EventMutations,
+  useEventService,
+} from "~/network/api/services/useEventService";
 import { Payment, PaymentSplit, PaymentType } from "~/types/payment";
 import { toCurrency } from "~/utils/common";
 import { createStyleSheet } from "./style";
@@ -23,16 +26,6 @@ export const EventAdministrationScreen = ({
   const { eventId } = route.params;
   const { theme } = useAppTheme();
   const styles = createStyleSheet(theme);
-  // const [userId, setUserId]: any = useState("");
-  // const [expenseListData, setExpenseListData]: any = useState([]);
-  // const [payoutListData, setPayoutListData]: any = useState([]);
-  // const [isPayout, setIsPayout] = useState(false);
-  // const [revenueAmt, setRevenueAmt] = useState(0);
-  // const [expensesAmt, setExpenseAmt]: any = useState();
-  // const [totalProfile, setTotalProfile]: any = useState();
-  // const [payoutAmt, setpayoutAmt]: any = useState();
-  const [isAddEditPayout, setISAddEditPayout] = useState(Boolean);
-  // const [remainingAmt, setRemainingAmt]: any = useState();
   const [modalVisible, setModalVisible] = useState(false);
 
   const {
@@ -42,7 +35,7 @@ export const EventAdministrationScreen = ({
     },
   } = useEventService();
 
-  const { isPending, isLoading, financials, payments } = useQueries({
+  const { financials, payments } = useQueries({
     queries: [getFinancials(eventId), getPayments(eventId)],
     combine: (results) => {
       return {
@@ -52,6 +45,10 @@ export const EventAdministrationScreen = ({
         isPending: results.some((result) => result.isPending),
       };
     },
+  });
+
+  const mutateSendPayment = useMutation<Payment, Error, void>({
+    mutationKey: [EventMutations.sendPayment],
   });
 
   const expenses =
@@ -198,217 +195,209 @@ export const EventAdministrationScreen = ({
     <ScrollView>
       {financials && (
         <View style={styles.eventContainerTwo}>
-          {financials.revenueTotal > 0 ? (
-            <View style={styles.eventListCont}>
-              <Text style={styles.financialCont}>Financials</Text>
+          <View style={styles.eventListCont}>
+            <Text style={styles.financialCont}>Financials</Text>
 
-              <View style={styles.revenueCont}>
-                <Text style={styles.revenueLbl}>Revenue</Text>
+            <View style={styles.revenueCont}>
+              <Text style={styles.revenueLbl}>Revenue</Text>
+              <Text style={styles.revenueRuppes}>
+                {toCurrency(financials.revenueTotal)}
+              </Text>
+            </View>
+            <View style={styles.revenueCont}>
+              <Text style={styles.revenueLbl}>Expenses</Text>
+              <Text style={styles.revenueRuppes}>
+                {toCurrency(financials.expensesTotal)}
+              </Text>
+            </View>
+            <View style={styles.revenueCont}>
+              <Text style={styles.revenueLbl}>Profit</Text>
+              <Text style={styles.revenueRuppes}>
+                {toCurrency(financials.revenueTotal - financials.expensesTotal)}
+              </Text>
+            </View>
+            <View style={styles.payoutCont}>
+              <Text style={styles.revenueLbl}>Payouts</Text>
+              {financials.payoutsTotal !== undefined ? (
                 <Text style={styles.revenueRuppes}>
-                  {toCurrency(financials.revenueTotal)}
+                  {toCurrency(financials.payoutsTotal)}
                 </Text>
-              </View>
-              <View style={styles.revenueCont}>
-                <Text style={styles.revenueLbl}>Expenses</Text>
-                <Text style={styles.revenueRuppes}>
-                  {toCurrency(financials.expensesTotal)}
-                </Text>
-              </View>
-              <View style={styles.revenueCont}>
-                <Text style={styles.revenueLbl}>Profit</Text>
+              ) : (
+                <Text>$0</Text>
+              )}
+            </View>
+            <View style={styles.revenueCont}>
+              <Text style={styles.revenueLbl}>Remaining</Text>
+              {financials.remainingTotal !== undefined ? (
                 <Text style={styles.revenueRuppes}>
                   {toCurrency(
-                    financials.revenueTotal - financials.expensesTotal
+                    financials.revenueTotal -
+                      (financials.expensesTotal + financials.payoutsTotal)
                   )}
                 </Text>
-              </View>
-              <View style={styles.payoutCont}>
-                <Text style={styles.revenueLbl}>Payouts</Text>
-                {financials.payoutsTotal !== undefined ? (
-                  <Text style={styles.revenueRuppes}>
-                    {toCurrency(financials.payoutsTotal)}
-                  </Text>
-                ) : (
-                  <Text>$0</Text>
-                )}
-              </View>
-              <View style={styles.revenueCont}>
-                <Text style={styles.revenueLbl}>Remaining</Text>
-                {financials.remainingTotal !== undefined ? (
-                  <Text style={styles.revenueRuppes}>
-                    {toCurrency(
-                      financials.revenueTotal -
-                        (financials.expensesTotal + financials.payoutsTotal)
-                    )}
-                  </Text>
-                ) : (
-                  <Text>$0</Text>
-                )}
-              </View>
+              ) : (
+                <Text>$0</Text>
+              )}
+            </View>
 
-              <TouchableOpacity onPress={sendPayoutModal}>
-                <View style={styles.payoutContainer}>
-                  <View style={styles.payoutsubContainer}>
-                    <ImageComponent
-                      source={sendPayoutImg}
-                      style={styles.payoutImg}
-                    />
-                    <Text style={styles.sendPayoutLbl}>send payouts</Text>
-                  </View>
+            <TouchableOpacity onPress={sendPayoutModal}>
+              <View style={styles.payoutContainer}>
+                <View style={styles.payoutsubContainer}>
+                  <ImageComponent
+                    source={sendPayoutImg}
+                    style={styles.payoutImg}
+                  />
+                  <Text style={styles.sendPayoutLbl}>send payouts</Text>
                 </View>
+              </View>
+            </TouchableOpacity>
 
-                <View style={styles.payOutDetailsCont}>
-                  <Text style={styles.payoutDetailsLbl}>
-                    Payout can be sent 3 days after the event. All refunds must
-                    happen within this time before a payout can be sent.
-                  </Text>
-                </View>
-              </TouchableOpacity>
+            <View style={styles.payOutDetailsCont}>
+              <Text style={styles.payoutDetailsLbl}>
+                Payout can be sent 3 days after the event. All refunds must
+                happen within this time before a payout can be sent.
+              </Text>
+            </View>
 
-              {/* {/ { <\-------------------Expenses----------------------> /} */}
-              <View>
-                <View style={styles.userPayoutsStatementCont}>
-                  <View style={styles.subStatementcont}>
-                    <Text style={styles.expenensLbl}>Expenses</Text>
-                  </View>
+            {/* {/ { <\-------------------Expenses----------------------> /} */}
+            <View>
+              <View style={styles.userPayoutsStatementCont}>
+                <View style={styles.subStatementcont}>
+                  <Text style={styles.expenensLbl}>Expenses</Text>
                 </View>
-                {expenses ? (
-                  expenses.map((item) => (
-                    <View>
-                      <View style={styles.userDetailsCont}>
-                        <View
-                          style={{
-                            flexDirection: "row",
-                            justifyContent: "space-between",
-                          }}
+              </View>
+              {expenses ? (
+                expenses.map((item) => (
+                  <View key={item.id} style={styles.userDetailsCont}>
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        justifyContent: "space-between",
+                      }}
+                    >
+                      <View style={styles.detailsSubCont}>
+                        <TouchableOpacity
+                          onPress={() => handleEditPayment(item)}
                         >
-                          <View style={styles.detailsSubCont}>
-                            <TouchableOpacity
-                              onPress={() => handleEditPayment(item)}
-                            >
-                              <ImageComponent
-                                source={edit2}
-                                style={styles.editIcon}
-                              />
-                            </TouchableOpacity>
+                          <ImageComponent
+                            source={edit2}
+                            style={styles.editIcon}
+                          />
+                        </TouchableOpacity>
 
-                            <ImageComponent
-                              source={{ uri: item.user.pic }}
-                              resizeMode="cover"
-                              style={styles.userImage}
-                            />
-                            <View style={styles.userNameCont}>
-                              <Text style={styles.usernameLbl}>
-                                {item.user.firstName} {item.user.lastName}
-                              </Text>
-                              <Text style={styles.payoutForLbl}>
-                                Expense for: {item?.description}
-                              </Text>
-                            </View>
-                          </View>
-                          <Text style={styles.totalRupeesLbl}>
-                            {item.paymentSplit === PaymentSplit.Fixed
-                              ? toCurrency(item.amount)
-                              : `%${item.amount}`}
+                        <ImageComponent
+                          source={{ uri: item.payee.pic }}
+                          resizeMode="cover"
+                          style={styles.userImage}
+                        />
+                        <View style={styles.userNameCont}>
+                          <Text style={styles.usernameLbl}>
+                            {item.payee.firstName} {item.payee.lastName}
+                          </Text>
+                          <Text style={styles.payoutForLbl}>
+                            Expense for: {item?.description}
                           </Text>
                         </View>
                       </View>
+                      <Text style={styles.totalRupeesLbl}>
+                        {item.paymentSplit === PaymentSplit.Fixed
+                          ? toCurrency(item.amount)
+                          : `%${item.amount}`}
+                      </Text>
                     </View>
-                  ))
-                ) : (
-                  <Text>No expenses yet</Text>
-                )}
-                <TouchableOpacity
-                  activeOpacity={1}
-                  onPress={() => handleAddPayment(PaymentType.Expense)}
-                  style={styles.addItemCont}
-                >
-                  <View style={styles.subAddItemCont}>
-                    <Text style={styles.plusIcon}>+</Text>
-                    <Text style={styles.addItemLbl}>add item</Text>
                   </View>
-                </TouchableOpacity>
-                <View style={styles.borderBottom}></View>
-                <View style={styles.rupeesCont}>
-                  <Text style={styles.rupeesLbl}>
-                    {toCurrency(financials.expensesTotal)}
-                  </Text>
+                ))
+              ) : (
+                <Text>No expenses yet</Text>
+              )}
+              <TouchableOpacity
+                activeOpacity={1}
+                onPress={() => handleAddPayment(PaymentType.Expense)}
+                style={styles.addItemCont}
+              >
+                <View style={styles.subAddItemCont}>
+                  <Text style={styles.plusIcon}>+</Text>
+                  <Text style={styles.addItemLbl}>add item</Text>
                 </View>
-              </View>
-
-              {/* {/ <\-------------------Payouts----------------------> /} */}
-              <View>
-                <View style={styles.userPayoutsStatementCont}>
-                  <View style={styles.subStatementcont}>
-                    <Text style={styles.expenensLbl}>Payouts</Text>
-                  </View>
-                </View>
-                {payouts ? (
-                  [...fixedPayouts, ...percentPayouts].map((item) => (
-                    <View key={item.id} style={styles.userDetailsCont}>
-                      <View
-                        style={{
-                          flexDirection: "row",
-                          justifyContent: "space-between",
-                        }}
-                      >
-                        <View style={styles.detailsSubCont}>
-                          <TouchableOpacity
-                            onPress={() => handleEditPayment(item)}
-                          >
-                            <ImageComponent
-                              source={edit2}
-                              style={styles.editIcon}
-                            />
-                          </TouchableOpacity>
-
-                          <ImageComponent
-                            source={{ uri: item.user.pic }}
-                            resizeMode="cover"
-                            style={styles.userImage}
-                          />
-                          <View style={styles.userNameCont}>
-                            <Text style={styles.usernameLbl}>
-                              {item.user.firstName} {item.user.lastName}
-                            </Text>
-                            <Text style={styles.payoutForLbl}>
-                              Payout for: {item?.description}
-                            </Text>
-                          </View>
-                        </View>
-                        <Text style={styles.revenueRuppes}>
-                          {item.paymentSplit === PaymentSplit.Fixed
-                            ? toCurrency(item.amount)
-                            : `${item.amount}%`}
-                        </Text>
-                      </View>
-                    </View>
-                  ))
-                ) : (
-                  <Text>No payouts] yet</Text>
-                )}
-                <TouchableOpacity
-                  activeOpacity={1}
-                  onPress={() => handleAddPayment(PaymentType.Payout)}
-                  style={styles.addItemCont}
-                >
-                  <View style={styles.subAddItemCont}>
-                    <Text style={styles.plusIcon}>+</Text>
-                    <Text style={styles.addItemLbl}>add item</Text>
-                  </View>
-                </TouchableOpacity>
-
-                <View style={styles.borderBottom}></View>
-                <View style={styles.rupeesCont}>
-                  <Text style={styles.rupeesLbl}>
-                    {toCurrency(financials.payoutsTotal)}
-                  </Text>
-                </View>
+              </TouchableOpacity>
+              <View style={styles.borderBottom}></View>
+              <View style={styles.rupeesCont}>
+                <Text style={styles.rupeesLbl}>
+                  {toCurrency(financials.expensesTotal)}
+                </Text>
               </View>
             </View>
-          ) : (
-            <View></View>
-          )}
+
+            {/* {/ <\-------------------Payouts----------------------> /} */}
+            <View>
+              <View style={styles.userPayoutsStatementCont}>
+                <View style={styles.subStatementcont}>
+                  <Text style={styles.expenensLbl}>Payouts</Text>
+                </View>
+              </View>
+              {payouts ? (
+                [...fixedPayouts, ...percentPayouts].map((item) => (
+                  <View key={item.id} style={styles.userDetailsCont}>
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        justifyContent: "space-between",
+                      }}
+                    >
+                      <View style={styles.detailsSubCont}>
+                        <TouchableOpacity
+                          onPress={() => handleEditPayment(item)}
+                        >
+                          <ImageComponent
+                            source={edit2}
+                            style={styles.editIcon}
+                          />
+                        </TouchableOpacity>
+
+                        <ImageComponent
+                          source={{ uri: item.payee.pic }}
+                          resizeMode="cover"
+                          style={styles.userImage}
+                        />
+                        <View style={styles.userNameCont}>
+                          <Text style={styles.usernameLbl}>
+                            {item.payee.firstName} {item.payee.lastName}
+                          </Text>
+                          <Text style={styles.payoutForLbl}>
+                            Payout for: {item?.description}
+                          </Text>
+                        </View>
+                      </View>
+                      <Text style={styles.revenueRuppes}>
+                        {item.paymentSplit === PaymentSplit.Fixed
+                          ? toCurrency(item.amount)
+                          : `${item.amount}%`}
+                      </Text>
+                    </View>
+                  </View>
+                ))
+              ) : (
+                <Text>No payouts] yet</Text>
+              )}
+              <TouchableOpacity
+                activeOpacity={1}
+                onPress={() => handleAddPayment(PaymentType.Payout)}
+                style={styles.addItemCont}
+              >
+                <View style={styles.subAddItemCont}>
+                  <Text style={styles.plusIcon}>+</Text>
+                  <Text style={styles.addItemLbl}>add item</Text>
+                </View>
+              </TouchableOpacity>
+
+              <View style={styles.borderBottom}></View>
+              <View style={styles.rupeesCont}>
+                <Text style={styles.rupeesLbl}>
+                  {toCurrency(financials.payoutsTotal)}
+                </Text>
+              </View>
+            </View>
+          </View>
 
           <Modal
             animationType="slide"

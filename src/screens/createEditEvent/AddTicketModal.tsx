@@ -125,8 +125,8 @@ export const AddTicketModal = ({
 
   const createTicketType = (): TicketTypeData => ({
     name,
-    price: price || 0,
-    quantity: quantity ? quantity : undefined,
+    price: price ?? 0,
+    quantity: quantity ?? undefined,
   });
 
   return (
@@ -181,8 +181,8 @@ export const AddTicketModal = ({
             {myUser?.type === UserType.EventProducer ? (
               <CurrencyInput
                 style={styles.inputStyle}
-                value={price}
-                onChangeValue={setPrice}
+                value={(price ?? 0) / 100}
+                onChangeValue={(v) => setPrice((v ?? 0) * 100)}
                 placeholder={strings.ticketPriceFree}
                 prefix="$"
                 separator="."

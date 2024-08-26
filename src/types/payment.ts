@@ -19,10 +19,10 @@ export enum PaymentSplit {
 export interface PaymentData {
   id?: string;
   eventId: string;
-  user: OneUser;
+  payee: OneUser;
   paymentType: PaymentType;
   paymentSplit: PaymentSplit;
-  paidAt: DateTime | null;
+  paidAt?: DateTime;
   amount: number;
   description: string;
   images: ImageUrl[];

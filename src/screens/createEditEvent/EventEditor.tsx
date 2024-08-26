@@ -37,7 +37,7 @@ import {
 } from "~/types/local-event";
 import { TicketTypeData } from "~/types/ticket-type-data";
 import { FileKey } from "~/types/upload-file-data";
-import { isNotEmpty } from "~/utils/common";
+import { isNotEmpty, toCurrency } from "~/utils/common";
 import { AddTicketModal } from "./AddTicketModal";
 import { createStyleSheet } from "./style";
 
@@ -328,7 +328,7 @@ export const EventEditor = ({
                       <Text style={styles.ticket}>{`${t?.name} - ${
                         t.quantity ? t.quantity : "Unlimited"
                       } ${
-                        t.price > 0 ? "@ $" + t.price.toFixed(2) : "Free"
+                        t.price === 0 ? "Free!" : toCurrency(t.price)
                       }`}</Text>
                       <View style={styles.rowContainer}>
                         <Pressable onPress={() => handleTicketSelected(index)}>

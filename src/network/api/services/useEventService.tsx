@@ -21,6 +21,7 @@ export enum EventMutations {
   createPayment = "createPayment",
   editPayment = "editPayment",
   deletePayment = "deletePayment",
+  sendPayment = "sendPayment",
 }
 
 export function useEventService() {
@@ -28,13 +29,13 @@ export function useEventService() {
 
   const queries = {
     all: () => ["events"],
-    lists: () => [...queries.all(), "list"],
+    lists: () => [...queries.all(), "lists"],
     list: (filters?: GetEventsParams) =>
       queryOptions({
         queryKey: [...queries.lists(), filters],
         queryFn: () => getEvents(filters),
       }),
-    details: () => [...queries.all(), "detail"],
+    details: () => [...queries.all(), "details"],
     detail: (id?: string) =>
       queryOptions({
         queryKey: [...queries.details(), id],
@@ -160,6 +161,16 @@ export function useEventService() {
       });
     },
   });
+  queryClient.setMutationDefaults([EventMutations.sendPayment], {
+    mutationFn: (data: PaymentId) => {
+      return sendPayment(data);
+    },
+    onSuccess: (result: PaymentId) => {
+      void queryClient.invalidateQueries({
+        queryKey: queries.financialsForEvent(result.eventId).queryKey,
+      });
+    },
+  });
 
   const { doGet, doPatch, doPost, doDelete } = useApiService();
 
@@ -235,9 +246,9 @@ export function useEventService() {
   const createPayment = (data: PaymentData) => {
     return doPost<Payment>(
       `/v3/events/${data.eventId}/payments`,
-      _.omit(["eventId", "user"], {
+      _.omit(["eventId", "payee"], {
         ...data,
-        userId: data.user.id,
+        payeeId: data.payee.id,
       })
     );
   };
@@ -245,15 +256,19 @@ export function useEventService() {
   const updatePayment = (data: PaymentData) => {
     return doPatch<Payment>(
       `/v3/events/${data.eventId}/payments/${data.id}`,
-      _.omit(["id", "eventId", "user"], {
+      _.omit(["id", "eventId", "payee"], {
         ...data,
-        userId: data.user.id,
+        payeeId: data.payee.id,
       })
     );
   };
 
   const deletePayment = ({ id, eventId }: PaymentId) => {
     return doDelete<Payment>(`/v3/events/${eventId}/payments/${id}`);
+  };
+
+  const sendPayment = ({ id, eventId }: PaymentId) => {
+    return doPost<Payment>(`/v3/events/${eventId}/payments/${id}/send`);
   };
 
   async function getTicketPriceBreakdown(

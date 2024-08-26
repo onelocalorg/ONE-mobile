@@ -27,13 +27,13 @@ export function useUserService() {
 
   const queries = {
     all: () => ["users"],
-    lists: () => [...queries.all(), "list"],
+    lists: () => [...queries.all(), "lists"],
     list: (filters?: GetUsersParams) =>
       queryOptions({
         queryKey: [...queries.lists(), filters],
         queryFn: () => getUsers(filters),
       }),
-    details: () => [...queries.all(), "detail"],
+    details: () => [...queries.all(), "details"],
     detail: (id?: string) =>
       queryOptions({
         queryKey: [...queries.details(), id],

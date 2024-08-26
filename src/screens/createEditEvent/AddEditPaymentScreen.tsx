@@ -6,6 +6,7 @@ import CurrencyInput from "react-native-currency-input";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
 import { redDeleteIcon, saveIcon } from "~/assets/images";
 import { ImageComponent } from "~/components/image-component";
+import { Loader } from "~/components/loader";
 import { MultiImageViewer } from "~/components/MultiImageViewer";
 import { ShortModal } from "~/components/ShortModal";
 import { UserChooser } from "~/components/user-chooser/UserChooser";
@@ -39,14 +40,12 @@ export const AddEditPaymentScreen = ({
     queries: { paymentDetail },
   } = useEventService();
 
-  const {
-    data: payment,
-    isPending,
-    isLoading,
-  } = useQuery({
+  const { data: payment, isPending } = useQuery({
     ...paymentDetail({ eventId, id: paymentId! }),
     enabled: !!paymentId,
   });
+
+  console.log("isPending", isPending);
 
   const {
     control,
@@ -58,14 +57,28 @@ export const AddEditPaymentScreen = ({
     defaultValues: {
       id: paymentId,
       eventId,
-      user: payment?.user,
-      paymentType: payment?.paymentType ?? type ?? PaymentType.Expense,
-      paymentSplit: payment?.paymentSplit ?? PaymentSplit.Fixed,
-      amount: payment?.amount ?? 0,
-      description: payment?.description ?? "",
-      images: payment?.images ?? [],
+      paymentType: type ?? PaymentType.Expense,
+      paymentSplit: PaymentSplit.Fixed,
+      amount: 0,
+      description: "",
+      images: [],
+    },
+    values: payment,
+    resetOptions: {
+      keepDirtyValues: true, // keep dirty fields unchanged, but update defaultValues
     },
   });
+
+  // {
+  //   id: paymentId,
+  //   eventId,
+  //   // user: payment?.user,
+  //   paymentType: payment?.paymentType ?? type ?? PaymentType.Expense,
+  //   paymentSplit: payment?.paymentSplit ?? PaymentSplit.Fixed,
+  //   amount: payment?.amount ?? 0,
+  //   description: payment?.description ?? "",
+  //   images: payment?.images ?? [],
+  // }
 
   const paymentType = useWatch({ control, name: "paymentType" });
   const paymentSplit = useWatch({ control, name: "paymentSplit" });
@@ -154,11 +167,11 @@ export const AddEditPaymentScreen = ({
 
   const showUserChooser = () => {
     setUserChooserVisible(true);
-    resetField("user");
+    resetField("payee");
   };
 
   const handleChangeUser = (user: OneUser) => {
-    setValue("user", user);
+    setValue("payee", user);
     setUserChooserVisible(false);
   };
 
@@ -200,9 +213,11 @@ export const AddEditPaymentScreen = ({
   };
 
   return (
-    <ShortModal height={400}>
+    <ShortModal height={isPending && !!paymentId ? 100 : 400}>
       <View style={{ flex: 1 }}>
         <View style={styles.breakDownCont}>
+          <Loader showOverlay={true} visible={isPending && !!paymentId} />
+
           <View style={styles.subBreakdowncont}>
             <View
               style={{
@@ -213,7 +228,9 @@ export const AddEditPaymentScreen = ({
                 alignItems: "center",
               }}
             >
-              <Text style={styles.breakdownHeader}>Add {type}</Text>
+              <Text style={styles.breakdownHeader}>
+                {paymentId ? "Edit" : "Add"}
+              </Text>
             </View>
 
             <View style={styles.payModalContainer}>
@@ -238,9 +255,9 @@ export const AddEditPaymentScreen = ({
                       style={styles.payInput}
                     ></TextInput>
                   )}
-                  name="user"
+                  name="payee"
                 />
-                {errors.user && <Text>This is required.</Text>}
+                {errors.payee && <Text>This is required.</Text>}
               </View>
             </View>
 
@@ -297,9 +314,7 @@ export const AddEditPaymentScreen = ({
                       <CurrencyInput
                         // style={styles.inputStyle}
                         value={value / 100}
-                        onChangeValue={(v) =>
-                          v ? onChange(v * 100) : onChange(v)
-                        }
+                        onChangeValue={(v) => onChange((v ?? 0) * 100)}
                         onBlur={onBlur}
                         // placeholder={strings.ticketPriceFree}
                         separator="."
