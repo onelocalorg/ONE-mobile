@@ -9,7 +9,9 @@ import { ImageComponent } from "~/components/image-component";
 import { Loader } from "~/components/loader";
 import { TabComponent } from "~/components/tab-component";
 import { RootStackScreenProps, Screens } from "~/navigation/types";
+import { useChapterService } from "~/network/api/services/useChapterService";
 import { useUserService } from "~/network/api/services/useUserService";
+import { findChapter } from "~/utils/common";
 import { MyEvents } from "../myprofile/MyEvents";
 import { About } from "./About";
 import { createStyleSheet } from "./style";
@@ -29,6 +31,11 @@ export const UserProfileScreen = ({
   } = useUserService();
 
   const { isPending, data: userProfile } = useQuery(getUser(userId));
+  const {
+    queries: { list: listChapters },
+  } = useChapterService();
+
+  const { data: chapters } = useQuery(listChapters());
 
   return (
     <>
@@ -50,6 +57,15 @@ export const UserProfileScreen = ({
                   <Text style={styles.name}>{userProfile.lastName}</Text>
                 </View>
               </View>
+            </View>
+
+            <View style={styles.innerContainer}>
+              <Text>
+                Home chapter:{" "}
+                {userProfile.chapterId
+                  ? findChapter(userProfile.chapterId, chapters)?.name
+                  : "None"}
+              </Text>
             </View>
 
             <View style={styles.line} />

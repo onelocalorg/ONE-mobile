@@ -1,16 +1,22 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useMutation, useQuery } from "@tanstack/react-query";
-import React from "react";
-import { Alert, Text, TouchableOpacity, View } from "react-native";
+import React, { useContext, useState } from "react";
+import { Alert, Pressable, Text, TouchableOpacity, View } from "react-native";
 import { getReadableVersion } from "react-native-device-info";
 import { ScrollView } from "react-native-gesture-handler";
+import { Menu } from "react-native-paper";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
 import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
 import { dummy } from "~/assets/images";
 import { ImageUploader } from "~/components/ImageUploader";
 import { ImageComponent } from "~/components/image-component";
 import { Loader } from "~/components/loader";
+import { AppContext } from "~/navigation/AppContext";
 import { useMyUserId } from "~/navigation/AuthContext";
+import {
+  ChapterMutations,
+  useChapterService,
+} from "~/network/api/services/useChapterService";
 import {
   UserMutations,
   useUserService,
@@ -19,6 +25,7 @@ import { ImageKey } from "~/types/image-info";
 import { RemoteImage } from "~/types/remote-image";
 import { FileKey, UploadFileData } from "~/types/upload-file-data";
 import { UserProfile, UserProfileUpdateData } from "~/types/user-profile";
+import { findChapter } from "~/utils/common";
 import { LogoutPressable } from "./LogoutPressable";
 import { MyEvents } from "./MyEvents";
 import { ProfileEditor } from "./ProfileEditor";
@@ -29,12 +36,22 @@ export const MyProfileScreen = () => {
   const { strings } = useStringsAndLabels();
   const styles = createStyleSheet(theme);
   const myUserId = useMyUserId();
+  const { chapterFilter, setChapterFilter } = useContext(AppContext)!;
+
+  const [isChapterPickerVisible, setChapterPickerVisible] = useState(false);
+  const openMenu = () => setChapterPickerVisible(true);
+  const closeMenu = () => setChapterPickerVisible(false);
 
   const {
     queries: { detail: getUser },
   } = useUserService();
 
   const { isLoading, data: myProfile } = useQuery(getUser(myUserId));
+  const {
+    queries: { list: listChapters },
+  } = useChapterService();
+
+  const { data: chapters } = useQuery(listChapters());
 
   const { mutate: uploadFile } = useMutation<
     RemoteImage,
@@ -54,6 +71,10 @@ export const MyProfileScreen = () => {
 
   const { mutate: deleteUser } = useMutation<never, Error, string>({
     mutationKey: [UserMutations.deleteUser],
+  });
+
+  const { mutate: joinChapter } = useMutation<void, Error, string>({
+    mutationKey: [ChapterMutations.joinChapter],
   });
 
   const handleImageAdded = (image: ImageKey) => {
@@ -86,6 +107,37 @@ export const MyProfileScreen = () => {
       <ScrollView>
         {myProfile ? (
           <>
+            {myProfile && (
+              <View style={styles.innerContainer}>
+                <Menu
+                  visible={isChapterPickerVisible}
+                  onDismiss={closeMenu}
+                  anchor={
+                    <Pressable onPress={openMenu}>
+                      <Text>
+                        Home chapter:{" "}
+                        {myProfile.chapterId
+                          ? findChapter(myProfile.chapterId, chapters)?.name
+                          : "None"}
+                        <Text style={{ fontSize: 10 }}>{"\u25BC"}</Text>
+                      </Text>
+                    </Pressable>
+                  }
+                >
+                  {chapters?.map((chapter) => (
+                    <Menu.Item
+                      key={chapter.id}
+                      onPress={() => {
+                        joinChapter(chapter.id);
+                        setChapterFilter(chapter);
+                        closeMenu();
+                      }}
+                      title={chapter.name}
+                    />
+                  ))}
+                </Menu>
+              </View>
+            )}
             <View style={styles.profileContainer}>
               <ImageUploader
                 id={myUserId}
@@ -102,6 +154,7 @@ export const MyProfileScreen = () => {
               </ImageUploader>
             </View>
 
+            <View style={styles.line} />
             {myProfile && (
               <ProfileEditor
                 userProfile={myProfile}
@@ -111,7 +164,7 @@ export const MyProfileScreen = () => {
 
             <View style={styles.line} />
 
-            <View style={styles.innerConatiner}>
+            <View style={styles.innerContainer}>
               <Text style={styles.membership}>My events</Text>
             </View>
             <MyEvents user={myProfile} />

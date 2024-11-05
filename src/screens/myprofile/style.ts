@@ -138,7 +138,7 @@ export const createStyleSheet = (theme: ThemeProps) => {
     marginBottom: {
       marginBottom: verticalScale(10),
     },
-    innerConatiner: {
+    innerContainer: {
       marginHorizontal: normalScale(12),
     },
     rowOnly: {

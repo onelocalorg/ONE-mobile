@@ -1,17 +1,5 @@
 export const dataObject: any = [];
 
-export const getData = (key: any) => {
-  if (key == undefined) {
-    return 1;
-  } else {
-    return dataObject[key];
-  }
-};
-
-export const setData = (key: any, value: any) => {
-  dataObject[key] = value;
-};
-
 export const apiConstants = {
   login: "/v3/auth/login",
   userProfile: "/v3/users",

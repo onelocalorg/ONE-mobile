@@ -7,11 +7,11 @@ import { Pill } from "~/components/pill";
 import { UserProfile } from "~/types/user-profile";
 import { createStyleSheet } from "./style";
 
-interface RecentaboutDataProps {
+interface AboutDataProps {
   user: UserProfile;
 }
 
-export const About = ({ user }: RecentaboutDataProps) => {
+export const About = ({ user }: AboutDataProps) => {
   const { theme } = useAppTheme();
   const { strings } = useStringsAndLabels();
   const styles = createStyleSheet(theme);
@@ -22,7 +22,7 @@ export const About = ({ user }: RecentaboutDataProps) => {
   return (
     <View style={styles.container}>
       <Text style={styles.input}>{user.catchphrase}</Text>
-      <View style={styles.innerConatiner}>
+      <View style={styles.innerContainer}>
         <Text style={styles.membership}>About</Text>
         <Text style={styles.input}>{user.about}</Text>
         <Text style={styles.membership}>{strings.skills}</Text>
