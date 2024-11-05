@@ -153,18 +153,21 @@ export function usePostService() {
     isPast?: boolean;
     from?: string;
     age?: Duration; //max age of posts returned
+    chapterId?: string;
   };
   const getPosts = ({
     numPosts = 20,
     isPast,
     from,
     age,
+    chapterId,
   }: GetPostsParams | undefined = {}) => {
     const urlParams: string[] = [];
     if (!_.isNil(isPast)) urlParams.push(`past=${isPast.toString()}`);
     if (!_.isNil(numPosts)) urlParams.push(`limit=${numPosts.toString()}`);
     if (!_.isNil(from)) urlParams.push(`from=${from}`);
     if (!_.isNil(age)) urlParams.push(`age=${age.toISO()}`);
+    if (!_.isNil(chapterId)) urlParams.push(`chapter=${chapterId}`);
 
     const urlSearchParams = urlParams.join("&");
 

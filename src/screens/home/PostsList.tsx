@@ -16,6 +16,7 @@ import { useNavigations } from "~/app-hooks/useNavigations";
 import { comment, gratitudeBlack } from "~/assets/images";
 import { ImageComponent } from "~/components/image-component";
 import { Loader } from "~/components/loader";
+import { useChapterFilter } from "~/navigation/AppContext";
 import { usePostService } from "~/network/api/services/usePostService";
 import { Post } from "~/types/post";
 import { PostCard, PostCardSize } from "./PostCard";
@@ -29,6 +30,7 @@ export const PostsList = ({ header }: PostsListProps) => {
   const styles = createStyleSheet(theme);
   const { strings } = useStringsAndLabels();
   const { gotoPostDetails, showGiveGratisModal } = useNavigations();
+  const chapterFilter = useChapterFilter();
 
   const {
     queries: { infiniteList },
@@ -43,7 +45,7 @@ export const PostsList = ({ header }: PostsListProps) => {
     isFetching,
     isLoading,
     isFetchingNextPage,
-  } = useInfiniteQuery(infiniteList());
+  } = useInfiniteQuery(infiniteList({ chapterId: chapterFilter?.id }));
 
   const loadNext = useCallback(() => {
     hasNextPage && !isFetching && fetchNextPage().catch(console.error);

@@ -117,17 +117,20 @@ export function useEventService() {
     isPast?: boolean;
     isCanceled?: boolean;
     host?: string;
+    chapterId?: string;
   };
   const getEvents = ({
     isPast,
     isCanceled,
     host,
+    chapterId,
   }: GetEventsParams | undefined = {}) => {
     const urlParams: string[] = [];
     if (!_.isNil(isPast)) urlParams.push(`past=${isPast.toString()}`);
     if (!_.isNil(isCanceled))
       urlParams.push(`canceled=${isCanceled.toString()}`);
     if (!_.isNil(host)) urlParams.push(`host=${host}`);
+    if (!_.isNil(chapterId)) urlParams.push(`chapter=${chapterId}`);
 
     const urlSearchParams = urlParams.join("&");
 
