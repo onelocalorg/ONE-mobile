@@ -1,4 +1,26 @@
 {
   "git.ignoreLimitWarning": true,
-  "java.configuration.updateBuildConfiguration": "automatic"
+  "java.configuration.updateBuildConfiguration": "automatic",
+  "cSpell.words": [
+    "datetime",
+    "datetimepicker",
+    "fawazahmed",
+    "fontawesome",
+    "fortawesome",
+    "gradlew",
+    "Grats",
+    "jsbundle",
+    "Navigations",
+    "netinfo",
+    "notifee",
+    "onelogo",
+    "playstore",
+    "reduxjs",
+    "rnmapbox",
+    "rsvps",
+    "signin",
+    "Signout",
+    "swiper",
+    "testflight"
+  ]
 }
