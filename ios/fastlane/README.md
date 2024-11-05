@@ -71,6 +71,14 @@ Connect to DEV server, build and upload to TestFlight
 
 Connect to BETA server, Build and upload to TestFlight
 
+### ios build_prod_upload_testflight
+
+```sh
+[bundle exec] fastlane ios build_prod_upload_testflight
+```
+
+Connect to PRODUCTION server, Build and upload to TestFlight
+
 ----
 
 This README.md is auto-generated and will be re-generated every time [_fastlane_](https://fastlane.tools) is run.
