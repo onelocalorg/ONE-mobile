@@ -71,3 +71,8 @@ now for Android.
 2. Run the build as above, except use `playstore` instead of `testflight`.
 3. On the Google Developer Console, create a new release and copy this file into the page:
    `android/app/build/outputs/bundle/release/app-release.abb`.
+
+# Troubleshooting
+
+Build hanging at the very beginning? Run `npx react-native clean`, also
+creating a new Simulator. These are the two things that seemed to help me.
