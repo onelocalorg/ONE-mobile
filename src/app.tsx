@@ -5,7 +5,6 @@ import React, { useEffect, useState } from "react";
 import { StatusBar } from "react-native";
 import { queryConfig } from "~/network/utils/query-config";
 import { InternetConnectionHandle } from "~/utils/internet-connection-handle";
-import { AppUpdate } from "./components/app-update";
 import { Loader } from "./components/loader";
 import Authentication from "./navigation/Authentication";
 
@@ -18,15 +17,13 @@ Sentry.init({
 
 export const queryClient = new QueryClient(queryConfig);
 export const App = () => {
-  const [isUpdateRequired, setUpdateRequired] = useState<boolean>();
-  const [isNavigationVisible, setNavigationVisible] = useState(false);
   const [isLoading, setLoading] = useState(true);
   useEffect(() => {
     async function bootstrap() {
-      notifee
-        .setBadgeCount(0)
-        .then(() => console.log("Badge count removed"))
-        .catch((e) => console.error("Could not remove badge count", e));
+      // notifee
+      //   .setBadgeCount(0)
+      //   .then(() => console.log("Badge count removed"))
+      //   .catch((e) => console.error("Could not remove badge count", e));
 
       const initialNotification = await notifee.getInitialNotification();
 
@@ -44,14 +41,8 @@ export const App = () => {
 
     bootstrap()
       .then(() => setLoading(false))
-      .catch(console.error);
+      .catch((err) => console.error("Failed bootstrap", err));
   }, []);
-
-  const onNeedsUpdate = (isUpdateRequired: boolean) => {
-    if (isUpdateRequired === false) {
-      setNavigationVisible(true);
-    }
-  };
 
   return (
     <>
@@ -64,8 +55,7 @@ export const App = () => {
             barStyle={"light-content"}
             translucent={true}
           />
-          <AppUpdate onNeedsUpdate={onNeedsUpdate} />
-          {isNavigationVisible ? <Authentication /> : null}
+          <Authentication />
         </>
       )}
     </>
