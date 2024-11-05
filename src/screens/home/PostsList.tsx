@@ -72,7 +72,7 @@ export const PostsList = ({ header }: PostsListProps) => {
             </TouchableOpacity>
             <TouchableOpacity
               activeOpacity={0.8}
-              onPress={gotoPostDetails(post, true)}
+              onPress={gotoPostDetails(post, undefined, true)}
               style={styles.repliesContainer}
             >
               <Text style={styles.replyClass}>{post.numReplies}</Text>
