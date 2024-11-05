@@ -42,6 +42,7 @@ export const persistKeys = {
   myId: "myId",
   myEmail: "myEmail",
   fcmToken: "@fcmToken",
+  chapterFilter: "chapterFilter",
 };
 
 export const apiKeys = {

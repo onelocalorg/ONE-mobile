@@ -1,10 +1,12 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import React, { useEffect, useMemo, useReducer } from "react";
+import React, { useEffect, useMemo, useReducer, useState } from "react";
 import { LOG } from "~/config";
 import { ApiService } from "~/network/api/services/ApiService";
 import { persistKeys } from "~/network/constant";
+import { Chapter } from "~/types/chapter";
 import { CurrentUser } from "~/types/current-user";
 import { handleApiError } from "~/utils/common";
+import { AppContext } from "./AppContext";
 import { AppNavigation } from "./AppNavigation";
 import {
   AuthContext,
@@ -14,6 +16,7 @@ import {
 import { NotificationService } from "./NotificationService";
 
 export default function Authentication() {
+  const [chapterFilter, setChapterFilter] = useState<Chapter | null>(null);
   type AppState = {
     isLoading: boolean;
     isSignout: boolean;
@@ -117,6 +120,8 @@ export default function Authentication() {
     void bootstrapAsync();
   }, []);
 
+  const appContext = useMemo(() => ({}), []);
+
   const authDispatchContext = useMemo(
     () => ({
       handleSignIn: async (user: CurrentUser) => {
@@ -153,18 +158,25 @@ export default function Authentication() {
   );
 
   return (
-    <AuthContext.Provider value={state}>
-      <AuthDispatchContext.Provider value={authDispatchContext}>
-        <ApiService>
-          <NotificationService>
-            <AppNavigation
-              email={state.myEmail}
-              password={state.password}
-              token={state.accessToken}
-            />
-          </NotificationService>
-        </ApiService>
-      </AuthDispatchContext.Provider>
-    </AuthContext.Provider>
+    <AppContext.Provider
+      value={{
+        chapterFilter,
+        setChapterFilter,
+      }}
+    >
+      <AuthContext.Provider value={state}>
+        <AuthDispatchContext.Provider value={authDispatchContext}>
+          <ApiService>
+            <NotificationService>
+              <AppNavigation
+                email={state.myEmail}
+                password={state.password}
+                token={state.accessToken}
+              />
+            </NotificationService>
+          </ApiService>
+        </AuthDispatchContext.Provider>
+      </AuthContext.Provider>
+    </AppContext.Provider>
   );
 }

@@ -6,6 +6,7 @@ import { useAppTheme } from "~/app-hooks/use-app-theme";
 import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
 import { EventCard } from "~/components/events/EventCard";
 import { Loader } from "~/components/loader";
+import { useChapterFilter } from "~/navigation/AppContext";
 import { useEventService } from "~/network/api/services/useEventService";
 import { LocalEvent } from "~/types/local-event";
 import { handleApiError } from "~/utils/common";
@@ -19,6 +20,7 @@ export const EventListScreen = () => {
   const makeDate = new Date();
   makeDate.setMonth(makeDate.getMonth() + 1);
   const [isLoading, setLoading] = useState(false);
+  const chapterFilter = useChapterFilter();
 
   const {
     queries: { list: listEvents },
@@ -29,7 +31,7 @@ export const EventListScreen = () => {
     isError,
     data: eventsList,
     error,
-  } = useQuery(listEvents({ isPast: false }));
+  } = useQuery(listEvents({ isPast: false, chapterId: chapterFilter?.id }));
   if (isPending !== isLoading) setLoading(isPending);
   if (isError) handleApiError("Events", error);
 
