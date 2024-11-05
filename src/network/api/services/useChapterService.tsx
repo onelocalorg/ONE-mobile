@@ -1,6 +1,8 @@
 import { queryOptions, useQueryClient } from "@tanstack/react-query";
+import { useMyUserId } from "~/navigation/AuthContext";
 import { Chapter } from "~/types/chapter";
 import { useApiService } from "./ApiService";
+import { useUserService } from "./useUserService";
 
 export enum ChapterMutations {
   joinChapter = "joinChapter",
@@ -8,6 +10,9 @@ export enum ChapterMutations {
 
 export function useChapterService() {
   const queryClient = useQueryClient();
+  const myUserId = useMyUserId();
+  const { queries: userQueries } = useUserService();
+
   const queries = {
     all: () => ["chapters"],
     lists: () => [...queries.all(), "list"],
@@ -19,11 +24,13 @@ export function useChapterService() {
   };
 
   queryClient.setMutationDefaults([ChapterMutations.joinChapter], {
-    mutationFn: (chapter: Chapter) => {
-      return joinChapter(chapter);
+    mutationFn: (chapterId: string) => {
+      return joinChapter(chapterId);
     },
     onSuccess: () => {
-      void queryClient.invalidateQueries({ queryKey: queries.all() });
+      void queryClient.invalidateQueries({
+        queryKey: userQueries.detail(myUserId).queryKey,
+      });
     },
   });
   const { doGet, doPost } = useApiService();
@@ -32,8 +39,8 @@ export function useChapterService() {
     return doGet<Chapter[]>(`/v3/chapters`);
   };
 
-  const joinChapter = (chapter: Chapter) =>
-    doPost(`/v3/chapters/${chapter.id}`);
+  const joinChapter = (chapterId: string) =>
+    doPost(`/v3/chapters/${chapterId}/join`);
 
   return {
     queries,

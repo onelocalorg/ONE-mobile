@@ -14,6 +14,7 @@ export interface UserProfile extends UserProfileData {
   pic: ImageUrl;
   isEmailVerified: boolean;
   type: UserType;
+  chapterId?: string;
 }
 
 export interface UserProfileData extends UserProfileUpdateData {

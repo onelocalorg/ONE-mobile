@@ -2,6 +2,7 @@
   "git.ignoreLimitWarning": true,
   "java.configuration.updateBuildConfiguration": "automatic",
   "cSpell.words": [
+    "Checkins",
     "datetime",
     "datetimepicker",
     "fawazahmed",
@@ -13,6 +14,7 @@
     "Navigations",
     "netinfo",
     "notifee",
+    "onelocal",
     "onelogo",
     "playstore",
     "reduxjs",

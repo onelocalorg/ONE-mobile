@@ -3,6 +3,7 @@ import _ from "lodash/fp";
 import { DateTime, Interval } from "luxon";
 import { Alert } from "react-native";
 import { LOG } from "~/config";
+import { Chapter } from "~/types/chapter";
 
 // const { handleSignOut } = useContext(AuthDispatchContext);
 
@@ -65,3 +66,6 @@ export const isNotEmpty = _.overEvery([
   _.negate(_.isUndefined),
   _.negate(_.isEmpty),
 ]);
+
+export const findChapter = (chapterId?: string, chapters?: Chapter[]) =>
+  chapters?.find((c) => c.id === chapterId);

@@ -133,7 +133,7 @@ export const MyAbout = ({ user, onEditProfile }: AboutDataProps) => {
 
   return (
     <>
-      <View style={styles.innerConatiner}>
+      <View style={styles.innerContainer}>
         <Loader visible={false} showOverlay />
 
         {/* <View style={styles.rowOnly}>
