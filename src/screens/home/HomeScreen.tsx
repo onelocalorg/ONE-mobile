@@ -5,6 +5,7 @@ import { View } from "react-native";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
 import { useNavigations } from "~/app-hooks/useNavigations";
 import {
+  ChapterFilter,
   GetUsersSort,
   useUserService,
 } from "~/network/api/services/useUserService";
@@ -24,7 +25,12 @@ export const HomeScreen = () => {
   } = useUserService();
 
   const { isLoading, data: userList } = useQuery(
-    listUsers({ sort: GetUsersSort.Join, limit: 50, picsOnly: true })
+    listUsers({
+      sort: GetUsersSort.Join,
+      limit: 50,
+      picsOnly: true,
+      chapter: ChapterFilter.Same,
+    })
   );
 
   const withoutProfilePic = _.reject(
