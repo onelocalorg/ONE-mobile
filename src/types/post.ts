@@ -35,6 +35,7 @@ export interface PostUpdateData {
   type: PostType;
   name?: string;
   details?: string;
+  chapterId?: string;
   address?: string;
   venue?: string;
   coordinates?: number[];

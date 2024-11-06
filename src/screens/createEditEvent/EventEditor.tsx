@@ -26,6 +26,7 @@ import { ChooseDate } from "~/components/choose-date/ChooseDate";
 import { ImageChooser } from "~/components/image-chooser/ImageChooser";
 import { ImageComponent } from "~/components/image-component";
 import { LocationAutocomplete } from "~/components/location-autocomplete/LocationAutocomplete";
+import { useChapterFilter } from "~/navigation/AppContext";
 import { useMyUserId } from "~/navigation/AuthContext";
 import { EventMutations } from "~/network/api/services/useEventService";
 import { normalScale, verticalScale } from "~/theme/device/normalize";
@@ -66,6 +67,7 @@ export const EventEditor = ({
   const myUserId = useMyUserId();
   const isMyEvent = myUserId === event?.host.id;
   const [isTicketModalVisible, setTicketModalVisible] = useState(false);
+  const chapterFilter = useChapterFilter();
 
   const {
     control,
@@ -91,6 +93,7 @@ export const EventEditor = ({
         }
       : {
           name: "",
+          chapterId: chapterFilter?.id,
           startDate: DateTime.now().startOf("hour").plus({ hour: 1 }),
           coordinates: [],
           ticketTypes: [],
