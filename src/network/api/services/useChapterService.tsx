@@ -31,6 +31,9 @@ export function useChapterService() {
       void queryClient.invalidateQueries({
         queryKey: userQueries.detail(myUserId).queryKey,
       });
+      void queryClient.invalidateQueries({
+        queryKey: userQueries.lists(),
+      });
     },
   });
   const { doGet, doPost } = useApiService();

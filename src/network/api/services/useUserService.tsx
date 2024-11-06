@@ -21,6 +21,10 @@ export enum GetUsersSort {
   Join = "join",
 }
 
+export enum ChapterFilter {
+  Same = "same",
+}
+
 export function useUserService() {
   const queryClient = useQueryClient();
   const { queries: eventQueries } = useEventService();
@@ -101,17 +105,21 @@ export function useUserService() {
     sort?: GetUsersSort;
     limit?: number;
     picsOnly?: boolean;
+    chapter?: ChapterFilter;
   }
   const getUsers = ({
     sort,
     limit,
     picsOnly,
+    chapter,
   }: GetUsersParams | undefined = {}) => {
     // TODO make this more generic
     const urlParams: string[] = [];
     if (!_.isNil(sort)) urlParams.push(`sort=${sort.toString()}`);
     if (!_.isNil(limit)) urlParams.push(`limit=${limit.toString()}`);
     if (!_.isNil(picsOnly)) urlParams.push(`pics=${picsOnly.toString()}`);
+    if (!_.isNil(chapter)) urlParams.push(`chapter=${chapter}`);
+
     const urlSearchParams = urlParams.join("&");
 
     return doGet<OneUser[]>(`/v3/users?${urlSearchParams}`);
