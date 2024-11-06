@@ -15,6 +15,7 @@ import { View } from "react-native";
 import Carousel, { ICarouselInstance } from "react-native-reanimated-carousel";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
 import { useNavigations } from "~/app-hooks/useNavigations";
+import { useChapterFilter } from "~/navigation/AppContext";
 import { useEventService } from "~/network/api/services/useEventService";
 import { usePostService } from "~/network/api/services/usePostService";
 import { LocalEvent, isEvent } from "~/types/local-event";
@@ -24,10 +25,6 @@ import { createStyleSheet } from "../../components/map/style";
 import { MapCard } from "./MapCard";
 
 void MapboxGL.setAccessToken(process.env.MAP_ACCESS_TOKEN!);
-
-const BOULDER_LON = -105.2705;
-const BOULDER_LAT = 40.015;
-const DEFAULT_ZOOM = 11.5;
 
 const mapStyles = {
   icon: {
@@ -43,9 +40,10 @@ export const MapScreen = () => {
   const { gotoEventDetails, gotoPostDetails } = useNavigations();
   const [layoutWidth, setLayoutWidth] = useState<number>();
   const ref = useRef<ICarouselInstance>(null);
+  const chapterFilter = useChapterFilter();
 
   // TODO Use the center of the current community
-  const centerCoordinate = [BOULDER_LON, BOULDER_LAT];
+  const centerCoordinate = chapterFilter?.coordinates;
 
   const {
     queries: { list: listEvents },
@@ -111,7 +109,7 @@ export const MapScreen = () => {
       >
         <Camera
           centerCoordinate={centerCoordinate}
-          zoomLevel={DEFAULT_ZOOM}
+          zoomLevel={chapterFilter?.zoom}
           animationDuration={20}
         />
         <Images
