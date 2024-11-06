@@ -57,10 +57,12 @@ export const MapScreen = () => {
       listEvents({
         isPast: false,
         isCanceled: false,
+        chapterId: chapterFilter?.id,
       }),
       listPosts({
         isPast: false,
         age: Duration.fromObject({ days: 14 }),
+        chapterId: chapterFilter?.id,
       }),
     ],
     combine: (results) => {
