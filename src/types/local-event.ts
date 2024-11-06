@@ -27,6 +27,7 @@ export interface LocalEventUpdateData {
   id: string;
   name?: string;
   type?: string;
+  chapterId?: string;
   startDate?: DateTime;
   endDate?: DateTime;
   cancelDate?: DateTime;

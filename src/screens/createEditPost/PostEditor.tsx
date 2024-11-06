@@ -30,6 +30,7 @@ import { ImageChooser } from "~/components/image-chooser/ImageChooser";
 import { ImageComponent } from "~/components/image-component";
 import { Loader } from "~/components/loader";
 import { LocationAutocomplete } from "~/components/location-autocomplete/LocationAutocomplete";
+import { useChapterFilter } from "~/navigation/AppContext";
 import { UserMutations } from "~/network/api/services/useUserService";
 import { ImageKey } from "~/types/image-info";
 import { Post, PostData, PostType, PostUpdateData } from "~/types/post";
@@ -57,6 +58,7 @@ export const PostEditor = ({
   const { strings } = useStringsAndLabels();
   const navigation = useNavigation();
   const [isDatePickerVisible, setDatePickerVisible] = useState(false);
+  const chapterFilter = useChapterFilter();
 
   const {
     control,
@@ -69,6 +71,7 @@ export const PostEditor = ({
       type: PostType.OFFER,
       name: "",
       details: "",
+      chapterId: chapterFilter?.id,
       images: [],
       timezone: DateTime.local().zoneName,
       ..._.omit(
