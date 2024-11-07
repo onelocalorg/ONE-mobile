@@ -123,22 +123,45 @@ export const EventEditor = ({
       navigation.goBack();
     };
 
+    const createEvent = () =>
+      onSubmitCreate!(
+        {
+          // ChapterId is overridden by chapterFilter set in defaultValues
+          chapterId: myProfile?.chapterId,
+          ..._.pickBy(isNotEmpty, data),
+        } as LocalEventData,
+        {
+          onSuccess,
+        }
+      );
+
     console.log("profile.chapter", myProfile?.chapterId);
 
-    event
-      ? onSubmitUpdate!(_.pickBy(isNotEmpty, data) as LocalEventUpdateData, {
-          onSuccess,
-        })
-      : onSubmitCreate!(
+    if (
+      !event &&
+      chapterFilter?.id &&
+      myProfile?.chapterId &&
+      chapterFilter.id !== myProfile.chapterId
+    ) {
+      Alert.alert(
+        "Create outside of home chapter?",
+        `This will create an event in ${chapterFilter.name} which is different from your home chapter. Are you sure you want to proceed?`,
+        [
+          { text: strings.no, onPress: () => null, style: "cancel" },
           {
-            // ChapterId is overridden by chapterFilter set in defaultValues
-            chapterId: myProfile?.chapterId,
-            ..._.pickBy(isNotEmpty, data),
-          } as LocalEventData,
-          {
+            text: strings.yes,
+            onPress: () => createEvent(),
+          },
+        ],
+        { cancelable: false }
+      );
+    } else {
+      event
+        ? onSubmitUpdate!(_.pickBy(isNotEmpty, data) as LocalEventUpdateData, {
             onSuccess,
-          }
-        );
+          })
+        : createEvent();
+    }
   };
 
   const handleTicketSelected = (index: number) => {

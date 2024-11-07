@@ -8,6 +8,7 @@ import { DateTime } from "luxon";
 import React, { useState } from "react";
 import { Controller, useForm, useWatch } from "react-hook-form";
 import {
+  Alert,
   Keyboard,
   Text,
   TextInput,
@@ -120,9 +121,29 @@ export const PostEditor = ({
 
     const clean = removeUrls(data);
 
-    post
-      ? onSubmitUpdate!(clean as PostUpdateData, { onSuccess })
-      : onSubmitCreate!(clean as PostData, { onSuccess });
+    if (
+      !post &&
+      chapterFilter?.id &&
+      myProfile?.chapterId &&
+      chapterFilter.id !== myProfile.chapterId
+    ) {
+      Alert.alert(
+        "Create outside of home chapter?",
+        `This will create a post in ${chapterFilter.name} which is different from your home chapter. Are you sure you want to proceed?`,
+        [
+          { text: strings.no, onPress: () => null, style: "cancel" },
+          {
+            text: strings.yes,
+            onPress: () => onSubmitCreate!(clean as PostData, { onSuccess }),
+          },
+        ],
+        { cancelable: false }
+      );
+    } else {
+      post
+        ? onSubmitUpdate!(clean as PostUpdateData, { onSuccess })
+        : onSubmitCreate!(clean as PostData, { onSuccess });
+    }
   };
 
   const handleChangeImages = (images: ImageKey[]) => {
