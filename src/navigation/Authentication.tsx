@@ -11,21 +11,13 @@ import { AppNavigation } from "./AppNavigation";
 import {
   AuthContext,
   AuthDispatchContext,
+  AuthState,
   HandleSignInUnverifiedProps,
 } from "./AuthContext";
 import { NotificationService } from "./NotificationService";
 
 export default function Authentication() {
   const [chapterFilter, setChapterFilter] = useState<Chapter | null>(null);
-  type AppState = {
-    isLoading: boolean;
-    isSignout: boolean;
-    accessToken?: string;
-    refreshToken?: string;
-    myUserId?: string;
-    myEmail?: string;
-    password?: string;
-  };
 
   type SignIn = { type: "SIGN_IN"; user: CurrentUser };
   type RestoreToken = {
@@ -44,7 +36,7 @@ export default function Authentication() {
   type AppActions = SignIn | RestoreToken | SignOut | SignInUnverified;
 
   const [state, dispatch] = useReducer(
-    (prevState: AppState, action: AppActions): AppState => {
+    (prevState: AuthState, action: AppActions): AuthState => {
       LOG.debug("handling action", action.type);
       switch (action.type) {
         case "RESTORE_TOKENS":
@@ -119,8 +111,6 @@ export default function Authentication() {
 
     void bootstrapAsync();
   }, []);
-
-  const appContext = useMemo(() => ({}), []);
 
   const authDispatchContext = useMemo(
     () => ({
