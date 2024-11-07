@@ -11,6 +11,7 @@
     "gradlew",
     "Grats",
     "jsbundle",
+    "myprofile",
     "Navigations",
     "netinfo",
     "notifee",
@@ -22,6 +23,7 @@
     "rsvps",
     "signin",
     "Signout",
+    "Signup",
     "swiper",
     "testflight"
   ]

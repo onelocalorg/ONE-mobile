@@ -144,7 +144,7 @@ export const AppNavigation = ({
     <NavigationContainer linking={linking}>
       <RootStack.Navigator
         screenOptions={({ navigation, route }): StackNavigationOptions => ({
-          headerTitle: () => <OneLogo localText="B o u l d e r" />,
+          headerTitle: () => <OneLogo />,
           headerStyle: {
             backgroundColor: theme.colors.headerColor,
             height: 120,

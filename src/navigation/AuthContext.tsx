@@ -1,12 +1,23 @@
 import { createContext, useContext } from "react";
 import { CurrentUser } from "~/types/current-user";
 
-type AuthContextType = {
+// type AuthContextType = {
+//   accessToken?: string;
+//   myUser?: CurrentUser;
+//   myUserId?: string;
+// };
+
+export type AuthState = {
+  isLoading: boolean;
+  isSignout: boolean;
   accessToken?: string;
+  refreshToken?: string;
   myUserId?: string;
+  myEmail?: string;
+  password?: string;
 };
 
-export const AuthContext = createContext<AuthContextType | null>(null);
+export const AuthContext = createContext<AuthState | null>(null);
 
 export interface HandleSignInUnverifiedProps {
   email: string;

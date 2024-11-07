@@ -3,7 +3,7 @@ import { faCalendar } from "@fortawesome/free-regular-svg-icons";
 import { faLocationDot } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { useNavigation } from "@react-navigation/native";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import _ from "lodash/fp";
 import { DateTime } from "luxon";
 import React, { useState } from "react";
@@ -29,6 +29,7 @@ import { LocationAutocomplete } from "~/components/location-autocomplete/Locatio
 import { useChapterFilter } from "~/navigation/AppContext";
 import { useMyUserId } from "~/navigation/AuthContext";
 import { EventMutations } from "~/network/api/services/useEventService";
+import { useUserService } from "~/network/api/services/useUserService";
 import { normalScale, verticalScale } from "~/theme/device/normalize";
 import { ImageKey } from "~/types/image-info";
 import {
@@ -68,6 +69,12 @@ export const EventEditor = ({
   const isMyEvent = myUserId === event?.host.id;
   const [isTicketModalVisible, setTicketModalVisible] = useState(false);
   const chapterFilter = useChapterFilter();
+
+  // TODO Figure out a better way to have the current user always available
+  const {
+    queries: { detail: getUser },
+  } = useUserService();
+  const { data: myProfile } = useQuery(getUser(myUserId));
 
   const {
     control,
@@ -116,13 +123,22 @@ export const EventEditor = ({
       navigation.goBack();
     };
 
+    console.log("profile.chapter", myProfile?.chapterId);
+
     event
       ? onSubmitUpdate!(_.pickBy(isNotEmpty, data) as LocalEventUpdateData, {
           onSuccess,
         })
-      : onSubmitCreate!(_.pickBy(isNotEmpty, data) as LocalEventData, {
-          onSuccess,
-        });
+      : onSubmitCreate!(
+          {
+            // ChapterId is overridden by chapterFilter set in defaultValues
+            chapterId: myProfile?.chapterId,
+            ..._.pickBy(isNotEmpty, data),
+          } as LocalEventData,
+          {
+            onSuccess,
+          }
+        );
   };
 
   const handleTicketSelected = (index: number) => {

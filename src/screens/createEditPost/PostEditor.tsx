@@ -2,7 +2,7 @@ import { faCalendar } from "@fortawesome/free-regular-svg-icons";
 import { faLocationDot } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { useNavigation } from "@react-navigation/native";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import _ from "lodash/fp";
 import { DateTime } from "luxon";
 import React, { useState } from "react";
@@ -31,11 +31,16 @@ import { ImageComponent } from "~/components/image-component";
 import { Loader } from "~/components/loader";
 import { LocationAutocomplete } from "~/components/location-autocomplete/LocationAutocomplete";
 import { useChapterFilter } from "~/navigation/AppContext";
-import { UserMutations } from "~/network/api/services/useUserService";
+import { useMyUserId } from "~/navigation/AuthContext";
+import {
+  UserMutations,
+  useUserService,
+} from "~/network/api/services/useUserService";
 import { ImageKey } from "~/types/image-info";
 import { Post, PostData, PostType, PostUpdateData } from "~/types/post";
 import { RemoteImage } from "~/types/remote-image";
 import { FileKey, UploadFileData } from "~/types/upload-file-data";
+import { isNotEmpty } from "~/utils/common";
 import { createStyleSheet } from "./style";
 
 interface Callback {
@@ -59,6 +64,13 @@ export const PostEditor = ({
   const navigation = useNavigation();
   const [isDatePickerVisible, setDatePickerVisible] = useState(false);
   const chapterFilter = useChapterFilter();
+
+  // TODO Figure out a better way to have the current user always available
+  const myUserId = useMyUserId();
+  const {
+    queries: { detail: getUser },
+  } = useUserService();
+  const { data: myProfile } = useQuery(getUser(myUserId));
 
   const {
     control,
@@ -100,7 +112,9 @@ export const PostEditor = ({
     };
 
     const removeUrls = (data: PostData | PostUpdateData) => ({
-      ...data,
+      // ChapterId is overridden by chapterFilter set in defaultValues
+      chapterId: myProfile?.chapterId,
+      ..._.pickBy(isNotEmpty, data),
       images: data.images?.map(_.omit("url")),
     });
 
