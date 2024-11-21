@@ -42,8 +42,8 @@ export const ImageUploader = ({
         data: base64,
         filename,
       } = await ImagePicker.openPicker({
-        width: 1200,
-        height: 1200,
+        width: 900,
+        height: 900,
         cropping: true,
         mediaType: "photo",
         includeBase64: true,
