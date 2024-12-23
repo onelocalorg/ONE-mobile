@@ -15,14 +15,6 @@ For _fastlane_ installation instructions, see [Installing _fastlane_](https://do
 
 ## Android
 
-### android patched_google_play_track_version_codes
-
-```sh
-[bundle exec] fastlane android patched_google_play_track_version_codes
-```
-
-
-
 ### android fetch_and_increment_build_number
 
 ```sh
@@ -38,6 +30,14 @@ Fetches the latest version code from the Play Console and increments it by 1
 ```
 
 Build
+
+### android screenshots
+
+```sh
+[bundle exec] fastlane android screenshots
+```
+
+
 
 ### android test
 
@@ -78,6 +78,14 @@ Connect to DEV server, build and upload to Play Store
 ```
 
 Connect to BETA server, Build and upload to Play Store
+
+### android build_prod_upload_playstore
+
+```sh
+[bundle exec] fastlane android build_prod_upload_playstore
+```
+
+Connect to PRODUCTION server, Build and upload to Play Store
 
 ----
 
