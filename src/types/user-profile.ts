@@ -7,6 +7,7 @@ export interface UserProfile extends UserProfileData {
   gratis: number;
   pic: ImageUrl;
   isEmailVerified: boolean;
+  chapterId?: string;
 }
 
 export interface UserProfileData extends UserProfileUpdateData {
