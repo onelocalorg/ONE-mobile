@@ -47,7 +47,7 @@ target 'OneBoulder' do
     # Pods for testing
   end
 
-  $RNMapboxMapsVersion = '= 11.3.0'
+  $RNMapboxMapsVersion = '= 11.9.0'
 
   pre_install do |installer|
     $RNMapboxMaps.pre_install(installer)

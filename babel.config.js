@@ -12,7 +12,7 @@ module.exports = function (api) {
         },
       ],
       ["module:react-native-dotenv"],
-      "react-native-reanimated/plugin",
+      "react-native-reanimated/plugin", // Must be last
     ],
   };
 };
