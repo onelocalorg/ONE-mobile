@@ -1,4 +1,5 @@
 import "react-native-gesture-handler";
+import "react-native-get-random-values";
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import React from "react";
