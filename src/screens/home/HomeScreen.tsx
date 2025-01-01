@@ -3,7 +3,6 @@ import _ from "lodash/fp";
 import React from "react";
 import { View } from "react-native";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
-import { useNavigations } from "~/app-hooks/useNavigations";
 import {
   ChapterFilter,
   GetUsersSort,
@@ -11,14 +10,13 @@ import {
 } from "~/network/api/services/useUserService";
 import { OneUser } from "~/types/one-user";
 import { AddPostView } from "./AddPostView";
-import { RecentUsers } from "./HorizontalAvatarView";
 import { PostsList } from "./PostsList";
+import { RecentUsers } from "./RecentUsers";
 import { createStyleSheet } from "./style";
 
 export const HomeScreen = () => {
   const { theme } = useAppTheme();
   const styles = createStyleSheet(theme);
-  const navigations = useNavigations();
 
   const {
     queries: { list: listUsers },
