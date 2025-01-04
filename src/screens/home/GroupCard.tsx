@@ -2,7 +2,7 @@ import React from "react";
 import { Text, TouchableOpacity, View } from "react-native";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
 import { useNavigations } from "~/app-hooks/useNavigations";
-import { dummy, event as eventIcon, pin } from "~/assets/images";
+import { dummy, pin } from "~/assets/images";
 import { ImageComponent } from "~/components/image-component";
 import { Group } from "~/types/group";
 import { createStyleSheet } from "./style";
@@ -33,16 +33,17 @@ export const GroupCard = ({ group, style }: GroupCardProps) => {
       <View style={styles.flex}>
         <View style={styles.row}>
           <View style={styles.flex}>
-            <Text style={styles.dateText}>
-              {group.venue}
-              {" • "}
-              {group.address}
-            </Text>
+            {group.address && (
+              <Text style={styles.dateText}>
+                {group.venue}
+                {" • "}
+                {group.address}
+              </Text>
+            )}
             <Text numberOfLines={2} style={styles.title}>
               {group.name}
             </Text>
           </View>
-          <ImageComponent source={eventIcon} style={styles.event} />
         </View>
 
         <View style={styles.row}>
