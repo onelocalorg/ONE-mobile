@@ -132,6 +132,12 @@ export function useNavigations() {
     navigation.navigate(Screens.CREATE_EDIT_GROUP);
   };
 
+  const gotoEditGroup = (id: string) => {
+    navigation.navigate(Screens.CREATE_EDIT_GROUP, {
+      id,
+    });
+  };
+
   return {
     gotoUserProfile,
     gotoPostDetails,
@@ -141,5 +147,6 @@ export function useNavigations() {
     showGiveGratisModal,
     gotoCreatePost,
     gotoCreateGroup,
+    gotoEditGroup,
   };
 }

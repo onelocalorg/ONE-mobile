@@ -1,8 +1,10 @@
 import { ImageKey, ImageUrl } from "./image-info";
+import { OneUser, OneUserData } from "./one-user";
 
 export interface Group extends GroupData {
   id: string;
   pic: ImageUrl;
+  admins: OneUser[];
 }
 
 export interface GroupData extends GroupUpdateData {
@@ -20,5 +22,6 @@ export interface GroupUpdateData {
   venue?: string;
   address?: string;
   coordinates?: number[];
+  admins?: OneUserData[];
   pic?: ImageKey;
 }

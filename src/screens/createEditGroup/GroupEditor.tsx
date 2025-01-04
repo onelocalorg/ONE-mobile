@@ -149,7 +149,9 @@ export const GroupEditor = ({
       <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
         <View style={{ justifyContent: "space-between" }}>
           <View style={{ rowGap: 8 }}>
-            <Text style={styles.emphasized}>Create Group</Text>
+            <Text style={styles.emphasized}>
+              {group ? strings.editGroup : strings.createGroup}
+            </Text>
             <Controller
               control={control}
               rules={{
@@ -207,6 +209,21 @@ export const GroupEditor = ({
                 name="address"
               />
             </View>
+            <Controller
+              control={control}
+              render={({ field: { onChange, onBlur, value } }) => (
+                <TextInput
+                  placeholder="Venue"
+                  placeholderTextColor="#8B8888"
+                  onBlur={onBlur}
+                  value={value}
+                  onChangeText={onChange}
+                  style={styles.groupInput}
+                  autoFocus={!!group}
+                ></TextInput>
+              )}
+              name="venue"
+            />
 
             <Controller
               control={control}
