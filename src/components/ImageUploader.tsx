@@ -55,7 +55,7 @@ export const ImageUploader = ({
       } else {
         uploadFile(
           {
-            userId: myUserId,
+            resourceId: id,
             uploadKey,
             imageName: filename || (id ?? (Math.random() * 100000).toString()),
             mimeType: mime || "image/jpg",

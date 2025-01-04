@@ -13,8 +13,8 @@ export enum FileKey {
 
 export interface UploadFileData {
   uploadKey: FileKey;
+  resourceId?: string;
   eventId?: string;
-  userId?: string;
   imageName: string;
   base64: string;
   mimeType: string;

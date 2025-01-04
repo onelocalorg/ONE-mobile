@@ -35,11 +35,9 @@ export const createStyleSheet = (theme: ThemeProps) => {
       alignItems: "center",
     },
     fullName: {
-      alignSelf: "center",
       marginTop: verticalScale(12),
       marginLeft: normalScale(20),
       marginBottom: verticalScale(48),
-      alignItems: "center",
     },
     name: {
       marginTop: normalScale(2),
