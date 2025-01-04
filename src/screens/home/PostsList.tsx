@@ -18,14 +18,16 @@ import { ImageComponent } from "~/components/image-component";
 import { Loader } from "~/components/loader";
 import { useChapterFilter } from "~/navigation/AppContext";
 import { usePostService } from "~/network/api/services/usePostService";
+import { Group } from "~/types/group";
 import { Post } from "~/types/post";
 import { PostCard, PostCardSize } from "./PostCard";
 import { createStyleSheet } from "./style";
 
 type PostsListProps = {
   header?: ReactElement;
+  group?: Group;
 };
-export const PostsList = ({ header }: PostsListProps) => {
+export const PostsList = ({ header, group }: PostsListProps) => {
   const { theme } = useAppTheme();
   const styles = createStyleSheet(theme);
   const { strings } = useStringsAndLabels();
@@ -45,7 +47,9 @@ export const PostsList = ({ header }: PostsListProps) => {
     isFetching,
     isLoading,
     isFetchingNextPage,
-  } = useInfiniteQuery(infiniteList({ chapterId: chapterFilter?.id }));
+  } = useInfiniteQuery(
+    infiniteList({ chapterId: chapterFilter?.id, group: group?.id })
+  );
 
   const loadNext = useCallback(() => {
     hasNextPage && !isFetching && fetchNextPage().catch(console.error);

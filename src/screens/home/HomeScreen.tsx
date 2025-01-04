@@ -10,6 +10,8 @@ import {
 } from "~/network/api/services/useUserService";
 import { OneUser } from "~/types/one-user";
 import { AddPostView } from "./AddPostView";
+import { GroupsList } from "./GroupsList";
+import { HomeScreenTypeChooser } from "./HomeScreenTypeChooser";
 import { PostsList } from "./PostsList";
 import { RecentUsers } from "./RecentUsers";
 import { createStyleSheet } from "./style";
@@ -17,6 +19,7 @@ import { createStyleSheet } from "./style";
 export const HomeScreen = () => {
   const { theme } = useAppTheme();
   const styles = createStyleSheet(theme);
+  const [isGroupsChosen, setGroupsChosen] = React.useState(false);
 
   const {
     queries: { list: listUsers },
@@ -38,18 +41,24 @@ export const HomeScreen = () => {
   return (
     <>
       <View style={styles.MainPostContainer}>
-        {!isLoading && (
-          <PostsList
-            header={
-              <>
-                {userList ? (
-                  <RecentUsers users={withoutProfilePic(userList)} />
-                ) : null}
-                <AddPostView />
-              </>
-            }
-          />
-        )}
+        <HomeScreenTypeChooser onGroupsChosen={setGroupsChosen} />
+
+        {!isLoading ? (
+          isGroupsChosen ? (
+            <GroupsList />
+          ) : (
+            <PostsList
+              header={
+                <>
+                  {userList ? (
+                    <RecentUsers users={withoutProfilePic(userList)} />
+                  ) : null}
+                  <AddPostView />
+                </>
+              }
+            />
+          )
+        ) : null}
       </View>
     </>
   );

@@ -8,6 +8,7 @@ export enum FileKey {
   expenseImage = "expense_image",
   payoutImage = "payout_image",
   createEventImage = "create_event_image",
+  groupImage = "group_image",
 }
 
 export interface UploadFileData {
