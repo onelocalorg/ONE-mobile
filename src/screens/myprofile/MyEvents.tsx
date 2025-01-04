@@ -7,17 +7,19 @@ import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
 import { EventCard } from "~/components/events/EventCard";
 import { Loader } from "~/components/loader";
 import { useEventService } from "~/network/api/services/useEventService";
+import { Group } from "~/types/group";
 import { LocalEvent } from "~/types/local-event";
 import { UserProfile } from "~/types/user-profile";
 import { handleApiError } from "~/utils/common";
 import { createStyleSheet } from "./style";
 
 interface MyEventsProps {
-  user: UserProfile;
+  user?: UserProfile;
+  group?: Group;
   onEventPress?: (event: LocalEvent) => void;
 }
 
-export const MyEvents = ({ user }: MyEventsProps) => {
+export const MyEvents = ({ user, group }: MyEventsProps) => {
   const { theme } = useAppTheme();
   const styles = createStyleSheet(theme);
   const { strings } = useStringsAndLabels();
@@ -32,7 +34,7 @@ export const MyEvents = ({ user }: MyEventsProps) => {
     isError,
     data: events,
     error,
-  } = useQuery(listEvents({ host: user.id }));
+  } = useQuery(listEvents({ host: user?.id, group: group?.id }));
   if (isPending !== isLoading) setLoading(isPending);
   if (isError) handleApiError("My events", error);
 

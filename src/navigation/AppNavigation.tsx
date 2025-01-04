@@ -11,10 +11,12 @@ import { GenericWebView } from "~/components/generic-webview";
 import { MyAvatar } from "~/components/navbar/MyAvatar";
 import { OneLogo } from "~/components/navbar/OneLogo";
 import { CreateEditEventScreen } from "~/screens/createEditEvent/CreateEditEventScreen";
+import { CreateEditGroupScreen } from "~/screens/createEditGroup/CreateEditGroupScreen";
 import { CreateEditPostScreen } from "~/screens/createEditPost/CreateEditPostScreen";
 import { ChooseTicketsModal } from "~/screens/event-detail/ChooseTicketsModal";
 import { EventDetailScreen } from "~/screens/event-detail/EventDetailScreen";
 import { EventListScreen } from "~/screens/event/EventListScreen";
+import { GroupDetailScreen } from "~/screens/group-detail/GroupDetailScreen";
 import { GiveGratis } from "~/screens/home/GiveGratis";
 import { HomeScreen } from "~/screens/home/HomeScreen";
 import { PostContextMenu } from "~/screens/home/PostContextMenu";
@@ -60,6 +62,9 @@ export const AppNavigation = ({
         },
         [Screens.CREATE_EDIT_POST]: {
           path: "posts/create",
+        },
+        [Screens.CREATE_EDIT_GROUP]: {
+          path: "groups/create",
         },
         [Screens.POST_DETAIL]: {
           path: "posts/:id/:reply?",
@@ -191,6 +196,10 @@ export const AppNavigation = ({
               name={Screens.EVENT_DETAIL}
               component={EventDetailScreen}
             />
+            <RootStack.Screen
+              name={Screens.GROUP_DETAIL}
+              component={GroupDetailScreen}
+            />
           </RootStack.Group>
         ) : email ? (
           <GuestStack.Screen
@@ -242,6 +251,10 @@ export const AppNavigation = ({
           <RootStack.Screen
             name={Screens.CREATE_EDIT_POST}
             component={CreateEditPostScreen}
+          />
+          <RootStack.Screen
+            name={Screens.CREATE_EDIT_GROUP}
+            component={CreateEditGroupScreen}
           />
           <RootStack.Screen
             name={Screens.CHOOSE_TICKETS}

@@ -154,6 +154,7 @@ export function usePostService() {
     from?: string;
     age?: Duration; //max age of posts returned
     chapterId?: string;
+    group?: string;
   };
   const getPosts = ({
     numPosts = 20,
@@ -161,6 +162,7 @@ export function usePostService() {
     from,
     age,
     chapterId,
+    group,
   }: GetPostsParams | undefined = {}) => {
     const urlParams: string[] = [];
     if (!_.isNil(isPast)) urlParams.push(`past=${isPast.toString()}`);
@@ -168,6 +170,7 @@ export function usePostService() {
     if (!_.isNil(from)) urlParams.push(`from=${from}`);
     if (!_.isNil(age)) urlParams.push(`age=${age.toISO()}`);
     if (!_.isNil(chapterId)) urlParams.push(`chapter=${chapterId}`);
+    if (!_.isNil(group)) urlParams.push(`group=${group}`);
 
     const urlSearchParams = urlParams.join("&");
 

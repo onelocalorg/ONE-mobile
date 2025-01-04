@@ -4,6 +4,7 @@ import _ from "lodash/fp";
 import { useCallback, useEffect } from "react";
 import { useNotificationService } from "~/navigation/NotificationService";
 import { Screens } from "~/navigation/types";
+import { Group } from "~/types/group";
 import { LocalEvent } from "~/types/local-event";
 import { OneUser } from "~/types/one-user";
 import { Post } from "~/types/post";
@@ -18,6 +19,15 @@ export function useNavigations() {
         id: asId(post),
         reply: reply,
         isReplyFocus,
+      });
+    },
+    [navigation]
+  );
+
+  const gotoGroupDetails = useCallback(
+    (group: string | Group) => () => {
+      navigation.navigate(Screens.GROUP_DETAIL, {
+        id: asId(group),
       });
     },
     [navigation]
@@ -75,7 +85,7 @@ export function useNavigations() {
     });
   }, []);
 
-  const asId = (v: string | OneUser | Post | LocalEvent) =>
+  const asId = (v: string | OneUser | Post | LocalEvent | Group) =>
     _.isString(v) ? v : v?.id;
 
   const gotoUserProfile = (user: string | OneUser) => () => {
@@ -118,12 +128,18 @@ export function useNavigations() {
     navigation.navigate(Screens.CREATE_EDIT_POST);
   };
 
+  const gotoCreateGroup = () => {
+    navigation.navigate(Screens.CREATE_EDIT_GROUP);
+  };
+
   return {
     gotoUserProfile,
     gotoPostDetails,
     gotoEventDetails,
+    gotoGroupDetails,
     showPostContextMenu,
     showGiveGratisModal,
     gotoCreatePost,
+    gotoCreateGroup,
   };
 }
