@@ -142,8 +142,11 @@ export const GroupEditor = ({
         { cancelable: false }
       );
     } else {
+      const omit = ["admins", "members"];
       group
-        ? onSubmitUpdate!(clean as GroupUpdateData, { onSuccess })
+        ? onSubmitUpdate!(_.omit(omit, clean) as GroupUpdateData, {
+            onSuccess,
+          })
         : onSubmitCreate!(clean as GroupData, { onSuccess });
     }
   };
