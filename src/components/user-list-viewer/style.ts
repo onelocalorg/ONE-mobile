@@ -653,8 +653,8 @@ export const createStyleSheet = (theme: ThemeProps) => {
       // backgroundColor: 'green'
     },
     userImage: {
-      height: 24,
-      width: 24,
+      height: 48,
+      width: 48,
       borderRadius: 100,
       marginTop: 8,
     },
@@ -671,7 +671,6 @@ export const createStyleSheet = (theme: ThemeProps) => {
       fontFamily: theme.fontType.regular,
       fontSize: theme.fontSize.font12,
       color: theme.colors.black,
-      paddingHorizontal: 5,
       paddingTop: 5,
     },
     payoutForLbl: {
@@ -892,7 +891,6 @@ export const createStyleSheet = (theme: ThemeProps) => {
     deleteIcon: {
       height: 25,
       width: 20,
-      marginLeft: 8,
     },
 
     modalContainerTwo: {

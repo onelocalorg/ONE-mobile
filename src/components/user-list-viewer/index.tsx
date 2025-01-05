@@ -1,13 +1,15 @@
+import { faXmark } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import React from "react";
-import { ImageComponent, Text, TouchableOpacity, View } from "react-native";
+import { Pressable, Text, View } from "react-native";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
-import { redDeleteIcon } from "~/assets/images";
 import { OneUser } from "~/types/one-user";
+import { ImageComponent } from "../image-component";
 import { createStyleSheet } from "./style";
 
 interface UserListViewerProps {
   users: OneUser[];
-  onDeleteUser: (user: OneUser) => void;
+  onDeleteUser?: (user: OneUser) => void;
 }
 export const UserListViewer = ({
   users,
@@ -17,7 +19,7 @@ export const UserListViewer = ({
   const styles = createStyleSheet(theme);
 
   const handleDeleteUser = (user: OneUser) => {
-    onDeleteUser(user);
+    onDeleteUser!(user);
   };
 
   return (
@@ -31,24 +33,21 @@ export const UserListViewer = ({
             }}
           >
             <View style={styles.detailsSubCont}>
-              <TouchableOpacity onPress={() => handleDeleteUser(user)}>
-                <ImageComponent
-                  source={redDeleteIcon}
-                  style={styles.deleteIcon}
-                />
-              </TouchableOpacity>
-
               <ImageComponent
                 source={{ uri: user.pic }}
                 resizeMode="cover"
                 style={styles.userImage}
               />
-              <View style={styles.userNameCont}>
-                <Text style={styles.usernameLbl}>
-                  {user.firstName} {user.lastName}
-                </Text>
-              </View>
+              {onDeleteUser && (
+                <Pressable onPress={() => handleDeleteUser(user)}>
+                  <FontAwesomeIcon icon={faXmark} size={20} color="red" />
+                </Pressable>
+              )}
             </View>
+          </View>
+          <View style={styles.userNameCont}>
+            <Text style={styles.usernameLbl}>{user.firstName}</Text>
+            <Text style={styles.usernameLbl}>{user.lastName}</Text>
           </View>
         </View>
       ))}
