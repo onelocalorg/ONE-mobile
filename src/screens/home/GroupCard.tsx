@@ -34,21 +34,24 @@ export const GroupCard = ({ group, style }: GroupCardProps) => {
       <View style={styles.flex}>
         <View style={styles.row}>
           <View style={styles.flex}>
-            {group.address && (
-              <Text style={styles.dateText}>
-                {group.venue}
-                {" • "}
-                {group.address}
-              </Text>
-            )}
             <Text numberOfLines={2} style={styles.title}>
               {group.name}
             </Text>
+            <Text numberOfLines={2}>{group.summary}</Text>
           </View>
         </View>
 
         <View style={styles.row}>
-          <ImageComponent source={pin} style={styles.pin} />
+          {group.address && (
+            <>
+              <ImageComponent source={pin} style={styles.pin} />
+              <Text style={styles.dateText}>
+                {group.venue}
+                {group.venue && <Text> • </Text>}
+                {group.address}
+              </Text>
+            </>
+          )}
           {/* <ImageComponent style={styles.addressDot} source={activeRadio}></ImageComponent> */}
           {/* <Text style={styles.fullAddress}>{full_address}</Text> */}
         </View>
