@@ -24,7 +24,6 @@ import {
 } from "~/components/image-chooser/ImageChooser";
 import { Loader } from "~/components/loader";
 import { LocationAutocomplete } from "~/components/location-autocomplete/LocationAutocomplete";
-import { UserChooser } from "~/components/user-chooser/UserChooser";
 import { useChapterFilter } from "~/navigation/AppContext";
 import { useMyUserId } from "~/navigation/AuthContext";
 import {
@@ -270,10 +269,6 @@ export const GroupEditor = ({
           <Pressable onPress={showAdminChooser}>
             <Text>Choose</Text>
           </Pressable>
-
-          {/* {isAdminChooserVisible && ( */}
-          <UserChooser search={""} onChangeUser={handleChangeAdmin} />
-          {/* )} */}
 
           <View
             style={{
