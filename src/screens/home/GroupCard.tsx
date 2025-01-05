@@ -1,3 +1,4 @@
+import _ from "lodash/fp";
 import React from "react";
 import { Text, TouchableOpacity, View } from "react-native";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
@@ -25,9 +26,9 @@ export const GroupCard = ({ group, style }: GroupCardProps) => {
     >
       <ImageComponent
         resizeMode="stretch"
-        uri={group.pic?.url}
+        uri={_.head(group.images)?.url}
         source={dummy}
-        isUrl={!!group.pic?.url}
+        isUrl={!!_.head(group.images)?.url}
         style={styles.dummy}
       />
       <View style={styles.flex}>

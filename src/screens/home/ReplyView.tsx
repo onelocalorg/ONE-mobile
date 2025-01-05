@@ -1,3 +1,4 @@
+import React from "react";
 import { ImageComponent, Text, TouchableOpacity, View } from "react-native";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
 import { useNavigations } from "~/app-hooks/useNavigations";

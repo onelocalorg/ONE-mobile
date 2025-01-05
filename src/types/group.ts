@@ -3,8 +3,8 @@ import { OneUser, OneUserData } from "./one-user";
 
 export interface Group extends GroupData {
   id: string;
-  pic: ImageUrl;
   admins: OneUser[];
+  images: ImageUrl[];
 }
 
 export interface GroupData extends GroupUpdateData {
@@ -23,5 +23,5 @@ export interface GroupUpdateData {
   address?: string;
   coordinates?: number[];
   admins?: OneUserData[];
-  pic?: ImageKey;
+  images?: ImageKey[];
 }

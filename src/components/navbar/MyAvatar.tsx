@@ -27,9 +27,9 @@ export const MyAvatar = ({ onPress }: MyAvatarProps) => {
       <Pressable style={styles.profileView} onPress={onPress}>
         <ImageComponent
           resizeMode="cover"
-          isUrl={!!myProfile?.pic.url}
+          isUrl={!!myProfile?.pic}
           source={defaultUser}
-          uri={myProfile?.pic.url}
+          uri={myProfile?.pic}
           style={styles.profile}
         />
       </Pressable>
