@@ -1,5 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useQuery } from "@tanstack/react-query";
+import _ from "lodash";
 import React, { useState } from "react";
 import { Text, View } from "react-native";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
@@ -50,9 +51,9 @@ export const GroupDetailScreen = ({
           <>
             <View style={styles.rowOnly}>
               <ImageComponent
-                isUrl={!!group.pic?.url}
+                isUrl={!!_.head(group.images)?.url}
                 resizeMode="cover"
-                uri={group.pic?.url}
+                uri={_.head(group.images)?.url}
                 source={dummy}
                 style={styles.profile}
               />
