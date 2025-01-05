@@ -3,11 +3,12 @@ import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { useNavigation } from "@react-navigation/native";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import _ from "lodash/fp";
-import React from "react";
+import React, { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import {
   Alert,
   Keyboard,
+  Pressable,
   Text,
   TextInput,
   TouchableWithoutFeedback,
@@ -23,6 +24,7 @@ import {
 } from "~/components/image-chooser/ImageChooser";
 import { Loader } from "~/components/loader";
 import { LocationAutocomplete } from "~/components/location-autocomplete/LocationAutocomplete";
+import { UserChooser } from "~/components/user-chooser/UserChooser";
 import { useChapterFilter } from "~/navigation/AppContext";
 import { useMyUserId } from "~/navigation/AuthContext";
 import {
@@ -30,6 +32,7 @@ import {
   useUserService,
 } from "~/network/api/services/useUserService";
 import { Group, GroupData, GroupUpdateData } from "~/types/group";
+import { OneUser } from "~/types/one-user";
 import { RemoteImage } from "~/types/remote-image";
 import { FileKey, UploadFileData } from "~/types/upload-file-data";
 import { isNotEmpty } from "~/utils/common";
@@ -55,6 +58,7 @@ export const GroupEditor = ({
   const { strings } = useStringsAndLabels();
   const navigation = useNavigation();
   const chapterFilter = useChapterFilter();
+  const [isAdminChooserVisible, setAdminChooserVisible] = useState(false);
 
   // TODO Figure out a better way to have the current user always available
   const myUserId = useMyUserId();
@@ -82,11 +86,9 @@ export const GroupEditor = ({
           venue: "",
           address: "",
           coordinates: [],
-          pic: { key: "" },
+          images: [],
         },
   });
-
-  console.log("errors", errors);
 
   const { isPending: isUploadingImage } = useMutation<
     RemoteImage,
@@ -95,6 +97,17 @@ export const GroupEditor = ({
   >({
     mutationKey: [UserMutations.uploadFile],
   });
+
+  const showAdminChooser = () => {
+    setAdminChooserVisible(true);
+    console.log("click");
+    // resetField("payee");
+  };
+
+  const handleChangeAdmin = (user: OneUser) => {
+    // setValue("payee", user);
+    setAdminChooserVisible(false);
+  };
 
   const onSubmit = (data: GroupData | GroupUpdateData) => {
     console.log("onSubmit");
@@ -136,11 +149,11 @@ export const GroupEditor = ({
   };
 
   const getButtonName = () => {
-    return group ? strings.editGroup : strings.createGroup;
+    return (group ? strings.editGroup : strings.createGroup) as string;
   };
 
   const handleChangeImages = (images: ImageKey[]) => {
-    setValue("pic", _.head(images));
+    setValue("images", images);
   };
 
   return (
@@ -245,10 +258,19 @@ export const GroupEditor = ({
             <ImageChooser
               id={group?.id}
               uploadKey={FileKey.groupImage}
-              defaultValue={getValues("pic") ? [getValues("pic")!] : undefined}
+              defaultValue={getValues("images")}
               onChangeImages={handleChangeImages}
             />
           </View>
+
+          <Text style={styles.emphasized}>Admins</Text>
+          <Pressable onPress={showAdminChooser}>
+            <Text>Choose</Text>
+          </Pressable>
+
+          {/* {isAdminChooserVisible && ( */}
+          <UserChooser search={""} onChangeUser={handleChangeAdmin} />
+          {/* )} */}
 
           <View
             style={{
