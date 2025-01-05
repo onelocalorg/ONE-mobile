@@ -1,9 +1,7 @@
-import { ImageUrl } from "./image-info";
-
 export interface OneUser extends OneUserData {
   firstName: string;
   lastName?: string;
-  pic: ImageUrl;
+  pic: string;
 }
 
 export interface OneUserData {

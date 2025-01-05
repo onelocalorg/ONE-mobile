@@ -13,7 +13,7 @@ import { useChapterService } from "~/network/api/services/useChapterService";
 import { useUserService } from "~/network/api/services/useUserService";
 import { findChapter } from "~/utils/common";
 import { MyEvents } from "../myprofile/MyEvents";
-import { About } from "./About";
+import { About } from "./about";
 import { createStyleSheet } from "./style";
 
 export const UserProfileScreen = ({

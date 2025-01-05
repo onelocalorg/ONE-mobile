@@ -20,16 +20,16 @@ export const MyAvatar = ({ onPress }: MyAvatarProps) => {
     queries: { detail: getUser },
   } = useUserService();
 
-  const { isError, data: myProfile, error } = useQuery(getUser(myUserId));
+  const { data: myProfile } = useQuery(getUser(myUserId));
 
   return (
     <View>
       <Pressable style={styles.profileView} onPress={onPress}>
         <ImageComponent
           resizeMode="cover"
-          isUrl={!!myProfile?.pic}
+          isUrl={!!myProfile?.pic.url}
           source={defaultUser}
-          uri={myProfile?.pic}
+          uri={myProfile?.pic.url}
           style={styles.profile}
         />
       </Pressable>
