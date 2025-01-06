@@ -9,17 +9,17 @@ import { createStyleSheet } from "./style";
 
 interface UserListViewerProps {
   users: OneUser[];
-  onDeleteUser?: (user: OneUser) => void;
+  onRemoveUser?: (user: OneUser) => void;
 }
 export const UserListViewer = ({
   users,
-  onDeleteUser,
+  onRemoveUser,
 }: UserListViewerProps) => {
   const { theme } = useAppTheme();
   const styles = createStyleSheet(theme);
 
-  const handleDeleteUser = (user: OneUser) => {
-    onDeleteUser!(user);
+  const handleRemoveUser = (user: OneUser) => {
+    onRemoveUser!(user);
   };
 
   return (
@@ -38,8 +38,8 @@ export const UserListViewer = ({
                 resizeMode="cover"
                 style={styles.userImage}
               />
-              {onDeleteUser && (
-                <Pressable onPress={() => handleDeleteUser(user)}>
+              {onRemoveUser && (
+                <Pressable onPress={() => handleRemoveUser(user)}>
                   <FontAwesomeIcon icon={faXmark} size={20} color="red" />
                 </Pressable>
               )}

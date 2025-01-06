@@ -4,6 +4,7 @@ import { OneUser, OneUserData } from "./one-user";
 export interface Group extends GroupData {
   id: string;
   admins: OneUser[];
+  members: OneUser[];
   images: ImageUrl[];
 }
 
@@ -23,5 +24,6 @@ export interface GroupUpdateData {
   address?: string;
   coordinates?: number[];
   admins?: OneUserData[];
+  members?: OneUserData[];
   images?: ImageKey[];
 }

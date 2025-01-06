@@ -170,4 +170,5 @@ export const stringsAndLabels = {
   members: "Members",
   details: "Details",
   admins: "Admins",
+  images: "Images",
 };
