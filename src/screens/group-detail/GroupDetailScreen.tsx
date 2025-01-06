@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import _ from "lodash";
 import React, { useState } from "react";
 import { Text, View } from "react-native";
@@ -13,8 +13,10 @@ import { Loader } from "~/components/loader";
 import { TabComponent } from "~/components/tab-component";
 import { useMyUserId } from "~/navigation/AuthContext";
 import { RootStackScreenProps, Screens } from "~/navigation/types";
-import { useChapterService } from "~/network/api/services/useChapterService";
-import { useGroupService } from "~/network/api/services/useGroupService";
+import {
+  GroupMutations,
+  useGroupService,
+} from "~/network/api/services/useGroupService";
 import { PostsList } from "../home/PostsList";
 import { MyEvents } from "../myprofile/MyEvents";
 import { AboutGroup } from "./AboutGroup";
@@ -37,11 +39,21 @@ export const GroupDetailScreen = ({
   } = useGroupService();
 
   const { isPending, data: group } = useQuery(getGroup(groupId));
-  const {
-    queries: { list: listChapters },
-  } = useChapterService();
 
-  const { data: chapters } = useQuery(listChapters());
+  const { mutate: joinGroup } = useMutation<void, Error, string>({
+    mutationKey: [GroupMutations.joinGroup],
+  });
+  const { mutate: leaveGroup } = useMutation<void, Error, string>({
+    mutationKey: [GroupMutations.leaveGroup],
+  });
+
+  const handleJoinGroup = () => {
+    joinGroup(groupId);
+  };
+
+  const handleLeaveGroup = () => {
+    leaveGroup(groupId);
+  };
 
   return (
     <>
@@ -65,11 +77,15 @@ export const GroupDetailScreen = ({
               </View>
             </View>
 
-            {group.admins.find((a) => a.id === myId) && (
+            {group.admins.find((a) => a.id === myId) ? (
               <ButtonComponent
                 title="Edit"
                 onPress={() => gotoEditGroup(groupId)}
               />
+            ) : group.members.find((a) => a.id === myId) ? (
+              <ButtonComponent title="Leave" onPress={handleLeaveGroup} />
+            ) : (
+              <ButtonComponent title="Join" onPress={handleJoinGroup} />
             )}
 
             <View style={styles.line} />

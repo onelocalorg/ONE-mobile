@@ -138,6 +138,8 @@ export function useNavigations() {
     });
   };
 
+  const gotoChooseUser = () => {};
+
   return {
     gotoUserProfile,
     gotoPostDetails,
@@ -148,5 +150,6 @@ export function useNavigations() {
     gotoCreatePost,
     gotoCreateGroup,
     gotoEditGroup,
+    gotoChooseUser,
   };
 }

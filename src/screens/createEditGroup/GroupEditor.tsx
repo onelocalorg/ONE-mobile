@@ -1,10 +1,10 @@
-import { faLocationDot } from "@fortawesome/free-solid-svg-icons";
+import { faLocationDot, faPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { useNavigation } from "@react-navigation/native";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import _ from "lodash/fp";
 import React, { useState } from "react";
-import { Controller, useForm } from "react-hook-form";
+import { Controller, useFieldArray, useForm } from "react-hook-form";
 import {
   Alert,
   Keyboard,
@@ -16,6 +16,7 @@ import {
 } from "react-native";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
 import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
+import { useNavigations } from "~/app-hooks/useNavigations";
 import { buttonArrowGreen } from "~/assets/images";
 import { ButtonComponent } from "~/components/button-component";
 import {
@@ -24,16 +25,14 @@ import {
 } from "~/components/image-chooser/ImageChooser";
 import { Loader } from "~/components/loader";
 import { LocationAutocomplete } from "~/components/location-autocomplete/LocationAutocomplete";
+import { UserListViewer } from "~/components/user-list-viewer";
 import { useChapterFilter } from "~/navigation/AppContext";
-import { useMyUserId } from "~/navigation/AuthContext";
-import {
-  UserMutations,
-  useUserService,
-} from "~/network/api/services/useUserService";
+import { UserMutations } from "~/network/api/services/useUserService";
 import { Group, GroupData, GroupUpdateData } from "~/types/group";
 import { OneUser } from "~/types/one-user";
 import { RemoteImage } from "~/types/remote-image";
 import { FileKey, UploadFileData } from "~/types/upload-file-data";
+import { UserProfile } from "~/types/user-profile";
 import { isNotEmpty } from "~/utils/common";
 import { createStyleSheet } from "./style";
 
@@ -42,12 +41,14 @@ interface Callback {
 }
 interface GroupEditorProps {
   group?: Group;
+  myProfile: UserProfile;
   isLoading: boolean;
   onSubmitCreate?: (data: GroupData, callback: Callback) => void;
   onSubmitUpdate?: (data: GroupUpdateData, callback: Callback) => void;
 }
 export const GroupEditor = ({
   group,
+  myProfile,
   isLoading,
   onSubmitCreate,
   onSubmitUpdate,
@@ -56,20 +57,15 @@ export const GroupEditor = ({
   const styles = createStyleSheet(theme);
   const { strings } = useStringsAndLabels();
   const navigation = useNavigation();
+  const { gotoChooseUser } = useNavigations();
   const chapterFilter = useChapterFilter();
   const [isAdminChooserVisible, setAdminChooserVisible] = useState(false);
-
-  // TODO Figure out a better way to have the current user always available
-  const myUserId = useMyUserId();
-  const {
-    queries: { detail: getUser },
-  } = useUserService();
-  const { data: myProfile } = useQuery(getUser(myUserId));
 
   const {
     control,
     setValue,
     getValues,
+    watch,
     handleSubmit,
     formState: { errors },
   } = useForm<GroupUpdateData>({
@@ -86,7 +82,28 @@ export const GroupEditor = ({
           address: "",
           coordinates: [],
           images: [],
+          admins: [
+            {
+              id: myProfile.id,
+              firstName: myProfile.firstName,
+              lastName: myProfile.lastName,
+              pic: myProfile.pic.url,
+            },
+          ],
+          members: [],
         },
+  });
+
+  const [admins, members] = watch(["admins", "members"]);
+
+  const { append: appendAdmin, remove: removeAdmin } = useFieldArray({
+    control,
+    name: "admins",
+  });
+
+  const { append: appendMember, remove: removeMember } = useFieldArray({
+    control,
+    name: "members",
   });
 
   const { isPending: isUploadingImage } = useMutation<
@@ -106,6 +123,22 @@ export const GroupEditor = ({
   const handleChangeAdmin = (user: OneUser) => {
     // setValue("payee", user);
     setAdminChooserVisible(false);
+  };
+
+  const handleAddAdmin = (user: OneUser) => {
+    appendAdmin(user);
+  };
+
+  const handleRemoveAdmin = (user: OneUser) => {
+    removeAdmin(admins!.findIndex((u) => u.id === user.id));
+  };
+
+  const handleAddMember = (user: OneUser) => {
+    appendMember(user);
+  };
+
+  const handleRemoveMember = (user: OneUser) => {
+    removeMember(members!.findIndex((u) => u.id === user.id));
   };
 
   const onSubmit = (data: GroupData | GroupUpdateData) => {
@@ -151,7 +184,7 @@ export const GroupEditor = ({
   };
 
   const getButtonName = () => {
-    return (group ? strings.editGroup : strings.createGroup) as string;
+    return group ? strings.editGroup : strings.createGroup;
   };
 
   const handleChangeImages = (images: ImageKey[]) => {
@@ -256,19 +289,50 @@ export const GroupEditor = ({
               )}
               name="details"
             />
-
-            <ImageChooser
-              id={group?.id}
-              uploadKey={FileKey.groupImage}
-              defaultValue={getValues("images")}
-              onChangeImages={handleChangeImages}
-            />
           </View>
 
-          <Text style={styles.emphasized}>Admins</Text>
-          <Pressable onPress={showAdminChooser}>
-            <Text>Choose</Text>
-          </Pressable>
+          <View
+            style={{
+              flexDirection: "row",
+              marginTop: 20,
+            }}
+          >
+            <Text style={styles.emphasized}>{strings.admins}</Text>
+            <Pressable onPress={gotoChooseUser}>
+              <FontAwesomeIcon icon={faPlus} size={20} />
+            </Pressable>
+          </View>
+          <UserListViewer
+            users={(admins as OneUser[]) ?? []}
+            onRemoveUser={
+              // Don't allow removing user if there is only one admin
+              admins?.length && admins.length > 1
+                ? handleRemoveAdmin
+                : undefined
+            }
+          />
+          <View
+            style={{
+              flexDirection: "row",
+              marginTop: 20,
+            }}
+          >
+            <Text style={styles.emphasized}>{strings.members}</Text>
+            <Pressable onPress={gotoChooseUser}>
+              <FontAwesomeIcon icon={faPlus} size={20} />
+            </Pressable>
+          </View>
+          <UserListViewer
+            users={(members as OneUser[]) ?? []}
+            onRemoveUser={handleRemoveMember}
+          />
+          <Text style={styles.emphasized}>{strings.images}</Text>
+          <ImageChooser
+            id={group?.id}
+            uploadKey={FileKey.groupImage}
+            defaultValue={getValues("images")}
+            onChangeImages={handleChangeImages}
+          />
 
           <View
             style={{
