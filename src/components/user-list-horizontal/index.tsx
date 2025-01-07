@@ -7,14 +7,14 @@ import { OneUser } from "~/types/one-user";
 import { ImageComponent } from "../image-component";
 import { createStyleSheet } from "./style";
 
-interface UserListViewerProps {
+interface UserListHorizontalProps {
   users: OneUser[];
   onRemoveUser?: (user: OneUser) => void;
 }
-export const UserListViewer = ({
+export const UserListHorizontal = ({
   users,
   onRemoveUser,
-}: UserListViewerProps) => {
+}: UserListHorizontalProps) => {
   const { theme } = useAppTheme();
   const styles = createStyleSheet(theme);
 

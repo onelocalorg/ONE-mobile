@@ -25,7 +25,8 @@ import {
 } from "~/components/image-chooser/ImageChooser";
 import { Loader } from "~/components/loader";
 import { LocationAutocomplete } from "~/components/location-autocomplete/LocationAutocomplete";
-import { UserListViewer } from "~/components/user-list-viewer";
+import { UserChooser } from "~/components/user-chooser/UserChooser";
+import { UserListHorizontal } from "~/components/user-list-horizontal";
 import { useChapterFilter } from "~/navigation/AppContext";
 import { UserMutations } from "~/network/api/services/useUserService";
 import { Group, GroupData, GroupUpdateData } from "~/types/group";
@@ -57,9 +58,10 @@ export const GroupEditor = ({
   const styles = createStyleSheet(theme);
   const { strings } = useStringsAndLabels();
   const navigation = useNavigation();
-  const { gotoChooseUser } = useNavigations();
+  const { gotoChooseUsers } = useNavigations();
   const chapterFilter = useChapterFilter();
   const [isAdminChooserVisible, setAdminChooserVisible] = useState(false);
+  const [userSearch, setUserSearch] = useState("");
 
   const {
     control,
@@ -298,11 +300,11 @@ export const GroupEditor = ({
             }}
           >
             <Text style={styles.emphasized}>{strings.admins}</Text>
-            <Pressable onPress={gotoChooseUser}>
+            <Pressable onPress={() => gotoChooseUsers()}>
               <FontAwesomeIcon icon={faPlus} size={20} />
             </Pressable>
           </View>
-          <UserListViewer
+          <UserListHorizontal
             users={(admins as OneUser[]) ?? []}
             onRemoveUser={
               // Don't allow removing user if there is only one admin
@@ -318,14 +320,24 @@ export const GroupEditor = ({
             }}
           >
             <Text style={styles.emphasized}>{strings.members}</Text>
-            <Pressable onPress={gotoChooseUser}>
+            <Pressable onPress={() => gotoChooseUsers()}>
               <FontAwesomeIcon icon={faPlus} size={20} />
             </Pressable>
           </View>
-          <UserListViewer
+          <UserListHorizontal
             users={(members as OneUser[]) ?? []}
             onRemoveUser={handleRemoveMember}
           />
+          {isAdminChooserVisible && (
+            <>
+              <Text>show</Text>
+              <UserChooser
+                search={userSearch}
+                onChangeUser={handleChangeAdmin}
+              />
+            </>
+          )}
+
           <Text style={styles.emphasized}>{strings.images}</Text>
           <ImageChooser
             id={group?.id}

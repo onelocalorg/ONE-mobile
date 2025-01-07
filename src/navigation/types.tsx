@@ -32,6 +32,7 @@ export enum Screens {
   CREATE_EDIT_POST = "CreateEditPost",
   CREATE_EDIT_GROUP = "CreateEditGroup",
   CHOOSE_TICKETS = "ChooseTickets",
+  SELECT_USERS = "SelectUsers",
 }
 
 export type GuestStackParamList = {
@@ -65,6 +66,7 @@ export type RootStackParamList = {
   };
   [Screens.REPORT_CONTENT_MODAL]: { postId: string };
   [Screens.CHOOSE_TICKETS]: { eventId: string };
+  [Screens.SELECT_USERS]: undefined;
 };
 
 export type RootStackScreenProps<T extends keyof RootStackParamList> =

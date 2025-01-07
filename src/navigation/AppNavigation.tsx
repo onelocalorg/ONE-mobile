@@ -10,6 +10,7 @@ import { ShortModalScreenOptions } from "~/components/ShortModal";
 import { GenericWebView } from "~/components/generic-webview";
 import { MyAvatar } from "~/components/navbar/MyAvatar";
 import { OneLogo } from "~/components/navbar/OneLogo";
+import { UserListSearchable } from "~/components/user-list-searchable/UserListSearchable";
 import { CreateEditEventScreen } from "~/screens/createEditEvent/CreateEditEventScreen";
 import { CreateEditGroupScreen } from "~/screens/createEditGroup/CreateEditGroupScreen";
 import { CreateEditPostScreen } from "~/screens/createEditPost/CreateEditPostScreen";
@@ -262,6 +263,10 @@ export const AppNavigation = ({
             options={{
               ...ShortModalScreenOptions,
             }}
+          />
+          <RootStack.Screen
+            name={Screens.SELECT_USERS}
+            component={UserListSearchable}
           />
         </RootStack.Group>
       </RootStack.Navigator>
