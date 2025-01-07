@@ -48,7 +48,7 @@ export const CreateEditGroupScreen = ({
       <Loader visible={!!group && isPending} />
       <View>
         <View style={styles.groupClass}>
-          {group && myProfile ? (
+          {myProfile ? (
             <GroupEditor
               group={group}
               onSubmitCreate={mutateCreateGroup.mutate}
