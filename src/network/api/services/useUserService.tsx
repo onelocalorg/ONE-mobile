@@ -118,7 +118,8 @@ export function useUserService() {
     // TODO make this more generic
     const urlParams: string[] = [];
     if (!_.isNil(sort)) urlParams.push(`sort=${sort.toString()}`);
-    if (!_.isNil(search)) urlParams.push(`search=${search.toString()}`);
+    if (!_.isNil(search) && !_.isEmpty(search))
+      urlParams.push(`search=${search.toString()}`);
     if (!_.isNil(limit)) urlParams.push(`limit=${limit.toString()}`);
     if (!_.isNil(picsOnly)) urlParams.push(`pics=${picsOnly.toString()}`);
     if (!_.isNil(chapter)) urlParams.push(`chapter=${chapter}`);

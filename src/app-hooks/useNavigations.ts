@@ -138,7 +138,9 @@ export function useNavigations() {
     });
   };
 
-  const gotoChooseUser = () => {};
+  const gotoChooseUsers = () => {
+    navigation.navigate(Screens.SELECT_USERS);
+  };
 
   return {
     gotoUserProfile,
@@ -150,6 +152,6 @@ export function useNavigations() {
     gotoCreatePost,
     gotoCreateGroup,
     gotoEditGroup,
-    gotoChooseUser,
+    gotoChooseUsers,
   };
 }
