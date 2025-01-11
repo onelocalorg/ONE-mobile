@@ -171,4 +171,6 @@ export const stringsAndLabels = {
   details: "Details",
   admins: "Admins",
   images: "Images",
+  addPostPlaceholder: "What do you want to post?",
+  addPost: "Add Post",
 };

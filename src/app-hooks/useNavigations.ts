@@ -124,8 +124,8 @@ export function useNavigations() {
       });
     };
 
-  const gotoCreatePost = () => {
-    navigation.navigate(Screens.CREATE_EDIT_POST);
+  const gotoCreatePost = ({ groupId }: { groupId?: string }) => {
+    navigation.navigate(Screens.CREATE_POST, { groupId });
   };
 
   const gotoCreateGroup = () => {

@@ -48,7 +48,7 @@ export const PostsList = ({ header, group }: PostsListProps) => {
     isLoading,
     isFetchingNextPage,
   } = useInfiniteQuery(
-    infiniteList({ chapterId: chapterFilter?.id, group: group?.id })
+    infiniteList({ chapterId: chapterFilter?.id, groupId: group?.id || null })
   );
 
   const loadNext = useCallback(() => {

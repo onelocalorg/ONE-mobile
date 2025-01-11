@@ -28,6 +28,7 @@ export interface Post extends PostData {
 export interface PostData extends Omit<PostUpdateData, "id"> {
   name: string;
   details: string;
+  groupId?: string;
 }
 
 export interface PostUpdateData {

@@ -112,11 +112,13 @@ export const PostEditor = ({
       navigation.goBack();
     };
 
+    const omitFields = post ? ["groupId"] : [];
+
     const removeUrls = (data: PostData | PostUpdateData) => ({
       // ChapterId is overridden by chapterFilter set in defaultValues
       chapterId: myProfile?.chapterId,
-      ..._.pickBy(isNotEmpty, data),
-      images: data.images?.map(_.omit("url")),
+      ..._.pickBy(isNotEmpty, _.omit(omitFields, data)),
+      images: data.images?.map(_.omit(["url"])),
     });
 
     const clean = removeUrls(data);

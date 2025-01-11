@@ -19,7 +19,6 @@ export enum Screens {
   MY_PROFILE = "MyProfile",
   EVENTS_LIST = "EventsList",
   MAP = "Map",
-  EDIT_POST = "EditPost",
 
   HOME_STACK = "HomeStack",
   EVENTS_STACK = "EventsStack",
@@ -29,7 +28,8 @@ export enum Screens {
   GIVE_GRATIS_MODAL = "GiveGratis",
   REPORT_CONTENT_MODAL = "ReportContent",
   CREATE_EDIT_EVENT = "CreateEditEvent",
-  CREATE_EDIT_POST = "CreateEditPost",
+  CREATE_POST = "CreatePost",
+  EDIT_POST = "EditPost",
   CREATE_EDIT_GROUP = "CreateEditGroup",
   CHOOSE_TICKETS = "ChooseTickets",
   SELECT_USERS = "SelectUsers",
@@ -51,7 +51,8 @@ export type RootStackParamList = {
   [Screens.MY_PROFILE]: undefined;
   [Screens.EVENT_DETAIL]: { id: string; reply?: string };
   [Screens.CREATE_EDIT_EVENT]: { id: string } | undefined;
-  [Screens.CREATE_EDIT_POST]: { id: string } | undefined;
+  [Screens.CREATE_POST]: { groupId?: string } | undefined;
+  [Screens.EDIT_POST]: { id: string };
   [Screens.CREATE_EDIT_GROUP]: { id: string } | undefined;
   [Screens.POST_DETAIL]: { id: string; reply?: string; isReplyFocus?: boolean };
   [Screens.POST_CONTEXT_MENU_MODAL]: {
