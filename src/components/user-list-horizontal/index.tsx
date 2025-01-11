@@ -23,27 +23,25 @@ export const UserListHorizontal = ({
   };
 
   return (
-    <>
+    <View
+      style={{
+        flexDirection: "row",
+        justifyContent: "flex-start",
+      }}
+    >
       {users.map((user) => (
         <View key={user.id} style={styles.userDetailsCont}>
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
-            }}
-          >
-            <View style={styles.detailsSubCont}>
-              <ImageComponent
-                source={{ uri: user.pic }}
-                resizeMode="cover"
-                style={styles.userImage}
-              />
-              {onRemoveUser && (
-                <Pressable onPress={() => handleRemoveUser(user)}>
-                  <FontAwesomeIcon icon={faXmark} size={20} color="red" />
-                </Pressable>
-              )}
-            </View>
+          <View style={styles.detailsSubCont}>
+            <ImageComponent
+              source={{ uri: user.pic }}
+              resizeMode="cover"
+              style={styles.userImage}
+            />
+            {onRemoveUser && (
+              <Pressable onPress={() => handleRemoveUser(user)}>
+                <FontAwesomeIcon icon={faXmark} size={20} color="red" />
+              </Pressable>
+            )}
           </View>
           <View style={styles.userNameCont}>
             <Text style={styles.usernameLbl}>{user.firstName}</Text>
@@ -51,6 +49,6 @@ export const UserListHorizontal = ({
           </View>
         </View>
       ))}
-    </>
+    </View>
   );
 };
