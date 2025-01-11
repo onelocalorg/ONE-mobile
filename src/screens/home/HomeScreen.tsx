@@ -3,6 +3,7 @@ import _ from "lodash/fp";
 import React from "react";
 import { View } from "react-native";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
+import { GroupList } from "~/components/groups/GroupList";
 import {
   ChapterFilter,
   GetUsersSort,
@@ -10,7 +11,6 @@ import {
 } from "~/network/api/services/useUserService";
 import { OneUser } from "~/types/one-user";
 import { AddPostView } from "./AddPostView";
-import { GroupsList } from "./GroupsList";
 import { HomeScreenTypeChooser } from "./HomeScreenTypeChooser";
 import { PostsList } from "./PostsList";
 import { RecentUsers } from "./RecentUsers";
@@ -45,7 +45,7 @@ export const HomeScreen = () => {
 
         {!isLoading ? (
           isGroupsChosen ? (
-            <GroupsList />
+            <GroupList />
           ) : (
             <PostsList
               header={

@@ -6,6 +6,7 @@ export interface Group extends GroupData {
   admins: OneUser[];
   members: OneUser[];
   images: ImageUrl[];
+  parent: Group | null;
 }
 
 export interface GroupData extends GroupUpdateData {
@@ -15,7 +16,6 @@ export interface GroupData extends GroupUpdateData {
 
 export interface GroupUpdateData {
   id: string;
-  parentId?: string;
   name?: string;
   chapterId?: string;
   summary?: string;

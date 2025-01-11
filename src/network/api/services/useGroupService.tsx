@@ -83,10 +83,15 @@ export function useGroupService() {
 
   type GetGroupsParams = {
     chapterId?: string;
+    parentId?: string | null;
   };
-  const getGroups = ({ chapterId }: GetGroupsParams | undefined = {}) => {
+  const getGroups = ({
+    chapterId,
+    parentId,
+  }: GetGroupsParams | undefined = {}) => {
     const urlParams: string[] = [];
-    if (!_.isNil(chapterId)) urlParams.push(`chapter=${chapterId}`);
+    if (!_.isUndefined(chapterId)) urlParams.push(`chapter=${chapterId}`);
+    if (!_.isUndefined(parentId)) urlParams.push(`parent=${parentId || null}`);
     const urlSearchParams = urlParams.join("&");
 
     return doGet<Group[]>(`/v3/groups?${urlSearchParams}`);

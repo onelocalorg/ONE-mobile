@@ -92,7 +92,6 @@ export const GroupEditor = ({
               pic: myProfile.pic.url,
             },
           ],
-          members: [],
         },
   });
 
@@ -176,9 +175,9 @@ export const GroupEditor = ({
         { cancelable: false }
       );
     } else {
-      const omit = ["admins", "members"];
+      const updateOmit = ["admins", "members", "parent"];
       group
-        ? onSubmitUpdate!(_.omit(omit, clean) as GroupUpdateData, {
+        ? onSubmitUpdate!(_.omit(updateOmit, clean) as GroupUpdateData, {
             onSuccess,
           })
         : onSubmitCreate!(clean as GroupData, { onSuccess });
@@ -196,181 +195,199 @@ export const GroupEditor = ({
   return (
     <View>
       <Loader visible={isLoading || isUploadingImage} />
-      <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-        <View style={{ justifyContent: "space-between" }}>
-          <View style={{ rowGap: 8 }}>
-            <Text style={styles.emphasized}>
-              {group ? strings.editGroup : strings.createGroup}
-            </Text>
-            <Controller
-              control={control}
-              rules={{
-                required: true,
-              }}
-              render={({ field: { onChange, onBlur, value } }) => (
-                <TextInput
-                  placeholder="Name"
-                  placeholderTextColor="#8B8888"
-                  onBlur={onBlur}
-                  value={value}
-                  onChangeText={onChange}
-                  style={styles.groupInput}
-                  autoFocus={!group}
-                ></TextInput>
-              )}
-              name="name"
-            />
-            {errors.name && <Text>This is required.</Text>}
-            <Controller
-              control={control}
-              render={({ field: { onChange, onBlur, value } }) => (
-                <TextInput
-                  placeholder="Summary"
-                  placeholderTextColor="#8B8888"
-                  onBlur={onBlur}
-                  value={value}
-                  onChangeText={onChange}
-                  style={styles.groupInput}
-                  autoFocus={!!group}
-                ></TextInput>
-              )}
-              name="summary"
-            />
-
-            <View style={styles.rowContainer}>
-              <FontAwesomeIcon icon={faLocationDot} size={20} />
+      {group && (
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+          <View style={{ justifyContent: "space-between" }}>
+            <View style={{ rowGap: 8 }}>
+              <Text style={styles.emphasized}>
+                {group ? strings.editGroup : strings.createGroup}
+              </Text>
               <Controller
                 control={control}
-                render={({ field: { onChange, value } }) => (
-                  <LocationAutocomplete
-                    placeholder="Location"
-                    address={value}
-                    onPress={(data, details) => {
-                      onChange(data.description);
-                      if (details) {
-                        setValue("coordinates", [
-                          details.geometry.location.lng,
-                          details.geometry.location.lat,
-                        ]);
-                      }
-                    }}
-                  />
+                rules={{
+                  required: true,
+                }}
+                render={({ field: { onChange, onBlur, value } }) => (
+                  <TextInput
+                    placeholder="Name"
+                    placeholderTextColor="#8B8888"
+                    onBlur={onBlur}
+                    value={value}
+                    onChangeText={onChange}
+                    style={styles.groupInput}
+                    autoFocus={!group}
+                  ></TextInput>
                 )}
-                name="address"
+                name="name"
+              />
+              {errors.name && <Text>This is required.</Text>}
+              <Controller
+                control={control}
+                render={({ field: { onChange, onBlur, value } }) => (
+                  <TextInput
+                    placeholder="Summary"
+                    placeholderTextColor="#8B8888"
+                    onBlur={onBlur}
+                    value={value}
+                    onChangeText={onChange}
+                    style={styles.groupInput}
+                    autoFocus={!!group}
+                  ></TextInput>
+                )}
+                name="summary"
+              />
+
+              <View style={styles.rowContainer}>
+                <FontAwesomeIcon icon={faLocationDot} size={20} />
+                <Controller
+                  control={control}
+                  render={({ field: { onChange, value } }) => (
+                    <LocationAutocomplete
+                      placeholder="Location"
+                      address={value}
+                      onPress={(data, details) => {
+                        onChange(data.description);
+                        if (details) {
+                          setValue("coordinates", [
+                            details.geometry.location.lng,
+                            details.geometry.location.lat,
+                          ]);
+                        }
+                      }}
+                    />
+                  )}
+                  name="address"
+                />
+              </View>
+              <Controller
+                control={control}
+                render={({ field: { onChange, onBlur, value } }) => (
+                  <TextInput
+                    placeholder="Venue"
+                    placeholderTextColor="#8B8888"
+                    onBlur={onBlur}
+                    value={value}
+                    onChangeText={onChange}
+                    style={styles.groupInput}
+                    autoFocus={!!group}
+                  ></TextInput>
+                )}
+                name="venue"
+              />
+
+              <Controller
+                control={control}
+                render={({ field: { onChange, onBlur, value } }) => (
+                  <TextInput
+                    multiline
+                    placeholder="Details"
+                    placeholderTextColor="darkgray"
+                    textAlignVertical={"top"}
+                    value={value}
+                    onBlur={onBlur}
+                    onChangeText={onChange}
+                    style={styles.groupInputBody}
+                  ></TextInput>
+                )}
+                name="details"
               />
             </View>
-            <Controller
-              control={control}
-              render={({ field: { onChange, onBlur, value } }) => (
-                <TextInput
-                  placeholder="Venue"
-                  placeholderTextColor="#8B8888"
-                  onBlur={onBlur}
-                  value={value}
-                  onChangeText={onChange}
-                  style={styles.groupInput}
-                  autoFocus={!!group}
-                ></TextInput>
-              )}
-              name="venue"
+
+            <View
+              style={{
+                flexDirection: "row",
+                marginTop: 20,
+              }}
+            >
+              <Text style={styles.emphasized}>{strings.admins}</Text>
+              <Pressable
+                onPress={() =>
+                  gotoChooseUsers({
+                    groupId: group.id,
+                    type: "admins",
+                    users: group.admins,
+                  })
+                }
+              >
+                <FontAwesomeIcon icon={faPlus} size={20} />
+              </Pressable>
+            </View>
+            <UserListHorizontal
+              users={(admins as OneUser[]) ?? []}
+              onRemoveUser={
+                // Don't allow removing user if there is only one admin
+                admins?.length && admins.length > 1
+                  ? handleRemoveAdmin
+                  : undefined
+              }
+            />
+            <View
+              style={{
+                flexDirection: "row",
+                marginTop: 20,
+              }}
+            >
+              <Text style={styles.emphasized}>{strings.members}</Text>
+              <Pressable
+                onPress={() =>
+                  gotoChooseUsers({
+                    groupId: group.id,
+                    type: "members",
+                    users: group.members,
+                  })
+                }
+              >
+                <FontAwesomeIcon icon={faPlus} size={20} />
+              </Pressable>
+            </View>
+            <UserListHorizontal
+              users={(members as OneUser[]) ?? []}
+              onRemoveUser={handleRemoveMember}
+            />
+            {isAdminChooserVisible && (
+              <>
+                <Text>show</Text>
+                <UserChooser
+                  search={userSearch}
+                  onChangeUser={handleChangeAdmin}
+                />
+              </>
+            )}
+
+            <Text style={styles.emphasized}>{strings.images}</Text>
+            <ImageChooser
+              id={group?.id}
+              uploadKey={FileKey.groupImage}
+              defaultValue={getValues("images")}
+              onChangeImages={handleChangeImages}
             />
 
-            <Controller
-              control={control}
-              render={({ field: { onChange, onBlur, value } }) => (
-                <TextInput
-                  multiline
-                  placeholder="Details"
-                  placeholderTextColor="darkgray"
-                  textAlignVertical={"top"}
-                  value={value}
-                  onBlur={onBlur}
-                  onChangeText={onChange}
-                  style={styles.groupInputBody}
-                ></TextInput>
-              )}
-              name="details"
-            />
-          </View>
-
-          <View
-            style={{
-              flexDirection: "row",
-              marginTop: 20,
-            }}
-          >
-            <Text style={styles.emphasized}>{strings.admins}</Text>
-            <Pressable onPress={() => gotoChooseUsers()}>
-              <FontAwesomeIcon icon={faPlus} size={20} />
-            </Pressable>
-          </View>
-          <UserListHorizontal
-            users={(admins as OneUser[]) ?? []}
-            onRemoveUser={
-              // Don't allow removing user if there is only one admin
-              admins?.length && admins.length > 1
-                ? handleRemoveAdmin
-                : undefined
-            }
-          />
-          <View
-            style={{
-              flexDirection: "row",
-              marginTop: 20,
-            }}
-          >
-            <Text style={styles.emphasized}>{strings.members}</Text>
-            <Pressable onPress={() => gotoChooseUsers()}>
-              <FontAwesomeIcon icon={faPlus} size={20} />
-            </Pressable>
-          </View>
-          <UserListHorizontal
-            users={(members as OneUser[]) ?? []}
-            onRemoveUser={handleRemoveMember}
-          />
-          {isAdminChooserVisible && (
-            <>
-              <Text>show</Text>
-              <UserChooser
-                search={userSearch}
-                onChangeUser={handleChangeAdmin}
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "space-around",
+                bottom: 0,
+                marginBottom: 0,
+                marginTop: 30,
+              }}
+            >
+              <ButtonComponent
+                onPress={navigation.goBack}
+                hasIcon={false}
+                title="Cancel"
+                style={styles.cancelButton}
               />
-            </>
-          )}
-
-          <Text style={styles.emphasized}>{strings.images}</Text>
-          <ImageChooser
-            id={group?.id}
-            uploadKey={FileKey.groupImage}
-            defaultValue={getValues("images")}
-            onChangeImages={handleChangeImages}
-          />
-
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "space-around",
-              bottom: 0,
-              marginBottom: 0,
-              marginTop: 30,
-            }}
-          >
-            <ButtonComponent
-              onPress={navigation.goBack}
-              hasIcon={false}
-              title="Cancel"
-              style={styles.cancelButton}
-            />
-            <ButtonComponent
-              onPress={handleSubmit(onSubmit)}
-              icon={buttonArrowGreen}
-              title={getButtonName()}
-              style={styles.groupButton}
-              disabled={isLoading}
-            />
+              <ButtonComponent
+                onPress={handleSubmit(onSubmit)}
+                icon={buttonArrowGreen}
+                title={getButtonName()}
+                style={styles.groupButton}
+                disabled={isLoading}
+              />
+            </View>
           </View>
-        </View>
-      </TouchableWithoutFeedback>
+        </TouchableWithoutFeedback>
+      )}
     </View>
   );
 };
