@@ -11,7 +11,8 @@ import { GenericWebView } from "~/components/generic-webview";
 import { MyAvatar } from "~/components/navbar/MyAvatar";
 import { OneLogo } from "~/components/navbar/OneLogo";
 import { UserListSearchable } from "~/components/user-list-searchable/UserListSearchable";
-import { CreateEditEventScreen } from "~/screens/createEditEvent/CreateEditEventScreen";
+import { CreateEventScreen } from "~/screens/createEditEvent/CreateEventScreen";
+import { EditEventScreen } from "~/screens/createEditEvent/EditEventScreen";
 import { CreateEditGroupScreen } from "~/screens/createEditGroup/CreateEditGroupScreen";
 import { CreatePostScreen } from "~/screens/createEditPost/CreatePostScreen";
 import { EditPostScreen } from "~/screens/createEditPost/EditPostScreen";
@@ -250,8 +251,12 @@ export const AppNavigation = ({
             }}
           />
           <RootStack.Screen
-            name={Screens.CREATE_EDIT_EVENT}
-            component={CreateEditEventScreen}
+            name={Screens.CREATE_EVENT}
+            component={CreateEventScreen}
+          />
+          <RootStack.Screen
+            name={Screens.EDIT_EVENT}
+            component={EditEventScreen}
           />
           <RootStack.Screen
             name={Screens.CREATE_POST}

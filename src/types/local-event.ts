@@ -16,6 +16,7 @@ export interface LocalEvent extends LocalEventData {
 
 export interface LocalEventData extends Omit<LocalEventUpdateData, "id"> {
   name: string;
+  groupId?: string;
   startDate: DateTime;
   coordinates: number[];
   ticketTypes: TicketTypeData[];

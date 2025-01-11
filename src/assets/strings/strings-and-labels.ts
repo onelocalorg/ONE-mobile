@@ -172,5 +172,7 @@ export const stringsAndLabels = {
   admins: "Admins",
   images: "Images",
   addPostPlaceholder: "What do you want to post?",
-  addPost: "Add Post",
+  addEventPlaceholder: "What event do you want to create?",
+  createPost: "Create Post",
+  createSubgroup: "Create a Group inside this Group",
 };

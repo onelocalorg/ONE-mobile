@@ -118,22 +118,22 @@ export function useEventService() {
     isCanceled?: boolean;
     host?: string;
     chapterId?: string;
-    group?: string;
+    groupId?: string | null;
   };
   const getEvents = ({
     isPast,
     isCanceled,
     host,
     chapterId,
-    group,
+    groupId,
   }: GetEventsParams | undefined = {}) => {
     const urlParams: string[] = [];
-    if (!_.isNil(isPast)) urlParams.push(`past=${isPast.toString()}`);
-    if (!_.isNil(isCanceled))
+    if (!_.isUndefined(isPast)) urlParams.push(`past=${isPast.toString()}`);
+    if (!_.isUndefined(isCanceled))
       urlParams.push(`canceled=${isCanceled.toString()}`);
-    if (!_.isNil(host)) urlParams.push(`host=${host}`);
-    if (!_.isNil(chapterId)) urlParams.push(`chapter=${chapterId}`);
-    if (!_.isNil(group)) urlParams.push(`group=${group}`);
+    if (!_.isUndefined(host)) urlParams.push(`host=${host}`);
+    if (!_.isUndefined(chapterId)) urlParams.push(`chapter=${chapterId}`);
+    if (!_.isUndefined(groupId)) urlParams.push(`group=${groupId}`);
 
     const urlSearchParams = urlParams.join("&");
 

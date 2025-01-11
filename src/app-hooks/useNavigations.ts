@@ -128,8 +128,12 @@ export function useNavigations() {
     navigation.navigate(Screens.CREATE_POST, { groupId });
   };
 
-  const gotoCreateGroup = () => {
-    navigation.navigate(Screens.CREATE_EDIT_GROUP);
+  const gotoCreateEvent = ({ groupId }: { groupId?: string }) => {
+    navigation.navigate(Screens.CREATE_EVENT, { groupId });
+  };
+
+  const gotoCreateGroup = ({ parentId }) => {
+    navigation.navigate(Screens.CREATE_EDIT_GROUP, { parentId });
   };
 
   const gotoEditGroup = (id: string) => {
@@ -150,6 +154,7 @@ export function useNavigations() {
     showPostContextMenu,
     showGiveGratisModal,
     gotoCreatePost,
+    gotoCreateEvent,
     gotoCreateGroup,
     gotoEditGroup,
     gotoChooseUsers,
