@@ -1,7 +1,7 @@
 import { faCircle } from "@fortawesome/free-regular-svg-icons";
 import { faCircleCheck, faSearch } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import _ from "lodash/fp";
 import React, { useState } from "react";
 import { Pressable, SectionList, Text, View } from "react-native";
@@ -9,48 +9,55 @@ import { TextInput } from "react-native-gesture-handler";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
 import { defaultUser } from "~/assets/images";
 import { createStyleSheet } from "~/components/user-list-searchable/style";
+import { RootStackScreenProps, Screens } from "~/navigation/types";
+import { GroupMutations } from "~/network/api/services/useGroupService";
 import { useUserService } from "~/network/api/services/useUserService";
+import { Group, GroupUpdateData } from "~/types/group";
 import { OneUser } from "~/types/one-user";
 import { ImageComponent } from "../image-component";
 
-interface UserListSearchableProps {
-  curSelectedUsers?: OneUser[];
-  onSelectUsers?: (users: OneUser[]) => void;
-}
 export const UserListSearchable = ({
-  curSelectedUsers,
-  onSelectUsers,
-}: UserListSearchableProps) => {
+  route,
+}: RootStackScreenProps<Screens.SELECT_USERS>) => {
+  const { groupId, type, users } = route.params;
+
   const { theme } = useAppTheme();
   const styles = createStyleSheet(theme);
   const [searchText, setSearchText] = useState("");
-  const [selectedUsers, setSelectedUsers] = useState(curSelectedUsers || []);
+  const [selectedUsers, setSelectedUsers] = useState(users || []);
 
   const {
     queries: { list: listUsers },
   } = useUserService();
 
-  const { isLoading, data: users } = useQuery(
+  const { isLoading, data: allUsers } = useQuery(
     listUsers({
       search: searchText,
     })
   );
 
-  console.log("users", users);
+  const { mutate: updateGroup } = useMutation<Group, Error, GroupUpdateData>({
+    mutationKey: [GroupMutations.editGroup],
+  });
 
-  const separatedUsers = users
+  const separatedUsers = allUsers
     ? Object.entries(
-        _.groupBy((user: OneUser) => user.firstName.charAt(0), users)
+        _.groupBy((user: OneUser) => user.firstName.charAt(0), allUsers)
       ).sort()
     : [];
-
-  console.log("separatedUsers", JSON.stringify(separatedUsers));
 
   const toggleSelectUser = (user: OneUser) => {
     if (selectedUsers.find((u) => u.id === user.id)) {
       setSelectedUsers(selectedUsers.filter((u) => u.id !== user.id));
     } else {
       setSelectedUsers([...selectedUsers, user]);
+    }
+
+    if (groupId) {
+      updateGroup({
+        id: groupId,
+        [type]: selectedUsers.map((u) => ({ id: u.id })),
+      });
     }
   };
 

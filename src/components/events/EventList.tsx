@@ -31,6 +31,11 @@ export const EventList = ({ placeholder, group }: EventListProps) => {
     queries: { list: listEvents },
   } = useEventService();
 
+  const groupIds = group ? [group.id] : null;
+  if (group?.parentId) {
+    groupIds?.push(group.parentId);
+  }
+
   const {
     isPending,
     isError,
@@ -40,7 +45,7 @@ export const EventList = ({ placeholder, group }: EventListProps) => {
     listEvents({
       isPast: false,
       chapterId: chapterFilter?.id,
-      groupId: group?.id || null,
+      groupIds,
     })
   );
   if (isPending !== isLoading) setLoading(isPending);

@@ -8,6 +8,8 @@ import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
 import { useNavigations } from "~/app-hooks/useNavigations";
 import { dummy } from "~/assets/images";
 import { ButtonComponent } from "~/components/button-component";
+import { EventList } from "~/components/events/EventList";
+import { GroupList } from "~/components/groups/GroupList";
 import { ImageComponent } from "~/components/image-component";
 import { Loader } from "~/components/loader";
 import { TabComponent } from "~/components/tab-component";
@@ -19,7 +21,6 @@ import {
 } from "~/network/api/services/useGroupService";
 import { AddPostView } from "../home/AddPostView";
 import { PostsList } from "../home/PostsList";
-import { MyEvents } from "../myprofile/MyEvents";
 import { AboutGroup } from "./AboutGroup";
 import { createStyleSheet } from "./style";
 
@@ -56,6 +57,11 @@ export const GroupDetailScreen = ({
     leaveGroup(groupId);
   };
 
+  const tabs = [strings.about, strings.posts, strings.events];
+  if (group && !group.parent) {
+    tabs.push(strings.groups);
+  }
+
   return (
     <>
       <Loader visible={isPending} />
@@ -90,15 +96,7 @@ export const GroupDetailScreen = ({
             )}
 
             <View style={styles.line} />
-            <TabComponent
-              tabs={[
-                strings.about,
-                strings.posts,
-                strings.events,
-                strings.groups,
-              ]}
-              onPressTab={setSelectedTab}
-            />
+            <TabComponent tabs={tabs} onPressTab={setSelectedTab} />
             {navigation ? (
               <>
                 {selectedTab === 0 && <AboutGroup group={group} />}
@@ -107,13 +105,21 @@ export const GroupDetailScreen = ({
                     group={group}
                     header={
                       <AddPostView
-                        placeholder={strings.addPost}
+                        placeholder={strings.createPost}
                         group={group}
                       />
                     }
                   />
                 )}
-                {selectedTab === 2 && <MyEvents group={group} />}
+                {selectedTab === 2 && (
+                  <EventList group={group} placeholder={strings.createEvent} />
+                )}
+                {selectedTab === 3 && (
+                  <GroupList
+                    parent={group}
+                    placeholder={strings.createSubgroup}
+                  />
+                )}
               </>
             ) : null}
 

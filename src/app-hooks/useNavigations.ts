@@ -1,5 +1,6 @@
 import notifee, { EventType, Notification } from "@notifee/react-native";
-import { useNavigation } from "@react-navigation/native";
+import { ParamListBase, useNavigation } from "@react-navigation/native";
+import { StackNavigationProp } from "@react-navigation/stack";
 import _ from "lodash/fp";
 import { useCallback, useEffect } from "react";
 import { useNotificationService } from "~/navigation/NotificationService";
@@ -10,7 +11,7 @@ import { OneUser } from "~/types/one-user";
 import { Post } from "~/types/post";
 
 export function useNavigations() {
-  const navigation = useNavigation();
+  const navigation = useNavigation<StackNavigationProp<ParamListBase>>();
   const { pullNotifications } = useNotificationService();
 
   const gotoPostDetails = useCallback(
@@ -26,7 +27,7 @@ export function useNavigations() {
 
   const gotoGroupDetails = useCallback(
     (group: string | Group) => () => {
-      navigation.navigate(Screens.GROUP_DETAIL, {
+      navigation.push(Screens.GROUP_DETAIL, {
         id: asId(group),
       });
     },
@@ -132,18 +133,23 @@ export function useNavigations() {
     navigation.navigate(Screens.CREATE_EVENT, { groupId });
   };
 
-  const gotoCreateGroup = ({ parentId }) => {
-    navigation.navigate(Screens.CREATE_EDIT_GROUP, { parentId });
+  const gotoCreateGroup = ({ parentId }: { parentId?: string }) => {
+    navigation.navigate(Screens.CREATE_GROUP, { parentId });
   };
 
   const gotoEditGroup = (id: string) => {
-    navigation.navigate(Screens.CREATE_EDIT_GROUP, {
+    navigation.navigate(Screens.EDIT_GROUP, {
       id,
     });
   };
 
-  const gotoChooseUsers = () => {
-    navigation.navigate(Screens.SELECT_USERS);
+  interface ChooseUsersProps {
+    groupId?: string;
+    type: string;
+    users: OneUser[];
+  }
+  const gotoChooseUsers = ({ groupId, type, users }: ChooseUsersProps) => {
+    navigation.navigate(Screens.SELECT_USERS, { groupId, type, users });
   };
 
   return {

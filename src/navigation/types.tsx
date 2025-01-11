@@ -4,6 +4,7 @@ import type {
   NavigatorScreenParams,
 } from "@react-navigation/native";
 import { StackScreenProps } from "@react-navigation/stack";
+import { OneUser } from "~/types/one-user";
 
 export enum Screens {
   LOGIN = "Login",
@@ -31,7 +32,8 @@ export enum Screens {
   EDIT_EVENT = "EditEvent",
   CREATE_POST = "CreatePost",
   EDIT_POST = "EditPost",
-  CREATE_EDIT_GROUP = "CreateEditGroup",
+  CREATE_GROUP = "CreateGroup",
+  EDIT_GROUP = "EditGroup",
   CHOOSE_TICKETS = "ChooseTickets",
   SELECT_USERS = "SelectUsers",
 }
@@ -55,7 +57,8 @@ export type RootStackParamList = {
   [Screens.EDIT_EVENT]: { id: string };
   [Screens.CREATE_POST]: { groupId?: string } | undefined;
   [Screens.EDIT_POST]: { id: string };
-  [Screens.CREATE_EDIT_GROUP]: { id: string } | undefined;
+  [Screens.CREATE_GROUP]: { parentId?: string } | undefined;
+  [Screens.EDIT_GROUP]: { id: string };
   [Screens.POST_DETAIL]: { id: string; reply?: string; isReplyFocus?: boolean };
   [Screens.POST_CONTEXT_MENU_MODAL]: {
     postId: string;
@@ -69,7 +72,7 @@ export type RootStackParamList = {
   };
   [Screens.REPORT_CONTENT_MODAL]: { postId: string };
   [Screens.CHOOSE_TICKETS]: { eventId: string };
-  [Screens.SELECT_USERS]: undefined;
+  [Screens.SELECT_USERS]: { groupId?: string; type: string; users: OneUser[] };
 };
 
 export type RootStackScreenProps<T extends keyof RootStackParamList> =

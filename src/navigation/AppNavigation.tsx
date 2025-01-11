@@ -13,7 +13,8 @@ import { OneLogo } from "~/components/navbar/OneLogo";
 import { UserListSearchable } from "~/components/user-list-searchable/UserListSearchable";
 import { CreateEventScreen } from "~/screens/createEditEvent/CreateEventScreen";
 import { EditEventScreen } from "~/screens/createEditEvent/EditEventScreen";
-import { CreateEditGroupScreen } from "~/screens/createEditGroup/CreateEditGroupScreen";
+import { CreateGroupScreen } from "~/screens/createEditGroup/CreateGroupScreen";
+import { EditGroupScreen } from "~/screens/createEditGroup/EditGroupScreen";
 import { CreatePostScreen } from "~/screens/createEditPost/CreatePostScreen";
 import { EditPostScreen } from "~/screens/createEditPost/EditPostScreen";
 import { ChooseTicketsModal } from "~/screens/event-detail/ChooseTicketsModal";
@@ -69,8 +70,11 @@ export const AppNavigation = ({
         [Screens.EDIT_POST]: {
           path: "posts/edit",
         },
-        [Screens.CREATE_EDIT_GROUP]: {
+        [Screens.CREATE_GROUP]: {
           path: "groups/create",
+        },
+        [Screens.EDIT_GROUP]: {
+          path: "groups/edit",
         },
         [Screens.POST_DETAIL]: {
           path: "posts/:id/:reply?",
@@ -267,8 +271,12 @@ export const AppNavigation = ({
             component={EditPostScreen}
           />
           <RootStack.Screen
-            name={Screens.CREATE_EDIT_GROUP}
-            component={CreateEditGroupScreen}
+            name={Screens.CREATE_GROUP}
+            component={CreateGroupScreen}
+          />
+          <RootStack.Screen
+            name={Screens.EDIT_GROUP}
+            component={EditGroupScreen}
           />
           <RootStack.Screen
             name={Screens.CHOOSE_TICKETS}

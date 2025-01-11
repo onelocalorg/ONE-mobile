@@ -38,6 +38,11 @@ export const PostsList = ({ header, group }: PostsListProps) => {
     queries: { infiniteList },
   } = usePostService();
 
+  const groupIds = group ? [group.id] : null;
+  if (group?.parentId) {
+    groupIds?.push(group.parentId);
+  }
+
   const {
     data: posts,
     fetchNextPage,
@@ -48,7 +53,7 @@ export const PostsList = ({ header, group }: PostsListProps) => {
     isLoading,
     isFetchingNextPage,
   } = useInfiniteQuery(
-    infiniteList({ chapterId: chapterFilter?.id, groupId: group?.id || null })
+    infiniteList({ chapterId: chapterFilter?.id, groupIds })
   );
 
   const loadNext = useCallback(() => {
