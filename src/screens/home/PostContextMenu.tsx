@@ -55,7 +55,7 @@ export const PostContextMenu = ({
         onPress: () => {
           mutateDeletePost.mutate(postId, {
             onSuccess: () => {
-              navigation.popToTop();
+              navigation.goBack();
             },
           });
         },
@@ -69,8 +69,8 @@ export const PostContextMenu = ({
   };
 
   const navigateToEditPost = () => {
-    navigation.popToTop();
-    navigation.navigate(Screens.CREATE_EDIT_POST, { id: postId });
+    navigation.goBack();
+    navigation.navigate(Screens.EDIT_POST, { id: postId });
   };
 
   return (

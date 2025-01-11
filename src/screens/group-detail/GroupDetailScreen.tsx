@@ -17,6 +17,7 @@ import {
   GroupMutations,
   useGroupService,
 } from "~/network/api/services/useGroupService";
+import { AddPostView } from "../home/AddPostView";
 import { PostsList } from "../home/PostsList";
 import { MyEvents } from "../myprofile/MyEvents";
 import { AboutGroup } from "./AboutGroup";
@@ -101,7 +102,17 @@ export const GroupDetailScreen = ({
             {navigation ? (
               <>
                 {selectedTab === 0 && <AboutGroup group={group} />}
-                {selectedTab === 1 && <PostsList group={group} />}
+                {selectedTab === 1 && (
+                  <PostsList
+                    group={group}
+                    header={
+                      <AddPostView
+                        placeholder={strings.addPost}
+                        group={group}
+                      />
+                    }
+                  />
+                )}
                 {selectedTab === 2 && <MyEvents group={group} />}
               </>
             ) : null}
