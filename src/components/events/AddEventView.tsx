@@ -1,20 +1,26 @@
-import { useNavigation } from "@react-navigation/native";
 import { useQuery } from "@tanstack/react-query";
 import { Text, TouchableOpacity, View } from "react-native";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
+import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
+import { useNavigations } from "~/app-hooks/useNavigations";
 import { defaultUser } from "~/assets/images";
 import { ImageComponent } from "~/components/image-component";
 import { useMyUserId } from "~/navigation/AuthContext";
-import { Screens } from "~/navigation/types";
 import { useUserService } from "~/network/api/services/useUserService";
+import { Group } from "~/types/group";
 import { handleApiError } from "~/utils/common";
 import { createStyleSheet } from "./style";
 
-export const AddEventView = () => {
+interface AddEventViewProps {
+  placeholder?: string;
+  group?: Group;
+}
+export const AddEventView = ({ placeholder, group }: AddEventViewProps) => {
   const { theme } = useAppTheme();
   const styles = createStyleSheet(theme);
   const myUserId = useMyUserId();
-  const navigation = useNavigation();
+  const { strings } = useStringsAndLabels();
+  const { gotoCreateEvent } = useNavigations();
 
   const {
     queries: { detail: getUser },
@@ -24,7 +30,7 @@ export const AddEventView = () => {
   if (isError) handleApiError("User profile", error);
 
   const handlePress = () => {
-    navigation.navigate(Screens.CREATE_EDIT_EVENT);
+    gotoCreateEvent({ groupId: group?.id });
   };
 
   return (
@@ -44,7 +50,7 @@ export const AddEventView = () => {
           ></ImageComponent>
           <View style={styles.postInput}>
             <Text style={{ textAlign: "left", color: "gray" }}>
-              What event do you want to create?
+              {placeholder || strings.addEventPlaceholder}
             </Text>
           </View>
         </View>

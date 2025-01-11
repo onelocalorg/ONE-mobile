@@ -27,7 +27,8 @@ export enum Screens {
   POST_CONTEXT_MENU_MODAL = "PostContextMenu",
   GIVE_GRATIS_MODAL = "GiveGratis",
   REPORT_CONTENT_MODAL = "ReportContent",
-  CREATE_EDIT_EVENT = "CreateEditEvent",
+  CREATE_EVENT = "CreateEvent",
+  EDIT_EVENT = "EditEvent",
   CREATE_POST = "CreatePost",
   EDIT_POST = "EditPost",
   CREATE_EDIT_GROUP = "CreateEditGroup",
@@ -50,7 +51,8 @@ export type RootStackParamList = {
   [Screens.USER_PROFILE]: { id: string };
   [Screens.MY_PROFILE]: undefined;
   [Screens.EVENT_DETAIL]: { id: string; reply?: string };
-  [Screens.CREATE_EDIT_EVENT]: { id: string } | undefined;
+  [Screens.CREATE_EVENT]: { groupId?: string } | undefined;
+  [Screens.EDIT_EVENT]: { id: string };
   [Screens.CREATE_POST]: { groupId?: string } | undefined;
   [Screens.EDIT_POST]: { id: string };
   [Screens.CREATE_EDIT_GROUP]: { id: string } | undefined;

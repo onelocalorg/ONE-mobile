@@ -8,18 +8,14 @@ import {
   EventMutations,
   useEventService,
 } from "~/network/api/services/useEventService";
-import {
-  LocalEvent,
-  LocalEventData,
-  LocalEventUpdateData,
-} from "~/types/local-event";
+import { LocalEvent, LocalEventUpdateData } from "~/types/local-event";
 import { EventEditor } from "./EventEditor";
 import { createStyleSheet } from "./style";
 
-export const CreateEditEventScreen = ({
+export const EditEventScreen = ({
   route,
-}: RootStackScreenProps<Screens.CREATE_EDIT_EVENT>) => {
-  const eventId = route.params?.id;
+}: RootStackScreenProps<Screens.EDIT_EVENT>) => {
+  const eventId = route.params.id;
   const { theme } = useAppTheme();
   const styles = createStyleSheet(theme);
 
@@ -29,10 +25,11 @@ export const CreateEditEventScreen = ({
 
   const { data: event, isPending, isLoading } = useQuery(getEvent(eventId));
 
-  const mutateCreateEvent = useMutation<LocalEvent, Error, LocalEventData>({
-    mutationKey: [EventMutations.createEvent],
-  });
-  const mutateEditEvent = useMutation<LocalEvent, Error, LocalEventUpdateData>({
+  const { mutate: editEvent } = useMutation<
+    LocalEvent,
+    Error,
+    LocalEventUpdateData
+  >({
     mutationKey: [EventMutations.editEvent],
   });
 
@@ -43,8 +40,7 @@ export const CreateEditEventScreen = ({
         {!eventId || event ? (
           <EventEditor
             event={event}
-            onSubmitCreate={mutateCreateEvent.mutate}
-            onSubmitUpdate={mutateEditEvent.mutate}
+            onSubmitUpdate={editEvent}
             isLoading={isLoading}
           />
         ) : null}
