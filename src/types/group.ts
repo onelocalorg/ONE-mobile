@@ -5,6 +5,7 @@ import { OneUser, OneUserData } from "./one-user";
 export interface Group extends GroupData {
   id: string;
   admins: OneUser[];
+  editors: OneUser[];
   members: OneUser[];
   images: ImageUrl[];
   chapters: ChapterData[];

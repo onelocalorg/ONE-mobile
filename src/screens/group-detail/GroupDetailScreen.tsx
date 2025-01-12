@@ -2,7 +2,7 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import _ from "lodash";
 import React, { useState } from "react";
-import { Text, View } from "react-native";
+import { Alert, Text, View } from "react-native";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
 import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
 import { useNavigations } from "~/app-hooks/useNavigations";
@@ -49,6 +49,13 @@ export const GroupDetailScreen = ({
   const { mutate: leaveGroup } = useMutation<void, Error, string>({
     mutationKey: [GroupMutations.leaveGroup],
   });
+  const { mutate: deleteGroup } = useMutation<never, Error, string>({
+    mutationKey: [GroupMutations.deleteGroup],
+  });
+
+  const isEditor = group && group.editors?.find((a) => a.id === myId);
+  const isAdmin = group && group.admins?.find((a) => a.id === myId);
+  const isMember = group && group.members?.find((a) => a.id === myId);
 
   const handleJoinGroup = () => {
     joinGroup(groupId);
@@ -58,10 +65,31 @@ export const GroupDetailScreen = ({
     leaveGroup(groupId);
   };
 
+  const handleDeleteGroup = () => {
+    // deleteGroup(groupId);
+  };
+
   const tabs = [strings.about, strings.posts, strings.events];
   if (group && !group.parent) {
     tabs.push(strings.groups);
   }
+
+  const confirmDeleteGroup = () => {
+    Alert.alert(strings.deleteGroup, strings.deleteGroupConfirm, [
+      { text: strings.no, onPress: () => null, style: "destructive" },
+      {
+        text: strings.yes,
+
+        onPress: () => {
+          deleteGroup(groupId, {
+            onSuccess: () => {
+              navigation.goBack();
+            },
+          });
+        },
+      },
+    ]);
+  };
 
   return (
     <>
@@ -88,12 +116,12 @@ export const GroupDetailScreen = ({
             {group.chapters && (
               <ChapterListHorizontal chapters={group.chapters} />
             )}
-            {group.admins.find((a) => a.id === myId) ? (
+            {isEditor || isAdmin ? (
               <ButtonComponent
                 title="Edit"
                 onPress={() => gotoEditGroup(groupId)}
               />
-            ) : group.members.find((a) => a.id === myId) ? (
+            ) : isMember ? (
               <ButtonComponent title="Leave" onPress={handleLeaveGroup} />
             ) : (
               <ButtonComponent title="Join" onPress={handleJoinGroup} />
@@ -127,12 +155,9 @@ export const GroupDetailScreen = ({
               </>
             ) : null}
 
-            {/* <ScrollView showsVerticalScrollIndicator={false}>
-            {selectedTab === 0 && <Recentabout group={group} />}
-            {selectedTab === 1 && userId ? (
-              <RecentMyEvents userId={userId} navigation={navigation} />
-            ) : null}
-          </ScrollView> */}
+            {isAdmin && (
+              <ButtonComponent title="Delete" onPress={confirmDeleteGroup} />
+            )}
           </>
         ) : null}
       </View>
