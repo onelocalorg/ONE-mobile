@@ -19,6 +19,7 @@ import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
 import { useNavigations } from "~/app-hooks/useNavigations";
 import { buttonArrowGreen } from "~/assets/images";
 import { ButtonComponent } from "~/components/button-component";
+import { ChapterListHorizontal } from "~/components/chapter-list-horizontal";
 import {
   ImageChooser,
   ImageKey,
@@ -28,6 +29,7 @@ import { LocationAutocomplete } from "~/components/location-autocomplete/Locatio
 import { UserListHorizontal } from "~/components/user-list-horizontal";
 import { useChapterFilter } from "~/navigation/AppContext";
 import { UserMutations } from "~/network/api/services/useUserService";
+import { ChapterData, ChapterUpdateData } from "~/types/chapter";
 import { Group, GroupData, GroupUpdateData } from "~/types/group";
 import { OneUser, OneUserData } from "~/types/one-user";
 import { RemoteImage } from "~/types/remote-image";
@@ -74,7 +76,7 @@ export const GroupEditor = ({
         }
       : {
           name: "",
-          chapterId: chapterFilter?.id,
+          chapters: [],
           summary: "",
           details: "",
           venue: "",
@@ -93,7 +95,7 @@ export const GroupEditor = ({
         },
   });
 
-  const [admins, members] = watch(["admins", "members"]);
+  const [admins, members, chapters] = watch(["admins", "members", "chapters"]);
 
   const { remove: removeAdmin } = useFieldArray({
     control,
@@ -103,6 +105,11 @@ export const GroupEditor = ({
   const { remove: removeMember } = useFieldArray({
     control,
     name: "members",
+  });
+
+  const { remove: removeChapter } = useFieldArray({
+    control,
+    name: "chapters",
   });
 
   const { isPending: isUploadingImage } = useMutation<
@@ -121,6 +128,10 @@ export const GroupEditor = ({
     removeMember(members!.findIndex((u) => u.id === user.id));
   };
 
+  const handleRemoveChapter = (chapter: ChapterUpdateData) => {
+    removeChapter(members!.findIndex((c) => c.id === chapter.id));
+  };
+
   const onUsersSelected = (
     users: OneUserData[],
     type: "admins" | "members"
@@ -136,7 +147,7 @@ export const GroupEditor = ({
 
     const removeUrls = (data: GroupData | GroupUpdateData) => ({
       // ChapterId is overridden by chapterFilter set in defaultValues
-      chapterId: myProfile?.chapterId,
+      chapters: [{ id: myProfile?.chapterId }],
       ..._.pickBy(isNotEmpty, data),
     });
 
@@ -277,6 +288,29 @@ export const GroupEditor = ({
               name="details"
             />
           </View>
+
+          <View
+            style={{
+              flexDirection: "row",
+              marginTop: 20,
+            }}
+          >
+            <Text style={styles.emphasized}>{strings.chapters}</Text>
+            <Pressable
+              onPress={() =>
+                gotoChooseUsers({
+                  type: "chapters",
+                  users: group?.members ?? members!,
+                })
+              }
+            >
+              <FontAwesomeIcon icon={faPlus} size={20} />
+            </Pressable>
+          </View>
+          <ChapterListHorizontal
+            chapters={chapters as ChapterData[]}
+            onRemoveChapter={handleRemoveChapter}
+          />
 
           <View
             style={{
