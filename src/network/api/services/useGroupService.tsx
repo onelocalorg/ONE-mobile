@@ -8,6 +8,7 @@ export enum GroupMutations {
   editGroup = "editGroup",
   joinGroup = "joinGroup",
   leaveGroup = "leaveGroup",
+  deleteGroup = "deleteGroup",
 }
 
 export function useGroupService() {
@@ -77,7 +78,18 @@ export function useGroupService() {
     },
   });
 
-  const { doGet, doPost, doPatch } = useApiService();
+  queryClient.setMutationDefaults([GroupMutations.deleteGroup], {
+    mutationFn: (groupId: string) => {
+      return deleteGroup(groupId);
+    },
+    onSuccess: () => {
+      void queryClient.invalidateQueries({
+        queryKey: queries.lists(),
+      });
+    },
+  });
+
+  const { doGet, doPost, doPatch, doDelete } = useApiService();
 
   const getGroup = (id: string) => doGet<Group>(`/v3/groups/${id}`);
 
@@ -105,6 +117,9 @@ export function useGroupService() {
   const joinGroup = (groupId: string) => doPost(`/v3/groups/${groupId}/join`);
 
   const leaveGroup = (groupId: string) => doPost(`/v3/groups/${groupId}/leave`);
+
+  const deleteGroup = (groupId: string) =>
+    doDelete(`/v3/groups/${groupId}/leave`);
 
   return {
     queries,

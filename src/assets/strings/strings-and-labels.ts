@@ -64,7 +64,8 @@ export const stringsAndLabels = {
   confirmLogout: "Are you sure you want to log out?",
   yes: "Yes",
   no: "No",
-  deletePostConfirm: "Are you sure you want to delete this post ?",
+  deletePostConfirm: "Are you sure you want to delete this post?",
+  deleteGroupConfirm: "Are you sure you want to delete this group?",
   noDataText: "No More Data Found",
   noEventsFound: "No Events Found",
   noPostFound: "No Posts Found",
@@ -140,6 +141,7 @@ export const stringsAndLabels = {
   blockUserConfirm:
     "If you continue, you will not be able to see any posts from this user.",
   deletePost: "Delete Post",
+  deleteGroup: "Delete Group",
   reportPost: "Report Post",
   reportPostConfirm:
     "An email will be sent to ONE Local with the information you provide",
