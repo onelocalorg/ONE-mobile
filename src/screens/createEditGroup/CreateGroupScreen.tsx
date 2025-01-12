@@ -34,20 +34,16 @@ export const CreateGroupScreen = ({
   });
 
   return (
-    <>
-      <View>
-        <View style={styles.groupClass}>
-          {myProfile ? (
-            <GroupEditor
-              onSubmitCreate={(data) =>
-                mutateCreateGroup.mutate({ ...data, parentId })
-              }
-              isLoading={false}
-              myProfile={myProfile}
-            />
-          ) : null}
-        </View>
-      </View>
-    </>
+    <View style={styles.groupClass}>
+      {myProfile && (
+        <GroupEditor
+          onSubmitCreate={(data) =>
+            mutateCreateGroup.mutate({ ...data, parentId })
+          }
+          isLoading={false}
+          myProfile={myProfile}
+        />
+      )}
+    </View>
   );
 };

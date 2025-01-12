@@ -51,7 +51,7 @@ export const AddGroupView = ({ placeholder, parent }: AddGroupViewProps) => {
           ></ImageComponent>
           <View style={styles.postInput}>
             <Text style={{ textAlign: "left", color: "gray" }}>
-              {placeholder || strings.createSubgroup}
+              {placeholder || strings.createGroup}
             </Text>
           </View>
         </View>
