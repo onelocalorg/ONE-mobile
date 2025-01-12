@@ -1,3 +1,4 @@
+import { ChapterData, ChapterUpdateData } from "./chapter";
 import { ImageKey, ImageUrl } from "./image-info";
 import { OneUser, OneUserData } from "./one-user";
 
@@ -6,6 +7,7 @@ export interface Group extends GroupData {
   admins: OneUser[];
   members: OneUser[];
   images: ImageUrl[];
+  chapters: ChapterData[];
   parent: Group | null;
 }
 
@@ -17,7 +19,7 @@ export interface GroupData extends GroupUpdateData {
 export interface GroupUpdateData {
   id: string;
   name?: string;
-  chapterId?: string;
+  chapters?: ChapterUpdateData[];
   summary?: string;
   details?: string;
   venue?: string;

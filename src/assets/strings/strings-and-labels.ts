@@ -167,6 +167,7 @@ export const stringsAndLabels = {
   events: "Events",
   groups: "Groups",
   posts: "Posts",
+  chapters: "Chapters",
   members: "Members",
   details: "Details",
   admins: "Admins",

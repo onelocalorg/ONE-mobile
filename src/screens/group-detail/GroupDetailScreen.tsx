@@ -8,6 +8,7 @@ import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
 import { useNavigations } from "~/app-hooks/useNavigations";
 import { dummy } from "~/assets/images";
 import { ButtonComponent } from "~/components/button-component";
+import { ChapterListHorizontal } from "~/components/chapter-list-horizontal";
 import { EventList } from "~/components/events/EventList";
 import { GroupList } from "~/components/groups/GroupList";
 import { ImageComponent } from "~/components/image-component";
@@ -84,6 +85,9 @@ export const GroupDetailScreen = ({
               </View>
             </View>
 
+            {group.chapters && (
+              <ChapterListHorizontal chapters={group.chapters} />
+            )}
             {group.admins.find((a) => a.id === myId) ? (
               <ButtonComponent
                 title="Edit"
