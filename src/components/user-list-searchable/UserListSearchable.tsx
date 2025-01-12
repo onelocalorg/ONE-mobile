@@ -1,7 +1,8 @@
 import { faCircle } from "@fortawesome/free-regular-svg-icons";
 import { faCircleCheck, faSearch } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useNavigation } from "@react-navigation/native";
+import { useQuery } from "@tanstack/react-query";
 import _ from "lodash/fp";
 import React, { useState } from "react";
 import { Pressable, SectionList, Text, View } from "react-native";
@@ -10,9 +11,7 @@ import { useAppTheme } from "~/app-hooks/use-app-theme";
 import { defaultUser } from "~/assets/images";
 import { createStyleSheet } from "~/components/user-list-searchable/style";
 import { RootStackScreenProps, Screens } from "~/navigation/types";
-import { GroupMutations } from "~/network/api/services/useGroupService";
 import { useUserService } from "~/network/api/services/useUserService";
-import { Group, GroupUpdateData } from "~/types/group";
 import { OneUser } from "~/types/one-user";
 import { ImageComponent } from "../image-component";
 
@@ -25,6 +24,7 @@ export const UserListSearchable = ({
   const styles = createStyleSheet(theme);
   const [searchText, setSearchText] = useState("");
   const [selectedUsers, setSelectedUsers] = useState(users || []);
+  const navigation = useNavigation();
 
   const {
     queries: { list: listUsers },
@@ -36,9 +36,9 @@ export const UserListSearchable = ({
     })
   );
 
-  const { mutate: updateGroup } = useMutation<Group, Error, GroupUpdateData>({
-    mutationKey: [GroupMutations.editGroup],
-  });
+  // const { mutate: updateGroup } = useMutation<Group, Error, GroupUpdateData>({
+  //   mutationKey: [GroupMutations.editGroup],
+  // });
 
   const separatedUsers = allUsers
     ? Object.entries(
@@ -53,12 +53,17 @@ export const UserListSearchable = ({
       setSelectedUsers([...selectedUsers, user]);
     }
 
-    if (groupId) {
-      updateGroup({
-        id: groupId,
-        [type]: selectedUsers.map((u) => ({ id: u.id })),
-      });
-    }
+    console.log("selectedUsers", selectedUsers);
+    navigation.setParams({
+      users: selectedUsers,
+    });
+
+    // if (groupId) {
+    //   updateGroup({
+    //     id: groupId,
+    //     [type]: selectedUsers.map((u) => ({ id: u.id })),
+    //   });
+    // }
   };
 
   return (
@@ -85,7 +90,14 @@ export const UserListSearchable = ({
         }))}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
-          <Pressable onPress={() => toggleSelectUser(item)}>
+          <Pressable
+            onPress={() => toggleSelectUser(item)}
+            disabled={
+              type === "admins" &&
+              users.length < 2 &&
+              !!selectedUsers.find((u) => u.id === item.id)
+            }
+          >
             <View style={styles.userDetailsCont}>
               <View
                 style={{

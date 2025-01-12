@@ -4,7 +4,7 @@ import type {
   NavigatorScreenParams,
 } from "@react-navigation/native";
 import { StackScreenProps } from "@react-navigation/stack";
-import { OneUser } from "~/types/one-user";
+import { OneUserData } from "~/types/one-user";
 
 export enum Screens {
   LOGIN = "Login",
@@ -72,7 +72,11 @@ export type RootStackParamList = {
   };
   [Screens.REPORT_CONTENT_MODAL]: { postId: string };
   [Screens.CHOOSE_TICKETS]: { eventId: string };
-  [Screens.SELECT_USERS]: { groupId?: string; type: string; users: OneUser[] };
+  [Screens.SELECT_USERS]: {
+    groupId?: string;
+    type: string;
+    users: OneUserData[];
+  };
 };
 
 export type RootStackScreenProps<T extends keyof RootStackParamList> =

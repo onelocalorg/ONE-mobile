@@ -7,7 +7,7 @@ import { useNotificationService } from "~/navigation/NotificationService";
 import { Screens } from "~/navigation/types";
 import { Group } from "~/types/group";
 import { LocalEvent } from "~/types/local-event";
-import { OneUser } from "~/types/one-user";
+import { OneUser, OneUserData } from "~/types/one-user";
 import { Post } from "~/types/post";
 
 export function useNavigations() {
@@ -146,10 +146,14 @@ export function useNavigations() {
   interface ChooseUsersProps {
     groupId?: string;
     type: string;
-    users: OneUser[];
+    users: OneUserData[];
   }
   const gotoChooseUsers = ({ groupId, type, users }: ChooseUsersProps) => {
-    navigation.navigate(Screens.SELECT_USERS, { groupId, type, users });
+    navigation.navigate(Screens.SELECT_USERS, {
+      groupId,
+      type,
+      users,
+    });
   };
 
   return {
