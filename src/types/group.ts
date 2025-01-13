@@ -4,17 +4,17 @@ import { OneUser, OneUserData } from "./one-user";
 
 export interface Group extends GroupData {
   id: string;
+  parentId?: string;
   admins: OneUser[];
   editors: OneUser[];
   members: OneUser[];
-  images: ImageUrl[];
   chapters: ChapterData[];
   parent: Group | null;
 }
 
 export interface GroupData extends GroupUpdateData {
-  parentId?: string;
   name: string;
+  images: ImageUrl[];
 }
 
 export interface GroupUpdateData {

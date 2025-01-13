@@ -28,10 +28,12 @@ import { Loader } from "~/components/loader";
 import { LocationAutocomplete } from "~/components/location-autocomplete/LocationAutocomplete";
 import { UserListHorizontal } from "~/components/user-list-horizontal";
 import { useChapterFilter } from "~/navigation/AppContext";
+import { RootStackScreenProps, Screens } from "~/navigation/types";
+import { GroupMutations } from "~/network/api/services/useGroupService";
 import { UserMutations } from "~/network/api/services/useUserService";
 import { ChapterData, ChapterUpdateData } from "~/types/chapter";
 import { Group, GroupData, GroupUpdateData } from "~/types/group";
-import { OneUser, OneUserData } from "~/types/one-user";
+import { OneUser } from "~/types/one-user";
 import { RemoteImage } from "~/types/remote-image";
 import { FileKey, UploadFileData } from "~/types/upload-file-data";
 import { UserProfile } from "~/types/user-profile";
@@ -61,6 +63,10 @@ export const GroupEditor = ({
   const navigation = useNavigation();
   const { gotoChooseUsers } = useNavigations();
   const chapterFilter = useChapterFilter();
+
+  const { mutate: updateGroup } = useMutation<Group, Error, GroupUpdateData>({
+    mutationKey: [GroupMutations.editGroup],
+  });
 
   const {
     control,
@@ -132,13 +138,23 @@ export const GroupEditor = ({
     removeChapter(members!.findIndex((c) => c.id === chapter.id));
   };
 
-  const onUsersSelected = (
-    users: OneUserData[],
-    type: "admins" | "members"
-  ) => {
-    console.log("setting users", type, users);
-    setValue(type, users);
-  };
+  React.useEffect(() => {
+    const unsubscribe = navigation.addListener("state", (event) => {
+      const params = event.data.state.routes.find(
+        (r) =>
+          r.name ===
+          (Screens.SELECT_USERS as keyof ReactNavigation.RootParamList)
+      )?.params as
+        | RootStackScreenProps<Screens.SELECT_USERS>["route"]["params"]
+        | undefined;
+
+      if (params) {
+        setValue(params.type as "admins" | "members", params.users);
+      }
+    });
+
+    return unsubscribe;
+  }, [navigation, setValue]);
 
   const onSubmit = (data: GroupData | GroupUpdateData) => {
     const onSuccess = () => {
@@ -172,9 +188,8 @@ export const GroupEditor = ({
         { cancelable: false }
       );
     } else {
-      const updateOmit = ["admins", "members", "parent"];
       group
-        ? onSubmitUpdate!(_.omit(updateOmit, clean) as GroupUpdateData, {
+        ? onSubmitUpdate!(clean as GroupData as GroupUpdateData, {
             onSuccess,
           })
         : onSubmitCreate!(clean as GroupData, { onSuccess });
