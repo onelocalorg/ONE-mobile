@@ -210,6 +210,30 @@ export const AppNavigation = ({
               name={Screens.GROUP_DETAIL}
               component={GroupDetailScreen}
             />
+            <RootStack.Screen
+              name={Screens.CREATE_EVENT}
+              component={CreateEventScreen}
+            />
+            <RootStack.Screen
+              name={Screens.EDIT_EVENT}
+              component={EditEventScreen}
+            />
+            <RootStack.Screen
+              name={Screens.CREATE_POST}
+              component={CreatePostScreen}
+            />
+            <RootStack.Screen
+              name={Screens.EDIT_POST}
+              component={EditPostScreen}
+            />
+            <RootStack.Screen
+              name={Screens.CREATE_GROUP}
+              component={CreateGroupScreen}
+            />
+            <RootStack.Screen
+              name={Screens.EDIT_GROUP}
+              component={EditGroupScreen}
+            />
           </RootStack.Group>
         ) : email ? (
           <GuestStack.Screen
@@ -253,30 +277,6 @@ export const AppNavigation = ({
             options={{
               ...ShortModalScreenOptions,
             }}
-          />
-          <RootStack.Screen
-            name={Screens.CREATE_EVENT}
-            component={CreateEventScreen}
-          />
-          <RootStack.Screen
-            name={Screens.EDIT_EVENT}
-            component={EditEventScreen}
-          />
-          <RootStack.Screen
-            name={Screens.CREATE_POST}
-            component={CreatePostScreen}
-          />
-          <RootStack.Screen
-            name={Screens.EDIT_POST}
-            component={EditPostScreen}
-          />
-          <RootStack.Screen
-            name={Screens.CREATE_GROUP}
-            component={CreateGroupScreen}
-          />
-          <RootStack.Screen
-            name={Screens.EDIT_GROUP}
-            component={EditGroupScreen}
           />
           <RootStack.Screen
             name={Screens.CHOOSE_TICKETS}

@@ -1,6 +1,6 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import React from "react";
-import { View } from "react-native";
+import { ScrollView, View } from "react-native";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
 import { Loader } from "~/components/loader";
 import { useMyUserId } from "~/navigation/AuthContext";
@@ -41,18 +41,20 @@ export const EditGroupScreen = ({
   return (
     <>
       <Loader visible={!!group && isPending} />
-      <View>
-        <View style={styles.groupClass}>
-          {myProfile ? (
-            <GroupEditor
-              group={group}
-              onSubmitUpdate={mutateEditGroup.mutate}
-              isLoading={isLoading}
-              myProfile={myProfile}
-            />
-          ) : null}
+      <ScrollView>
+        <View>
+          <View style={styles.groupClass}>
+            {myProfile ? (
+              <GroupEditor
+                group={group}
+                onSubmitUpdate={mutateEditGroup.mutate}
+                isLoading={isLoading}
+                myProfile={myProfile}
+              />
+            ) : null}
+          </View>
         </View>
-      </View>
+      </ScrollView>
     </>
   );
 };

@@ -1,7 +1,7 @@
 import { useNavigation } from "@react-navigation/native";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import React from "react";
-import { View } from "react-native";
+import { ScrollView, View } from "react-native";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
 import { useMyUserId } from "~/navigation/AuthContext";
 import { RootStackScreenProps, Screens } from "~/navigation/types";
@@ -34,16 +34,18 @@ export const CreateGroupScreen = ({
   });
 
   return (
-    <View style={styles.groupClass}>
-      {myProfile && (
-        <GroupEditor
-          onSubmitCreate={(data) =>
-            mutateCreateGroup.mutate({ ...data, parentId })
-          }
-          isLoading={false}
-          myProfile={myProfile}
-        />
-      )}
-    </View>
+    <ScrollView>
+      <View style={styles.groupClass}>
+        {myProfile && (
+          <GroupEditor
+            onSubmitCreate={(data) =>
+              mutateCreateGroup.mutate({ ...data, parentId })
+            }
+            isLoading={false}
+            myProfile={myProfile}
+          />
+        )}
+      </View>
+    </ScrollView>
   );
 };
