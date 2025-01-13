@@ -2,6 +2,7 @@ import { useNavigation } from "@react-navigation/native";
 import { useMutation } from "@tanstack/react-query";
 import React from "react";
 import { View } from "react-native";
+import { ScrollView } from "react-native-gesture-handler";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
 import { RootStackScreenProps, Screens } from "~/navigation/types";
 import { PostMutations } from "~/network/api/services/usePostService";
@@ -26,14 +27,14 @@ export const CreatePostScreen = ({
 
   return (
     <>
-      <View>
+      <ScrollView>
         <View style={styles.postClass}>
           <PostEditor
             onSubmitCreate={(postData) => createPost({ ...postData, groupId })}
             isLoading={false}
           />
         </View>
-      </View>
+      </ScrollView>
     </>
   );
 };

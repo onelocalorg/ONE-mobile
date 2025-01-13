@@ -1,6 +1,7 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import React from "react";
 import { View } from "react-native";
+import { ScrollView } from "react-native-gesture-handler";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
 import { Loader } from "~/components/loader";
 import { RootStackScreenProps, Screens } from "~/navigation/types";
@@ -36,15 +37,17 @@ export const EditEventScreen = ({
   return (
     <>
       <Loader visible={!!eventId && isPending} />
-      <View style={styles.eventClass}>
-        {!eventId || event ? (
-          <EventEditor
-            event={event}
-            onSubmitUpdate={editEvent}
-            isLoading={isLoading}
-          />
-        ) : null}
-      </View>
+      <ScrollView>
+        <View style={styles.eventClass}>
+          {!eventId || event ? (
+            <EventEditor
+              event={event}
+              onSubmitUpdate={editEvent}
+              isLoading={isLoading}
+            />
+          ) : null}
+        </View>
+      </ScrollView>
     </>
   );
 };
