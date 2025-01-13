@@ -234,6 +234,10 @@ export const AppNavigation = ({
               name={Screens.EDIT_GROUP}
               component={EditGroupScreen}
             />
+            <RootStack.Screen
+              name={Screens.SELECT_USERS}
+              component={UserListSearchable}
+            />
           </RootStack.Group>
         ) : email ? (
           <GuestStack.Screen
@@ -284,10 +288,6 @@ export const AppNavigation = ({
             options={{
               ...ShortModalScreenOptions,
             }}
-          />
-          <RootStack.Screen
-            name={Screens.SELECT_USERS}
-            component={UserListSearchable}
           />
         </RootStack.Group>
       </RootStack.Navigator>

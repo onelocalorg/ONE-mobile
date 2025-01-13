@@ -36,10 +36,6 @@ export const UserListSearchable = ({
     })
   );
 
-  // const { mutate: updateGroup } = useMutation<Group, Error, GroupUpdateData>({
-  //   mutationKey: [GroupMutations.editGroup],
-  // });
-
   const separatedUsers = allUsers
     ? Object.entries(
         _.groupBy((user: OneUser) => user.firstName.charAt(0), allUsers)
@@ -47,23 +43,17 @@ export const UserListSearchable = ({
     : [];
 
   const toggleSelectUser = (user: OneUser) => {
+    let selectedNow;
     if (selectedUsers.find((u) => u.id === user.id)) {
-      setSelectedUsers(selectedUsers.filter((u) => u.id !== user.id));
+      selectedNow = selectedUsers.filter((u) => u.id !== user.id);
     } else {
-      setSelectedUsers([...selectedUsers, user]);
+      selectedNow = [...selectedUsers, user];
     }
+    setSelectedUsers(selectedNow);
 
-    console.log("selectedUsers", selectedUsers);
     navigation.setParams({
-      users: selectedUsers,
+      users: selectedNow,
     });
-
-    // if (groupId) {
-    //   updateGroup({
-    //     id: groupId,
-    //     [type]: selectedUsers.map((u) => ({ id: u.id })),
-    //   });
-    // }
   };
 
   return (
