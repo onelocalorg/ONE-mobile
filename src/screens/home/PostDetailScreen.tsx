@@ -12,6 +12,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import Markdown from "react-native-markdown-display";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
 import { useNavigations } from "~/app-hooks/useNavigations";
 import {
@@ -143,7 +144,7 @@ export const PostDetailScreen = ({
           </View>
         </View>
       </View>
-      <Text style={styles.postDes}>{post.details}</Text>
+      <Markdown>{post.details}</Markdown>
       <MultiImageViewer images={post.images} />
       <View style={styles.postDetailCont}>
         <Text style={styles.postDetailTitle}>What:</Text>
