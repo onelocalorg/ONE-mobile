@@ -1039,7 +1039,7 @@ export const createStyleSheet = (theme: ThemeProps) => {
       backgroundColor: theme.colors.darkenBlack,
       flex: 1,
       flexDirection: "column",
-      paddingTop: 40,
+      paddingTop: 10,
       // gap: 20,
     },
     replyModalContainer: {
