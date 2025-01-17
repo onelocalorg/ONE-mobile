@@ -7,13 +7,15 @@ import { useAppTheme } from "~/app-hooks/use-app-theme";
 import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
 import { useNavigations } from "~/app-hooks/useNavigations";
 import { dummy } from "~/assets/images";
-import { ButtonComponent } from "~/components/button-component";
 import { ChapterListHorizontal } from "~/components/chapter-list-horizontal";
 import { EventList } from "~/components/events/EventList";
 import { GroupList } from "~/components/groups/GroupList";
 import { ImageComponent } from "~/components/image-component";
 import { Loader } from "~/components/loader";
 import { TabComponent } from "~/components/tab-component";
+import { Box } from "~/components/ui/box";
+import { Button, ButtonText } from "~/components/ui/button";
+import { Grid, GridItem } from "~/components/ui/grid";
 import { useMyUserId } from "~/navigation/AuthContext";
 import { RootStackScreenProps, Screens } from "~/navigation/types";
 import {
@@ -94,7 +96,7 @@ export const GroupDetailScreen = ({
   return (
     <>
       <Loader visible={isPending} />
-      <View style={styles.container}>
+      <Box>
         {group ? (
           <>
             <View style={styles.rowOnly}>
@@ -113,25 +115,67 @@ export const GroupDetailScreen = ({
               </View>
             </View>
 
-            {group.chapters && (
-              <ChapterListHorizontal chapters={group.chapters} />
-            )}
-            {isEditor || isAdmin ? (
-              <ButtonComponent
-                title="Edit"
-                onPress={() => gotoEditGroup(groupId)}
-              />
-            ) : isMember ? (
-              <ButtonComponent title="Leave" onPress={handleLeaveGroup} />
-            ) : (
-              <ButtonComponent title="Join" onPress={handleJoinGroup} />
-            )}
+            <Grid
+              _extra={{
+                className: "grid-cols-2",
+              }}
+            >
+              <GridItem
+                _extra={{
+                  className: "col-span-1",
+                }}
+              >
+                <ChapterListHorizontal chapters={group.chapters} />
+                {/* </Box> */}
+              </GridItem>
+              <GridItem
+                _extra={{
+                  className: "col-span-1",
+                }}
+                className="pr-6"
+              >
+                {isEditor || isAdmin ? (
+                  <Button
+                    className="mh-6 bg-purple-300"
+                    onPress={() => gotoEditGroup(groupId)}
+                  >
+                    <ButtonText>Edit</ButtonText>
+                  </Button>
+                ) : isMember ? (
+                  <Button
+                    className="mh-6 bg-purple-300"
+                    onPress={handleLeaveGroup}
+                  >
+                    <ButtonText>Leave</ButtonText>
+                  </Button>
+                ) : (
+                  <Button
+                    className="mh-6 bg-purple-300"
+                    onPress={handleJoinGroup}
+                  >
+                    <ButtonText>Join</ButtonText>
+                  </Button>
+                )}
+              </GridItem>
+            </Grid>
 
             <View style={styles.line} />
             <TabComponent tabs={tabs} onPressTab={setSelectedTab} />
             {navigation ? (
               <>
-                {selectedTab === 0 && <AboutGroup group={group} />}
+                {selectedTab === 0 && (
+                  <>
+                    <AboutGroup group={group} />
+                    {isAdmin && (
+                      <Button
+                        className="mt-4 mb-4 w-36 ml-8 bg-red-600"
+                        onPress={confirmDeleteGroup}
+                      >
+                        <ButtonText>Delete</ButtonText>
+                      </Button>
+                    )}
+                  </>
+                )}
                 {selectedTab === 1 && (
                   <PostsList
                     group={group}
@@ -154,13 +198,9 @@ export const GroupDetailScreen = ({
                 )}
               </>
             ) : null}
-
-            {isAdmin && (
-              <ButtonComponent title="Delete" onPress={confirmDeleteGroup} />
-            )}
           </>
         ) : null}
-      </View>
+      </Box>
     </>
   );
 };

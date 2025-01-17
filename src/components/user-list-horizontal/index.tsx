@@ -1,10 +1,14 @@
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import React from "react";
-import { Pressable, Text, View } from "react-native";
+import { Pressable, ScrollView, View } from "react-native";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
 import { OneUser } from "~/types/one-user";
 import { ImageComponent } from "../image-component";
+import { Center } from "../ui/center";
+import { HStack } from "../ui/hstack";
+import { Text } from "../ui/text";
+import { VStack } from "../ui/vstack";
 import { createStyleSheet } from "./style";
 
 interface UserListHorizontalProps {
@@ -23,32 +27,33 @@ export const UserListHorizontal = ({
   };
 
   return (
-    <View
-      style={{
-        flexDirection: "row",
-        justifyContent: "flex-start",
-      }}
-    >
-      {users.map((user) => (
-        <View key={user.id} style={styles.userDetailsCont}>
-          <View style={styles.detailsSubCont}>
-            <ImageComponent
-              source={{ uri: user.pic }}
-              resizeMode="cover"
-              style={styles.userImage}
-            />
-            {onRemoveUser && (
-              <Pressable onPress={() => handleRemoveUser(user)}>
-                <FontAwesomeIcon icon={faXmark} size={20} color="red" />
-              </Pressable>
-            )}
-          </View>
-          <View style={styles.userNameCont}>
-            <Text style={styles.usernameLbl}>{user.firstName}</Text>
-            <Text style={styles.usernameLbl}>{user.lastName}</Text>
-          </View>
-        </View>
-      ))}
-    </View>
+    <ScrollView horizontal={true}>
+      <HStack>
+        {users.map((user) => (
+          <Center key={user.id}>
+            <VStack className="mx-4">
+              <View style={styles.detailsSubCont}>
+                <ImageComponent
+                  source={{ uri: user.pic }}
+                  resizeMode="cover"
+                  style={styles.userImage}
+                />
+                {onRemoveUser && (
+                  <Pressable onPress={() => handleRemoveUser(user)}>
+                    <FontAwesomeIcon icon={faXmark} size={20} color="red" />
+                  </Pressable>
+                )}
+              </View>
+              <VStack>
+                <Center>
+                  <Text size="sm">{user.firstName}</Text>
+                  <Text size="sm">{user.lastName}</Text>
+                </Center>
+              </VStack>
+            </VStack>
+          </Center>
+        ))}
+      </HStack>
+    </ScrollView>
   );
 };
