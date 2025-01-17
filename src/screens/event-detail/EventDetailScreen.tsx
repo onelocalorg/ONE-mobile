@@ -3,6 +3,7 @@ import { DateTime } from "luxon";
 import React from "react";
 import { Image, Text, TouchableOpacity, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
+import Markdown from "react-native-markdown-display";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
 import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
 import { useNavigations } from "~/app-hooks/useNavigations";
@@ -122,7 +123,7 @@ export const EventDetailScreen = ({
             </View>
             <SizedBox height={verticalScale(30)} />
             <Text style={styles.event}>{strings.aboutEvent}</Text>
-            <Text style={styles.desc}>{event.details}</Text>
+            <Markdown>{event.details}</Markdown>
             <MultiImageViewer images={event.images} />
           </View>
           <Tickets event={event} />
