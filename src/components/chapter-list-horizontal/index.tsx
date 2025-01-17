@@ -6,6 +6,7 @@ import { useAppTheme } from "~/app-hooks/use-app-theme";
 import { inactiveRadio } from "~/assets/images";
 import { ChapterData } from "~/types/chapter";
 import { ImageComponent } from "../image-component";
+import { HStack } from "../ui/hstack";
 import { createStyleSheet } from "./style";
 
 interface ChapterListHorizontalProps {
@@ -24,12 +25,7 @@ export const ChapterListHorizontal = ({
   };
 
   return (
-    <View
-      style={{
-        flexDirection: "row",
-        justifyContent: "flex-start",
-      }}
-    >
+    <HStack>
       {chapters.map((chapter) => (
         <View key={chapter.id} style={styles.chapterDetailsCont}>
           <View style={styles.detailsSubCont}>
@@ -49,6 +45,6 @@ export const ChapterListHorizontal = ({
           </View>
         </View>
       ))}
-    </View>
+    </HStack>
   );
 };

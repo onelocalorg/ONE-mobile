@@ -10,6 +10,7 @@ import { useChapterFilter } from "~/navigation/AppContext";
 import { useGroupService } from "~/network/api/services/useGroupService";
 import { Group } from "~/types/group";
 import { handleApiError } from "~/utils/common";
+import { Box } from "../ui/box";
 import { AddGroupView } from "./AddGroupView";
 import { createStyleSheet } from "./style";
 
@@ -46,9 +47,9 @@ export const GroupList = ({ placeholder, parent }: GroupListProps) => {
 
   const renderLocalGroup: ListRenderItem<Group> = ({ item }) => {
     return (
-      <View>
+      <Box className="mx-4 my-2">
         <GroupCard style={styles.listContainer} group={item} />
-      </View>
+      </Box>
     );
   };
 

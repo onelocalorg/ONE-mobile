@@ -43,10 +43,14 @@ export const GroupCard = ({ group, style }: GroupCardProps) => {
         </View>
 
         <View style={styles.row}>
-          <ImageComponent source={pin} style={styles.pin} />
-          <Text numberOfLines={3} style={styles.location}>
-            {group.venue || group.address?.split(",")[0]}
-          </Text>
+          {group.address && (
+            <>
+              <ImageComponent source={pin} style={styles.pin} />
+              <Text numberOfLines={3} style={styles.location}>
+                {group.venue || group.address?.split(",")[0]}
+              </Text>
+            </>
+          )}
           {/* <ImageComponent style={styles.addressDot} source={activeRadio}></ImageComponent> */}
           {/* <Text style={styles.fullAddress}>{full_address}</Text> */}
         </View>
