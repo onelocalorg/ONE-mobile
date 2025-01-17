@@ -58,7 +58,7 @@ export const EventDetailScreen = ({
   // });
 
   const handleEditEvent = () => {
-    navigation.push(Screens.CREATE_EDIT_EVENT, { id: eventId });
+    navigation.push(Screens.EDIT_EVENT, { id: eventId });
   };
 
   return (
