@@ -1,7 +1,7 @@
 module.exports = function (api) {
   api.cache(false);
   return {
-    presets: ["module:metro-react-native-babel-preset"],
+    presets: ["module:metro-react-native-babel-preset", "nativewind/babel"],
     plugins: [
       "jest-hoist",
       [
