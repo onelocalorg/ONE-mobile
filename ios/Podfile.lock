@@ -998,7 +998,7 @@ PODS:
     - React-Core
   - react-native-netinfo (9.5.0):
     - React-Core
-  - react-native-safe-area-context (4.14.1):
+  - react-native-safe-area-context (5.1.0):
     - React-Core
   - react-native-simple-toast (3.3.1):
     - React-Core
@@ -1232,25 +1232,25 @@ PODS:
     - React-Core
   - RNPermissions (4.1.5):
     - React-Core
-  - RNReanimated (3.16.6):
+  - RNReanimated (3.16.7):
     - glog
     - RCT-Folly (= 2022.05.16.00)
     - React-Core
     - ReactCommon/turbomodule/core
-    - RNReanimated/reanimated (= 3.16.6)
-    - RNReanimated/worklets (= 3.16.6)
-  - RNReanimated/reanimated (3.16.6):
+    - RNReanimated/reanimated (= 3.16.7)
+    - RNReanimated/worklets (= 3.16.7)
+  - RNReanimated/reanimated (3.16.7):
     - glog
     - RCT-Folly (= 2022.05.16.00)
     - React-Core
     - ReactCommon/turbomodule/core
-    - RNReanimated/reanimated/apple (= 3.16.6)
-  - RNReanimated/reanimated/apple (3.16.6):
+    - RNReanimated/reanimated/apple (= 3.16.7)
+  - RNReanimated/reanimated/apple (3.16.7):
     - glog
     - RCT-Folly (= 2022.05.16.00)
     - React-Core
     - ReactCommon/turbomodule/core
-  - RNReanimated/worklets (3.16.6):
+  - RNReanimated/worklets (3.16.7):
     - glog
     - RCT-Folly (= 2022.05.16.00)
     - React-Core
@@ -1266,7 +1266,7 @@ PODS:
     - React-Core
     - React-hermes
     - Sentry/HybridSDK (= 8.41.0)
-  - RNSVG (15.10.1):
+  - RNSVG (15.2.0):
     - React-Core
   - RNVectorIcons (10.2.0):
     - glog
@@ -1647,7 +1647,7 @@ SPEC CHECKSUMS:
   react-native-get-random-values: d16467cf726c618e9c7a8c3c39c31faa2244bbba
   react-native-image-picker: 89d0856dd413f2071ad42e5541a16477260b3f19
   react-native-netinfo: 26560022f28c06d8ef00a9ff1e03beefbbb60c2d
-  react-native-safe-area-context: 758e894ca5a9bd1868d2a9cfbca7326a2b6bf9dc
+  react-native-safe-area-context: e134b241010ebe2aacdcea013565963d13826faa
   react-native-simple-toast: f6316baf3870934e6e92cf48dbc9e330a5c8eb82
   react-native-splash-screen: 95994222cc95c236bd3cdc59fe45ed5f27969594
   react-native-webview: e339e6344f440e2f5c88af03f9d4cd186f7286bf
@@ -1685,10 +1685,10 @@ SPEC CHECKSUMS:
   rnmapbox-maps: a4192f488b6fad996fa9d94883a6cf45c96eaf46
   RNNotifee: 271cfeb505183d2cd1b858c14c3968b6ca30a642
   RNPermissions: 4f7b81b0d457c8ec4e892cc36ef2376734a4b22c
-  RNReanimated: 461ea011e67f6e72d3b1e78f7215b45816d3e7e2
+  RNReanimated: 088a1bf9c0b23af527cf39d2f86ae2efa63229d1
   RNScreens: 1174f55dd2f72abe45a4e48bf20e552feb051600
   RNSentry: eca960919ced41a2a1357dc1bdd368ae1c8bf0f1
-  RNSVG: 3421710ac15f4f2dc47e5c122f2c2e4282116830
+  RNSVG: 0e7deccab0678200815104223aadd5ca734dd41d
   RNVectorIcons: 692434715e99ea48fa4d5dcf28758a604b097d7e
   SDWebImage: a7f831e1a65eb5e285e3fb046a23fcfbf08e696d
   SDWebImageWebPCoder: 908b83b6adda48effe7667cd2b7f78c897e5111d

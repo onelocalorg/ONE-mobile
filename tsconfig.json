@@ -21,6 +21,9 @@
       "~/*": [
         "src/*"
       ],
+      "tailwind.config": [
+        "./tailwind.config.js"
+      ]
     },
     "noEmit": true,
     "target": "esnext"
@@ -29,9 +32,11 @@
     "src/**/*.tsx",
     "src/**/*.ts",
     "index.js",
-    ".eslintrc.cjs"
+    ".eslintrc.cjs",
+    "nativewind-env.d.ts"
   ],
   "exclude": [
+    "node_modules",
     "**/*.spec.ts"
   ]
 }

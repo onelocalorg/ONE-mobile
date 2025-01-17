@@ -21,6 +21,7 @@ module.exports = {
       jsx: true,
     },
   },
+  ignores: ["node_modules", "ios", "android", "babel.config.js", "metro.config.js", "tailwind.config.js"],
   root: true,
   rules: {
     "@typescript-eslint/no-unused-vars": [
@@ -47,4 +48,5 @@ module.exports = {
       files: [".eslintrc.cjs"],
     },
   ],
+  
 };
