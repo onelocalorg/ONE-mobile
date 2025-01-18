@@ -1,12 +1,8 @@
-import { Rows4, Users } from 'lucide-react-native';
+import { Rows4, Users } from "lucide-react-native";
 import React from "react";
-import {
-  Button,
-  ButtonIcon,
-  ButtonText
-} from "~/components/ui/button";
-import { Center } from '~/components/ui/center';
-import { HStack } from '~/components/ui/hstack';
+import { Button, ButtonIcon, ButtonText } from "~/components/ui/button";
+import { Center } from "~/components/ui/center";
+import { HStack } from "~/components/ui/hstack";
 
 export const HomeScreenTypeChooser = ({
   onGroupsChosen,
@@ -16,7 +12,6 @@ export const HomeScreenTypeChooser = ({
   const [isGroupsChosen, setGroupsChosen] = React.useState(false);
 
   const notifySetGroupsChosen = (newSetting: boolean) => {
-    console.log('click notify')
     if (isGroupsChosen !== newSetting) {
       onGroupsChosen(newSetting);
       setGroupsChosen(newSetting);
@@ -24,19 +19,23 @@ export const HomeScreenTypeChooser = ({
   };
 
   return (
-      <Center>
-       <HStack>
-        <Button className={isGroupsChosen ? "bg-slate-400" : "bg-slate-700"} 
-            onPress={() => notifySetGroupsChosen(false)}>
-          <ButtonIcon as={Rows4}/>
+    <Center>
+      <HStack>
+        <Button
+          className={isGroupsChosen ? "bg-slate-400" : "bg-slate-700"}
+          onPress={() => notifySetGroupsChosen(false)}
+        >
+          <ButtonIcon as={Rows4} />
           <ButtonText>Posts</ButtonText>
         </Button>
-        <Button className={!isGroupsChosen ? "bg-slate-400" : "bg-slate-700"} 
-            onPress={() => notifySetGroupsChosen(true)}>
-          <ButtonIcon as={Users}/>
+        <Button
+          className={!isGroupsChosen ? "bg-slate-400" : "bg-slate-700"}
+          onPress={() => notifySetGroupsChosen(true)}
+        >
+          <ButtonIcon as={Users} />
           <ButtonText>Groups</ButtonText>
         </Button>
-     </HStack>
+      </HStack>
     </Center>
   );
 };
