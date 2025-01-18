@@ -1,7 +1,7 @@
-import ReadMore from "@fawazahmed/react-native-read-more";
 import _ from "lodash/fp";
 import React, { useState } from "react";
 import { Image, Pressable, Text, TouchableOpacity, View } from "react-native";
+import Markdown from "react-native-markdown-display";
 import Carousel from "react-native-reanimated-carousel";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
 import { useNavigations } from "~/app-hooks/useNavigations";
@@ -11,6 +11,7 @@ import {
   greenImage as threeVerticalDots,
 } from "~/assets/images";
 import { ImageComponent } from "~/components/image-component";
+import { Box } from "~/components/ui/box";
 import { Post, PostType } from "~/types/post";
 import { createStyleSheet } from "./style";
 
@@ -81,13 +82,9 @@ export const PostCard = ({ post, size, onSeeMore }: PostCardProps) => {
             ) : null}
           </View>
         </View>
-        <ReadMore
-          numberOfLines={numberOfLines}
-          style={styles.postDes}
-          onSeeMore={onSeeMore}
-        >
-          {post.details}
-        </ReadMore>
+        <Box className="px-4">
+          <Markdown>{post.details.substring(0, 100)}</Markdown>
+        </Box>
         {post.images.length > 1
           ? layoutWidth && (
               <Carousel
