@@ -67,10 +67,6 @@ export const GroupDetailScreen = ({
     leaveGroup(groupId);
   };
 
-  const handleDeleteGroup = () => {
-    // deleteGroup(groupId);
-  };
-
   const tabs = [strings.about, strings.posts, strings.events];
   if (group && !group.parent) {
     tabs.push(strings.groups);

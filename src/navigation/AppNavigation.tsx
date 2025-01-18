@@ -7,6 +7,7 @@ import {
 import React from "react";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
 import { ShortModalScreenOptions } from "~/components/ShortModal";
+import { ChapterListSearchable } from "~/components/chapter-list-searchable/ChapterListSearchable";
 import { GenericWebView } from "~/components/generic-webview";
 import { MyAvatar } from "~/components/navbar/MyAvatar";
 import { OneLogo } from "~/components/navbar/OneLogo";
@@ -237,6 +238,10 @@ export const AppNavigation = ({
             <RootStack.Screen
               name={Screens.SELECT_USERS}
               component={UserListSearchable}
+            />
+            <RootStack.Screen
+              name={Screens.SELECT_CHAPTERS}
+              component={ChapterListSearchable}
             />
           </RootStack.Group>
         ) : email ? (

@@ -1,4 +1,4 @@
-import { ChapterData, ChapterUpdateData } from "./chapter";
+import { ChapterData } from "./chapter";
 import { ImageKey, ImageUrl } from "./image-info";
 import { OneUser, OneUserData } from "./one-user";
 
@@ -20,7 +20,7 @@ export interface GroupData extends GroupUpdateData {
 export interface GroupUpdateData {
   id: string;
   name?: string;
-  chapters?: ChapterUpdateData[];
+  chapters?: ChapterData[];
   summary?: string;
   details?: string;
   venue?: string;

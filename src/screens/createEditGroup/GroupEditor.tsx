@@ -29,9 +29,8 @@ import { LocationAutocomplete } from "~/components/location-autocomplete/Locatio
 import { UserListHorizontal } from "~/components/user-list-horizontal";
 import { useChapterFilter } from "~/navigation/AppContext";
 import { RootStackScreenProps, Screens } from "~/navigation/types";
-import { GroupMutations } from "~/network/api/services/useGroupService";
 import { UserMutations } from "~/network/api/services/useUserService";
-import { ChapterData, ChapterUpdateData } from "~/types/chapter";
+import { ChapterData } from "~/types/chapter";
 import { Group, GroupData, GroupUpdateData } from "~/types/group";
 import { OneUser } from "~/types/one-user";
 import { RemoteImage } from "~/types/remote-image";
@@ -61,12 +60,8 @@ export const GroupEditor = ({
   const styles = createStyleSheet(theme);
   const { strings } = useStringsAndLabels();
   const navigation = useNavigation();
-  const { gotoChooseUsers } = useNavigations();
+  const { gotoChooseChapters, gotoChooseUsers } = useNavigations();
   const chapterFilter = useChapterFilter();
-
-  const { mutate: updateGroup } = useMutation<Group, Error, GroupUpdateData>({
-    mutationKey: [GroupMutations.editGroup],
-  });
 
   const {
     control,
@@ -134,7 +129,7 @@ export const GroupEditor = ({
     removeMember(members!.findIndex((u) => u.id === user.id));
   };
 
-  const handleRemoveChapter = (chapter: ChapterUpdateData) => {
+  const handleRemoveChapter = (chapter: ChapterData) => {
     removeChapter(members!.findIndex((c) => c.id === chapter.id));
   };
 
@@ -150,6 +145,24 @@ export const GroupEditor = ({
 
       if (params) {
         setValue(params.type as "admins" | "members", params.users);
+      }
+    });
+
+    return unsubscribe;
+  }, [navigation, setValue]);
+
+  React.useEffect(() => {
+    const unsubscribe = navigation.addListener("state", (event) => {
+      const params = event.data.state.routes.find(
+        (r) =>
+          r.name ===
+          (Screens.SELECT_CHAPTERS as keyof ReactNavigation.RootParamList)
+      )?.params as
+        | RootStackScreenProps<Screens.SELECT_CHAPTERS>["route"]["params"]
+        | undefined;
+
+      if (params) {
+        setValue("chapters", params.chapters);
       }
     });
 
@@ -313,9 +326,8 @@ export const GroupEditor = ({
             <Text style={styles.emphasized}>{strings.chapters}</Text>
             <Pressable
               onPress={() =>
-                gotoChooseUsers({
-                  type: "chapters",
-                  users: group?.members ?? members!,
+                gotoChooseChapters({
+                  chapters: group?.chapters ?? chapters!,
                 })
               }
             >
@@ -337,7 +349,6 @@ export const GroupEditor = ({
             <Pressable
               onPress={() =>
                 gotoChooseUsers({
-                  groupId: group?.id,
                   type: "admins",
                   users: group?.admins ?? admins!,
                 })
@@ -365,7 +376,6 @@ export const GroupEditor = ({
             <Pressable
               onPress={() =>
                 gotoChooseUsers({
-                  groupId: group?.id,
                   type: "members",
                   users: group?.members ?? members!,
                 })
