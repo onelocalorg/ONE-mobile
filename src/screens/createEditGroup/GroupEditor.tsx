@@ -77,7 +77,9 @@ export const GroupEditor = ({
         }
       : {
           name: "",
-          chapters: [],
+          chapters: chapterFilter
+            ? [{ id: chapterFilter.id, name: chapterFilter.name }]
+            : [],
           summary: "",
           details: "",
           venue: "",
@@ -184,13 +186,14 @@ export const GroupEditor = ({
 
     if (
       !group &&
-      chapterFilter?.id &&
-      myProfile?.chapterId &&
-      chapterFilter.id !== myProfile.chapterId
+      chapters &&
+      chapters.length > 0 &&
+      chapterFilter &&
+      !chapters.find((c) => c.id === myProfile.chapterId)
     ) {
       Alert.alert(
         "Create outside of home chapter?",
-        `This will create a group in ${chapterFilter.name} which is different from your home chapter. Are you sure you want to proceed?`,
+        `This will create a group in ${chapterFilter.name} but not in your home chapter. Are you sure you want to proceed?`,
         [
           { text: strings.no, onPress: () => null, style: "cancel" },
           {
