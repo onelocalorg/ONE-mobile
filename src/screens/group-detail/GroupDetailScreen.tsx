@@ -2,7 +2,7 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import _ from "lodash";
 import React, { useState } from "react";
-import { Alert, Text, View } from "react-native";
+import { Alert, ScrollView, Text, View } from "react-native";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
 import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
 import { useNavigations } from "~/app-hooks/useNavigations";
@@ -92,111 +92,116 @@ export const GroupDetailScreen = ({
   return (
     <>
       <Loader visible={isPending} />
-      <Box>
-        {group ? (
-          <>
-            <View style={styles.rowOnly}>
-              <ImageComponent
-                isUrl={!!_.head(group.images)?.url}
-                resizeMode="cover"
-                uri={_.head(group.images)?.url}
-                source={dummy}
-                style={styles.profile}
-              />
-              <View style={styles.fullName}>
-                <View style={styles.rowOnly}>
-                  <Text style={styles.name}>{group.name} </Text>
+      <ScrollView>
+        <Box>
+          {group ? (
+            <>
+              <View style={styles.rowOnly}>
+                <ImageComponent
+                  isUrl={!!_.head(group.images)?.url}
+                  resizeMode="cover"
+                  uri={_.head(group.images)?.url}
+                  source={dummy}
+                  style={styles.profile}
+                />
+                <View style={styles.fullName}>
+                  <View style={styles.rowOnly}>
+                    <Text style={styles.name}>{group.name} </Text>
+                  </View>
+                  <Text style={styles.des}>{group.summary}</Text>
                 </View>
-                <Text style={styles.des}>{group.summary}</Text>
               </View>
-            </View>
 
-            <Grid
-              _extra={{
-                className: "grid-cols-2",
-              }}
-            >
-              <GridItem
+              <Grid
                 _extra={{
-                  className: "col-span-1",
+                  className: "grid-cols-2",
                 }}
               >
-                <ChapterListHorizontal chapters={group.chapters} />
-                {/* </Box> */}
-              </GridItem>
-              <GridItem
-                _extra={{
-                  className: "col-span-1",
-                }}
-                className="pr-6"
-              >
-                {isEditor || isAdmin ? (
-                  <Button
-                    className="mh-6 bg-purple-300"
-                    onPress={() => gotoEditGroup(groupId)}
-                  >
-                    <ButtonText>Edit</ButtonText>
-                  </Button>
-                ) : isMember ? (
-                  <Button
-                    className="mh-6 bg-purple-300"
-                    onPress={handleLeaveGroup}
-                  >
-                    <ButtonText>Leave</ButtonText>
-                  </Button>
-                ) : (
-                  <Button
-                    className="mh-6 bg-purple-300"
-                    onPress={handleJoinGroup}
-                  >
-                    <ButtonText>Join</ButtonText>
-                  </Button>
-                )}
-              </GridItem>
-            </Grid>
+                <GridItem
+                  _extra={{
+                    className: "col-span-1",
+                  }}
+                >
+                  <ChapterListHorizontal chapters={group.chapters} />
+                  {/* </Box> */}
+                </GridItem>
+                <GridItem
+                  _extra={{
+                    className: "col-span-1",
+                  }}
+                  className="pr-6"
+                >
+                  {isEditor || isAdmin ? (
+                    <Button
+                      className="mh-6 bg-purple-300"
+                      onPress={() => gotoEditGroup(groupId)}
+                    >
+                      <ButtonText>Edit</ButtonText>
+                    </Button>
+                  ) : isMember ? (
+                    <Button
+                      className="mh-6 bg-purple-300"
+                      onPress={handleLeaveGroup}
+                    >
+                      <ButtonText>Leave</ButtonText>
+                    </Button>
+                  ) : (
+                    <Button
+                      className="mh-6 bg-purple-300"
+                      onPress={handleJoinGroup}
+                    >
+                      <ButtonText>Join</ButtonText>
+                    </Button>
+                  )}
+                </GridItem>
+              </Grid>
 
-            <View style={styles.line} />
-            <TabComponent tabs={tabs} onPressTab={setSelectedTab} />
-            {navigation ? (
-              <>
-                {selectedTab === 0 && (
-                  <>
-                    <AboutGroup group={group} />
-                    {isAdmin && (
-                      <Button
-                        className="mt-4 mb-4 w-36 ml-8 bg-red-600"
-                        onPress={confirmDeleteGroup}
-                      >
-                        <ButtonText>Delete</ButtonText>
-                      </Button>
-                    )}
-                  </>
-                )}
-                {selectedTab === 1 && (
-                  <PostsList
-                    group={group}
-                    header={
-                      <AddPostView
-                        placeholder={strings.createPost}
-                        group={group}
-                      />
-                    }
-                  />
-                )}
-                {selectedTab === 2 && (
-                  <EventList group={group} placeholder={strings.createEvent} />
-                )}
-                {selectedTab === 3 && (
-                  <GroupList
-                    parent={group}
-                    placeholder={strings.createSubgroup}
-                  />
-                )}
-              </>
-            ) : null}
-          </>
-        ) : null}
-      </Box>
+              <View style={styles.line} />
+              <TabComponent tabs={tabs} onPressTab={setSelectedTab} />
+              {navigation ? (
+                <>
+                  {selectedTab === 0 && (
+                    <>
+                      <AboutGroup group={group} />
+                      {isAdmin && (
+                        <Button
+                          className="mt-4 mb-4 w-36 ml-8 bg-red-600"
+                          onPress={confirmDeleteGroup}
+                        >
+                          <ButtonText>Delete</ButtonText>
+                        </Button>
+                      )}
+                    </>
+                  )}
+                  {selectedTab === 1 && (
+                    <PostsList
+                      group={group}
+                      header={
+                        <AddPostView
+                          placeholder={strings.createPost}
+                          group={group}
+                        />
+                      }
+                    />
+                  )}
+                  {selectedTab === 2 && (
+                    <EventList
+                      group={group}
+                      placeholder={strings.createEvent}
+                    />
+                  )}
+                  {selectedTab === 3 && (
+                    <GroupList
+                      parent={group}
+                      placeholder={strings.createSubgroup}
+                    />
+                  )}
+                </>
+              ) : null}
+            </>
+          ) : null}
+        </Box>
+      </ScrollView>
     </>
   );
 };
