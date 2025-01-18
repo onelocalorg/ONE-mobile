@@ -5,6 +5,7 @@ import _ from "lodash/fp";
 import { useCallback, useEffect } from "react";
 import { useNotificationService } from "~/navigation/NotificationService";
 import { Screens } from "~/navigation/types";
+import { ChapterData } from "~/types/chapter";
 import { Group } from "~/types/group";
 import { LocalEvent } from "~/types/local-event";
 import { OneUser, OneUserData } from "~/types/one-user";
@@ -144,15 +145,22 @@ export function useNavigations() {
   };
 
   interface ChooseUsersProps {
-    groupId?: string;
     type: string;
     users: OneUserData[];
   }
-  const gotoChooseUsers = ({ groupId, type, users }: ChooseUsersProps) => {
+  const gotoChooseUsers = ({ type, users }: ChooseUsersProps) => {
     navigation.navigate(Screens.SELECT_USERS, {
-      groupId,
       type,
       users,
+    });
+  };
+
+  interface ChooseChaptersProps {
+    chapters: ChapterData[];
+  }
+  const gotoChooseChapters = ({ chapters }: ChooseChaptersProps) => {
+    navigation.navigate(Screens.SELECT_CHAPTERS, {
+      chapters,
     });
   };
 
@@ -168,5 +176,6 @@ export function useNavigations() {
     gotoCreateGroup,
     gotoEditGroup,
     gotoChooseUsers,
+    gotoChooseChapters,
   };
 }

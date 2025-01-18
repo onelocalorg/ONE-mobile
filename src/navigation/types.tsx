@@ -4,6 +4,7 @@ import type {
   NavigatorScreenParams,
 } from "@react-navigation/native";
 import { StackScreenProps } from "@react-navigation/stack";
+import { ChapterData } from "~/types/chapter";
 import { OneUserData } from "~/types/one-user";
 
 export enum Screens {
@@ -36,6 +37,7 @@ export enum Screens {
   EDIT_GROUP = "EditGroup",
   CHOOSE_TICKETS = "ChooseTickets",
   SELECT_USERS = "SelectUsers",
+  SELECT_CHAPTERS = "SelectChapters",
 }
 
 export type GuestStackParamList = {
@@ -73,9 +75,11 @@ export type RootStackParamList = {
   [Screens.REPORT_CONTENT_MODAL]: { postId: string };
   [Screens.CHOOSE_TICKETS]: { eventId: string };
   [Screens.SELECT_USERS]: {
-    groupId?: string;
     type: string;
     users: OneUserData[];
+  };
+  [Screens.SELECT_CHAPTERS]: {
+    chapters: ChapterData[];
   };
 };
 

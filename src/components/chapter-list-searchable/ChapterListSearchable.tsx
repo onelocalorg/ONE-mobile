@@ -8,51 +8,49 @@ import React, { useState } from "react";
 import { Pressable, SectionList, Text, View } from "react-native";
 import { TextInput } from "react-native-gesture-handler";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
-import { defaultUser } from "~/assets/images";
-import { createStyleSheet } from "~/components/user-list-searchable/style";
+import { createStyleSheet } from "~/components/chapter-list-searchable/style";
 import { RootStackScreenProps, Screens } from "~/navigation/types";
-import { useUserService } from "~/network/api/services/useUserService";
-import { OneUser } from "~/types/one-user";
-import { ImageComponent } from "../image-component";
+import { useChapterService } from "~/network/api/services/useChapterService";
+import { Chapter } from "~/types/chapter";
 
-export const UserListSearchable = ({
+export const ChapterListSearchable = ({
   route,
-}: RootStackScreenProps<Screens.SELECT_USERS>) => {
-  const { type, users } = route.params;
+}: RootStackScreenProps<Screens.SELECT_CHAPTERS>) => {
+  const { chapters } = route.params;
 
   const { theme } = useAppTheme();
   const styles = createStyleSheet(theme);
   const [searchText, setSearchText] = useState("");
-  const [selectedUsers, setSelectedUsers] = useState(users || []);
+  const [selectedChapters, setSelectedChapters] = useState(chapters || []);
   const navigation = useNavigation();
 
   const {
-    queries: { list: listUsers },
-  } = useUserService();
+    queries: { list: listChapters },
+  } = useChapterService();
 
-  const { data: allUsers } = useQuery(
-    listUsers({
+  const { data: allChapters } = useQuery(
+    listChapters({
       search: searchText,
     })
   );
 
-  const separatedUsers = allUsers
+  const separatedChapters = allChapters
     ? Object.entries(
-        _.groupBy((user: OneUser) => user.firstName.charAt(0), allUsers)
+        _.groupBy((chapter: Chapter) => chapter.name.charAt(0), allChapters)
       ).sort()
     : [];
 
-  const toggleSelectUser = (user: OneUser) => {
+  const toggleSelectChapter = (chapter: Chapter) => {
     let selectedNow;
-    if (selectedUsers.find((u) => u.id === user.id)) {
-      selectedNow = selectedUsers.filter((u) => u.id !== user.id);
+    if (selectedChapters.find((u) => u.id === chapter.id)) {
+      selectedNow = selectedChapters.filter((u) => u.id !== chapter.id);
     } else {
-      selectedNow = [...selectedUsers, user];
+      selectedNow = [...selectedChapters, chapter];
     }
-    setSelectedUsers(selectedNow);
+    setSelectedChapters(selectedNow);
 
     navigation.setParams({
-      users: selectedNow,
+      chapters: selectedNow,
     });
   };
 
@@ -74,21 +72,14 @@ export const UserListSearchable = ({
       </View>
       <SectionList
         style={styles.container}
-        sections={separatedUsers.map(([key, value]) => ({
+        sections={separatedChapters.map(([key, value]) => ({
           title: key,
           data: value,
         }))}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
-          <Pressable
-            onPress={() => toggleSelectUser(item)}
-            disabled={
-              type === "admins" &&
-              users.length < 2 &&
-              !!selectedUsers.find((u) => u.id === item.id)
-            }
-          >
-            <View style={styles.userDetailsCont}>
+          <Pressable onPress={() => toggleSelectChapter(item)}>
+            <View style={styles.chapterDetailsCont}>
               <View
                 style={{
                   flexDirection: "row",
@@ -104,20 +95,18 @@ export const UserListSearchable = ({
                     flexDirection: "row",
                   }}
                 >
-                  <View style={styles.detailsSubCont}>
+                  {/* <View style={styles.detailsSubCont}>
                     <ImageComponent
                       resizeMode="cover"
-                      style={styles.userImage}
+                      style={styles.chapterImage}
                       isUrl={!!item?.pic}
                       uri={item?.pic}
-                      source={defaultUser}
+                      source={defaultChapter}
                     />
-                  </View>
-                  <Text style={styles.usernameLbl}>
-                    {item.firstName} {item.lastName}
-                  </Text>
+                  </View> */}
+                  <Text style={styles.chapternameLbl}>{item.name}</Text>
                 </View>
-                {selectedUsers.find((u) => u.id === item.id) ? (
+                {selectedChapters.find((u) => u.id === item.id) ? (
                   <FontAwesomeIcon
                     icon={faCircleCheck}
                     size={32}

@@ -1,4 +1,5 @@
 import { queryOptions, useQueryClient } from "@tanstack/react-query";
+import _ from "lodash/fp";
 import { useMyUserId } from "~/navigation/AuthContext";
 import { Chapter } from "~/types/chapter";
 import { useApiService } from "./ApiService";
@@ -16,10 +17,10 @@ export function useChapterService() {
   const queries = {
     all: () => ["chapters"],
     lists: () => [...queries.all(), "list"],
-    list: () =>
+    list: (filters?: GetChaptersParams) =>
       queryOptions({
-        queryKey: [...queries.lists()],
-        queryFn: () => getChapters(),
+        queryKey: [...queries.lists(), filters],
+        queryFn: () => getChapters(filters),
       }),
   };
 
@@ -38,8 +39,17 @@ export function useChapterService() {
   });
   const { doGet, doPost } = useApiService();
 
-  const getChapters = () => {
-    return doGet<Chapter[]>(`/v3/chapters`);
+  interface GetChaptersParams {
+    search?: string;
+  }
+  const getChapters = ({ search }: GetChaptersParams | undefined = {}) => {
+    const urlParams: string[] = [];
+    if (!_.isNil(search) && !_.isEmpty(search))
+      urlParams.push(`search=${search.toString()}`);
+
+    const urlSearchParams = urlParams.join("&");
+
+    return doGet<Chapter[]>(`/v3/chapters?${urlSearchParams}`);
   };
 
   const joinChapter = (chapterId: string) =>
