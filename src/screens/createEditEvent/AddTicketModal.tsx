@@ -200,7 +200,7 @@ export const AddTicketModal = ({
                   resetState();
                   onDismiss?.();
                 }}
-                title={strings.cancle}
+                title={strings.cancel}
               />
               <ButtonComponent
                 onPress={() => {

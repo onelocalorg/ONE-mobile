@@ -62,7 +62,7 @@ export const EventCard = ({
           {/* <Text style={styles.fullAddress}>{full_address}</Text> */}
         </View>
         {event.cancelDate ? (
-          <Text style={styles.cancleText}>CANCELED</Text>
+          <Text style={styles.cancelText}>CANCELED</Text>
         ) : null}
       </View>
     </TouchableOpacity>

@@ -235,7 +235,7 @@ export const EventEditor = ({
 
   const verifyCancelEvent = (id: string) => {
     Alert.alert(
-      strings.cancle,
+      strings.cancel,
       strings.verifyCancel,
       [
         { text: strings.no, onPress: () => null, style: "cancel" },
@@ -401,10 +401,10 @@ export const EventEditor = ({
                     <TouchableOpacity
                       activeOpacity={0.8}
                       onPress={() => verifyCancelEvent(event.id)}
-                      style={styles.cancleEventBtn}
+                      style={styles.cancelEventBtn}
                     >
-                      <Text style={styles.cancleEventText}>
-                        {strings.cancleEvent}
+                      <Text style={styles.cancelEventText}>
+                        {strings.cancelEvent}
                       </Text>
                     </TouchableOpacity>
                   </View>

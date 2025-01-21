@@ -206,9 +206,9 @@ export const MyAbout = ({ user, onEditProfile }: AboutDataProps) => {
                             {postData.defaultSignupText}
                           </Text>
                           {postData.status == true ? (
-                            <TouchableOpacity onPress={cancleSubscriptionAPI}>
-                              <Text style={styles.cancleSubStyle}>
-                                {strings.cancleSubscription}
+                            <TouchableOpacity onPress={cancelSubscriptionAPI}>
+                              <Text style={styles.cancelSubStyle}>
+                                {strings.cancelSubscription}
                               </Text>
                             </TouchableOpacity>
                           ) : (
