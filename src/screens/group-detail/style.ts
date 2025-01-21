@@ -305,7 +305,7 @@ export const createStyleSheet = (theme: ThemeProps) => {
       fontSize: theme.fontSize.font14,
       fontFamily: theme.fontType.regular,
     },
-    cancleSubStyle: {
+    cancelSubStyle: {
       textAlign: "center",
       marginTop: 20,
       marginBottom: 20,

@@ -57,7 +57,7 @@ export const MapCard = ({ item, onPress }: MapCardProps) => {
           </Text>
         </View>
         {/* {item.isCanceled ? (
-          <Text style={styles.cancleText}>CANCELED</Text>
+          <Text style={styles.cancelText}>CANCELED</Text>
         ) : (
           <View></View>
         )} */}

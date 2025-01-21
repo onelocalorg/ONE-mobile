@@ -218,7 +218,7 @@ export const createStyleSheet = (theme: ThemeProps) => {
       right: 5,
       bottom: 10,
     },
-    cancleEventBtn: {
+    cancelEventBtn: {
       marginHorizontal: 20,
       backgroundColor: theme.colors.white,
       borderRadius: theme.borderRadius.radius14,
@@ -238,7 +238,7 @@ export const createStyleSheet = (theme: ThemeProps) => {
       marginTop: 12,
     },
 
-    cancleEventText: {
+    cancelEventText: {
       fontSize: 14,
       textAlign: "center",
       color: theme.colors.black,
@@ -1005,7 +1005,7 @@ export const createStyleSheet = (theme: ThemeProps) => {
       marginVertical: 5,
       marginHorizontal: 5,
     },
-    cancleText: {
+    cancelText: {
       position: "absolute",
       right: 0,
       top: 35,

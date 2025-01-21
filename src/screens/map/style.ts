@@ -84,7 +84,7 @@ export const createStyleSheet = (theme: ThemeProps) => {
       marginVertical: 5,
       marginHorizontal: 5,
     },
-    cancleText: {
+    cancelText: {
       position: "absolute",
       right: 0,
       top: 35,
