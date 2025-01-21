@@ -1,7 +1,7 @@
 import _ from "lodash/fp";
 import React, { useState } from "react";
 import { Image, Pressable, Text, TouchableOpacity, View } from "react-native";
-import Markdown from "react-native-markdown-display";
+import Markdown, { MarkdownIt } from "react-native-markdown-display";
 import Carousel from "react-native-reanimated-carousel";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
 import { useNavigations } from "~/app-hooks/useNavigations";
@@ -83,7 +83,15 @@ export const PostCard = ({ post, size, onSeeMore }: PostCardProps) => {
           </View>
         </View>
         <Box className="px-4">
-          <Markdown>{post.details.substring(0, 100)}</Markdown>
+          <Markdown
+            markdownit={MarkdownIt({ typographer: true }).disable([
+              "image",
+              "heading",
+              "html_block",
+            ])}
+          >
+            {post.details.substring(0, 200)}
+          </Markdown>
         </Box>
         {post.images.length > 1
           ? layoutWidth && (
