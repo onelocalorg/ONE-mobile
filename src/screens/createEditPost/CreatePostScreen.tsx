@@ -27,7 +27,7 @@ export const CreatePostScreen = ({
 
   return (
     <>
-      <ScrollView>
+      <ScrollView keyboardShouldPersistTaps="handled">
         <View style={styles.postClass}>
           <PostEditor
             onSubmitCreate={(postData) => createPost({ ...postData, groupId })}

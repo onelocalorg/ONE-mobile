@@ -41,7 +41,7 @@ export const EditGroupScreen = ({
   return (
     <>
       <Loader visible={!!group && isPending} />
-      <ScrollView>
+      <ScrollView keyboardShouldPersistTaps="handled">
         <View>
           <View style={styles.groupClass}>
             {myProfile ? (

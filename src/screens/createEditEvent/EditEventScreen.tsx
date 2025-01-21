@@ -37,7 +37,7 @@ export const EditEventScreen = ({
   return (
     <>
       <Loader visible={!!eventId && isPending} />
-      <ScrollView>
+      <ScrollView keyboardShouldPersistTaps="handled">
         <View style={styles.eventClass}>
           {!eventId || event ? (
             <EventEditor
