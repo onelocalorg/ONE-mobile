@@ -19,10 +19,14 @@ export const AboutGroup = ({ group }: AboutProps) => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.input}>{strings.details}</Text>
-      <Box className="px-4">
-        <Markdown>{group.details}</Markdown>
-      </Box>
+      {group.details && (
+        <>
+          <Text style={styles.input}>{strings.details}</Text>
+          <Box className="px-4">
+            <Markdown>{group.details}</Markdown>
+          </Box>
+        </>
+      )}
       <Text style={styles.input}>{strings.admins}</Text>
       <UserListHorizontal users={group.admins} />
       <Text style={styles.input}>{strings.members}</Text>

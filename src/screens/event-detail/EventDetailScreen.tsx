@@ -121,9 +121,13 @@ export const EventDetailScreen = ({
                 >{`${event.host.firstName} ${event.host.lastName}`}</Text>
               </View>
             </View>
-            <SizedBox height={verticalScale(30)} />
-            <Text style={styles.event}>{strings.aboutEvent}</Text>
-            <Markdown>{event.details}</Markdown>
+            {event.details && (
+              <>
+                <SizedBox height={verticalScale(30)} />
+                <Text style={styles.event}>{strings.aboutEvent}</Text>
+                <Markdown>{event.details}</Markdown>
+              </>
+            )}
             <MultiImageViewer images={event.images} />
           </View>
           <Tickets event={event} />

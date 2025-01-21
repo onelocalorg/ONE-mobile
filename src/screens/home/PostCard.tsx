@@ -82,17 +82,19 @@ export const PostCard = ({ post, size, onSeeMore }: PostCardProps) => {
             ) : null}
           </View>
         </View>
-        <Box className="px-4">
-          <Markdown
-            markdownit={MarkdownIt({ typographer: true }).disable([
-              "image",
-              "heading",
-              "html_block",
-            ])}
-          >
-            {post.details.substring(0, 200)}
-          </Markdown>
-        </Box>
+        {post.details && (
+          <Box className="px-4">
+            <Markdown
+              markdownit={MarkdownIt({ typographer: true }).disable([
+                "image",
+                "heading",
+                "html_block",
+              ])}
+            >
+              {post.details.substring(0, 200)}
+            </Markdown>
+          </Box>
+        )}
         {post.images.length > 1
           ? layoutWidth && (
               <Carousel

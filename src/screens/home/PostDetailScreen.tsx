@@ -144,7 +144,7 @@ export const PostDetailScreen = ({
           </View>
         </View>
       </View>
-      <Markdown>{post.details}</Markdown>
+      {post.details && <Markdown>{post.details}</Markdown>}
       <MultiImageViewer images={post.images} />
       <View style={styles.postDetailCont}>
         <Text style={styles.postDetailTitle}>What:</Text>
