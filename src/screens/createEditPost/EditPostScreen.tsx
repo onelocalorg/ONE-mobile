@@ -32,7 +32,7 @@ export const EditPostScreen = ({
   return (
     <>
       <Loader visible={!!post && isPending} />
-      <ScrollView>
+      <ScrollView keyboardShouldPersistTaps="handled">
         <View style={styles.postClass}>
           {!postId || post ? (
             <PostEditor

@@ -34,7 +34,7 @@ export const CreateGroupScreen = ({
   });
 
   return (
-    <ScrollView>
+    <ScrollView keyboardShouldPersistTaps="handled">
       <View style={styles.groupClass}>
         {myProfile && (
           <GroupEditor
