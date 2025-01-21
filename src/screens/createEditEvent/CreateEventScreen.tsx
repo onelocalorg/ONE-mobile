@@ -30,7 +30,7 @@ export const CreateEventScreen = ({
   });
 
   return (
-    <ScrollView>
+    <ScrollView keyboardShouldPersistTaps="handled">
       <View style={styles.eventClass}>
         <EventEditor
           onSubmitCreate={(eventData) => createEvent({ ...eventData, groupId })}
