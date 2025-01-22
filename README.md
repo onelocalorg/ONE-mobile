@@ -76,3 +76,16 @@ now for Android.
 
 Build hanging at the very beginning? Run `npx react-native clean`, also
 creating a new Simulator. These are the two things that seemed to help me.
+
+
+
+
+## License
+
+This project is licensed under the **MIT License with a Commons Clause**.
+
+- **Non-commercial use only**: By default, the software may only be used for personal, educational, research, or community purposes,. Commercial use is prohibited without prior permission.
+- **Community Organizations**: Specific nonprofit or community organizations may request permission to use the software for fundraising or other community initiatives. Contact [your email] for details.
+- **Commercial Use**: Businesses or entities wishing to use this software commercially must obtain a separate commercial license. For inquiries, contact [your email].
+
+For the full text of the license, see the [LICENSE](./LICENSE) file.
