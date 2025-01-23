@@ -1,9 +1,11 @@
 import _ from "lodash/fp";
 import React from "react";
 import { Text, TouchableOpacity, View } from "react-native";
+import { SvgXml } from "react-native-svg";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
 import { useNavigations } from "~/app-hooks/useNavigations";
-import { dummy, gratis as groupIcon, pin } from "~/assets/images";
+import { GroupIcon } from "~/assets/icons/GroupIcon";
+import { dummy, pin } from "~/assets/images";
 import { ImageComponent } from "~/components/image-component";
 import { Group } from "~/types/group";
 import { createStyleSheet } from "./style";
@@ -39,7 +41,7 @@ export const GroupCard = ({ group, style }: GroupCardProps) => {
               {group.name}
             </Text>
           </View>
-          <ImageComponent source={groupIcon} style={styles.group} />
+          <SvgXml xml={GroupIcon} width={30} fill="none" />
         </View>
 
         <View style={styles.row}>
