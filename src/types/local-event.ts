@@ -1,4 +1,5 @@
 import { DateTime } from "luxon";
+import { Group } from "./group";
 import { ImageKey, ImageUrl } from "./image-info";
 import { OneUser } from "./one-user";
 import { Post } from "./post";
@@ -41,4 +42,4 @@ export interface LocalEventUpdateData {
   ticketTypes?: TicketTypeData[];
 }
 
-export const isEvent = (item: LocalEvent | Post) => "host" in item;
+export const isEvent = (item: LocalEvent | Post | Group) => "host" in item;
