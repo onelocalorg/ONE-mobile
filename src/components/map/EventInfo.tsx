@@ -19,8 +19,8 @@ export const EventInfo = ({ event }: EventProps) => {
       <Image
         resizeMode="stretch"
         source={
-          event?.image
-            ? { uri: event?.image }
+          event?.images && event.images.length > 0
+            ? { uri: event?.images[0] }
             : require("~/assets/images/defaultEvent.png")
         }
         style={styles.dummy}
