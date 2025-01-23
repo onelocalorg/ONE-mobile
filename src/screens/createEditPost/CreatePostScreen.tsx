@@ -1,11 +1,14 @@
 import { useNavigation } from "@react-navigation/native";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import React from "react";
 import { View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
 import { RootStackScreenProps, Screens } from "~/navigation/types";
-import { PostMutations } from "~/network/api/services/usePostService";
+import {
+  PostMutations,
+  usePostService,
+} from "~/network/api/services/usePostService";
 import { Post, PostData } from "~/types/post";
 import { PostEditor } from "./PostEditor";
 import { createStyleSheet } from "./style";
@@ -17,11 +20,17 @@ export const CreatePostScreen = ({
   const { theme } = useAppTheme();
   const styles = createStyleSheet(theme);
   const navigation = useNavigation();
+  const queryClient = useQueryClient();
+  const { queries: postQueries } = usePostService();
 
   const { mutate: createPost } = useMutation<Post, Error, PostData>({
     mutationKey: [PostMutations.createPost],
     onSuccess: () => {
-      navigation.goBack();
+      queryClient
+        .invalidateQueries({
+          queryKey: postQueries.lists(),
+        })
+        .then(() => navigation.goBack());
     },
   });
 
