@@ -177,29 +177,6 @@ export function useEventService() {
     return resp;
   }
 
-  // interface TickeHolderProps {
-  //   queryParams?: {
-  //     limit?: number;
-  //     page?: number;
-  //     pagination?: boolean;
-  //   };
-  //   eventId?: string;
-  // }
-
-  // const onFetchTicketHolderList = async (props: TickeHolderProps) => {
-  //   const { queryParams, eventId } = props || {};
-  //   let response;
-  //   try {
-  //     const endPoint = `${apiConstants.ticketHolderCheckins}/${eventId}`;
-  //     const data = await API.homeService.get(endPoint, { params: queryParams });
-  //     response = getApiResponse(data);
-  //   } catch (error: any) {
-  //     response = getApiResponse(error);
-  //   }
-
-  //   return response;
-  // };
-
   // interface CheckedInUserProps {
   //   bodyParams: {
   //     isCheckedIn: boolean;
