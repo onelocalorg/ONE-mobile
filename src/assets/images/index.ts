@@ -20,6 +20,7 @@ export { default as closeCard } from "./closeCard.png";
 export { default as comment } from "./comment.png";
 export { default as confirmedTicket } from "./confirmedTicket.png";
 export { default as copy } from "./copy.png";
+export { default as defaultUser } from "./defaultUser.png";
 export { default as downImg } from "./downImg.png";
 export { default as dummy } from "./dummy.png";
 export { default as edit } from "./edit.png";
