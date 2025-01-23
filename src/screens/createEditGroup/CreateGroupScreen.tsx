@@ -1,11 +1,14 @@
 import { useNavigation } from "@react-navigation/native";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import React from "react";
 import { ScrollView, View } from "react-native";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
 import { useMyUserId } from "~/navigation/AuthContext";
 import { RootStackScreenProps, Screens } from "~/navigation/types";
-import { GroupMutations } from "~/network/api/services/useGroupService";
+import {
+  GroupMutations,
+  useGroupService,
+} from "~/network/api/services/useGroupService";
 import { useUserService } from "~/network/api/services/useUserService";
 import { Group, GroupData } from "~/types/group";
 import { GroupEditor } from "./GroupEditor";
@@ -18,6 +21,7 @@ export const CreateGroupScreen = ({
   const { theme } = useAppTheme();
   const styles = createStyleSheet(theme);
   const navigation = useNavigation();
+  const queryClient = useQueryClient();
 
   // TODO Figure out a better way to have the current user always available
   const myUserId = useMyUserId();
@@ -26,10 +30,16 @@ export const CreateGroupScreen = ({
   } = useUserService();
   const { data: myProfile } = useQuery(getUser(myUserId));
 
+  const { queries: groupQueries } = useGroupService();
+
   const mutateCreateGroup = useMutation<Group, Error, GroupData>({
     mutationKey: [GroupMutations.createGroup],
     onSuccess: () => {
-      navigation.goBack();
+      queryClient
+        .invalidateQueries({
+          queryKey: groupQueries.lists(),
+        })
+        .then(() => navigation.goBack());
     },
   });
 

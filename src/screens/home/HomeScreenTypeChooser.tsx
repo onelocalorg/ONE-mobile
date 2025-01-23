@@ -3,6 +3,7 @@ import React from "react";
 import { Button, ButtonIcon, ButtonText } from "~/components/ui/button";
 import { Center } from "~/components/ui/center";
 import { HStack } from "~/components/ui/hstack";
+import { Icon } from "~/components/ui/icon";
 
 export const HomeScreenTypeChooser = ({
   onGroupsChosen,
@@ -32,7 +33,7 @@ export const HomeScreenTypeChooser = ({
           className={!isGroupsChosen ? "bg-slate-400" : "bg-slate-700"}
           onPress={() => notifySetGroupsChosen(true)}
         >
-          <ButtonIcon as={Users} />
+          <Icon as={Users} size="md" color="white" />
           <ButtonText>Groups</ButtonText>
         </Button>
       </HStack>
