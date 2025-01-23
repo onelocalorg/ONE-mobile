@@ -1,4 +1,5 @@
 import { DateTime } from "luxon";
+import { Group } from "./group";
 import { ImageKey, ImageUrl } from "./image-info";
 import { LocalEvent } from "./local-event";
 import { OneUser } from "./one-user";
@@ -45,4 +46,4 @@ export interface PostUpdateData {
   images?: ImageKey[];
 }
 
-export const isPost = (item: LocalEvent | Post) => "author" in item;
+export const isPost = (item: LocalEvent | Post | Group) => "author" in item;

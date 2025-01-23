@@ -17,9 +17,11 @@ import { useAppTheme } from "~/app-hooks/use-app-theme";
 import { useNavigations } from "~/app-hooks/useNavigations";
 import { useChapterFilter } from "~/navigation/AppContext";
 import { useEventService } from "~/network/api/services/useEventService";
+import { useGroupService } from "~/network/api/services/useGroupService";
 import { usePostService } from "~/network/api/services/usePostService";
-import { LocalEvent, isEvent } from "~/types/local-event";
-import { Post } from "~/types/post";
+import { Group } from "~/types/group";
+import { isEvent, LocalEvent } from "~/types/local-event";
+import { isPost, Post } from "~/types/post";
 import { Loader } from "../../components/loader";
 import { createStyleSheet } from "../../components/map/style";
 import { MapCard } from "./MapCard";
@@ -37,7 +39,8 @@ export const MapScreen = () => {
   const { theme } = useAppTheme();
   const styles = createStyleSheet(theme);
   const [selected, setSelected] = useState<LocalEvent[] | Post[]>([]);
-  const { gotoEventDetails, gotoPostDetails } = useNavigations();
+  const { gotoEventDetails, gotoPostDetails, gotoGroupDetails } =
+    useNavigations();
   const [layoutWidth, setLayoutWidth] = useState<number>();
   const ref = useRef<ICarouselInstance>(null);
   const chapterFilter = useChapterFilter();
@@ -51,6 +54,9 @@ export const MapScreen = () => {
   const {
     queries: { list: listPosts },
   } = usePostService();
+  const {
+    queries: { list: listGroups },
+  } = useGroupService();
 
   const { isLoading, features } = useQueries({
     queries: [
@@ -64,12 +70,16 @@ export const MapScreen = () => {
         age: Duration.fromObject({ days: 14 }),
         chapterId: chapterFilter?.id,
       }),
+      listGroups({
+        chapterId: chapterFilter?.id,
+      }),
     ],
     combine: (results) => {
       return {
         features: toFeatureCollection(
           results[0].data ?? [],
-          results[1].data?.filter((p) => p.coordinates) ?? []
+          results[1].data?.filter((p) => p.coordinates) ?? [],
+          results[2].data?.filter((p) => p.coordinates) ?? []
         ),
         isLoading: results.some((result) => result.isLoading),
         isPending: results.some((result) => result.isPending),
@@ -82,8 +92,12 @@ export const MapScreen = () => {
     setSelected(ope.features.map((f) => f.properties as LocalEvent));
   };
 
-  const gotoDetails = (item: LocalEvent | Post) =>
-    isEvent(item) ? gotoEventDetails(item.id) : gotoPostDetails(item.id);
+  const gotoDetails = (item: LocalEvent | Post | Group) =>
+    isEvent(item)
+      ? gotoEventDetails(item.id)
+      : isPost(item)
+      ? gotoPostDetails(item.id)
+      : gotoGroupDetails(item.id);
 
   const clearSelected = () => {
     setSelected([]);
@@ -120,6 +134,8 @@ export const MapScreen = () => {
             event: require("~/assets/map/event.png"),
             // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
             posting: require("~/assets/map/post.png"),
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+            group: require("~/assets/map/group.png"),
           }}
         />
         <ShapeSource
@@ -140,7 +156,7 @@ export const MapScreen = () => {
             width: "100%",
           }}
         >
-          <Carousel<LocalEvent | Post>
+          <Carousel<LocalEvent | Post | Group>
             ref={ref}
             width={layoutWidth}
             mode="parallax"
@@ -173,14 +189,18 @@ export const MapScreen = () => {
     </View>
   );
 
-  function toFeatureCollection(events: LocalEvent[], posts: Post[]) {
+  function toFeatureCollection(
+    events: LocalEvent[],
+    posts: Post[],
+    groups: Group[]
+  ) {
     const fc = {
       type: "FeatureCollection",
-      features: [...posts, ...events].map((item) => ({
+      features: [...posts, ...events, ...groups].map((item) => ({
         type: "Feature",
         properties: {
           ..._.omit(["coordinates"], item),
-          icon: isEvent(item) ? "event" : "posting",
+          icon: isEvent(item) ? "event" : isPost(item) ? "posting" : "group",
         },
         geometry: {
           type: "Point",
