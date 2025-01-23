@@ -1,12 +1,19 @@
 import _ from "lodash/fp";
+import { MapPin } from "lucide-react-native";
 import { DateTime } from "luxon";
 import React from "react";
-import { Text, TouchableOpacity, View } from "react-native";
+import { TouchableOpacity } from "react-native";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
 import { useNavigations } from "~/app-hooks/useNavigations";
-import { dummy, event as eventIcon, pin } from "~/assets/images";
+import { event as eventIcon } from "~/assets/images";
 import { ImageComponent } from "~/components/image-component";
 import { LocalEvent } from "~/types/local-event";
+import { Avatar, AvatarFallbackText, AvatarImage } from "../ui/avatar";
+import { HStack } from "../ui/hstack";
+import { Icon } from "../ui/icon";
+import { Image } from "../ui/image";
+import { Text } from "../ui/text";
+import { VStack } from "../ui/vstack";
 import { createStyleSheet } from "./style";
 
 interface EventCardProps {
@@ -31,40 +38,55 @@ export const EventCard = ({
       activeOpacity={0.8}
       disabled={disabled}
     >
-      <ImageComponent
-        resizeMode="stretch"
-        uri={_.head(event.images)?.url}
-        source={dummy}
-        isUrl={!!_.head(event.images)?.url}
-        style={styles.dummy}
-      />
-      <View style={styles.flex}>
-        <View style={styles.row}>
-          <View style={styles.flex}>
-            <Text style={styles.dateText}>
+      <VStack>
+        {event.group && (
+          <HStack className="mb-2">
+            {event.group.images?.length > 0 && (
+              <Avatar size="sm" className="mr-2">
+                <AvatarFallbackText>{event.group.name}</AvatarFallbackText>
+                <AvatarImage
+                  source={{
+                    uri: _.head(event.group.images)?.url,
+                  }}
+                />
+              </Avatar>
+            )}
+            <Text>{event.group.name}</Text>
+          </HStack>
+        )}
+        <HStack>
+          <Image
+            className="rounded-lg"
+            size="md"
+            source={{
+              uri: _.head(event.images)?.url,
+            }}
+            alt={event.name}
+          />
+          <VStack className="mx-2 shrink">
+            <Text size="md" className="pb-0">
               {event.startDate.toLocaleString(DateTime.DATE_MED)}
               {" • "}
               {event.startDate.toLocaleString(DateTime.TIME_SIMPLE)}
             </Text>
-            <Text numberOfLines={2} style={styles.title}>
+            <Text bold={true} size="lg" className="py-1">
               {event.name}
             </Text>
-          </View>
-          <ImageComponent source={eventIcon} style={styles.event} />
-        </View>
-
-        <View style={styles.row}>
-          <ImageComponent source={pin} style={styles.pin} />
-          <Text numberOfLines={3} style={styles.location}>
-            {event.venue || event.address?.split(",")[0]}
-          </Text>
-          {/* <ImageComponent style={styles.addressDot} source={activeRadio}></ImageComponent> */}
-          {/* <Text style={styles.fullAddress}>{full_address}</Text> */}
-        </View>
-        {event.cancelDate ? (
-          <Text style={styles.cancelText}>CANCELED</Text>
-        ) : null}
-      </View>
+            <HStack>
+              <Icon as={MapPin} />
+              <Text size="xs" isTruncated={true}>
+                {event.venue || event.address?.split(",")[0]}
+              </Text>
+            </HStack>
+          </VStack>
+          <VStack>
+            <ImageComponent source={eventIcon} />
+            {event.cancelDate ? (
+              <Text style={styles.cancelText}>CANCELED</Text>
+            ) : null}
+          </VStack>
+        </HStack>
+      </VStack>
     </TouchableOpacity>
   );
 };

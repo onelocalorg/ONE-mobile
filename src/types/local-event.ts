@@ -1,5 +1,5 @@
 import { DateTime } from "luxon";
-import { Group } from "./group";
+import { Group, GroupData } from "./group";
 import { ImageKey, ImageUrl } from "./image-info";
 import { OneUser } from "./one-user";
 import { Post } from "./post";
@@ -17,7 +17,7 @@ export interface LocalEvent extends LocalEventData {
 
 export interface LocalEventData extends Omit<LocalEventUpdateData, "id"> {
   name: string;
-  groupId?: string;
+  group?: GroupData;
   startDate: DateTime;
   coordinates: number[];
   ticketTypes: TicketTypeData[];
