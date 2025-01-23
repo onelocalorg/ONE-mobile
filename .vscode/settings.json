@@ -12,6 +12,7 @@
     "gradlew",
     "Grats",
     "hitbox",
+    "hstack",
     "jsbundle",
     "jscodeshift",
     "Mapbox",
@@ -31,6 +32,7 @@
     "Signout",
     "Signup",
     "swiper",
-    "testflight"
+    "testflight",
+    "vstack"
   ]
 }

@@ -11,6 +11,7 @@ import { useEventService } from "~/network/api/services/useEventService";
 import { Group } from "~/types/group";
 import { LocalEvent } from "~/types/local-event";
 import { handleApiError } from "~/utils/common";
+import { Box } from "../ui/box";
 import { AddEventView } from "./AddEventView";
 import { createStyleSheet } from "./style";
 
@@ -31,7 +32,7 @@ export const EventList = ({ placeholder, group }: EventListProps) => {
     queries: { list: listEvents },
   } = useEventService();
 
-  const groupIds = group ? [group.id] : null;
+  const groupIds = group ? [group.id] : undefined;
   if (group?.parentId) {
     groupIds?.push(group.parentId);
   }
@@ -53,9 +54,9 @@ export const EventList = ({ placeholder, group }: EventListProps) => {
 
   const renderLocalEvent: ListRenderItem<LocalEvent> = ({ item }) => {
     return (
-      <View>
+      <Box className="my-1 mx-4">
         <EventCard style={styles.listContainer} event={item} />
-      </View>
+      </Box>
     );
   };
 
