@@ -13,6 +13,7 @@ import { useChapterService } from "~/network/api/services/useChapterService";
 import { useUserService } from "~/network/api/services/useUserService";
 import { findChapter } from "~/utils/common";
 import { MyEvents } from "../myprofile/MyEvents";
+import { MyGroups } from "../myprofile/MyGroups";
 import { About } from "./about";
 import { createStyleSheet } from "./style";
 
@@ -70,13 +71,18 @@ export const UserProfileScreen = ({
 
             <View style={styles.line} />
             <TabComponent
-              tabs={[strings.about, `${userProfile.firstName}'s Events`]}
+              tabs={[
+                strings.about,
+                `${userProfile.firstName}'s Events`,
+                strings.groups,
+              ]}
               onPressTab={setSelectedTab}
             />
             {navigation ? (
               <>
                 {selectedTab === 0 && <About user={userProfile} />}
                 {selectedTab === 1 && <MyEvents user={userProfile} />}
+                {selectedTab === 2 && <MyGroups user={userProfile} />}
               </>
             ) : null}
 
