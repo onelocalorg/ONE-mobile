@@ -34,7 +34,9 @@ export const MyEvents = ({ user, group }: MyEventsProps) => {
     isError,
     data: events,
     error,
-  } = useQuery(listEvents({ host: user?.id, group: group?.id }));
+  } = useQuery(
+    listEvents({ host: user?.id, groupIds: group ? [group.id] : undefined })
+  );
   if (isPending !== isLoading) setLoading(isPending);
   if (isError) handleApiError("My events", error);
 
