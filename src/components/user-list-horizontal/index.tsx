@@ -3,6 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import React from "react";
 import { Pressable, ScrollView, View } from "react-native";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
+import { useNavigations } from "~/app-hooks/useNavigations";
 import { OneUser } from "~/types/one-user";
 import { ImageComponent } from "../image-component";
 import { Center } from "../ui/center";
@@ -21,6 +22,7 @@ export const UserListHorizontal = ({
 }: UserListHorizontalProps) => {
   const { theme } = useAppTheme();
   const styles = createStyleSheet(theme);
+  const { gotoUserProfile } = useNavigations();
 
   const handleRemoveUser = (user: OneUser) => {
     onRemoveUser!(user);
@@ -31,26 +33,28 @@ export const UserListHorizontal = ({
       <HStack>
         {users.map((user) => (
           <Center key={user.id}>
-            <VStack className="mx-4">
-              <View style={styles.detailsSubCont}>
-                <ImageComponent
-                  source={{ uri: user.pic }}
-                  resizeMode="cover"
-                  style={styles.userImage}
-                />
-                {onRemoveUser && (
-                  <Pressable onPress={() => handleRemoveUser(user)}>
-                    <FontAwesomeIcon icon={faXmark} size={20} color="red" />
-                  </Pressable>
-                )}
-              </View>
-              <VStack>
-                <Center>
-                  <Text size="sm">{user.firstName}</Text>
-                  <Text size="sm">{user.lastName}</Text>
-                </Center>
+            <Pressable onPress={gotoUserProfile(user.id)}>
+              <VStack className="mx-4">
+                <View style={styles.detailsSubCont}>
+                  <ImageComponent
+                    source={{ uri: user.pic }}
+                    resizeMode="cover"
+                    style={styles.userImage}
+                  />
+                  {onRemoveUser && (
+                    <Pressable onPress={() => handleRemoveUser(user)}>
+                      <FontAwesomeIcon icon={faXmark} size={20} color="red" />
+                    </Pressable>
+                  )}
+                </View>
+                <VStack>
+                  <Center>
+                    <Text size="sm">{user.firstName}</Text>
+                    <Text size="sm">{user.lastName}</Text>
+                  </Center>
+                </VStack>
               </VStack>
-            </VStack>
+            </Pressable>
           </Center>
         ))}
       </HStack>
