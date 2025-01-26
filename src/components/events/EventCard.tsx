@@ -43,12 +43,12 @@ export const EventCard = ({
           className: "grid-cols-4",
         }}
       >
-        <GridItem
-          _extra={{
-            className: "col-span-4",
-          }}
-        >
-          {event.group && (
+        {event.group && (
+          <GridItem
+            _extra={{
+              className: "col-span-4",
+            }}
+          >
             <HStack className="mb-2">
               {event.group.images?.length > 0 && (
                 <Avatar size="sm" className="mr-2">
@@ -64,8 +64,8 @@ export const EventCard = ({
                 {event.group.name}
               </Heading>
             </HStack>
-          )}
-        </GridItem>
+          </GridItem>
+        )}
         {event.images.length > 0 && (
           <GridItem
             _extra={{
@@ -98,26 +98,25 @@ export const EventCard = ({
             </Text>
             <HStack>
               <Icon as={MapPin} />
-              <Text className="pl-1" size="xs" isTruncated={true}>
+              <Text className="pl-1 max-w-sm" size="xs" isTruncated={true}>
                 {event.venue || event.address?.split(",")[0]}
               </Text>
             </HStack>
           </VStack>
         </GridItem>
-        {/* <GridItem
-          _extra={{
-            className: "col-span-1",
-          }}
-        >
-          <VStack>
-            <ImageComponent source={eventIcon} />
-            {event.cancelDate ? (
-              <Text style={styles.cancelText}>CANCELED</Text>
-            ) : null}
-          </VStack>
-        </GridItem> */}
+        {event.cancelDate && (
+          <GridItem
+            _extra={{
+              className: "col-span-4",
+            }}
+            className="mt-2"
+          >
+            <Text bold={true} className="color-red-600 text-right mr-4">
+              CANCELED
+            </Text>
+          </GridItem>
+        )}
       </Grid>
-      {/* </VStack> */}
     </TouchableOpacity>
   );
 };
