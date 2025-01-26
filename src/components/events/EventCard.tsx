@@ -43,12 +43,12 @@ export const EventCard = ({
           className: "grid-cols-4",
         }}
       >
-        {event.group && (
-          <GridItem
-            _extra={{
-              className: "col-span-4",
-            }}
-          >
+        <GridItem
+          _extra={{
+            className: "col-span-4",
+          }}
+        >
+          {event.group && (
             <HStack className="mb-2">
               {event.group.images?.length > 0 && (
                 <Avatar size="sm" className="mr-2">
@@ -64,8 +64,8 @@ export const EventCard = ({
                 {event.group.name}
               </Heading>
             </HStack>
-          </GridItem>
-        )}
+          )}
+        </GridItem>
         {event.images.length > 0 && (
           <GridItem
             _extra={{
@@ -87,7 +87,7 @@ export const EventCard = ({
             className: event.images.length > 0 ? "col-span-3" : "col-span-4",
           }}
         >
-          <VStack className="mx-2 shrink">
+          <VStack className="mx-2">
             <Text size="md" className="pb-0">
               {event.startDate.toLocaleString(DateTime.DATE_MED)}
               {" • "}
