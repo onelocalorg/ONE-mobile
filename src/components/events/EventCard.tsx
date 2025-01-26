@@ -5,15 +5,15 @@ import React from "react";
 import { TouchableOpacity } from "react-native";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
 import { useNavigations } from "~/app-hooks/useNavigations";
-import { event as eventIcon } from "~/assets/images";
-import { ImageComponent } from "~/components/image-component";
+import { Grid, GridItem } from "~/components/ui/grid";
+import { Heading } from "~/components/ui/heading";
+import { HStack } from "~/components/ui/hstack";
+import { Icon } from "~/components/ui/icon";
+import { Image } from "~/components/ui/image";
+import { Text } from "~/components/ui/text";
+import { VStack } from "~/components/ui/vstack";
 import { LocalEvent } from "~/types/local-event";
 import { Avatar, AvatarFallbackText, AvatarImage } from "../ui/avatar";
-import { HStack } from "../ui/hstack";
-import { Icon } from "../ui/icon";
-import { Image } from "../ui/image";
-import { Text } from "../ui/text";
-import { VStack } from "../ui/vstack";
 import { createStyleSheet } from "./style";
 
 interface EventCardProps {
@@ -38,55 +38,86 @@ export const EventCard = ({
       activeOpacity={0.8}
       disabled={disabled}
     >
-      <VStack>
-        {event.group && (
-          <HStack className="mb-2">
-            {event.group.images?.length > 0 && (
-              <Avatar size="sm" className="mr-2">
-                <AvatarFallbackText>{event.group.name}</AvatarFallbackText>
-                <AvatarImage
-                  source={{
-                    uri: _.head(event.group.images)?.url,
-                  }}
-                />
-              </Avatar>
-            )}
-            <Text>{event.group.name}</Text>
-          </HStack>
-        )}
-        <HStack>
-          <Image
-            className="rounded-lg"
-            size="md"
-            source={{
-              uri: _.head(event.images)?.url,
+      <Grid
+        _extra={{
+          className: "grid-cols-4",
+        }}
+      >
+        <GridItem
+          _extra={{
+            className: "col-span-4",
+          }}
+        >
+          {event.group && (
+            <HStack className="mb-2">
+              {event.group.images?.length > 0 && (
+                <Avatar size="sm" className="mr-2">
+                  <AvatarFallbackText>{event.group.name}</AvatarFallbackText>
+                  <AvatarImage
+                    source={{
+                      uri: _.head(event.group.images)?.url,
+                    }}
+                  />
+                </Avatar>
+              )}
+              <Heading size="md" isTruncated={true}>
+                {event.group.name}
+              </Heading>
+            </HStack>
+          )}
+        </GridItem>
+        {event.images.length > 0 && (
+          <GridItem
+            _extra={{
+              className: "col-span-1",
             }}
-            alt={event.name}
-          />
+          >
+            <Image
+              className="rounded-lg"
+              size="md"
+              source={{
+                uri: _.head(event.images)?.url,
+              }}
+              alt={event.name}
+            />
+          </GridItem>
+        )}
+        <GridItem
+          _extra={{
+            className: event.images.length > 0 ? "col-span-3" : "col-span-4",
+          }}
+        >
           <VStack className="mx-2 shrink">
             <Text size="md" className="pb-0">
               {event.startDate.toLocaleString(DateTime.DATE_MED)}
               {" • "}
               {event.startDate.toLocaleString(DateTime.TIME_SIMPLE)}
             </Text>
-            <Text bold={true} size="lg" className="py-1">
+            <Text bold={true} size="lg" className="py-1" isTruncated={true}>
               {event.name}
             </Text>
             <HStack>
               <Icon as={MapPin} />
-              <Text size="xs" isTruncated={true}>
+              <Text className="pl-1" size="xs" isTruncated={true}>
                 {event.venue || event.address?.split(",")[0]}
               </Text>
             </HStack>
           </VStack>
+        </GridItem>
+        {/* <GridItem
+          _extra={{
+            className: "col-span-1",
+          }}
+        >
           <VStack>
             <ImageComponent source={eventIcon} />
             {event.cancelDate ? (
               <Text style={styles.cancelText}>CANCELED</Text>
             ) : null}
           </VStack>
-        </HStack>
-      </VStack>
+        </GridItem> */}
+      </Grid>
+      {/* </VStack> */}
     </TouchableOpacity>
   );
 };

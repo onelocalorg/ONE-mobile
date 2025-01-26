@@ -22,6 +22,7 @@
     "playstore:prod": "cd android && bundle exec fastlane build_prod_upload_playstore && cd .."
   },
   "dependencies": {
+    "@expo/html-elements": "^0.4.2",
     "@fawazahmed/react-native-read-more": "^3.0.4",
     "@fortawesome/fontawesome-svg-core": "^6.5.2",
     "@fortawesome/free-regular-svg-icons": "^6.5.2",

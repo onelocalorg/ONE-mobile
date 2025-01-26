@@ -12,7 +12,7 @@ import { Dimensions, Platform, View, ViewProps } from "react-native";
 import {
   getBreakPointValue,
   useBreakpointValue,
-} from "../utils/use-break-point-value";
+} from "~/components/ui/utils/use-break-point-value";
 import { gridItemStyle, gridStyle } from "./styles";
 
 const { width: DEVICE_WIDTH } = Dimensions.get("window");
