@@ -1,12 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import React, { useEffect, useState } from "react";
-import {
-  Button,
-  Keyboard,
-  Text,
-  TouchableWithoutFeedback,
-  View,
-} from "react-native";
+import { Keyboard, Text, TouchableWithoutFeedback, View } from "react-native";
 import CurrencyInput from "react-native-currency-input";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
 import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
@@ -19,7 +13,6 @@ import { useMyUserId } from "~/navigation/AuthContext";
 import { useUserService } from "~/network/api/services/useUserService";
 import { verticalScale } from "~/theme/device/normalize";
 import { TicketTypeData } from "~/types/ticket-type-data";
-import { UserType } from "~/types/user-profile";
 import { createStyleSheet } from "./style";
 
 interface AddTicketModalProps {
@@ -178,29 +171,15 @@ export const AddTicketModal = ({
               </TouchableOpacity>
             </View> */}
             <Text style={styles.label}>{strings.ticketPrice}</Text>
-            {myUser?.type === UserType.EventProducer ? (
-              <CurrencyInput
-                style={styles.inputStyle}
-                value={(price ?? 0) / 100}
-                onChangeValue={(v) => setPrice((v ?? 0) * 100)}
-                placeholder={strings.ticketPriceFree}
-                prefix="$"
-                separator="."
-                delimiter=","
-              ></CurrencyInput>
-            ) : (
-              <>
-                <Text
-                  style={[
-                    styles.label,
-                    { paddingLeft: 16, marginTop: 0, fontWeight: "bold" },
-                  ]}
-                >
-                  {price ? price.toString() : "Free"}
-                </Text>
-                <Button title="Upgrade to sell tickets" />
-              </>
-            )}
+            <CurrencyInput
+              style={styles.inputStyle}
+              value={(price ?? 0) / 100}
+              onChangeValue={(v) => setPrice((v ?? 0) * 100)}
+              placeholder={strings.ticketPriceFree}
+              prefix="$"
+              separator="."
+              delimiter=","
+            ></CurrencyInput>
             <Text style={styles.label}>{strings.ticketQuantity}</Text>
             <Input
               keyboardType="numeric"
