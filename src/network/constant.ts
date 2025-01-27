@@ -42,5 +42,5 @@ export const apiKeys = {
   packageDetail: "packageDetails",
 };
 
-export const IOS_VERSION = "8.3.2";
-export const ANDROID_VERSION = "8.3.2";
+export const IOS_VERSION = "8.4.0";
+export const ANDROID_VERSION = "8.4.0";

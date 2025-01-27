@@ -1,6 +1,6 @@
 {
   "name": "one-local",
-  "version": "8.3.2",
+  "version": "8.4.0",
   "private": true,
   "scripts": {
     "start": "npm run start:development",
