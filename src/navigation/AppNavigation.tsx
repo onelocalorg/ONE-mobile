@@ -20,7 +20,6 @@ import { CreateGroupScreen } from "~/screens/createEditGroup/CreateGroupScreen";
 import { EditGroupScreen } from "~/screens/createEditGroup/EditGroupScreen";
 import { CreatePostScreen } from "~/screens/createEditPost/CreatePostScreen";
 import { EditPostScreen } from "~/screens/createEditPost/EditPostScreen";
-import { ChooseTicketsModal } from "~/screens/event-detail/ChooseTicketsModal";
 import { EventDetailScreen } from "~/screens/event-detail/EventDetailScreen";
 import { EventListScreen } from "~/screens/event/EventListScreen";
 import { GroupDetailScreen } from "~/screens/group-detail/GroupDetailScreen";
@@ -289,13 +288,6 @@ export const AppNavigation = ({
           <RootStack.Screen
             name={Screens.REPORT_CONTENT_MODAL}
             component={ReportContent}
-            options={{
-              ...ShortModalScreenOptions,
-            }}
-          />
-          <RootStack.Screen
-            name={Screens.CHOOSE_TICKETS}
-            component={ChooseTicketsModal}
             options={{
               ...ShortModalScreenOptions,
             }}

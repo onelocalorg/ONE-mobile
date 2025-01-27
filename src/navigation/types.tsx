@@ -36,7 +36,6 @@ export enum Screens {
   EDIT_POST = "EditPost",
   CREATE_GROUP = "CreateGroup",
   EDIT_GROUP = "EditGroup",
-  CHOOSE_TICKETS = "ChooseTickets",
   SELECT_USERS = "SelectUsers",
   SELECT_CHAPTERS = "SelectChapters",
   EVENT_ADMINISTRATION = "EventAdministration",
@@ -76,7 +75,6 @@ export type RootStackParamList = {
     replyId?: string;
   };
   [Screens.REPORT_CONTENT_MODAL]: { postId: string };
-  [Screens.CHOOSE_TICKETS]: { eventId: string };
   [Screens.SELECT_USERS]: {
     type: string;
     users: OneUserData[];

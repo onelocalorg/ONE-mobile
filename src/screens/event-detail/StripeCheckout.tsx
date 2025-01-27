@@ -1,25 +1,36 @@
 import { StripeProvider, useStripe } from "@stripe/stripe-react-native";
 import React, { useEffect, useState } from "react";
-import { Alert, Button, Text, View } from "react-native";
+import { Alert, Text, View } from "react-native";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
-import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
-import { Order } from "~/types/order";
+import { Button, ButtonIcon, ButtonText } from "~/components/ui/button";
+import {
+  Drawer,
+  DrawerBackdrop,
+  DrawerBody,
+  DrawerContent,
+  DrawerHeader,
+} from "~/components/ui/drawer";
+import { CloseIcon } from "~/components/ui/icon";
+import { PayableOrder } from "~/types/order";
 import { toCurrency } from "~/utils/common";
 import { SubtotalView } from "./SubtotalView";
 import { createStyleSheet } from "./style";
 
 interface StripeCheckoutProps {
-  order: Order;
+  order: PayableOrder;
+  isOpen: boolean;
+  onCancel?: () => void;
   onCheckoutComplete?: () => void;
 }
 
 export const StripeCheckout = ({
   order,
+  isOpen,
+  onCancel,
   onCheckoutComplete,
 }: StripeCheckoutProps) => {
   const { theme } = useAppTheme();
   const styles = createStyleSheet(theme);
-  const { strings } = useStringsAndLabels();
 
   const { initPaymentSheet, presentPaymentSheet } = useStripe();
   const [loading, setLoading] = useState(false);
@@ -37,9 +48,8 @@ export const StripeCheckout = ({
       // Set `allowsDelayedPaymentMethods` to true if your business can handle payment
       //methods that complete payment after a delay, like SEPA Debit and Sofort.
       allowsDelayedPaymentMethods: false,
-      //   defaultBillingDetails: {
-      //     name: "Jane Doe",
-      //   },
+      // FIXME Properly implement this
+      returnURL: "onelocal://stripe-redirect",
     });
     if (!error) {
       setLoading(true);
@@ -62,21 +72,41 @@ export const StripeCheckout = ({
   };
 
   return (
-    <StripeProvider publishableKey={order.stripe.publishableKey}>
-      <>
-        {order.lineItems.map((li) => (
-          <View key={li.ticketType.id} style={styles.rowOnly}>
-            <Text style={styles.ticket}>{`${toCurrency(
-              li.ticketType.price
-            )} - ${li.ticketType.name}`}</Text>
-            <Text>
-              x {li.quantity} = {toCurrency(li.ticketType.price * li.quantity)}
-            </Text>
-          </View>
-        ))}
-      </>
-      <SubtotalView order={order} />
-      <Button disabled={!loading} title="Checkout" onPress={openPaymentSheet} />
-    </StripeProvider>
+    <Drawer
+      isOpen={isOpen}
+      onClose={onCheckoutComplete}
+      size="md"
+      anchor="bottom"
+    >
+      <DrawerBackdrop />
+      <DrawerContent>
+        <DrawerHeader>
+          <Button variant="link" onPress={onCancel} size="xl">
+            <ButtonIcon as={CloseIcon} />
+          </Button>
+        </DrawerHeader>
+        <DrawerBody>
+          <StripeProvider publishableKey={order.stripe.publishableKey}>
+            <>
+              {order.lineItems.map((li) => (
+                <View key={li.ticketType.id} style={styles.rowOnly}>
+                  <Text style={styles.ticket}>{`${toCurrency(
+                    li.ticketType.price
+                  )} - ${li.ticketType.name}`}</Text>
+                  <Text>
+                    x {li.quantity} ={" "}
+                    {toCurrency(li.ticketType.price * li.quantity)}
+                  </Text>
+                </View>
+              ))}
+            </>
+            <SubtotalView order={order} />
+            <Button disabled={!loading} onPress={openPaymentSheet}>
+              <ButtonText>Checkout</ButtonText>
+            </Button>
+          </StripeProvider>
+        </DrawerBody>
+      </DrawerContent>
+    </Drawer>
   );
 };

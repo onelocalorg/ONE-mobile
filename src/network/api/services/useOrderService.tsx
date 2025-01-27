@@ -51,6 +51,7 @@ export function useOrderService() {
     lineItems: LineItem[];
   }
   const createOrder = ({ lineItems }: CreateOrderProps) => {
+    console.log("createOrder", lineItems);
     const body = {
       lineItems: lineItems.map((li) => ({
         ...li,

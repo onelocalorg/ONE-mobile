@@ -6,9 +6,9 @@ import { useAppTheme } from "~/app-hooks/use-app-theme";
 import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
 import { ButtonComponent } from "~/components/button-component";
 import { useMyUserId } from "~/navigation/AuthContext";
-import { Screens } from "~/navigation/types";
 import { LocalEvent } from "~/types/local-event";
 import { toCurrency } from "~/utils/common";
+import { ChooseTicketsModal } from "./ChooseTicketsModal";
 import { createStyleSheet as createBaseStyleSheet } from "./style";
 
 interface TicketsProps {
@@ -22,13 +22,14 @@ export const Tickets = ({ event }: TicketsProps) => {
   const navigation = useNavigation();
   const myUserId = useMyUserId();
   const isMyEvent = myUserId === event.id;
+  const [isCheckoutVisible, setCheckoutVisible] = React.useState(false);
 
   const ticketQuantityToString = (quantity?: number) =>
     !quantity || quantity === 0 ? "Unlimited" : quantity.toString();
 
-  const showTicketsModal = () => {
-    navigation.navigate(Screens.CHOOSE_TICKETS, { eventId: event.id });
-  };
+  // const showTicketsModal = () => {
+  //   navigation.navigate(Screens.CHOOSE_TICKETS, { eventId: event.id });
+  // };
 
   return (
     <View style={styles.container}>
@@ -51,9 +52,14 @@ export const Tickets = ({ event }: TicketsProps) => {
         <ButtonComponent
           disabled={!!event.cancelDate}
           title={strings.chooseTickets}
-          onPress={showTicketsModal}
+          onPress={() => setCheckoutVisible(true)}
         />
       ) : null}
+      <ChooseTicketsModal
+        event={event}
+        isOpen={isCheckoutVisible}
+        onClose={() => setCheckoutVisible(false)}
+      />
     </View>
   );
 };

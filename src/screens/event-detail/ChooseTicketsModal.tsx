@@ -1,47 +1,52 @@
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import React, { useState } from "react";
-import { Alert, Text, View } from "react-native";
-import { useAppTheme } from "~/app-hooks/use-app-theme";
+import { Alert } from "react-native";
 import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
-import { ShortModal } from "~/components/ShortModal";
-import { ButtonComponent } from "~/components/button-component";
-import { Loader } from "~/components/loader";
-import { OneModal } from "~/components/modal-component/OneModal";
-import { RootStackScreenProps, Screens } from "~/navigation/types";
-import { useEventService } from "~/network/api/services/useEventService";
+import { Button, ButtonIcon, ButtonText } from "~/components/ui/button";
+import { Center } from "~/components/ui/center";
+import {
+  Drawer,
+  DrawerBackdrop,
+  DrawerBody,
+  DrawerContent,
+  DrawerFooter,
+  DrawerHeader,
+} from "~/components/ui/drawer";
+import { Heading } from "~/components/ui/heading";
+import { CloseIcon } from "~/components/ui/icon";
+import { Spinner } from "~/components/ui/spinner";
 import {
   OrderMutations,
   useOrderService,
 } from "~/network/api/services/useOrderService";
 import { LineItemTypes } from "~/types/line-item";
-import { Order, OrderData } from "~/types/order";
+import { LocalEvent } from "~/types/local-event";
+import { isPayableOrder, Order, OrderData, PayableOrder } from "~/types/order";
 import { TicketSelection } from "~/types/ticket-selection";
 import { toCurrency } from "~/utils/common";
 import { StripeCheckout } from "./StripeCheckout";
 import { TicketSelector } from "./TicketSelector";
-import { createStyleSheet } from "./style";
 
+interface ChooseTicketsModalProps {
+  event: LocalEvent;
+  isOpen: boolean;
+  onClose: () => void;
+}
 export const ChooseTicketsModal = ({
-  navigation,
-  route,
-}: RootStackScreenProps<Screens.CHOOSE_TICKETS>) => {
-  const eventId = route.params.eventId;
-  const { theme } = useAppTheme();
+  event,
+  isOpen = false,
+  onClose,
+}: ChooseTicketsModalProps) => {
   const { strings } = useStringsAndLabels();
-  const styles = createStyleSheet(theme);
   const [tickets, setTickets] = useState<TicketSelection[]>([]);
   const [isCheckoutVisible, setCheckoutVisible] = useState(false);
-  const orderService = useOrderService();
 
-  const {
-    queries: { detail: getEvent },
-  } = useEventService();
-
-  const { data: event, isLoading } = useQuery(getEvent(eventId));
+  // So that mutationFn is set
+  useOrderService();
 
   const {
     isPending,
-    mutate,
+    mutate: createOrder,
     data: order,
   } = useMutation<Order, Error, OrderData>({
     mutationKey: [OrderMutations.createOrder],
@@ -53,72 +58,92 @@ export const ChooseTicketsModal = ({
       0
     );
 
+  const numTickets = tickets.reduce(
+    (total, ticket) => total + ticket.quantity,
+    0
+  );
+
+  const cancelOrder = () => {
+    setTickets([]);
+    onClose();
+  };
+
   const createTicketOrder = () => {
-    if (event) {
-      mutate(
-        {
-          lineItems: tickets
-            .filter((ts) => ts.quantity > 0)
-            .map((ts) => ({
-              type: LineItemTypes.TICKET,
-              quantity: ts.quantity,
-              event,
-              ticketType: ts.type,
-            })),
+    createOrder(
+      {
+        lineItems: tickets
+          .filter((ts) => ts.quantity > 0)
+          .map((ts) => ({
+            type: LineItemTypes.TICKET,
+            quantity: ts.quantity,
+            event,
+            ticketType: ts.type,
+          })),
+      },
+      {
+        onSuccess(order) {
+          if (!isPayableOrder(order)) {
+            Alert.alert(
+              "Tickets issued",
+              "Check your email to find your order confirmation.",
+              [{ text: "OK", onPress: onClose }]
+            );
+          } else {
+            setCheckoutVisible(true);
+          }
         },
-        {
-          onSuccess(order) {
-            if (!order.paymentIntent) {
-              Alert.alert(
-                "Tickets issued",
-                "Check your email to find your order confirmation.",
-                [{ text: "OK", onPress: navigation.goBack }]
-              );
-            }
-            // else modal below will pop up
-          },
-        }
-      );
-    }
+      }
+    );
   };
 
   return (
-    <ShortModal height={220}>
-      <View style={styles.modalContainer}>
-        <Loader visible={isLoading || isPending} />
-        {event ? (
-          <>
-            {/* <EventCard event={event} /> */}
-            <Text style={styles.amount}>
-              {toCurrency(selectedTicketPrice())}
-            </Text>
+    <Drawer
+      anchor="bottom"
+      isOpen={isOpen}
+      closeOnOverlayClick={true}
+      size="md"
+    >
+      <DrawerBackdrop />
+      <DrawerContent>
+        {isPending && <Spinner />}
+        {/* <EventCard event={event} /> */}
+        <DrawerHeader>
+          <Button variant="link" onPress={cancelOrder} size="xl">
+            <ButtonIcon as={CloseIcon} />
+          </Button>
+        </DrawerHeader>
+        <DrawerBody>
+          <Center>
+            <Heading size="5xl">{toCurrency(selectedTicketPrice())}</Heading>
+          </Center>
+          {event && (
             <TicketSelector
               ticketTypes={event.ticketTypes}
               onSelectedChanged={setTickets}
             />
-            <View style={styles.lineSpace} />
-            <ButtonComponent
-              // disabled={buttonDisable}
+          )}
+          <DrawerFooter className="py-8">
+            <Button
+              className="flex-1"
               onPress={createTicketOrder}
-              title={strings.checkout}
-            />
-            {order && order.paymentIntent ? (
-              <OneModal
-                isVisible={isCheckoutVisible}
-                onDismiss={() => setCheckoutVisible(false)}
-              >
-                <StripeCheckout
-                  order={order}
-                  onCheckoutComplete={() => {
-                    setCheckoutVisible(false);
-                    navigation.popToTop();
-                  }}
-                />
-              </OneModal>
-            ) : null}
-          </>
-        ) : null}
-      </View>
-    </ShortModal>
+              isDisabled={numTickets === 0 || isPending}
+            >
+              <ButtonText>{strings.checkout}</ButtonText>
+            </Button>
+          </DrawerFooter>
+        </DrawerBody>
+      </DrawerContent>
+      {isPayableOrder(order) && (
+        <StripeCheckout
+          order={order as PayableOrder}
+          isOpen={isCheckoutVisible}
+          onCheckoutComplete={() => {
+            setCheckoutVisible(false);
+            onClose();
+          }}
+          onCancel={() => setCheckoutVisible(false)}
+        />
+      )}
+    </Drawer>
   );
 };
