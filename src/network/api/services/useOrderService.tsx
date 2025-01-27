@@ -15,8 +15,8 @@ export function useOrderService() {
   const queryClient = useQueryClient();
 
   const queries = {
-    all: () => ["events"],
-    lists: () => [...queries.all(), "list"],
+    all: () => ["orders"],
+    lists: () => [...queries.all(), "lists"],
   };
 
   const { mutate: createRsvp } = useMutation<Rsvp, Error, RsvpData>({
@@ -29,6 +29,9 @@ export function useOrderService() {
     },
     onSuccess: (order: Order) => {
       void queryClient.invalidateQueries({ queryKey: queries.all() });
+      void queryClient.invalidateQueries({
+        queryKey: ["events", "details", order.lineItems[0].event.id],
+      });
 
       order.lineItems.forEach((li) => {
         void createRsvp({

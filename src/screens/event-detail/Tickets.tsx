@@ -1,4 +1,5 @@
 import { useNavigation } from "@react-navigation/native";
+import _ from "lodash/fp";
 import React from "react";
 import { Text, View } from "react-native";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
@@ -37,7 +38,7 @@ export const Tickets = ({ event }: TicketsProps) => {
         <></>
       )}
       <View>
-        {event.ticketTypes?.map((tt) => (
+        {_.sortBy(_.get("price"), event.ticketTypes).map((tt) => (
           <View key={tt.id} style={styles.rowOnly}>
             <Text style={styles.ticket}>{`${ticketQuantityToString(
               tt.quantity

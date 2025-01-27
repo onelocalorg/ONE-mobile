@@ -22,7 +22,10 @@ export const TicketSelector = ({
   const styles = createStyleSheet(theme);
 
   const [tickets, setTickets] = useState<TicketSelection[]>(
-    ticketTypes.map((tt) => ({ type: tt, quantity: 0 }))
+    _.sortBy(_.get("price"), ticketTypes).map((tt) => ({
+      type: tt,
+      quantity: 0,
+    }))
   );
 
   const handleMinusClick = (tid: string) => {

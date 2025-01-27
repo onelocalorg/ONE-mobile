@@ -1,5 +1,11 @@
 import { ImageKey, ImageUrl } from "./image-info";
 
+export enum UserType {
+  Explorer = "explorer",
+  Player = "player",
+  EventProducer = "eventProducer",
+}
+
 export interface UserProfile extends UserProfileData {
   id: string;
   firstName: string;
@@ -7,6 +13,7 @@ export interface UserProfile extends UserProfileData {
   gratis: number;
   pic: ImageUrl;
   isEmailVerified: boolean;
+  type: UserType;
   chapterId?: string;
 }
 

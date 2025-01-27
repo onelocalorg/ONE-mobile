@@ -12,8 +12,10 @@ import { GenericWebView } from "~/components/generic-webview";
 import { MyAvatar } from "~/components/navbar/MyAvatar";
 import { OneLogo } from "~/components/navbar/OneLogo";
 import { UserListSearchable } from "~/components/user-list-searchable/UserListSearchable";
+import { AddEditPaymentScreen } from "~/screens/createEditEvent/AddEditPaymentScreen";
 import { CreateEventScreen } from "~/screens/createEditEvent/CreateEventScreen";
 import { EditEventScreen } from "~/screens/createEditEvent/EditEventScreen";
+import { EventAdministrationScreen } from "~/screens/createEditEvent/EventAdministrationScreen";
 import { CreateGroupScreen } from "~/screens/createEditGroup/CreateGroupScreen";
 import { EditGroupScreen } from "~/screens/createEditGroup/EditGroupScreen";
 import { CreatePostScreen } from "~/screens/createEditPost/CreatePostScreen";
@@ -243,6 +245,10 @@ export const AppNavigation = ({
               name={Screens.SELECT_CHAPTERS}
               component={ChapterListSearchable}
             />
+            <RootStack.Screen
+              name={Screens.EVENT_ADMINISTRATION}
+              component={EventAdministrationScreen}
+            />
           </RootStack.Group>
         ) : email ? (
           <GuestStack.Screen
@@ -290,6 +296,13 @@ export const AppNavigation = ({
           <RootStack.Screen
             name={Screens.CHOOSE_TICKETS}
             component={ChooseTicketsModal}
+            options={{
+              ...ShortModalScreenOptions,
+            }}
+          />
+          <RootStack.Screen
+            name={Screens.ADD_EDIT_PAYMENT}
+            component={AddEditPaymentScreen}
             options={{
               ...ShortModalScreenOptions,
             }}

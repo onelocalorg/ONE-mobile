@@ -66,6 +66,7 @@
     "react-native": "0.73.7",
     "react-native-camera": "^4.2.1",
     "react-native-css-interop": "^0.1.22",
+    "react-native-currency-input": "^1.1.1",
     "react-native-device-info": "^10.7.0",
     "react-native-eject": "^0.2.0",
     "react-native-elements": "^3.4.3",

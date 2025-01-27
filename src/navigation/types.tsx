@@ -6,6 +6,7 @@ import type {
 import { StackScreenProps } from "@react-navigation/stack";
 import { ChapterData } from "~/types/chapter";
 import { OneUserData } from "~/types/one-user";
+import { PaymentType } from "~/types/payment";
 
 export enum Screens {
   LOGIN = "Login",
@@ -38,6 +39,8 @@ export enum Screens {
   CHOOSE_TICKETS = "ChooseTickets",
   SELECT_USERS = "SelectUsers",
   SELECT_CHAPTERS = "SelectChapters",
+  EVENT_ADMINISTRATION = "EventAdministration",
+  ADD_EDIT_PAYMENT = "AddEditPayment",
 }
 
 export type GuestStackParamList = {
@@ -80,6 +83,12 @@ export type RootStackParamList = {
   };
   [Screens.SELECT_CHAPTERS]: {
     chapters: ChapterData[];
+  };
+  [Screens.EVENT_ADMINISTRATION]: { eventId: string };
+  [Screens.ADD_EDIT_PAYMENT]: {
+    eventId: string;
+    paymentId?: string;
+    type?: PaymentType;
   };
 };
 

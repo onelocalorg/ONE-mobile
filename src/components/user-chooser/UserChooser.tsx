@@ -22,8 +22,6 @@ export const UserChooser = ({
     enabled: !!search,
   });
 
-  console.log("allUsers", allUsers);
-
   const handleChangeUser = (user: OneUser) => {
     onChangeUser(user);
   };

@@ -1,10 +1,12 @@
 import { queryOptions, useQueryClient } from "@tanstack/react-query";
 import _ from "lodash/fp";
+import { EventFinancials } from "~/types/event-financials";
 import {
   LocalEvent,
   LocalEventData,
   LocalEventUpdateData,
 } from "~/types/local-event";
+import { Payment, PaymentData } from "~/types/payment";
 import { PriceBreakdown } from "~/types/price-breakdown";
 import { Rsvp, RsvpData, RsvpList } from "~/types/rsvp";
 import { TicketSelection } from "~/types/ticket-selection";
@@ -16,6 +18,10 @@ export enum EventMutations {
   cancelEvent = "cancelEvent",
   createRsvp = "createRsvp",
   deleteRsvp = "deleteRsvp",
+  createPayment = "createPayment",
+  editPayment = "editPayment",
+  deletePayment = "deletePayment",
+  sendPayment = "sendPayment",
 }
 
 export function useEventService() {
@@ -23,13 +29,13 @@ export function useEventService() {
 
   const queries = {
     all: () => ["events"],
-    lists: () => [...queries.all(), "list"],
+    lists: () => [...queries.all(), "lists"],
     list: (filters?: GetEventsParams) =>
       queryOptions({
         queryKey: [...queries.lists(), filters],
         queryFn: () => getEvents(filters),
       }),
-    details: () => [...queries.all(), "detail"],
+    details: () => [...queries.all(), "details"],
     detail: (id?: string) =>
       queryOptions({
         queryKey: [...queries.details(), id],
@@ -37,11 +43,33 @@ export function useEventService() {
         enabled: !!id,
         staleTime: 5000,
       }),
-    rsvps: () => ["rsvps"],
+    rsvps: () => [...queries.details(), "rsvps"],
     rsvpsForEvent: (eventId: string) =>
       queryOptions({
         queryKey: [...queries.rsvps(), eventId],
         queryFn: () => getRsvps(eventId),
+        staleTime: 5000,
+      }),
+    financialsForEvent: (eventId: string) =>
+      queryOptions({
+        queryKey: [...queries.detail(eventId).queryKey, "financials"],
+        queryFn: () => getFinancials(eventId),
+        staleTime: 5000,
+      }),
+    payments: () => ["payments"],
+    paymentsForEvent: (eventId: string) =>
+      queryOptions({
+        queryKey: [...queries.financialsForEvent(eventId).queryKey, "payments"],
+        queryFn: () => getPayments(eventId),
+        staleTime: 5000,
+      }),
+    paymentDetail: (paymentId: PaymentId) =>
+      queryOptions({
+        queryKey: [
+          ...queries.paymentsForEvent(paymentId.eventId).queryKey,
+          paymentId.id,
+        ],
+        queryFn: () => getPayment(paymentId),
         staleTime: 5000,
       }),
   };
@@ -79,23 +107,67 @@ export function useEventService() {
       });
     },
   });
-  queryClient.setMutationDefaults(["createRsvp"], {
+  queryClient.setMutationDefaults([EventMutations.createRsvp], {
     mutationFn: (data: RsvpData) => {
       return createRsvp(data);
     },
-    onSuccess: (data: RsvpData) => {
+    onSuccess: () => {
       void queryClient.invalidateQueries({
         queryKey: queries.rsvps(),
       });
     },
   });
-  queryClient.setMutationDefaults(["deleteRsvp"], {
+  queryClient.setMutationDefaults([EventMutations.deleteRsvp], {
     mutationFn: (data: DeleteRsvpProps) => {
       return deleteRsvp(data);
     },
-    onSuccess: (data: DeleteRsvpProps) => {
+    onSuccess: () => {
       void queryClient.invalidateQueries({
         queryKey: queries.rsvps(),
+      });
+    },
+  });
+  queryClient.setMutationDefaults([EventMutations.createPayment], {
+    mutationFn: (data: PaymentData) => {
+      return createPayment(data);
+    },
+    onSuccess: (result: Payment) => {
+      console.log(
+        "invalidating query",
+        queries.financialsForEvent(result.eventId).queryKey
+      );
+      void queryClient.invalidateQueries({
+        queryKey: queries.financialsForEvent(result.eventId).queryKey,
+      });
+    },
+  });
+  queryClient.setMutationDefaults([EventMutations.editPayment], {
+    mutationFn: (data: PaymentData) => {
+      return updatePayment(data);
+    },
+    onSuccess: (result: Payment) => {
+      void queryClient.invalidateQueries({
+        queryKey: queries.financialsForEvent(result.eventId).queryKey,
+      });
+    },
+  });
+  queryClient.setMutationDefaults([EventMutations.deletePayment], {
+    mutationFn: (data: PaymentId) => {
+      return deletePayment(data);
+    },
+    onSuccess: (result: PaymentId) => {
+      void queryClient.invalidateQueries({
+        queryKey: queries.financialsForEvent(result.eventId).queryKey,
+      });
+    },
+  });
+  queryClient.setMutationDefaults([EventMutations.sendPayment], {
+    mutationFn: (data: PaymentId) => {
+      return sendPayment(data);
+    },
+    onSuccess: (result: PaymentId) => {
+      void queryClient.invalidateQueries({
+        queryKey: queries.financialsForEvent(result.eventId).queryKey,
       });
     },
   });
@@ -161,6 +233,52 @@ export function useEventService() {
   }
   const deleteRsvp = ({ id, eventId }: DeleteRsvpProps) => {
     return doDelete<Rsvp>(`/v3/events/${eventId}/rsvps/${id}`);
+  };
+
+  const getFinancials = (eventId: string) => {
+    return doGet<EventFinancials>(`/v3/events/${eventId}/financials`);
+  };
+
+  const getPayments = async (eventId: string) => {
+    return doGet<Payment[]>(`/v3/events/${eventId}/payments`);
+  };
+
+  const getPayment = async ({
+    id,
+    eventId,
+  }: {
+    id: string;
+    eventId: string;
+  }) => {
+    return doGet<Payment>(`/v3/events/${eventId}/payments/${id}`);
+  };
+
+  const createPayment = (data: PaymentData) => {
+    return doPost<Payment>(
+      `/v3/events/${data.eventId}/payments`,
+      _.omit(["eventId", "payee"], {
+        ...data,
+        payeeId: data.payee.id,
+      })
+    );
+  };
+
+  const updatePayment = (data: PaymentData) => {
+    return doPatch<Payment>(
+      `/v3/events/${data.eventId}/payments/${data.id}`,
+      _.omit(["id", "eventId", "payee"], {
+        ...data,
+        payeeId: data.payee.id,
+      })
+    );
+  };
+
+  const deletePayment = ({ id, eventId }: PaymentId) => {
+    return doDelete<Payment>(`/v3/events/${eventId}/payments/${id}`);
+  };
+
+  const sendPayment = ({ id, eventId }: PaymentId) => {
+    return doPost<Payment>(`/v3/events/${eventId}/payments/${id}/send`);
   };
 
   async function getTicketPriceBreakdown(
@@ -241,4 +359,9 @@ export function useEventService() {
   //   }
   //   return response;
   // };
+}
+
+export interface PaymentId {
+  id: string;
+  eventId: string;
 }
