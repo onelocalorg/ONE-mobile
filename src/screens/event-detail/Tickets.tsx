@@ -27,10 +27,6 @@ export const Tickets = ({ event }: TicketsProps) => {
   const ticketQuantityToString = (quantity?: number) =>
     !quantity || quantity === 0 ? "Unlimited" : quantity.toString();
 
-  // const showTicketsModal = () => {
-  //   navigation.navigate(Screens.CHOOSE_TICKETS, { eventId: event.id });
-  // };
-
   return (
     <View style={styles.container}>
       {event.ticketTypes?.length ? (

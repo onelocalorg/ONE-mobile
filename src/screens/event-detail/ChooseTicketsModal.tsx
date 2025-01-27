@@ -65,6 +65,7 @@ export const ChooseTicketsModal = ({
 
   const cancelOrder = () => {
     setTickets([]);
+    setCheckoutVisible(false);
     onClose();
   };
 
@@ -137,11 +138,8 @@ export const ChooseTicketsModal = ({
         <StripeCheckout
           order={order as PayableOrder}
           isOpen={isCheckoutVisible}
-          onCheckoutComplete={() => {
-            setCheckoutVisible(false);
-            onClose();
-          }}
-          onCancel={() => setCheckoutVisible(false)}
+          onCheckoutComplete={cancelOrder}
+          onCancel={cancelOrder}
         />
       )}
     </Drawer>
