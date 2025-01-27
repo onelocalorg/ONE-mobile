@@ -115,7 +115,7 @@ export function useGroupService() {
   const createGroup = (data: GroupData) => doPost(`/v3/groups/`, data);
 
   const updateGroup = (data: GroupUpdateData) =>
-    doPatch<Group>(`/v3/groups/${data.id}`, _.omit(["id"], data));
+    doPatch<Group>(`/v3/groups/${data.id}`, _.omit(["id", "creator"], data));
 
   const joinGroup = (groupId: string) => doPost(`/v3/groups/${groupId}/join`);
 
