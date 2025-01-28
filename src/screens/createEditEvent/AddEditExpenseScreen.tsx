@@ -1,6 +1,6 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import React, { useState } from "react";
-import { Controller, useForm, useWatch } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { Alert, Text, TextInput, TouchableOpacity, View } from "react-native";
 import CurrencyInput from "react-native-currency-input";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
@@ -16,20 +16,15 @@ import {
   PaymentId,
   useEventService,
 } from "~/network/api/services/useEventService";
+import { Expense, ExpenseData } from "~/types/expense";
 import { OneUser } from "~/types/one-user";
-import {
-  Payment,
-  PaymentData,
-  PaymentSplit,
-  PaymentType,
-} from "~/types/payment";
 import { createStyleSheet } from "./style";
 
-export const AddEditPaymentScreen = ({
+export const AddEditExpenseScreen = ({
   navigation,
   route,
-}: RootStackScreenProps<Screens.ADD_EDIT_PAYMENT>) => {
-  const { eventId, type, paymentId } = route.params;
+}: RootStackScreenProps<Screens.ADD_EDIT_EXPENSE>) => {
+  const { eventId, paymentId } = route.params;
 
   const { theme } = useAppTheme();
   const styles = createStyleSheet(theme);
@@ -37,11 +32,11 @@ export const AddEditPaymentScreen = ({
   const [userSearch, setUserSearch] = useState("");
 
   const {
-    queries: { paymentDetail },
+    queries: { expenseDetail },
   } = useEventService();
 
-  const { data: payment, isPending } = useQuery({
-    ...paymentDetail({ eventId, id: paymentId! }),
+  const { data: expense, isPending } = useQuery({
+    ...expenseDetail({ eventId, id: paymentId! }),
     enabled: !!paymentId,
   });
 
@@ -53,17 +48,14 @@ export const AddEditPaymentScreen = ({
     handleSubmit,
     resetField,
     formState: { errors },
-  } = useForm<PaymentData>({
+  } = useForm<ExpenseData>({
     defaultValues: {
       id: paymentId,
-      eventId,
-      paymentType: type ?? PaymentType.Expense,
-      paymentSplit: PaymentSplit.Fixed,
       amount: 0,
       description: "",
       images: [],
     },
-    values: payment,
+    values: expense,
     resetOptions: {
       keepDirtyValues: true, // keep dirty fields unchanged, but update defaultValues
     },
@@ -73,29 +65,26 @@ export const AddEditPaymentScreen = ({
   //   id: paymentId,
   //   eventId,
   //   // user: payment?.user,
-  //   paymentType: payment?.paymentType ?? type ?? PaymentType.Expense,
-  //   paymentSplit: payment?.paymentSplit ?? PaymentSplit.Fixed,
+  //   paymentType: payment?.paymentType ?? type ?? ExpenseType.Expense,
+  //   paymentSplit: payment?.paymentSplit ?? ExpenseSplit.Fixed,
   //   amount: payment?.amount ?? 0,
   //   description: payment?.description ?? "",
   //   images: payment?.images ?? [],
   // }
 
-  const paymentType = useWatch({ control, name: "paymentType" });
-  const paymentSplit = useWatch({ control, name: "paymentSplit" });
-
-  const mutateCreatePayment = useMutation<Payment, Error, PaymentData>({
-    mutationKey: [EventMutations.createPayment],
+  const { mutate: createExpense } = useMutation<Expense, Error, ExpenseData>({
+    mutationKey: [EventMutations.createExpense],
   });
 
-  const mutateUpdatePayment = useMutation<Payment, Error, PaymentData>({
-    mutationKey: [EventMutations.editPayment],
+  const { mutate: updateExpense } = useMutation<Expense, Error, ExpenseData>({
+    mutationKey: [EventMutations.editExpense],
   });
 
-  const mutateDeletePayment = useMutation<void, Error, PaymentId>({
-    mutationKey: [EventMutations.deletePayment],
+  const { mutate: deleteExpense } = useMutation<void, Error, PaymentId>({
+    mutationKey: [EventMutations.deleteExpense],
   });
 
-  // </---------------Delete Expense and Payout--------------------/>
+  // </---------------Delete Expense and Expense--------------------/>
 
   // const openGallary = async () => {
   //   const { assets } = await launchImageLibrary({
@@ -175,27 +164,27 @@ export const AddEditPaymentScreen = ({
     setUserChooserVisible(false);
   };
 
-  const onSavePayment = (payment: PaymentData) => {
+  const onSaveExpense = (payment: ExpenseData) => {
     if (paymentId) {
-      mutateUpdatePayment.mutate(payment, {
-        onSuccess: navigation.goBack,
+      updateExpense(payment, {
+        onSettled: navigation.goBack,
       });
     } else {
-      mutateCreatePayment.mutate(payment, {
-        onSuccess: navigation.goBack,
+      createExpense(payment, {
+        onSettled: navigation.goBack,
       });
     }
   };
 
-  const onDeletePayment = () => {
+  const onDeleteExpense = () => {
     Alert.alert(
       "Delete",
-      "Are you sure you want to delete it?",
+      "Are you sure you want to delete?",
       [
         {
           text: "Yes",
           onPress: () => {
-            mutateDeletePayment.mutate(
+            deleteExpense(
               { id: paymentId!, eventId },
               { onSuccess: navigation.goBack }
             );
@@ -270,38 +259,7 @@ export const AddEditPaymentScreen = ({
 
             <View style={styles.amountCont}>
               <Text style={styles.amountLbl}>Amount</Text>
-              <TouchableOpacity
-                activeOpacity={0.8}
-                onPress={() => setValue("paymentSplit", PaymentSplit.Fixed)}
-              >
-                <View
-                  style={[
-                    paymentSplit === PaymentSplit.Fixed
-                      ? styles.priceContainer
-                      : styles.priceContainerTwo,
-                  ]}
-                >
-                  <Text style={styles.percentageSign}>$</Text>
-                </View>
-              </TouchableOpacity>
-              {paymentType !== PaymentType.Expense ? (
-                <TouchableOpacity
-                  activeOpacity={0.8}
-                  onPress={() => setValue("paymentSplit", PaymentSplit.Percent)}
-                >
-                  <View
-                    style={[
-                      paymentSplit === PaymentSplit.Percent
-                        ? styles.priceContainer
-                        : styles.priceContainerTwo,
-                    ]}
-                  >
-                    <Text style={styles.percentageSign}>%</Text>
-                  </View>
-                </TouchableOpacity>
-              ) : (
-                <View></View>
-              )}
+              <Text style={styles.percentageSign}>$</Text>
               <View style={{ flexDirection: "row", width: 150 }}>
                 <Controller
                   control={control}
@@ -309,29 +267,17 @@ export const AddEditPaymentScreen = ({
                     required: true,
                     min: 0.01,
                   }}
-                  render={({ field: { onChange, onBlur, value } }) =>
-                    paymentSplit === PaymentSplit.Fixed ? (
-                      <CurrencyInput
-                        // style={styles.inputStyle}
-                        value={value / 100}
-                        onChangeValue={(v) => onChange((v ?? 0) * 100)}
-                        onBlur={onBlur}
-                        // placeholder={strings.ticketPriceFree}
-                        separator="."
-                        delimiter=","
-                      />
-                    ) : (
-                      <>
-                        <TextInput
-                          keyboardType="numeric"
-                          inputMode="numeric"
-                          value={value.toString()}
-                          onChangeText={onChange}
-                          onBlur={onBlur}
-                        />
-                      </>
-                    )
-                  }
+                  render={({ field: { onChange, onBlur, value } }) => (
+                    <CurrencyInput
+                      // style={styles.inputStyle}
+                      value={value / 100}
+                      onChangeValue={(v) => onChange((v ?? 0) * 100)}
+                      onBlur={onBlur}
+                      // placeholder={strings.ticketPriceFree}
+                      separator="."
+                      delimiter=","
+                    />
+                  )}
                   name="amount"
                 />
               </View>
@@ -361,7 +307,7 @@ export const AddEditPaymentScreen = ({
               {errors.description && <Text>This is required.</Text>}
             </View>
 
-            {payment?.images && <MultiImageViewer images={payment.images} />}
+            {expense?.images && <MultiImageViewer images={expense.images} />}
 
             {/* 
               TODO Add images
@@ -395,7 +341,7 @@ export const AddEditPaymentScreen = ({
             <View style={styles.submitButton}>
               <TouchableOpacity
                 activeOpacity={0.8}
-                onPress={handleSubmit(onSavePayment)}
+                onPress={handleSubmit(onSaveExpense)}
               >
                 <ImageComponent
                   source={saveIcon}
@@ -403,7 +349,7 @@ export const AddEditPaymentScreen = ({
                 ></ImageComponent>
               </TouchableOpacity>
               {paymentId && (
-                <TouchableOpacity onPress={onDeletePayment}>
+                <TouchableOpacity onPress={onDeleteExpense}>
                   <ImageComponent
                     source={redDeleteIcon}
                     style={styles.deleteIcon}

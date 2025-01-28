@@ -2,26 +2,22 @@ import { DateTime } from "luxon";
 import { ImageUrl } from "./image-info";
 import { OneUser } from "./one-user";
 
-export interface Payment extends PaymentData {
+export interface Payout extends PayoutData {
   id: string;
 }
 
-export enum PaymentType {
-  Expense = "expense",
-  Payout = "payout",
-}
-
-export enum PaymentSplit {
+export enum PayoutSplit {
   Fixed = "fixed",
   Percent = "percent",
 }
 
-export interface PaymentData {
+export interface PayoutData {
   id?: string;
-  eventId: string;
+  event: {
+    id: string;
+  };
   payee: OneUser;
-  paymentType: PaymentType;
-  paymentSplit: PaymentSplit;
+  split: PayoutSplit;
   paidAt?: DateTime;
   amount: number;
   description: string;

@@ -1,21 +1,20 @@
 import { useMutation, useQueries } from "@tanstack/react-query";
+import { BanknoteIcon } from "lucide-react-native";
+import { DateTime } from "luxon";
 import React, { useState } from "react";
 import { Modal, Text, TouchableOpacity, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
-import {
-  buttonArrowGreen,
-  edit2,
-  payoutClose,
-  sendPayoutImg,
-} from "~/assets/images";
+import { buttonArrowGreen, edit2, payoutClose } from "~/assets/images";
 import { ImageComponent } from "~/components/image-component";
+import { Button, ButtonIcon, ButtonText } from "~/components/ui/button";
 import { RootStackScreenProps, Screens } from "~/navigation/types";
 import {
   EventMutations,
   useEventService,
 } from "~/network/api/services/useEventService";
-import { Payment, PaymentSplit, PaymentType } from "~/types/payment";
+import { Expense } from "~/types/expense";
+import { Payout, PayoutSplit } from "~/types/payout";
 import { toCurrency } from "~/utils/common";
 import { createStyleSheet } from "./style";
 
@@ -30,37 +29,40 @@ export const EventAdministrationScreen = ({
 
   const {
     queries: {
+      detail: getEventDetail,
       financialsForEvent: getFinancials,
-      paymentsForEvent: getPayments,
+      expensesForEvent: getExpenses,
+      payoutsForEvent: getPayouts,
     },
   } = useEventService();
 
-  const { financials, payments } = useQueries({
-    queries: [getFinancials(eventId), getPayments(eventId)],
+  const { event, financials, expenses, payouts } = useQueries({
+    queries: [
+      getEventDetail(eventId),
+      getFinancials(eventId),
+      getExpenses(eventId),
+      getPayouts(eventId),
+    ],
     combine: (results) => {
       return {
-        financials: results[0].data,
-        payments: results[1].data,
+        event: results[0].data,
+        financials: results[1].data,
+        expenses: results[2].data,
+        payouts: results[3].data,
         isLoading: results.some((result) => result.isLoading),
         isPending: results.some((result) => result.isPending),
       };
     },
   });
 
-  const mutateSendPayment = useMutation<Payment, Error, void>({
-    mutationKey: [EventMutations.sendPayment],
+  const mutateSendPayout = useMutation<Payout, Error, void>({
+    mutationKey: [EventMutations.sendPayout],
   });
 
-  const expenses =
-    payments?.filter((p) => p.paymentType === PaymentType.Expense) ?? [];
-
-  const payouts =
-    payments?.filter((p) => p.paymentType === PaymentType.Payout) ?? [];
-
   const fixedPayouts =
-    payouts?.filter((p) => p.paymentSplit === PaymentSplit.Fixed) ?? [];
+    payouts?.filter((p) => p.split === PayoutSplit.Fixed) ?? [];
   const percentPayouts =
-    payouts?.filter((p) => p.paymentSplit === PaymentSplit.Percent) ?? [];
+    payouts?.filter((p) => p.split === PayoutSplit.Percent) ?? [];
 
   // const openAddBreakDownModal = (id: any) => {
   //   setUserId(userId);
@@ -166,12 +168,23 @@ export const EventAdministrationScreen = ({
   //   });
   // };
 
-  const handleAddPayment = (type: PaymentType) => {
-    navigation.push(Screens.ADD_EDIT_PAYMENT, { eventId, type });
+  const handleAddExpense = () => {
+    navigation.push(Screens.ADD_EDIT_EXPENSE, { eventId });
   };
 
-  const handleEditPayment = (payment: Payment) => {
-    navigation.push(Screens.ADD_EDIT_PAYMENT, {
+  const handleAddPayout = () => {
+    navigation.push(Screens.ADD_EDIT_PAYOUT, { eventId });
+  };
+
+  const handleEditExpense = (payment: Expense) => {
+    navigation.push(Screens.ADD_EDIT_EXPENSE, {
+      eventId,
+      paymentId: payment.id,
+    });
+  };
+
+  const handleEditPayout = (payment: Payout) => {
+    navigation.push(Screens.ADD_EDIT_PAYOUT, {
       eventId,
       paymentId: payment.id,
     });
@@ -240,17 +253,15 @@ export const EventAdministrationScreen = ({
               )}
             </View>
 
-            <TouchableOpacity onPress={sendPayoutModal}>
-              <View style={styles.payoutContainer}>
-                <View style={styles.payoutsubContainer}>
-                  <ImageComponent
-                    source={sendPayoutImg}
-                    style={styles.payoutImg}
-                  />
-                  <Text style={styles.sendPayoutLbl}>send payouts</Text>
-                </View>
-              </View>
-            </TouchableOpacity>
+            <Button
+              onPress={sendPayoutModal}
+              isDisabled={
+                !event || event.startDate.plus({ days: 3 }) > DateTime.now()
+              }
+            >
+              <ButtonIcon as={BanknoteIcon}></ButtonIcon>
+              <ButtonText>Send payouts</ButtonText>
+            </Button>
 
             <View style={styles.payOutDetailsCont}>
               <Text style={styles.payoutDetailsLbl}>
@@ -266,7 +277,7 @@ export const EventAdministrationScreen = ({
                   <Text style={styles.expenensLbl}>Expenses</Text>
                 </View>
               </View>
-              {expenses ? (
+              {expenses && expenses.length > 0 ? (
                 expenses.map((item) => (
                   <View key={item.id} style={styles.userDetailsCont}>
                     <View
@@ -277,7 +288,7 @@ export const EventAdministrationScreen = ({
                     >
                       <View style={styles.detailsSubCont}>
                         <TouchableOpacity
-                          onPress={() => handleEditPayment(item)}
+                          onPress={() => handleEditExpense(item)}
                         >
                           <ImageComponent
                             source={edit2}
@@ -300,9 +311,7 @@ export const EventAdministrationScreen = ({
                         </View>
                       </View>
                       <Text style={styles.totalRupeesLbl}>
-                        {item.paymentSplit === PaymentSplit.Fixed
-                          ? toCurrency(item.amount)
-                          : `%${item.amount}`}
+                        {toCurrency(item.amount)}
                       </Text>
                     </View>
                   </View>
@@ -312,7 +321,7 @@ export const EventAdministrationScreen = ({
               )}
               <TouchableOpacity
                 activeOpacity={1}
-                onPress={() => handleAddPayment(PaymentType.Expense)}
+                onPress={() => handleAddExpense()}
                 style={styles.addItemCont}
               >
                 <View style={styles.subAddItemCont}>
@@ -335,7 +344,7 @@ export const EventAdministrationScreen = ({
                   <Text style={styles.expenensLbl}>Payouts</Text>
                 </View>
               </View>
-              {payouts ? (
+              {payouts && payouts.length > 0 ? (
                 [...fixedPayouts, ...percentPayouts].map((item) => (
                   <View key={item.id} style={styles.userDetailsCont}>
                     <View
@@ -346,7 +355,7 @@ export const EventAdministrationScreen = ({
                     >
                       <View style={styles.detailsSubCont}>
                         <TouchableOpacity
-                          onPress={() => handleEditPayment(item)}
+                          onPress={() => handleEditPayout(item)}
                         >
                           <ImageComponent
                             source={edit2}
@@ -369,7 +378,7 @@ export const EventAdministrationScreen = ({
                         </View>
                       </View>
                       <Text style={styles.revenueRuppes}>
-                        {item.paymentSplit === PaymentSplit.Fixed
+                        {item.split === PayoutSplit.Fixed
                           ? toCurrency(item.amount)
                           : `${item.amount}%`}
                       </Text>
@@ -377,11 +386,11 @@ export const EventAdministrationScreen = ({
                   </View>
                 ))
               ) : (
-                <Text>No payouts] yet</Text>
+                <Text>No payouts yet</Text>
               )}
               <TouchableOpacity
                 activeOpacity={1}
-                onPress={() => handleAddPayment(PaymentType.Payout)}
+                onPress={() => handleAddPayout()}
                 style={styles.addItemCont}
               >
                 <View style={styles.subAddItemCont}>

@@ -1,12 +1,13 @@
 import { queryOptions, useQueryClient } from "@tanstack/react-query";
 import _ from "lodash/fp";
 import { EventFinancials } from "~/types/event-financials";
+import { Expense, ExpenseData } from "~/types/expense";
 import {
   LocalEvent,
   LocalEventData,
   LocalEventUpdateData,
 } from "~/types/local-event";
-import { Payment, PaymentData } from "~/types/payment";
+import { Payout, PayoutData } from "~/types/payout";
 import { PriceBreakdown } from "~/types/price-breakdown";
 import { Rsvp, RsvpData, RsvpList } from "~/types/rsvp";
 import { TicketSelection } from "~/types/ticket-selection";
@@ -18,10 +19,14 @@ export enum EventMutations {
   cancelEvent = "cancelEvent",
   createRsvp = "createRsvp",
   deleteRsvp = "deleteRsvp",
-  createPayment = "createPayment",
-  editPayment = "editPayment",
-  deletePayment = "deletePayment",
-  sendPayment = "sendPayment",
+  createExpense = "createExpense",
+  editExpense = "editExpense",
+  deleteExpense = "deleteExpense",
+  sendExpense = "sendExpense",
+  createPayout = "createPayout",
+  editPayout = "editPayout",
+  deletePayout = "deletePayout",
+  sendPayout = "sendPayout",
 }
 
 export function useEventService() {
@@ -50,26 +55,43 @@ export function useEventService() {
         queryFn: () => getRsvps(eventId),
         staleTime: 5000,
       }),
+    financials: () => [...queries.all(), "financials"],
     financialsForEvent: (eventId: string) =>
       queryOptions({
-        queryKey: [...queries.detail(eventId).queryKey, "financials"],
+        queryKey: [...queries.financials(), eventId],
         queryFn: () => getFinancials(eventId),
         staleTime: 5000,
       }),
-    payments: () => ["payments"],
-    paymentsForEvent: (eventId: string) =>
+    expenses: () => [...queries.financials(), "expenses"],
+    expensesForEvent: (eventId: string) =>
       queryOptions({
-        queryKey: [...queries.financialsForEvent(eventId).queryKey, "payments"],
-        queryFn: () => getPayments(eventId),
+        queryKey: [...queries.financialsForEvent(eventId).queryKey, "expenses"],
+        queryFn: () => getExpenses(eventId),
         staleTime: 5000,
       }),
-    paymentDetail: (paymentId: PaymentId) =>
+    expenseDetail: (expenseId: PaymentId) =>
       queryOptions({
         queryKey: [
-          ...queries.paymentsForEvent(paymentId.eventId).queryKey,
+          ...queries.expensesForEvent(expenseId.eventId).queryKey,
+          expenseId.id,
+        ],
+        queryFn: () => getExpense(expenseId),
+        staleTime: 5000,
+      }),
+    payouts: () => [...queries.financials(), "payouts"],
+    payoutsForEvent: (eventId: string) =>
+      queryOptions({
+        queryKey: [...queries.financialsForEvent(eventId).queryKey, "payouts"],
+        queryFn: () => getPayouts(eventId),
+        staleTime: 5000,
+      }),
+    payoutDetail: (paymentId: PaymentId) =>
+      queryOptions({
+        queryKey: [
+          ...queries.payoutsForEvent(paymentId.eventId).queryKey,
           paymentId.id,
         ],
-        queryFn: () => getPayment(paymentId),
+        queryFn: () => getPayout(paymentId),
         staleTime: 5000,
       }),
   };
@@ -127,47 +149,89 @@ export function useEventService() {
       });
     },
   });
-  queryClient.setMutationDefaults([EventMutations.createPayment], {
-    mutationFn: (data: PaymentData) => {
-      return createPayment(data);
+
+  queryClient.setMutationDefaults([EventMutations.createExpense], {
+    mutationFn: (data: ExpenseData) => {
+      return createExpense(data);
     },
-    onSuccess: (result: Payment) => {
+    onSuccess: (result: Expense) => {
+      void queryClient.invalidateQueries({
+        queryKey: queries.financialsForEvent(result.event.id).queryKey,
+      });
+    },
+  });
+  queryClient.setMutationDefaults([EventMutations.editExpense], {
+    mutationFn: (data: ExpenseData) => {
+      return updateExpense(data);
+    },
+    onSuccess: (result: Expense) => {
       console.log(
-        "invalidating query",
-        queries.financialsForEvent(result.eventId).queryKey
+        "invalidate",
+        queries.financialsForEvent(result.event.id).queryKey
       );
       void queryClient.invalidateQueries({
-        queryKey: queries.financialsForEvent(result.eventId).queryKey,
+        queryKey: queries.financialsForEvent(result.event.id).queryKey,
       });
     },
   });
-  queryClient.setMutationDefaults([EventMutations.editPayment], {
-    mutationFn: (data: PaymentData) => {
-      return updatePayment(data);
-    },
-    onSuccess: (result: Payment) => {
-      void queryClient.invalidateQueries({
-        queryKey: queries.financialsForEvent(result.eventId).queryKey,
-      });
-    },
-  });
-  queryClient.setMutationDefaults([EventMutations.deletePayment], {
+  queryClient.setMutationDefaults([EventMutations.deleteExpense], {
     mutationFn: (data: PaymentId) => {
-      return deletePayment(data);
+      return deleteExpense(data);
     },
-    onSuccess: (result: PaymentId) => {
+    onSuccess: (result: Expense) => {
       void queryClient.invalidateQueries({
-        queryKey: queries.financialsForEvent(result.eventId).queryKey,
+        queryKey: queries.financialsForEvent(result.event.id).queryKey,
       });
     },
   });
-  queryClient.setMutationDefaults([EventMutations.sendPayment], {
+  queryClient.setMutationDefaults([EventMutations.sendExpense], {
     mutationFn: (data: PaymentId) => {
-      return sendPayment(data);
+      return sendExpense(data);
     },
-    onSuccess: (result: PaymentId) => {
+    onSuccess: (result: Expense) => {
       void queryClient.invalidateQueries({
-        queryKey: queries.financialsForEvent(result.eventId).queryKey,
+        queryKey: queries.financialsForEvent(result.event.id).queryKey,
+      });
+    },
+  });
+
+  queryClient.setMutationDefaults([EventMutations.createPayout], {
+    mutationFn: (data: PayoutData) => {
+      return createPayout(data);
+    },
+    onSuccess: (result: Payout) => {
+      void queryClient.invalidateQueries({
+        queryKey: queries.financialsForEvent(result.event.id).queryKey,
+      });
+    },
+  });
+  queryClient.setMutationDefaults([EventMutations.editPayout], {
+    mutationFn: (data: PayoutData) => {
+      return updatePayout(data);
+    },
+    onSuccess: (result: Payout) => {
+      void queryClient.invalidateQueries({
+        queryKey: queries.financialsForEvent(result.event.id).queryKey,
+      });
+    },
+  });
+  queryClient.setMutationDefaults([EventMutations.deletePayout], {
+    mutationFn: (data: PaymentId) => {
+      return deletePayout(data);
+    },
+    onSuccess: (result: Payout) => {
+      void queryClient.invalidateQueries({
+        queryKey: queries.financialsForEvent(result.event.id).queryKey,
+      });
+    },
+  });
+  queryClient.setMutationDefaults([EventMutations.sendPayout], {
+    mutationFn: (data: PaymentId) => {
+      return sendPayout(data);
+    },
+    onSuccess: (result: Payout) => {
+      void queryClient.invalidateQueries({
+        queryKey: queries.financialsForEvent(result.event.id).queryKey,
       });
     },
   });
@@ -235,52 +299,6 @@ export function useEventService() {
     return doDelete<Rsvp>(`/v3/events/${eventId}/rsvps/${id}`);
   };
 
-  const getFinancials = (eventId: string) => {
-    return doGet<EventFinancials>(`/v3/events/${eventId}/financials`);
-  };
-
-  const getPayments = async (eventId: string) => {
-    return doGet<Payment[]>(`/v3/events/${eventId}/payments`);
-  };
-
-  const getPayment = async ({
-    id,
-    eventId,
-  }: {
-    id: string;
-    eventId: string;
-  }) => {
-    return doGet<Payment>(`/v3/events/${eventId}/payments/${id}`);
-  };
-
-  const createPayment = (data: PaymentData) => {
-    return doPost<Payment>(
-      `/v3/events/${data.eventId}/payments`,
-      _.omit(["eventId", "payee"], {
-        ...data,
-        payeeId: data.payee.id,
-      })
-    );
-  };
-
-  const updatePayment = (data: PaymentData) => {
-    return doPatch<Payment>(
-      `/v3/events/${data.eventId}/payments/${data.id}`,
-      _.omit(["id", "eventId", "payee"], {
-        ...data,
-        payeeId: data.payee.id,
-      })
-    );
-  };
-
-  const deletePayment = ({ id, eventId }: PaymentId) => {
-    return doDelete<Payment>(`/v3/events/${eventId}/payments/${id}`);
-  };
-
-  const sendPayment = ({ id, eventId }: PaymentId) => {
-    return doPost<Payment>(`/v3/events/${eventId}/payments/${id}/send`);
-  };
-
   async function getTicketPriceBreakdown(
     eventId: string,
     tickets: TicketSelection[]
@@ -294,6 +312,95 @@ export function useEventService() {
     );
     return resp;
   }
+
+  const getFinancials = (eventId: string) => {
+    return doGet<EventFinancials>(`/v3/events/${eventId}/financials`);
+  };
+
+  const getExpenses = async (eventId: string) => {
+    return doGet<Expense[]>(`/v3/events/${eventId}/expenses`);
+  };
+
+  const getExpense = async ({
+    id,
+    eventId,
+  }: {
+    id: string;
+    eventId: string;
+  }) => {
+    return doGet<Expense>(`/v3/events/${eventId}/expenses/${id}`);
+  };
+
+  const createExpense = (data: ExpenseData) => {
+    return doPost<Expense>(
+      `/v3/events/${data.event.id}/expenses`,
+      _.omit(["event", "payee"], {
+        ...data,
+        payeeId: data.payee.id,
+      })
+    );
+  };
+
+  const updateExpense = (data: ExpenseData) => {
+    console.log("updateExpense", data);
+    return doPatch<Expense>(
+      `/v3/events/${data.event.id}/expenses/${data.id}`,
+      _.omit(["id", "event", "payee"], {
+        ...data,
+        payeeId: data.payee.id,
+      })
+    );
+  };
+
+  const deleteExpense = ({ id, eventId }: PaymentId) => {
+    return doDelete<Expense>(`/v3/events/${eventId}/expenses/${id}`);
+  };
+
+  const sendExpense = ({ id, eventId }: PaymentId) => {
+    return doPost<Expense>(`/v3/events/${eventId}/expenses/${id}/send`);
+  };
+
+  const getPayouts = async (eventId: string) => {
+    return doGet<Payout[]>(`/v3/events/${eventId}/payouts`);
+  };
+
+  const getPayout = async ({
+    id,
+    eventId,
+  }: {
+    id: string;
+    eventId: string;
+  }) => {
+    return doGet<Payout>(`/v3/events/${eventId}/payouts/${id}`);
+  };
+
+  const createPayout = (data: PayoutData) => {
+    return doPost<Payout>(
+      `/v3/events/${data.event.id}/payouts`,
+      _.omit(["event", "payee"], {
+        ...data,
+        payeeId: data.payee.id,
+      })
+    );
+  };
+
+  const updatePayout = (data: PayoutData) => {
+    return doPatch<Payout>(
+      `/v3/events/${data.event.id}/payouts/${data.id}`,
+      _.omit(["id", "event", "payee"], {
+        ...data,
+        payeeId: data.payee.id,
+      })
+    );
+  };
+
+  const deletePayout = ({ id, eventId }: PaymentId) => {
+    return doDelete<Payout>(`/v3/events/${eventId}/payouts/${id}`);
+  };
+
+  const sendPayout = ({ id, eventId }: PaymentId) => {
+    return doPost<Payout>(`/v3/events/${eventId}/payouts/${id}/send`);
+  };
 
   // interface CheckedInUserProps {
   //   bodyParams: {

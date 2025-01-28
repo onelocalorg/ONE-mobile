@@ -12,7 +12,8 @@ import { GenericWebView } from "~/components/generic-webview";
 import { MyAvatar } from "~/components/navbar/MyAvatar";
 import { OneLogo } from "~/components/navbar/OneLogo";
 import { UserListSearchable } from "~/components/user-list-searchable/UserListSearchable";
-import { AddEditPaymentScreen } from "~/screens/createEditEvent/AddEditPaymentScreen";
+import { AddEditExpenseScreen } from "~/screens/createEditEvent/AddEditExpenseScreen";
+import { AddEditPayoutScreen } from "~/screens/createEditEvent/AddEditPayoutScreen";
 import { CreateEventScreen } from "~/screens/createEditEvent/CreateEventScreen";
 import { EditEventScreen } from "~/screens/createEditEvent/EditEventScreen";
 import { EventAdministrationScreen } from "~/screens/createEditEvent/EventAdministrationScreen";
@@ -293,8 +294,15 @@ export const AppNavigation = ({
             }}
           />
           <RootStack.Screen
-            name={Screens.ADD_EDIT_PAYMENT}
-            component={AddEditPaymentScreen}
+            name={Screens.ADD_EDIT_EXPENSE}
+            component={AddEditExpenseScreen}
+            options={{
+              ...ShortModalScreenOptions,
+            }}
+          />
+          <RootStack.Screen
+            name={Screens.ADD_EDIT_PAYOUT}
+            component={AddEditPayoutScreen}
             options={{
               ...ShortModalScreenOptions,
             }}
