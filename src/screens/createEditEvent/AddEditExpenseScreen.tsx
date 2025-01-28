@@ -50,7 +50,9 @@ export const AddEditExpenseScreen = ({
     formState: { errors },
   } = useForm<ExpenseData>({
     defaultValues: {
-      id: paymentId,
+      event: {
+        id: eventId,
+      },
       amount: 0,
       description: "",
       images: [],

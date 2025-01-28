@@ -6,14 +6,21 @@ export interface Expense extends ExpenseData {
   id: string;
 }
 
-export interface ExpenseData {
-  id?: string;
-  event: {
-    id: string;
-  };
+export interface ExpenseData extends Omit<ExpenseUpdateData, "id"> {
   payee: OneUser;
   paidAt?: DateTime;
   amount: number;
   description: string;
-  images: ImageUrl[];
+  images?: ImageUrl[];
+}
+
+export interface ExpenseUpdateData {
+  id: string;
+  event: {
+    id: string;
+  };
+  payee?: OneUser;
+  amount?: number;
+  description?: string;
+  images?: ImageUrl[];
 }

@@ -31,8 +31,6 @@ export const AddEditPayout = ({
   const [isUserChooserVisible, setUserChooserVisible] = useState(false);
   const [userSearch, setUserSearch] = useState("");
 
-  console.log("payout", payout);
-
   const {
     control,
     setValue,
@@ -41,6 +39,9 @@ export const AddEditPayout = ({
     formState: { errors },
   } = useForm<PayoutData>({
     defaultValues: payout ?? {
+      event: {
+        id: eventId,
+      },
       amount: 0,
       split: PayoutSplit.Fixed,
       description: "",
@@ -52,9 +53,7 @@ export const AddEditPayout = ({
   });
 
   const split = useWatch({ control, name: "split" });
-
-  console.log("split", split);
-  console.log("payout", payout);
+  const amount = useWatch({ control, name: "amount" });
 
   const { mutate: createPayout } = useMutation<Payout, Error, PayoutData>({
     mutationKey: [EventMutations.createPayout],
@@ -273,7 +272,7 @@ export const AddEditPayout = ({
                   split === PayoutSplit.Fixed ? (
                     <CurrencyInput
                       // style={styles.inputStyle}
-                      value={value / 100}
+                      value={amount / 100}
                       onChangeValue={(v) => onChange((v ?? 0) * 100)}
                       onBlur={onBlur}
                       // placeholder={strings.ticketPriceFree}

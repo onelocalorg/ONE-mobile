@@ -11,15 +11,23 @@ export enum PayoutSplit {
   Percent = "percent",
 }
 
-export interface PayoutData {
-  id?: string;
+export interface PayoutData extends Omit<PayoutUpdateData, "id"> {
+  payee: OneUser;
+  paidAt?: DateTime;
+  split: PayoutSplit;
+  amount: number;
+  description: string;
+  images?: ImageUrl[];
+}
+
+export interface PayoutUpdateData {
+  id: string;
   event: {
     id: string;
   };
-  payee: OneUser;
-  split: PayoutSplit;
-  paidAt?: DateTime;
-  amount: number;
-  description: string;
-  images: ImageUrl[];
+  payee?: OneUser;
+  split?: PayoutSplit;
+  amount?: number;
+  description?: string;
+  images?: ImageUrl[];
 }

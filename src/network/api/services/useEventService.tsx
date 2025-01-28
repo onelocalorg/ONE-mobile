@@ -1,13 +1,13 @@
 import { queryOptions, useQueryClient } from "@tanstack/react-query";
 import _ from "lodash/fp";
 import { EventFinancials } from "~/types/event-financials";
-import { Expense, ExpenseData } from "~/types/expense";
+import { Expense, ExpenseData, ExpenseUpdateData } from "~/types/expense";
 import {
   LocalEvent,
   LocalEventData,
   LocalEventUpdateData,
 } from "~/types/local-event";
-import { Payout, PayoutData } from "~/types/payout";
+import { Payout, PayoutData, PayoutUpdateData } from "~/types/payout";
 import { PriceBreakdown } from "~/types/price-breakdown";
 import { Rsvp, RsvpData, RsvpList } from "~/types/rsvp";
 import { TicketSelection } from "~/types/ticket-selection";
@@ -161,7 +161,7 @@ export function useEventService() {
     },
   });
   queryClient.setMutationDefaults([EventMutations.editExpense], {
-    mutationFn: (data: ExpenseData) => {
+    mutationFn: (data: ExpenseUpdateData) => {
       return updateExpense(data);
     },
     onSuccess: (result: Expense) => {
@@ -178,9 +178,9 @@ export function useEventService() {
     mutationFn: (data: PaymentId) => {
       return deleteExpense(data);
     },
-    onSuccess: (result: Expense) => {
+    onSuccess: () => {
       void queryClient.invalidateQueries({
-        queryKey: queries.financialsForEvent(result.event.id).queryKey,
+        queryKey: queries.financials(),
       });
     },
   });
@@ -206,7 +206,7 @@ export function useEventService() {
     },
   });
   queryClient.setMutationDefaults([EventMutations.editPayout], {
-    mutationFn: (data: PayoutData) => {
+    mutationFn: (data: PayoutUpdateData) => {
       return updatePayout(data);
     },
     onSuccess: (result: Payout) => {
@@ -219,9 +219,9 @@ export function useEventService() {
     mutationFn: (data: PaymentId) => {
       return deletePayout(data);
     },
-    onSuccess: (result: Payout) => {
+    onSuccess: () => {
       void queryClient.invalidateQueries({
-        queryKey: queries.financialsForEvent(result.event.id).queryKey,
+        queryKey: queries.financials(),
       });
     },
   });
@@ -341,13 +341,13 @@ export function useEventService() {
     );
   };
 
-  const updateExpense = (data: ExpenseData) => {
+  const updateExpense = (data: ExpenseUpdateData) => {
     console.log("updateExpense", data);
     return doPatch<Expense>(
       `/v3/events/${data.event.id}/expenses/${data.id}`,
       _.omit(["id", "event", "payee"], {
         ...data,
-        payeeId: data.payee.id,
+        payeeId: data.payee?.id,
       })
     );
   };
@@ -384,12 +384,12 @@ export function useEventService() {
     );
   };
 
-  const updatePayout = (data: PayoutData) => {
+  const updatePayout = (data: PayoutUpdateData) => {
     return doPatch<Payout>(
       `/v3/events/${data.event.id}/payouts/${data.id}`,
       _.omit(["id", "event", "payee"], {
         ...data,
-        payeeId: data.payee.id,
+        payeeId: data.payee?.id,
       })
     );
   };
