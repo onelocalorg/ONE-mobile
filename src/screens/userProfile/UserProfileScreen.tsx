@@ -4,8 +4,7 @@ import React, { useState } from "react";
 import { Text, View } from "react-native";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
 import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
-import { dummy } from "~/assets/images";
-import { ImageComponent } from "~/components/image-component";
+import { OneAvatar } from "~/components/avatar/OneAvatar";
 import { Loader } from "~/components/loader";
 import { TabComponent } from "~/components/tab-component";
 import { RootStackScreenProps, Screens } from "~/navigation/types";
@@ -45,13 +44,8 @@ export const UserProfileScreen = ({
         {userProfile ? (
           <>
             <View style={styles.rowOnly}>
-              <ImageComponent
-                isUrl={!!userProfile.pic?.url}
-                resizeMode="cover"
-                uri={userProfile.pic?.url}
-                source={dummy}
-                style={styles.profile}
-              />
+              <OneAvatar user={userProfile} className="p-2" size="2xl" />
+
               <View style={styles.fullName}>
                 <View style={styles.rowOnly}>
                   <Text style={styles.name}>{userProfile.firstName} </Text>

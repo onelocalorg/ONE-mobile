@@ -1,11 +1,12 @@
 import { ImageKey, ImageUrl } from "./image-info";
+import { OneUser } from "./one-user";
 
 export interface UserProfile extends UserProfileData {
   id: string;
   firstName: string;
   lastName?: string;
   gratis: number;
-  pic: ImageUrl;
+  pic?: ImageUrl;
   isEmailVerified: boolean;
   chapterId?: string;
 }
@@ -26,3 +27,7 @@ export interface UserProfileUpdateData {
   about?: string;
   skills?: string[];
 }
+
+export const isUserProfile = (
+  user: UserProfile | OneUser
+): user is UserProfile => "gratis" in user;

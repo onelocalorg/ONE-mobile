@@ -5,11 +5,12 @@ import {
   createStackNavigator,
 } from "@react-navigation/stack";
 import React from "react";
+import { Pressable } from "react-native";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
 import { ShortModalScreenOptions } from "~/components/ShortModal";
+import { MyAvatar } from "~/components/avatar/MyAvatar";
 import { ChapterListSearchable } from "~/components/chapter-list-searchable/ChapterListSearchable";
 import { GenericWebView } from "~/components/generic-webview";
-import { MyAvatar } from "~/components/navbar/MyAvatar";
 import { OneLogo } from "~/components/navbar/OneLogo";
 import { UserListSearchable } from "~/components/user-list-searchable/UserListSearchable";
 import { AddEditExpenseScreen } from "~/screens/createEditEvent/AddEditExpenseScreen";
@@ -180,10 +181,12 @@ export const AppNavigation = ({
             route.name === Screens.MY_PROFILE ? (
               <LogoutPressable />
             ) : token ? (
-              <MyAvatar
+              <Pressable
                 // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-member-access
                 onPress={() => navigation.navigate(Screens.MY_PROFILE)}
-              />
+              >
+                <MyAvatar size="lg" />
+              </Pressable>
             ) : null,
         })}
       >

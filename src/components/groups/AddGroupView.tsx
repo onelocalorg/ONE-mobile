@@ -3,13 +3,12 @@ import { useQuery } from "@tanstack/react-query";
 import { Text, TouchableOpacity, View } from "react-native";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
 import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
-import { defaultUser } from "~/assets/images";
-import { ImageComponent } from "~/components/image-component";
 import { useMyUserId } from "~/navigation/AuthContext";
 import { Screens } from "~/navigation/types";
 import { useUserService } from "~/network/api/services/useUserService";
 import { Group } from "~/types/group";
 import { handleApiError } from "~/utils/common";
+import { MyAvatar } from "../avatar/MyAvatar";
 import { createStyleSheet } from "./style";
 
 interface AddGroupViewProps {
@@ -42,13 +41,7 @@ export const AddGroupView = ({ placeholder, parent }: AddGroupViewProps) => {
         onPress={handlePress}
       >
         <View style={styles.postContainer}>
-          <ImageComponent
-            style={styles.avatar}
-            resizeMode="cover"
-            isUrl={!!myProfile?.pic.url}
-            source={defaultUser}
-            uri={myProfile?.pic.url}
-          ></ImageComponent>
+          <MyAvatar className="pl-2" />
           <View style={styles.postInput}>
             <Text style={{ textAlign: "left", color: "gray" }}>
               {placeholder || strings.createGroup}

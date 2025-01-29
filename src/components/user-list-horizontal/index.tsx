@@ -5,7 +5,7 @@ import { Pressable, ScrollView, View } from "react-native";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
 import { useNavigations } from "~/app-hooks/useNavigations";
 import { OneUser } from "~/types/one-user";
-import { ImageComponent } from "../image-component";
+import { OneAvatar } from "../avatar/OneAvatar";
 import { Center } from "../ui/center";
 import { HStack } from "../ui/hstack";
 import { Text } from "../ui/text";
@@ -36,11 +36,7 @@ export const UserListHorizontal = ({
             <Pressable onPress={gotoUserProfile(user.id)}>
               <VStack className="mx-4">
                 <View style={styles.detailsSubCont}>
-                  <ImageComponent
-                    source={{ uri: user.pic }}
-                    resizeMode="cover"
-                    style={styles.userImage}
-                  />
+                  <OneAvatar user={user} size="md" />
                   {onRemoveUser && (
                     <Pressable onPress={() => handleRemoveUser(user)}>
                       <FontAwesomeIcon icon={faXmark} size={20} color="red" />

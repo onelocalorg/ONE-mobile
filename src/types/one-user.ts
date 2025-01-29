@@ -1,7 +1,7 @@
 export interface OneUser extends OneUserData {
   firstName: string;
   lastName?: string;
-  pic: string;
+  pic?: string;
 }
 
 export interface OneUserData {
