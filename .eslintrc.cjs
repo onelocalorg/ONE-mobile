@@ -31,6 +31,7 @@ module.exports = {
     "__tests__",
     "jest.config.js",
     "react-native.config.js",
+    "src/components/ui/**",
   ],
   root: true,
   rules: {
