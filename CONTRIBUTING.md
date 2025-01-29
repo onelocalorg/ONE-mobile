@@ -183,4 +183,4 @@ Thank you again for your interest in contributing to ONE Local and [Project Name
 
 ## Contact Us
 
-If you have any questions or need further clarification about contributing, please don't hesitate to contact us at [Contact Email].
+# If you have any questions or need further clarification about contributing, please don't hesitate to contact us at [Contact Email].
