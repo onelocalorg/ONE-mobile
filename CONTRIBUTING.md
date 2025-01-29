@@ -23,7 +23,7 @@ By contributing any code, documentation, or other materials to this project (you
 
 While you assign copyright of your contributions to ONE Boulder Cooperative, we want to ensure contributors also retain significant freedom to use their own contributions. Therefore, immediately upon your contribution being accepted, ONE Boulder Cooperative grants you back a perpetual, worldwide, non-exclusive, royalty-free, irrevocable license to your contributions under the MIT License.
 
-This "license back" means that you, as the contributor, are explicitly granted the following rights with respect to your own contributions, even after copyright assignment to the Cooperative:
+This _"license back"_ means that you, as the contributor, are explicitly granted the following rights with respect to your own contributions, even after copyright assignment to the Cooperative:
 
 ### *   **Use:**    You are free to use your contributions for any purpose, including commercial purposes, in other projects, or in any way you see fit.
 ### *   **Modify:**    You can modify your contributions as you wish, even after they become part of the ONE Local project.
