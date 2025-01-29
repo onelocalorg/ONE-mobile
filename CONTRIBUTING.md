@@ -149,6 +149,39 @@ This license back is intended to balance the Cooperative's need for copyright ow
 
 - **Irrevocable Assignment:** Please understand that this is a copyright assignment, and it is irrevocable. You are transferring ownership of your copyright to the Cooperative.
 - **Non-Commercial Use for Contributors (Generally):** While the Cooperative owns the copyright, the project's license (MIT + Commons Clause) generally restricts commercial use for others without explicit permission. Exceptions for community organizations and non-profits remain possible under specific agreements.
+- # **Contributions "As Is":** Your contributions are provided on an "as is" basis, without warranty or liability.
+
+## Contributor Rights - License Back from the Cooperative
+
+While you assign copyright of your contributions to ONE Boulder Cooperative, we want to ensure contributors also retain significant freedom to use their own contributions. Therefore, immediately upon your contribution being accepted, ONE Boulder Cooperative grants you back a perpetual, worldwide, non-exclusive, royalty-free, irrevocable license to your contributions under the MIT License.
+
+This "license back" means that you, as the contributor, are explicitly granted the following rights with respect to your own contributions, even after copyright assignment to the Cooperative:
+
+- **Use:** You are free to use your contributions for any purpose, including commercial purposes, in other projects, or in any way you see fit.
+- **Modify:** You can modify your contributions as you wish, even after they become part of the ONE Local project.
+- **Distribute:** You can distribute your original contributions (or modified versions) separately, as part of other projects, or in any way you choose.
+- **Sublicense:** You can grant sublicenses to others to use your contributions under the MIT License terms.
+- **No Royalties or Restrictions from the Cooperative:** The Cooperative will not claim royalties from you or impose any restrictions on your use of your own contributions under this license back.
+
+## Important Clarifications about this License Back:
+
+- **MIT License Terms Apply:** Your use of your contributions under this license back is governed by the terms of the MIT License, including the requirement to include the copyright notice and permission notice in copies or substantial portions of the software.
+- **Cooperative Remains Copyright Owner:** This license back does not undo the copyright assignment. ONE Boulder Cooperative remains the copyright owner of your contributions and the project as a whole. This license simply grants you, the contributor, very broad rights to use your own contributions.
+- **Project Licensing Remains Consistent:** The overall ONE Local project continues to be licensed under the MIT License + Commons Clause + Use Exceptions. This license back is an additional right granted specifically to contributors regarding their individual contributions.
+
+This license back is intended to balance the Cooperative's need for copyright ownership for long-term stewardship with our commitment to empowering contributors and allowing them to freely use their own code.
+
+## As the copyright owner, ONE Boulder Cooperative is committed to:
+
+- **Maintaining the Project's Open and Community-Focused Nature:** We are dedicated to keeping [Project Name] accessible for non-commercial use by the community, as reflected in our project license (MIT + Commons Clause).
+- **Transparent Stewardship:** We will be transparent about how the project is managed and how any commercial activities are used to support the project and its community.
+- **Attribution and Recognition:** We will ensure proper attribution for your contributions, as required by the MIT License and in line with community best practices. We deeply value and appreciate every contribution.
+- **Community Governance (Future Goal):** As the cooperative evolves, we aim to further involve our community and membership in the governance and direction of the project, ensuring it remains responsive to community needs.
+
+## Important Considerations:
+
+- **Irrevocable Assignment:** Please understand that this is a copyright assignment, and it is irrevocable. You are transferring ownership of your copyright to the Cooperative.
+- **Non-Commercial Use for Contributors (Generally):** While the Cooperative owns the copyright, the project's license (MIT + Commons Clause) generally restricts commercial use for others without explicit permission. Exceptions for community organizations and non-profits remain possible under specific agreements.
 - **Contributions "As Is":** Your contributions are provided on an "as is" basis, without warranty or liability.
 
 By choosing to contribute, you acknowledge and agree to these Copyright Assignment terms. If you support our cooperative model and believe in the long-term community benefit of [Project Name], we warmly welcome your contributions.
