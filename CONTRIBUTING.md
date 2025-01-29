@@ -25,11 +25,11 @@ While you assign copyright of your contributions to ONE Boulder Cooperative, we 
 
 This "license back" means that you, as the contributor, are explicitly granted the following rights with respect to your own contributions, even after copyright assignment to the Cooperative:
 
-###*   **Use:** You are free to use your contributions for any purpose, including commercial purposes, in other projects, or in any way you see fit.
-###*   **Modify:** You can modify your contributions as you wish, even after they become part of the ONE Local project.
-###*   **Distribute:** You can distribute your original contributions (or modified versions) separately, as part of other projects, or in any way you choose.
-###*   **Sublicense:** You can grant sublicenses to others to use your contributions under the MIT License terms.
-###*   **No Royalties or Restrictions from the Cooperative:** The Cooperative will not claim royalties from you or impose any restrictions on your use of your own contributions under this license back.
+### *   **Use:** You are free to use your contributions for any purpose, including commercial purposes, in other projects, or in any way you see fit.
+### *   **Modify:** You can modify your contributions as you wish, even after they become part of the ONE Local project.
+### *   **Distribute:** You can distribute your original contributions (or modified versions) separately, as part of other projects, or in any way you choose.
+### *   **Sublicense:** You can grant sublicenses to others to use your contributions under the MIT License terms.
+### *   **No Royalties or Restrictions from the Cooperative:** The Cooperative will not claim royalties from you or impose any restrictions on your use of your own contributions under this license back.
 
 ## Important Clarifications about this License Back:
 
