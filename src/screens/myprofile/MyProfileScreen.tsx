@@ -7,9 +7,8 @@ import { ScrollView } from "react-native-gesture-handler";
 import { Menu } from "react-native-paper";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
 import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
-import { dummy } from "~/assets/images";
+import { MyAvatar } from "~/components/avatar/MyAvatar";
 import { ImageUploader } from "~/components/ImageUploader";
-import { ImageComponent } from "~/components/image-component";
 import { Loader } from "~/components/loader";
 import { AppContext } from "~/navigation/AppContext";
 import { useMyUserId } from "~/navigation/AuthContext";
@@ -138,21 +137,13 @@ export const MyProfileScreen = () => {
                 </Menu>
               </View>
             )}
-            <View style={styles.profileContainer}>
-              <ImageUploader
-                id={myUserId}
-                uploadKey={FileKey.pic}
-                onImageUpload={handleImageAdded}
-              >
-                <ImageComponent
-                  isUrl={!!myProfile.pic.url}
-                  resizeMode="cover"
-                  style={styles.profile}
-                  uri={myProfile.pic.url}
-                  source={dummy}
-                />
-              </ImageUploader>
-            </View>
+            <ImageUploader
+              id={myUserId}
+              uploadKey={FileKey.pic}
+              onImageUpload={handleImageAdded}
+            >
+              <MyAvatar className="p-2" size="2xl" />
+            </ImageUploader>
 
             <View style={styles.line} />
             {myProfile && (

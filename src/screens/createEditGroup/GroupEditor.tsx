@@ -91,7 +91,7 @@ export const GroupEditor = ({
               id: myProfile.id,
               firstName: myProfile.firstName,
               lastName: myProfile.lastName,
-              pic: myProfile.pic.url,
+              pic: myProfile.pic?.url,
             },
           ],
           members: [],

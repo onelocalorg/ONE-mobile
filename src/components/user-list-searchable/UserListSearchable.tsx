@@ -8,12 +8,11 @@ import React, { useState } from "react";
 import { Pressable, SectionList, Text, View } from "react-native";
 import { TextInput } from "react-native-gesture-handler";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
-import { defaultUser } from "~/assets/images";
 import { createStyleSheet } from "~/components/user-list-searchable/style";
 import { RootStackScreenProps, Screens } from "~/navigation/types";
 import { useUserService } from "~/network/api/services/useUserService";
 import { OneUser } from "~/types/one-user";
-import { ImageComponent } from "../image-component";
+import { OneAvatar } from "../avatar/OneAvatar";
 
 export const UserListSearchable = ({
   route,
@@ -105,13 +104,14 @@ export const UserListSearchable = ({
                   }}
                 >
                   <View style={styles.detailsSubCont}>
-                    <ImageComponent
+                    <OneAvatar user={item} />
+                    {/* <ImageComponent
                       resizeMode="cover"
                       style={styles.userImage}
                       isUrl={!!item?.pic}
                       uri={item?.pic}
                       source={defaultUser}
-                    />
+                    /> */}
                   </View>
                   <Text style={styles.usernameLbl}>
                     {item.firstName} {item.lastName}
