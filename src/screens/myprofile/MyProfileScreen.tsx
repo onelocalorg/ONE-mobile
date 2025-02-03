@@ -49,10 +49,10 @@ export const MyProfileScreen = () => {
   const closeMenu = () => setChapterPickerVisible(false);
 
   const {
-    queries: { detail: getUser },
+    queries: { me: getMe },
   } = useUserService();
 
-  const { isLoading, data: myProfile } = useQuery(getUser(myUserId));
+  const { isLoading, data: myProfile } = useQuery(getMe());
   const {
     queries: { list: listChapters },
   } = useChapterService();
@@ -78,6 +78,10 @@ export const MyProfileScreen = () => {
   const { mutate: joinChapter } = useMutation<void, Error, string>({
     mutationKey: [ChapterMutations.joinChapter],
   });
+
+  const isStripeConfigured = () =>
+    myProfile?.stripe &&
+    myProfile.stripe.requirements.currently_due.length === 0;
 
   const handleImageAdded = (image: ImageKey) => {
     updateUserProfile({
@@ -117,37 +121,35 @@ export const MyProfileScreen = () => {
       <ScrollView>
         {myProfile ? (
           <>
-            {myProfile && (
-              <View style={styles.innerContainer}>
-                <Menu
-                  visible={isChapterPickerVisible}
-                  onDismiss={closeMenu}
-                  anchor={
-                    <Pressable onPress={openMenu}>
-                      <Text>
-                        Home chapter:{" "}
-                        {myProfile.chapterId
-                          ? findChapter(myProfile.chapterId, chapters)?.name
-                          : "None"}
-                        <Text style={{ fontSize: 10 }}>{"\u25BC"}</Text>
-                      </Text>
-                    </Pressable>
-                  }
-                >
-                  {chapters?.map((chapter) => (
-                    <Menu.Item
-                      key={chapter.id}
-                      onPress={() => {
-                        joinChapter(chapter.id);
-                        setChapterFilter(chapter);
-                        closeMenu();
-                      }}
-                      title={chapter.name}
-                    />
-                  ))}
-                </Menu>
-              </View>
-            )}
+            <View style={styles.innerContainer}>
+              <Menu
+                visible={isChapterPickerVisible}
+                onDismiss={closeMenu}
+                anchor={
+                  <Pressable onPress={openMenu}>
+                    <Text>
+                      Home chapter:{" "}
+                      {myProfile.chapterId
+                        ? findChapter(myProfile.chapterId, chapters)?.name
+                        : "None"}
+                      <Text style={{ fontSize: 10 }}>{"\u25BC"}</Text>
+                    </Text>
+                  </Pressable>
+                }
+              >
+                {chapters?.map((chapter) => (
+                  <Menu.Item
+                    key={chapter.id}
+                    onPress={() => {
+                      joinChapter(chapter.id);
+                      setChapterFilter(chapter);
+                      closeMenu();
+                    }}
+                    title={chapter.name}
+                  />
+                ))}
+              </Menu>
+            </View>
             <ImageUploader
               id={myUserId}
               uploadKey={FileKey.pic}
@@ -163,9 +165,14 @@ export const MyProfileScreen = () => {
                 saveProfile={updateUserProfile}
               />
             )}
-            <Button className="m-4" onPress={configureTransfers}>
-              <ButtonText>Configure payments</ButtonText>
-            </Button>
+
+            {!isStripeConfigured() ? (
+              <Button className="m-4" onPress={configureTransfers}>
+                <ButtonText>Configure payments</ButtonText>
+              </Button>
+            ) : (
+              <Text>Payments configured :)</Text>
+            )}
 
             <View style={styles.line} />
 
