@@ -11,6 +11,7 @@ import { Button, ButtonIcon, ButtonText } from "~/components/ui/button";
 import { RootStackScreenProps, Screens } from "~/navigation/types";
 import {
   EventMutations,
+  PaymentId,
   useEventService,
 } from "~/network/api/services/useEventService";
 import { Expense } from "~/types/expense";
@@ -55,7 +56,10 @@ export const EventAdministrationScreen = ({
     },
   });
 
-  const mutateSendPayout = useMutation<Payout, Error, void>({
+  const { mutate: sendExpense } = useMutation<Expense, Error, PaymentId>({
+    mutationKey: [EventMutations.sendExpense],
+  });
+  const { mutate: sendPayout } = useMutation<Payout, Error, PaymentId>({
     mutationKey: [EventMutations.sendPayout],
   });
 
@@ -198,10 +202,16 @@ export const EventAdministrationScreen = ({
     setModalVisible(false);
   };
 
-  const sendPayoutClick = () => {
+  const sendPayoutsConfirm = () => {
     setModalVisible(false);
 
-    // mutateCreatePayout.mutate()
+    expenses?.forEach((expense) => {
+      sendExpense({ id: expense.id, eventId });
+    });
+
+    payouts?.forEach((payout) => {
+      sendPayout({ id: payout.id, eventId });
+    });
   };
 
   return (
@@ -419,16 +429,16 @@ export const EventAdministrationScreen = ({
             <View style={styles.modalContainerTwo}>
               <View style={styles.modalView}>
                 <Text style={styles.sendPayoutLblTwo}>
-                  Are you sure you want to send payout?
+                  Are you sure you want to send payouts?
                 </Text>
                 <Text style={styles.sendingTextLbl}>
                   (you won't be able to make changes after sending)
                 </Text>
                 <TouchableOpacity
-                  onPress={sendPayoutClick}
+                  onPress={sendPayoutsConfirm}
                   style={styles.payoutButtonCont}
                 >
-                  <Text style={styles.sendPayoutButton}>Send Payout</Text>
+                  <Text style={styles.sendPayoutButton}>Send Payouts</Text>
                   <ImageComponent
                     style={styles.sendIcon}
                     source={buttonArrowGreen}

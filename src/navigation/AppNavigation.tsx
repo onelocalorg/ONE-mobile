@@ -92,6 +92,9 @@ export const AppNavigation = ({
         [Screens.MAP]: {
           path: "map",
         },
+        [Screens.CONFIRM_STRIPE_SETUP]: {
+          path: "confirm-stripe-setup",
+        },
       },
     },
   };

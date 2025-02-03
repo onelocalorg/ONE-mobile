@@ -1,14 +1,14 @@
-import { DateTime } from "luxon";
 import { ImageUrl } from "./image-info";
 import { OneUser } from "./one-user";
+import { PaymentStatus } from "./payment";
 
 export interface Expense extends ExpenseData {
   id: string;
+  status: PaymentStatus;
 }
 
 export interface ExpenseData extends Omit<ExpenseUpdateData, "id"> {
   payee: OneUser;
-  paidAt?: DateTime;
   amount: number;
   description: string;
   images?: ImageUrl[];

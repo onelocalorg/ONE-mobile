@@ -40,6 +40,7 @@ export enum Screens {
   EVENT_ADMINISTRATION = "EventAdministration",
   ADD_EDIT_EXPENSE = "AddEditExpense",
   ADD_EDIT_PAYOUT = "AddEditPayout",
+  CONFIRM_STRIPE_SETUP = "ConfirmStripeSetup",
 }
 
 export type GuestStackParamList = {
@@ -91,6 +92,7 @@ export type RootStackParamList = {
     eventId: string;
     paymentId?: string;
   };
+  [Screens.CONFIRM_STRIPE_SETUP]: undefined;
 };
 
 export type RootStackScreenProps<T extends keyof RootStackParamList> =

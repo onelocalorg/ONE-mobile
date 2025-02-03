@@ -1,9 +1,10 @@
-import { DateTime } from "luxon";
 import { ImageUrl } from "./image-info";
 import { OneUser } from "./one-user";
+import { PaymentStatus } from "./payment";
 
 export interface Payout extends PayoutData {
   id: string;
+  status: PaymentStatus;
 }
 
 export enum PayoutSplit {
@@ -13,7 +14,6 @@ export enum PayoutSplit {
 
 export interface PayoutData extends Omit<PayoutUpdateData, "id"> {
   payee: OneUser;
-  paidAt?: DateTime;
   split: PayoutSplit;
   amount: number;
   description: string;

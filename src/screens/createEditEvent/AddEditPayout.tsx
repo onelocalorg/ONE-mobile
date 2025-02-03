@@ -167,7 +167,7 @@ export const AddEditPayout = ({
         {
           text: "Yes",
           onPress: () => {
-            deletePayout({ id: payout?.id!, eventId }, { onSettled: onClose });
+            deletePayout({ id: payout!.id, eventId }, { onSettled: onClose });
           },
           style: "destructive",
         },

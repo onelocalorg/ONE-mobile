@@ -1,7 +1,13 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import { useMutation, useQuery } from "@tanstack/react-query";
 import React, { useContext, useState } from "react";
-import { Alert, Pressable, Text, TouchableOpacity, View } from "react-native";
+import {
+  Alert,
+  Linking,
+  Pressable,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { getReadableVersion } from "react-native-device-info";
 import { ScrollView } from "react-native-gesture-handler";
 import { Menu } from "react-native-paper";
@@ -10,6 +16,7 @@ import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
 import { MyAvatar } from "~/components/avatar/MyAvatar";
 import { ImageUploader } from "~/components/ImageUploader";
 import { Loader } from "~/components/loader";
+import { Button, ButtonText } from "~/components/ui/button";
 import { AppContext } from "~/navigation/AppContext";
 import { useMyUserId } from "~/navigation/AuthContext";
 import {
@@ -21,8 +28,8 @@ import {
   useUserService,
 } from "~/network/api/services/useUserService";
 import { ImageKey } from "~/types/image-info";
-import { RemoteImage } from "~/types/remote-image";
-import { FileKey, UploadFileData } from "~/types/upload-file-data";
+import { FileKey } from "~/types/upload-file-data";
+import { Url } from "~/types/url";
 import { UserProfile, UserProfileUpdateData } from "~/types/user-profile";
 import { findChapter } from "~/utils/common";
 import { LogoutPressable } from "./LogoutPressable";
@@ -52,12 +59,8 @@ export const MyProfileScreen = () => {
 
   const { data: chapters } = useQuery(listChapters());
 
-  const { mutate: uploadFile } = useMutation<
-    RemoteImage,
-    Error,
-    UploadFileData
-  >({
-    mutationKey: [UserMutations.uploadFile],
+  const { mutate: getAccountLinkUrl } = useMutation<Url, Error, string>({
+    mutationKey: [UserMutations.configureTransfers],
   });
 
   const { mutate: updateUserProfile } = useMutation<
@@ -80,6 +83,14 @@ export const MyProfileScreen = () => {
     updateUserProfile({
       id: myUserId!,
       pic: { key: image.key },
+    });
+  };
+
+  const configureTransfers = () => {
+    getAccountLinkUrl(myUserId!, {
+      onSuccess: (data) => {
+        void Linking.openURL(data.url).then((r) => console.log(r));
+      },
     });
   };
 
@@ -152,6 +163,9 @@ export const MyProfileScreen = () => {
                 saveProfile={updateUserProfile}
               />
             )}
+            <Button className="m-4" onPress={configureTransfers}>
+              <ButtonText>Configure payments</ButtonText>
+            </Button>
 
             <View style={styles.line} />
 

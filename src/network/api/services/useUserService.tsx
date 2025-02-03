@@ -5,7 +5,8 @@ import { OneUser } from "~/types/one-user";
 import { RemoteImage } from "~/types/remote-image";
 import { RegisterTokenData } from "~/types/token";
 import { UploadFileData } from "~/types/upload-file-data";
-import { UserProfile, UserProfileUpdateData } from "~/types/user-profile";
+import { Url } from "~/types/url";
+import { Me, UserProfile, UserProfileUpdateData } from "~/types/user-profile";
 import { useApiService } from "./ApiService";
 import { useEventService } from "./useEventService";
 
@@ -15,6 +16,7 @@ export enum UserMutations {
   uploadFile = "uploadFile",
   registerToken = "registerToken",
   blockUser = "blockUser",
+  configureTransfers = "configureTransfers",
 }
 
 export enum GetUsersSort {
@@ -44,6 +46,11 @@ export function useUserService() {
         queryFn: () => getUser(id!),
         enabled: !!id,
         staleTime: 5000,
+      }),
+    me: () =>
+      queryOptions({
+        queryKey: [...queries.detail("me").queryKey],
+        queryFn: () => getMe(),
       }),
   };
 
@@ -81,9 +88,17 @@ export function useUserService() {
     },
   });
 
+  queryClient.setMutationDefaults([UserMutations.configureTransfers], {
+    mutationFn: (userId: string) => {
+      return configureTransfers(userId);
+    },
+  });
+
   const { doDelete, doGet, doPatch, doPost } = useApiService();
 
   const getUser = (userId: string) => doGet<UserProfile>(`/v3/users/${userId}`);
+
+  const getMe = () => doGet<Me>(`/v3/users/me`);
 
   queryClient.setMutationDefaults([UserMutations.blockUser], {
     mutationFn: (userId: string) => {
@@ -149,10 +164,14 @@ export function useUserService() {
       ..._.omit(["userId"], data),
     });
 
+  const configureTransfers = (userId: string) =>
+    doPost<Url>(`/v3/users/${userId}/configure-transfers`, {});
+
   return {
     queries,
     getUsers,
     getUser,
+    getMe,
     deleteUser,
     updateUser,
     uploadFile,

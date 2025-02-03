@@ -1,6 +1,15 @@
 import { ImageKey, ImageUrl } from "./image-info";
 import { OneUser } from "./one-user";
 
+export interface Me extends UserProfile {
+  stripe?: {
+    id: string;
+    requirements: {
+      currently_due: string[];
+    };
+  };
+}
+
 export interface UserProfile extends UserProfileData {
   id: string;
   firstName: string;
