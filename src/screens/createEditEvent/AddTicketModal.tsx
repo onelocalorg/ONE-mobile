@@ -184,7 +184,7 @@ export const AddTicketModal = ({
             <Input
               keyboardType="numeric"
               value={quantity?.toString()}
-              onChangeText={(v) => setQuantity(parseInt(v))}
+              onChangeText={(v) => setQuantity(parseInt(v || "0"))}
               placeholder={strings.ticketsUnlimited}
             />
             <SizedBox height={verticalScale(25)} />
