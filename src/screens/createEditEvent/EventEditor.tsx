@@ -63,7 +63,7 @@ export const EventEditor = ({
   const viewCount = event?.viewCount;
   const styles = createStyleSheet(theme);
   const navigation = useNavigation();
-  const [isEndDateActive, setEndDateActive] = useState(false);
+  const [isEndDateActive, setEndDateActive] = useState(!!event?.endDate);
   const [curTicket, setCurTicket] = useState<number | undefined>();
   const myUserId = useMyUserId();
   const isMyEvent = myUserId === event?.host.id;
