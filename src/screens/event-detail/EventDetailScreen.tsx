@@ -13,6 +13,8 @@ import { ButtonComponent } from "~/components/button-component";
 import { ImageComponent } from "~/components/image-component";
 import { Loader } from "~/components/loader";
 import { SizedBox } from "~/components/sized-box";
+import { HStack } from "~/components/ui/hstack";
+import { VStack } from "~/components/ui/vstack";
 import { useMyUserId } from "~/navigation/AuthContext";
 import { RootStackScreenProps, Screens } from "~/navigation/types";
 import { useEventService } from "~/network/api/services/useEventService";
@@ -79,22 +81,33 @@ export const EventDetailScreen = ({
               style={styles.eventImage}
             />
             <SizedBox height={verticalScale(35)} />
-            <View style={styles.row}>
+            <HStack className="items-center gap-3">
               <View style={styles.circularView}>
                 <ImageComponent
                   source={calendarTime}
                   style={styles.calendarTime}
                 />
               </View>
-              <View style={styles.margin}>
-                <Text style={styles.date}>
-                  {event.startDate.toLocaleString(DateTime.DATE_MED)}
-                </Text>
-                <Text style={styles.time}>
+              <VStack>
+                <Text>{event.startDate.toLocaleString(DateTime.DATE_MED)}</Text>
+                <Text>
                   {event.startDate.toLocaleString(DateTime.TIME_SIMPLE)}
                 </Text>
-              </View>
-            </View>
+              </VStack>
+              {event.endDate && (
+                <>
+                  <Text>-</Text>
+                  <VStack>
+                    <Text>
+                      {event.endDate.toLocaleString(DateTime.DATE_MED)}
+                    </Text>
+                    <Text>
+                      {event.endDate.toLocaleString(DateTime.TIME_SIMPLE)}
+                    </Text>
+                  </VStack>
+                </>
+              )}
+            </HStack>
             <View style={[styles.row, styles.marginTop]}>
               <View style={[styles.circularView, styles.yellow]}>
                 <ImageComponent source={pinWhite} style={styles.pinWhite} />
