@@ -8,6 +8,12 @@ import { useAppTheme } from "~/app-hooks/use-app-theme";
 import { buttonArrowGreen, edit2, payoutClose } from "~/assets/images";
 import { ImageComponent } from "~/components/image-component";
 import { Button, ButtonIcon, ButtonText } from "~/components/ui/button";
+import {
+  CheckIcon,
+  ClockIcon,
+  CloseCircleIcon,
+  Icon,
+} from "~/components/ui/icon";
 import { RootStackScreenProps, Screens } from "~/navigation/types";
 import {
   EventMutations,
@@ -35,6 +41,7 @@ export const EventAdministrationScreen = ({
       expensesForEvent: getExpenses,
       payoutsForEvent: getPayouts,
     },
+    queryClient,
   } = useEventService();
 
   const { event, financials, expenses, payouts } = useQueries({
@@ -63,10 +70,10 @@ export const EventAdministrationScreen = ({
     mutationKey: [EventMutations.sendPayout],
   });
 
-  const fixedPayouts =
-    payouts?.filter((p) => p.split === PayoutSplit.Fixed) ?? [];
-  const percentPayouts =
-    payouts?.filter((p) => p.split === PayoutSplit.Percent) ?? [];
+  // const fixedPayouts =
+  //   payouts?.filter((p) => p.split === PayoutSplit.Fixed) ?? [];
+  // const percentPayouts =
+  //   payouts?.filter((p) => p.split === PayoutSplit.Percent) ?? [];
 
   // const openAddBreakDownModal = (id: any) => {
   //   setUserId(userId);
@@ -214,6 +221,23 @@ export const EventAdministrationScreen = ({
     });
   };
 
+  const paymentIcon = (payment: Payout | Expense) => {
+    let icon;
+    switch (payment.status) {
+      case "complete":
+        icon = CheckIcon;
+        break;
+      case "pending":
+      case "waiting":
+        icon = ClockIcon;
+        break;
+      case "failed":
+        icon = CloseCircleIcon;
+        break;
+    }
+    return icon;
+  };
+
   return (
     <ScrollView>
       {financials && (
@@ -323,6 +347,12 @@ export const EventAdministrationScreen = ({
                       <Text style={styles.totalRupeesLbl}>
                         {toCurrency(item.amount)}
                       </Text>
+                      {item.status !== "new" && (
+                        <Icon
+                          className="justify-self-end"
+                          as={paymentIcon(item)}
+                        />
+                      )}
                     </View>
                   </View>
                 ))
@@ -355,7 +385,7 @@ export const EventAdministrationScreen = ({
                 </View>
               </View>
               {payouts && payouts.length > 0 ? (
-                [...fixedPayouts, ...percentPayouts].map((item) => (
+                payouts.map((item) => (
                   <View key={item.id} style={styles.userDetailsCont}>
                     <View
                       style={{
@@ -392,6 +422,12 @@ export const EventAdministrationScreen = ({
                           ? toCurrency(item.amount)
                           : `${item.amount}%`}
                       </Text>
+                      {item.status !== "new" && (
+                        <Icon
+                          className="justify-self-end"
+                          as={paymentIcon(item)}
+                        />
+                      )}
                     </View>
                   </View>
                 ))

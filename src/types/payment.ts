@@ -1,1 +1,6 @@
-export type PaymentStatus = "new" | "pending" | "paid";
+export type PaymentStatus =
+  | "new"
+  | "waiting"
+  | "pending"
+  | "complete"
+  | "failed";

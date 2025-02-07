@@ -11,6 +11,7 @@ import { Payout, PayoutData, PayoutUpdateData } from "~/types/payout";
 import { PriceBreakdown } from "~/types/price-breakdown";
 import { Rsvp, RsvpData, RsvpList } from "~/types/rsvp";
 import { TicketSelection } from "~/types/ticket-selection";
+import { Transfer } from "~/types/transfer";
 import { useApiService } from "./ApiService";
 
 export enum EventMutations {
@@ -188,9 +189,9 @@ export function useEventService() {
     mutationFn: (data: PaymentId) => {
       return sendExpense(data);
     },
-    onSuccess: (result: Expense) => {
+    onSuccess: (result: Transfer) => {
       void queryClient.invalidateQueries({
-        queryKey: queries.financialsForEvent(result.event.id).queryKey,
+        queryKey: queries.expensesForEvent(result.event.id).queryKey,
       });
     },
   });
@@ -229,9 +230,9 @@ export function useEventService() {
     mutationFn: (data: PaymentId) => {
       return sendPayout(data);
     },
-    onSuccess: (result: Payout) => {
+    onSuccess: (result: Transfer) => {
       void queryClient.invalidateQueries({
-        queryKey: queries.financialsForEvent(result.event.id).queryKey,
+        queryKey: queries.payoutsForEvent(result.event.id).queryKey,
       });
     },
   });
@@ -399,7 +400,7 @@ export function useEventService() {
   };
 
   const sendPayout = ({ id, eventId }: PaymentId) => {
-    return doPost<Payout>(`/v3/events/${eventId}/payouts/${id}/send`);
+    return doPost<Transfer>(`/v3/events/${eventId}/payouts/${id}/send`);
   };
 
   // interface CheckedInUserProps {
@@ -442,6 +443,7 @@ export function useEventService() {
   // };
 
   return {
+    queryClient,
     queries,
     getEvent,
     createEvent,
