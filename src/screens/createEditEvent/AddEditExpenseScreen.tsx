@@ -258,35 +258,6 @@ export const AddEditExpenseScreen = ({
 
           {expense?.images && <MultiImageViewer images={expense.images} />}
 
-          {/* 
-              TODO Add images
-              <View
-                style={{
-                  backgroundColor: "#A9A9A9",
-                  height: 1,
-                  marginRight: 20,
-                }}
-              ></View>
-              <View style={styles.mediaCont}>
-                <Text style={styles.mediaLbl}>Media</Text>
-                <TouchableOpacity onPress={openGallary}>
-                  <Text style={styles.addPhotosCont}>add photos</Text>
-                </TouchableOpacity>
-              </View>
-
-              <View style={styles.multipleImagecont}>
-                {imageSelectArray.map((item: any) => {
-                  return (
-                    <TouchableOpacity onPress={() => removeSelectImage(item)}>
-                      <ImageComponent
-                        source={{ uri: item?.imageUrl }}
-                        style={styles.selectImage}
-                      ></ImageComponent>
-                    </TouchableOpacity>
-                  );
-                })}
-              </View> */}
-
           <View style={styles.submitButton}>
             <TouchableOpacity
               activeOpacity={0.8}

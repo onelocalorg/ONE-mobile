@@ -87,76 +87,6 @@ export const AddEditPayout = ({
     },
   });
 
-  // </---------------Delete Payout and Payout--------------------/>
-
-  // const openGallary = async () => {
-  //   const { assets } = await launchImageLibrary({
-  //     mediaType: "photo",
-  //     includeBase64: true,
-  //     maxWidth: 800,
-  //     maxHeight: 800,
-  //   });
-  //   if (assets) {
-  //     const img = assets?.[0];
-  //     const fileNameTwo = img?.fileName ?? "";
-  //     LodingData(true);
-  //     const output =
-  //       fileNameTwo.substr(0, fileNameTwo.lastIndexOf(".")) || fileNameTwo;
-  //     const base64Two = img?.base64 ?? "";
-  //     postImageUploadAPI(output, base64Two);
-  //   }
-  // };
-
-  // const postImageUploadAPI = async (fileItem: any, base64Item: any) => {
-  //   const token = await AsyncStorage.getItem("token");
-  //   const pic: any = {
-  //     uploadKey: "createPostImg",
-  //     imageName: fileItem,
-  //     base64String: "data:image/jpeg;base64," + base64Item,
-  //   };
-
-  //   console.log("================ postImageUploadAPI Request=================");
-  //   try {
-  //     const response = await fetch(
-  //       process.env.API_URL + "/v3/users/upload/file",
-  //       {
-  //         method: "post",
-  //         headers: new Headers({
-  //           Authorization: "Bearer " + token,
-  //           "Content-Type": "application/json",
-  //         }),
-  //         body: JSON.stringify(pic),
-  //       }
-  //     );
-  //     const dataItem = await response.json();
-  //     const tempData = imageSelectArray;
-  //     tempData.push(dataItem?.data);
-  //     setImageSelectArray(tempData);
-  //     const tempTwo = imageSelectArrayKey;
-
-  //     tempTwo.push(dataItem?.data?.key);
-  //     setImageSelectArrayKey(tempTwo);
-  //     LodingData(false);
-  //   } catch (error) {
-  //     console.log(error);
-  //     LodingData(false);
-  //   }
-  // };
-  //
-  // const removeSelectImage = (imageItem: any) => {
-  //   const newImage = imageSelectArray.filter(
-  //     (person: any) =>
-  //       person.imageUrl !== imageItem.imageUrl && person.key !== imageItem.key
-  //   );
-
-  //   setImageSelectArray(newImage);
-
-  //   const newImageKey = imageSelectArrayKey.filter(
-  //     (person: any) => person !== imageItem.key
-  //   );
-  //   setImageSelectArrayKey(newImageKey);
-  // };
-
   const showUserChooser = () => {
     setUserChooserVisible(true);
     resetField("payee");
@@ -344,35 +274,6 @@ export const AddEditPayout = ({
           </View>
 
           {payout?.images && <MultiImageViewer images={payout.images} />}
-
-          {/* 
-              TODO Add images
-              <View
-                style={{
-                  backgroundColor: "#A9A9A9",
-                  height: 1,
-                  marginRight: 20,
-                }}
-              ></View>
-              <View style={styles.mediaCont}>
-                <Text style={styles.mediaLbl}>Media</Text>
-                <TouchableOpacity onPress={openGallary}>
-                  <Text style={styles.addPhotosCont}>add photos</Text>
-                </TouchableOpacity>
-              </View>
-
-              <View style={styles.multipleImagecont}>
-                {imageSelectArray.map((item: any) => {
-                  return (
-                    <TouchableOpacity onPress={() => removeSelectImage(item)}>
-                      <ImageComponent
-                        source={{ uri: item?.imageUrl }}
-                        style={styles.selectImage}
-                      ></ImageComponent>
-                    </TouchableOpacity>
-                  );
-                })}
-              </View> */}
 
           <View style={styles.submitButton}>
             <TouchableOpacity
