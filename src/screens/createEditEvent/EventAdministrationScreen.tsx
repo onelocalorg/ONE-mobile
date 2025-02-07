@@ -7,6 +7,7 @@ import { useAppTheme } from "~/app-hooks/use-app-theme";
 import { buttonArrowGreen, edit2, payoutClose } from "~/assets/images";
 import { OneAvatar } from "~/components/avatar/OneAvatar";
 import { ImageComponent } from "~/components/image-component";
+import { Box } from "~/components/ui/box";
 import { Button, ButtonIcon, ButtonText } from "~/components/ui/button";
 import { HStack } from "~/components/ui/hstack";
 import {
@@ -15,6 +16,7 @@ import {
   CloseCircleIcon,
   Icon,
 } from "~/components/ui/icon";
+import { Text as GsText } from "~/components/ui/text";
 import { RootStackScreenProps, Screens } from "~/navigation/types";
 import {
   EventMutations,
@@ -209,10 +211,19 @@ export const EventAdministrationScreen = ({
                     key={item.id}
                     className="mx-4 items-center justify-between gap-2"
                   >
-                    <TouchableOpacity onPress={() => handleEditExpense(item)}>
-                      <ImageComponent source={edit2} style={styles.editIcon} />
-                    </TouchableOpacity>
-
+                    {item.status !== "new" ? (
+                      <Icon
+                        className="justify-self-end"
+                        as={paymentIcon(item)}
+                      />
+                    ) : (
+                      <TouchableOpacity onPress={() => handleEditExpense(item)}>
+                        <ImageComponent
+                          source={edit2}
+                          style={styles.editIcon}
+                        />
+                      </TouchableOpacity>
+                    )}
                     <OneAvatar user={item.payee} size="xs" />
                     <View style={styles.userNameCont} className="grow">
                       <Text style={styles.usernameLbl}>
@@ -222,15 +233,9 @@ export const EventAdministrationScreen = ({
                         Expense for: {item?.description}
                       </Text>
                     </View>
-                    <Text style={styles.totalRupeesLbl}>
+                    <GsText className="justify-self-end">
                       {toCurrency(item.amount)}
-                    </Text>
-                    {item.status !== "new" && (
-                      <Icon
-                        className="justify-self-end"
-                        as={paymentIcon(item)}
-                      />
-                    )}
+                    </GsText>
                   </HStack>
                 ))
               ) : (
@@ -248,9 +253,9 @@ export const EventAdministrationScreen = ({
               </TouchableOpacity>
               <View style={styles.borderBottom}></View>
               <View style={styles.rupeesCont}>
-                <Text style={styles.rupeesLbl}>
+                <GsText style={styles.rupeesLbl}>
                   {toCurrency(financials.expensesTotal)}
-                </Text>
+                </GsText>
               </View>
             </View>
 
@@ -265,31 +270,35 @@ export const EventAdministrationScreen = ({
                 payouts.map((item) => (
                   <HStack
                     key={item.id}
-                    className="mx-4 items-center justify-between gap-2"
+                    className="flex mx-4 items-center gap-2"
                   >
-                    <TouchableOpacity onPress={() => handleEditPayout(item)}>
-                      <ImageComponent source={edit2} style={styles.editIcon} />
-                    </TouchableOpacity>
+                    {item.status !== "new" ? (
+                      <Icon
+                        className="justify-self-end"
+                        as={paymentIcon(item)}
+                      />
+                    ) : (
+                      <TouchableOpacity onPress={() => handleEditPayout(item)}>
+                        <ImageComponent
+                          source={edit2}
+                          style={styles.editIcon}
+                        />
+                      </TouchableOpacity>
+                    )}
                     <OneAvatar user={item.payee} size="xs" />
-                    <View style={styles.userNameCont} className="grow">
+                    <Box className="grow">
                       <Text style={styles.usernameLbl}>
                         {item.payee.firstName} {item.payee.lastName}
                       </Text>
                       <Text style={styles.payoutForLbl}>
                         Payout for: {item?.description}
                       </Text>
-                    </View>
-                    <Text style={styles.revenueRuppes}>
+                    </Box>
+                    <GsText className="justify-self-end">
                       {item.split === PayoutSplit.Fixed
                         ? toCurrency(item.amount)
                         : `${item.amount}%`}
-                    </Text>
-                    {item.status !== "new" && (
-                      <Icon
-                        className="justify-self-end"
-                        as={paymentIcon(item)}
-                      />
-                    )}
+                    </GsText>
                   </HStack>
                 ))
               ) : (
