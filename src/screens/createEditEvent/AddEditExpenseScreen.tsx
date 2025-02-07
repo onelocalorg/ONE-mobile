@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import React, { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { Alert, Text, TextInput, TouchableOpacity, View } from "react-native";
@@ -37,8 +37,10 @@ export const AddEditExpenseScreen = ({
   const [isUserChooserVisible, setUserChooserVisible] = useState(false);
   const [userSearch, setUserSearch] = useState("");
   const [isSaving, setIsSaving] = useState(false);
+  const queryClient = useQueryClient();
 
   const {
+    queries,
     queries: { expenseDetail },
   } = useEventService();
 
@@ -70,14 +72,29 @@ export const AddEditExpenseScreen = ({
 
   const { mutate: createExpense } = useMutation<Expense, Error, ExpenseData>({
     mutationKey: [EventMutations.createExpense],
+    onSuccess: () => {
+      void queryClient.invalidateQueries({
+        queryKey: queries.financialsForEvent(eventId).queryKey,
+      });
+    },
   });
 
   const { mutate: updateExpense } = useMutation<Expense, Error, ExpenseData>({
     mutationKey: [EventMutations.editExpense],
+    onSuccess: () => {
+      void queryClient.invalidateQueries({
+        queryKey: queries.financialsForEvent(eventId).queryKey,
+      });
+    },
   });
 
   const { mutate: deleteExpense } = useMutation<void, Error, PaymentId>({
     mutationKey: [EventMutations.deleteExpense],
+    onSuccess: () => {
+      void queryClient.invalidateQueries({
+        queryKey: queries.financialsForEvent(eventId).queryKey,
+      });
+    },
   });
 
   const showUserChooser = () => {
@@ -98,11 +115,11 @@ export const AddEditExpenseScreen = ({
     setIsSaving(true);
     if (paymentId) {
       updateExpense(payment, {
-        onSettled: navigation.goBack,
+        onSuccess: navigation.goBack,
       });
     } else {
       createExpense(payment, {
-        onSettled: navigation.goBack,
+        onSuccess: navigation.goBack,
       });
     }
   };
@@ -129,7 +146,6 @@ export const AddEditExpenseScreen = ({
       ],
       { cancelable: false }
     );
-    // postContentModal(false);
   };
 
   return (
@@ -275,6 +291,7 @@ export const AddEditExpenseScreen = ({
             <TouchableOpacity
               activeOpacity={0.8}
               onPress={handleSubmit(onSaveExpense)}
+              disabled={isSaving}
             >
               <ImageComponent
                 source={saveIcon}

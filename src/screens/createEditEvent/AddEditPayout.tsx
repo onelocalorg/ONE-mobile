@@ -1,4 +1,4 @@
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import React, { useState } from "react";
 import { Controller, useForm, useWatch } from "react-hook-form";
 import { Alert, Text, TextInput, TouchableOpacity, View } from "react-native";
@@ -11,6 +11,7 @@ import { UserChooser } from "~/components/user-chooser/UserChooser";
 import {
   EventMutations,
   PaymentId,
+  useEventService,
 } from "~/network/api/services/useEventService";
 import { OneUser } from "~/types/one-user";
 import { Payout, PayoutData, PayoutSplit } from "~/types/payout";
@@ -30,6 +31,8 @@ export const AddEditPayout = ({
   const styles = createStyleSheet(theme);
   const [isUserChooserVisible, setUserChooserVisible] = useState(false);
   const [userSearch, setUserSearch] = useState("");
+  const [isSaving, setIsSaving] = useState(false);
+  const queryClient = useQueryClient();
 
   const {
     control,
@@ -55,16 +58,33 @@ export const AddEditPayout = ({
   const split = useWatch({ control, name: "split" });
   const amount = useWatch({ control, name: "amount" });
 
+  const { queries } = useEventService();
+
   const { mutate: createPayout } = useMutation<Payout, Error, PayoutData>({
     mutationKey: [EventMutations.createPayout],
+    onSuccess: () => {
+      void queryClient.invalidateQueries({
+        queryKey: queries.financialsForEvent(eventId).queryKey,
+      });
+    },
   });
 
   const { mutate: updatePayout } = useMutation<Payout, Error, PayoutData>({
     mutationKey: [EventMutations.editPayout],
+    onSuccess: () => {
+      void queryClient.invalidateQueries({
+        queryKey: queries.financialsForEvent(eventId).queryKey,
+      });
+    },
   });
 
   const { mutate: deletePayout } = useMutation<void, Error, PaymentId>({
     mutationKey: [EventMutations.deletePayout],
+    onSuccess: () => {
+      void queryClient.invalidateQueries({
+        queryKey: queries.financialsForEvent(eventId).queryKey,
+      });
+    },
   });
 
   // </---------------Delete Payout and Payout--------------------/>
@@ -148,13 +168,14 @@ export const AddEditPayout = ({
   };
 
   const onSavePayout = (payment: PayoutData) => {
+    setIsSaving(true);
     if (payout) {
       updatePayout(payment, {
         onSettled: onClose,
       });
     } else {
       createPayout(payment, {
-        onSuccess: onClose,
+        onSettled: onClose,
       });
     }
   };
@@ -357,6 +378,7 @@ export const AddEditPayout = ({
             <TouchableOpacity
               activeOpacity={0.8}
               onPress={handleSubmit(onSavePayout)}
+              disabled={isSaving}
             >
               <ImageComponent
                 source={saveIcon}
