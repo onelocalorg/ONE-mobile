@@ -4,12 +4,12 @@ import {
   Alert,
   Linking,
   Pressable,
+  ScrollView,
   Text,
   TouchableOpacity,
   View,
 } from "react-native";
 import { getReadableVersion } from "react-native-device-info";
-import { ScrollView } from "react-native-gesture-handler";
 import { Menu } from "react-native-paper";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
 import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";

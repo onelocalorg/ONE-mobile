@@ -1,8 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { DateTime } from "luxon";
 import React from "react";
-import { Image, Text, TouchableOpacity, View } from "react-native";
-import { ScrollView } from "react-native-gesture-handler";
+import { Image, ScrollView, Text, TouchableOpacity, View } from "react-native";
 import Markdown from "react-native-markdown-display";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
 import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
