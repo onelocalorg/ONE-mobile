@@ -207,14 +207,14 @@ export const EventAdministrationScreen = ({
                 expenses.map((item) => (
                   <HStack
                     key={item.id}
-                    className="mx-4 items-center justify-between"
+                    className="mx-4 items-center justify-between gap-2"
                   >
                     <TouchableOpacity onPress={() => handleEditExpense(item)}>
                       <ImageComponent source={edit2} style={styles.editIcon} />
                     </TouchableOpacity>
 
                     <OneAvatar user={item.payee} size="xs" />
-                    <View style={styles.userNameCont}>
+                    <View style={styles.userNameCont} className="grow">
                       <Text style={styles.usernameLbl}>
                         {item.payee.firstName} {item.payee.lastName}
                       </Text>
@@ -265,13 +265,13 @@ export const EventAdministrationScreen = ({
                 payouts.map((item) => (
                   <HStack
                     key={item.id}
-                    className="mx-4 items-center justify-between"
+                    className="mx-4 items-center justify-between gap-2"
                   >
                     <TouchableOpacity onPress={() => handleEditPayout(item)}>
                       <ImageComponent source={edit2} style={styles.editIcon} />
                     </TouchableOpacity>
                     <OneAvatar user={item.payee} size="xs" />
-                    <View style={styles.userNameCont}>
+                    <View style={styles.userNameCont} className="grow">
                       <Text style={styles.usernameLbl}>
                         {item.payee.firstName} {item.payee.lastName}
                       </Text>

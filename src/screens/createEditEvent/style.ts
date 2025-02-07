@@ -661,8 +661,6 @@ export const createStyleSheet = (theme: ThemeProps) => {
     editIcon: {
       height: 16,
       width: 16,
-      marginTop: 12,
-      marginRight: 5,
     },
     userNameCont: {
       width: width - 200,
