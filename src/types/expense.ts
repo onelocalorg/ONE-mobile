@@ -5,6 +5,7 @@ import { PaymentStatus } from "./payment";
 export interface Expense extends ExpenseData {
   id: string;
   status: PaymentStatus;
+  transfers?: [];
 }
 
 export interface ExpenseData extends Omit<ExpenseUpdateData, "id"> {

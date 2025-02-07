@@ -346,7 +346,7 @@ export function useEventService() {
     console.log("updateExpense", data);
     return doPatch<Expense>(
       `/v3/events/${data.event.id}/expenses/${data.id}`,
-      _.omit(["id", "event", "payee"], {
+      _.omit(["id", "event", "payee", "createdAt", "transfers", "status"], {
         ...data,
         payeeId: data.payee?.id,
       })
@@ -388,7 +388,7 @@ export function useEventService() {
   const updatePayout = (data: PayoutUpdateData) => {
     return doPatch<Payout>(
       `/v3/events/${data.event.id}/payouts/${data.id}`,
-      _.omit(["id", "event", "payee"], {
+      _.omit(["id", "event", "payee", "createdAt", "transfers", "status"], {
         ...data,
         payeeId: data.payee?.id,
       })

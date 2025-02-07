@@ -5,6 +5,7 @@ import { PaymentStatus } from "./payment";
 export interface Payout extends PayoutData {
   id: string;
   status: PaymentStatus;
+  transfers?: [];
 }
 
 export enum PayoutSplit {
