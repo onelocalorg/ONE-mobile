@@ -1,14 +1,18 @@
 import { useQuery } from "@tanstack/react-query";
 import React from "react";
-import { FlatList, Pressable, Text, View } from "react-native";
+import { FlatList, Pressable, Text } from "react-native";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
 import { useUserService } from "~/network/api/services/useUserService";
 import { OneUser } from "~/types/one-user";
+import { OneAvatar } from "../avatar/OneAvatar";
+import { HStack } from "../ui/hstack";
 
 export const UserChooser = ({
+  isVisible,
   search,
   onChangeUser,
 }: {
+  isVisible: boolean;
   search: string;
   onChangeUser: (user: OneUser) => void;
 }) => {
@@ -132,23 +136,24 @@ export const UserChooser = ({
     height: "auto",
   }}
 > */}
-      <FlatList
-        data={allUsers}
-        renderItem={({ item }) => (
-          <Pressable
-            onPress={() => handleChangeUser(item)}
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-              marginVertical: 5,
-              borderBottomWidth: 1,
-              borderColor: "gray",
-              paddingVertical: 8,
-            }}
-          >
-            <View style={{ flexDirection: "row", marginRight: 50 }}>
-              <>
-                {/* 
+      {isVisible && (
+        <FlatList
+          data={allUsers}
+          renderItem={({ item }) => (
+            <Pressable
+              onPress={() => handleChangeUser(item)}
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                marginVertical: 5,
+                borderBottomWidth: 1,
+                borderColor: "gray",
+                paddingVertical: 8,
+              }}
+            >
+              <HStack className="gap-2">
+                <>
+                  {/* 
                  FIXME When I enable, it gives me an error unexpected undefined
                 {item.pic && (
                   <ImageComponent
@@ -163,20 +168,21 @@ export const UserChooser = ({
                     source={{ uri: item.pic }}
                   ></ImageComponent>
                 )} */}
-                <Text
-                  numberOfLines={1}
-                  style={{
-                    alignSelf: "center",
-                    flexShrink: 1,
-                    width: 150,
-                    color: theme.colors.black,
-                  }}
-                >
-                  {item.firstName} {item.lastName}
-                </Text>
-              </>
+                  <OneAvatar user={item} />
+                  <Text
+                    numberOfLines={1}
+                    style={{
+                      alignSelf: "center",
+                      flexShrink: 1,
+                      width: 150,
+                      color: theme.colors.black,
+                    }}
+                  >
+                    {item.firstName} {item.lastName}
+                  </Text>
+                </>
 
-              {/* <TouchableOpacity 
+                {/* <TouchableOpacity 
                 <ImageComponent
                   style={{
                     height: 20,
@@ -187,10 +193,11 @@ export const UserChooser = ({
                   source={buttonArrowGreen}
                 ></ImageComponent>
               </TouchableOpacity> */}
-            </View>
-          </Pressable>
-        )}
-      ></FlatList>
+              </HStack>
+            </Pressable>
+          )}
+        ></FlatList>
+      )}
       {/* </View> */}
     </>
   );

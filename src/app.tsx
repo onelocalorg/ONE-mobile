@@ -7,9 +7,7 @@ import { queryConfig } from "~/network/utils/query-config";
 import { InternetConnectionHandle } from "~/utils/internet-connection-handle";
 import "../global.css";
 import { Loader } from "./components/loader";
-import { GluestackUIProvider } from "./components/ui/gluestack-ui-provider";
 import Authentication from "./navigation/Authentication";
-
 
 Sentry.init({
   dsn: process.env.SENTRY_DNS,
@@ -48,7 +46,7 @@ export const App = () => {
   }, []);
 
   return (
-    <GluestackUIProvider>
+    <>
       <Loader visible={isLoading} />
       {!isLoading && (
         <>
@@ -61,6 +59,6 @@ export const App = () => {
           <Authentication />
         </>
       )}
-    </GluestackUIProvider>
+    </>
   );
 };

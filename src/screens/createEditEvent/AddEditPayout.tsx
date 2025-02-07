@@ -227,9 +227,11 @@ export const AddEditPayout = ({
             </View>
           </View>
 
-          {isUserChooserVisible && (
-            <UserChooser search={userSearch} onChangeUser={handleChangeUser} />
-          )}
+          <UserChooser
+            search={userSearch}
+            onChangeUser={handleChangeUser}
+            isVisible={isUserChooserVisible}
+          />
 
           <View style={styles.amountCont}>
             <Text style={styles.amountLbl}>Amount</Text>

@@ -1,5 +1,6 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import React, { useEffect, useMemo, useReducer, useState } from "react";
+import { GluestackUIProvider } from "~/components/ui/gluestack-ui-provider";
 import { LOG } from "~/config";
 import { ApiService } from "~/network/api/services/ApiService";
 import { persistKeys } from "~/network/constant";
@@ -158,11 +159,13 @@ export default function Authentication() {
         <AuthDispatchContext.Provider value={authDispatchContext}>
           <ApiService>
             <NotificationService>
-              <AppNavigation
-                email={state.myEmail}
-                password={state.password}
-                token={state.accessToken}
-              />
+              <GluestackUIProvider>
+                <AppNavigation
+                  email={state.myEmail}
+                  password={state.password}
+                  token={state.accessToken}
+                />
+              </GluestackUIProvider>
             </NotificationService>
           </ApiService>
         </AuthDispatchContext.Provider>

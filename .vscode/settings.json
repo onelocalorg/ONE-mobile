@@ -2,6 +2,7 @@
   "git.ignoreLimitWarning": true,
   "java.configuration.updateBuildConfiguration": "automatic",
   "cSpell.words": [
+    "Actionsheet",
     "Checkins",
     "datetime",
     "datetimepicker",

@@ -6,7 +6,7 @@ import { Box } from "../ui/box";
 type OneAvatarProps = {
   user?: OneUser | UserProfile;
   className?: string;
-  size?: "sm" | "md" | "lg" | "xl" | "2xl" | "xs" | undefined;
+  size?: "xs" | "sm" | "md" | "lg" | "xl" | "2xl" | undefined;
 };
 export const OneAvatar = ({ user, className, size = "sm" }: OneAvatarProps) => {
   return (

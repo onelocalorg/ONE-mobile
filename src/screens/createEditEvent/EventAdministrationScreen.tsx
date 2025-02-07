@@ -2,12 +2,13 @@ import { useMutation, useQueries } from "@tanstack/react-query";
 import { BanknoteIcon } from "lucide-react-native";
 import { DateTime } from "luxon";
 import React, { useState } from "react";
-import { Modal, Text, TouchableOpacity, View } from "react-native";
-import { ScrollView } from "react-native-gesture-handler";
+import { Modal, ScrollView, Text, TouchableOpacity, View } from "react-native";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
 import { buttonArrowGreen, edit2, payoutClose } from "~/assets/images";
+import { OneAvatar } from "~/components/avatar/OneAvatar";
 import { ImageComponent } from "~/components/image-component";
 import { Button, ButtonIcon, ButtonText } from "~/components/ui/button";
+import { HStack } from "~/components/ui/hstack";
 import {
   CheckIcon,
   ClockIcon,
@@ -69,115 +70,6 @@ export const EventAdministrationScreen = ({
   const { mutate: sendPayout } = useMutation<Payout, Error, PaymentId>({
     mutationKey: [EventMutations.sendPayout],
   });
-
-  // const fixedPayouts =
-  //   payouts?.filter((p) => p.split === PayoutSplit.Fixed) ?? [];
-  // const percentPayouts =
-  //   payouts?.filter((p) => p.split === PayoutSplit.Percent) ?? [];
-
-  // const openAddBreakDownModal = (id: any) => {
-  //   setUserId(userId);
-  //   navigation?.navigate(navigations.ADDPAYOUTEXPENSE, {
-  //     id: eventId,
-  //     addPayOutExpense: payoutData?.total_profit,
-  //   });
-  // };
-
-  // async function getPayoutAPI() {
-  //   LodingData(true);
-  //   const token = await AsyncStorage.getItem("token");
-  //   console.log("=========== createPayoutAPI Request ==============");
-  //   try {
-  //     const response = await fetch(
-  //       process.env.API_URL + "/v3/events/event-financial/" + eventId,
-  //       {
-  //         method: "get",
-  //         headers: new Headers({
-  //           Authorization: "Bearer " + token,
-  //           "Content-Type": "application/json",
-  //         }),
-  //       }
-  //     );
-  //     console.log(
-  //       process.env.API_URL + "/v3/events/event-financial/" + eventId
-  //     );
-  //     const dataItem = await response.json();
-  //     console.log(
-  //       "=========== payout data from API==============",
-  //       JSON.stringify(dataItem)
-  //     );
-  //     LodingData(false);
-  //     setPayoutData(dataItem?.data);
-  //     setExpenseListData(dataItem?.data?.expenses);
-  //     setPayoutListData(dataItem?.data?.payouts);
-  //     setUserId(dataItem?.data?.producer?.user_id);
-  //     setRevenueAmt(dataItem?.data?.revenue_amount);
-  //     setExpenseAmt(dataItem?.data?.total_expenses);
-  //     setIsPayout(dataItem?.data?.isPayout);
-  //     setISAddEditPayout(dataItem?.data?.isPayoutAddEdit);
-  //     setTotalProfile(
-  //       dataItem?.data?.revenue_amount - dataItem?.data?.total_expenses
-  //     );
-  //     setpayoutAmt(dataItem?.data?.total_payout);
-  //     setRemainingAmt(dataItem?.data?.remaining_amount);
-  //   } catch (error) {
-  //     console.error(error);
-  //     LodingData(false);
-  //   }
-  // }
-
-  // async function createPayoutAPI() {
-  //   LodingData(true);
-  //   const token = await AsyncStorage.getItem("token");
-  //   const data: any = {};
-  //   console.log("-----------dataprint-------------", JSON.stringify(data));
-  //   try {
-  //     const response = await fetch(
-  //       process.env.API_URL +
-  //         "/v3/events/event-financial/" +
-  //         eventId +
-  //         "/create",
-  //       {
-  //         method: "post",
-  //         headers: new Headers({
-  //           Authorization: "Bearer " + token,
-  //           "Content-Type": "application/json",
-  //         }),
-  //       }
-  //     );
-  //     const dataItem = await response.json();
-  //     console.log(dataItem);
-  //     LodingData(false);
-
-  //     if (dataItem.success) {
-  //       setIsPayout(false);
-  //     }
-  //     Toast.show(dataItem?.message, Toast.LONG, {
-  //       backgroundColor: "black",
-  //     });
-  //   } catch (error) {
-  //     console.error(error);
-  //     LodingData(false);
-  //   }
-  // }
-
-  // const editClick = (item: any, type: any) => {
-  //   const tempData = {
-  //     isPayoutorExpense: type,
-  //     userSelectedData: item.user_id,
-  //     profitAmt: payoutData?.total_profit,
-  //     percentageAmount: item.amount_percent,
-  //     description: item.description,
-  //     images: item.images,
-  //     eventId: eventId,
-  //     amount: item.amount,
-  //     expensePayoutID: item.key,
-  //   };
-  //   navigation?.navigate(navigations.EDITPAYOUTEXPENSE, {
-  //     payoutExpenseObject: tempData,
-  //     id: eventId,
-  //   });
-  // };
 
   const handleAddExpense = () => {
     navigation.push(Screens.ADD_EDIT_EXPENSE, { eventId });
@@ -313,55 +205,40 @@ export const EventAdministrationScreen = ({
               </View>
               {expenses && expenses.length > 0 ? (
                 expenses.map((item) => (
-                  <View key={item.id} style={styles.userDetailsCont}>
-                    <View
-                      style={{
-                        flexDirection: "row",
-                        justifyContent: "space-between",
-                      }}
-                    >
-                      <View style={styles.detailsSubCont}>
-                        <TouchableOpacity
-                          onPress={() => handleEditExpense(item)}
-                        >
-                          <ImageComponent
-                            source={edit2}
-                            style={styles.editIcon}
-                          />
-                        </TouchableOpacity>
+                  <HStack
+                    key={item.id}
+                    className="mx-4 items-center justify-between"
+                  >
+                    <TouchableOpacity onPress={() => handleEditExpense(item)}>
+                      <ImageComponent source={edit2} style={styles.editIcon} />
+                    </TouchableOpacity>
 
-                        <ImageComponent
-                          source={{ uri: item.payee.pic }}
-                          resizeMode="cover"
-                          style={styles.userImage}
-                        />
-                        <View style={styles.userNameCont}>
-                          <Text style={styles.usernameLbl}>
-                            {item.payee.firstName} {item.payee.lastName}
-                          </Text>
-                          <Text style={styles.payoutForLbl}>
-                            Expense for: {item?.description}
-                          </Text>
-                        </View>
-                      </View>
-                      <Text style={styles.totalRupeesLbl}>
-                        {toCurrency(item.amount)}
+                    <OneAvatar user={item.payee} size="xs" />
+                    <View style={styles.userNameCont}>
+                      <Text style={styles.usernameLbl}>
+                        {item.payee.firstName} {item.payee.lastName}
                       </Text>
-                      {item.status !== "new" && (
-                        <Icon
-                          className="justify-self-end"
-                          as={paymentIcon(item)}
-                        />
-                      )}
+                      <Text style={styles.payoutForLbl}>
+                        Expense for: {item?.description}
+                      </Text>
                     </View>
-                  </View>
+                    <Text style={styles.totalRupeesLbl}>
+                      {toCurrency(item.amount)}
+                    </Text>
+                    {item.status !== "new" && (
+                      <Icon
+                        className="justify-self-end"
+                        as={paymentIcon(item)}
+                      />
+                    )}
+                  </HStack>
                 ))
               ) : (
                 <Text>No expenses yet</Text>
               )}
               <TouchableOpacity
                 activeOpacity={1}
-                onPress={() => handleAddExpense()}
+                onPress={handleAddExpense}
                 style={styles.addItemCont}
               >
                 <View style={styles.subAddItemCont}>
@@ -386,57 +263,41 @@ export const EventAdministrationScreen = ({
               </View>
               {payouts && payouts.length > 0 ? (
                 payouts.map((item) => (
-                  <View key={item.id} style={styles.userDetailsCont}>
-                    <View
-                      style={{
-                        flexDirection: "row",
-                        justifyContent: "space-between",
-                      }}
-                    >
-                      <View style={styles.detailsSubCont}>
-                        <TouchableOpacity
-                          onPress={() => handleEditPayout(item)}
-                        >
-                          <ImageComponent
-                            source={edit2}
-                            style={styles.editIcon}
-                          />
-                        </TouchableOpacity>
-
-                        <ImageComponent
-                          source={{ uri: item.payee.pic }}
-                          resizeMode="cover"
-                          style={styles.userImage}
-                        />
-                        <View style={styles.userNameCont}>
-                          <Text style={styles.usernameLbl}>
-                            {item.payee.firstName} {item.payee.lastName}
-                          </Text>
-                          <Text style={styles.payoutForLbl}>
-                            Payout for: {item?.description}
-                          </Text>
-                        </View>
-                      </View>
-                      <Text style={styles.revenueRuppes}>
-                        {item.split === PayoutSplit.Fixed
-                          ? toCurrency(item.amount)
-                          : `${item.amount}%`}
+                  <HStack
+                    key={item.id}
+                    className="mx-4 items-center justify-between"
+                  >
+                    <TouchableOpacity onPress={() => handleEditPayout(item)}>
+                      <ImageComponent source={edit2} style={styles.editIcon} />
+                    </TouchableOpacity>
+                    <OneAvatar user={item.payee} size="xs" />
+                    <View style={styles.userNameCont}>
+                      <Text style={styles.usernameLbl}>
+                        {item.payee.firstName} {item.payee.lastName}
                       </Text>
-                      {item.status !== "new" && (
-                        <Icon
-                          className="justify-self-end"
-                          as={paymentIcon(item)}
-                        />
-                      )}
+                      <Text style={styles.payoutForLbl}>
+                        Payout for: {item?.description}
+                      </Text>
                     </View>
-                  </View>
+                    <Text style={styles.revenueRuppes}>
+                      {item.split === PayoutSplit.Fixed
+                        ? toCurrency(item.amount)
+                        : `${item.amount}%`}
+                    </Text>
+                    {item.status !== "new" && (
+                      <Icon
+                        className="justify-self-end"
+                        as={paymentIcon(item)}
+                      />
+                    )}
+                  </HStack>
                 ))
               ) : (
                 <Text>No payouts yet</Text>
               )}
               <TouchableOpacity
                 activeOpacity={1}
-                onPress={() => handleAddPayout()}
+                onPress={handleAddPayout}
                 style={styles.addItemCont}
               >
                 <View style={styles.subAddItemCont}>
@@ -493,6 +354,14 @@ export const EventAdministrationScreen = ({
               </View>
             </View>
           </Modal>
+          {/* {event && (
+            <AddEditExpenseSheet
+              event={event}
+              expense={selectedPayment}
+              isOpen={isExpenseVisible}
+              onClose={hideExpense}
+            />
+          )} */}
         </View>
       )}
     </ScrollView>
