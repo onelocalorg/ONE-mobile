@@ -1,4 +1,5 @@
 import { useMutation, useQueries } from "@tanstack/react-query";
+import _ from "lodash/fp";
 import { BanknoteIcon } from "lucide-react-native";
 import { DateTime } from "luxon";
 import React, { useState } from "react";
@@ -8,7 +9,12 @@ import { buttonArrowGreen, edit2, payoutClose } from "~/assets/images";
 import { OneAvatar } from "~/components/avatar/OneAvatar";
 import { ImageComponent } from "~/components/image-component";
 import { Box } from "~/components/ui/box";
-import { Button, ButtonIcon, ButtonText } from "~/components/ui/button";
+import {
+  Button,
+  ButtonIcon,
+  ButtonSpinner,
+  ButtonText,
+} from "~/components/ui/button";
 import { HStack } from "~/components/ui/hstack";
 import {
   CheckIcon,
@@ -44,7 +50,6 @@ export const EventAdministrationScreen = ({
       expensesForEvent: getExpenses,
       payoutsForEvent: getPayouts,
     },
-    queryClient,
   } = useEventService();
 
   const { event, financials, expenses, payouts } = useQueries({
@@ -66,12 +71,22 @@ export const EventAdministrationScreen = ({
     },
   });
 
-  const { mutate: sendExpense } = useMutation<Expense, Error, PaymentId>({
+  const { isPending: isExpensePending, mutate: sendExpense } = useMutation<
+    Expense,
+    Error,
+    PaymentId
+  >({
     mutationKey: [EventMutations.sendExpense],
   });
-  const { mutate: sendPayout } = useMutation<Payout, Error, PaymentId>({
+  const { isPending: isPayoutPending, mutate: sendPayout } = useMutation<
+    Payout,
+    Error,
+    PaymentId
+  >({
     mutationKey: [EventMutations.sendPayout],
   });
+
+  const isPaymentPending = isExpensePending || isPayoutPending;
 
   const handleAddExpense = () => {
     navigation.push(Screens.ADD_EDIT_EXPENSE, { eventId });
@@ -106,14 +121,22 @@ export const EventAdministrationScreen = ({
   const sendPayoutsConfirm = () => {
     setModalVisible(false);
 
-    expenses?.forEach((expense) => {
-      sendExpense({ id: expense.id, eventId });
-    });
+    expenses
+      ?.filter((p) => p.status === "new")
+      .forEach((expense) => {
+        sendExpense({ id: expense.id, eventId });
+      });
 
-    payouts?.forEach((payout) => {
-      sendPayout({ id: payout.id, eventId });
-    });
+    payouts
+      ?.filter((p) => p.status === "new")
+      .forEach((payout) => {
+        sendPayout({ id: payout.id, eventId });
+      });
   };
+
+  const isNewPaymentsRemaining = () =>
+    _.some((p) => p.status === "new", payouts) ||
+    _.some((e) => e.status === "new", expenses);
 
   const paymentIcon = (payment: Payout | Expense) => {
     let icon;
@@ -184,9 +207,13 @@ export const EventAdministrationScreen = ({
             <Button
               onPress={sendPayoutModal}
               isDisabled={
-                !event || event.startDate.plus({ days: 3 }) > DateTime.now()
+                !event ||
+                event.startDate.plus({ days: 3 }) > DateTime.now() ||
+                !isNewPaymentsRemaining() ||
+                isPaymentPending
               }
             >
+              {isPaymentPending && <ButtonSpinner />}
               <ButtonIcon as={BanknoteIcon}></ButtonIcon>
               <ButtonText>Send payouts</ButtonText>
             </Button>
@@ -363,14 +390,6 @@ export const EventAdministrationScreen = ({
               </View>
             </View>
           </Modal>
-          {/* {event && (
-            <AddEditExpenseSheet
-              event={event}
-              expense={selectedPayment}
-              isOpen={isExpenseVisible}
-              onClose={hideExpense}
-            />
-          )} */}
         </View>
       )}
     </ScrollView>
