@@ -152,7 +152,10 @@ export function useUserService() {
 
   const updateUser = (data: UserProfileUpdateData) =>
     doPatch<UserProfile>(`/v3/users/${data.id}`, {
-      ..._.omit(["id", "isEmailVerified", "chapterId", "groups"], data),
+      ..._.omit(
+        ["id", "isEmailVerified", "chapterId", "groups", "user_type"],
+        data
+      ),
       skills: !_.isEmpty(data.skills) ? data.skills?.join(",") : undefined,
     });
 
