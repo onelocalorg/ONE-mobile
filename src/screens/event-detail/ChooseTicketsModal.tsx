@@ -1,6 +1,7 @@
 import { useMutation } from "@tanstack/react-query";
 import React, { useState } from "react";
-import { Alert } from "react-native";
+import { Alert, Text, View } from "react-native";
+import { useAppTheme } from "~/app-hooks/use-app-theme";
 import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
 import { Button, ButtonIcon, ButtonText } from "~/components/ui/button";
 import { Center } from "~/components/ui/center";
@@ -21,10 +22,12 @@ import {
 } from "~/network/api/services/useOrderService";
 import { LineItemTypes } from "~/types/line-item";
 import { LocalEvent } from "~/types/local-event";
-import { isPayableOrder, Order, OrderData, PayableOrder } from "~/types/order";
+import { isPayableOrder, Order, OrderData } from "~/types/order";
 import { TicketSelection } from "~/types/ticket-selection";
 import { toCurrency } from "~/utils/common";
 import { StripeCheckout } from "./StripeCheckout";
+import { createStyleSheet } from "./style";
+import { SubtotalView } from "./SubtotalView";
 import { TicketSelector } from "./TicketSelector";
 
 interface ChooseTicketsModalProps {
@@ -37,6 +40,8 @@ export const ChooseTicketsModal = ({
   isOpen = false,
   onClose,
 }: ChooseTicketsModalProps) => {
+  const { theme } = useAppTheme();
+  const styles = createStyleSheet(theme);
   const { strings } = useStringsAndLabels();
   const [tickets, setTickets] = useState<TicketSelection[]>([]);
   const [isCheckoutVisible, setCheckoutVisible] = useState(false);
@@ -136,11 +141,26 @@ export const ChooseTicketsModal = ({
       </DrawerContent>
       {isPayableOrder(order) && (
         <StripeCheckout
-          order={order as PayableOrder}
+          paymentInfo={order!}
           isOpen={isCheckoutVisible}
           onCheckoutComplete={cancelOrder}
           onCancel={cancelOrder}
-        />
+        >
+          <>
+            {order?.lineItems.map((li) => (
+              <View key={li.ticketType.id} style={styles.rowOnly}>
+                <Text style={styles.ticket}>{`${toCurrency(
+                  li.ticketType.price
+                )} - ${li.ticketType.name}`}</Text>
+                <Text>
+                  x {li.quantity} ={" "}
+                  {toCurrency(li.ticketType.price * li.quantity)}
+                </Text>
+              </View>
+            ))}
+            {order && <SubtotalView order={order} />}
+          </>
+        </StripeCheckout>
       )}
     </Drawer>
   );

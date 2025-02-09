@@ -1,4 +1,3 @@
-import { useNavigation } from "@react-navigation/native";
 import _ from "lodash/fp";
 import React from "react";
 import { Text, View } from "react-native";
@@ -19,7 +18,6 @@ export const Tickets = ({ event }: TicketsProps) => {
   const { theme } = useAppTheme();
   const { strings } = useStringsAndLabels();
   const styles = createBaseStyleSheet(theme);
-  const navigation = useNavigation();
   const myUserId = useMyUserId();
   const isMyEvent = myUserId === event.id;
   const [isCheckoutVisible, setCheckoutVisible] = React.useState(false);
@@ -29,10 +27,8 @@ export const Tickets = ({ event }: TicketsProps) => {
 
   return (
     <View style={styles.container}>
-      {event.ticketTypes?.length ? (
+      {event.ticketTypes?.length && (
         <Text style={styles.event}>{strings.tickets}</Text>
-      ) : (
-        <></>
       )}
       <View>
         {_.sortBy(_.get("price"), event.ticketTypes).map((tt) => (
@@ -44,13 +40,13 @@ export const Tickets = ({ event }: TicketsProps) => {
         ))}
       </View>
 
-      {!isMyEvent && event.ticketTypes?.length ? (
+      {!isMyEvent && event.ticketTypes?.length && (
         <ButtonComponent
           disabled={!!event.cancelDate}
           title={strings.chooseTickets}
           onPress={() => setCheckoutVisible(true)}
         />
-      ) : null}
+      )}
       <ChooseTicketsModal
         event={event}
         isOpen={isCheckoutVisible}

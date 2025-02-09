@@ -1,7 +1,6 @@
 import { StripeProvider, useStripe } from "@stripe/stripe-react-native";
-import React, { useEffect, useState } from "react";
-import { Alert, Text, View } from "react-native";
-import { useAppTheme } from "~/app-hooks/use-app-theme";
+import React, { ReactNode, useEffect, useState } from "react";
+import { Alert } from "react-native";
 import { Button, ButtonIcon, ButtonText } from "~/components/ui/button";
 import {
   Drawer,
@@ -11,50 +10,46 @@ import {
   DrawerHeader,
 } from "~/components/ui/drawer";
 import { CloseIcon } from "~/components/ui/icon";
-import { PayableOrder } from "~/types/order";
-import { toCurrency } from "~/utils/common";
-import { SubtotalView } from "./SubtotalView";
-import { createStyleSheet } from "./style";
+import { StripePaymentInfo } from "~/types/stripe-payment-info";
 
 interface StripeCheckoutProps {
-  order: PayableOrder;
+  paymentInfo: StripePaymentInfo;
   isOpen: boolean;
   onCancel?: () => void;
   onCheckoutComplete?: () => void;
+  children: ReactNode;
 }
 
 export const StripeCheckout = ({
-  order,
+  paymentInfo,
   isOpen,
   onCancel,
   onCheckoutComplete,
+  children,
 }: StripeCheckoutProps) => {
-  const { theme } = useAppTheme();
-  const styles = createStyleSheet(theme);
-
   const { initPaymentSheet, presentPaymentSheet } = useStripe();
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    initializePaymentSheet();
-  }, []);
+    const initializePaymentSheet = async () => {
+      const { error } = await initPaymentSheet({
+        merchantDisplayName: "ONE Local",
+        customerId: paymentInfo.stripe.customer,
+        customerEphemeralKeySecret: paymentInfo.stripe.ephemeralKey,
+        paymentIntentClientSecret: paymentInfo.paymentIntent,
+        // Set `allowsDelayedPaymentMethods` to true if your business can handle payment
+        //methods that complete payment after a delay, like SEPA Debit and Sofort.
+        allowsDelayedPaymentMethods: false,
+        // FIXME Properly implement this
+        returnURL: "onelocal://stripe-redirect",
+      });
+      if (!error) {
+        setLoading(true);
+      }
+    };
 
-  const initializePaymentSheet = async () => {
-    const { error } = await initPaymentSheet({
-      merchantDisplayName: "ONE Local",
-      customerId: order.stripe.customer,
-      customerEphemeralKeySecret: order.stripe.ephemeralKey,
-      paymentIntentClientSecret: order.paymentIntent,
-      // Set `allowsDelayedPaymentMethods` to true if your business can handle payment
-      //methods that complete payment after a delay, like SEPA Debit and Sofort.
-      allowsDelayedPaymentMethods: false,
-      // FIXME Properly implement this
-      returnURL: "onelocal://stripe-redirect",
-    });
-    if (!error) {
-      setLoading(true);
-    }
-  };
+    void initializePaymentSheet();
+  }, [initPaymentSheet, paymentInfo]);
 
   const openPaymentSheet = async () => {
     const { error } = await presentPaymentSheet();
@@ -86,24 +81,13 @@ export const StripeCheckout = ({
           </Button>
         </DrawerHeader>
         <DrawerBody>
-          <StripeProvider publishableKey={order.stripe.publishableKey}>
+          <StripeProvider publishableKey={paymentInfo.stripe.publishableKey}>
             <>
-              {order.lineItems.map((li) => (
-                <View key={li.ticketType.id} style={styles.rowOnly}>
-                  <Text style={styles.ticket}>{`${toCurrency(
-                    li.ticketType.price
-                  )} - ${li.ticketType.name}`}</Text>
-                  <Text>
-                    x {li.quantity} ={" "}
-                    {toCurrency(li.ticketType.price * li.quantity)}
-                  </Text>
-                </View>
-              ))}
+              {children}
+              <Button disabled={!loading} onPress={openPaymentSheet}>
+                <ButtonText>Checkout</ButtonText>
+              </Button>
             </>
-            <SubtotalView order={order} />
-            <Button disabled={!loading} onPress={openPaymentSheet}>
-              <ButtonText>Checkout</ButtonText>
-            </Button>
           </StripeProvider>
         </DrawerBody>
       </DrawerContent>

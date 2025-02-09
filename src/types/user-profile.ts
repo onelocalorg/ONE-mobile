@@ -1,6 +1,9 @@
 import { ImageKey, ImageUrl } from "./image-info";
 import { OneUser } from "./one-user";
 
+export type SubscriptionType = "free" | "host";
+export type BillingInterval = "none" | "monthly" | "yearly";
+
 export interface Me extends UserProfile {
   stripe?: {
     id: string;

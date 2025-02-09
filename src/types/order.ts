@@ -22,4 +22,4 @@ export interface OrderData {
 export const isPayableOrder = (
   order: Order | undefined
 ): order is PayableOrder | undefined =>
-  !!order && order.hasOwnProperty("paymentIntent");
+  !!order && Object.prototype.hasOwnProperty.call(order, "paymentIntent");
