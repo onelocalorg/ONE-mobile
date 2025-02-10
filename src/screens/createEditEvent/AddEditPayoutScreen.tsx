@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import React from "react";
+import { KeyboardAvoidingView } from "react-native";
 import { Loader } from "~/components/loader";
 import {
   Actionsheet,
@@ -33,20 +34,29 @@ export const AddEditPayoutScreen = ({
 
   return (
     <Actionsheet defaultIsOpen={true} onClose={handleOnClose} snapPoints={[50]}>
-      <ActionsheetBackdrop />
-      <ActionsheetContent>
-        <ActionsheetDragIndicatorWrapper>
-          <ActionsheetDragIndicator />
-        </ActionsheetDragIndicatorWrapper>
-        {(!paymentId || payout) && (
-          <AddEditPayout
-            eventId={eventId}
-            payout={payout}
-            onClose={navigation.goBack}
-          />
-        )}
-        <Loader showOverlay={true} visible={isPending && !!paymentId} />
-      </ActionsheetContent>
+      <KeyboardAvoidingView
+        behavior="position"
+        style={{
+          position: "relative",
+          flex: 1,
+          justifyContent: "flex-end",
+        }}
+      >
+        <ActionsheetBackdrop />
+        <ActionsheetContent>
+          <ActionsheetDragIndicatorWrapper>
+            <ActionsheetDragIndicator />
+          </ActionsheetDragIndicatorWrapper>
+          {(!paymentId || payout) && (
+            <AddEditPayout
+              eventId={eventId}
+              payout={payout}
+              onClose={navigation.goBack}
+            />
+          )}
+          <Loader showOverlay={true} visible={isPending && !!paymentId} />
+        </ActionsheetContent>
+      </KeyboardAvoidingView>
     </Actionsheet>
   );
 };
