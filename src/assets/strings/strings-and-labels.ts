@@ -178,4 +178,9 @@ export const stringsAndLabels = {
   addEventPlaceholder: "What event do you want to create?",
   createPost: "Create Post",
   createSubgroup: "Create a Group inside this Group",
+  photoPermissionsTitle: "Photo access needed",
+  photoPermissionsError:
+    "Please grant access to the ONE Local app to choose a photo.",
+  photoPermissionsDirectionsIos:
+    "For iOS: Go to Settings > Privacy & Security > Photos > ONE Local and choose Selected Photos or All Photos.",
 };
