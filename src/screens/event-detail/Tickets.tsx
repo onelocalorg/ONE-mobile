@@ -27,31 +27,33 @@ export const Tickets = ({ event }: TicketsProps) => {
 
   return (
     <View style={styles.container}>
-      {event.ticketTypes?.length && (
-        <Text style={styles.event}>{strings.tickets}</Text>
-      )}
-      <View>
-        {_.sortBy(_.get("price"), event.ticketTypes).map((tt) => (
-          <View key={tt.id} style={styles.rowOnly}>
-            <Text style={styles.ticket}>{`${ticketQuantityToString(
-              tt.quantity
-            )} ${tt.name} - ${toCurrency(tt.price)}`}</Text>
-          </View>
-        ))}
-      </View>
+      <>
+        {event.ticketTypes?.length > 0 && (
+          <Text style={styles.event}>{strings.tickets}</Text>
+        )}
+        <View>
+          {_.sortBy(_.get("price"), event.ticketTypes).map((tt) => (
+            <View key={tt.id} style={styles.rowOnly}>
+              <Text style={styles.ticket}>{`${ticketQuantityToString(
+                tt.quantity
+              )} ${tt.name} - ${toCurrency(tt.price)}`}</Text>
+            </View>
+          ))}
+        </View>
 
-      {!isMyEvent && event.ticketTypes?.length && (
-        <ButtonComponent
-          disabled={!!event.cancelDate}
-          title={strings.chooseTickets}
-          onPress={() => setCheckoutVisible(true)}
+        {!isMyEvent && event.ticketTypes?.length > 0 && (
+          <ButtonComponent
+            disabled={!!event.cancelDate}
+            title={strings.chooseTickets}
+            onPress={() => setCheckoutVisible(true)}
+          />
+        )}
+        <ChooseTicketsModal
+          event={event}
+          isOpen={isCheckoutVisible}
+          onClose={() => setCheckoutVisible(false)}
         />
-      )}
-      <ChooseTicketsModal
-        event={event}
-        isOpen={isCheckoutVisible}
-        onClose={() => setCheckoutVisible(false)}
-      />
+      </>
     </View>
   );
 };
