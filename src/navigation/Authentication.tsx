@@ -4,7 +4,7 @@ import { GluestackUIProvider } from "~/components/ui/gluestack-ui-provider";
 import { LOG } from "~/config";
 import { ApiService } from "~/network/api/services/ApiService";
 import { persistKeys } from "~/network/constant";
-import { Chapter } from "~/types/chapter";
+import { ChapterData } from "~/types/chapter";
 import { CurrentUser } from "~/types/current-user";
 import { handleApiError } from "~/utils/common";
 import { AppContext } from "./AppContext";
@@ -18,7 +18,7 @@ import {
 import { NotificationService } from "./NotificationService";
 
 export default function Authentication() {
-  const [chapterFilter, setChapterFilter] = useState<Chapter | null>(null);
+  const [chapterFilter, setChapterFilter] = useState<ChapterData | null>(null);
 
   type SignIn = { type: "SIGN_IN"; user: CurrentUser };
   type RestoreToken = {
@@ -50,6 +50,9 @@ export default function Authentication() {
             password: undefined,
           };
         case "SIGN_IN":
+          if (action.user.homeChapter) {
+            setChapterFilter(action.user.homeChapter);
+          }
           return {
             ...prevState,
             isSignout: false,

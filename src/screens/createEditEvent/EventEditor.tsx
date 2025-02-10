@@ -70,11 +70,10 @@ export const EventEditor = ({
   const [isTicketModalVisible, setTicketModalVisible] = useState(false);
   const chapterFilter = useChapterFilter();
 
-  // TODO Figure out a better way to have the current user always available
   const {
-    queries: { detail: getUser },
+    queries: { me: getMe },
   } = useUserService();
-  const { data: myProfile } = useQuery(getUser(myUserId));
+  const { data: myProfile } = useQuery(getMe());
 
   const {
     control,
@@ -127,7 +126,7 @@ export const EventEditor = ({
       onSubmitCreate!(
         {
           // ChapterId is overridden by chapterFilter set in defaultValues
-          chapterId: myProfile?.chapterId,
+          chapterId: myProfile?.homeChapter?.id,
           ..._.pickBy(isNotEmpty, data),
         } as LocalEventData,
         {
@@ -135,13 +134,11 @@ export const EventEditor = ({
         }
       );
 
-    console.log("profile.chapter", myProfile?.chapterId);
-
     if (
       !event &&
       chapterFilter?.id &&
-      myProfile?.chapterId &&
-      chapterFilter.id !== myProfile.chapterId
+      myProfile?.homeChapter?.id &&
+      chapterFilter.id !== myProfile.homeChapter.id
     ) {
       Alert.alert(
         "Create outside of home chapter?",

@@ -32,7 +32,6 @@ import { ImageComponent } from "~/components/image-component";
 import { Loader } from "~/components/loader";
 import { LocationAutocomplete } from "~/components/location-autocomplete/LocationAutocomplete";
 import { useChapterFilter } from "~/navigation/AppContext";
-import { useMyUserId } from "~/navigation/AuthContext";
 import {
   UserMutations,
   useUserService,
@@ -67,11 +66,10 @@ export const PostEditor = ({
   const chapterFilter = useChapterFilter();
 
   // TODO Figure out a better way to have the current user always available
-  const myUserId = useMyUserId();
   const {
-    queries: { detail: getUser },
+    queries: { me: getMe },
   } = useUserService();
-  const { data: myProfile } = useQuery(getUser(myUserId));
+  const { data: myProfile } = useQuery(getMe());
 
   const {
     control,
@@ -116,7 +114,7 @@ export const PostEditor = ({
 
     const removeUrls = (data: PostData | PostUpdateData) => ({
       // ChapterId is overridden by chapterFilter set in defaultValues
-      chapterId: myProfile?.chapterId,
+      chapterId: myProfile?.homeChapter?.id,
       ..._.pickBy(isNotEmpty, _.omit(omitFields, data)),
       images: data.images?.map(_.omit(["url"])),
     });
@@ -126,8 +124,8 @@ export const PostEditor = ({
     if (
       !post &&
       chapterFilter?.id &&
-      myProfile?.chapterId &&
-      chapterFilter.id !== myProfile.chapterId
+      myProfile?.homeChapter?.id &&
+      chapterFilter.id !== myProfile.homeChapter?.id
     ) {
       Alert.alert(
         "Create outside of home chapter?",

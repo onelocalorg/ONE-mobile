@@ -1,3 +1,4 @@
+import { ChapterData } from "./chapter";
 import { ImageKey, ImageUrl } from "./image-info";
 import { OneUser } from "./one-user";
 
@@ -20,7 +21,6 @@ export interface UserProfile extends UserProfileData {
   gratis: number;
   pic?: ImageUrl;
   isEmailVerified: boolean;
-  chapterId?: string;
 }
 
 export interface UserProfileData extends UserProfileUpdateData {
@@ -38,6 +38,7 @@ export interface UserProfileUpdateData {
   pic?: ImageKey;
   about?: string;
   skills?: string[];
+  homeChapter?: ChapterData;
 }
 
 export const isUserProfile = (

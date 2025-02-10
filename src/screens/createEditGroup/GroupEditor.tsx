@@ -178,7 +178,7 @@ export const GroupEditor = ({
 
     const removeUrls = (data: GroupData | GroupUpdateData) => ({
       // ChapterId is overridden by chapterFilter set in defaultValues
-      chapters: [{ id: myProfile?.chapterId }],
+      chapters: [{ id: myProfile?.homeChapter?.id }],
       ..._.pickBy(isNotEmpty, data),
     });
 
@@ -189,7 +189,7 @@ export const GroupEditor = ({
       chapters &&
       chapters.length > 0 &&
       chapterFilter &&
-      !chapters.find((c) => c.id === myProfile.chapterId)
+      !chapters.find((c) => c.id === myProfile.homeChapter?.id)
     ) {
       Alert.alert(
         "Create outside of home chapter?",

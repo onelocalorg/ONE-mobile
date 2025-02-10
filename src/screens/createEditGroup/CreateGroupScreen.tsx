@@ -3,7 +3,6 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import React from "react";
 import { ScrollView, View } from "react-native";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
-import { useMyUserId } from "~/navigation/AuthContext";
 import { RootStackScreenProps, Screens } from "~/navigation/types";
 import {
   GroupMutations,
@@ -23,19 +22,17 @@ export const CreateGroupScreen = ({
   const navigation = useNavigation();
   const queryClient = useQueryClient();
 
-  // TODO Figure out a better way to have the current user always available
-  const myUserId = useMyUserId();
   const {
-    queries: { detail: getUser },
+    queries: { me: getMe },
   } = useUserService();
-  const { data: myProfile } = useQuery(getUser(myUserId));
+  const { data: myProfile } = useQuery(getMe());
 
   const { queries: groupQueries } = useGroupService();
 
   const mutateCreateGroup = useMutation<Group, Error, GroupData>({
     mutationKey: [GroupMutations.createGroup],
     onSuccess: () => {
-      queryClient
+      void queryClient
         .invalidateQueries({
           queryKey: groupQueries.lists(),
         })

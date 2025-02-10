@@ -1,6 +1,5 @@
 import { queryOptions, useQueryClient } from "@tanstack/react-query";
 import _ from "lodash/fp";
-import { useMyUserId } from "~/navigation/AuthContext";
 import { Chapter } from "~/types/chapter";
 import { useApiService } from "./ApiService";
 import { useUserService } from "./useUserService";
@@ -11,7 +10,6 @@ export enum ChapterMutations {
 
 export function useChapterService() {
   const queryClient = useQueryClient();
-  const myUserId = useMyUserId();
   const { queries: userQueries } = useUserService();
 
   const queries = {
@@ -30,7 +28,7 @@ export function useChapterService() {
     },
     onSuccess: () => {
       void queryClient.invalidateQueries({
-        queryKey: userQueries.detail(myUserId).queryKey,
+        queryKey: userQueries.me().queryKey,
       });
       void queryClient.invalidateQueries({
         queryKey: userQueries.lists(),

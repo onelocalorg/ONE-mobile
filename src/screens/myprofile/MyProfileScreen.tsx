@@ -129,8 +129,8 @@ export const MyProfileScreen = () => {
                   <Pressable onPress={openMenu}>
                     <Text>
                       Home chapter:{" "}
-                      {myProfile.chapterId
-                        ? findChapter(myProfile.chapterId, chapters)?.name
+                      {myProfile.homeChapter?.id
+                        ? findChapter(myProfile.homeChapter?.id, chapters)?.name
                         : "None"}
                       <Text style={{ fontSize: 10 }}>{"\u25BC"}</Text>
                     </Text>
