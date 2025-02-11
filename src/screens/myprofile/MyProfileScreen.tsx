@@ -42,7 +42,7 @@ export const MyProfileScreen = () => {
   const { strings } = useStringsAndLabels();
   const styles = createStyleSheet(theme);
   const myUserId = useMyUserId();
-  const { chapterFilter, setChapterFilter } = useContext(AppContext)!;
+  const { setChapterFilter } = useContext(AppContext)!;
 
   const [isChapterPickerVisible, setChapterPickerVisible] = useState(false);
   const openMenu = () => setChapterPickerVisible(true);

@@ -18,7 +18,9 @@ import {
 import { NotificationService } from "./NotificationService";
 
 export default function Authentication() {
-  const [chapterFilter, setChapterFilter] = useState<ChapterData | null>(null);
+  const [chapterFilter, setChapterFilter] = useState<
+    ChapterData | null | undefined
+  >(undefined);
 
   type SignIn = { type: "SIGN_IN"; user: CurrentUser };
   type RestoreToken = {
@@ -50,9 +52,6 @@ export default function Authentication() {
             password: undefined,
           };
         case "SIGN_IN":
-          if (action.user.homeChapter) {
-            setChapterFilter(action.user.homeChapter);
-          }
           return {
             ...prevState,
             isSignout: false,
