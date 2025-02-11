@@ -111,7 +111,7 @@ export const SubscriptionPlans = ({ onClose }: SubscriptionPlansProps) => {
 
   return (
     <>
-      <Actionsheet defaultIsOpen={true} onClose={onClose} snapPoints={[40]}>
+      <Actionsheet defaultIsOpen={true} onClose={onClose} snapPoints={[45]}>
         <ActionsheetBackdrop />
         <ActionsheetContent>
           <ActionsheetDragIndicatorWrapper>
@@ -119,7 +119,7 @@ export const SubscriptionPlans = ({ onClose }: SubscriptionPlansProps) => {
           </ActionsheetDragIndicatorWrapper>
           {hostPlan && (
             <>
-              <Heading className="mt-4" size="2xl">
+              <Heading className="mt-4 text-center" size="2xl">
                 {`${hostPlan.name} ${strings.membership}`}
               </Heading>
 
@@ -140,7 +140,7 @@ export const SubscriptionPlans = ({ onClose }: SubscriptionPlansProps) => {
                           ${Math.round(monthlyPlan.unit_amount / 100)}
                         </Heading>
 
-                        <Text>{`per ${monthlyPlan.recurring.interval}`}</Text>
+                        <Text className="text-center">{`per ${monthlyPlan.recurring.interval}`}</Text>
                       </TouchableOpacity>
                     </Card>
                   )}
@@ -160,7 +160,7 @@ export const SubscriptionPlans = ({ onClose }: SubscriptionPlansProps) => {
                           ${Math.round(yearlyPlan.unit_amount / 100)}
                         </Heading>
 
-                        <Text>{`per ${yearlyPlan.recurring.interval}`}</Text>
+                        <Text className="text-center">{`per ${yearlyPlan.recurring.interval}`}</Text>
                       </TouchableOpacity>
                     </Card>
                   )}

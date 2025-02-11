@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Dimensions, useWindowDimensions } from "react-native";
 
 import resolveConfig from "tailwindcss/resolveConfig";
-import tailwindConfig from "../../../../tailwind.config";
+import * as tailwindConfig from "../../../../tailwind.config";
 
 const TailwindTheme = resolveConfig(tailwindConfig as any);
 const screenSize = TailwindTheme.theme.screens;
