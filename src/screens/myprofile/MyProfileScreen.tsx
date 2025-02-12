@@ -17,12 +17,16 @@ import { MyAvatar } from "~/components/avatar/MyAvatar";
 import { ImageUploader } from "~/components/ImageUploader";
 import { Loader } from "~/components/loader";
 import { Button, ButtonText } from "~/components/ui/button";
+import { HStack } from "~/components/ui/hstack";
+import { Text as GsText } from "~/components/ui/text";
+import { VStack } from "~/components/ui/vstack";
 import { AppContext } from "~/navigation/AppContext";
 import { useMyUserId } from "~/navigation/AuthContext";
 import {
   ChapterMutations,
   useChapterService,
 } from "~/network/api/services/useChapterService";
+import { usePayoutService } from "~/network/api/services/usePayoutService";
 import {
   UserMutations,
   useUserService,
@@ -31,7 +35,7 @@ import { ImageKey } from "~/types/image-info";
 import { FileKey } from "~/types/upload-file-data";
 import { Url } from "~/types/url";
 import { UserProfile, UserProfileUpdateData } from "~/types/user-profile";
-import { findChapter } from "~/utils/common";
+import { findChapter, toCurrency } from "~/utils/common";
 import { LogoutPressable } from "./LogoutPressable";
 import { MyEvents } from "./MyEvents";
 import { ProfileEditor } from "./ProfileEditor";
@@ -51,8 +55,13 @@ export const MyProfileScreen = () => {
   const {
     queries: { me: getMe },
   } = useUserService();
-
   const { isLoading, data: myProfile } = useQuery(getMe());
+
+  const {
+    queries: { balance: getBalance },
+  } = usePayoutService();
+  const { data: balance } = useQuery(getBalance());
+
   const {
     queries: { list: listChapters },
   } = useChapterService();
@@ -115,6 +124,22 @@ export const MyProfileScreen = () => {
     );
   };
 
+  const getDisabledReason = () => {
+    let reason;
+    switch (myProfile?.stripe?.requirements.disabled_reason) {
+      case "requirements.past_due":
+        reason =
+          "Payments need to be configured. Please click the button below to configure payments";
+        break;
+      case "requirements.pending_verification":
+        reason = "Payments are pending verification";
+        break;
+      default:
+        reason = myProfile?.stripe?.requirements.disabled_reason;
+    }
+    return reason;
+  };
+
   return (
     <>
       <Loader visible={isLoading} showOverlay={true} />
@@ -149,7 +174,19 @@ export const MyProfileScreen = () => {
                   />
                 ))}
               </Menu>
+              {balance && (
+                <VStack>
+                  <HStack>
+                    <Text>Balance:</Text>
+                    <Text>{toCurrency(balance.available[0].amount)}</Text>
+                  </HStack>
+                  <GsText className="color-red-500">
+                    {getDisabledReason()}
+                  </GsText>
+                </VStack>
+              )}
             </View>
+
             <ImageUploader
               id={myUserId}
               uploadKey={FileKey.pic}

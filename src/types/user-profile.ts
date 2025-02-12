@@ -9,7 +9,10 @@ export interface Me extends UserProfile {
   stripe?: {
     id: string;
     requirements: {
+      past_due: string[];
       currently_due: string[];
+      disabled_reason: string | null;
+      errors: [{ code: string; reason: string; requirement: string }];
     };
   };
 }
