@@ -200,23 +200,33 @@ export const MyProfileScreen = () => {
                       Payouts enabled:
                     </GsText>
                     {myProfile?.stripe?.payouts_enabled ? (
-                      <Icon as={CheckCircleIcon} className="color-green-500" />
+                      <>
+                        <Icon
+                          as={CheckCircleIcon}
+                          className="color-green-500"
+                        />
+                        <GsText size="xs">
+                          Payouts sent to your bank account automatically.
+                        </GsText>
+                      </>
                     ) : (
-                      <Icon as={CloseCircleIcon} className="color-red-500" />
-                    )}
-                    {!_.isEmpty(myProfile?.stripe?.requirements.errors) ? (
-                      <Button
-                        size="xs"
-                        className="ml-2 w-5/12"
-                        action="negative"
-                        onPress={openErrorDisplay}
-                      >
-                        <ButtonText>See errors</ButtonText>
-                      </Button>
-                    ) : (
-                      <GsText className="color-red-500">
-                        {getDisabledReason()}
-                      </GsText>
+                      <>
+                        <Icon as={CloseCircleIcon} className="color-red-500" />
+                        {!_.isEmpty(myProfile?.stripe?.requirements.errors) ? (
+                          <Button
+                            size="xs"
+                            className="ml-2 w-5/12"
+                            action="negative"
+                            onPress={openErrorDisplay}
+                          >
+                            <ButtonText>See errors</ButtonText>
+                          </Button>
+                        ) : (
+                          <GsText className="color-red-500">
+                            {getDisabledReason()}
+                          </GsText>
+                        )}
+                      </>
                     )}
                   </HStack>
                 </VStack>
