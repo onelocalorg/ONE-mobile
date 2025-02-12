@@ -1,4 +1,6 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
+import _ from "lodash/fp";
+import { CheckCircleIcon } from "lucide-react-native";
 import React, { useContext, useState } from "react";
 import {
   Alert,
@@ -16,8 +18,18 @@ import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
 import { MyAvatar } from "~/components/avatar/MyAvatar";
 import { ImageUploader } from "~/components/ImageUploader";
 import { Loader } from "~/components/loader";
+import {
+  AlertDialog,
+  AlertDialogBackdrop,
+  AlertDialogBody,
+  AlertDialogContent,
+  AlertDialogFooter,
+  AlertDialogHeader,
+} from "~/components/ui/alert-dialog";
 import { Button, ButtonText } from "~/components/ui/button";
+import { Heading } from "~/components/ui/heading";
 import { HStack } from "~/components/ui/hstack";
+import { CloseCircleIcon, Icon } from "~/components/ui/icon";
 import { Text as GsText } from "~/components/ui/text";
 import { VStack } from "~/components/ui/vstack";
 import { AppContext } from "~/navigation/AppContext";
@@ -51,6 +63,9 @@ export const MyProfileScreen = () => {
   const [isChapterPickerVisible, setChapterPickerVisible] = useState(false);
   const openMenu = () => setChapterPickerVisible(true);
   const closeMenu = () => setChapterPickerVisible(false);
+  const [isErrorDisplayVisible, setErrorDisplayVisible] = useState(false);
+  const openErrorDisplay = () => setErrorDisplayVisible(true);
+  const closeErrorDisplay = () => setErrorDisplayVisible(false);
 
   const {
     queries: { me: getMe },
@@ -177,12 +192,33 @@ export const MyProfileScreen = () => {
               {balance && (
                 <VStack>
                   <HStack>
-                    <Text>Balance:</Text>
-                    <Text>{toCurrency(balance.available[0].amount)}</Text>
+                    <GsText className="font-semibold pr-1">Balance:</GsText>
+                    <GsText>{toCurrency(balance.available[0].amount)}</GsText>
                   </HStack>
-                  <GsText className="color-red-500">
-                    {getDisabledReason()}
-                  </GsText>
+                  <HStack className="items-center">
+                    <GsText className="font-semibold pr-1">
+                      Payouts enabled:
+                    </GsText>
+                    {myProfile?.stripe?.payouts_enabled ? (
+                      <Icon as={CheckCircleIcon} className="color-green-500" />
+                    ) : (
+                      <Icon as={CloseCircleIcon} className="color-red-500" />
+                    )}
+                    {!_.isEmpty(myProfile?.stripe?.requirements.errors) ? (
+                      <Button
+                        size="xs"
+                        className="ml-2 w-5/12"
+                        action="negative"
+                        onPress={openErrorDisplay}
+                      >
+                        <ButtonText>See errors</ButtonText>
+                      </Button>
+                    ) : (
+                      <GsText className="color-red-500">
+                        {getDisabledReason()}
+                      </GsText>
+                    )}
+                  </HStack>
                 </VStack>
               )}
             </View>
@@ -239,6 +275,37 @@ export const MyProfileScreen = () => {
           </View>
         )}
       </ScrollView>
+      <AlertDialog
+        isOpen={isErrorDisplayVisible}
+        onClose={closeErrorDisplay}
+        size="md"
+      >
+        <AlertDialogBackdrop />
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <Heading className="text-typography-950 font-semibold" size="md">
+              Errors preventing payouts
+            </Heading>
+          </AlertDialogHeader>
+          <AlertDialogBody className="mt-3 mb-4">
+            {myProfile?.stripe?.requirements.errors.map((error) => (
+              <GsText key={error.code} size="sm" className="color-red-500">
+                {error.reason}
+              </GsText>
+            ))}
+          </AlertDialogBody>
+          <AlertDialogFooter className="">
+            <Button
+              variant="outline"
+              action="secondary"
+              onPress={closeErrorDisplay}
+              size="sm"
+            >
+              <ButtonText>OK</ButtonText>
+            </Button>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </>
   );
 };

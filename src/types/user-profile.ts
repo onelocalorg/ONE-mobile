@@ -8,6 +8,7 @@ export type BillingInterval = "none" | "monthly" | "yearly";
 export interface Me extends UserProfile {
   stripe?: {
     id: string;
+    payouts_enabled: boolean;
     requirements: {
       past_due: string[];
       currently_due: string[];
