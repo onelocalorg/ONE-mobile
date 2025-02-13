@@ -87,13 +87,10 @@ export const MyProfileScreen = () => {
     mutationKey: [UserMutations.configureTransfers],
   });
 
-  const { mutate: updateUserProfile } = useMutation<
-    UserProfile,
-    Error,
-    UserProfileUpdateData
-  >({
-    mutationKey: [UserMutations.updateUser],
-  });
+  const { isPending: isUpdateUserPending, mutate: updateUserProfile } =
+    useMutation<UserProfile, Error, UserProfileUpdateData>({
+      mutationKey: [UserMutations.updateUser],
+    });
 
   const { mutate: deleteUser } = useMutation<never, Error, string>({
     mutationKey: [UserMutations.deleteUser],
@@ -157,7 +154,7 @@ export const MyProfileScreen = () => {
 
   return (
     <>
-      <Loader visible={isLoading} showOverlay={true} />
+      <Loader visible={isLoading || isUpdateUserPending} showOverlay={true} />
       <ScrollView>
         {myProfile ? (
           <>
