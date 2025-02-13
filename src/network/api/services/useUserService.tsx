@@ -64,10 +64,17 @@ export function useUserService() {
     mutationFn: (data: UserProfileUpdateData) => {
       return updateUser(data);
     },
-    onSuccess: (data: UserProfile) => {
+    onSuccess: (data: UserProfile, variables: UserProfileUpdateData) => {
       void queryClient.invalidateQueries({
         queryKey: queries.detail(data.id).queryKey,
       });
+
+      // If the pic is changed, invalidate the list of users which displays the pic
+      if (variables.pic) {
+        void queryClient.invalidateQueries({
+          queryKey: queries.lists(),
+        });
+      }
       // FIXME invalidate the post queries, but can't because postService
       // invalidates the user queries when they give gratis
       // void queryClient.invalidateQueries({
