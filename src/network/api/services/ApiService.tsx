@@ -121,9 +121,6 @@ export function ApiService({ children }: ApiServiceProviderProps) {
     transform?: (data: any) => Resource
   ) {
     LOG.info("callApi", method, url);
-    if (body) {
-      LOG.debug("body:", body);
-    }
 
     if (body) {
       LOG.debug(
