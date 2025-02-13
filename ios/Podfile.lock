@@ -998,7 +998,7 @@ PODS:
     - React-Core
   - react-native-netinfo (9.5.0):
     - React-Core
-  - react-native-safe-area-context (5.1.0):
+  - react-native-safe-area-context (4.14.1):
     - React-Core
   - react-native-simple-toast (3.3.1):
     - React-Core
@@ -1225,10 +1225,10 @@ PODS:
     - React
     - React-Core
     - Turf
-  - RNNotifee (7.9.0):
+  - RNNotifee (9.1.8):
     - React-Core
-    - RNNotifee/NotifeeCore (= 7.9.0)
-  - RNNotifee/NotifeeCore (7.9.0):
+    - RNNotifee/NotifeeCore (= 9.1.8)
+  - RNNotifee/NotifeeCore (9.1.8):
     - React-Core
   - RNPermissions (4.1.5):
     - React-Core
@@ -1647,7 +1647,7 @@ SPEC CHECKSUMS:
   react-native-get-random-values: d16467cf726c618e9c7a8c3c39c31faa2244bbba
   react-native-image-picker: 89d0856dd413f2071ad42e5541a16477260b3f19
   react-native-netinfo: 26560022f28c06d8ef00a9ff1e03beefbbb60c2d
-  react-native-safe-area-context: e134b241010ebe2aacdcea013565963d13826faa
+  react-native-safe-area-context: 758e894ca5a9bd1868d2a9cfbca7326a2b6bf9dc
   react-native-simple-toast: f6316baf3870934e6e92cf48dbc9e330a5c8eb82
   react-native-splash-screen: 95994222cc95c236bd3cdc59fe45ed5f27969594
   react-native-webview: e339e6344f440e2f5c88af03f9d4cd186f7286bf
@@ -1683,7 +1683,7 @@ SPEC CHECKSUMS:
   RNGoogleSignin: b8f09e3ec56e09497e1e53b0ff66d5a45916c6b1
   RNImageCropPicker: 2c53b596a1af85eacba1048e996f916933021bbb
   rnmapbox-maps: a4192f488b6fad996fa9d94883a6cf45c96eaf46
-  RNNotifee: 271cfeb505183d2cd1b858c14c3968b6ca30a642
+  RNNotifee: 5e3b271e8ea7456a36eec994085543c9adca9168
   RNPermissions: 4f7b81b0d457c8ec4e892cc36ef2376734a4b22c
   RNReanimated: 088a1bf9c0b23af527cf39d2f86ae2efa63229d1
   RNScreens: 1174f55dd2f72abe45a4e48bf20e552feb051600
