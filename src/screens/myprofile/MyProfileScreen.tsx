@@ -223,6 +223,7 @@ export const MyProfileScreen = () => {
                   )}
                 </VStack>
               )}
+              <Text>{myProfile.email}</Text>
             </View>
 
             <ImageUploader

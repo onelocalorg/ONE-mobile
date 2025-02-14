@@ -6,6 +6,7 @@ export type SubscriptionType = "free" | "host";
 export type BillingInterval = "none" | "monthly" | "yearly";
 
 export interface Me extends UserProfile {
+  email: string;
   stripe?: {
     id: string;
     payouts_enabled: boolean;
