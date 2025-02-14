@@ -53,6 +53,9 @@ export const EventAdministrationScreen = ({
   const styles = createStyleSheet(theme);
   const [modalVisible, setModalVisible] = useState(false);
   const [isNeedsConfigVisible, setNeedsConfigVisible] = useState(false);
+  const showNeedsConfigAlert = () => {
+    setNeedsConfigVisible(true);
+  };
   const closeNeedsConfigAlert = () => {
     setNeedsConfigVisible(false);
   };
@@ -228,7 +231,11 @@ export const EventAdministrationScreen = ({
               </View>
 
               <Button
-                onPress={sendPayoutModal}
+                onPress={
+                  myProfile?.stripe?.payouts_enabled
+                    ? sendPayoutModal
+                    : showNeedsConfigAlert
+                }
                 isDisabled={
                   !event ||
                   event.startDate.plus({ days: 3 }) > DateTime.now() ||
