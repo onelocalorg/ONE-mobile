@@ -7,7 +7,6 @@ import {
   Linking,
   Pressable,
   ScrollView,
-  Text,
   TouchableOpacity,
   View,
 } from "react-native";
@@ -30,7 +29,7 @@ import { Button, ButtonText } from "~/components/ui/button";
 import { Heading } from "~/components/ui/heading";
 import { HStack } from "~/components/ui/hstack";
 import { CloseCircleIcon, Icon } from "~/components/ui/icon";
-import { Text as GsText } from "~/components/ui/text";
+import { Text } from "~/components/ui/text";
 import { VStack } from "~/components/ui/vstack";
 import { AppContext } from "~/navigation/AppContext";
 import { useMyUserId } from "~/navigation/AuthContext";
@@ -164,13 +163,16 @@ export const MyProfileScreen = () => {
                 onDismiss={closeMenu}
                 anchor={
                   <Pressable onPress={openMenu}>
-                    <Text>
-                      Home chapter:{" "}
-                      {myProfile.homeChapter?.id
-                        ? findChapter(myProfile.homeChapter?.id, chapters)?.name
-                        : "None"}
-                      <Text style={{ fontSize: 10 }}>{"\u25BC"}</Text>
-                    </Text>
+                    <HStack>
+                      <Text className="font-semibold pr-1">Home chapter:</Text>
+                      <Text className="pr-0.5">
+                        {myProfile.homeChapter?.id
+                          ? findChapter(myProfile.homeChapter?.id, chapters)
+                              ?.name
+                          : "None"}
+                      </Text>
+                      <Text>{"\u25BC"}</Text>
+                    </HStack>
                   </Pressable>
                 }
               >
@@ -189,22 +191,20 @@ export const MyProfileScreen = () => {
               {balance && (
                 <VStack>
                   <HStack>
-                    <GsText className="font-semibold pr-1">Balance:</GsText>
-                    <GsText>{toCurrency(balance.available[0].amount)}</GsText>
+                    <Text className="font-semibold pr-1">Balance:</Text>
+                    <Text>{toCurrency(balance.available[0].amount)}</Text>
                   </HStack>
                   <HStack className="items-center">
-                    <GsText className="font-semibold pr-1">
-                      Payouts enabled:
-                    </GsText>
+                    <Text className="font-semibold pr-1">Payouts enabled:</Text>
                     {myProfile?.stripe?.payouts_enabled ? (
                       <>
                         <Icon
                           as={CheckCircleIcon}
                           className="color-green-500"
                         />
-                        <GsText size="xs">
+                        <Text size="xs">
                           Payouts sent to your bank account automatically.
-                        </GsText>
+                        </Text>
                       </>
                     ) : (
                       <>
@@ -219,9 +219,9 @@ export const MyProfileScreen = () => {
                             <ButtonText>See errors</ButtonText>
                           </Button>
                         ) : (
-                          <GsText className="color-red-500">
+                          <Text className="color-red-500">
                             {getDisabledReason()}
-                          </GsText>
+                          </Text>
                         )}
                       </>
                     )}
@@ -296,9 +296,9 @@ export const MyProfileScreen = () => {
           </AlertDialogHeader>
           <AlertDialogBody className="mt-3 mb-4">
             {myProfile?.stripe?.requirements.errors.map((error) => (
-              <GsText key={error.code} size="sm" className="color-red-500">
+              <Text key={error.code} size="sm" className="color-red-500">
                 {error.reason}
-              </GsText>
+              </Text>
             ))}
           </AlertDialogBody>
           <AlertDialogFooter className="">
