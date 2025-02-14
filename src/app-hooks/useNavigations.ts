@@ -96,7 +96,7 @@ export function useNavigations() {
     });
   };
 
-  const gotoMyProfile = () => () => {
+  const gotoMyProfile = () => {
     navigation.navigate(Screens.MY_PROFILE);
   };
 

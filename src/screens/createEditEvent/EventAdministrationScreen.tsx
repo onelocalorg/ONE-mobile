@@ -12,10 +12,8 @@ import { ImageComponent } from "~/components/image-component";
 import {
   AlertDialog,
   AlertDialogBackdrop,
-  AlertDialogCloseButton,
   AlertDialogContent,
   AlertDialogFooter,
-  AlertDialogHeader,
 } from "~/components/ui/alert-dialog";
 import { Box } from "~/components/ui/box";
 import {
@@ -131,6 +129,11 @@ export const EventAdministrationScreen = ({
       eventId,
       paymentId: payment.id,
     });
+  };
+
+  const handleConfigurePayments = () => {
+    closeNeedsConfigAlert();
+    gotoMyProfile();
   };
 
   const sendPayoutModal = () => {
@@ -433,9 +436,6 @@ export const EventAdministrationScreen = ({
       >
         <AlertDialogBackdrop />
         <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogCloseButton />
-          </AlertDialogHeader>
           <Box className="my-2">
             <Text>
               You need to configure your profile for payments before sending
@@ -443,7 +443,7 @@ export const EventAdministrationScreen = ({
             </Text>
           </Box>
           <AlertDialogFooter>
-            <Button size="sm" onPress={gotoMyProfile}>
+            <Button size="sm" onPress={handleConfigurePayments}>
               <ButtonText>OK</ButtonText>
             </Button>
           </AlertDialogFooter>
