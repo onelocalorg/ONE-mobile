@@ -5,7 +5,7 @@ import {
   createStackNavigator,
 } from "@react-navigation/stack";
 import React from "react";
-import { Pressable } from "react-native";
+import { Dimensions, Pressable } from "react-native";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
 import { ShortModalScreenOptions } from "~/components/ShortModal";
 import { MyAvatar } from "~/components/avatar/MyAvatar";
@@ -47,6 +47,7 @@ import {
   RootStackParamList,
   Screens,
 } from "./types";
+const { height: windowHeight } = Dimensions.get("window");
 
 type AppNavigationProps = {
   email?: string;
@@ -166,7 +167,7 @@ export const AppNavigation = ({
           headerTitle: () => <OneLogo />,
           headerStyle: {
             backgroundColor: theme.colors.headerColor,
-            height: 120,
+            height: windowHeight * 0.16,
           },
           headerRightContainerStyle: {
             paddingRight: 20,
