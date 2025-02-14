@@ -62,9 +62,11 @@ export const GroupDetailScreen = ({
     mutationKey: [GroupMutations.deleteGroup],
   });
 
-  const isEditor = group && group.editors?.find((a) => a.id === myId);
   const isAdmin = group && group.admins?.find((a) => a.id === myId);
-  const isMember = group && group.members?.find((a) => a.id === myId);
+  const isEditor =
+    isAdmin || (group && group.editors?.find((a) => a.id === myId));
+  const isMember =
+    isEditor || (group && group.members?.find((a) => a.id === myId));
 
   const handleJoinGroup = () => {
     joinGroup(groupId);
@@ -185,10 +187,12 @@ export const GroupDetailScreen = ({
                     <PostsList
                       group={group}
                       header={
-                        <AddPostView
-                          placeholder={strings.createPost}
-                          group={group}
-                        />
+                        isMember ? (
+                          <AddPostView
+                            placeholder={strings.createPost}
+                            group={group}
+                          />
+                        ) : undefined
                       }
                     />
                   )}

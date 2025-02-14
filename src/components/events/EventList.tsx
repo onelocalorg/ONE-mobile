@@ -7,6 +7,7 @@ import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
 import { EventCard } from "~/components/events/EventCard";
 import { Loader } from "~/components/loader";
 import { useChapterFilter } from "~/navigation/AppContext";
+import { useMyUserId } from "~/navigation/AuthContext";
 import { useEventService } from "~/network/api/services/useEventService";
 import { Group } from "~/types/group";
 import { LocalEvent } from "~/types/local-event";
@@ -27,6 +28,13 @@ export const EventList = ({ placeholder, group }: EventListProps) => {
   makeDate.setMonth(makeDate.getMonth() + 1);
   const [isLoading, setLoading] = useState(false);
   const chapterFilter = useChapterFilter();
+  const myId = useMyUserId();
+
+  const isAdmin = group && group.admins?.find((a) => a.id === myId);
+  const isEditor =
+    isAdmin || (group && group.editors?.find((a) => a.id === myId));
+  const isMember =
+    isEditor || (group && group.members?.find((a) => a.id === myId));
 
   const {
     queries: { list: listEvents },
@@ -63,7 +71,7 @@ export const EventList = ({ placeholder, group }: EventListProps) => {
   return (
     <View>
       <Loader visible={isLoading} showOverlay />
-      <AddEventView placeholder={placeholder} group={group} />
+      {isMember && <AddEventView placeholder={placeholder} group={group} />}
       <FlatList
         renderItem={renderLocalEvent}
         keyExtractor={(item) => item.id}
