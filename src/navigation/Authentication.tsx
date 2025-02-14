@@ -1,9 +1,10 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import React, { useEffect, useMemo, useReducer, useState } from "react";
+import { GluestackUIProvider } from "~/components/ui/gluestack-ui-provider";
 import { LOG } from "~/config";
 import { ApiService } from "~/network/api/services/ApiService";
 import { persistKeys } from "~/network/constant";
-import { Chapter } from "~/types/chapter";
+import { ChapterData } from "~/types/chapter";
 import { CurrentUser } from "~/types/current-user";
 import { handleApiError } from "~/utils/common";
 import { AppContext } from "./AppContext";
@@ -17,7 +18,9 @@ import {
 import { NotificationService } from "./NotificationService";
 
 export default function Authentication() {
-  const [chapterFilter, setChapterFilter] = useState<Chapter | null>(null);
+  const [chapterFilter, setChapterFilter] = useState<
+    ChapterData | null | undefined
+  >(undefined);
 
   type SignIn = { type: "SIGN_IN"; user: CurrentUser };
   type RestoreToken = {
@@ -158,11 +161,13 @@ export default function Authentication() {
         <AuthDispatchContext.Provider value={authDispatchContext}>
           <ApiService>
             <NotificationService>
-              <AppNavigation
-                email={state.myEmail}
-                password={state.password}
-                token={state.accessToken}
-              />
+              <GluestackUIProvider>
+                <AppNavigation
+                  email={state.myEmail}
+                  password={state.password}
+                  token={state.accessToken}
+                />
+              </GluestackUIProvider>
             </NotificationService>
           </ApiService>
         </AuthDispatchContext.Provider>

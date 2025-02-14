@@ -1,9 +1,15 @@
 import React, { useState } from "react";
-import { ListRenderItem, Text, TouchableOpacity, View } from "react-native";
+import {
+  GestureResponderEvent,
+  ListRenderItem,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import Toast from "react-native-simple-toast";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
 import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
-import { addGreen } from "~/assets/images";
+import { addGreen, save } from "~/assets/images";
 import { FlatListComponent } from "~/components/flatlist-component";
 import { ImageComponent } from "~/components/image-component";
 import { Input } from "~/components/input";
@@ -57,6 +63,10 @@ export const MyAbout = ({ user, onEditProfile }: AboutDataProps) => {
       label={item}
     />
   );
+
+  function onSaveProfile(event: GestureResponderEvent): void {
+    throw new Error("Function not implemented.");
+  }
 
   // const getTextStyle: any = (itemCss: any) => {
   //   if (itemCss.status) {
@@ -136,12 +146,12 @@ export const MyAbout = ({ user, onEditProfile }: AboutDataProps) => {
       <View style={styles.innerContainer}>
         <Loader visible={false} showOverlay />
 
-        {/* <View style={styles.rowOnly}>
+        <View style={styles.rowOnly}>
           <Text style={styles.membership}>{strings.membership}</Text>
           <TouchableOpacity activeOpacity={0.8} onPress={onSaveProfile}>
             <ImageComponent source={save} style={styles.save} />
           </TouchableOpacity>
-        </View> */}
+        </View>
         {/* <GestureRecognizer>
               <TouchableOpacity
                 onPressOut={() => {

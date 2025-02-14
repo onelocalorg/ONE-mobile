@@ -35,9 +35,11 @@ export enum Screens {
   EDIT_POST = "EditPost",
   CREATE_GROUP = "CreateGroup",
   EDIT_GROUP = "EditGroup",
-  CHOOSE_TICKETS = "ChooseTickets",
   SELECT_USERS = "SelectUsers",
   SELECT_CHAPTERS = "SelectChapters",
+  EVENT_ADMINISTRATION = "EventAdministration",
+  ADD_EDIT_EXPENSE = "AddEditExpense",
+  ADD_EDIT_PAYOUT = "AddEditPayout",
 }
 
 export type GuestStackParamList = {
@@ -73,13 +75,21 @@ export type RootStackParamList = {
     replyId?: string;
   };
   [Screens.REPORT_CONTENT_MODAL]: { postId: string };
-  [Screens.CHOOSE_TICKETS]: { eventId: string };
   [Screens.SELECT_USERS]: {
     type: string;
     users: OneUserData[];
   };
   [Screens.SELECT_CHAPTERS]: {
     chapters: ChapterData[];
+  };
+  [Screens.EVENT_ADMINISTRATION]: { eventId: string };
+  [Screens.ADD_EDIT_EXPENSE]: {
+    eventId: string;
+    paymentId?: string;
+  };
+  [Screens.ADD_EDIT_PAYOUT]: {
+    eventId: string;
+    paymentId?: string;
   };
 };
 

@@ -1,8 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { DateTime } from "luxon";
 import React from "react";
-import { Image, Text, TouchableOpacity, View } from "react-native";
-import { ScrollView } from "react-native-gesture-handler";
+import { Image, ScrollView, Text, TouchableOpacity, View } from "react-native";
 import Markdown from "react-native-markdown-display";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
 import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
@@ -63,6 +62,10 @@ export const EventDetailScreen = ({
     navigation.push(Screens.EDIT_EVENT, { id: eventId });
   };
 
+  const handleEventAdministration = () => {
+    navigation.push(Screens.EVENT_ADMINISTRATION, { eventId });
+  };
+
   return (
     <ScrollView>
       <Loader visible={isPending} showOverlay />
@@ -71,6 +74,15 @@ export const EventDetailScreen = ({
           <View style={styles.container}>
             <Text style={styles.title}>{event.name}</Text>
             <SizedBox height={verticalScale(16)} />
+            {event.host.id === myUserId && (
+              <>
+                <ButtonComponent
+                  title={strings.adminTools}
+                  onPress={handleEventAdministration}
+                />
+                <SizedBox height={verticalScale(16)} />
+              </>
+            )}
             <Image
               resizeMode="cover"
               source={
@@ -145,13 +157,11 @@ export const EventDetailScreen = ({
           </View>
           <Tickets event={event} />
           <RsvpView event={event} />
-          {event.host.id === myUserId ? (
+          {event.host.id === myUserId && (
             <ButtonComponent
               title={strings.editEvent}
               onPress={handleEditEvent}
             />
-          ) : (
-            <></>
           )}
         </>
       ) : null}

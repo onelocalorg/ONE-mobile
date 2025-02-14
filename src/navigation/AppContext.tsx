@@ -1,9 +1,9 @@
 import { createContext, useContext } from "react";
-import { Chapter } from "~/types/chapter";
+import { ChapterData } from "~/types/chapter";
 
 type AppContextType = {
-  chapterFilter: Chapter | null;
-  setChapterFilter: (chapter: Chapter | null) => void;
+  chapterFilter: ChapterData | null | undefined;
+  setChapterFilter: (chapter: ChapterData | null) => void;
 };
 
 export const AppContext = createContext<AppContextType | null>(null);

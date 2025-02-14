@@ -1,29 +1,40 @@
+import { useQuery } from "@tanstack/react-query";
+import _ from "lodash/fp";
 import React, { useEffect, useState } from "react";
-import {
-  Alert,
-  Keyboard,
-  Pressable,
-  Text,
-  TouchableWithoutFeedback,
-  View,
-} from "react-native";
+import { Keyboard, Text, TouchableWithoutFeedback, View } from "react-native";
+import CurrencyInput from "react-native-currency-input";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
 import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
 import { save } from "~/assets/images";
 import { ButtonComponent } from "~/components/button-component";
 import { Input } from "~/components/input";
-import { OneModal } from "~/components/modal-component/OneModal";
 import { SizedBox } from "~/components/sized-box";
+import {
+  Actionsheet,
+  ActionsheetBackdrop,
+  ActionsheetContent,
+  ActionsheetDragIndicator,
+  ActionsheetDragIndicatorWrapper,
+} from "~/components/ui/actionsheet";
+import { Button, ButtonSpinner, ButtonText } from "~/components/ui/button";
+import { Heading } from "~/components/ui/heading";
+import { CloseIcon, Icon } from "~/components/ui/icon";
+import {
+  Modal,
+  ModalBackdrop,
+  ModalCloseButton,
+  ModalContent,
+  ModalHeader,
+} from "~/components/ui/modal";
+import { useSubscriptionService } from "~/network/api/services/useSubscriptionService";
 import { verticalScale } from "~/theme/device/normalize";
 import { TicketTypeData } from "~/types/ticket-type-data";
+import { SubscriptionPlans } from "../myprofile/SubscriptionPlans";
 import { createStyleSheet } from "./style";
 
 interface AddTicketModalProps {
-  // eventDetails: EventData;
-  // eventId: string;
   value?: TicketTypeData;
   isVisible: boolean;
-  // isEdit?: boolean;
 
   onSuccess: (ticketDetails: TicketTypeData) => void;
   onDismiss?: () => void;
@@ -31,7 +42,6 @@ interface AddTicketModalProps {
 
 export const AddTicketModal = ({
   value,
-  // isEdit,
   isVisible,
   onSuccess,
   onDismiss,
@@ -39,9 +49,17 @@ export const AddTicketModal = ({
   const { theme } = useAppTheme();
   const { strings } = useStringsAndLabels();
   const styles = createStyleSheet(theme);
-  // const datePickerRef: React.Ref<DatePickerRefProps> = useRef(null);
-  // const [startDate, setStartDate] = useState(new Date());
-  // const [endDate, setEndDate] = useState(new Date());
+
+  const [showSubscriptions, setShowSubscriptions] = React.useState(false);
+  const handleClose = () => setShowSubscriptions(false);
+
+  const {
+    queries: { subscriptions: getSubscriptions },
+  } = useSubscriptionService();
+  const { data: subscriptions, isPending: isSubscriptionsLoading } = useQuery(
+    getSubscriptions()
+  );
+
   const [name, setName] = useState(value ? value.name : "");
   const [price, setPrice] = useState(value?.price ?? 0);
   const [quantity, setQuantity] = useState(value?.quantity || undefined);
@@ -53,48 +71,6 @@ export const AddTicketModal = ({
       setQuantity(value.quantity);
     }
   }, [value]);
-
-  // const { mutateAsync, isLoading } = useCreateTicket();
-  // const { mutateAsync: editTicket, isLoading: editTicketLoading } =
-  //   useEditTicket();
-
-  // useFocusEffect(
-  //   useCallback(() => {
-  //     if (ticketData && isEdit) {
-  //       // setEndDate(new Date(ticketData?.end_date));
-  //       // setStartDate(new Date(ticketData?.start_date));
-  //       setPrice(ticketData.price);
-  //       setTicketName(ticketData.name);
-  //       totalTicketQuantity(ticketData.quantity);
-  //     }
-  //   }, [ticketData, isEdit])
-  // );
-
-  // const onSetPrice = (text: string) => {
-  //   setPrice(Big(text));
-  // };
-
-  // const onCreateTicket = async () => {
-  //   const request = {
-  //     name: ticketName,
-  //     // start_date: new Date(startDate).toISOString(),
-  //     // end_date: new Date(endDate).toISOString(),
-  //     price: price ? price.toString() : undefined,
-  //     // event: eventId,
-  //     quantity: ticketQuantity,
-  //   };
-  //   let res;
-  //   if (isEdit) {
-  //     res = await editTicket({ bodyParams: request, ticketId: ticketData?.id });
-  //   } else {
-  //     res = await mutateAsync({ bodyParams: request });
-  //   }
-
-  //   if (res?.success) {
-  //     resetState();
-  //     onSuccessfulTicketCreation?.(res?.data);
-  //   }
-  // };
 
   const isValid = () => {
     return name;
@@ -108,120 +84,106 @@ export const AddTicketModal = ({
     setQuantity(undefined);
   };
 
-  // const keyboardDismiss = () => {
-  //   Keyboard.dismiss();
-  // };
-
   const createTicketType = (): TicketTypeData => ({
     name,
-    price,
-    quantity: quantity ? quantity : undefined,
+    price: price ?? 0,
+    quantity: quantity ?? undefined,
   });
 
   return (
-    <View>
-      <OneModal
-        isVisible={isVisible}
-        onDismiss={() => {
+    <>
+      <Modal
+        isOpen={isVisible}
+        onClose={() => {
           resetState();
           onDismiss?.();
         }}
       >
-        {/* {isEdit === false ? (
-          <Text style={styles.ticketTitle}>{strings.ticketAdd}</Text>
-        ) : (
-          <Text style={styles.ticketTitle}>{strings.ticketEdit}</Text>
-        )} */}
-
-        {/* <TouchableOpacity activeOpacity={1} onPress={keyboardDismiss}> */}
-        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-          <View style={styles.modalContainer}>
-            {/* <EventList data={eventDetails} /> */}
-            <Text style={styles.label}>{strings.ticketName}</Text>
-            <Input value={name} onChangeText={setName} />
-            {/* <Text style={styles.label}>{strings.ticketTimeframe}</Text>
-            <View style={styles.dateView}>
-              <ImageComponent source={calendar} style={styles.calendar} />
-              <TouchableOpacity
-                onPress={() => datePickerRef.current?.onOpenModal("start")}
-                activeOpacity={0.8}
-                style={styles.rowData}
-              >
-                <Text style={styles.startLabel}>
-                  {moment(startDate).format("MMM DD, YYYY, h:mma") ||
-                    strings.selectStartDate}
-                </Text>
-                <ImageComponent source={arrowDown} style={styles.arrowDown} />
-              </TouchableOpacity>
-              <Text style={styles.startLabel}>{strings.to}</Text>
-              <TouchableOpacity
-                onPress={() => datePickerRef.current?.onOpenModal("end")}
-                activeOpacity={0.8}
-                style={styles.rowData}
-              >
-                <Text style={styles.startLabel}>
-                  {moment(endDate).format("MMM DD, YYYY, h:mma") ||
-                    strings.selectEndDate}
-                </Text>
-                <ImageComponent source={arrowDown} style={styles.arrowDown} />
-              </TouchableOpacity>
-            </View> */}
-            <Text style={styles.label}>{strings.ticketPrice}</Text>
-            <Pressable
-              onPress={() => {
-                Alert.alert("Only free tickets allowed in this release");
-              }}
-            >
-              <Text
-                // onChangeText={(v) => setPrice(Number.parseFloat(v))}
-                // placeholder={strings.ticketPriceFree}
-                // editable={false}
-                style={[
-                  styles.label,
-                  { paddingLeft: 16, marginTop: 0, fontWeight: "bold" },
-                ]}
-              >
-                {price ? price.toString() : "Free"}
-              </Text>
-            </Pressable>
-            <Text style={styles.label}>{strings.ticketQuantity}</Text>
-            <Input
-              keyboardType="numeric"
-              value={quantity?.toString()}
-              onChangeText={(v) => setQuantity(parseInt(v))}
-              placeholder={strings.ticketsUnlimited}
-            />
-            <SizedBox height={verticalScale(25)} />
-            <View
-              style={{ flexDirection: "row", justifyContent: "space-evenly" }}
-            >
-              <ButtonComponent
-                onPress={() => {
-                  resetState();
-                  onDismiss?.();
-                }}
-                title={strings.cancel}
+        <ModalBackdrop />
+        <ModalContent>
+          <ModalHeader>
+            <Heading size="md">Create ticket offers</Heading>
+            <ModalCloseButton>
+              <Icon
+                as={CloseIcon}
+                size="md"
+                className="stroke-background-400 group-[:hover]/modal-close-button:stroke-background-700 group-[:active]/modal-close-button:stroke-background-900 group-[:focus-visible]/modal-close-button:stroke-background-900"
               />
-              <ButtonComponent
-                onPress={() => {
-                  resetState();
-                  onSuccess(createTicketType());
-                }}
-                icon={save}
-                title={strings.ok}
-                disabled={!isValid()}
+            </ModalCloseButton>
+          </ModalHeader>
+          <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+            <View style={styles.modalContainer}>
+              <Text style={styles.label}>{strings.ticketName}</Text>
+              <Input value={name} onChangeText={setName} />
+              <Text style={styles.label}>{strings.ticketPrice}</Text>
+              {!_.isEmpty(subscriptions) ? (
+                <CurrencyInput
+                  style={styles.inputStyle}
+                  value={(price ?? 0) / 100}
+                  onChangeValue={(v) => setPrice((v ?? 0) * 100)}
+                  placeholder={strings.ticketPriceFree}
+                  prefix="$"
+                  separator="."
+                  delimiter=","
+                />
+              ) : (
+                <Button
+                  variant="solid"
+                  action="primary"
+                  onPress={() => setShowSubscriptions(true)}
+                >
+                  {isSubscriptionsLoading && <ButtonSpinner />}
+                  <ButtonText>Free or tap to upgrade</ButtonText>
+                </Button>
+              )}
+              <Text style={styles.label}>{strings.ticketQuantity}</Text>
+              <Input
+                keyboardType="numeric"
+                value={quantity?.toString()}
+                onChangeText={(v) => setQuantity(parseInt(v || "0"))}
+                placeholder={strings.ticketsUnlimited}
               />
+              <SizedBox height={verticalScale(25)} />
+              <View
+                style={{ flexDirection: "row", justifyContent: "space-evenly" }}
+              >
+                <ButtonComponent
+                  onPress={() => {
+                    resetState();
+                    onDismiss?.();
+                  }}
+                  title={strings.cancel}
+                />
+                <ButtonComponent
+                  onPress={() => {
+                    resetState();
+                    onSuccess(createTicketType());
+                  }}
+                  icon={save}
+                  title={strings.ok}
+                  disabled={!isValid()}
+                />
+              </View>
             </View>
-          </View>
-        </TouchableWithoutFeedback>
-        {/* </TouchableOpacity> */}
-        {/* <DateRangePicker
+          </TouchableWithoutFeedback>
+          {/* </TouchableOpacity> */}
+          {/* <DateRangePicker
           selectStartDate={setStartDate}
           selectEndDate={setEndDate}
           ref={datePickerRef}
         /> */}
-      </OneModal>
-    </View>
+        </ModalContent>
+      </Modal>
+      <Actionsheet isOpen={showSubscriptions} onClose={handleClose}>
+        <ActionsheetBackdrop />
+        <ActionsheetContent>
+          <ActionsheetDragIndicatorWrapper>
+            <ActionsheetDragIndicator />
+          </ActionsheetDragIndicatorWrapper>
+          <SubscriptionPlans onClose={handleClose} />
+        </ActionsheetContent>
+      </Actionsheet>
+    </>
   );
 };
 

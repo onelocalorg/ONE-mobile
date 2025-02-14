@@ -39,13 +39,6 @@ export function ApiService({ children }: ApiServiceProviderProps) {
   const queryClient = useQueryClient();
   const dispatch = useContext(AuthDispatchContext);
 
-  // queryClient.setDefaultOptions({
-  //   queries: {
-  //     o
-  //   }
-  // })
-  // })
-
   queryClient.setMutationDefaults([], {
     onError: (err: Error) => {
       if (err instanceof ApiError && err.code === 401) {
@@ -89,15 +82,6 @@ export function ApiService({ children }: ApiServiceProviderProps) {
     return callApi<Resource>("GET", url, undefined, transform);
   }
 
-  // Perform a GET against the given url and return a list of resources generated via
-  // the given transform fundtion
-  // async function doGetList<Resource>(
-  //   url: string,
-  //   transform?: (data: any) => Resource
-  // ) {
-  //   return callApiAndMap<Resource>("GET", url, undefined, transform);
-  // }
-
   // Perform a POST against the given url and return the resource generated via
   // the given transform fundction
   function doPost<Resource>(
@@ -107,16 +91,6 @@ export function ApiService({ children }: ApiServiceProviderProps) {
   ) {
     return callApi<Resource>("POST", url, body, transform);
   }
-
-  // Perform a GET against the given url and return a list of resources generated via
-  // the given transform fundtion
-  // function doPostList<Resource>(
-  //   url: string,
-  //   body?: any,
-  //   transform?: (data: any) => Resource
-  // ) {
-  //   return callApiAndMap<Resource>("POST", url, body, transform);
-  // }
 
   // Perform a PATCH against the given url and return the resource generated via
   // the given transform fundction
@@ -188,18 +162,6 @@ export function ApiService({ children }: ApiServiceProviderProps) {
     return resource as Resource;
   }
 
-  // function callApiAndMap<Resource>(
-  //   method: string,
-  //   url: string,
-  //   body?: any,
-  //   transform?: (data: any) => Resource
-  // ) {
-  //   return callApi<Resource[]>(method, url, body, (data) =>
-  //     // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-call
-  //     transform ? data.map(transform) : data
-  //   );
-  // }
-
   function convertDateTimes<T>(from: T): T {
     function recurse(v: unknown): unknown {
       if (_.isNumber(v) || _.isString(v) || _.isBoolean(v)) {
@@ -229,21 +191,6 @@ export function ApiService({ children }: ApiServiceProviderProps) {
 
     return recurse(from) as T;
   }
-
-  // return _.isArray(from)
-  //   ? from.map(convertDateTimes)
-  //   : !_.isObject(from)
-  //   ? from
-  //   : mapValuesWithKey(
-  //       (v: string, k: string) =>
-  //         _.isArray(v)
-  //           ? v.map(convertDateTimes)
-  //           : DATETIME_KEYS.includes(k)
-  //           ? DateTime.fromISO(v)
-  //           : v,
-  //       from
-  //     );
-  // }
 
   function hideFields(from: unknown) {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-return

@@ -1,7 +1,6 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import React from "react";
-import { View } from "react-native";
-import { ScrollView } from "react-native-gesture-handler";
+import { ScrollView, View } from "react-native";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
 import { Loader } from "~/components/loader";
 import { RootStackScreenProps, Screens } from "~/navigation/types";

@@ -5,7 +5,8 @@ import { OneUser } from "~/types/one-user";
 import { RemoteImage } from "~/types/remote-image";
 import { RegisterTokenData } from "~/types/token";
 import { UploadFileData } from "~/types/upload-file-data";
-import { UserProfile, UserProfileUpdateData } from "~/types/user-profile";
+import { Url } from "~/types/url";
+import { Me, UserProfile, UserProfileUpdateData } from "~/types/user-profile";
 import { useApiService } from "./ApiService";
 import { useEventService } from "./useEventService";
 
@@ -15,6 +16,7 @@ export enum UserMutations {
   uploadFile = "uploadFile",
   registerToken = "registerToken",
   blockUser = "blockUser",
+  configureTransfers = "configureTransfers",
 }
 
 export enum GetUsersSort {
@@ -31,19 +33,24 @@ export function useUserService() {
 
   const queries = {
     all: () => ["users"],
-    lists: () => [...queries.all(), "list"],
+    lists: () => [...queries.all(), "lists"],
     list: (filters?: GetUsersParams) =>
       queryOptions({
         queryKey: [...queries.lists(), filters],
         queryFn: () => getUsers(filters),
       }),
-    details: () => [...queries.all(), "detail"],
+    details: () => [...queries.all(), "details"],
     detail: (id?: string) =>
       queryOptions({
         queryKey: [...queries.details(), id],
         queryFn: () => getUser(id!),
         enabled: !!id,
         staleTime: 5000,
+      }),
+    me: () =>
+      queryOptions({
+        queryKey: [...queries.detail("me").queryKey],
+        queryFn: () => getMe(),
       }),
   };
 
@@ -57,10 +64,17 @@ export function useUserService() {
     mutationFn: (data: UserProfileUpdateData) => {
       return updateUser(data);
     },
-    onSuccess: (data: UserProfile) => {
+    onSuccess: (data: UserProfile, variables: UserProfileUpdateData) => {
       void queryClient.invalidateQueries({
         queryKey: queries.detail(data.id).queryKey,
       });
+
+      // If the pic is changed, invalidate the list of users which displays the pic
+      if (variables.pic) {
+        void queryClient.invalidateQueries({
+          queryKey: queries.lists(),
+        });
+      }
       // FIXME invalidate the post queries, but can't because postService
       // invalidates the user queries when they give gratis
       // void queryClient.invalidateQueries({
@@ -81,9 +95,17 @@ export function useUserService() {
     },
   });
 
+  queryClient.setMutationDefaults([UserMutations.configureTransfers], {
+    mutationFn: (userId: string) => {
+      return configureTransfers(userId);
+    },
+  });
+
   const { doDelete, doGet, doPatch, doPost } = useApiService();
 
   const getUser = (userId: string) => doGet<UserProfile>(`/v3/users/${userId}`);
+
+  const getMe = () => doGet<Me>(`/v3/users/me`);
 
   queryClient.setMutationDefaults([UserMutations.blockUser], {
     mutationFn: (userId: string) => {
@@ -163,10 +185,14 @@ export function useUserService() {
       ..._.omit(["userId"], data),
     });
 
+  const configureTransfers = (userId: string) =>
+    doPost<Url>(`/v3/users/${userId}/configure-transfers`, {});
+
   return {
     queries,
     getUsers,
     getUser,
+    getMe,
     deleteUser,
     updateUser,
     uploadFile,

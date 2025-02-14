@@ -39,7 +39,7 @@ import {
 } from "~/types/local-event";
 import { TicketTypeData } from "~/types/ticket-type-data";
 import { FileKey } from "~/types/upload-file-data";
-import { isNotEmpty } from "~/utils/common";
+import { isNotEmpty, toCurrency } from "~/utils/common";
 import { AddTicketModal } from "./AddTicketModal";
 import { createStyleSheet } from "./style";
 
@@ -70,11 +70,10 @@ export const EventEditor = ({
   const [isTicketModalVisible, setTicketModalVisible] = useState(false);
   const chapterFilter = useChapterFilter();
 
-  // TODO Figure out a better way to have the current user always available
   const {
-    queries: { detail: getUser },
+    queries: { me: getMe },
   } = useUserService();
-  const { data: myProfile } = useQuery(getUser(myUserId));
+  const { data: myProfile } = useQuery(getMe());
 
   const {
     control,
@@ -127,7 +126,7 @@ export const EventEditor = ({
       onSubmitCreate!(
         {
           // ChapterId is overridden by chapterFilter set in defaultValues
-          chapterId: myProfile?.chapterId,
+          chapterId: myProfile?.homeChapter?.id,
           ..._.pickBy(isNotEmpty, data),
         } as LocalEventData,
         {
@@ -135,13 +134,11 @@ export const EventEditor = ({
         }
       );
 
-    console.log("profile.chapter", myProfile?.chapterId);
-
     if (
       !event &&
       chapterFilter?.id &&
-      myProfile?.chapterId &&
-      chapterFilter.id !== myProfile.chapterId
+      myProfile?.homeChapter?.id &&
+      chapterFilter.id !== myProfile.homeChapter.id
     ) {
       Alert.alert(
         "Create outside of home chapter?",
@@ -182,8 +179,6 @@ export const EventEditor = ({
   const handleChangeImages = (images: ImageKey[]) => {
     setValue("images", images);
   };
-
-  console.log("images", getValues("images"));
 
   const ChooseStartAndEndDates = () => (
     <View style={styles.rowContainer}>
@@ -372,7 +367,7 @@ export const EventEditor = ({
                       <Text style={styles.ticket}>{`${t?.name} - ${
                         t.quantity ? t.quantity : "Unlimited"
                       } ${
-                        t.price > 0 ? "@ $" + t.price.toFixed(2) : "Free"
+                        t.price === 0 ? "Free!" : toCurrency(t.price)
                       }`}</Text>
                       <View style={styles.rowContainer}>
                         <Pressable onPress={() => handleTicketSelected(index)}>

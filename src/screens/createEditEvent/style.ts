@@ -661,8 +661,6 @@ export const createStyleSheet = (theme: ThemeProps) => {
     editIcon: {
       height: 16,
       width: 16,
-      marginTop: 12,
-      marginRight: 5,
     },
     userNameCont: {
       width: width - 200,
@@ -1076,6 +1074,18 @@ export const createStyleSheet = (theme: ThemeProps) => {
       paddingVertical: 10,
       paddingHorizontal: 5,
       margin: 10,
+    },
+    inputStyle: {
+      backgroundColor: "white",
+      borderRadius: 8,
+      fontSize: 14,
+      borderColor: "#8B8888",
+      borderWidth: 1,
+      paddingVertical: normalScale(4),
+      paddingHorizontal: normalScale(10),
+      lineHeight: 20,
+      color: "black",
+      height: verticalScale(52),
     },
   });
 };

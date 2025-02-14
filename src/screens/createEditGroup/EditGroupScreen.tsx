@@ -3,7 +3,6 @@ import React from "react";
 import { ScrollView, View } from "react-native";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
 import { Loader } from "~/components/loader";
-import { useMyUserId } from "~/navigation/AuthContext";
 import { RootStackScreenProps, Screens } from "~/navigation/types";
 import {
   GroupMutations,
@@ -28,11 +27,10 @@ export const EditGroupScreen = ({
   const { data: group, isPending, isLoading } = useQuery(getGroup(groupId));
 
   // TODO Figure out a better way to have the current user always available
-  const myUserId = useMyUserId();
   const {
-    queries: { detail: getUser },
+    queries: { me: getMe },
   } = useUserService();
-  const { data: myProfile } = useQuery(getUser(myUserId));
+  const { data: myProfile } = useQuery(getMe());
 
   const mutateEditGroup = useMutation<Group, Error, GroupUpdateData>({
     mutationKey: [GroupMutations.editGroup],

@@ -1,30 +1,53 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import { useMutation, useQuery } from "@tanstack/react-query";
+import _ from "lodash/fp";
+import { CheckCircleIcon } from "lucide-react-native";
 import React, { useContext, useState } from "react";
-import { Alert, Pressable, Text, TouchableOpacity, View } from "react-native";
+import {
+  Alert,
+  Linking,
+  Pressable,
+  ScrollView,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { getReadableVersion } from "react-native-device-info";
-import { ScrollView } from "react-native-gesture-handler";
 import { Menu } from "react-native-paper";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
 import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
 import { MyAvatar } from "~/components/avatar/MyAvatar";
 import { ImageUploader } from "~/components/ImageUploader";
 import { Loader } from "~/components/loader";
+import {
+  AlertDialog,
+  AlertDialogBackdrop,
+  AlertDialogBody,
+  AlertDialogContent,
+  AlertDialogFooter,
+  AlertDialogHeader,
+} from "~/components/ui/alert-dialog";
+import { Button, ButtonText } from "~/components/ui/button";
+import { Heading } from "~/components/ui/heading";
+import { HStack } from "~/components/ui/hstack";
+import { CloseCircleIcon, Icon } from "~/components/ui/icon";
+import { Text as GsText } from "~/components/ui/text";
+import { VStack } from "~/components/ui/vstack";
 import { AppContext } from "~/navigation/AppContext";
 import { useMyUserId } from "~/navigation/AuthContext";
 import {
   ChapterMutations,
   useChapterService,
 } from "~/network/api/services/useChapterService";
+import { usePayoutService } from "~/network/api/services/usePayoutService";
 import {
   UserMutations,
   useUserService,
 } from "~/network/api/services/useUserService";
 import { ImageKey } from "~/types/image-info";
-import { RemoteImage } from "~/types/remote-image";
-import { FileKey, UploadFileData } from "~/types/upload-file-data";
+import { FileKey } from "~/types/upload-file-data";
+import { Url } from "~/types/url";
 import { UserProfile, UserProfileUpdateData } from "~/types/user-profile";
-import { findChapter } from "~/utils/common";
+import { findChapter, toCurrency } from "~/utils/common";
 import { LogoutPressable } from "./LogoutPressable";
 import { MyEvents } from "./MyEvents";
 import { ProfileEditor } from "./ProfileEditor";
@@ -35,38 +58,39 @@ export const MyProfileScreen = () => {
   const { strings } = useStringsAndLabels();
   const styles = createStyleSheet(theme);
   const myUserId = useMyUserId();
-  const { chapterFilter, setChapterFilter } = useContext(AppContext)!;
+  const { setChapterFilter } = useContext(AppContext)!;
 
   const [isChapterPickerVisible, setChapterPickerVisible] = useState(false);
   const openMenu = () => setChapterPickerVisible(true);
   const closeMenu = () => setChapterPickerVisible(false);
+  const [isErrorDisplayVisible, setErrorDisplayVisible] = useState(false);
+  const openErrorDisplay = () => setErrorDisplayVisible(true);
+  const closeErrorDisplay = () => setErrorDisplayVisible(false);
 
   const {
-    queries: { detail: getUser },
+    queries: { me: getMe },
   } = useUserService();
+  const { isLoading, data: myProfile } = useQuery(getMe());
 
-  const { isLoading, data: myProfile } = useQuery(getUser(myUserId));
+  const {
+    queries: { balance: getBalance },
+  } = usePayoutService();
+  const { data: balance } = useQuery(getBalance());
+
   const {
     queries: { list: listChapters },
   } = useChapterService();
 
   const { data: chapters } = useQuery(listChapters());
 
-  const { mutate: uploadFile } = useMutation<
-    RemoteImage,
-    Error,
-    UploadFileData
-  >({
-    mutationKey: [UserMutations.uploadFile],
+  const { mutate: getAccountLinkUrl } = useMutation<Url, Error, string>({
+    mutationKey: [UserMutations.configureTransfers],
   });
 
-  const { mutate: updateUserProfile } = useMutation<
-    UserProfile,
-    Error,
-    UserProfileUpdateData
-  >({
-    mutationKey: [UserMutations.updateUser],
-  });
+  const { isPending: isUpdateUserPending, mutate: updateUserProfile } =
+    useMutation<UserProfile, Error, UserProfileUpdateData>({
+      mutationKey: [UserMutations.updateUser],
+    });
 
   const { mutate: deleteUser } = useMutation<never, Error, string>({
     mutationKey: [UserMutations.deleteUser],
@@ -76,10 +100,22 @@ export const MyProfileScreen = () => {
     mutationKey: [ChapterMutations.joinChapter],
   });
 
+  const isStripeConfigured = () =>
+    myProfile?.stripe &&
+    myProfile.stripe.requirements.currently_due.length === 0;
+
   const handleImageAdded = (image: ImageKey) => {
     updateUserProfile({
       id: myUserId!,
       pic: { key: image.key },
+    });
+  };
+
+  const configureTransfers = () => {
+    getAccountLinkUrl(myUserId!, {
+      onSuccess: (data) => {
+        void Linking.openURL(data.url).then((r) => console.log(r));
+      },
     });
   };
 
@@ -100,43 +136,100 @@ export const MyProfileScreen = () => {
     );
   };
 
+  const getDisabledReason = () => {
+    let reason;
+    switch (myProfile?.stripe?.requirements.disabled_reason) {
+      case "requirements.past_due":
+        reason =
+          "Payments need to be configured. Please click the button below to configure payments";
+        break;
+      case "requirements.pending_verification":
+        reason = "Payments are pending verification";
+        break;
+      default:
+        reason = myProfile?.stripe?.requirements.disabled_reason;
+    }
+    return reason;
+  };
+
   return (
     <>
-      <Loader visible={isLoading} showOverlay={true} />
+      <Loader visible={isLoading || isUpdateUserPending} showOverlay={true} />
       <ScrollView>
         {myProfile ? (
           <>
-            {myProfile && (
-              <View style={styles.innerContainer}>
-                <Menu
-                  visible={isChapterPickerVisible}
-                  onDismiss={closeMenu}
-                  anchor={
-                    <Pressable onPress={openMenu}>
-                      <Text>
-                        Home chapter:{" "}
-                        {myProfile.chapterId
-                          ? findChapter(myProfile.chapterId, chapters)?.name
-                          : "None"}
-                        <Text style={{ fontSize: 10 }}>{"\u25BC"}</Text>
-                      </Text>
-                    </Pressable>
-                  }
-                >
-                  {chapters?.map((chapter) => (
-                    <Menu.Item
-                      key={chapter.id}
-                      onPress={() => {
-                        joinChapter(chapter.id);
-                        setChapterFilter(chapter);
-                        closeMenu();
-                      }}
-                      title={chapter.name}
-                    />
-                  ))}
-                </Menu>
-              </View>
-            )}
+            <View style={styles.innerContainer}>
+              <Menu
+                visible={isChapterPickerVisible}
+                onDismiss={closeMenu}
+                anchor={
+                  <Pressable onPress={openMenu}>
+                    <Text>
+                      Home chapter:{" "}
+                      {myProfile.homeChapter?.id
+                        ? findChapter(myProfile.homeChapter?.id, chapters)?.name
+                        : "None"}
+                      <Text style={{ fontSize: 10 }}>{"\u25BC"}</Text>
+                    </Text>
+                  </Pressable>
+                }
+              >
+                {chapters?.map((chapter) => (
+                  <Menu.Item
+                    key={chapter.id}
+                    onPress={() => {
+                      joinChapter(chapter.id);
+                      setChapterFilter(chapter);
+                      closeMenu();
+                    }}
+                    title={chapter.name}
+                  />
+                ))}
+              </Menu>
+              {balance && (
+                <VStack>
+                  <HStack>
+                    <GsText className="font-semibold pr-1">Balance:</GsText>
+                    <GsText>{toCurrency(balance.available[0].amount)}</GsText>
+                  </HStack>
+                  <HStack className="items-center">
+                    <GsText className="font-semibold pr-1">
+                      Payouts enabled:
+                    </GsText>
+                    {myProfile?.stripe?.payouts_enabled ? (
+                      <>
+                        <Icon
+                          as={CheckCircleIcon}
+                          className="color-green-500"
+                        />
+                        <GsText size="xs">
+                          Payouts sent to your bank account automatically.
+                        </GsText>
+                      </>
+                    ) : (
+                      <>
+                        <Icon as={CloseCircleIcon} className="color-red-500" />
+                        {!_.isEmpty(myProfile?.stripe?.requirements.errors) ? (
+                          <Button
+                            size="xs"
+                            className="ml-2 w-5/12"
+                            action="negative"
+                            onPress={openErrorDisplay}
+                          >
+                            <ButtonText>See errors</ButtonText>
+                          </Button>
+                        ) : (
+                          <GsText className="color-red-500">
+                            {getDisabledReason()}
+                          </GsText>
+                        )}
+                      </>
+                    )}
+                  </HStack>
+                </VStack>
+              )}
+            </View>
+
             <ImageUploader
               id={myUserId}
               uploadKey={FileKey.pic}
@@ -151,6 +244,14 @@ export const MyProfileScreen = () => {
                 userProfile={myProfile}
                 saveProfile={updateUserProfile}
               />
+            )}
+
+            {!isStripeConfigured() ? (
+              <Button className="m-4" onPress={configureTransfers}>
+                <ButtonText>Configure payments</ButtonText>
+              </Button>
+            ) : (
+              <Text>Payments configured :)</Text>
             )}
 
             <View style={styles.line} />
@@ -181,6 +282,37 @@ export const MyProfileScreen = () => {
           </View>
         )}
       </ScrollView>
+      <AlertDialog
+        isOpen={isErrorDisplayVisible}
+        onClose={closeErrorDisplay}
+        size="md"
+      >
+        <AlertDialogBackdrop />
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <Heading className="text-typography-950 font-semibold" size="md">
+              Errors preventing payouts
+            </Heading>
+          </AlertDialogHeader>
+          <AlertDialogBody className="mt-3 mb-4">
+            {myProfile?.stripe?.requirements.errors.map((error) => (
+              <GsText key={error.code} size="sm" className="color-red-500">
+                {error.reason}
+              </GsText>
+            ))}
+          </AlertDialogBody>
+          <AlertDialogFooter className="">
+            <Button
+              variant="outline"
+              action="secondary"
+              onPress={closeErrorDisplay}
+              size="sm"
+            >
+              <ButtonText>OK</ButtonText>
+            </Button>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </>
   );
 };

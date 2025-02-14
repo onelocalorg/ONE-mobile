@@ -8,9 +8,7 @@ import { OneAvatar } from "~/components/avatar/OneAvatar";
 import { Loader } from "~/components/loader";
 import { TabComponent } from "~/components/tab-component";
 import { RootStackScreenProps, Screens } from "~/navigation/types";
-import { useChapterService } from "~/network/api/services/useChapterService";
 import { useUserService } from "~/network/api/services/useUserService";
-import { findChapter } from "~/utils/common";
 import { MyEvents } from "../myprofile/MyEvents";
 import { MyGroups } from "../myprofile/MyGroups";
 import { About } from "./about";
@@ -31,11 +29,6 @@ export const UserProfileScreen = ({
   } = useUserService();
 
   const { isPending, data: userProfile } = useQuery(getUser(userId));
-  const {
-    queries: { list: listChapters },
-  } = useChapterService();
-
-  const { data: chapters } = useQuery(listChapters());
 
   return (
     <>
@@ -56,10 +49,7 @@ export const UserProfileScreen = ({
 
             <View style={styles.innerContainer}>
               <Text>
-                Home chapter:{" "}
-                {userProfile.chapterId
-                  ? findChapter(userProfile.chapterId, chapters)?.name
-                  : "None"}
+                {`Home chapter: ${userProfile.homeChapter?.name ?? "None"}`}
               </Text>
             </View>
 

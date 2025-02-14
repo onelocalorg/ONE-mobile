@@ -13,13 +13,15 @@ import { ChapterListSearchable } from "~/components/chapter-list-searchable/Chap
 import { GenericWebView } from "~/components/generic-webview";
 import { OneLogo } from "~/components/navbar/OneLogo";
 import { UserListSearchable } from "~/components/user-list-searchable/UserListSearchable";
+import { AddEditExpenseScreen } from "~/screens/createEditEvent/AddEditExpenseScreen";
+import { AddEditPayoutScreen } from "~/screens/createEditEvent/AddEditPayoutScreen";
 import { CreateEventScreen } from "~/screens/createEditEvent/CreateEventScreen";
 import { EditEventScreen } from "~/screens/createEditEvent/EditEventScreen";
+import { EventAdministrationScreen } from "~/screens/createEditEvent/EventAdministrationScreen";
 import { CreateGroupScreen } from "~/screens/createEditGroup/CreateGroupScreen";
 import { EditGroupScreen } from "~/screens/createEditGroup/EditGroupScreen";
 import { CreatePostScreen } from "~/screens/createEditPost/CreatePostScreen";
 import { EditPostScreen } from "~/screens/createEditPost/EditPostScreen";
-import { ChooseTicketsModal } from "~/screens/event-detail/ChooseTicketsModal";
 import { EventDetailScreen } from "~/screens/event-detail/EventDetailScreen";
 import { EventListScreen } from "~/screens/event/EventListScreen";
 import { GroupDetailScreen } from "~/screens/group-detail/GroupDetailScreen";
@@ -246,6 +248,10 @@ export const AppNavigation = ({
               name={Screens.SELECT_CHAPTERS}
               component={ChapterListSearchable}
             />
+            <RootStack.Screen
+              name={Screens.EVENT_ADMINISTRATION}
+              component={EventAdministrationScreen}
+            />
           </RootStack.Group>
         ) : email ? (
           <GuestStack.Screen
@@ -291,8 +297,15 @@ export const AppNavigation = ({
             }}
           />
           <RootStack.Screen
-            name={Screens.CHOOSE_TICKETS}
-            component={ChooseTicketsModal}
+            name={Screens.ADD_EDIT_EXPENSE}
+            component={AddEditExpenseScreen}
+            options={{
+              ...ShortModalScreenOptions,
+            }}
+          />
+          <RootStack.Screen
+            name={Screens.ADD_EDIT_PAYOUT}
+            component={AddEditPayoutScreen}
             options={{
               ...ShortModalScreenOptions,
             }}
