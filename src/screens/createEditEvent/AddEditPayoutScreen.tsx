@@ -33,7 +33,7 @@ export const AddEditPayoutScreen = ({
   };
 
   return (
-    <Actionsheet defaultIsOpen={true} onClose={handleOnClose} snapPoints={[50]}>
+    <Actionsheet defaultIsOpen={true} onClose={handleOnClose} snapPoints={[70]}>
       <KeyboardAvoidingView
         behavior="position"
         style={{
