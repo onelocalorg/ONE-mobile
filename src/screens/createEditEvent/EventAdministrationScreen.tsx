@@ -1,14 +1,22 @@
-import { useMutation, useQueries } from "@tanstack/react-query";
+import { useMutation, useQueries, useQuery } from "@tanstack/react-query";
 import _ from "lodash/fp";
 import { BanknoteIcon } from "lucide-react-native";
 import { DateTime } from "luxon";
 import React, { useState } from "react";
 import { Modal, ScrollView, Text, TouchableOpacity, View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
+import { useNavigations } from "~/app-hooks/useNavigations";
 import { buttonArrowGreen, edit2, payoutClose } from "~/assets/images";
 import { OneAvatar } from "~/components/avatar/OneAvatar";
 import { ImageComponent } from "~/components/image-component";
+import {
+  AlertDialog,
+  AlertDialogBackdrop,
+  AlertDialogCloseButton,
+  AlertDialogContent,
+  AlertDialogFooter,
+  AlertDialogHeader,
+} from "~/components/ui/alert-dialog";
 import { Box } from "~/components/ui/box";
 import {
   Button,
@@ -30,6 +38,7 @@ import {
   PaymentId,
   useEventService,
 } from "~/network/api/services/useEventService";
+import { useUserService } from "~/network/api/services/useUserService";
 import { Expense } from "~/types/expense";
 import { Payout, PayoutSplit } from "~/types/payout";
 import { toCurrency } from "~/utils/common";
@@ -43,6 +52,16 @@ export const EventAdministrationScreen = ({
   const { theme } = useAppTheme();
   const styles = createStyleSheet(theme);
   const [modalVisible, setModalVisible] = useState(false);
+  const [isNeedsConfigVisible, setNeedsConfigVisible] = useState(false);
+  const closeNeedsConfigAlert = () => {
+    setNeedsConfigVisible(false);
+  };
+  const { gotoMyProfile } = useNavigations();
+
+  const {
+    queries: { me: getMe },
+  } = useUserService();
+  const { data: myProfile } = useQuery(getMe());
 
   const {
     queries: {
@@ -157,7 +176,7 @@ export const EventAdministrationScreen = ({
   };
 
   return (
-    <SafeAreaView>
+    <>
       <ScrollView>
         {financials && (
           <View style={styles.eventContainerTwo}>
@@ -401,6 +420,28 @@ export const EventAdministrationScreen = ({
           </View>
         )}
       </ScrollView>
-    </SafeAreaView>
+      <AlertDialog
+        isOpen={isNeedsConfigVisible}
+        onClose={closeNeedsConfigAlert}
+      >
+        <AlertDialogBackdrop />
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogCloseButton />
+          </AlertDialogHeader>
+          <Box className="my-2">
+            <Text>
+              You need to configure your profile for payments before sending
+              payments to others.
+            </Text>
+          </Box>
+          <AlertDialogFooter>
+            <Button size="sm" onPress={gotoMyProfile}>
+              <ButtonText>OK</ButtonText>
+            </Button>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </>
   );
 };

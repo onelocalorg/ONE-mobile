@@ -96,6 +96,10 @@ export function useNavigations() {
     });
   };
 
+  const gotoMyProfile = () => () => {
+    navigation.navigate(Screens.MY_PROFILE);
+  };
+
   const gotoEventDetails =
     (event: string | LocalEvent, reply?: string) => () => {
       navigation.navigate(Screens.EVENT_DETAIL, {
@@ -166,6 +170,7 @@ export function useNavigations() {
 
   return {
     gotoUserProfile,
+    gotoMyProfile,
     gotoPostDetails,
     gotoEventDetails,
     gotoGroupDetails,
