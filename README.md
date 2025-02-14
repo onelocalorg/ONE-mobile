@@ -26,6 +26,8 @@ For development, run:
 npm start
 ```
 
+and then launch ios or android
+
 If you want to connect to the staging (beta) server, instead run `npm run start:staging`.
 
 ## Step 4: Send build to TestFlight
@@ -74,11 +76,19 @@ now for Android.
 
 # Troubleshooting
 
-Build hanging at the very beginning? Run `npx react-native clean`, also
-creating a new Simulator. These are the two things that seemed to help me.
+Build hanging at the very beginning? For example, stuck with:
 
+```
+----- xcbeautify -----
+Version: 2.14.1
+----------------------
+```
 
+Try these things:
 
+1. Run `npx react-native@latest clean`,
+1. Open XCode and build the project
+1. Create a new Simulator.
 
 ## License
 
