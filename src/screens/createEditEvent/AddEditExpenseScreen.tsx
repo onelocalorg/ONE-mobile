@@ -10,6 +10,7 @@ import {
   View,
 } from "react-native";
 import CurrencyInput from "react-native-currency-input";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
 import { redDeleteIcon, saveIcon } from "~/assets/images";
 import { ImageComponent } from "~/components/image-component";
@@ -156,7 +157,7 @@ export const AddEditExpenseScreen = ({
   };
 
   return (
-    <Actionsheet defaultIsOpen={true} onClose={handleOnClose} snapPoints={[70]}>
+    <Actionsheet defaultIsOpen={true} onClose={handleOnClose} snapPoints={[60]}>
       <KeyboardAvoidingView
         behavior="position"
         style={{
@@ -165,136 +166,138 @@ export const AddEditExpenseScreen = ({
           justifyContent: "flex-end",
         }}
       >
-        <ActionsheetBackdrop />
-        <ActionsheetContent>
-          <ActionsheetDragIndicatorWrapper>
-            <ActionsheetDragIndicator />
-          </ActionsheetDragIndicatorWrapper>
-          <Loader showOverlay={true} visible={isPending && !!paymentId} />
+        <SafeAreaView>
+          <ActionsheetBackdrop />
+          <ActionsheetContent className="mt-30">
+            <ActionsheetDragIndicatorWrapper>
+              <ActionsheetDragIndicator />
+            </ActionsheetDragIndicatorWrapper>
+            <Loader showOverlay={true} visible={isPending && !!paymentId} />
 
-          <View style={styles.subBreakdowncont}>
-            <View
-              style={{
-                marginTop: 5,
-                marginLeft: 0,
-                paddingTop: 5,
-                flexDirection: "row",
-                alignItems: "center",
-              }}
-            >
-              <Text style={styles.breakdownHeader}>
-                {paymentId ? "Edit" : "Add"}
-              </Text>
-            </View>
+            <View style={styles.subBreakdowncont}>
+              <View
+                style={{
+                  marginTop: 5,
+                  marginLeft: 0,
+                  paddingTop: 5,
+                  flexDirection: "row",
+                  alignItems: "center",
+                }}
+              >
+                <Text style={styles.breakdownHeader}>
+                  {paymentId ? "Edit" : "Add"}
+                </Text>
+              </View>
 
-            <View style={styles.payModalContainer}>
-              <Text style={styles.whoCont}>Who:</Text>
+              <View style={styles.payModalContainer}>
+                <Text style={styles.whoCont}>Who:</Text>
+                <View>
+                  <Controller
+                    control={control}
+                    rules={{
+                      required: true,
+                    }}
+                    render={({ field: { value } }) => (
+                      <TextInput
+                        onPressIn={showUserChooser}
+                        placeholder="select who to pay"
+                        placeholderTextColor="darkgray"
+                        value={
+                          value
+                            ? `${value.firstName} ${value.lastName}`
+                            : userSearch
+                        }
+                        onChangeText={setUserSearch}
+                        style={styles.payInput}
+                      ></TextInput>
+                    )}
+                    name="payee"
+                  />
+                  {errors.payee && <Text>This is required.</Text>}
+                </View>
+              </View>
+
+              <UserChooser
+                search={userSearch}
+                onChangeUser={handleChangeUser}
+                isVisible={isUserChooserVisible}
+              />
+
+              <View style={styles.amountCont}>
+                <Text style={styles.amountLbl}>Amount</Text>
+                <Text style={styles.percentageSign}>$</Text>
+                <View style={{ flexDirection: "row", width: 150 }}>
+                  <Controller
+                    control={control}
+                    rules={{
+                      required: true,
+                      min: 0.01,
+                    }}
+                    render={({ field: { onChange, onBlur, value } }) => (
+                      <CurrencyInput
+                        // style={styles.inputStyle}
+                        value={value / 100}
+                        onChangeValue={(v) => onChange((v ?? 0) * 100)}
+                        onBlur={onBlur}
+                        // placeholder={strings.ticketPriceFree}
+                        separator="."
+                        delimiter=","
+                      />
+                    )}
+                    name="amount"
+                  />
+                </View>
+              </View>
+              {errors.amount && <Text>This is required.</Text>}
+
+              <View style={styles.descriptionCont}>
+                <Text style={styles.descpLbl}>Description</Text>
+              </View>
               <View>
                 <Controller
                   control={control}
                   rules={{
                     required: true,
                   }}
-                  render={({ field: { value } }) => (
+                  render={({ field: { onChange, onBlur, value } }) => (
                     <TextInput
-                      onPressIn={showUserChooser}
-                      placeholder="select who to pay"
-                      placeholderTextColor="darkgray"
-                      value={
-                        value
-                          ? `${value.firstName} ${value.lastName}`
-                          : userSearch
-                      }
-                      onChangeText={setUserSearch}
-                      style={styles.payInput}
+                      value={value}
+                      onBlur={onBlur}
+                      multiline
+                      onChangeText={onChange}
+                      style={styles.payoutDescLbl}
                     ></TextInput>
                   )}
-                  name="payee"
+                  name="description"
                 />
-                {errors.payee && <Text>This is required.</Text>}
+                {errors.description && <Text>This is required.</Text>}
               </View>
-            </View>
 
-            <UserChooser
-              search={userSearch}
-              onChangeUser={handleChangeUser}
-              isVisible={isUserChooserVisible}
-            />
+              {expense?.images && <MultiImageViewer images={expense.images} />}
 
-            <View style={styles.amountCont}>
-              <Text style={styles.amountLbl}>Amount</Text>
-              <Text style={styles.percentageSign}>$</Text>
-              <View style={{ flexDirection: "row", width: 150 }}>
-                <Controller
-                  control={control}
-                  rules={{
-                    required: true,
-                    min: 0.01,
-                  }}
-                  render={({ field: { onChange, onBlur, value } }) => (
-                    <CurrencyInput
-                      // style={styles.inputStyle}
-                      value={value / 100}
-                      onChangeValue={(v) => onChange((v ?? 0) * 100)}
-                      onBlur={onBlur}
-                      // placeholder={strings.ticketPriceFree}
-                      separator="."
-                      delimiter=","
-                    />
-                  )}
-                  name="amount"
-                />
-              </View>
-            </View>
-            {errors.amount && <Text>This is required.</Text>}
-
-            <View style={styles.descriptionCont}>
-              <Text style={styles.descpLbl}>Description</Text>
-            </View>
-            <View>
-              <Controller
-                control={control}
-                rules={{
-                  required: true,
-                }}
-                render={({ field: { onChange, onBlur, value } }) => (
-                  <TextInput
-                    value={value}
-                    onBlur={onBlur}
-                    multiline
-                    onChangeText={onChange}
-                    style={styles.payoutDescLbl}
-                  ></TextInput>
-                )}
-                name="description"
-              />
-              {errors.description && <Text>This is required.</Text>}
-            </View>
-
-            {expense?.images && <MultiImageViewer images={expense.images} />}
-
-            <View style={styles.submitButton}>
-              <TouchableOpacity
-                activeOpacity={0.8}
-                onPress={handleSubmit(onSaveExpense)}
-                disabled={isSaving}
-              >
-                <ImageComponent
-                  source={saveIcon}
-                  style={styles.saveIcon}
-                ></ImageComponent>
-              </TouchableOpacity>
-              {paymentId && (
-                <TouchableOpacity onPress={onDeleteExpense}>
+              <View style={styles.submitButton}>
+                <TouchableOpacity
+                  activeOpacity={0.8}
+                  onPress={handleSubmit(onSaveExpense)}
+                  disabled={isSaving}
+                >
                   <ImageComponent
-                    source={redDeleteIcon}
-                    style={styles.deleteIcon}
+                    source={saveIcon}
+                    style={styles.saveIcon}
                   ></ImageComponent>
                 </TouchableOpacity>
-              )}
+                {paymentId && (
+                  <TouchableOpacity onPress={onDeleteExpense}>
+                    <ImageComponent
+                      source={redDeleteIcon}
+                      style={styles.deleteIcon}
+                    ></ImageComponent>
+                  </TouchableOpacity>
+                )}
+              </View>
             </View>
-          </View>
-        </ActionsheetContent>
+          </ActionsheetContent>
+        </SafeAreaView>
       </KeyboardAvoidingView>
     </Actionsheet>
   );
