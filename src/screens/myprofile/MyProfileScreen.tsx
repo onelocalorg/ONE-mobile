@@ -197,19 +197,11 @@ export const MyProfileScreen = () => {
                   <HStack className="items-center">
                     <Text className="font-semibold pr-1">Payouts enabled:</Text>
                     {myProfile?.stripe?.payouts_enabled ? (
-                      <>
-                        <Icon
-                          as={CheckCircleIcon}
-                          className="color-green-500"
-                        />
-                        <Text size="xs">
-                          Payouts sent to your bank account automatically.
-                        </Text>
-                      </>
+                      <Icon as={CheckCircleIcon} className="color-green-500" />
                     ) : (
                       <>
                         <Icon as={CloseCircleIcon} className="color-red-500" />
-                        {!_.isEmpty(myProfile?.stripe?.requirements.errors) ? (
+                        {!_.isEmpty(myProfile?.stripe?.requirements.errors) && (
                           <Button
                             size="xs"
                             className="ml-2 w-5/12"
@@ -218,14 +210,17 @@ export const MyProfileScreen = () => {
                           >
                             <ButtonText>See errors</ButtonText>
                           </Button>
-                        ) : (
-                          <Text className="color-red-500">
-                            {getDisabledReason()}
-                          </Text>
                         )}
                       </>
                     )}
                   </HStack>
+                  {myProfile?.stripe?.payouts_enabled ? (
+                    <Text size="xs">
+                      Payouts sent to your bank account automatically.
+                    </Text>
+                  ) : (
+                    <Text className="color-red-500">{getDisabledReason()}</Text>
+                  )}
                 </VStack>
               )}
             </View>
