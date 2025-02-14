@@ -29,7 +29,7 @@ export const CreateEventScreen = ({
   >({
     mutationKey: [EventMutations.createEvent],
     onSuccess: () => {
-      queryClient
+      void queryClient
         .invalidateQueries({
           queryKey: eventQueries.lists(),
         })
