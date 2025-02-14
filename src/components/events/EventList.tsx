@@ -71,7 +71,9 @@ export const EventList = ({ placeholder, group }: EventListProps) => {
   return (
     <View>
       <Loader visible={isLoading} showOverlay />
-      {isMember && <AddEventView placeholder={placeholder} group={group} />}
+      {(!group || isMember) && (
+        <AddEventView placeholder={placeholder} group={group} />
+      )}
       <FlatList
         renderItem={renderLocalEvent}
         keyExtractor={(item) => item.id}

@@ -64,7 +64,9 @@ export const GroupList = ({ placeholder, parent }: GroupListProps) => {
   return (
     <View>
       <Loader visible={isLoading} showOverlay />
-      {isEditor && <AddGroupView placeholder={placeholder} parent={parent} />}
+      {(!parent || isEditor) && (
+        <AddGroupView placeholder={placeholder} parent={parent} />
+      )}
       <FlatList
         renderItem={renderLocalGroup}
         keyExtractor={(item) => item.id}
