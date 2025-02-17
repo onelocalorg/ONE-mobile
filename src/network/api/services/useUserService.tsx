@@ -21,6 +21,7 @@ export enum UserMutations {
 
 export enum GetUsersSort {
   Join = "join",
+  FirstName = "first_name",
 }
 
 export enum ChapterFilter {
@@ -128,14 +129,14 @@ export function useUserService() {
     search?: string;
     limit?: number;
     picsOnly?: boolean;
-    chapter?: ChapterFilter;
+    chapterId?: string;
   }
   const getUsers = ({
     sort,
     search,
     limit,
     picsOnly,
-    chapter,
+    chapterId,
   }: GetUsersParams | undefined = {}) => {
     // TODO make this more generic
     const urlParams: string[] = [];
@@ -144,7 +145,7 @@ export function useUserService() {
       urlParams.push(`search=${search.toString()}`);
     if (!_.isNil(limit)) urlParams.push(`limit=${limit.toString()}`);
     if (!_.isNil(picsOnly)) urlParams.push(`pics=${picsOnly.toString()}`);
-    if (!_.isNil(chapter)) urlParams.push(`chapter=${chapter}`);
+    if (!_.isNil(chapterId)) urlParams.push(`chapter=${chapterId}`);
 
     const urlSearchParams = urlParams.join("&");
 

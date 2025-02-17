@@ -4,7 +4,7 @@ import { Avatar, AvatarFallbackText, AvatarImage } from "../ui/avatar";
 import { Box } from "../ui/box";
 
 type OneAvatarProps = {
-  user?: OneUser | UserProfile;
+  user: OneUser | UserProfile;
   className?: string;
   size?: "xs" | "sm" | "md" | "lg" | "xl" | "2xl" | undefined;
 };
@@ -12,15 +12,14 @@ export const OneAvatar = ({ user, className, size = "sm" }: OneAvatarProps) => {
   return (
     <Box className={className}>
       <Avatar size={size}>
-        <AvatarFallbackText>
-          {user?.firstName} {user?.lastName}
+        <AvatarFallbackText className="text-white">
+          {`${user.firstName} ${user.lastName}`}
         </AvatarFallbackText>
         <AvatarImage
           source={
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-            user?.pic
+            user.pic
               ? { uri: isUserProfile(user) ? user.pic?.url : user.pic }
-              : require("~/assets/images/defaultUser.png")
+              : undefined
           }
           alt="Profile image"
         />

@@ -25,5 +25,11 @@ export const MyAvatar = ({ className, size = "sm" }: MyAvatarProps) => {
     }
   }, [myProfile?.homeChapter, chapterFilter, setChapterFilter]);
 
-  return <OneAvatar user={myProfile} className={className} size={size} />;
+  return (
+    <>
+      {myProfile && (
+        <OneAvatar user={myProfile} className={className} size={size} />
+      )}
+    </>
+  );
 };
