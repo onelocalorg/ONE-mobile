@@ -42,7 +42,10 @@ export const HomeScreen = () => {
   return (
     <>
       <View style={styles.MainPostContainer}>
-        <HomeScreenTypeChooser onScreenChosen={setActiveScreen} />
+        <HomeScreenTypeChooser
+          activeScreen={activeScreen}
+          onScreenChosen={setActiveScreen}
+        />
 
         {!isLoading ? (
           activeScreen === "groups" ? (

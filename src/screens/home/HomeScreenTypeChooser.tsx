@@ -8,14 +8,13 @@ import { Icon } from "~/components/ui/icon";
 export type ActiveScreen = "posts" | "groups" | "users";
 
 export const HomeScreenTypeChooser = ({
+  activeScreen,
   onScreenChosen,
 }: {
+  activeScreen: ActiveScreen;
   onScreenChosen: (screen: ActiveScreen) => void;
 }) => {
-  const [activeScreen, setActiveScreen] = React.useState<ActiveScreen>("posts");
-
   const setScreenChosen = (screen: ActiveScreen) => {
-    setActiveScreen(screen);
     onScreenChosen(screen);
   };
 
