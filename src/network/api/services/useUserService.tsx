@@ -1,4 +1,8 @@
-import { queryOptions, useQueryClient } from "@tanstack/react-query";
+import {
+  infiniteQueryOptions,
+  queryOptions,
+  useQueryClient,
+} from "@tanstack/react-query";
 import _ from "lodash/fp";
 import { Block } from "~/types/block";
 import { OneUser } from "~/types/one-user";
@@ -21,7 +25,6 @@ export enum UserMutations {
 
 export enum GetUsersSort {
   Join = "join",
-  FirstName = "first_name",
 }
 
 export enum ChapterFilter {
@@ -39,6 +42,18 @@ export function useUserService() {
       queryOptions({
         queryKey: [...queries.lists(), filters],
         queryFn: () => getUsers(filters),
+      }),
+    infiniteList: (filters?: GetUsersParams) =>
+      infiniteQueryOptions({
+        queryKey: [...queries.lists(), filters],
+        queryFn: ({ pageParam }) =>
+          getUsers({
+            ...filters,
+            from: pageParam !== "" ? pageParam : undefined,
+          }),
+        initialPageParam: "",
+        getNextPageParam: (lastPage) =>
+          lastPage.length > 0 ? lastPage[lastPage.length - 1].id : undefined,
       }),
     details: () => [...queries.all(), "details"],
     detail: (id?: string) =>
@@ -128,6 +143,7 @@ export function useUserService() {
     sort?: GetUsersSort;
     search?: string;
     limit?: number;
+    from?: string;
     picsOnly?: boolean;
     chapterId?: string;
   }
@@ -135,6 +151,7 @@ export function useUserService() {
     sort,
     search,
     limit,
+    from,
     picsOnly,
     chapterId,
   }: GetUsersParams | undefined = {}) => {
@@ -144,6 +161,7 @@ export function useUserService() {
     if (!_.isNil(search) && !_.isEmpty(search))
       urlParams.push(`search=${search.toString()}`);
     if (!_.isNil(limit)) urlParams.push(`limit=${limit.toString()}`);
+    if (!_.isNil(from)) urlParams.push(`from=${from}`);
     if (!_.isNil(picsOnly)) urlParams.push(`pics=${picsOnly.toString()}`);
     if (!_.isNil(chapterId)) urlParams.push(`chapter=${chapterId}`);
 

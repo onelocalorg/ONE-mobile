@@ -58,7 +58,7 @@ export const PostsList = ({ header, group }: PostsListProps) => {
 
   const loadNext = useCallback(() => {
     hasNextPage && !isFetching && fetchNextPage().catch(console.error);
-  }, [fetchNextPage, hasNextPage]);
+  }, [fetchNextPage, hasNextPage, isFetching]);
 
   const onRefresh = useCallback(() => {
     !isRefetching && refetch().catch(console.error);
