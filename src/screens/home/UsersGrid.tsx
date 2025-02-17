@@ -26,6 +26,7 @@ export const UsersGrid = () => {
   const { strings } = useStringsAndLabels();
   const { gotoUserProfile } = useNavigations();
   const chapterFilter = useChapterFilter();
+  const initialNumToRender = 40;
 
   const {
     queries: { infiniteList: listUsers },
@@ -43,6 +44,7 @@ export const UsersGrid = () => {
   } = useInfiniteQuery(
     listUsers({
       sort: GetUsersSort.Join,
+      limit: initialNumToRender,
       chapterId: chapterFilter?.id ?? undefined,
     })
   );
@@ -56,16 +58,7 @@ export const UsersGrid = () => {
   }, [isRefetching, refetch]);
 
   const userRenderer: ListRenderItem<OneUser> = ({ item: user }) => {
-    return (
-      // <Center key={users[0].id}>
-      //   <HStack space="lg" className="m-4">
-      <PressableAvatar user={user} />
-      //     {users.length > 1 && <PressableAvatar user={users[1]} />}
-      //     {users.length > 2 && <PressableAvatar user={users[2]} />}
-      //     {users.length > 3 && <PressableAvatar user={users[3]} />}
-      //   </HStack>
-      // </Center>
-    );
+    return <PressableAvatar user={user} />;
   };
 
   const PressableAvatar = ({ user }: { user: OneUser }) => {
@@ -91,6 +84,7 @@ export const UsersGrid = () => {
           data={userList?.pages.flat() ?? []}
           keyExtractor={(item) => item.id}
           renderItem={userRenderer}
+          initialNumToRender={initialNumToRender}
           onEndReached={loadNext}
           horizontal={false}
           numColumns={4}
