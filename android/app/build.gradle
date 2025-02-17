@@ -85,7 +85,7 @@ android {
         applicationId "one.onelocal.app"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 8432
+        versionCode 8435
         versionName "8.4.3"
         missingDimensionStrategy 'react-native-camera', 'general'
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
