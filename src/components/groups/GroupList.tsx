@@ -7,6 +7,7 @@ import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
 import { GroupCard } from "~/components/groups/GroupCard";
 import { Loader } from "~/components/loader";
 import { useChapterFilter } from "~/navigation/AppContext";
+import { useMyUserId } from "~/navigation/AuthContext";
 import { useGroupService } from "~/network/api/services/useGroupService";
 import { Group } from "~/types/group";
 import { handleApiError } from "~/utils/common";
@@ -26,6 +27,13 @@ export const GroupList = ({ placeholder, parent }: GroupListProps) => {
   makeDate.setMonth(makeDate.getMonth() + 1);
   const [isLoading, setLoading] = useState(false);
   const chapterFilter = useChapterFilter();
+  const myId = useMyUserId();
+
+  const isAdmin = parent && parent.admins?.find((a) => a.id === myId);
+  const isEditor =
+    isAdmin || (parent && parent.editors?.find((a) => a.id === myId));
+  const isMember =
+    isEditor || (parent && parent.members?.find((a) => a.id === myId));
 
   const {
     queries: { list: listGroups },
@@ -56,7 +64,9 @@ export const GroupList = ({ placeholder, parent }: GroupListProps) => {
   return (
     <View>
       <Loader visible={isLoading} showOverlay />
-      <AddGroupView placeholder={placeholder} parent={parent} />
+      {(!parent || isEditor) && (
+        <AddGroupView placeholder={placeholder} parent={parent} />
+      )}
       <FlatList
         renderItem={renderLocalGroup}
         keyExtractor={(item) => item.id}

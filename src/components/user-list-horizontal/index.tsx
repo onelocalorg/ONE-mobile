@@ -34,7 +34,7 @@ export const UserListHorizontal = ({
         {users.map((user) => (
           <Center key={user.id}>
             <Pressable onPress={gotoUserProfile(user.id)}>
-              <VStack className="mx-4">
+              <VStack className="mx-4 items-center">
                 <View style={styles.detailsSubCont}>
                   <OneAvatar user={user} size="md" />
                   {onRemoveUser && (

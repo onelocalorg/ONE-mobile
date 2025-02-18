@@ -1,21 +1,28 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useMutation, useQuery } from "@tanstack/react-query";
-import _ from "lodash";
+import _ from "lodash/fp";
 import React, { useState } from "react";
-import { Alert, ScrollView, Text, View } from "react-native";
+import { Alert, ScrollView, View } from "react-native";
 import { useAppTheme } from "~/app-hooks/use-app-theme";
 import { useStringsAndLabels } from "~/app-hooks/use-strings-and-labels";
 import { useNavigations } from "~/app-hooks/useNavigations";
-import { dummy } from "~/assets/images";
 import { ChapterListHorizontal } from "~/components/chapter-list-horizontal";
 import { EventList } from "~/components/events/EventList";
 import { GroupList } from "~/components/groups/GroupList";
-import { ImageComponent } from "~/components/image-component";
 import { Loader } from "~/components/loader";
 import { TabComponent } from "~/components/tab-component";
+import {
+  Avatar,
+  AvatarFallbackText,
+  AvatarImage,
+} from "~/components/ui/avatar";
 import { Box } from "~/components/ui/box";
 import { Button, ButtonText } from "~/components/ui/button";
 import { Grid, GridItem } from "~/components/ui/grid";
+import { Heading } from "~/components/ui/heading";
+import { HStack } from "~/components/ui/hstack";
+import { Text } from "~/components/ui/text";
+import { VStack } from "~/components/ui/vstack";
 import { useMyUserId } from "~/navigation/AuthContext";
 import { RootStackScreenProps, Screens } from "~/navigation/types";
 import {
@@ -55,9 +62,11 @@ export const GroupDetailScreen = ({
     mutationKey: [GroupMutations.deleteGroup],
   });
 
-  const isEditor = group && group.editors?.find((a) => a.id === myId);
   const isAdmin = group && group.admins?.find((a) => a.id === myId);
-  const isMember = group && group.members?.find((a) => a.id === myId);
+  const isEditor =
+    isAdmin || (group && group.editors?.find((a) => a.id === myId));
+  const isMember =
+    isEditor || (group && group.members?.find((a) => a.id === myId));
 
   const handleJoinGroup = () => {
     joinGroup(groupId);
@@ -96,21 +105,22 @@ export const GroupDetailScreen = ({
         <Box>
           {group ? (
             <>
-              <View style={styles.rowOnly}>
-                <ImageComponent
-                  isUrl={!!_.head(group.images)?.url}
-                  resizeMode="cover"
-                  uri={_.head(group.images)?.url}
-                  source={dummy}
-                  style={styles.profile}
-                />
-                <View style={styles.fullName}>
-                  <View style={styles.rowOnly}>
-                    <Text style={styles.name}>{group.name} </Text>
-                  </View>
-                  <Text style={styles.des}>{group.summary}</Text>
-                </View>
-              </View>
+              <HStack space="md" className="flex m-3">
+                <Avatar size="2xl">
+                  <AvatarFallbackText>{group.name}</AvatarFallbackText>
+                  <AvatarImage
+                    source={{
+                      uri: _.head(group.images)?.url,
+                    }}
+                    alt="Profile image"
+                  />
+                </Avatar>
+                {/* FIXME Replace this right margin hack with proper sizing */}
+                <VStack className="pr-8 mr-24">
+                  <Heading size="lg">{group.name}</Heading>
+                  <Text isTruncated={true}>{group.summary}</Text>
+                </VStack>
+              </HStack>
 
               <Grid
                 _extra={{
@@ -177,10 +187,12 @@ export const GroupDetailScreen = ({
                     <PostsList
                       group={group}
                       header={
-                        <AddPostView
-                          placeholder={strings.createPost}
-                          group={group}
-                        />
+                        isMember ? (
+                          <AddPostView
+                            placeholder={strings.createPost}
+                            group={group}
+                          />
+                        ) : undefined
                       }
                     />
                   )}

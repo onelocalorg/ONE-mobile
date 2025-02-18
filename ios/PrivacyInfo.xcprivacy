@@ -32,14 +32,12 @@
 	<key>NSPrivacyCollectedDataTypes</key>
 	<array/>
 	<key>NSPrivacyTracking</key>
-	<false/>		
-			<key>NSPrivacyAccessedAPIType</key>
-			<string>NSPrivacyAccessedAPICategorySystemBootTime</string>
-			<key>NSPrivacyAccessedAPITypeReasons</key>
-			<array>
-				<string>35F9.1</string>
-			</array>
-		</dict>
+	<false/>
+	<key>NSPrivacyAccessedAPIType</key>
+	<string>NSPrivacyAccessedAPICategorySystemBootTime</string>
+	<key>NSPrivacyAccessedAPITypeReasons</key>
+	<array>
+		<string>35F9.1</string>
 	</array>
 	<key>NSPrivacyCollectedDataTypes</key>
 	<array>
@@ -48,7 +46,5 @@
 		<string>NSPrivacyCollectedDataTypePhotosorVideos</string>
 		<string>NSPrivacyCollectedDataTypeOtherUserContent</string>
 	</array>
-	<key>NSPrivacyTracking</key>
-	<false/>
 </dict>
 </plist>

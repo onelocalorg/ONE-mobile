@@ -11,15 +11,16 @@ import {
 } from "~/network/api/services/useUserService";
 import { OneUser } from "~/types/one-user";
 import { AddPostView } from "./AddPostView";
-import { HomeScreenTypeChooser } from "./HomeScreenTypeChooser";
+import { ActiveScreen, HomeScreenTypeChooser } from "./HomeScreenTypeChooser";
 import { PostsList } from "./PostsList";
 import { RecentUsers } from "./RecentUsers";
 import { createStyleSheet } from "./style";
+import { UsersGrid } from "./UsersGrid";
 
 export const HomeScreen = () => {
   const { theme } = useAppTheme();
   const styles = createStyleSheet(theme);
-  const [isGroupsChosen, setGroupsChosen] = React.useState(false);
+  const [activeScreen, setActiveScreen] = React.useState<ActiveScreen>("posts");
 
   const {
     queries: { list: listUsers },
@@ -30,7 +31,7 @@ export const HomeScreen = () => {
       sort: GetUsersSort.Join,
       limit: 50,
       picsOnly: true,
-      chapter: ChapterFilter.Same,
+      chapterId: ChapterFilter.Same,
     })
   );
 
@@ -41,12 +42,15 @@ export const HomeScreen = () => {
   return (
     <>
       <View style={styles.MainPostContainer}>
-        <HomeScreenTypeChooser onGroupsChosen={setGroupsChosen} />
+        <HomeScreenTypeChooser
+          activeScreen={activeScreen}
+          onScreenChosen={setActiveScreen}
+        />
 
         {!isLoading ? (
-          isGroupsChosen ? (
+          activeScreen === "groups" ? (
             <GroupList />
-          ) : (
+          ) : activeScreen == "posts" ? (
             <PostsList
               header={
                 <>
@@ -57,6 +61,8 @@ export const HomeScreen = () => {
                 </>
               }
             />
+          ) : (
+            <UsersGrid />
           )
         ) : null}
       </View>

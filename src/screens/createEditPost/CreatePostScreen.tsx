@@ -25,7 +25,7 @@ export const CreatePostScreen = ({
   const { mutate: createPost } = useMutation<Post, Error, PostData>({
     mutationKey: [PostMutations.createPost],
     onSuccess: () => {
-      queryClient
+      void queryClient
         .invalidateQueries({
           queryKey: postQueries.lists(),
         })

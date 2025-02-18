@@ -1,4 +1,4 @@
-import { ChapterData } from "./chapter";
+import { Chapter } from "./chapter";
 import { ImageKey, ImageUrl } from "./image-info";
 import { OneUser } from "./one-user";
 
@@ -6,6 +6,7 @@ export type SubscriptionType = "free" | "host";
 export type BillingInterval = "none" | "monthly" | "yearly";
 
 export interface Me extends UserProfile {
+  email: string;
   stripe?: {
     id: string;
     payouts_enabled: boolean;
@@ -42,7 +43,7 @@ export interface UserProfileUpdateData {
   pic?: ImageKey;
   about?: string;
   skills?: string[];
-  homeChapter?: ChapterData;
+  homeChapter?: Chapter;
 }
 
 export const isUserProfile = (

@@ -70,6 +70,7 @@ export const stringsAndLabels = {
   noEventsFound: "No Events Found",
   noPostFound: "No Posts Found",
   noGroupsFound: "No Groups Found",
+  noUsersFound: "No Users Found",
   producer: "Host",
   selectStartTime: "Select Start Time",
   selectEndTime: "Select End Time",

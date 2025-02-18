@@ -124,8 +124,7 @@ export function useGroupService() {
 
   const leaveGroup = (groupId: string) => doPost(`/v3/groups/${groupId}/leave`);
 
-  const deleteGroup = (groupId: string) =>
-    doDelete(`/v3/groups/${groupId}/leave`);
+  const deleteGroup = (groupId: string) => doDelete(`/v3/groups/${groupId}`);
 
   return {
     queries,

@@ -24,7 +24,6 @@ import {
 } from "~/network/api/services/useSubscriptionService";
 import { StripePaymentInfo } from "~/types/stripe-payment-info";
 import { StripeCheckout } from "../event-detail/StripeCheckout";
-import { createStyleSheet } from "./style";
 
 interface SubscriptionPlansProps {
   onClose: () => void;
@@ -32,7 +31,6 @@ interface SubscriptionPlansProps {
 export const SubscriptionPlans = ({ onClose }: SubscriptionPlansProps) => {
   const { theme } = useAppTheme();
   const { strings } = useStringsAndLabels();
-  const styles = createStyleSheet(theme);
   const [isMonthlySelected, setMonthlySelected] = useState(false);
   const [isYearlySelected, setYearlySelected] = useState(false);
   const [isCheckoutVisible, setCheckoutVisible] = useState(false);
@@ -90,6 +88,8 @@ export const SubscriptionPlans = ({ onClose }: SubscriptionPlansProps) => {
   };
 
   const createSubscription = () => {
+    // TODO Use isSuccess field rather than callback function so that
+    // invalidate can be done in hook
     void subscribe(selectedPlan!.id, {
       onSuccess(data) {
         setPaymentInfo(data);
@@ -103,7 +103,10 @@ export const SubscriptionPlans = ({ onClose }: SubscriptionPlansProps) => {
   const handleCheckoutComplete = () => {
     closeCheckout();
     onClose();
-    void queryClient.invalidateQueries({ queryKey: queries.subscriptions });
+
+    void queryClient.invalidateQueries({
+      queryKey: queries.subscriptions().queryKey,
+    });
   };
 
   const isPurchasable = () =>

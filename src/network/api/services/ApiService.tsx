@@ -153,9 +153,9 @@ export function ApiService({ children }: ApiServiceProviderProps) {
       throw new ApiError(json.code, json.message, json.data);
     }
 
-    LOG.debug("<=", hideFields(json.data));
-
     let resource = convertDateTimes(json.data);
+
+    LOG.debug("<=", hideFields(resource));
 
     resource = transform ? transform(resource) : resource;
 
@@ -164,7 +164,9 @@ export function ApiService({ children }: ApiServiceProviderProps) {
 
   function convertDateTimes<T>(from: T): T {
     function recurse(v: unknown): unknown {
-      if (_.isNumber(v) || _.isString(v) || _.isBoolean(v)) {
+      if (_.isNil(v)) {
+        return undefined;
+      } else if (_.isNumber(v) || _.isString(v) || _.isBoolean(v)) {
         return v;
       } else if (_.isArray(v)) {
         return (v as Array<unknown>).map(recurse);
@@ -172,7 +174,9 @@ export function ApiService({ children }: ApiServiceProviderProps) {
         // it is an object
         // eslint-disable-next-line @typescript-eslint/no-unsafe-call
         return mapValues((v: unknown, k: string) => {
-          if (_.isArray(v)) {
+          if (_.isNil(v)) {
+            return undefined;
+          } else if (_.isArray(v)) {
             return (v as Array<unknown>).map(recurse);
           } else if (_.isNumber(v) || _.isBoolean(v)) {
             return v;

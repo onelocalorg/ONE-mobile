@@ -1,7 +1,7 @@
 module.exports = function (api) {
-  api.cache(false);
+  api.cache(true);
   return {
-    presets: ["module:metro-react-native-babel-preset", "nativewind/babel"],
+    presets: ["module:@react-native/babel-preset", "nativewind/babel"],
     plugins: [
       "jest-hoist",
       [
@@ -11,7 +11,7 @@ module.exports = function (api) {
           rootPathSuffix: "src",
         },
       ],
-      ["module:react-native-dotenv"],
+      "module:react-native-dotenv",
       "react-native-reanimated/plugin", // Must be last
     ],
   };

@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import React from "react";
 import { KeyboardAvoidingView } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { Loader } from "~/components/loader";
 import {
   Actionsheet,
@@ -33,7 +34,7 @@ export const AddEditPayoutScreen = ({
   };
 
   return (
-    <Actionsheet defaultIsOpen={true} onClose={handleOnClose} snapPoints={[50]}>
+    <Actionsheet defaultIsOpen={true} onClose={handleOnClose} snapPoints={[60]}>
       <KeyboardAvoidingView
         behavior="position"
         style={{
@@ -42,20 +43,22 @@ export const AddEditPayoutScreen = ({
           justifyContent: "flex-end",
         }}
       >
-        <ActionsheetBackdrop />
-        <ActionsheetContent>
-          <ActionsheetDragIndicatorWrapper>
-            <ActionsheetDragIndicator />
-          </ActionsheetDragIndicatorWrapper>
-          {(!paymentId || payout) && (
-            <AddEditPayout
-              eventId={eventId}
-              payout={payout}
-              onClose={navigation.goBack}
-            />
-          )}
-          <Loader showOverlay={true} visible={isPending && !!paymentId} />
-        </ActionsheetContent>
+        <SafeAreaView>
+          <ActionsheetBackdrop />
+          <ActionsheetContent>
+            <ActionsheetDragIndicatorWrapper>
+              <ActionsheetDragIndicator />
+            </ActionsheetDragIndicatorWrapper>
+            {(!paymentId || payout) && (
+              <AddEditPayout
+                eventId={eventId}
+                payout={payout}
+                onClose={navigation.goBack}
+              />
+            )}
+            <Loader showOverlay={true} visible={isPending && !!paymentId} />
+          </ActionsheetContent>
+        </SafeAreaView>
       </KeyboardAvoidingView>
     </Actionsheet>
   );

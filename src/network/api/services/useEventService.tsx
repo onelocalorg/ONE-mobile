@@ -245,7 +245,7 @@ export function useEventService() {
     doPost(`/v3/events`, eventData);
 
   const updateEvent = (data: LocalEventUpdateData) =>
-    doPatch<LocalEvent>(`/v3/events/${data.id}`, _.omit(["id", "group"], data));
+    doPatch<LocalEvent>(`/v3/events/${data.id}`, _.omit(["id"], data));
 
   const cancelEvent = (id: string) =>
     doPost<LocalEvent>(`/v3/events/${id}/cancel`);
