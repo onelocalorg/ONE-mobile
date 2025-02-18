@@ -4,6 +4,7 @@ import "react-native-get-random-values";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import React from "react";
 import { AppRegistry } from "react-native";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { PaperProvider } from "react-native-paper";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { Provider } from "react-redux";
@@ -19,9 +20,11 @@ export default function Main() {
     <SafeAreaProvider>
       <QueryClientProvider client={queryClient}>
         <Provider store={store}>
-          <PaperProvider>
-            <App />
-          </PaperProvider>
+          <GestureHandlerRootView>
+            <PaperProvider>
+              <App />
+            </PaperProvider>
+          </GestureHandlerRootView>
         </Provider>
       </QueryClientProvider>
     </SafeAreaProvider>
