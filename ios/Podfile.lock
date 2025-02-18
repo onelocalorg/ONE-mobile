@@ -1000,12 +1000,12 @@ PODS:
     - React-Core
   - react-native-safe-area-context (4.14.1):
     - React-Core
-  - react-native-simple-toast (3.3.1):
+  - react-native-simple-toast (3.3.2):
     - React-Core
     - Toast (~> 4)
   - react-native-splash-screen (3.3.0):
     - React-Core
-  - react-native-webview (13.12.5):
+  - react-native-webview (13.13.2):
     - glog
     - RCT-Folly (= 2022.05.16.00)
     - React-Core
@@ -1180,7 +1180,7 @@ PODS:
     - React-Core
   - RNCAsyncStorage (1.24.0):
     - React-Core
-  - RNCClipboard (1.15.0):
+  - RNCClipboard (1.16.1):
     - React-Core
   - RNDateTimePicker (7.7.0):
     - React-Core
@@ -1198,7 +1198,7 @@ PODS:
     - FirebaseCoreExtension
     - React-Core
     - RNFBApp
-  - RNGestureHandler (2.21.2):
+  - RNGestureHandler (2.23.1):
     - glog
     - RCT-Folly (= 2022.05.16.00)
     - React-Core
@@ -1214,13 +1214,13 @@ PODS:
     - React-Core
     - React-RCTImage
     - TOCropViewController
-  - rnmapbox-maps (10.1.33):
+  - rnmapbox-maps (10.1.35):
     - MapboxMaps (= 11.9.0)
     - React
     - React-Core
-    - rnmapbox-maps/DynamicLibrary (= 10.1.33)
+    - rnmapbox-maps/DynamicLibrary (= 10.1.35)
     - Turf
-  - rnmapbox-maps/DynamicLibrary (10.1.33):
+  - rnmapbox-maps/DynamicLibrary (10.1.35):
     - MapboxMaps (= 11.9.0)
     - React
     - React-Core
@@ -1266,7 +1266,7 @@ PODS:
     - React-Core
     - React-hermes
     - Sentry/HybridSDK (= 8.41.0)
-  - RNSVG (15.2.0):
+  - RNSVG (15.11.1):
     - React-Core
   - RNVectorIcons (10.2.0):
     - glog
@@ -1648,9 +1648,9 @@ SPEC CHECKSUMS:
   react-native-image-picker: 89d0856dd413f2071ad42e5541a16477260b3f19
   react-native-netinfo: 26560022f28c06d8ef00a9ff1e03beefbbb60c2d
   react-native-safe-area-context: 758e894ca5a9bd1868d2a9cfbca7326a2b6bf9dc
-  react-native-simple-toast: f6316baf3870934e6e92cf48dbc9e330a5c8eb82
+  react-native-simple-toast: 4c9cc976cb92b6e5fb555e7c57fce38b90a56d07
   react-native-splash-screen: 95994222cc95c236bd3cdc59fe45ed5f27969594
-  react-native-webview: e339e6344f440e2f5c88af03f9d4cd186f7286bf
+  react-native-webview: d2a724a6307dc15ee8619c5b5448f0e7c5bc36fa
   React-nativeconfig: 1c018931dcd44532a5df80426c4387d71f66c737
   React-NativeModulesApple: 21e99badc890e1551808b0567ce225123e641785
   React-perflogger: 68ec84e2f858a3e35009aef8866b55893e5e0a1f
@@ -1673,22 +1673,22 @@ SPEC CHECKSUMS:
   ReactCommon: ee2d51628f84e5cb2695194df1cd5340474d3e9e
   RNAppleAuthentication: 8d313d93fe2238d6b7ff0a39c67ebcf298d96653
   RNCAsyncStorage: b6410dead2732b5c72a7fdb1ecb5651bbcf4674b
-  RNCClipboard: dbcf25b8f666b4685c02eeb65be981d30198e505
+  RNCClipboard: ee059e6006b137e369caed5eb852b4aad9f5d886
   RNDateTimePicker: 590f2000e4272050b98689cee6c8abc66c25bb22
   RNDeviceInfo: 98bb51ba1519cd3f19f14e7236b5bb1c312c780f
   RNFastImage: 462a183c4b0b6b26fdfd639e1ed6ba37536c3b87
   RNFBApp: 0e66b9f844efdf2ac3fa2b30e64c9db41a263b3d
   RNFBMessaging: 70b12c9f22c7c9d5011ac9b12ac2bafbfb081267
-  RNGestureHandler: 203eb9113b9438f47e0c1f72d5ed8681742016a4
+  RNGestureHandler: e12bf75d825377610804721eb6eb693b28ec1878
   RNGoogleSignin: b8f09e3ec56e09497e1e53b0ff66d5a45916c6b1
   RNImageCropPicker: 2c53b596a1af85eacba1048e996f916933021bbb
-  rnmapbox-maps: a4192f488b6fad996fa9d94883a6cf45c96eaf46
+  rnmapbox-maps: 5ab0733810c8ed0d949df063443de0f8a8406f3e
   RNNotifee: 5e3b271e8ea7456a36eec994085543c9adca9168
   RNPermissions: 4f7b81b0d457c8ec4e892cc36ef2376734a4b22c
   RNReanimated: 088a1bf9c0b23af527cf39d2f86ae2efa63229d1
   RNScreens: 1174f55dd2f72abe45a4e48bf20e552feb051600
   RNSentry: eca960919ced41a2a1357dc1bdd368ae1c8bf0f1
-  RNSVG: 0e7deccab0678200815104223aadd5ca734dd41d
+  RNSVG: f70944ff686a4fa2771cff9e81c9856a81738009
   RNVectorIcons: 692434715e99ea48fa4d5dcf28758a604b097d7e
   SDWebImage: a7f831e1a65eb5e285e3fb046a23fcfbf08e696d
   SDWebImageWebPCoder: 908b83b6adda48effe7667cd2b7f78c897e5111d

@@ -22,7 +22,7 @@ import {
 } from "~/network/api/services/useUserService";
 import { OneUser } from "~/types/one-user";
 
-export const UsersGrid = () => {
+export const PeopleGrid = () => {
   const { strings } = useStringsAndLabels();
   const { gotoUserProfile } = useNavigations();
   const chapterFilter = useChapterFilter();

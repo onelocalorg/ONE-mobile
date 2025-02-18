@@ -12,10 +12,10 @@ import {
 import { OneUser } from "~/types/one-user";
 import { AddPostView } from "./AddPostView";
 import { ActiveScreen, HomeScreenTypeChooser } from "./HomeScreenTypeChooser";
+import { PeopleGrid } from "./PeopleGrid";
 import { PostsList } from "./PostsList";
 import { RecentUsers } from "./RecentUsers";
 import { createStyleSheet } from "./style";
-import { UsersGrid } from "./UsersGrid";
 
 export const HomeScreen = () => {
   const { theme } = useAppTheme();
@@ -62,7 +62,7 @@ export const HomeScreen = () => {
               }
             />
           ) : (
-            <UsersGrid />
+            <PeopleGrid />
           )
         ) : null}
       </View>

@@ -5,7 +5,7 @@ import { Center } from "~/components/ui/center";
 import { HStack } from "~/components/ui/hstack";
 import { Icon } from "~/components/ui/icon";
 
-export type ActiveScreen = "posts" | "groups" | "users";
+export type ActiveScreen = "posts" | "groups" | "people";
 
 export const HomeScreenTypeChooser = ({
   activeScreen,
@@ -38,11 +38,13 @@ export const HomeScreenTypeChooser = ({
           <ButtonText>Groups</ButtonText>
         </Button>
         <Button
-          className={activeScreen === "users" ? "bg-slate-400" : "bg-slate-700"}
-          onPress={() => setScreenChosen("users")}
+          className={
+            activeScreen === "people" ? "bg-slate-400" : "bg-slate-700"
+          }
+          onPress={() => setScreenChosen("people")}
         >
           <Icon as={User} size="md" color="white" />
-          <ButtonText>Users</ButtonText>
+          <ButtonText>People</ButtonText>
         </Button>
       </HStack>
     </Center>
