@@ -1,6 +1,11 @@
 #import "AppDelegate.h"
-#import <Firebase.h>
+
 #import <React/RCTBundleURLProvider.h>
+
+// For Firebase
+#import <Firebase.h>
+
+// For Deep Linking
 #import <React/RCTLinkingManager.h>
 
 @implementation AppDelegate
@@ -20,10 +25,10 @@
 
 - (NSURL *)sourceURLForBridge:(RCTBridge *)bridge
 {
-  return [self getBundleURL];
+  return [self bundleURL];
 }
 
-- (NSURL *)getBundleURL
+- (NSURL *)bundleURL
 {
 #if DEBUG
   return [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"index"];

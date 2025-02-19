@@ -164,7 +164,7 @@ export const LoginScreen = ({
   const loadInBrowser = () => {
     const url = "https://onelocal.one/privacypolicy";
     if (url) {
-      Linking.openURL(url);
+      void Linking.openURL(url);
     }
   };
 

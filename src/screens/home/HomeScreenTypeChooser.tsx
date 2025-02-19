@@ -19,7 +19,7 @@ export const HomeScreenTypeChooser = ({
   };
 
   return (
-    <Center>
+    <Center className="flex">
       <HStack>
         <Button
           className={activeScreen === "posts" ? "bg-slate-400" : "bg-slate-700"}

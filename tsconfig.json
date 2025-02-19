@@ -21,6 +21,9 @@
       "~/*": [
         "src/*"
       ],
+      "@/*": [
+        "./src/*"
+      ], // Add relative path      
       "tailwind.config": [
         "./tailwind.config.js"
       ]

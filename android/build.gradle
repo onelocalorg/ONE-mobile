@@ -1,11 +1,11 @@
 buildscript {
     ext {
-        buildToolsVersion = "34.0.0"
-        minSdkVersion = 23
-        compileSdkVersion = 34
+        buildToolsVersion = "35.0.0"
+        minSdkVersion = 24
+        compileSdkVersion = 35
         targetSdkVersion = 34
         ndkVersion = "26.1.10909125"
-        kotlinVersion = "1.9.22"
+        kotlinVersion = "1.9.25"
         RNMapboxMapsVersion = '11.0.0'
     }
     repositories {
@@ -13,7 +13,9 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath("com.android.tools.build:gradle")
+        // Must include the appropriate version https://developer.android.com/build/releases/gradle-plugin#updating-gradle
+        // and the mvn repository https://mvnrepository.com/artifact/com.android.tools.build/gradle
+        classpath("com.android.tools.build:gradle:8.8.1")
         classpath("com.facebook.react:react-native-gradle-plugin")
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin")
         classpath("com.google.gms:google-services:4.4.2")

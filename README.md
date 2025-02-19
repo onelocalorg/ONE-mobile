@@ -74,11 +74,9 @@ now for Android.
 
 # Troubleshooting
 
-Build hanging at the very beginning? Run `npx react-native clean`, also
-creating a new Simulator. These are the two things that seemed to help me.
-
-
-
+Build hanging at the very beginning? Run `npm run clean`. Also I have found
+that I needed to clean the build directory and do a build in XCode when this happens
+(usually when changing branches).
 
 ## License
 
