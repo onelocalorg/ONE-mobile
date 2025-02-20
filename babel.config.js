@@ -11,6 +11,7 @@ module.exports = function (api) {
           rootPathSuffix: "src",
         },
       ],
+      ["@babel/plugin-transform-private-methods", { loose: true }],
       ["module:react-native-dotenv"],
       "react-native-reanimated/plugin", // Must be last
     ],
