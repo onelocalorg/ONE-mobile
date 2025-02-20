@@ -13,7 +13,11 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath("com.android.tools.build:gradle")
+        // Set the dependency because otherwise build complains that it should compile to 35
+        // for some reason
+        // When setting, look at gradle-wrapper.properties for the version of Gradle and then
+        // ensure it aligns with https://developer.android.com/build/releases/gradle-plugin
+        classpath("com.android.tools.build:gradle:8.6.1")
         classpath("com.facebook.react:react-native-gradle-plugin")
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin")
         classpath("com.google.gms:google-services:4.4.2")

@@ -77,8 +77,25 @@ now for Android.
 Build hanging at the very beginning? Run `npx react-native clean`, also
 creating a new Simulator. These are the two things that seemed to help me.
 
+## Dependencies
 
+- "react-native-gesture-handler": "<2.21.0"
 
+Because 2.21.0 requires RN 0.74.0+
+https://docs.swmansion.com/react-native-gesture-handler/docs/fundamentals/installation/
+
+- "@tanstack/react-query": "<5.38.0"
+
+In 5.39, a dependency was made for React 19, and 5.38 doesn't work for some reason.
+
+This demonstrates that @rnx-kit/align-deps can't be trusted:
+
+```
+% npx @rnx-kit/align-deps --requirements react-native@0.73
+error package.json: Found 1 violation(s) outside of capabilities.
+        In dependencies:
+          - react-native-gesture-handler "<2.21.0" should be "^2.14.0"
+```
 
 ## License
 
