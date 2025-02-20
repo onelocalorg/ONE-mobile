@@ -78,6 +78,8 @@ Build hanging at the very beginning? Run `npm run clean`. Also I have found
 that I needed to clean the build directory and do a build in XCode when this happens
 (usually when changing branches).
 
+Make sure to remove `package-lock.json` when updating dependencies!
+
 ## License
 
 This project is licensed under the **MIT License with a Commons Clause**.
