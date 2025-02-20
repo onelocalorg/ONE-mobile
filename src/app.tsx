@@ -5,7 +5,6 @@ import React, { useEffect, useState } from "react";
 import { StatusBar } from "react-native";
 import { queryConfig } from "~/network/utils/query-config";
 import { InternetConnectionHandle } from "~/utils/internet-connection-handle";
-import "../global.css";
 import { Loader } from "./components/loader";
 import Authentication from "./navigation/Authentication";
 

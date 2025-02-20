@@ -13,7 +13,10 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath("com.android.tools.build:gradle")
+        // To determine the correct version, look at gradle-wrapper.properties for the gradle version.
+        // Then find the appropriate plugin version https://developer.android.com/build/releases/gradle-plugin#updating-gradle
+        // and then use the latest in the mvn repository https://mvnrepository.com/artifact/com.android.tools.build/gradle
+        classpath("com.android.tools.build:gradle:8.4.2")
         classpath("com.facebook.react:react-native-gradle-plugin")
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin")
         classpath("com.google.gms:google-services:4.4.2")

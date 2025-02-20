@@ -4,7 +4,6 @@
 
 import React from "react";
 import "react-native";
-import "../global.css";
 import { App } from "../src/app";
 
 // Note: import explicitly to use the types shiped with jest.
