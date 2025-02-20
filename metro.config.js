@@ -1,19 +1,18 @@
 const { withNativeWind } = require("nativewind/metro");
-const { getDefaultConfig, mergeConfig } = require("@react-native/metro-config");
-
 const { withSentryConfig } = require("@sentry/react-native/metro");
+const { getDefaultConfig, mergeConfig } = require("@react-native/metro-config");
 
 /**
  * Metro configuration
- * https://reactnative.dev/docs/metro
+ * https://metrobundler.dev/docs/configuration
  *
  * @type {import('metro-config').MetroConfig}
  */
-const config = mergeConfig(getDefaultConfig(__dirname), {
-  cacheVersion: process.env.NODE_ENV,
-});
+const config = {};
 
-module.exports = withSentryConfig(withNativeWind(config), {
-  input: "./global.css",
-  inlineRem: 16,
-});
+module.exports = withSentryConfig(
+  withNativeWind(mergeConfig(getDefaultConfig(__dirname), config), {
+    input: "./global.css",
+    inlineRem: 16,
+  })
+);
