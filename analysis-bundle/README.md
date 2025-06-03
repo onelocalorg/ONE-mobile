@@ -1,0 +1,103 @@
+# One-Local Repository Analysis
+
+## 1. Codebase Metrics
+```
+{"header" : {
+  "cloc_url"           : "github.com/AlDanial/cloc",
+  "cloc_version"       : "2.04",
+  "elapsed_seconds"    : 1.49341917037964,
+  "n_files"            : 372,
+  "n_lines"            : 70888,
+  "files_per_second"   : 249.09282496048,
+  "lines_per_second"   : 47466.9144510712},
+"TypeScript" :{
+  "nFiles": 288,
+  "blank": 2306,
+  "comment": 1864,
+  "code": 42365},
+"JSON" :{
+  "nFiles": 9,
+  "blank": 0,
+  "comment": 0,
+  "code": 18912},
+"Markdown" :{
+  "nFiles": 23,
+  "blank": 768,
+  "comment": 0,
+  "code": 2617},
+"XML" :{
+  "nFiles": 25,
+  "blank": 16,
+  "comment": 26,
+  "code": 671},
+"JavaScript" :{
+  "nFiles": 8,
+  "blank": 10,
+  "comment": 11,
+  "code": 334},
+"YAML" :{
+  "nFiles": 2,
+  "blank": 16,
+  "comment": 5,
+  "code": 120},
+"Gradle" :{
+  "nFiles": 3,
+  "blank": 17,
+  "comment": 67,
+  "code": 111},
+"Bourne Shell" :{
+  "nFiles": 1,
+  "blank": 28,
+  "comment": 116,
+  "code": 105},
+"DOS Batch" :{
+  "nFiles": 1,
+  "blank": 21,
+  "comment": 2,
+  "code": 69},
+"Objective-C" :{
+  "nFiles": 2,
+  "blank": 15,
+  "comment": 0,
+  "code": 61},
+"Kotlin" :{
+  "nFiles": 2,
+  "blank": 12,
+  "comment": 11,
+  "code": 44},
+"Objective-C++" :{
+  "nFiles": 1,
+  "blank": 8,
+  "comment": 3,
+  "code": 31},
+"Properties" :{
+  "nFiles": 2,
+  "blank": 8,
+  "comment": 27,
+  "code": 13},
+"ProGuard" :{
+  "nFiles": 1,
+  "blank": 15,
+  "comment": 35,
+  "code": 12},
+"SVG" :{
+  "nFiles": 2,
+  "blank": 0,
+  "comment": 0,
+  "code": 7},
+"C/C++ Header" :{
+  "nFiles": 1,
+  "blank": 2,
+  "comment": 0,
+  "code": 4},
+"CSS" :{
+  "nFiles": 1,
+  "blank": 0,
+  "comment": 0,
+  "code": 3},
+"SUM": {
+  "blank": 3242,
+  "comment": 2167,
+  "code": 65479,
+  "nFiles": 372} }
+```

@@ -1,0 +1,90 @@
+jest-haste-map: Watchman crawl failed. Retrying once with node crawler.
+  Usually this happens when watchman isn't running. Create an empty `.watchmanconfig` file in your project's root folder or initialize a git or hg repository in your project.
+  Error: Watchman error: std::__1::system_error: open: /Volumes/Zoom-Archive/grig/work/onelocal/repo/ONE-mobile: Operation not permitted. Make sure watchman is running for this project. See https://facebook.github.io/watchman/docs/troubleshooting.
+FAIL __tests__/App.test.tsx
+  ● Test suite failed to run
+
+    Jest encountered an unexpected token
+
+    Jest failed to parse a file. This happens e.g. when your code or its dependencies use non-standard JavaScript syntax, or when Jest is not configured to support such syntax.
+
+    Out of the box Jest supports Babel, which will be used to transform your files into valid JS based on your Babel configuration.
+
+    By default "node_modules" folder is ignored by transformers.
+
+    Here's what you can do:
+     • If you are trying to use ECMAScript Modules, see https://jestjs.io/docs/ecmascript-modules for how to enable it.
+     • If you are trying to use TypeScript, see https://jestjs.io/docs/getting-started#using-typescript
+     • To have some of your "node_modules" files transformed, you can specify a custom "transformIgnorePatterns" in your config.
+     • If you need a custom transformation specify a "transform" option in your config.
+     • If you simply want to mock your non-JS modules (e.g. binary assets) you can stub them out with the "moduleNameMapper" config option.
+
+    You'll find more details and examples of these config options in the docs:
+    https://jestjs.io/docs/configuration
+    For information about custom transformations, see:
+    https://jestjs.io/docs/code-transformation
+
+    Details:
+
+    SyntaxError: /Volumes/Zoom-Archive/grig/work/onelocal/repo/ONE-mobile/global.css: Support for the experimental syntax 'decorators' isn't currently enabled (1:1):
+
+    > 1 | @tailwind base;
+        | ^
+      2 | @tailwind components;
+      3 | @tailwind utilities;
+      4 |
+
+    Add @babel/plugin-proposal-decorators (https://github.com/babel/babel/tree/main/packages/babel-plugin-proposal-decorators) to the 'plugins' section of your Babel config to enable transformation.
+    If you want to leave it as-is, add @babel/plugin-syntax-decorators (https://github.com/babel/babel/tree/main/packages/babel-plugin-syntax-decorators) to the 'plugins' section to enable parsing.
+
+    If you already added the plugin for this syntax to your config, it's possible that your config isn't being loaded.
+    You can re-run Babel with the BABEL_SHOW_CONFIG_FOR environment variable to show the loaded configuration:
+    	npx cross-env BABEL_SHOW_CONFIG_FOR=/Volumes/Zoom-Archive/grig/work/onelocal/repo/ONE-mobile/global.css <your build command>
+    See https://babeljs.io/docs/configuration#print-effective-configs for more info.
+
+       5 | import React from "react";
+       6 | import "react-native";
+    >  7 | import "../global.css";
+         | ^
+       8 | import { App } from "../src/app";
+       9 |
+      10 | // Note: import explicitly to use the types shiped with jest.
+
+      at constructor (node_modules/@babel/parser/src/parse-error.ts:95:45)
+      at Parser.toParseError [as raise] (node_modules/@babel/parser/src/tokenizer/index.ts:1497:19)
+      at Parser.raise [as expectOnePlugin] (node_modules/@babel/parser/src/tokenizer/index.ts:1562:18)
+      at Parser.expectOnePlugin [as parseDecorator] (node_modules/@babel/parser/src/parser/statement.ts:763:10)
+      at Parser.parseDecorator [as parseDecorators] (node_modules/@babel/parser/src/parser/statement.ts:744:28)
+      at Parser.parseDecorators [as parseStatementLike] (node_modules/@babel/parser/src/parser/statement.ts:435:25)
+      at Parser.parseStatementLike [as parseModuleItem] (node_modules/@babel/parser/src/parser/statement.ts:374:17)
+      at Parser.parseModuleItem [as parseBlockOrModuleBlockBody] (node_modules/@babel/parser/src/parser/statement.ts:1419:16)
+      at Parser.parseBlockOrModuleBlockBody [as parseBlockBody] (node_modules/@babel/parser/src/parser/statement.ts:1393:10)
+      at Parser.parseBlockBody [as parseProgram] (node_modules/@babel/parser/src/parser/statement.ts:225:10)
+      at Parser.parseProgram [as parseTopLevel] (node_modules/@babel/parser/src/parser/statement.ts:203:25)
+      at Parser.parseTopLevel [as parse] (node_modules/@babel/parser/src/parser/index.ts:90:10)
+      at parse (node_modules/@babel/parser/src/index.ts:92:38)
+      at parser (node_modules/@babel/core/src/parser/index.ts:28:19)
+          at parser.next (<anonymous>)
+      at normalizeFile (node_modules/@babel/core/src/transformation/normalize-file.ts:49:24)
+          at normalizeFile.next (<anonymous>)
+      at run (node_modules/@babel/core/src/transformation/index.ts:40:36)
+          at run.next (<anonymous>)
+      at transform (node_modules/@babel/core/src/transform.ts:29:20)
+          at transform.next (<anonymous>)
+      at evaluateSync (node_modules/gensync/index.js:251:28)
+      at sync (node_modules/gensync/index.js:89:14)
+      at fn (node_modules/@babel/core/src/errors/rewrite-stack-trace.ts:99:14)
+      at transformSync (node_modules/@babel/core/src/transform.ts:66:52)
+      at ScriptTransformer._instrumentFile (node_modules/@jest/transform/build/ScriptTransformer.js:389:46)
+      at ScriptTransformer._buildTransformResult (node_modules/@jest/transform/build/ScriptTransformer.js:491:33)
+      at ScriptTransformer.transformSource (node_modules/@jest/transform/build/ScriptTransformer.js:554:17)
+      at ScriptTransformer._transformAndBuildScript (node_modules/@jest/transform/build/ScriptTransformer.js:674:40)
+      at ScriptTransformer.transform (node_modules/@jest/transform/build/ScriptTransformer.js:726:19)
+      at Object.require (__tests__/App.test.tsx:7:1)
+
+Test Suites: 1 failed, 1 total
+Tests:       0 total
+Snapshots:   0 total
+Time:        1.389 s
+Ran all test suites.
+Test results written to: coverage.json
